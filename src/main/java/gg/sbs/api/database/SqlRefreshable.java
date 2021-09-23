@@ -14,11 +14,10 @@ import static gg.sbs.api.util.Consts.ONE_MINUTE_MS;
 
 public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
-    private static final long fixedRateMs = ONE_MINUTE_MS;
     private final List<T> items = new ArrayList<>();
     private boolean itemsInitialized = false;
 
-    public SqlRefreshable(Class<R> rClass) {
+    public SqlRefreshable(Class<R> rClass, long fixedRateMs) {
         scheduler.scheduleAtFixedRate(() -> {
             Collections.copy(items, SimplifiedAPI.getSqlRepository(rClass).findAll());
             itemsInitialized = true;
