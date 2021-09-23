@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt;
+package gg.sbs.api.nbt_old;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

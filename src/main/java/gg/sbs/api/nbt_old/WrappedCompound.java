@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt;
+package gg.sbs.api.nbt_old;
 
 abstract class WrappedCompound<W> extends NbtCompound {
 

@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt;
+package gg.sbs.api.nbt_old;
 
 import java.util.List;
 import java.util.Map;

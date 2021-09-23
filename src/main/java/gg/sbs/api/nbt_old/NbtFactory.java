@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt;
+package gg.sbs.api.nbt_old;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;

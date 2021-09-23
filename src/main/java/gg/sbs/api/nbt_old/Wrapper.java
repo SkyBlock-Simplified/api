@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt;
+package gg.sbs.api.nbt_old;
 
 /**
  * Represents an object that provides a view of a native NMS class.
