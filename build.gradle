@@ -60,6 +60,7 @@ static def loadEnv() {
             env.put(pair[0], pair.length == 2 ? pair[1] : '')
         }
     }
+    env.putAll(System.getenv())
     return env
 }
 
