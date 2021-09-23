@@ -21,7 +21,7 @@ import gg.sbs.api.database.models.reforges.ReforgeRefreshable;
 import gg.sbs.api.database.models.reforges.ReforgeRepository;
 import gg.sbs.api.mojang.MojangProfile;
 import gg.sbs.api.mojang.MojangRepository;
-import gg.sbs.api.nbt.NbtFactory;
+import gg.sbs.api.nbt_old.NbtFactory;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
 import gg.sbs.api.util.ResourceUtil;

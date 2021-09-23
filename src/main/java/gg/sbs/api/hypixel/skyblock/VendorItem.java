@@ -2,7 +2,7 @@ package gg.sbs.api.hypixel.skyblock;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import gg.sbs.api.nbt.NbtCompound;
+import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.util.ListUtil;
 
 import java.util.Arrays;
