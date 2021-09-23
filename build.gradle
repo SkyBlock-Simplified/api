@@ -50,15 +50,18 @@ configurations {
 }
 
 static def loadEnv() {
-    def file = new File('.env')
-    def scanner = new Scanner(file)
     def env = [:]
-    while (scanner.hasNextLine()) {
-        def line = scanner.nextLine()
-        if (line.contains('=')) {
-            def pair = line.split('=')
-            env.put(pair[0], pair.length == 2 ? pair[1] : '')
+    try {
+        def file = new File('.env')
+        def scanner = new Scanner(file)
+        while (scanner.hasNextLine()) {
+            def line = scanner.nextLine()
+            if (line.contains('=')) {
+                def pair = line.split('=')
+                env.put(pair[0], pair.length == 2 ? pair[1] : '')
+            }
         }
+    } catch (FileNotFoundException ignored) {
     }
     env.putAll(System.getenv())
     return env

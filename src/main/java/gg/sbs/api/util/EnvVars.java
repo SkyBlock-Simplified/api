@@ -7,16 +7,17 @@ import java.util.Scanner;
 
 public class EnvVars {
     public static Map<String, String> get() {
+        Map<String, String> env = new HashMap<>();
         // Load from src/main/resources/.env
         InputStream file = EnvVars.class.getResourceAsStream("../.env");
-        assert file != null;
-        Scanner scanner = new Scanner(file);
-        Map<String, String> env = new HashMap<>();
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.contains("=")) {
-                String[] pair = line.split("=");
-                env.put(pair[0], pair.length == 2 ? pair[1] : "");
+        if (file != null) {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.contains("=")) {
+                    String[] pair = line.split("=");
+                    env.put(pair[0], pair.length == 2 ? pair[1] : "");
+                }
             }
         }
         // Load from OS
