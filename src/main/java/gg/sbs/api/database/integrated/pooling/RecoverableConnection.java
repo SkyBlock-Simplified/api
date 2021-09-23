@@ -1,4 +1,4 @@
-package gg.sbs.api.database.drivers.pooling;
+package gg.sbs.api.database.integrated.pooling;
 
 import java.sql.Array;
 import java.sql.Blob;

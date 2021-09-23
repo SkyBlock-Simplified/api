@@ -1,4 +1,4 @@
-package gg.sbs.api.database.drivers.notifications;
+package gg.sbs.api.database.integrated.notifications;
 
 import gg.sbs.api.util.StringUtil;
 

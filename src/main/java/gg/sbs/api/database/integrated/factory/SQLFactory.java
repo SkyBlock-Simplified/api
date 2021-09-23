@@ -1,7 +1,7 @@
-package gg.sbs.api.database.drivers.factory;
+package gg.sbs.api.database.integrated.factory;
 
-import gg.sbs.api.database.drivers.factory.callbacks.ResultCallback;
-import gg.sbs.api.database.drivers.factory.callbacks.VoidResultCallback;
+import gg.sbs.api.database.integrated.factory.callbacks.ResultCallback;
+import gg.sbs.api.database.integrated.factory.callbacks.VoidResultCallback;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.StringUtil;
 

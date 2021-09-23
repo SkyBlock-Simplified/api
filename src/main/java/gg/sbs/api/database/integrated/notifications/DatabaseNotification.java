@@ -1,7 +1,7 @@
-package gg.sbs.api.database.drivers.notifications;
+package gg.sbs.api.database.integrated.notifications;
 
-import gg.sbs.api.database.drivers.factory.SQLFactory;
-import gg.sbs.api.database.drivers.factory.callbacks.VoidResultCallback;
+import gg.sbs.api.database.integrated.factory.SQLFactory;
+import gg.sbs.api.database.integrated.factory.callbacks.VoidResultCallback;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;

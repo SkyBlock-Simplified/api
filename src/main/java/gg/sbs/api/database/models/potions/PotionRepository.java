@@ -1,6 +1,6 @@
 package gg.sbs.api.database.models.potions;
 
-import gg.sbs.api.database.models.SqlRepository;
+import gg.sbs.api.database.SqlRepository;
 
 import java.util.List;
 

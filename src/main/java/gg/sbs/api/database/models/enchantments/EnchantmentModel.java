@@ -1,7 +1,7 @@
 package gg.sbs.api.database.models.enchantments;
 
-import gg.sbs.api.database.models.SqlJsonConverter;
-import gg.sbs.api.database.models.SqlModel;
+import gg.sbs.api.database.SqlJsonConverter;
+import gg.sbs.api.database.SqlModel;
 import gg.sbs.api.database.models.itemtypes.ItemTypeModel;
 import org.hibernate.annotations.UpdateTimestamp;
 

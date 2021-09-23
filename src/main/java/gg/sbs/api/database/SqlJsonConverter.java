@@ -1,4 +1,4 @@
-package gg.sbs.api.database.models;
+package gg.sbs.api.database;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

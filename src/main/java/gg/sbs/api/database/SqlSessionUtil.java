@@ -1,4 +1,4 @@
-package gg.sbs.api.database.models;
+package gg.sbs.api.database;
 
 import gg.sbs.api.util.EnvVars;
 import org.hibernate.Session;

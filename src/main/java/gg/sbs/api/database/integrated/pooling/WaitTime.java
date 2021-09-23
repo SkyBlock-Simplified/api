@@ -1,4 +1,4 @@
-package gg.sbs.api.database.drivers.pooling;
+package gg.sbs.api.database.integrated.pooling;
 
 /**
  * Represents time to wait for a connection. Ensures unified waiting intervals.

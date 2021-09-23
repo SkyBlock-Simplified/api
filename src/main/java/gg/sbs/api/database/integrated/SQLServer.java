@@ -1,6 +1,6 @@
-package gg.sbs.api.database.drivers;
+package gg.sbs.api.database.integrated;
 
-import gg.sbs.api.database.drivers.factory.SQLWrapper;
+import gg.sbs.api.database.integrated.factory.SQLWrapper;
 import gg.sbs.api.util.StringUtil;
 
 import java.sql.SQLException;

@@ -1,8 +1,8 @@
 package gg.sbs.api;
 
-import gg.sbs.api.database.models.SqlModel;
-import gg.sbs.api.database.models.SqlRefreshable;
-import gg.sbs.api.database.models.SqlRepository;
+import gg.sbs.api.database.SqlModel;
+import gg.sbs.api.database.SqlRefreshable;
+import gg.sbs.api.database.SqlRepository;
 import gg.sbs.api.database.models.accessories.AccessoryRefreshable;
 import gg.sbs.api.database.models.accessories.AccessoryRepository;
 import gg.sbs.api.database.models.accessoryfamilies.AccessoryFamilyRefreshable;

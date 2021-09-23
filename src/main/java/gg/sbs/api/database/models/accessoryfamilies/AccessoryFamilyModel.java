@@ -1,6 +1,6 @@
 package gg.sbs.api.database.models.accessoryfamilies;
 
-import gg.sbs.api.database.models.SqlModel;
+import gg.sbs.api.database.SqlModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;

@@ -1,4 +1,4 @@
-package gg.sbs.api.database.models;
+package gg.sbs.api.database;
 
 import org.hibernate.Session;
 

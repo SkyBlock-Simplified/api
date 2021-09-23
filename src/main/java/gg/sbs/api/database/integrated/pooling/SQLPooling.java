@@ -1,6 +1,6 @@
-package gg.sbs.api.database.drivers.pooling;
+package gg.sbs.api.database.integrated.pooling;
 
-import gg.sbs.api.database.drivers.factory.SQLFactory;
+import gg.sbs.api.database.integrated.factory.SQLFactory;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentDeque;

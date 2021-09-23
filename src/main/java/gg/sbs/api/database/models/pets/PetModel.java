@@ -1,7 +1,7 @@
 package gg.sbs.api.database.models.pets;
 
-import gg.sbs.api.database.models.SqlJsonConverter;
-import gg.sbs.api.database.models.SqlModel;
+import gg.sbs.api.database.SqlJsonConverter;
+import gg.sbs.api.database.SqlModel;
 import gg.sbs.api.database.models.rarities.RarityModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
