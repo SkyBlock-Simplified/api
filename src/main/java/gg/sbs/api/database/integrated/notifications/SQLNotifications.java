@@ -1,7 +1,7 @@
 package gg.sbs.api.database.integrated.notifications;
 
 import gg.sbs.api.database.integrated.pooling.SQLPooling;
-import gg.sbs.api.scheduler.MinecraftScheduler;
+import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
