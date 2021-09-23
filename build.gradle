@@ -26,6 +26,7 @@ buildscript {
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0'// apply false
+    id 'org.flywaydb.flyway' version '8.0.0-beta2'
 }
 
 version = project.modVersion
@@ -48,6 +49,22 @@ configurations {
     compile.extendsFrom(shade)
 }
 
+static def loadEnv() {
+    def file = new File('.env')
+    def scanner = new Scanner(file)
+    def env = [:]
+    while (scanner.hasNextLine()) {
+        def line = scanner.nextLine()
+        if (line.contains('=')) {
+            def pair = line.split('=')
+            env.put(pair[0], pair.length == 2 ? pair[1] : '')
+        }
+    }
+    return env
+}
+
+def env = loadEnv()
+
 dependencies {
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     implementation group: 'io.franzbecker', name: 'gradle-lombok', version: '3.3.0'
@@ -55,6 +72,9 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.7'
     implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.6'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
+    implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.5.7.Final'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 }
 
 shadowJar {
@@ -64,4 +84,10 @@ shadowJar {
     def localGoogleGuava = 'gg.sbs.api.google.guava'
     relocate googleGson, localGoogleGson
     relocate googleGuava, localGoogleGuava
+}
+
+flyway {
+    url = 'jdbc:mariadb://' + env.get('DB_URL') + ':' + env.get('DB_PORT') + '/' + env.get('DB_DATABASE')
+    user = env.get('DB_USER')
+    password = env.get('DB_PASSWORD')
 }
