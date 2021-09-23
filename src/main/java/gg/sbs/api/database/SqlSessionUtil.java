@@ -23,7 +23,13 @@ public class SqlSessionUtil {
                             + "/" + env.get("DB_DATABASE"));
                     put("hibernate.connection.username", env.get("DB_USER"));
                     put("hibernate.connection.password", env.get("DB_PASSWORD"));
+                    put("hibernate.connection.provider_class",
+                            org.hibernate.hikaricp.internal.HikariCPConnectionProvider.class.getCanonicalName());
                     put("hibernate.dialect", org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName());
+                    put("hibernate.hikari.prepStmtCacheSize", "250");
+                    put("hibernate.hikari.prepStmtCacheSqlLimit", "2048");
+                    put("hibernate.hikari.cachePrepStmts", "true");
+                    put("hibernate.hikari.useServerPrepStmts", "true");
                 }}
         ).build();
         return new MetadataSources(registry).buildMetadata().buildSessionFactory();
