@@ -1,14 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        /*maven {
-            name = "forge"
-            url = "https://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sponge"
-            url = "https://repo.spongepowered.org/maven"
-        }*/
         maven {
             name = "gradle"
             url = "https://plugins.gradle.org/m2/"
@@ -16,10 +8,6 @@ buildscript {
     }
     dependencies {
         classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
-        //classpath "io.franzbecker:gradle-lombok:3.3.0"
-        //classpath 'com.discord4j:discord4j-core:3.1.7'
-        classpath 'com.google.code.gson:gson:2.8.7'
-        classpath 'org.yaml:snakeyaml:1.6'
     }
 }
 
@@ -28,9 +16,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.0.0'// apply false
     id 'org.flywaydb.flyway' version '8.0.0-beta2'
 }
-
-version = project.modVersion
-group = project.modGroup
 
 repositories {
     mavenCentral()
@@ -42,11 +27,6 @@ repositories {
         name = 'jitpack-repo'
         url = 'https://jitpack.io'
     }
-}
-
-configurations {
-    shade
-    compile.extendsFrom(shade)
 }
 
 static def loadEnv() {
@@ -71,13 +51,15 @@ def env = loadEnv()
 
 dependencies {
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    implementation group: 'io.franzbecker', name: 'gradle-lombok', version: '3.3.0'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.7'
     implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.6'
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
     implementation group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.5.7.Final'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 shadowJar {
