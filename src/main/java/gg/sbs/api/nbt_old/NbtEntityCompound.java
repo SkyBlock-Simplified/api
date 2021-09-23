@@ -1,15 +1,15 @@
-package gg.sbs.api.nbt;
+package gg.sbs.api.nbt_old;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * NBT Wrapper for an Entity.
  */
-public final class NbtTileEntityCompound extends WrappedCompound<TileEntity> {
+public final class NbtEntityCompound extends WrappedCompound<Entity> {
 
-	NbtTileEntityCompound(TileEntity tileEntity, Object handle) {
-		super(tileEntity, handle, "ForgeData");
+	NbtEntityCompound(Entity entity, Object handle) {
+		super(entity, handle, "ForgeData");
 		//this.load();
 	}
 

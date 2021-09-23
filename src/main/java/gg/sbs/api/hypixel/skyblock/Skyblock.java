@@ -25,7 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 import gg.sbs.api.hypixel.SkyblockIsland;
 import gg.sbs.api.hypixel.skyblock.events.LocationChangeEvent;
 import gg.sbs.api.minecraft.ChatFormatting;
-import gg.sbs.api.nbt.NbtCompound;
+import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.NumberUtil;
