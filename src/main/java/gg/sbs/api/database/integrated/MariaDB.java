@@ -14,7 +14,7 @@ public class MariaDB extends SQLWrapper {
 	}
 
 	public MariaDB(String host, int port, String user, String pass, String schema) throws SQLException {
-		super("org.mariadb.jdbc.Driver", StringUtil.format("jdbc:mysql://{0}:{1,number,#}/{2}", host, port, schema), user, pass);
+		super("org.mariadb.jdbc.Driver", StringUtil.format("jdbc:mariadb://{0}:{1,number,#}/{2}", host, port, schema), user, pass);
 	}
 
 	/**
