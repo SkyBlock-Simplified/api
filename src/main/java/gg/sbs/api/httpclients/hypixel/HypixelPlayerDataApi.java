@@ -3,8 +3,6 @@ package gg.sbs.api.httpclients.hypixel;
 import feign.HeaderMap;
 import feign.Param;
 import feign.RequestLine;
-import gg.sbs.api.httpclients.hypixel.playerdata.HypixelGuildResponse;
-import gg.sbs.api.httpclients.hypixel.playerdata.HypixelPlayerResponse;
 
 import java.util.Map;
 
