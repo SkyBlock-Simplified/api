@@ -1180,33 +1180,58 @@ public class Skyblock {
 
     }
 
+    /*
+    {
+    id: "minecraft:skull",
+    Count: 1b,
+    tag: {
+        SkullOwner: {
+            Id: "f33f51a7-9691-4076-abda-f66e3d047a71",
+            Properties: {
+                textures: [{
+                    Signature: "c1Q0rQqA13TDB7leFcp1T0FJn3aCPFuNLU1MPPYSlZR9yY09MUYeSJy7nsNpIjmywo39Ra1GlFIpSKaWjg30BfYZOdw7ZJh+OCdWkYhWd44yHq5NMevMzmmWvAP2lc1zgn+P/2XwfmKzo0UueITq+gnpt3MbYojoAny8M/iLTGa+xlHnaUZR1M7Y8USBycET12xdqQNJ/pF4EXGwzZMStYXFYI+q4qNQUf0/4j8BnYOIYplWlxcGtU11DHvsyTWwauMfW6yHNj2HijwS2OHcean5P6II/TV3SoMwmE8DfDUPWU8rL5GJnZL0TUvwCgAvz0rxp8JLrZ68Ep80cvE7YviBeQAKa0KPkWszy+87eppupPyzbqmKlbM/FHlKFkHMh2pZK47+Y5vthROz2BAN+eqpn6YY/pVvYhHAVOYSOLo1r5ztSjHaN3WV8mpLN3G9qpGcW2hyMk43uFbUQ6PtfV7Ajza8iBJgQSjNmYPy4cu+nS31ipXF9Z1fkjqz5ZnIRVoJq7/IzgQrh085iBlvbTcmxNXJ+ccqfq860+Akib1JuRX+MEvv2KgZ12AkBgOY0IEqPo3AJTXm07f02cSvIN80V/q/VDaZ8QPp571DDPp+LILUSMyKQ61pA4yI4takYiYbs9KzWGChe9HuIs5Uxm6fuMHF+iDo0bOf4OSsV2Y=",
+                    Value: "ewogICJ0aW1lc3RhbXAiIDogMTYzMjQxNTQ0ODMzMiwKICAicHJvZmlsZUlkIiA6ICJmMzNmNTFhNzk2OTE0MDc2YWJkYWY2NmUzZDA0N2E3MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmFmdGVkRnVyeSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hMjc2ODQyYTZiYjA3MjU3YWFlNDAwODczN2I2NTAzYWJkOTJkNDgyNWY4NzkyNTE0YTM1Nzk3NzI3MzBiNTRiIgogICAgfSwKICAgICJDQVBFIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xNTNiMWEwZGZjYmFlOTUzY2RlYjZmMmMyYmY2YmY3OTk0MzIzOWIxMzcyNzgwZGE0NGJjYmIyOTI3MzEzMWRhIgogICAgfQogIH0KfQ=="
+                }]
+            },
+            Name: "CraftedFury"
+        },
+        display: {
+            Lore: [" §6 Mining Fortune §f768", "  §6☘ Farming Fortune §f224", "  §6☘ Foraging Fortune §f80", "  §5✧ Pristine §f1", "", "§7§eClick to view your profile!"],
+            Name: "§aYour SkyBlock Profile"
+        }
+    },
+    Damage: 3s
+}
+     */
+
     public enum Stat {
 
-        DAMAGE("?", ChatFormatting.RED),
-        HEALTH("?", ChatFormatting.RED),
-        DEFENSE("?", ChatFormatting.GREEN),
-        STRENGTH("?", ChatFormatting.RED),
-        SPEED("?", ChatFormatting.WHITE),
-        CRIT_CHANCE("?", ChatFormatting.BLUE),
-        CRIT_DAMAGE("?", ChatFormatting.BLUE),
-        INTELLIGENCE("?", ChatFormatting.AQUA),
-        MINING_SPEED("?", ChatFormatting.GOLD),
-        SEA_CREATURE_CHANCE("?", ChatFormatting.DARK_AQUA),
-        MAGIC_FIND("?", ChatFormatting.AQUA),
-        PET_LUCK("?", ChatFormatting.LIGHT_PURPLE),
-        FEROCITY("?", ChatFormatting.LIGHT_PURPLE),
-        ATTACK_SPEED("?", ChatFormatting.DARK_PURPLE),
-        ABILITY_DAMAGE("?", ChatFormatting.RED),
-        TRUE_DEFENSE("?", ChatFormatting.WHITE),
-        MINING_FORTUNE("?", ChatFormatting.WHITE),
-        FARMING_FORTUNE("?", ChatFormatting.WHITE),
-        FORAGING_FORTUNE("?", ChatFormatting.WHITE);
+        DAMAGE('\u2741', ChatFormatting.RED),
+        HEALTH('\u2764', ChatFormatting.RED),
+        DEFENSE('\u2748', ChatFormatting.GREEN),
+        STRENGTH('\u2741', ChatFormatting.RED),
+        SPEED('\u2726', ChatFormatting.WHITE),
+        CRIT_CHANCE('\u2623', ChatFormatting.BLUE),
+        CRIT_DAMAGE('\u2620', ChatFormatting.BLUE),
+        INTELLIGENCE('\u270e', ChatFormatting.AQUA),
+        MINING_SPEED('\u2e15', ChatFormatting.GOLD),
+        BONUS_ATTACK_SPEED('\u2694', ChatFormatting.YELLOW),
+        SEA_CREATURE_CHANCE('\u03b1', ChatFormatting.DARK_AQUA),
+        MAGIC_FIND('\u272f', ChatFormatting.AQUA),
+        PET_LUCK('\u2663', ChatFormatting.LIGHT_PURPLE),
+        TRUE_DEFENSE('\u2742', ChatFormatting.WHITE),
+        FEROCITY('\u2afd', ChatFormatting.LIGHT_PURPLE),
+        ABILITY_DAMAGE('\u0e51', ChatFormatting.RED),
+        MINING_FORTUNE('\u2618', ChatFormatting.WHITE),
+        FARMING_FORTUNE('\u2618', ChatFormatting.WHITE),
+        FORAGING_FORTUNE('\u2618', ChatFormatting.WHITE),
+        PRISTINE('\u2727', ChatFormatting.DARK_PURPLE);
 
-        private final String symbol;
+        private final char symbolChar;
         private final ChatFormatting color;
 
-        Stat(String symbol, ChatFormatting color) {
-            this.symbol = symbol;
+        Stat(char symbolChar, ChatFormatting color) {
+            this.symbolChar = symbolChar;
             this.color = color;
         }
 
@@ -1219,11 +1244,15 @@ public class Skyblock {
         }
 
         public String getFormattedDisplayName() {
-            return FormatUtil.preformat("{0} {1}{2}", this.color, this.symbol, this.getDisplayName(), ChatFormatting.GRAY);
+            return FormatUtil.preformat("{0} {1}{2}", this.color, this.getSymbol(), this.getDisplayName(), ChatFormatting.GRAY);
         }
 
         public String getSymbol() {
-            return this.symbol;
+            return StringUtil.unescapeJava(Character.toString(this.symbolChar));
+        }
+
+        public char getSymbolChar() {
+            return this.symbolChar;
         }
 
     }
@@ -2006,7 +2035,7 @@ public class Skyblock {
 
         // Spooky Festival
         HEADLESS_HORSEMAN(EntitySkeletonHorse.class, EntitySkeleton.class),
-        BAT_PINATA("Bat Pi�ata", EntityBat.class),
+        BAT_PINATA("Bat Pi�ata", EntityBat.class),
 
         // Bosses
         BROOD_MOTHER_CAVE_SPIDER("Brood Mother", EntityCaveSpider.class),
