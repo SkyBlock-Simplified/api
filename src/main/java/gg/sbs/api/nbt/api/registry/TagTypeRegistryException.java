@@ -4,6 +4,7 @@ package gg.sbs.api.nbt.api.registry;
  * Checked exception thrown when any issue arises relating to the {@link TagTypeRegistry}.
  */
 public class TagTypeRegistryException extends Exception {
+
     /**
      * Constructs a new {@link TagTypeRegistryException} with the specified detail message. The cause is not initialized, and may subsequently be initialized by a call to initCause.
      *
@@ -23,4 +24,5 @@ public class TagTypeRegistryException extends Exception {
     public TagTypeRegistryException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }

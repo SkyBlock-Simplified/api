@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NbtStringUtils {
+
     public static String escapeSnbt(String str) {
         StringBuilder sb = new StringBuilder(" ");
 

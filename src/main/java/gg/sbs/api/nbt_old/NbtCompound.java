@@ -24,8 +24,8 @@ import java.util.*;
  * <p>
  * See also:
  * <ul>
- *   <li>{@link NbtFactory#createCompound}</li>
- *   <li>{@link NbtFactory#fromCompound}</li>
+ *   <li>{@link NbtFactory_old#createCompound}</li>
+ *   <li>{@link NbtFactory_old#fromCompound}</li>
  * </ul>
  */
 @SuppressWarnings("unchecked")
@@ -36,7 +36,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 	}
 
 	NbtCompound(Object handle, boolean root, String storageKey) {
-		super(handle, root, storageKey, NbtFactory.getDataField(NbtType.TAG_COMPOUND, handle));
+		super(handle, root, storageKey, NbtFactory_old.getDataField(NbtType.TAG_COMPOUND, handle));
 	}
 
 	/**

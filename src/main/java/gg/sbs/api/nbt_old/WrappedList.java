@@ -24,7 +24,7 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 	}
 
 	private Object adjustIncoming(Object value) {
-		Object adjusted = NbtFactory.adjustIncoming(value);
+		Object adjusted = NbtFactory_old.adjustIncoming(value);
 
 		if (!Objects.equals(adjusted, value))
 			this.support = Primitives.unwrap(value.getClass());
@@ -38,7 +38,7 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 
 		// Set the list type if its the first element
 		if (this.size() == 0)
-			NbtFactory.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory.getNbtType(nbt).getId());
+			NbtFactory_old.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory_old.getNbtType(nbt).getId());
 
 		return this.original.add(nbt);
 	}
@@ -49,7 +49,7 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 
 		// Set the list type if its the first element
 		if (this.size() == 0)
-			NbtFactory.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory.getNbtType(nbt).getId());
+			NbtFactory_old.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory_old.getNbtType(nbt).getId());
 
 		this.original.add(index, nbt);
 	}
@@ -162,11 +162,11 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 	}
 
 	protected E wrapOutgoing(Object value) {
-		return (E)NbtFactory.adjustOutgoing(this.cache.wrap(value), this.support);
+		return (E) NbtFactory_old.adjustOutgoing(this.cache.wrap(value), this.support);
 	}
 
 	protected E unwrapIncoming(Object wrapped) {
-		return (E)NbtFactory.unwrapValue(this.adjustIncoming(wrapped));
+		return (E) NbtFactory_old.unwrapValue(this.adjustIncoming(wrapped));
 	}
 
 }

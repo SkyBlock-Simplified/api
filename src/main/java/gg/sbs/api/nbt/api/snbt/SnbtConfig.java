@@ -7,6 +7,7 @@ import lombok.Data;
  */
 @Data
 public class SnbtConfig {
+
     /**
      * Toggles SNBT pretty-printing.
      */
@@ -21,4 +22,5 @@ public class SnbtConfig {
      * Defines the threshold at which array tags will be displayed inline rather than block to improve readability.
      */
     private int inlineThreshold = 100;
+
 }

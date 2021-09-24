@@ -14,6 +14,7 @@ import java.util.Map;
  * A registry mapping {@code byte} tag type IDs to tag type classes. Used to register custom-made {@link Tag} types.
  */
 public class TagTypeRegistry {
+
     private final Map<Byte, @NonNull Class<? extends Tag>> registry = new HashMap<>();
     {
         TagType.registerAll(this);
@@ -95,4 +96,5 @@ public class TagTypeRegistry {
             throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", clazz.getSimpleName()), e);
         }
     }
+
 }

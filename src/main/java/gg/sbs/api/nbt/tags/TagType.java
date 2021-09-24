@@ -13,6 +13,7 @@ import gg.sbs.api.nbt.tags.primitive.*;
  * Defines the 12 standard NBT tag types and their IDs supported by this library, laid out in the Notchian spec.
  */
 public enum TagType {
+
     /**
      * ID: 1
      *
@@ -107,6 +108,9 @@ public enum TagType {
         return (byte) id;
     }
 
+    static {
+
+    }
     public static void registerAll(TagTypeRegistry registry) {
         try {
             registry.registerTagType(BYTE.getId(), ByteTag.class);
@@ -121,8 +125,7 @@ public enum TagType {
             registry.registerTagType(COMPOUND.getId(), CompoundTag.class);
             registry.registerTagType(INT_ARRAY.getId(), IntArrayTag.class);
             registry.registerTagType(LONG_ARRAY.getId(), LongArrayTag.class);
-        } catch (TagTypeRegistryException e) {
-            e.printStackTrace(); // Should never happen.
-        }
+        } catch (TagTypeRegistryException ignore) { }
     }
+
 }
