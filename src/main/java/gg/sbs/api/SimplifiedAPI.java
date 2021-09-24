@@ -21,10 +21,9 @@ import gg.sbs.api.database.models.reforges.ReforgeRefreshable;
 import gg.sbs.api.database.models.reforges.ReforgeRepository;
 import gg.sbs.api.mojang.MojangProfile;
 import gg.sbs.api.mojang.MojangRepository;
-import gg.sbs.api.nbt_old.NbtFactory;
+import gg.sbs.api.nbt_old.NbtFactory_old;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
-import gg.sbs.api.util.ResourceUtil;
 
 public class SimplifiedAPI {
 
@@ -32,7 +31,7 @@ public class SimplifiedAPI {
 
     static {
         //serviceManager.provide(MojangRepository.class, new MojangRepository<MojangProfile>());
-        serviceManager.provide(NbtFactory.class, NbtFactory.getInstance());
+        serviceManager.provide(NbtFactory_old.class, NbtFactory_old.getInstance());
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
 
         //serviceManager.provide(ModLogger.class, instance.getLogger());
@@ -61,8 +60,8 @@ public class SimplifiedAPI {
         return (MojangRepository<MojangProfile>) getServiceManager().getProvider(MojangRepository.class);
     }
 
-    public static NbtFactory getNbtFactory() {
-        return getServiceManager().getProvider(NbtFactory.class);
+    public static NbtFactory_old getNbtFactory() {
+        return getServiceManager().getProvider(NbtFactory_old.class);
     }
 
     public static Scheduler getScheduler() {
