@@ -87,7 +87,7 @@ public class RegexUtil {
 	 */
 	public static String replaceColor(String message, Pattern pattern) {
 		if (!ORDERED_MESSAGES.containsKey(message)) {
-			Pattern patternx = Pattern.compile(StringUtil.format("(((?:[&{0}]{1}){2})+)([^&{0}]*)", SECTOR_SYMBOL, "{1,2}", ALL_PATTERN));
+			Pattern patternx = Pattern.compile(FormatUtil.format("(((?:[&{0}]{1}){2})+)([^&{0}]*)", SECTOR_SYMBOL, "{1,2}", ALL_PATTERN));
 			String[] parts = StringUtil.split(" ", message);
 			String newMessage = message;
 
@@ -96,9 +96,9 @@ public class RegexUtil {
 				String newPart = part;
 
 				while (matcher.find()) {
-					String[] codes = matcher.group(1).split(StringUtil.format("(?<!&|{0})", SECTOR_SYMBOL));
+					String[] codes = matcher.group(1).split(FormatUtil.format("(?<!&|{0})", SECTOR_SYMBOL));
 					Arrays.sort(codes, CODE_COMPARE);
-					String replace = StringUtil.format("{0}{1}", StringUtil.implode(codes), matcher.group(3));
+					String replace = FormatUtil.format("{0}{1}", StringUtil.join(codes), matcher.group(3));
 					newPart = newPart.replace(matcher.group(0), replace);
 				}
 
