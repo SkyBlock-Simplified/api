@@ -1,6 +1,9 @@
 package gg.sbs.api.util.concurrent.atomic;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public abstract class AtomicDeque<E> extends AtomicQueue<E> implements Deque<E> {
 

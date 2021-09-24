@@ -1,6 +1,5 @@
 package gg.sbs.api.yaml.converters;
 
-import gg.sbs.api.minecraft.inventory.item.ItemDatabase;
 import gg.sbs.api.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;

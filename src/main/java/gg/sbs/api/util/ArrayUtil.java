@@ -1,14 +1,14 @@
 package gg.sbs.api.util;
 
+import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.mutable.MutableInt;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
-
-import gg.sbs.api.util.builder.HashCodeBuilder;
-import gg.sbs.api.util.mutable.MutableInt;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * <p>Operations on arrays, primitive arrays (like {@code int[]}) and
