@@ -1,0 +1,1 @@
+ALTER TABLE `npcs` DROP COLUMN `is_merchant`;
