@@ -1,0 +1,1 @@
+ALTER TABLE `npcs` MODIFY COLUMN `location` BIGINT;
