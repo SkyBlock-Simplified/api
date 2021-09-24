@@ -1,5 +1,6 @@
 package gg.sbs.api.util;
 
+import gg.sbs.api.util.translate.UnicodeEscaper;
 import lombok.NonNull;
 
 /**
@@ -305,11 +306,11 @@ public class CharUtil {
      * @return the escaped Unicode string
      */
     public static String unicodeEscaped(final char ch) {
-        return "\\u" +
+        return ("\\u" +
                 HEX_DIGITS[(ch >> 12) & 15] +
                 HEX_DIGITS[(ch >> 8) & 15] +
                 HEX_DIGITS[(ch >> 4) & 15] +
-                HEX_DIGITS[(ch) & 15];
+                HEX_DIGITS[(ch) & 15]);
     }
 
     /**
@@ -329,9 +330,9 @@ public class CharUtil {
      * @return the escaped Unicode string, null if null input
      */
     public static String unicodeEscaped(final Character ch) {
-        if (ch == null) {
+        if (ch == null)
             return null;
-        }
+
         return unicodeEscaped(ch.charValue());
     }
 

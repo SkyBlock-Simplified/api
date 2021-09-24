@@ -21,7 +21,6 @@ import gg.sbs.api.data.sql.models.reforges.ReforgeRefreshable;
 import gg.sbs.api.data.sql.models.reforges.ReforgeRepository;
 import gg.sbs.api.httpclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.httpclients.hypixel.HypixelPlayerDataApi;
-import gg.sbs.api.httpclients.hypixel.HypixelSkyBlockApi;
 import gg.sbs.api.mojang.MojangProfile;
 import gg.sbs.api.mojang.MojangRepository;
 import gg.sbs.api.nbt_old.NbtFactory_old;
