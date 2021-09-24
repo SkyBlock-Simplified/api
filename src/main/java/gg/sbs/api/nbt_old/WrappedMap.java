@@ -72,7 +72,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 	}
 
 	private Object adjustIncoming(String key, Object value) {
-		Object adjusted = NbtFactory.adjustIncoming(value);
+		Object adjusted = NbtFactory_old.adjustIncoming(value);
 
 		if (!Objects.equals(adjusted, value))
 			this.addSupportKey(key, Primitives.unwrap(value.getClass()));
@@ -96,7 +96,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 		if (support.containsKey(key)) {
 			NbtCompound keyCompound = (NbtCompound)support.get(key);
 			Class<?> clazz = Primitives.unwrap(new Reflection(keyCompound.get("class"), keyCompound.get("package")).getClazz());
-			value = NbtFactory.adjustOutgoing(value, clazz);
+			value = NbtFactory_old.adjustOutgoing(value, clazz);
 		}
 
 		return value;
@@ -337,7 +337,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 	 * @return nbt type of passed {@code wrapped} value.
 	 */
 	protected final Object unwrapIncoming(String key, Object wrapped) {
-		return NbtFactory.unwrapValue(this.adjustIncoming(key, wrapped));
+		return NbtFactory_old.unwrapValue(this.adjustIncoming(key, wrapped));
 	}
 
 	@Nonnull

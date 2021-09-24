@@ -7,7 +7,6 @@ import gg.sbs.api.SimplifiedAPI;
 import gg.sbs.api.util.Primitives;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.util.StringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -20,9 +19,9 @@ import java.util.*;
  * Factory class for wrapping NBT objects.
  */
 @SuppressWarnings("unchecked")
-public final class NbtFactory {
+public final class NbtFactory_old {
 
-	private static final NbtFactory INSTANCE = new NbtFactory();
+	private static final NbtFactory_old INSTANCE = new NbtFactory_old();
 
 	// Convert between NBT id and the equivalent class in java
 	static final BiMap<Byte, Class<?>> NBT_CLASS = HashBiMap.create();
@@ -37,7 +36,7 @@ public final class NbtFactory {
 	//private static final Reflection NMS_TILE_ENTITY = MinecraftReflection.getCompatibleForgeReflection("TileEntity", MinecraftReflection.MINECRAFT_PACKAGE, "tileentity");
 	//private static final Reflection NMS_BLOCK = new MinecraftReflection("Block", MinecraftReflection.MINECRAFT_PACKAGE, "block");
 
-	private NbtFactory() { }
+	private NbtFactory_old() { }
 
 	static Object adjustIncoming(Object value) {
 		if (value == null)
@@ -129,7 +128,7 @@ public final class NbtFactory {
 		return value;
 	}
 
-	public static NbtFactory getInstance() {
+	public static NbtFactory_old getInstance() {
 		return INSTANCE;
 	}
 

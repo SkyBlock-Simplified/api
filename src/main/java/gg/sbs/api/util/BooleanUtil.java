@@ -9,18 +9,9 @@ package gg.sbs.api.util;
  *
  * <p>#ThreadSafe#</p>
  */
-public class BooleanUtil {
+public final class BooleanUtil {
 
-    /**
-     * <p>{@code BooleanUtils} instances should NOT be constructed in standard programming.
-     * Instead, the class should be used as {@code BooleanUtils.negate(true);}.</p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean instance
-     * to operate.</p>
-     */
-    public BooleanUtil() {
-        super();
-    }
+    private BooleanUtil() { }
 
     // Boolean utilities
     //--------------------------------------------------------------------------

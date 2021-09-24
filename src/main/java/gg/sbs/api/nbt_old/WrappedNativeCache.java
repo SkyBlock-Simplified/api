@@ -16,7 +16,7 @@ final class WrappedNativeCache {
 		Object current = this.cache.get(value);
 
 		if (current == null) {
-			current = NbtFactory.wrapNative(value);
+			current = NbtFactory_old.wrapNative(value);
 
 			// Only cache composite objects
 			if (current instanceof WrappedMap || current instanceof WrappedList)

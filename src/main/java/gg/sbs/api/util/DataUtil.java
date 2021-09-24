@@ -19,7 +19,7 @@ import java.util.zip.InflaterOutputStream;
  * variable types and stream creation.</p>
  */
 @SuppressWarnings("all")
-public class DataUtil {
+public final class DataUtil {
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -44,6 +44,8 @@ public class DataUtil {
 		for (int i = 0; i < 64; i++)
 			map2[map1[i]] = (byte) i;
 	}
+
+	private DataUtil() { }
 
 	public static String compress(String data) throws IOException {
 		return compress(data.getBytes());
@@ -161,6 +163,22 @@ public class DataUtil {
 		return out;
 	}
 
+	public static CompressionType getCompression(InputStream inputStream) throws IOException {
+		if (!inputStream.markSupported())
+			inputStream = new BufferedInputStream(inputStream);
+
+		inputStream.mark(0);
+
+		if (inputStream.read() == 120)
+			return CompressionType.ZLIB;
+
+		inputStream.reset();
+		if (inputStream.read() == 31)
+			return CompressionType.GZIP;
+
+		return CompressionType.NONE;
+	}
+
 	public static ByteArrayDataInput newDataInput(byte[] data) {
 		return ByteStreams.newDataInput(data);
 	}
@@ -185,12 +203,12 @@ public class DataUtil {
 		return ByteStreams.newDataOutput(size);
 	}
 
-	public static int readVarInt(DataInputStream in) throws IOException {
+	public static int readVarInt(DataInputStream inputStream) throws IOException {
 		int i = 0;
 		int j = 0;
 
 		while (true) {
-			int k = in.readByte();
+			int k = inputStream.readByte();
 			i |= (k & 0x7F) << j++ * 7;
 			if (j > 5) throw new RuntimeException("VarInt too big");
 			if ((k & 0x80) != 128) break;
@@ -199,12 +217,12 @@ public class DataUtil {
 		return i;
 	}
 
-	public static int readVarInt(ByteArrayDataInput in) {
+	public static int readVarInt(ByteArrayDataInput dataInput) {
 		int i = 0;
 		int j = 0;
 
 		while (true) {
-			int k = in.readByte();
+			int k = dataInput.readByte();
 			i |= (k & 0x7F) << j++ * 7;
 			if (j > 5) throw new RuntimeException("VarInt too big");
 			if ((k & 0x80) != 128) break;

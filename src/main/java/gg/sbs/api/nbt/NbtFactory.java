@@ -2,12 +2,13 @@ package gg.sbs.api.nbt;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
-import gg.sbs.api.nbt.api.snbt.SnbtConfig;
-import gg.sbs.api.nbt.io.CompressionType;
 import gg.sbs.api.nbt.io.NbtReader;
 import gg.sbs.api.nbt.io.NbtWriter;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.collection.CompoundTag;
+import gg.sbs.api.util.CompressionType;
+import gg.sbs.api.util.DataUtil;
 import lombok.Cleanup;
 import lombok.NonNull;
 
@@ -22,7 +23,8 @@ import java.util.zip.InflaterInputStream;
 /**
  * Standard interface for reading and writing NBT data structures.
  */
-public class Nbt {
+public class NbtFactory {
+
     private @NonNull Gson gson;
     private @NonNull TagTypeRegistry typeRegistry;
     private @NonNull SnbtConfig snbtConfig;
@@ -33,7 +35,7 @@ public class Nbt {
     /**
      * Constructs an instance of this class using a default {@link TagTypeRegistry} (supporting the standard 12 tag types).
      */
-    public Nbt() {
+    public NbtFactory() {
         this(new TagTypeRegistry());
     }
 
@@ -42,7 +44,7 @@ public class Nbt {
      *
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
      */
-    public Nbt(@NonNull TagTypeRegistry typeRegistry) {
+    public NbtFactory(@NonNull TagTypeRegistry typeRegistry) {
         this(typeRegistry, new Gson());
     }
 
@@ -52,7 +54,7 @@ public class Nbt {
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
      * @param gson the GSON instance to be used.
      */
-    public Nbt(@NonNull TagTypeRegistry typeRegistry, @NonNull Gson gson) {
+    public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull Gson gson) {
         this(typeRegistry, gson, new SnbtConfig());
     }
 
@@ -63,7 +65,7 @@ public class Nbt {
      * @param gson the GSON instance to be used.
      * @param snbtConfig the SNBT config object to be used.
      */
-    public Nbt(@NonNull TagTypeRegistry typeRegistry, @NonNull Gson gson, @NonNull SnbtConfig snbtConfig) {
+    public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull Gson gson, @NonNull SnbtConfig snbtConfig) {
         this.typeRegistry = typeRegistry;
         this.gson = gson;
         this.snbtConfig = snbtConfig;
@@ -190,23 +192,23 @@ public class Nbt {
      */
     public CompoundTag fromFile(@NonNull File file) throws IOException {
         @Cleanup BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-        @Cleanup DataInputStream in = null;
+        @Cleanup DataInputStream inputStream = null;
 
-        switch (CompressionType.getCompression(new FileInputStream(file))) {
+        switch (DataUtil.getCompression(new FileInputStream(file))) {
             case NONE:
-                in = new DataInputStream(bis);
+                inputStream = new DataInputStream(bis);
                 break;
             case GZIP:
-                in = new DataInputStream(new GZIPInputStream(bis));
+                inputStream = new DataInputStream(new GZIPInputStream(bis));
                 break;
             case ZLIB:
-                in = new DataInputStream(new InflaterInputStream(bis));
+                inputStream = new DataInputStream(new InflaterInputStream(bis));
                 break;
             default:
                 throw new IllegalStateException("Illegal compression type. This should never happen.");
         }
 
-        return this.fromStream(in);
+        return this.fromStream(inputStream);
     }
 
     /**
@@ -302,4 +304,5 @@ public class Nbt {
     public void setSnbtConfig(@NonNull SnbtConfig snbtConfig) {
         this.snbtConfig = snbtConfig;
     }
+
 }

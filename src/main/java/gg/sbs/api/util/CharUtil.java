@@ -48,16 +48,7 @@ public class CharUtil {
         }
     }
 
-    /**
-     * <p>{@code CharUtils} instances should NOT be constructed in standard programming.
-     * Instead, the class should be used as {@code CharUtils.toString('c');}.</p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean instance
-     * to operate.</p>
-     */
-    public CharUtil() {
-        super();
-    }
+    private CharUtil() { }
 
     /**
      * <p>Converts the String to a Character using the first character, returning

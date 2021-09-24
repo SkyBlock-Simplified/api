@@ -1,10 +1,8 @@
 package gg.sbs.api.util.builder;
 
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.TextStringBuilder;
-import org.apache.commons.text.matcher.StringMatcher;
-import org.apache.commons.text.matcher.StringMatcherFactory;
+import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.matcher.StringMatcher;
+import gg.sbs.api.util.matcher.StringMatcherFactory;
 
 import java.util.*;
 
@@ -662,7 +660,7 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
         if (srcChars == null || count == 0) {
             return Collections.emptyList();
         }
-        final TextStringBuilder buf = new TextStringBuilder();
+        final StringBuilder buf = new StringBuilder();
         final List<String> tokenList = new ArrayList<>();
         int pos = offset;
 
@@ -673,7 +671,7 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
 
             // handle case where end of string is a delimiter
             if (pos >= count) {
-                addToken(tokenList, StringUtils.EMPTY);
+                addToken(tokenList, StringUtil.EMPTY);
             }
         }
         return tokenList;
@@ -715,7 +713,7 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
      * @return The starting position of the next field (the character immediately after the delimiter), or -1 if end of
      *         string found
      */
-    private int readNextToken(final char[] srcChars, int start, final int len, final TextStringBuilder workArea,
+    private int readNextToken(final char[] srcChars, int start, final int len, final StringBuilder workArea,
                               final List<String> tokenList) {
         // skip all leading whitespace, unless it is the
         // field delimiter or the quote character
@@ -731,14 +729,14 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
 
         // handle reaching end
         if (start >= len) {
-            addToken(tokenList, StringUtils.EMPTY);
+            addToken(tokenList, StringUtil.EMPTY);
             return -1;
         }
 
         // handle empty token
         final int delimLen = getDelimiterMatcher().isMatch(srcChars, start, start, len);
         if (delimLen > 0) {
-            addToken(tokenList, StringUtils.EMPTY);
+            addToken(tokenList, StringUtil.EMPTY);
             return start + delimLen;
         }
 
@@ -770,7 +768,7 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
      * @return The starting position of the next field (the character immediately after the delimiter, or if end of
      *         string found, then the length of string
      */
-    private int readWithQuotes(final char[] srcChars, final int start, final int len, final TextStringBuilder workArea,
+    private int readWithQuotes(final char[] srcChars, final int start, final int len, final StringBuilder workArea,
                                final List<String> tokenList, final int quoteStart, final int quoteLen) {
         // Loop until we've found the end of the quoted
         // string or the end of the input
@@ -901,11 +899,11 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
      * @return this, to enable chaining
      */
     public StringTokenizer setDelimiterMatcher(final StringMatcher delim) {
-        if (delim == null) {
+        if (delim == null)
             this.delimMatcher = StringMatcherFactory.INSTANCE.noneMatcher();
-        } else {
+        else
             this.delimMatcher = delim;
-        }
+
         return this;
     }
 

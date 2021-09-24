@@ -3,8 +3,7 @@ package gg.sbs.api.hypixel;
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 import gg.sbs.api.SimplifiedAPI;
-import gg.sbs.api.util.DataUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -14,7 +13,6 @@ import gg.sbs.api.hypixel.skyblock.Location;
 import gg.sbs.api.hypixel.skyblock.Skyblock;
 import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.reflection.Reflection;
-import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
@@ -421,7 +419,7 @@ public final class SkyblockIsland {
 			COMPLETE;
 
 			public String getName() {
-				return StringUtil.capitalizeFully(this.name());
+				return WordUtil.capitalizeFully(this.name());
 			}
 
 		}
@@ -820,7 +818,7 @@ public final class SkyblockIsland {
 		}
 
 		public String getName() {
-			return StringUtil.capitalizeFully(this.name().replace("_", " "));
+			return WordUtil.capitalizeFully(this.name().replace("_", " "));
 		}
 
 		public boolean hasEntity() {
@@ -897,7 +895,7 @@ public final class SkyblockIsland {
 			}
 
 			public String getName() {
-				return StringUtil.capitalizeFully(this.name().replace("_", " "));
+				return WordUtil.capitalizeFully(this.name().replace("_", " "));
 			}
 
 			public ItemStack getItemStack() {
@@ -1149,7 +1147,7 @@ public final class SkyblockIsland {
 		}
 
 		public String getPrettyName() {
-			return StringUtil.capitalizeFully(this.getName().replace("_", " "));
+			return WordUtil.capitalizeFully(this.getName().replace("_", " "));
 		}
 
 		@Override
@@ -1206,7 +1204,7 @@ public final class SkyblockIsland {
 			}
 
 			public String getPrettyItemName() {
-				return StringUtil.capitalizeFully(this.itemName.replace("_", " "));
+				return WordUtil.capitalizeFully(this.itemName.replace("_", " "));
 			}
 
 			public Skyblock.Item.Rarity getRarity() {

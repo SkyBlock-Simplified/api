@@ -95,7 +95,7 @@ public class MojangProfile extends MojangProfileHistory {
 	 * @return Skull item with this profiles skin face.
 	 */
 	/*public final ItemStack getSkull() {
-		return MinecraftAPI.getMiniBlockDatabase().create(this.getUniqueId(), StringUtil.preformat("{0}''s Head", ChatFormatting.RESET.toString(), this.getName()));
+		return MinecraftAPI.getMiniBlockDatabase().create(this.getUniqueId(), FormatUtil.preformat("{0}''s Head", ChatFormatting.RESET.toString(), this.getName()));
 	}*/
 
 	/*

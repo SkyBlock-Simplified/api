@@ -1,10 +1,10 @@
 package gg.sbs.api.nbt.tags.array;
 
-import gg.sbs.api.nbt.api.Tag;
-import gg.sbs.api.nbt.api.json.JsonSerializable;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
-import gg.sbs.api.nbt.api.snbt.SnbtConfig;
-import gg.sbs.api.nbt.api.snbt.SnbtSerializable;
+import gg.sbs.api.nbt.json.JsonSerializable;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.snbt.SnbtConfig;
+import gg.sbs.api.nbt.snbt.SnbtSerializable;
+import gg.sbs.api.nbt.tags.Tag;
 
 import java.util.regex.Pattern;
 
@@ -12,9 +12,8 @@ import java.util.regex.Pattern;
  * Abstract class for implementing NBT array tags.
  *
  * @param <T> the type held in the array.
- * @author dewy
  */
-public abstract class ArrayTag<T> extends Tag implements SnbtSerializable, JsonSerializable, Iterable<T> {
+abstract class ArrayTag<T> extends Tag implements SnbtSerializable, JsonSerializable, Iterable<T> {
 
     public static final Pattern NUMBER_PATTERN = Pattern.compile("[-0-9]+");
 

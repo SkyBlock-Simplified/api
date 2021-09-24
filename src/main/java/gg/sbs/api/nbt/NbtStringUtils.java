@@ -1,6 +1,6 @@
-package gg.sbs.api.nbt.utils;
+package gg.sbs.api.nbt;
 
-import gg.sbs.api.nbt.api.snbt.SnbtConfig;
+import gg.sbs.api.nbt.snbt.SnbtConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,31 +8,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NbtStringUtils {
+
     public static String escapeSnbt(String str) {
         StringBuilder sb = new StringBuilder(" ");
-
         char quote = 0;
+
         for (int i = 0; i < str.length(); ++i) {
             char current = str.charAt(i);
 
-            if (current == '\\') {
+            if (current == '\\')
                 sb.append('\\');
-            } else if (current == '"' || current == '\'') {
-                if (quote == 0) {
+            else if (current == '"' || current == '\'') {
+                if (quote == 0)
                     quote = current == '"' ? '\'' : '"';
-                }
 
-                if (quote == current) {
+                if (quote == current)
                     sb.append('\\');
-                }
             }
 
             sb.append(current);
         }
 
-        if (quote == 0) {
+        if (quote == 0)
             quote = '"';
-        }
 
         sb.setCharAt(0, quote);
         sb.append(quote);
@@ -48,9 +46,8 @@ public class NbtStringUtils {
         List<String> matches = new ArrayList<>();
         Matcher matcher = regex.matcher(in);
 
-        while (matcher.find()) {
+        while (matcher.find())
             matches.add(matcher.group());
-        }
 
         return matches.toArray(new String[0]);
     }

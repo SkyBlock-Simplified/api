@@ -5,11 +5,16 @@ import gg.sbs.api.mojang.ChatFormatting;
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
 
-public class FormatUtil {
+/**
+ * Format strings using {@link MessageFormat}.
+ */
+public final class FormatUtil {
 
     private static final transient LinkedHashMap<String, MessageFormat> MESSAGE_CACHE = new MaxSizeLinkedMap<>(100);
     private static final ChatFormatting DEFAULT_IMPORTANT = ChatFormatting.AQUA;
     private static final ChatFormatting DEFAULT_LOG = ChatFormatting.GRAY;
+
+    private FormatUtil() { }
 
     /**
      * Returns a formatted string using {@link MessageFormat}.
@@ -61,7 +66,7 @@ public class FormatUtil {
         if (!MESSAGE_CACHE.containsKey(format)) {
             MessageFormat messageFormat = null;
             String replaceFormat = (logImportant != null ? logImportant : "") + "$1" + (logColor != null ? logColor : "");
-            String newFormat = (prefixColor ? logColor : "") + RegexUtil.replace(format, RegexUtil.LOG_PATTERN4, replaceFormat);
+            String newFormat = (prefixColor ? logColor : "") + RegexUtil.replaceAll(format, RegexUtil.LOG_PATTERN4, replaceFormat);
 
             try {
                 messageFormat = new MessageFormat(newFormat);

@@ -23,8 +23,8 @@ public enum NbtType {
 
 	NbtType(int id, Class<?> type) {
 		this.id = (byte)id;
-		NbtFactory.NBT_CLASS.put(this.id, type);
-		NbtFactory.NBT_ENUM.put(this.id, this);
+		NbtFactory_old.NBT_CLASS.put(this.id, type);
+		NbtFactory_old.NBT_ENUM.put(this.id, this);
 	}
 
 	public final byte getId() {
@@ -41,7 +41,7 @@ public enum NbtType {
 	}
 
 	public final Class<?> getFieldType() {
-		return NbtFactory.NBT_CLASS.get(this.getId());
+		return NbtFactory_old.NBT_CLASS.get(this.getId());
 	}
 
 }

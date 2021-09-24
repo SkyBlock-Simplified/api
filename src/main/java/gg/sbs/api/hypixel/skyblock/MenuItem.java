@@ -1,9 +1,9 @@
 package gg.sbs.api.hypixel.skyblock;
 
+import gg.sbs.api.util.WordUtil;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import org.apache.commons.lang3.text.WordUtils;
 
 public enum MenuItem {
 
@@ -45,7 +45,7 @@ public enum MenuItem {
 	}
 
 	public String getPrettyName() {
-		return StringUtil.capitalizeFully(this.name().replace("_", " "));
+		return WordUtil.capitalizeFully(this.name().replace("_", " "));
 	}
 
 	public static MenuItem getMenuItem(Skyblock.InventoryType inventoryType) {

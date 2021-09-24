@@ -1,6 +1,6 @@
-package gg.sbs.api.nbt.api;
+package gg.sbs.api.nbt.tags;
 
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
 
 import java.io.DataInput;
 import java.io.DataOutput;

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Array and List Checking/Converting
  */
-public class ListUtil {
+public final class ListUtil {
 
 	/**
 	 * Gets if the {@code value} is empty or null.
@@ -30,7 +30,7 @@ public class ListUtil {
 	 * @return true if empty or null, otherwise false
 	 */
 	public static <T> boolean isEmpty(Collection<? extends T> collection) {
-		return collection == null || collection.isEmpty();
+		return collection == null || collection.size() == 0;
 	}
 
 	/**

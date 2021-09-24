@@ -1,8 +1,8 @@
 package gg.sbs.api.nbt.tags.primitive;
 
 import com.google.gson.JsonObject;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
-import gg.sbs.api.nbt.api.snbt.SnbtConfig;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.TagType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
