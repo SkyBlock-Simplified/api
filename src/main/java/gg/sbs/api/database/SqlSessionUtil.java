@@ -1,6 +1,6 @@
 package gg.sbs.api.database;
 
-import gg.sbs.api.util.EnvVars;
+import gg.sbs.api.util.ResourceUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -14,7 +14,7 @@ public class SqlSessionUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory() {
-        Map<String, String> env = EnvVars.get();
+        Map<String, String> env = ResourceUtil.getEnvironmentVariables();
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(
                 new HashMap<String, String>() {{
                     put("connection.driver_class", org.mariadb.jdbc.Driver.class.getCanonicalName());
