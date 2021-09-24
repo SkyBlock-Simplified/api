@@ -1,51 +1,61 @@
 package gg.sbs.api.util;
 
-import com.google.common.base.Preconditions;
+import lombok.Cleanup;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public final class ResourceUtil {
 
-	public InputStream getResource(String resourcePath) {
-		Preconditions.checkArgument(StringUtil.notEmpty(resourcePath), "Resource path cannot be NULL");
-		URL url = this.getClass().getClassLoader().getResource(resourcePath);
+	public static Map<String, String> getEnvironmentVariables() {
+		Map<String, String> env = new HashMap<>();
+		// Load from src/main/resources/.env
+		@Cleanup InputStream file = ResourceUtil.class.getResourceAsStream("../.env");
 
-		if (url != null) {
-			try {
-				URLConnection connection = url.openConnection();
-				connection.setUseCaches(false);
-
-				try (InputStream inputStream = connection.getInputStream()) {
-					return inputStream;
+		if (file != null) {
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if (line.contains("=")) {
+					String[] pair = line.split("=");
+					env.put(pair[0], pair.length == 2 ? pair[1] : "");
 				}
-			} catch (IOException ignore) { }
+			}
 		}
 
-		throw new IllegalArgumentException(StringUtil.format("No resource with name ''{0}'' found!"));
+		// Load from OS
+		env.putAll(System.getenv());
+		return env;
 	}
 
-	public void saveResource(File outpitDir, String resourcePath, boolean replace) {
-		this.saveResource(outpitDir, resourcePath, "", replace);
+	public static InputStream getResource(String resourcePath) {
+		return ResourceUtil.class.getResourceAsStream(resourcePath);
 	}
 
-	public void saveResource(File outpitDir, String resourcePath, String child, boolean replace) {
-		File directory = outpitDir;
+	public static void saveResource(File outputDir, String resourcePath, boolean replace) {
+		saveResource(outputDir, resourcePath, "", replace);
+	}
+
+	public static void saveResource(File outputDir, String resourcePath, String child, boolean replace) {
+		File directory = outputDir;
 
 		if (StringUtil.notEmpty(child))
 			directory = new File(directory, child);
 
 		File output = new File(directory, resourcePath);
 
-		try (InputStream inputStream = this.getResource(resourcePath)) {
+		try (InputStream inputStream = getResource(resourcePath)) {
 			if (!directory.exists()) {
 				if (!directory.mkdirs())
-					throw new IllegalStateException(StringUtil.format("Unable to create parent directories for ''{0}''!", output));
+					throw new IllegalStateException(StringUtil.format("Unable to create parent directories for ''{0}''.", output));
 			}
+
+			if (output.exists() && !replace)
+				throw new IllegalStateException(StringUtil.format("Output file ''{0}'' already exists.", output));
 
 			try (FileOutputStream outputStream = new FileOutputStream(output)) {
 				byte[] buffer = new byte[1024];
@@ -55,7 +65,7 @@ public final class ResourceUtil {
 					outputStream.write(buffer, 0, length);
 			}
 		} catch (Exception exception) {
-			throw new IllegalStateException(StringUtil.format("Unable to save resource ''{0}'' to ''{1}''!", resourcePath, output), exception);
+			throw new IllegalStateException(StringUtil.format("Unable to save resource ''{0}'' to ''{1}''.", resourcePath, output), exception);
 		}
 	}
 

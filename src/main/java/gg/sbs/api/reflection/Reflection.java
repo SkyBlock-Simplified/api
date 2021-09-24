@@ -1,10 +1,10 @@
 package gg.sbs.api.reflection;
 
-import com.google.common.primitives.Primitives;
 import gg.sbs.api.reflection.accessor.ConstructorAccessor;
 import gg.sbs.api.reflection.accessor.FieldAccessor;
 import gg.sbs.api.reflection.accessor.MethodAccessor;
 import gg.sbs.api.reflection.exceptions.ReflectionException;
+import gg.sbs.api.util.Primitives;
 import gg.sbs.api.util.StringUtil;
 
 import java.lang.management.ManagementFactory;
@@ -203,7 +203,7 @@ public class Reflection {
 		if (this.getClazz().getSuperclass() != null)
 			return this.getSuperReflection().getConstructor(paramTypes);
 
-		throw new ReflectionException(StringUtil.format("The constructor {0} was not found!", Arrays.asList(types)));
+		throw new ReflectionException(StringUtil.format("The constructor matching ''{0}'' was not found.", Arrays.asList(types)));
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class Reflection {
 		if (this.getClazz().getSuperclass() != null)
 			return this.getSuperReflection().getField(type);
 
-		throw new ReflectionException(StringUtil.format("The field with type {0} was not found!", type));
+		throw new ReflectionException(StringUtil.format("The field with type {0} was not found.", type));
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class Reflection {
 		if (this.getClazz().getSuperclass() != null)
 			return this.getSuperReflection().getField(name);
 
-		throw new ReflectionException(StringUtil.format("The field {0} was not found!", name));
+		throw new ReflectionException(StringUtil.format("The field {0} was not found.", name));
 	}
 
 	/**
@@ -350,7 +350,7 @@ public class Reflection {
 		if (this.getClazz().getSuperclass() != null)
 			return this.getSuperReflection().getMethod(type, paramTypes);
 
-		throw new ReflectionException(StringUtil.format("The method with return type {0} was not found with parameters {1}!", type, Arrays.asList(types)));
+		throw new ReflectionException(StringUtil.format("The method with return type ''{0}'' was not found with parameters ''{1}''.", type, Arrays.asList(types)));
 	}
 
 	/**
@@ -419,7 +419,7 @@ public class Reflection {
 		if (this.getClazz().getSuperclass() != null)
 			return this.getSuperReflection().getMethod(name, paramTypes);
 
-		throw new ReflectionException(StringUtil.format("The method {0} was not found with parameters {1}!", name, Collections.singletonList(types)));
+		throw new ReflectionException(StringUtil.format("The method ''{0}'' was not found with parameters ''{1}''!", name, Collections.singletonList(types)));
 	}
 
 	/**
