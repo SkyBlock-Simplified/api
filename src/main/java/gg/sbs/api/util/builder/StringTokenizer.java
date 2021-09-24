@@ -1,9 +1,8 @@
 package gg.sbs.api.util.builder;
 
 import gg.sbs.api.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.matcher.StringMatcher;
-import org.apache.commons.text.matcher.StringMatcherFactory;
+import gg.sbs.api.util.matcher.StringMatcher;
+import gg.sbs.api.util.matcher.StringMatcherFactory;
 
 import java.util.*;
 
@@ -900,12 +899,11 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
      * @return this, to enable chaining
      */
     public StringTokenizer setDelimiterMatcher(final StringMatcher delim) {
-        StringUtils su;
-        if (delim == null) {
+        if (delim == null)
             this.delimMatcher = StringMatcherFactory.INSTANCE.noneMatcher();
-        } else {
+        else
             this.delimMatcher = delim;
-        }
+
         return this;
     }
 
