@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * @author dewy
  */
 public abstract class ArrayTag<T> extends Tag implements SnbtSerializable, JsonSerializable, Iterable<T> {
+
     public static final Pattern NUMBER_PATTERN = Pattern.compile("[-0-9]+");
 
     /**
@@ -78,4 +79,5 @@ public abstract class ArrayTag<T> extends Tag implements SnbtSerializable, JsonS
     public String toString() {
         return this.toSnbt(0, new TagTypeRegistry(), new SnbtConfig());
     }
+
 }

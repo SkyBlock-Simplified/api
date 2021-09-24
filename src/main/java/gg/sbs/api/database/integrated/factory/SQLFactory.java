@@ -1,8 +1,9 @@
 package gg.sbs.api.database.integrated.factory;
 
-import gg.sbs.api.database.integrated.factory.callbacks.ResultCallback;
-import gg.sbs.api.database.integrated.factory.callbacks.VoidResultCallback;
+import gg.sbs.api.database.integrated.factory.callbacks.ResultSetCallback;
+import gg.sbs.api.database.integrated.factory.callbacks.VoidResultSetCallback;
 import gg.sbs.api.scheduler.Scheduler;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public abstract class SQLFactory {
             this.driverAvailable = true;
             this.driver = driver;
         } catch (ClassNotFoundException cnfException) {
-            throw new SQLException(StringUtil.format("Driver ''{0}'' is not available!", driver), cnfException);
+            throw new SQLException(FormatUtil.format("Driver ''{0}'' is not available!", driver), cnfException);
         }
 
         this.url = url;
@@ -78,28 +79,28 @@ public abstract class SQLFactory {
             this.driverAvailable = true;
             this.driver = driver;
         } catch (ClassNotFoundException cnfException) {
-            throw new SQLException(StringUtil.format("Driver ''{0}'' is not available!", driver), cnfException);
+            throw new SQLException(FormatUtil.format("Driver ''{0}'' is not available!", driver), cnfException);
         }
 
         String schemaName = (schema.endsWith(".db") ? schema.substring(0, schema.length() - 3) : schema);
-        String file = StringUtil.format("{0}.db", schemaName);
+        String file = FormatUtil.format("{0}.db", schemaName);
         File database = new File(directory.getAbsolutePath(), file);
 
         try {
             if (!database.exists()) {
                 if (!directory.exists()) {
                     if (!directory.mkdirs())
-                        throw new IOException(StringUtil.format("Unable to create directory ''{0}''!", directory.getAbsolutePath()));
+                        throw new IOException(FormatUtil.format("Unable to create directory ''{0}''!", directory.getAbsolutePath()));
                 }
 
                 if (!database.createNewFile())
-                    throw new IOException(StringUtil.format("Unable to create file ''{0}''!", file));
+                    throw new IOException(FormatUtil.format("Unable to create file ''{0}''!", file));
             }
         } catch (Exception ex) {
-            throw new SQLException(StringUtil.format("Unable to create specified database file ''{0}''!", database.getAbsolutePath()), ex);
+            throw new SQLException(FormatUtil.format("Unable to create specified database file ''{0}''!", database.getAbsolutePath()), ex);
         }
 
-        this.url = StringUtil.format(url, directory.getAbsolutePath(), file);
+        this.url = FormatUtil.format(url, directory.getAbsolutePath(), file);
         this.properties = properties;
         this.fileStorage = true;
         this.load(schemaName);
@@ -191,7 +192,7 @@ public abstract class SQLFactory {
     public final boolean createTable(String tableName, String sql) throws SQLException {
         try (Connection connection = this.getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                return statement.executeUpdate(StringUtil.format("CREATE TABLE IF NOT EXISTS {0}{1}{2}{1} ({3}){4};", (this.fileStorage ? "" : StringUtil.format("{0}{1}{0}.", this.getIdentifierQuoteString(), this.getSchema())), this.getIdentifierQuoteString(), tableName, sql, ("MySQL".equalsIgnoreCase(this.getProduct()) ? " ENGINE=InnoDB" : ""))) > 0;
+                return statement.executeUpdate(FormatUtil.format("CREATE TABLE IF NOT EXISTS {0}{1}{2}{1} ({3}){4};", (this.fileStorage ? "" : FormatUtil.format("{0}{1}{0}.", this.getIdentifierQuoteString(), this.getSchema())), this.getIdentifierQuoteString(), tableName, sql, ("MySQL".equalsIgnoreCase(this.getProduct()) ? " ENGINE=InnoDB" : ""))) > 0;
             }
         }
     }
@@ -246,7 +247,7 @@ public abstract class SQLFactory {
      */
     protected Connection getConnection() throws SQLException {
         if (!this.isDriverAvailable())
-            throw new SQLException(StringUtil.format("The sql driver {0} is unavailable!", this.getDriver()));
+            throw new SQLException(FormatUtil.format("The sql driver {0} is unavailable!", this.getDriver()));
         return DriverManager.getConnection(this.getUrl(), this.getProperties());
     }
 
@@ -319,7 +320,7 @@ public abstract class SQLFactory {
      * @return Url for the current DBMS.
      */
     public final String getUrl() {
-        return StringUtil.format("{0}{1}", this.url, (this.fileStorage ? "" : "?autoReconnectForPools=true&useUnicode=true&characterEncoding=UTF-8"));
+        return FormatUtil.format("{0}{1}", this.url, (this.fileStorage ? "" : "?autoReconnectForPools=true&useUnicode=true&characterEncoding=UTF-8"));
     }
 
     /**
@@ -338,7 +339,7 @@ public abstract class SQLFactory {
             this.schema = connection.getCatalog();
         }
 
-        if (StringUtil.isEmpty(this.schema) && StringUtil.notEmpty(schema))
+        if (StringUtil.isEmpty(this.schema) && StringUtil.isNotEmpty(schema))
             this.schema = schema;
 
         if (StringUtil.isEmpty(this.product))
@@ -356,7 +357,7 @@ public abstract class SQLFactory {
      * @param args     Arguments to pass to the query.
      * @return Whatever you decide to return in the callback.
      */
-    public final <T> T query(String sql, ResultCallback<T> callback, Object... args) throws SQLException {
+    public final <T> T query(String sql, ResultSetCallback<T> callback, Object... args) throws SQLException {
         try (Connection connection = this.getConnection()) {
             return this.query(connection, sql, callback, args);
         }
@@ -369,7 +370,7 @@ public abstract class SQLFactory {
      * @param callback Callback t process results with.
      * @param args     Arguments to pass to the query.
      */
-    public final void query(String sql, VoidResultCallback callback, Object... args) throws SQLException {
+    public final void query(String sql, VoidResultSetCallback callback, Object... args) throws SQLException {
         try (Connection connection = this.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 assignArgs(statement, args);
@@ -382,7 +383,7 @@ public abstract class SQLFactory {
         }
     }
 
-    protected final <T> T query(Connection connection, String sql, ResultCallback<T> callback, Object... args) throws SQLException {
+    protected final <T> T query(Connection connection, String sql, ResultSetCallback<T> callback, Object... args) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             assignArgs(statement, args);
 
@@ -402,7 +403,7 @@ public abstract class SQLFactory {
      * @param callback Callback to process results with.
      * @param args     Arguments to pass to the query.
      */
-    public final void queryAsync(final String sql, final VoidResultCallback callback, final Object... args) {
+    public final void queryAsync(final String sql, final VoidResultSetCallback callback, final Object... args) {
         Scheduler.getInstance().runAsync(() -> {
             try {
                 this.query(sql, callback, args);

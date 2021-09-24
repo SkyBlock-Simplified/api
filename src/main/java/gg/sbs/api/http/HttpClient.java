@@ -3,11 +3,7 @@ package gg.sbs.api.http;
 import gg.sbs.api.http.exceptions.HttpConnectionException;
 import gg.sbs.api.util.StringUtil;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.SocketException;
@@ -70,7 +66,7 @@ public class HttpClient {
 				try (BufferedReader reader = new BufferedReader(streamReader)) {
 					String line;
 
-					while (StringUtil.notEmpty(line = reader.readLine())) {
+					while (StringUtil.isNotEmpty(line = reader.readLine())) {
 						buffer.append(line);
 						buffer.append('\n');
 					}
@@ -175,7 +171,7 @@ public class HttpClient {
 				try (BufferedReader reader = new BufferedReader(streamReader)) {
 					String line;
 
-					while (StringUtil.notEmpty(line = reader.readLine())) {
+					while (StringUtil.isNotEmpty(line = reader.readLine())) {
 						buffer.append(line);
 						buffer.append('\n');
 					}

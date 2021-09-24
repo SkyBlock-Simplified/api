@@ -4,12 +4,7 @@ import com.google.common.base.Preconditions;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -20,13 +15,13 @@ public abstract class CSVStorage {
 	private final File file;
 
 	public CSVStorage(File folder, String fileName) {
-		Preconditions.checkArgument(StringUtil.notEmpty(fileName), "Filename cannot be NULL!");
+		Preconditions.checkArgument(StringUtil.isNotEmpty(fileName), "Filename cannot be NULL!");
 		this.file = new File(folder, fileName + (fileName.endsWith(".csv") ? "" : ".csv"));
 
 		try {
 			this.reload();
 		} catch (IOException ioex) {
-			throw new IllegalStateException(StringUtil.format("Unable to load ''{0}''!", this.getLocalFile().getName()), ioex);
+			throw new IllegalStateException(FormatUtil.format("Unable to load ''{0}''!", this.getLocalFile().getName()), ioex);
 		}
 	}
 

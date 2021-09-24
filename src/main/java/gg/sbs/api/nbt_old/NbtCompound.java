@@ -148,7 +148,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 
 			if (child == null) {
 				if (!createNew)
-					throw new IllegalArgumentException(StringUtil.format("Cannot find ''{0}'' in ''{1}''.", entry, path));
+					throw new IllegalArgumentException(FormatUtil.format("Cannot find ''{0}'' in ''{1}''.", entry, path));
 
 				current.put(entry, child = SimplifiedAPI.getNbtFactory().createCompound());
 			}

@@ -2,7 +2,7 @@ package gg.sbs.api.http.exceptions;
 
 import gg.sbs.api.http.HttpBody;
 import gg.sbs.api.http.HttpStatus;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 public class HttpConnectionException extends Exception {
 
@@ -18,7 +18,7 @@ public class HttpConnectionException extends Exception {
 	}
 
 	public HttpConnectionException(HttpStatus status, Throwable throwable) {
-		super(StringUtil.format("{0}: {1}: {2}", status.getMessage(), throwable.getClass().getName(), throwable.getMessage()), throwable);
+		super(FormatUtil.format("{0}: {1}: {2}", status.getMessage(), throwable.getClass().getName(), throwable.getMessage()), throwable);
 		this.body = HttpBody.EMPTY;
 		this.status = status;
 	}

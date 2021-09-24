@@ -1,6 +1,6 @@
 package gg.sbs.api.database.integrated.notifications;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 public enum TriggerEvent {
 
@@ -20,7 +20,7 @@ public enum TriggerEvent {
 				return event;
 		}
 
-		throw new IllegalArgumentException(StringUtil.format("No constant with text {0} found!", value));
+		throw new IllegalArgumentException(FormatUtil.format("No constant with text {0} found!", value));
 	}
 
 	public String toLowercase() {

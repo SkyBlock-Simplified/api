@@ -6,7 +6,7 @@ import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Vector implements Cloneable, Serializable {
+public class Vector implements Cloneable {
 
 	private static final double EPSILON = 1.0E-6D;
 	protected double x;
@@ -237,8 +237,7 @@ public class Vector implements Cloneable, Serializable {
 		return this;
 	}
 
-	@Override
-	public final Map<String, Object> serialize() {
+	public final Map<String, Object> toMap() {
 		ConcurrentLinkedMap<String, Object> result = Concurrent.newLinkedMap();
 		result.put("x", this.getX());
 		result.put("y", this.getY());
@@ -286,7 +285,7 @@ public class Vector implements Cloneable, Serializable {
 	}
 
 	public final String toString() {
-		return StringUtil.format("'{'{0},{1},{2}'}'", this.getX(), this.getY(), this.getZ());
+		return FormatUtil.format("'{'{0},{1},{2}'}'", this.getX(), this.getY(), this.getZ());
 	}
 
 	public final Vector zero() {

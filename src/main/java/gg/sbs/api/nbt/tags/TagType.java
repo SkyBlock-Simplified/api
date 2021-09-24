@@ -122,8 +122,7 @@ public enum TagType {
             registry.registerTagType(INT_ARRAY.getId(), IntArrayTag.class);
             registry.registerTagType(LONG_ARRAY.getId(), LongArrayTag.class);
         } catch (TagTypeRegistryException e) {
-            // Should never happen.
-            e.printStackTrace();
+            e.printStackTrace(); // Should never happen.
         }
     }
 }

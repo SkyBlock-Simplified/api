@@ -1,6 +1,7 @@
 package gg.sbs.api.mojang;
 
 import com.google.common.base.Preconditions;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;
 
@@ -137,11 +138,11 @@ public enum ChatFormatting {
      * @return A copy of the input string, without any coloring
      */
 	public static String stripColor(String value) {
-		return RegexUtil.strip(StringUtil.stripNull(value), RegexUtil.VANILLA_PATTERN);
+		return RegexUtil.strip(StringUtil.defaultString(value), RegexUtil.VANILLA_PATTERN);
 	}
 
 	public static String translateAlternateColorCodes(char altColorChar, String value) {
-		Pattern replaceAltColor = Pattern.compile(StringUtil.format("(?<!{0}){0}([0-9a-fk-orA-FK-OR])", altColorChar));
+		Pattern replaceAltColor = Pattern.compile(FormatUtil.format("(?<!{0}){0}([0-9a-fk-orA-FK-OR])", altColorChar));
 		return RegexUtil.replaceColor(value, replaceAltColor);
 	}
 

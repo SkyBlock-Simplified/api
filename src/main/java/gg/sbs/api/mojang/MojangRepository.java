@@ -5,14 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import gg.sbs.api.scheduler.ScheduledTask;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.http.*;
 import gg.sbs.api.http.exceptions.HttpConnectionException;
 import gg.sbs.api.mojang.exceptions.ProfileNotFoundException;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.util.StringUtil;
-import gg.sbs.api.util.callback.Callback;
+import gg.sbs.api.util.callback.ResultCallback;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
@@ -141,7 +140,7 @@ public abstract class MojangRepository<T extends MojangProfile> {
 	 * @param uniqueId Unique ID to search with.
 	 * @param callback The callback to handle the result or error with.
 	 */
-	public final void getUniqueIdHistory(UUID uniqueId, Callback<MojangProfileHistory[], ProfileNotFoundException> callback) {
+	public final void getUniqueIdHistory(UUID uniqueId, ResultCallback<MojangProfileHistory[], ProfileNotFoundException> callback) {
 		Preconditions.checkNotNull(callback, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -296,7 +295,7 @@ public abstract class MojangRepository<T extends MojangProfile> {
 	 * @param username Username to search with.
 	 * @param callback Callback to handle the result or error with.
 	 */
-	public final void searchByUsername(String username, Callback<T, ProfileNotFoundException> callback) {
+	public final void searchByUsername(String username, ResultCallback<T, ProfileNotFoundException> callback) {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -330,7 +329,7 @@ public abstract class MojangRepository<T extends MojangProfile> {
 	 * @param usernames Usernames to search with.
 	 * @param callback Callback to handle the result or error with.
 	 */
-	public final void searchByUsername(String[] usernames, Callback<T[], ProfileNotFoundException> callback) {
+	public final void searchByUsername(String[] usernames, ResultCallback<T[], ProfileNotFoundException> callback) {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -515,7 +514,7 @@ public abstract class MojangRepository<T extends MojangProfile> {
 	 * @param usernames Usernames to search with.
 	 * @param callback Callback to handle the result or error with.
 	 */
-	public final void searchByUsername(Collection<String> usernames, Callback<T[], ProfileNotFoundException> callback) {
+	public final void searchByUsername(Collection<String> usernames, ResultCallback<T[], ProfileNotFoundException> callback) {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -604,7 +603,7 @@ public abstract class MojangRepository<T extends MojangProfile> {
 	 * @param uniqueId Unique ID to search with.
 	 * @param callback The callback to handle the result or error with.
 	 */
-	public final void searchByUniqueId(UUID uniqueId, Callback<MojangProfile, ProfileNotFoundException> callback) {
+	public final void searchByUniqueId(UUID uniqueId, ResultCallback<MojangProfile, ProfileNotFoundException> callback) {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -640,25 +639,25 @@ public abstract class MojangRepository<T extends MojangProfile> {
 		public static final URL SERVICE_MINECRAFT_SKINS = getUrl("skins.minecraft.net");
 		public static final URL SERVICE_MINECRAFT_TEXTURES = getUrl("textures.minecraft.net");
 
-		public static final URL API_NAME_TO_UUID = getUrl(StringUtil.format("{0}/profiles/minecraft", SERVICE_MOJANG_API.getHost()));
-		public static final URL API_NAME_TO_UUID_AT = getUrl(StringUtil.format("{0}/users/profiles/minecraft", SERVICE_MOJANG_API.getHost()));
-		public static final URL SESSIONSERVER_SKIN_CAPE = getUrl(StringUtil.format("{0}/session/minecraft/profile", SERVICE_MOJANG_SESSION.getHost()));
-		public static final URL AUTHSERVER_AUTHENTICATE = getUrl(StringUtil.format("{0}/authenticate", SERVICE_MOJANG_AUTHSERVER.getHost()));
-		public static final URL AUTHSERVER_REFRESH = getUrl(StringUtil.format("{0}/refresh", SERVICE_MOJANG_AUTHSERVER.getHost()));
-		public static final URL AUTHSERVER_VALIDATE = getUrl(StringUtil.format("{0}/validate", SERVICE_MOJANG_AUTHSERVER.getHost()));
-		public static final URL AUTHSERVER_SIGNOUT = getUrl(StringUtil.format("{0}/signout", SERVICE_MOJANG_AUTHSERVER.getHost()));
-		public static final URL AUTHSERVER_INVALIDATE = getUrl(StringUtil.format("{0}/invalidate", SERVICE_MOJANG_AUTHSERVER.getHost()));
+		public static final URL API_NAME_TO_UUID = getUrl(FormatUtil.format("{0}/profiles/minecraft", SERVICE_MOJANG_API.getHost()));
+		public static final URL API_NAME_TO_UUID_AT = getUrl(FormatUtil.format("{0}/users/profiles/minecraft", SERVICE_MOJANG_API.getHost()));
+		public static final URL SESSIONSERVER_SKIN_CAPE = getUrl(FormatUtil.format("{0}/session/minecraft/profile", SERVICE_MOJANG_SESSION.getHost()));
+		public static final URL AUTHSERVER_AUTHENTICATE = getUrl(FormatUtil.format("{0}/authenticate", SERVICE_MOJANG_AUTHSERVER.getHost()));
+		public static final URL AUTHSERVER_REFRESH = getUrl(FormatUtil.format("{0}/refresh", SERVICE_MOJANG_AUTHSERVER.getHost()));
+		public static final URL AUTHSERVER_VALIDATE = getUrl(FormatUtil.format("{0}/validate", SERVICE_MOJANG_AUTHSERVER.getHost()));
+		public static final URL AUTHSERVER_SIGNOUT = getUrl(FormatUtil.format("{0}/signout", SERVICE_MOJANG_AUTHSERVER.getHost()));
+		public static final URL AUTHSERVER_INVALIDATE = getUrl(FormatUtil.format("{0}/invalidate", SERVICE_MOJANG_AUTHSERVER.getHost()));
 
 		public static URL getNameUrl(String username) {
 			return getNameUrl(username, true);
 		}
 
 		public static URL getNameUrl(String username, boolean useAt) {
-			return getUrl(StringUtil.format("{0}/{1}{2}", API_NAME_TO_UUID_AT.toString(), username, (useAt ? "?at=0" : "")));
+			return getUrl(FormatUtil.format("{0}/{1}{2}", API_NAME_TO_UUID_AT.toString(), username, (useAt ? "?at=0" : "")));
 		}
 
 		public static URL getNameHistoryUrl(UUID uniqueId) {
-			return getUrl(StringUtil.format("{0}/user/profiles/{1}/names", SERVICE_MOJANG_API.toString(), uniqueId.toString().replace("-", "")));
+			return getUrl(FormatUtil.format("{0}/user/profiles/{1}/names", SERVICE_MOJANG_API.toString(), uniqueId.toString().replace("-", "")));
 		}
 
 		public static URL getPropertiesUrl(UUID uniqueId) {
@@ -666,17 +665,17 @@ public abstract class MojangRepository<T extends MojangProfile> {
 		}
 
 		public static URL getPropertiesUrl(UUID uniqueId, boolean unsigned) {
-			return getUrl(StringUtil.format("{0}/{1}?unsigned={2}", SESSIONSERVER_SKIN_CAPE.toString(), uniqueId.toString().replace("-", ""), String.valueOf(unsigned)));
+			return getUrl(FormatUtil.format("{0}/{1}?unsigned={2}", SESSIONSERVER_SKIN_CAPE.toString(), uniqueId.toString().replace("-", ""), String.valueOf(unsigned)));
 		}
 
 		public static URL getUrl(String host) {
 			if (!host.startsWith("https://") && !host.startsWith("http://"))
-				host = StringUtil.format("https://{0}", host);
+				host = FormatUtil.format("https://{0}", host);
 
 			try {
 				return new URL(host);
 			} catch (MalformedURLException muex) {
-				throw new IllegalArgumentException(StringUtil.format("Unable to create URL {0}!", host));
+				throw new IllegalArgumentException(FormatUtil.format("Unable to create URL {0}!", host));
 			}
 		}
 

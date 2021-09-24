@@ -2,6 +2,7 @@ package gg.sbs.api.database.integrated.notifications;
 
 import gg.sbs.api.database.integrated.pooling.SQLPooling;
 import gg.sbs.api.scheduler.Scheduler;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
@@ -99,7 +100,7 @@ public abstract class SQLNotifications extends SQLPooling {
 	}
 
 	private void createPurgeEvent() {
-		this.updateAsync(StringUtil.format("CREATE EVENT IF NOT EXISTS purge_{0} ON SCHEDULE EVERY 24 DAY_HOUR DO DELETE LOW_PRIORITY FROM {0}.{1} WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY));", this.getSchema(), ACTIVITY_TABLE));
+		this.updateAsync(FormatUtil.format("CREATE EVENT IF NOT EXISTS purge_{0} ON SCHEDULE EVERY 24 DAY_HOUR DO DELETE LOW_PRIORITY FROM {0}.{1} WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY));", this.getSchema(), ACTIVITY_TABLE));
 	}
 
 	public final boolean isRunning() {

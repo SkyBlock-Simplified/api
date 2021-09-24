@@ -10,7 +10,8 @@ import gg.sbs.api.nbt.api.registry.TagTypeRegistryException;
 import gg.sbs.api.nbt.api.snbt.SnbtConfig;
 import gg.sbs.api.nbt.api.snbt.SnbtSerializable;
 import gg.sbs.api.nbt.tags.TagType;
-import gg.sbs.api.nbt.utils.StringUtils;
+import gg.sbs.api.nbt.utils.NbtStringUtils;
+import gg.sbs.api.util.FormatUtil;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
@@ -25,6 +26,7 @@ import java.util.function.Consumer;
  */
 @AllArgsConstructor
 public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, JsonSerializable, Iterable<T> {
+
     private @NonNull List<T> value;
     private byte type;
 
@@ -51,12 +53,6 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
      * @param value the tag's {@code List<>} value.
      */
     public ListTag(String name, @NonNull List<T> value) {
-        if (value.isEmpty()) {
-            this.type = 0;
-        } else {
-            this.type = value.get(0).getTypeId();
-        }
-
         this.setName(name);
         this.setValue(value);
     }
@@ -86,37 +82,29 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
      * @param value new {@code List<>} value to be set.
      */
     public void setValue(@NonNull List<T> value) {
-        if (value.isEmpty()) {
-            this.type = 0;
-        } else {
-            this.type = value.get(0).getTypeId();
-        }
-
+        this.type = value.isEmpty() ? 0 : value.get(0).getTypeId();
         this.value = value;
     }
 
     @Override
     public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
-        if (depth > 512) {
+        if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
-        }
 
         output.writeByte(this.type);
         output.writeInt(this.value.size());
 
-        for (T tag : this) {
+        for (T tag : this)
             tag.write(output, depth + 1, registry);
-        }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ListTag<T> read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
-        if (depth > 512) {
+        if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
-        }
 
         List<T> tags = new ArrayList<>();
-
         byte tagType = input.readByte();
         int length = input.readInt();
 
@@ -124,9 +112,8 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
         for (int i = 0; i < length; i++) {
             Class<? extends Tag> tagClass = registry.getClassFromId(tagType);
 
-            if (tagClass == null) {
-                throw new IOException("Tag type with ID " + tagType + " not present in tag type registry.");
-            }
+            if (tagClass == null)
+                throw new IOException(FormatUtil.format("Tag type with ID {0} not present in tag type registry.", tagType));
 
             try {
                 next = (T) registry.instantiate(tagClass);
@@ -140,12 +127,7 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
             tags.add(next);
         }
 
-        if (tags.isEmpty()) {
-            this.type = 0;
-        } else {
-            this.type = tagType;
-        }
-
+        this.type = tags.isEmpty() ? 0 : tagType;
         this.value = tags;
 
         return this;
@@ -155,46 +137,40 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
     public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
         StringBuilder sb = new StringBuilder("[");
 
-        if (config.isPrettyPrint()) {
-            sb.append('\n').append(StringUtils.multiplyIndent(depth + 1, config));
-        }
+        if (config.isPrettyPrint())
+            sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
 
         for (int i = 0; i < this.value.size(); ++i) {
             if (i != 0) {
-                if (config.isPrettyPrint()) {
-                    sb.append(",\n").append(StringUtils.multiplyIndent(depth + 1, config));
-                } else {
+                if (config.isPrettyPrint())
+                    sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
+                else
                     sb.append(',');
-                }
             }
 
             sb.append(((SnbtSerializable) this.value.get(i)).toSnbt(depth + 1, registry, config));
         }
 
-        if (config.isPrettyPrint()) {
-            sb.append("\n").append(StringUtils.multiplyIndent(depth , config)).append(']');
-        } else {
+        if (config.isPrettyPrint())
+            sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append(']');
+        else
             sb.append(']');
-        }
 
         return sb.toString();
     }
 
     @Override
     public JsonObject toJson(int depth, TagTypeRegistry registry) throws IOException {
-        if (depth > 512) {
+        if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
-        }
 
         JsonObject json = new JsonObject();
         JsonArray value = new JsonArray();
-
         json.addProperty("type", this.getTypeId());
         json.addProperty("listType", this.getListType());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         for (T tag : this) {
             tag.setName(null);
@@ -207,19 +183,14 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ListTag<T> fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
         if (depth > 512) {
             throw new IOException("NBT structure too complex (depth > 512).");
         }
 
         this.clear();
-
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         byte listType = json.get("listType").getAsByte();
         List<T> tags = new LinkedList<>();
 
@@ -227,9 +198,8 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
         for (JsonElement element : json.getAsJsonArray("value")) {
             Class<? extends Tag> tagClass = registry.getClassFromId(listType);
 
-            if (tagClass == null) {
-                throw new IOException("Tag type with ID " + listType + " not present in tag type registry.");
-            }
+            if (tagClass == null)
+                throw new IOException(FormatUtil.format("Tag type with ID {0} not present in tag type registry.", listType));
 
             try {
                 nextTag = (T) registry.instantiate(tagClass);
@@ -241,12 +211,7 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
             tags.add(nextTag);
         }
 
-        if (tags.isEmpty()) {
-            this.type = 0;
-        } else {
-            this.type = listType;
-        }
-
+        this.type = tags.isEmpty() ? 0 : listType;
         this.value = tags;
 
         return this;
@@ -277,13 +242,11 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
      * @return true if added successfully.
      */
     public boolean add(@NonNull T tag) {
-        if (this.value.isEmpty()) {
+        if (this.value.isEmpty())
             this.type = tag.getTypeId();
-        }
 
-        if (tag.getTypeId() != this.type) {
+        if (tag.getTypeId() != this.type)
             return false;
-        }
 
         return this.value.add(tag);
     }
@@ -300,9 +263,8 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
             this.type = tag.getTypeId();
         }
 
-        if (tag.getTypeId() != this.type) {
+        if (tag.getTypeId() != this.type)
             return;
-        }
 
         this.value.add(index, tag);
     }
@@ -316,9 +278,8 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
     public boolean remove(@NonNull T tag) {
         boolean success = this.value.remove(tag);
 
-        if (this.value.isEmpty()) {
+        if (this.value.isEmpty())
             this.type = 0;
-        }
 
         return success;
     }
@@ -332,9 +293,8 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
     public T remove(int index) {
         T previous = this.value.remove(index);
 
-        if (this.value.isEmpty()) {
+        if (this.value.isEmpty())
             this.type = 0;
-        }
 
         return previous;
     }
@@ -401,9 +361,7 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         ListTag<?> listTag = (ListTag<?>) o;
-
         if (type != listTag.type) return false;
         return Objects.equals(value, listTag.value);
     }
@@ -414,4 +372,5 @@ public class ListTag<T extends Tag> extends Tag implements SnbtSerializable, Jso
         result = 31 * result + (int) type;
         return result;
     }
+
 }

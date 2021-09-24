@@ -1,6 +1,6 @@
 package gg.sbs.api.util.concurrent;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedList;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedSet;
@@ -25,7 +25,7 @@ public final class Concurrent {
 	}
 
 	private static <T> BinaryOperator<T> throwingMerger() {
-		return (key, value) -> { throw new IllegalStateException(StringUtil.format("Duplicate key {0}", key)); };
+		return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}", key)); };
 	}
 
 	public static <E> ConcurrentDeque<E> newDeque() {

@@ -11,7 +11,8 @@ import gg.sbs.api.http.HttpResponse;
 import gg.sbs.api.http.HttpStatus;
 import gg.sbs.api.http.exceptions.HttpConnectionException;
 import gg.sbs.api.mojang.exceptions.ProfileNotFoundException;
-import gg.sbs.api.util.callback.Callback;
+import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.callback.ResultCallback;
 import gg.sbs.api.util.StringUtil;
 
 import java.net.URL;
@@ -58,20 +59,20 @@ public class MojangProfile extends MojangProfileHistory {
 	 * Gets the base64 encoded skin texture associated with this profile.
 	 *
 	 * @return Encoded skin texture, null if profile has no skin or has not yet been requested.
-	 * @see #loadProperties(Callback)
+	 * @see #loadProperties(ResultCallback)
 	 */
 	public final String getSkinBase64() {
 		if (this.skinUrl == null)
 			return null;
 
-		return new String(DataUtil.encode(StringUtil.format("'{'\"textures\":'{'\"SKIN\":'{'\"url\":\"{0}\"'}'}'}'", this.getSkinUrl().toString()).getBytes()));
+		return new String(DataUtil.encode(FormatUtil.format("'{'\"textures\":'{'\"SKIN\":'{'\"url\":\"{0}\"'}'}'}'", this.getSkinUrl().toString()).getBytes()));
 	}
 
 	/**
 	 * Gets the cape associated with this profile.
 	 *
 	 * @return Cape url, null if profile has no cape or has not yet been requested.
-	 * @see #loadProperties(Callback)
+	 * @see #loadProperties(ResultCallback)
 	 */
 	public final URL getCapeUrl() {
 		return this.capeUrl;
@@ -81,7 +82,7 @@ public class MojangProfile extends MojangProfileHistory {
 	 * Gets the skin associated with this profile.
 	 *
 	 * @return Skin url, null if profile has no skin or has not yet been requested.
-	 * @see #loadProperties(Callback)
+	 * @see #loadProperties(ResultCallback)
 	 */
 	public final URL getSkinUrl() {
 		return this.skinUrl;
@@ -203,7 +204,7 @@ public class MojangProfile extends MojangProfileHistory {
 	 *
 	 * @param callback A call back used for when the request is finished.
 	 */
-	public final void loadProperties(Callback<MojangProfile, ProfileNotFoundException> callback) {
+	public final void loadProperties(ResultCallback<MojangProfile, ProfileNotFoundException> callback) {
 		Scheduler.getInstance().runAsync(() -> {
 			ProfileNotFoundException pnfex = null;
 
@@ -220,7 +221,7 @@ public class MojangProfile extends MojangProfileHistory {
 
 	@Override
 	public final String toString() {
-		return StringUtil.format("'{'{0},{1}'}'", this.getUniqueId(), this.getName());
+		return FormatUtil.format("'{'{0},{1}'}'", this.getUniqueId(), this.getName());
 	}
 
 	@SuppressWarnings("unused")

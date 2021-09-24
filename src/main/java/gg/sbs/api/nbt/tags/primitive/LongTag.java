@@ -57,7 +57,6 @@ public class LongTag extends NumericalTag<Long> {
     @Override
     public LongTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = input.readLong();
-
         return this;
     }
 
@@ -71,9 +70,8 @@ public class LongTag extends NumericalTag<Long> {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
 
@@ -82,14 +80,8 @@ public class LongTag extends NumericalTag<Long> {
 
     @Override
     public LongTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsLong();
-
         return this;
     }
 
@@ -97,9 +89,7 @@ public class LongTag extends NumericalTag<Long> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         LongTag longTag = (LongTag) o;
-
         return value == longTag.value;
     }
 
@@ -107,4 +97,5 @@ public class LongTag extends NumericalTag<Long> {
     public int hashCode() {
         return (int) (value ^ (value >>> 32));
     }
+
 }

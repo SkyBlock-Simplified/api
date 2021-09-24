@@ -1,7 +1,8 @@
 package gg.sbs.api.database.integrated.notifications;
 
 import gg.sbs.api.database.integrated.factory.SQLFactory;
-import gg.sbs.api.database.integrated.factory.callbacks.VoidResultCallback;
+import gg.sbs.api.database.integrated.factory.callbacks.VoidResultSetCallback;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
@@ -43,18 +44,18 @@ public class DatabaseNotification {
 
 	private void createTrigger(TriggerEvent event) throws SQLException {
 		if (!this.primaryColumnNames.isEmpty()) {
-			String primaryKeys = StringUtil.implode(",", this.primaryColumnNames);
+			String primaryKeys = StringUtil.join(",", this.primaryColumnNames);
 			String quote = this.sql.getIdentifierQuoteString();
-			String trigger = StringUtil.format("CREATE TRIGGER {1}.{2} AFTER {3} ON {0}{4}{0} FOR EACH ROW INSERT INTO {1}.{5} (schema_name, table_name, sql_action, primary_keys, _submitted, old_data, new_data) VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), ",
+			String trigger = FormatUtil.format("CREATE TRIGGER {1}.{2} AFTER {3} ON {0}{4}{0} FOR EACH ROW INSERT INTO {1}.{5} (schema_name, table_name, sql_action, primary_keys, _submitted, old_data, new_data) VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), ",
 					quote, this.getSchema(), this.getName(event), event.toUppercase(), this.getTable(), SQLNotifications.ACTIVITY_TABLE);
 			String _old = null;
 			String _new = null;
 
 			if (TriggerEvent.INSERT != event)
-				_old = StringUtil.format("CONCAT(OLD.{0}{1}{0})", quote, StringUtil.implode(StringUtil.format("{0}, '','', OLD.{0}", quote), this.primaryColumnNames));
+				_old = FormatUtil.format("CONCAT(OLD.{0}{1}{0})", quote, StringUtil.join(FormatUtil.format("{0}, '','', OLD.{0}", quote), this.primaryColumnNames));
 
 			if (TriggerEvent.DELETE != event)
-				_new = StringUtil.format("CONCAT(NEW.{0}{1}{0})", quote, StringUtil.implode(StringUtil.format("{0}, '','', NEW.{0}", quote), this.primaryColumnNames));
+				_new = FormatUtil.format("CONCAT(NEW.{0}{1}{0})", quote, StringUtil.join(FormatUtil.format("{0}, '','', NEW.{0}", quote), this.primaryColumnNames));
 
 			try {
 				this.sql.update(String.format(trigger + "%s, %s);", _old, _new), this.getSchema(), this.getTable(), event.toUppercase(), primaryKeys);
@@ -62,19 +63,19 @@ public class DatabaseNotification {
 				if (sqlException.getMessage().contains("Access denied")) {
 					String privilege = (sqlException.getMessage().contains("SUPER") ? "SUPER" : sqlException.getMessage().contains("TRIGGER") ? "TRIGGER" : "");
 
-					if (StringUtil.notEmpty(privilege))
-						throw new SQLException(StringUtil.format("Cannot create trigger ''{0}''.''{1}''! SQL user lacks {2} privilege! Notifications will not work!", this.getSchema(), this.getName(event), privilege));
+					if (StringUtil.isNotEmpty(privilege))
+						throw new SQLException(FormatUtil.format("Cannot create trigger ''{0}''.''{1}''! SQL user lacks {2} privilege! Notifications will not work!", this.getSchema(), this.getName(event), privilege));
 				}
 
 				throw sqlException;
 			}
 		} else
-			throw new SQLException(StringUtil.format("The table {0}.{1} has no primary key columns to keep track of!", this.getSchema(), this.getTable()));
+			throw new SQLException(FormatUtil.format("The table {0}.{1} has no primary key columns to keep track of!", this.getSchema(), this.getTable()));
 	}
 
 	private void dropTrigger(TriggerEvent event) {
 		try {
-			this.sql.update(StringUtil.format("DROP TRIGGER IF EXISTS {0};", this.getName(event)));
+			this.sql.update(FormatUtil.format("DROP TRIGGER IF EXISTS {0};", this.getName(event)));
 		} catch (Exception ignore) { }
 	}
 
@@ -90,7 +91,7 @@ public class DatabaseNotification {
 
 		final ConcurrentMap<String, Object> deleted = Concurrent.newMap();
 
-		this.sql.query(StringUtil.format("SELECT old_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), result -> {
+		this.sql.query(FormatUtil.format("SELECT old_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), result -> {
 			if (result.next()) {
 				String[] _old = result.getString("old_data").split(",");
 				int keyCount = primaryColumnNames.size();
@@ -113,7 +114,7 @@ public class DatabaseNotification {
 	}
 
 	private String getName(TriggerEvent event) {
-		return StringUtil.format("on{0}{1}", this.getTable(), event.toUppercase());
+		return FormatUtil.format("on{0}{1}", this.getTable(), event.toUppercase());
 	}
 
 	/**
@@ -140,11 +141,11 @@ public class DatabaseNotification {
 	 * @param callback Callback class to handle retrieved data.
 	 * @throws SQLException If you attempt to retrieve updated data when deleting a record.
 	 */
-	public final void getUpdatedRow(final VoidResultCallback callback) throws SQLException {
+	public final void getUpdatedRow(final VoidResultSetCallback callback) throws SQLException {
 		if (this.getEvent() == TriggerEvent.DELETE)
 			throw new SQLException("Cannot retrieve a deleted record!");
 
-		this.sql.query(StringUtil.format("SELECT new_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), result -> {
+		this.sql.query(FormatUtil.format("SELECT new_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), result -> {
 			if (result.next()) {
 				ConcurrentList<String> whereClause = Concurrent.newList();
 				int keyCount = primaryColumnNames.size();
@@ -152,9 +153,9 @@ public class DatabaseNotification {
 
 				if (keyCount > 0) {
 					for (int i = 0; i < keyCount; i++)
-						whereClause.add(StringUtil.format("SUBSTRING_INDEX(SUBSTRING_INDEX({0}{1}{0}, '','', {2}), '','', -1) = ?", sql.getIdentifierQuoteString(), primaryColumnNames.get(i), (i + 1)));
+						whereClause.add(FormatUtil.format("SUBSTRING_INDEX(SUBSTRING_INDEX({0}{1}{0}, '','', {2}), '','', -1) = ?", sql.getIdentifierQuoteString(), primaryColumnNames.get(i), (i + 1)));
 
-					sql.query(StringUtil.format("SELECT * FROM {0} WHERE {1};", getTable(), StringUtil.implode(" AND ", whereClause)), callback, (Object[])_new);
+					sql.query(FormatUtil.format("SELECT * FROM {0} WHERE {1};", getTable(), StringUtil.join(" AND ", whereClause)), callback, (Object[])_new);
 				}
 			}
 		}, this.getSchema(), this.getTable(), this.getEvent().toUppercase(), this.previousId);
@@ -182,7 +183,7 @@ public class DatabaseNotification {
 		if (this.isStopped()) return false;
 
 		try {
-			return this.sql.query(StringUtil.format("SELECT id, sql_action FROM {0} WHERE table_name = ? AND id > ? AND sql_action IN (?, ?, ?) ORDER BY id {1}SC LIMIT 1;", SQLNotifications.ACTIVITY_TABLE, (this.previousId == 0 ? "DE" : "A")), result -> {
+			return this.sql.query(FormatUtil.format("SELECT id, sql_action FROM {0} WHERE table_name = ? AND id > ? AND sql_action IN (?, ?, ?) ORDER BY id {1}SC LIMIT 1;", SQLNotifications.ACTIVITY_TABLE, (this.previousId == 0 ? "DE" : "A")), result -> {
 				if (result.next()) {
 					int last = result.getInt("id");
 
@@ -197,7 +198,7 @@ public class DatabaseNotification {
 			}, this.getTable(), this.previousId, "INSERT", "UPDATE", "DELETE");
 		} catch (SQLException sqlException) {
 			// TODO: LOG
-			//NiftyCore.getNiftyLogger().log(Level.SEVERE, StringUtil.format("Unable to query activity table ''{0}''!", SQLNotifications.ACTIVITY_TABLE), ex);
+			//NiftyCore.getNiftyLogger().log(Level.SEVERE, FormatUtil.format("Unable to query activity table ''{0}''!", SQLNotifications.ACTIVITY_TABLE), ex);
 			this.stop();
 		}
 
@@ -242,8 +243,8 @@ public class DatabaseNotification {
 				while (result.next()) {
 					String action = result.getString("ACTION_STATEMENT");
 
-					if (action.startsWith(StringUtil.format("INSERT INTO {0}.{1}", this.getSchema(), SQLNotifications.ACTIVITY_TABLE))) {
-						if (action.contains(StringUtil.format("VALUES (''{0}'', ''{1}''", this.getSchema(), this.getTable())))
+					if (action.startsWith(FormatUtil.format("INSERT INTO {0}.{1}", this.getSchema(), SQLNotifications.ACTIVITY_TABLE))) {
+						if (action.contains(FormatUtil.format("VALUES (''{0}'', ''{1}''", this.getSchema(), this.getTable())))
 							valid++;
 					}
 				}

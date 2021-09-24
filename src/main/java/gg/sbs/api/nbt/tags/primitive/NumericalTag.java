@@ -13,6 +13,7 @@ import gg.sbs.api.nbt.api.snbt.SnbtSerializable;
  * @author dewy
  */
 public abstract class NumericalTag<T extends Number> extends Tag implements SnbtSerializable, JsonSerializable {
+
     @Override
     public abstract T getValue();
 
@@ -74,4 +75,5 @@ public abstract class NumericalTag<T extends Number> extends Tag implements Snbt
     public String toString() {
         return this.toSnbt(0, new TagTypeRegistry(), new SnbtConfig());
     }
+
 }

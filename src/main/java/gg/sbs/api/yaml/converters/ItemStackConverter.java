@@ -1,6 +1,5 @@
 package gg.sbs.api.yaml.converters;
 
-import gg.sbs.api.minecraft.inventory.item.ItemDatabase;
 import gg.sbs.api.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +29,7 @@ public class ItemStackConverter extends Converter {
 				nbt.put("ExtraAttributes.uuid", extraMap.get("uuid"));
 		}
 
-		if (StringUtil.notEmpty(metaMap.get("name").toString()))
+		if (StringUtil.isNotEmpty(metaMap.get("name").toString()))
 			nbt.putPath("display.Name", metaMap.get("name"));
 
 		if (metaMap.containsKey("lore")) {

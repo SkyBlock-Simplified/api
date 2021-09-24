@@ -17,7 +17,7 @@ public class ConfigSection {
 	}
 
 	public ConfigSection(ConfigSection root, String key) {
-		this.fullPath = StringUtil.notEmpty(root.fullPath) ? (root.fullPath + ".") : key;
+		this.fullPath = StringUtil.isNotEmpty(root.fullPath) ? (root.fullPath + ".") : key;
 	}
 
 	public ConfigSection create(String path) {

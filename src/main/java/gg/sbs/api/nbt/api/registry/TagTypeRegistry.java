@@ -2,9 +2,11 @@ package gg.sbs.api.nbt.api.registry;
 
 import gg.sbs.api.nbt.api.Tag;
 import gg.sbs.api.nbt.tags.TagType;
+import gg.sbs.api.reflection.Reflection;
+import gg.sbs.api.reflection.exceptions.ReflectionException;
+import gg.sbs.api.util.FormatUtil;
 import lombok.NonNull;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +15,6 @@ import java.util.Map;
  */
 public class TagTypeRegistry {
     private final Map<Byte, @NonNull Class<? extends Tag>> registry = new HashMap<>();
-
     {
         TagType.registerAll(this);
     }
@@ -26,23 +27,20 @@ public class TagTypeRegistry {
      * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
      */
     public void registerTagType(byte id, @NonNull Class<? extends Tag> clazz) throws TagTypeRegistryException {
-        if (id == 0) {
-            throw new TagTypeRegistryException("Cannot register NBT tag type " + clazz + " with ID " + id + ", as that ID is reserved.");
-        }
+        if (id == 0)
+            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is reserved.", clazz, id));
 
-        if (this.registry.containsKey(id)) {
-            throw new TagTypeRegistryException("Cannot register NBT tag type " + clazz + " with ID " + id + ", as that ID is already in use by the tag type " + this.registry.get(id).getSimpleName());
-        }
+        if (this.registry.containsKey(id))
+            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is already registered by the tag type ''{2}''.", clazz, id, this.registry.get(id).getSimpleName()));
 
         if (registry.containsValue(clazz)) {
             byte existing = 0;
             for (Map.Entry<Byte, Class<? extends Tag>> entry : this.registry.entrySet()) {
-                if (entry.getValue().equals(clazz)) {
+                if (entry.getValue().equals(clazz))
                     existing = entry.getKey();
-                }
             }
 
-            throw new TagTypeRegistryException("NBT tag type " + clazz.getSimpleName() + " already registered under ID " + existing);
+            throw new TagTypeRegistryException(FormatUtil.format("NBT tag type ''{0}'' already registered under ID {1}" + existing, clazz.getSimpleName(), existing));
         }
 
         this.registry.put(id, clazz);
@@ -55,9 +53,8 @@ public class TagTypeRegistry {
      * @return if the tag type was deregistered successfully.
      */
     public boolean deregisterTagType(byte id)  {
-        if (id >= 0 && id <= 12) {
+        if (id >= 0 && id <= 12)
             return false;
-        }
 
         return this.registry.remove(id) != null;
     }
@@ -93,12 +90,9 @@ public class TagTypeRegistry {
      */
     public Tag instantiate(@NonNull Class<? extends Tag> clazz) throws TagTypeRegistryException {
         try {
-            Constructor<? extends Tag> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-
-            return constructor.newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new TagTypeRegistryException("Instance of tag type class " + clazz.getSimpleName() + " could not be created.", e);
+            return (Tag)new Reflection(clazz).newInstance();
+        } catch (ReflectionException e) {
+            throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", clazz.getSimpleName()), e);
         }
     }
 }

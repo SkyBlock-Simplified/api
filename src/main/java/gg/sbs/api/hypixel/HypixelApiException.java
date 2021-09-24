@@ -1,6 +1,6 @@
 package gg.sbs.api.hypixel;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 /**
  * Custom exception for use by the HypixelAPI
@@ -30,7 +30,7 @@ public class HypixelApiException extends RuntimeException {
 	 * @param endpoint Lookup request type.
 	 */
 	public HypixelApiException(Reason reason, HypixelAPI.Endpoint endpoint, String message, Throwable throwable) {
-		super(throwable == null ? getCustomMessage(endpoint, message) : StringUtil.format("{0}: {1}: {2}", getCustomMessage(endpoint, message), throwable.getClass().getName(), throwable.getMessage()), throwable);
+		super(throwable == null ? getCustomMessage(endpoint, message) : FormatUtil.format("{0}: {1}: {2}", getCustomMessage(endpoint, message), throwable.getClass().getName(), throwable.getMessage()), throwable);
 		this.reason = reason;
 
 		this.endpoint = endpoint;
@@ -70,7 +70,7 @@ public class HypixelApiException extends RuntimeException {
 	}
 
 	private static String getCustomMessage(HypixelAPI.Endpoint endpoint, String message) {
-		return StringUtil.format("The Hypixel API Endpoint ''{0}'' has encountered a problem! ({1})", endpoint.getEndpoint(), message);
+		return FormatUtil.format("The Hypixel API Endpoint ''{0}'' has encountered a problem! ({1})", endpoint.getEndpoint(), message);
 	}
 
 }

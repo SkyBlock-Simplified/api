@@ -1,6 +1,7 @@
 package gg.sbs.api.mojang.exceptions;
 
 import gg.sbs.api.mojang.MojangProfile;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 
 /**
@@ -32,7 +33,7 @@ public class ProfileNotFoundException extends RuntimeException {
 	 * @param obj       Object to be used in the exception message.
 	 */
 	public ProfileNotFoundException(Reason reason, LookupType type, Throwable throwable, Object obj) {
-		super(throwable == null ? getCustomMessage(type, obj) : StringUtil.format("{0}: {1}: {2}", getCustomMessage(type, obj), throwable.getClass().getName(), throwable.getMessage()), throwable);
+		super(throwable == null ? getCustomMessage(type, obj) : FormatUtil.format("{0}: {1}: {2}", getCustomMessage(type, obj), throwable.getClass().getName(), throwable.getMessage()), throwable);
 		this.reason = reason;
 		this.type = type;
 		this.details = getCustomMessage(this.type, obj);
@@ -86,20 +87,20 @@ public class ProfileNotFoundException extends RuntimeException {
 				MojangProfile[] profiles = (MojangProfile[])obj;
 
 				for (MojangProfile profile : profiles)
-					players.append(StringUtil.format("'{'{0},{1}'}'", profile.getUniqueId(), profile.getName()));
+					players.append(FormatUtil.format("'{'{0},{1}'}'", profile.getUniqueId(), profile.getName()));
 
-				return StringUtil.format("The profile data for offline players '{'{0}'}' could not be found!", players.toString());
+				return FormatUtil.format("The profile data for offline players '{'{0}'}' could not be found!", players.toString());
 			case OFFLINE_PLAYER:
 				MojangProfile profile = (MojangProfile)obj;
-				return StringUtil.format("The profile data for offline player '{'{0},{1}'}' could not be found!", profile.getUniqueId(), profile.getName());
+				return FormatUtil.format("The profile data for offline player '{'{0},{1}'}' could not be found!", profile.getUniqueId(), profile.getName());
 			case UNIQUE_ID:
-				return StringUtil.format("The profile data for uuid ''{0}'' could not be found!", obj);
+				return FormatUtil.format("The profile data for uuid ''{0}'' could not be found!", obj);
 			case USERNAMES:
-				return StringUtil.format("The profile data for users '{'{0}'}' could not be found!", StringUtil.implode(", ", (String[])obj));
+				return FormatUtil.format("The profile data for users '{'{0}'}' could not be found!", StringUtil.join(", ", (String[])obj));
 			case USERNAME:
-				return StringUtil.format("The profile data for user ''{0}'' could not be found!", obj);
+				return FormatUtil.format("The profile data for user ''{0}'' could not be found!", obj);
 			default:
-				return StringUtil.format("The profile data for ''{0}'' could not be found!", obj);
+				return FormatUtil.format("The profile data for ''{0}'' could not be found!", obj);
 		}
 	}
 

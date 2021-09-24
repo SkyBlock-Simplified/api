@@ -1,18 +1,14 @@
 package gg.sbs.api.util.builder;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import gg.sbs.api.util.ArrayUtil;
 import gg.sbs.api.util.StringUtil;
 import lombok.NonNull;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * <p>
@@ -428,7 +424,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * @see HashCodeExclude
      */
     public static int reflectionHashCode(final Object object, final Collection<String> excludeFields) {
-        return reflectionHashCode(object, StringUtil.toNoNullStringArray(excludeFields));
+        return reflectionHashCode(object, ArrayUtil.toNoNullStringArray(excludeFields));
     }
 
     // -------------------------------------------------------------------------

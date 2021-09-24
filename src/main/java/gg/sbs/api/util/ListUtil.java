@@ -85,7 +85,7 @@ public class ListUtil {
 
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] == null)
-				throw new IllegalArgumentException(StringUtil.format(elementMessage, i));
+				throw new IllegalArgumentException(FormatUtil.format(elementMessage, i));
 		}
 	}
 
@@ -101,7 +101,7 @@ public class ListUtil {
 			i++;
 
 			if (obj == null)
-				throw new IllegalArgumentException(StringUtil.format(elementMessage, i));
+				throw new IllegalArgumentException(FormatUtil.format(elementMessage, i));
 		}
 	}
 

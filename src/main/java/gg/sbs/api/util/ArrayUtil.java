@@ -1,13 +1,14 @@
 package gg.sbs.api.util;
 
+import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.mutable.MutableInt;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
-
-import gg.sbs.api.util.builder.HashCodeBuilder;
-import gg.sbs.api.util.mutable.MutableInt;
 
 /**
  * <p>Operations on arrays, primitive arrays (like {@code int[]}) and
@@ -3425,7 +3426,7 @@ public class ArrayUtil {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final byte current = array[i];
-            if (NumberUtil2.compare(previous, current) > 0) {
+            if (NumberUtil.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -3521,7 +3522,7 @@ public class ArrayUtil {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final int current = array[i];
-            if (NumberUtil2.compare(previous, current) > 0) {
+            if (NumberUtil.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -3545,7 +3546,7 @@ public class ArrayUtil {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final long current = array[i];
-            if (NumberUtil2.compare(previous, current) > 0) {
+            if (NumberUtil.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -3569,7 +3570,7 @@ public class ArrayUtil {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final short current = array[i];
-            if (NumberUtil2.compare(previous, current) > 0) {
+            if (NumberUtil.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -8671,6 +8672,44 @@ public class ArrayUtil {
         }
         return map;
     }
+
+
+    /**
+     * Converts the given Collection into an array of Strings. The returned array does not contain {@code null}
+     * entries. Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException} if an array element
+     * is {@code null}.
+     *
+     * @param collection
+     *            The collection to convert
+     * @return A new array of Strings.
+     */
+    public static String[] toNoNullStringArray(final Collection<String> collection) {
+        if (collection == null)
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+
+        return toNoNullStringArray(collection.toArray());
+    }
+
+    /**
+     * Returns a new array of Strings without null elements. Internal method used to normalize exclude lists
+     * (arrays and collections). Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
+     * if an array element is {@code null}.
+     *
+     * @param array
+     *            The array to check
+     * @return The given array or a new array without null.
+     */
+    public static String[] toNoNullStringArray(final Object[] array) {
+        final List<String> list = new ArrayList<>(array.length);
+
+        for (final Object e : array) {
+            if (e != null)
+                list.add(e.toString());
+        }
+
+        return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+    }
+
 
     // Basic methods handling multi-dimensional arrays
     //-----------------------------------------------------------------------

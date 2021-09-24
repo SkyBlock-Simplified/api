@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.hypixel.skyblock.RemoteLocation;
 import gg.sbs.api.mojang.ChatFormatting;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
@@ -45,28 +46,28 @@ public final class HypixelProfile {
 	public RankInfo getRank() {
 		Rank rank = Rank.NONE;
 
-		if (StringUtil.notEmpty(this.packageRank))
+		if (StringUtil.isNotEmpty(this.packageRank))
 			rank = Rank.getRank(this.packageRank);
 
-		if (StringUtil.notEmpty(this.newPackageRank))
+		if (StringUtil.isNotEmpty(this.newPackageRank))
 			rank = Rank.getRank(this.newPackageRank);
 
-		if (StringUtil.notEmpty(this.monthlyPackageRank) && !"NONE".equals(this.monthlyPackageRank))
+		if (StringUtil.isNotEmpty(this.monthlyPackageRank) && !"NONE".equals(this.monthlyPackageRank))
 			rank = Rank.getRank(this.monthlyPackageRank);
 
-		if (StringUtil.notEmpty(this.rank) && !"NORMAL".equals(this.rank))
+		if (StringUtil.isNotEmpty(this.rank) && !"NORMAL".equals(this.rank))
 			rank = Rank.getRank(this.rank);
 
-		if (StringUtil.notEmpty(this.prefix))
+		if (StringUtil.isNotEmpty(this.prefix))
 			rank = Rank.getRank(RegexUtil.strip(this.prefix, RegexUtil.VANILLA_PATTERN).replaceAll("[\\W]", ""));
 
 		ChatFormatting rankFormat = rank.getDefaultFormat();
 		ChatFormatting plusFormat = rank.getDefaultFormat();
 
-		if (rank == Rank.SUPERSTAR && StringUtil.notEmpty(this.monthlyRankColor))
+		if (rank == Rank.SUPERSTAR && StringUtil.isNotEmpty(this.monthlyRankColor))
 			rankFormat = ChatFormatting.valueOf(this.monthlyRankColor);
 
-		if (StringUtil.notEmpty(this.rankPlusColor))
+		if (StringUtil.isNotEmpty(this.rankPlusColor))
 			plusFormat = ChatFormatting.valueOf(this.rankPlusColor);
 
 		if (rank == Rank.PIG)
@@ -115,7 +116,7 @@ public final class HypixelProfile {
 				return profile;
 		}
 
-		throw new IllegalArgumentException(StringUtil.format("Profile ID {0} is not part of {0}''s Hypixel Profile!", profileId, this.getDisplayName()));
+		throw new IllegalArgumentException(FormatUtil.format("Profile ID {0} is not part of {0}''s Hypixel Profile!", profileId, this.getDisplayName()));
 	}
 
 	public ConcurrentList<SkyblockProfile> getSkyblockProfiles() {
@@ -256,9 +257,9 @@ public final class HypixelProfile {
 
 		@Override
 		public String toString() {
-			String sfPluses = StringUtil.preformat("{0}", this.getPlusFormat(), this.getPluses());
-			String sfRank = StringUtil.preformat("{0}", this.getRankFormat(), this.getRank().getName());
-			return StringUtil.format("{0}[{1}{2}{3}]", ChatFormatting.WHITE.toString(), sfRank, sfPluses, ChatFormatting.WHITE.toString());
+			String sfPluses = FormatUtil.preformat("{0}", this.getPlusFormat(), this.getPluses());
+			String sfRank = FormatUtil.preformat("{0}", this.getRankFormat(), this.getRank().getName());
+			return FormatUtil.format("{0}[{1}{2}{3}]", ChatFormatting.WHITE.toString(), sfRank, sfPluses, ChatFormatting.WHITE.toString());
 		}
 
 	}

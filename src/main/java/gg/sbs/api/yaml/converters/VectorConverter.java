@@ -22,7 +22,7 @@ public class VectorConverter extends Converter {
 
 	@Override
 	public Object toConfig(Class<?> type, Object obj, ParameterizedType genericType) throws Exception {
-		return ((Vector)obj).serialize();
+		return ((Vector)obj).toMap();
 	}
 
 	@Override

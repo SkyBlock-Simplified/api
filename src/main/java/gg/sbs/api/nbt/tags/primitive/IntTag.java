@@ -17,6 +17,7 @@ import java.io.IOException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntTag extends NumericalTag<Integer> {
+
     private int value;
 
     /**
@@ -57,7 +58,6 @@ public class IntTag extends NumericalTag<Integer> {
     @Override
     public IntTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = input.readInt();
-
         return this;
     }
 
@@ -71,25 +71,17 @@ public class IntTag extends NumericalTag<Integer> {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
-
         return json;
     }
 
     @Override
     public IntTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsInt();
-
         return this;
     }
 
@@ -97,9 +89,7 @@ public class IntTag extends NumericalTag<Integer> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         IntTag intTag = (IntTag) o;
-
         return value == intTag.value;
     }
 
@@ -107,4 +97,5 @@ public class IntTag extends NumericalTag<Integer> {
     public int hashCode() {
         return value;
     }
+
 }

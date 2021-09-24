@@ -1,10 +1,10 @@
 	package gg.sbs.api.util.concurrent;
 
-	import gg.sbs.api.util.concurrent.atomic.AtomicMap;
+    import gg.sbs.api.util.concurrent.atomic.AtomicMap;
 
-	import java.util.HashMap;
-	import java.util.Map;
-	import java.util.concurrent.atomic.AtomicReference;
+    import java.util.HashMap;
+    import java.util.Map;
+    import java.util.concurrent.atomic.AtomicReference;
 
     /**
      * A concurrent map that allows for simultaneously fast reading, iteration and

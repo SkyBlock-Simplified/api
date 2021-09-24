@@ -1,11 +1,11 @@
 package gg.sbs.api.service.exceptions;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 public final class UnknownServiceException extends IllegalArgumentException {
 
 	public UnknownServiceException(Class<?> service) {
-		super(StringUtil.format("Service ''{0}'' has not been registered!", service.getName()));
+		super(FormatUtil.format("Service ''{0}'' has not been registered!", service.getName()));
 	}
 
 }
