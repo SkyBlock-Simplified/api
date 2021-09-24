@@ -1,9 +1,9 @@
 package gg.sbs.api.httpclients.hypixel.playerdata;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class HypixelPlayerStats {
-    @JsonProperty("SkyBlock")
+    @SerializedName("SkyBlock")
     private HypixelPlayerStatsSkyBlock skyBlock;
 
     public HypixelPlayerStatsSkyBlock getSkyBlock() {

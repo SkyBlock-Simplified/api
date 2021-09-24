@@ -1,16 +1,16 @@
 package gg.sbs.api.httpclients.hypixel.playerdata;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class HypixelPlayer {
-    @JsonProperty("_id")
+    @SerializedName("_id")
     private String id;
 
     private String uuid;
 
-    @JsonProperty("displayname")
+    @SerializedName("displayname")
     private String displayName;
 
     private long firstLogin;
@@ -18,7 +18,7 @@ public class HypixelPlayer {
     private List<String> knownAliasesLower;
     private long lastLogin;
 
-    @JsonProperty("playername")
+    @SerializedName("playername")
     private String playerName;
 
     private HypixelPlayerStats stats;

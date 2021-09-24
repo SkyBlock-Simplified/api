@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -16,8 +16,9 @@ public class SqlJsonConverter implements AttributeConverter<Map<String, Object>,
             return new HashMap<>();
         }
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(attr, HashMap.class);
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            return gson.fromJson(attr, HashMap.class);
         } catch (Exception e) {
             return new HashMap<>();
         }
@@ -25,10 +26,11 @@ public class SqlJsonConverter implements AttributeConverter<Map<String, Object>,
 
     public String convertToDatabaseColumn(Map<String, Object> attr) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(attr);
-        } catch (JsonProcessingException e) {
-            return null;
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            return gson.toJson(attr);
+        } catch (Exception e) {
+            return "";
         }
     }
 }

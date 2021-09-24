@@ -1,12 +1,12 @@
 package gg.sbs.api.httpclients.hypixel.playerdata;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class HypixelPlayerStatsSkyBlockProfile {
-    @JsonProperty("profile_id")
+    @SerializedName("profile_id")
     private String profileId;
 
-    @JsonProperty("cute_name")
+    @SerializedName("cute_name")
     private String cuteName;
 
     public String getProfileId() {

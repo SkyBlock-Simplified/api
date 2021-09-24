@@ -1,16 +1,16 @@
 package gg.sbs.api.httpclients.hypixel.playerdata;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class HypixelGuild {
-    @JsonProperty("_id")
+    @SerializedName("_id")
     private String id;
 
     private String name;
 
-    @JsonProperty("name_lower")
+    @SerializedName("name_lower")
     private String nameLower;
 
     private int coins;
