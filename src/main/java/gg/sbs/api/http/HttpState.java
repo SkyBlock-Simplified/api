@@ -8,6 +8,7 @@ public enum HttpState {
 	OTHER,
 	REDIRECTION,
 	SERVER_RROR,
+	CLOUDFLARE_ERROR,
 	SUCCESS
 
 }
