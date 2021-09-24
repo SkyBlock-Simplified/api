@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 public final class ResourceUtil {
 
+	private ResourceUtil() { }
+
 	public static Map<String, String> getEnvironmentVariables() {
 		Map<String, String> env = new HashMap<>();
 		// Load from src/main/resources/.env
@@ -54,7 +56,9 @@ public final class ResourceUtil {
 					throw new IllegalStateException(StringUtil.format("Unable to create parent directories for ''{0}''.", output));
 			}
 
-			if (output.exists() && !replace)
+			if (replace)
+				output.delete();
+			else if (output.exists())
 				throw new IllegalStateException(StringUtil.format("Output file ''{0}'' already exists.", output));
 
 			try (FileOutputStream outputStream = new FileOutputStream(output)) {
