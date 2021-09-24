@@ -1,6 +1,6 @@
 package gg.sbs.api.util;
 
-import gg.sbs.api.hypixel.HypixelAPI;
+import gg.sbs.api.hypixel_old.HypixelAPI;
 import gg.sbs.api.util.comparator.LastCharCompare;
 
 import java.util.Arrays;

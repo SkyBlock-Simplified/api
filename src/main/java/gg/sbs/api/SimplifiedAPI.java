@@ -1,24 +1,27 @@
 package gg.sbs.api;
 
-import gg.sbs.api.database.SqlModel;
-import gg.sbs.api.database.SqlRefreshable;
-import gg.sbs.api.database.SqlRepository;
-import gg.sbs.api.database.models.accessories.AccessoryRefreshable;
-import gg.sbs.api.database.models.accessories.AccessoryRepository;
-import gg.sbs.api.database.models.accessoryfamilies.AccessoryFamilyRefreshable;
-import gg.sbs.api.database.models.accessoryfamilies.AccessoryFamilyRepository;
-import gg.sbs.api.database.models.enchantments.EnchantmentRefreshable;
-import gg.sbs.api.database.models.enchantments.EnchantmentRepository;
-import gg.sbs.api.database.models.itemtypes.ItemTypeRefreshable;
-import gg.sbs.api.database.models.itemtypes.ItemTypeRepository;
-import gg.sbs.api.database.models.pets.PetRefreshable;
-import gg.sbs.api.database.models.pets.PetRepository;
-import gg.sbs.api.database.models.potions.PotionRefreshable;
-import gg.sbs.api.database.models.potions.PotionRepository;
-import gg.sbs.api.database.models.rarities.RarityRefreshable;
-import gg.sbs.api.database.models.rarities.RarityRepository;
-import gg.sbs.api.database.models.reforges.ReforgeRefreshable;
-import gg.sbs.api.database.models.reforges.ReforgeRepository;
+import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.SqlRefreshable;
+import gg.sbs.api.data.sql.SqlRepository;
+import gg.sbs.api.data.sql.models.accessories.AccessoryRefreshable;
+import gg.sbs.api.data.sql.models.accessories.AccessoryRepository;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyRefreshable;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyRepository;
+import gg.sbs.api.data.sql.models.enchantments.EnchantmentRefreshable;
+import gg.sbs.api.data.sql.models.enchantments.EnchantmentRepository;
+import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRefreshable;
+import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRepository;
+import gg.sbs.api.data.sql.models.pets.PetRefreshable;
+import gg.sbs.api.data.sql.models.pets.PetRepository;
+import gg.sbs.api.data.sql.models.potions.PotionRefreshable;
+import gg.sbs.api.data.sql.models.potions.PotionRepository;
+import gg.sbs.api.data.sql.models.rarities.RarityRefreshable;
+import gg.sbs.api.data.sql.models.rarities.RarityRepository;
+import gg.sbs.api.data.sql.models.reforges.ReforgeRefreshable;
+import gg.sbs.api.data.sql.models.reforges.ReforgeRepository;
+import gg.sbs.api.httpclients.hypixel.HypixelApiBuilder;
+import gg.sbs.api.httpclients.hypixel.HypixelPlayerDataApi;
+import gg.sbs.api.httpclients.hypixel.HypixelSkyBlockApi;
 import gg.sbs.api.mojang.MojangProfile;
 import gg.sbs.api.mojang.MojangRepository;
 import gg.sbs.api.nbt_old.NbtFactory_old;
@@ -53,6 +56,8 @@ public class SimplifiedAPI {
         serviceManager.provide(PotionRefreshable.class, new PotionRefreshable());
         serviceManager.provide(RarityRefreshable.class, new RarityRefreshable());
         serviceManager.provide(ReforgeRefreshable.class, new ReforgeRefreshable());
+
+        serviceManager.provide(HypixelPlayerDataApi.class, HypixelApiBuilder.buildApi(HypixelPlayerDataApi.class));
     }
 
     @SuppressWarnings("unchecked")
