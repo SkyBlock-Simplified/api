@@ -17,6 +17,7 @@ import java.io.IOException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FloatTag extends NumericalTag<Float> {
+
     private float value;
 
     /**
@@ -71,25 +72,17 @@ public class FloatTag extends NumericalTag<Float> {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
-
         return json;
     }
 
     @Override
     public FloatTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsFloat();
-
         return this;
     }
 
@@ -97,9 +90,7 @@ public class FloatTag extends NumericalTag<Float> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         FloatTag floatTag = (FloatTag) o;
-
         return Float.compare(floatTag.value, value) == 0;
     }
 
@@ -107,4 +98,5 @@ public class FloatTag extends NumericalTag<Float> {
     public int hashCode() {
         return (value != 0.0f ? Float.floatToIntBits(value) : 0);
     }
+
 }

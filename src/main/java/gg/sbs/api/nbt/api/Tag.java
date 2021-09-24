@@ -10,6 +10,7 @@ import java.io.IOException;
  * An abstract NBT tag.
  */
 public abstract class Tag {
+
     private String name;
 
     /**
@@ -64,4 +65,5 @@ public abstract class Tag {
      * @throws IOException if any I/O error occurs.
      */
     public abstract Tag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException;
+
 }

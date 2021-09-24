@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StringUtils {
+public class NbtStringUtils {
     public static String escapeSnbt(String str) {
         StringBuilder sb = new StringBuilder(" ");
 
@@ -54,4 +54,5 @@ public class StringUtils {
 
         return matches.toArray(new String[0]);
     }
+
 }

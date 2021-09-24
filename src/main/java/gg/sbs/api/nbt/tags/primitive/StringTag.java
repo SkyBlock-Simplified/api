@@ -7,7 +7,7 @@ import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.api.snbt.SnbtConfig;
 import gg.sbs.api.nbt.api.snbt.SnbtSerializable;
 import gg.sbs.api.nbt.tags.TagType;
-import gg.sbs.api.nbt.utils.StringUtils;
+import gg.sbs.api.nbt.utils.NbtStringUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -23,6 +23,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StringTag extends Tag implements SnbtSerializable, JsonSerializable {
+
     private @NonNull String value;
 
     /**
@@ -63,13 +64,12 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
     @Override
     public StringTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = input.readUTF();
-
         return this;
     }
 
     @Override
     public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
-        return StringUtils.escapeSnbt(this.value);
+        return NbtStringUtils.escapeSnbt(this.value);
     }
 
     @Override
@@ -77,25 +77,17 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
-
         return json;
     }
 
     @Override
     public StringTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsString();
-
         return this;
     }
 
@@ -108,9 +100,7 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         StringTag stringTag = (StringTag) o;
-
         return Objects.equals(value, stringTag.value);
     }
 
@@ -118,4 +108,5 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
     public int hashCode() {
         return value.hashCode();
     }
+
 }

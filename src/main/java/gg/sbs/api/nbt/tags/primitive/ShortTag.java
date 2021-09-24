@@ -18,6 +18,7 @@ import java.io.IOException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShortTag extends NumericalTag<Short> {
+
     private short value;
 
     /**
@@ -77,7 +78,6 @@ public class ShortTag extends NumericalTag<Short> {
     @Override
     public ShortTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = input.readShort();
-
         return this;
     }
 
@@ -91,25 +91,17 @@ public class ShortTag extends NumericalTag<Short> {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
-
         return json;
     }
 
     @Override
     public ShortTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsShort();
-
         return this;
     }
 
@@ -117,9 +109,7 @@ public class ShortTag extends NumericalTag<Short> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         ShortTag shortTag = (ShortTag) o;
-
         return value == shortTag.value;
     }
 
@@ -127,4 +117,5 @@ public class ShortTag extends NumericalTag<Short> {
     public int hashCode() {
         return value;
     }
+
 }

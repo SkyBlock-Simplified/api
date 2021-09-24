@@ -6,11 +6,12 @@ import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.api.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.nbt.tags.primitive.ByteTag;
-import gg.sbs.api.nbt.utils.StringUtils;
+import gg.sbs.api.nbt.utils.NbtStringUtils;
+import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.Primitives;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -28,7 +29,8 @@ import java.util.function.Consumer;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ByteArrayTag extends ArrayTag<Byte> {
-    private @NonNull byte[] value;
+
+    private byte[] value;
 
     /**
      * Constructs a byte array tag with a given name and value.
@@ -36,7 +38,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
      * @param name the tag's name.
      * @param value the tag's {@code byte[]} value.
      */
-    public ByteArrayTag(String name, @NonNull byte[] value) {
+    public ByteArrayTag(String name, byte[] value) {
         this.setName(name);
         this.setValue(value);
     }
@@ -58,7 +60,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
      */
     public ByteArrayTag(String name, @NonNull List<Byte> value) {
         this.setName(name);
-        this.setValue(ArrayUtils.toPrimitive(value.toArray(new Byte[0])));
+        this.setValue(Primitives.unwrap(value.toArray(new Byte[0])));
     }
 
     @Override
@@ -76,7 +78,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
      *
      * @param value new {@code byte[]} value to be set.
      */
-    public void setValue(@NonNull byte[] value) {
+    public void setValue(byte[] value) {
         this.value = value;
     }
 
@@ -90,9 +92,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     public ByteArrayTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         byte[] tmp = new byte[input.readInt()];
         input.readFully(tmp);
-
         this.value = tmp;
-
         return this;
     }
 
@@ -102,13 +102,11 @@ public class ByteArrayTag extends ArrayTag<Byte> {
         JsonArray array = new JsonArray();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
-        for (byte b : this) {
+        for (byte b : this)
             array.add(b);
-        }
 
         json.add("value", array);
 
@@ -118,18 +116,11 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     @Override
     public ByteArrayTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
         JsonArray array = json.getAsJsonArray("value");
-
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = new byte[array.size()];
 
-        for (int i = 0; i < array.size(); i++) {
+        for (int i = 0; i < array.size(); i++)
             this.value[i] = array.get(i).getAsByte();
-        }
 
         return this;
     }
@@ -139,34 +130,30 @@ public class ByteArrayTag extends ArrayTag<Byte> {
         StringBuilder sb = new StringBuilder("[B;");
 
         if (config.isPrettyPrint()) {
-            if (this.value.length < config.getInlineThreshold()) {
-                sb.append('\n').append(StringUtils.multiplyIndent(depth + 1, config));
-            } else {
+            if (this.value.length < config.getInlineThreshold())
+                sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
+            else
                 sb.append(' ');
-            }
         }
 
         for (int i = 0; i < this.value.length; ++i) {
             if (i != 0) {
                 if (config.isPrettyPrint()) {
-                    if (this.value.length < config.getInlineThreshold()) {
-                        sb.append(",\n").append(StringUtils.multiplyIndent(depth + 1, config));
-                    } else {
+                    if (this.value.length < config.getInlineThreshold())
+                        sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
+                    else
                         sb.append(", ");
-                    }
-                } else {
+                } else
                     sb.append(',');
-                }
             }
 
             sb.append(this.value[i]).append('B');
         }
 
-        if (config.isPrettyPrint() && this.value.length < config.getInlineThreshold()) {
-            sb.append("\n").append(StringUtils.multiplyIndent(depth , config)).append(']');
-        } else {
+        if (config.isPrettyPrint() && this.value.length < config.getInlineThreshold())
+            sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append(']');
+        else
             sb.append(']');
-        }
 
         return sb.toString();
     }
@@ -188,14 +175,13 @@ public class ByteArrayTag extends ArrayTag<Byte> {
 
     @Override
     public void insert(int index, @NonNull Byte... elements) {
-        this.value = ArrayUtils.insert(index, this.value, ArrayUtils.toPrimitive(elements));
+        this.value = ArrayUtil.insert(index, this.value, Primitives.unwrap(elements));
     }
 
     @Override
     public Byte remove(int index) {
         Byte previous = this.value[index];
-        this.value = ArrayUtils.remove(this.value, index);
-
+        this.value = ArrayUtil.remove(this.value, index);
         return previous;
     }
 
@@ -206,26 +192,24 @@ public class ByteArrayTag extends ArrayTag<Byte> {
 
     @Override
     public Iterator<Byte> iterator() {
-        return Arrays.asList(ArrayUtils.toObject(this.value)).iterator();
+        return Arrays.asList(Primitives.wrap(this.value)).iterator();
     }
 
     @Override
     public void forEach(Consumer<? super Byte> action) {
-        Arrays.asList(ArrayUtils.toObject(this.value)).forEach(action);
+        Arrays.asList(Primitives.wrap(this.value)).forEach(action);
     }
 
     @Override
     public Spliterator<Byte> spliterator() {
-        return Arrays.asList(ArrayUtils.toObject(this.value)).spliterator();
+        return Arrays.asList(Primitives.wrap(this.value)).spliterator();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         ByteArrayTag that = (ByteArrayTag) o;
-
         return Arrays.equals(value, that.value);
     }
 
@@ -233,4 +217,5 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     public int hashCode() {
         return Arrays.hashCode(value);
     }
+
 }

@@ -17,6 +17,7 @@ import java.io.IOException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DoubleTag extends NumericalTag<Double> {
+
     private double value;
 
     /**
@@ -57,7 +58,6 @@ public class DoubleTag extends NumericalTag<Double> {
     @Override
     public DoubleTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = input.readDouble();
-
         return this;
     }
 
@@ -71,25 +71,17 @@ public class DoubleTag extends NumericalTag<Double> {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
-
         return json;
     }
 
     @Override
     public DoubleTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsDouble();
-
         return this;
     }
 
@@ -97,9 +89,7 @@ public class DoubleTag extends NumericalTag<Double> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         DoubleTag doubleTag = (DoubleTag) o;
-
         return Double.compare(doubleTag.value, value) == 0;
     }
 
@@ -108,4 +98,5 @@ public class DoubleTag extends NumericalTag<Double> {
         long temp = Double.doubleToLongBits(value);
         return (int) (temp ^ (temp >>> 32));
     }
+
 }

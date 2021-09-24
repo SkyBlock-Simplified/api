@@ -6,11 +6,12 @@ import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.api.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.nbt.tags.primitive.IntTag;
-import gg.sbs.api.nbt.utils.StringUtils;
+import gg.sbs.api.nbt.utils.NbtStringUtils;
+import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.Primitives;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -28,7 +29,8 @@ import java.util.function.Consumer;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntArrayTag extends ArrayTag<Integer> {
-    private @NonNull int[] value;
+
+    private int[] value;
 
     /**
      * Constructs an int array tag with a given name and value.
@@ -36,7 +38,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      * @param name the tag's name.
      * @param value the tag's {@code int[]} value.
      */
-    public IntArrayTag(String name, @NonNull int[] value) {
+    public IntArrayTag(String name, int[] value) {
         this.setName(name);
         this.setValue(value);
     }
@@ -58,7 +60,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      */
     public IntArrayTag(String name, @NonNull List<Integer> value) {
         this.setName(name);
-        this.setValue(ArrayUtils.toPrimitive(value.toArray(new Integer[0])));
+        this.setValue(Primitives.unwrap(value.toArray(new Integer[0])));
     }
 
     @Override
@@ -76,7 +78,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      *
      * @param value new {@code int[]} value to be set.
      */
-    public void setValue(@NonNull int[] value) {
+    public void setValue(int[] value) {
         this.value = value;
     }
 
@@ -93,9 +95,8 @@ public class IntArrayTag extends ArrayTag<Integer> {
     public IntArrayTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = new int[input.readInt()];
 
-        for (int i = 0; i < this.value.length; i++) {
+        for (int i = 0; i < this.value.length; i++)
             this.value[i] = input.readInt();
-        }
 
         return this;
     }
@@ -106,13 +107,11 @@ public class IntArrayTag extends ArrayTag<Integer> {
         JsonArray array = new JsonArray();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
-        for (int i : this) {
+        for (int i : this)
             array.add(i);
-        }
 
         json.add("value", array);
 
@@ -122,18 +121,11 @@ public class IntArrayTag extends ArrayTag<Integer> {
     @Override
     public IntArrayTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
         JsonArray array = json.getAsJsonArray("value");
-
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = new int[array.size()];
 
-        for (int i = 0; i < array.size(); i++) {
+        for (int i = 0; i < array.size(); i++)
             this.value[i] = array.get(i).getAsInt();
-        }
 
         return this;
     }
@@ -143,34 +135,30 @@ public class IntArrayTag extends ArrayTag<Integer> {
         StringBuilder sb = new StringBuilder("[I;");
 
         if (config.isPrettyPrint()) {
-            if (this.value.length < config.getInlineThreshold()) {
-                sb.append('\n').append(StringUtils.multiplyIndent(depth + 1, config));
-            } else {
+            if (this.value.length < config.getInlineThreshold())
+                sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
+            else
                 sb.append(' ');
-            }
         }
 
         for (int i = 0; i < this.value.length; ++i) {
             if (i != 0) {
                 if (config.isPrettyPrint()) {
-                    if (this.value.length < config.getInlineThreshold()) {
-                        sb.append(",\n").append(StringUtils.multiplyIndent(depth + 1, config));
-                    } else {
+                    if (this.value.length < config.getInlineThreshold())
+                        sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
+                    else
                         sb.append(", ");
-                    }
-                } else {
+                } else
                     sb.append(',');
-                }
             }
 
             sb.append(this.value[i]);
         }
 
-        if (config.isPrettyPrint() && this.value.length < config.getInlineThreshold()) {
-            sb.append("\n").append(StringUtils.multiplyIndent(depth , config)).append(']');
-        } else {
+        if (config.isPrettyPrint() && this.value.length < config.getInlineThreshold())
+            sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append(']');
+        else
             sb.append(']');
-        }
 
         return sb.toString();
     }
@@ -192,14 +180,13 @@ public class IntArrayTag extends ArrayTag<Integer> {
 
     @Override
     public void insert(int index, @NonNull Integer... elements) {
-        this.value = ArrayUtils.insert(index, this.value, ArrayUtils.toPrimitive(elements));
+        this.value = ArrayUtil.insert(index, this.value, Primitives.unwrap(elements));
     }
 
     @Override
     public Integer remove(int index) {
         Integer previous = this.value[index];
-        this.value = ArrayUtils.remove(this.value, index);
-
+        this.value = ArrayUtil.remove(this.value, index);
         return previous;
     }
 
@@ -210,26 +197,24 @@ public class IntArrayTag extends ArrayTag<Integer> {
 
     @Override
     public Iterator<Integer> iterator() {
-        return Arrays.asList(ArrayUtils.toObject(this.value)).iterator();
+        return Arrays.asList(Primitives.wrap(this.value)).iterator();
     }
 
     @Override
     public void forEach(Consumer<? super Integer> action) {
-        Arrays.asList(ArrayUtils.toObject(this.value)).forEach(action);
+        Arrays.asList(Primitives.wrap(this.value)).forEach(action);
     }
 
     @Override
     public Spliterator<Integer> spliterator() {
-        return Arrays.asList(ArrayUtils.toObject(this.value)).spliterator();
+        return Arrays.asList(Primitives.wrap(this.value)).spliterator();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         IntArrayTag that = (IntArrayTag) o;
-
         return Arrays.equals(value, that.value);
     }
 
@@ -237,4 +222,5 @@ public class IntArrayTag extends ArrayTag<Integer> {
     public int hashCode() {
         return Arrays.hashCode(value);
     }
+
 }

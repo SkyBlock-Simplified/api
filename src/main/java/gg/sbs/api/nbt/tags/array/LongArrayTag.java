@@ -6,11 +6,12 @@ import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.api.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.nbt.tags.primitive.LongTag;
-import gg.sbs.api.nbt.utils.StringUtils;
+import gg.sbs.api.nbt.utils.NbtStringUtils;
+import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.Primitives;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -28,7 +29,8 @@ import java.util.function.Consumer;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LongArrayTag extends ArrayTag<Long> {
-    private @NonNull long[] value;
+
+    private long[] value;
 
     /**
      * Constructs a long array tag with a given name and value.
@@ -36,7 +38,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      * @param name the tag's name.
      * @param value the tag's {@code long[]} value.
      */
-    public LongArrayTag(String name, @NonNull long[] value) {
+    public LongArrayTag(String name, long[] value) {
         this.setName(name);
         this.setValue(value);
     }
@@ -58,7 +60,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      */
     public LongArrayTag(String name, @NonNull List<Long> value) {
         this.setName(name);
-        this.setValue(ArrayUtils.toPrimitive(value.toArray(new Long[0])));
+        this.setValue(Primitives.unwrap(value.toArray(new Long[0])));
     }
 
     @Override
@@ -76,7 +78,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      *
      * @param value new {@code long[]} value to be set.
      */
-    public void setValue(@NonNull long[] value) {
+    public void setValue(long[] value) {
         this.value = value;
     }
 
@@ -84,18 +86,16 @@ public class LongArrayTag extends ArrayTag<Long> {
     public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
         output.writeInt(this.value.length);
 
-        for (long l : this) {
+        for (long l : this)
             output.writeLong(l);
-        }
     }
 
     @Override
     public LongArrayTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         this.value = new long[input.readInt()];
 
-        for (int i = 0; i < this.value.length; i++) {
+        for (int i = 0; i < this.value.length; i++)
             this.value[i] = input.readLong();
-        }
 
         return this;
     }
@@ -106,13 +106,11 @@ public class LongArrayTag extends ArrayTag<Long> {
         JsonArray array = new JsonArray();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
-        for (long l : this) {
+        for (long l : this)
             array.add(l);
-        }
 
         json.add("value", array);
 
@@ -122,13 +120,7 @@ public class LongArrayTag extends ArrayTag<Long> {
     @Override
     public LongArrayTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
         JsonArray array = json.getAsJsonArray("value");
-
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = new long[array.size()];
 
         for (int i = 0; i < array.size(); i++) {
@@ -144,7 +136,7 @@ public class LongArrayTag extends ArrayTag<Long> {
 
         if (config.isPrettyPrint()) {
             if (this.value.length < config.getInlineThreshold()) {
-                sb.append('\n').append(StringUtils.multiplyIndent(depth + 1, config));
+                sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
             } else {
                 sb.append(' ');
             }
@@ -154,7 +146,7 @@ public class LongArrayTag extends ArrayTag<Long> {
             if (i != 0) {
                 if (config.isPrettyPrint()) {
                     if (this.value.length < config.getInlineThreshold()) {
-                        sb.append(",\n").append(StringUtils.multiplyIndent(depth + 1, config));
+                        sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
                     } else {
                         sb.append(", ");
                     }
@@ -166,11 +158,10 @@ public class LongArrayTag extends ArrayTag<Long> {
             sb.append(this.value[i]).append('L');
         }
 
-        if (config.isPrettyPrint() && this.value.length < config.getInlineThreshold()) {
-            sb.append("\n").append(StringUtils.multiplyIndent(depth , config)).append(']');
-        } else {
+        if (config.isPrettyPrint() && this.value.length < config.getInlineThreshold())
+            sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append(']');
+        else
             sb.append(']');
-        }
 
         return sb.toString();
     }
@@ -192,14 +183,13 @@ public class LongArrayTag extends ArrayTag<Long> {
 
     @Override
     public void insert(int index, @NonNull Long... elements) {
-        this.value = ArrayUtils.insert(index, this.value, ArrayUtils.toPrimitive(elements));
+        this.value = ArrayUtil.insert(index, this.value, Primitives.unwrap(elements));
     }
 
     @Override
     public Long remove(int index) {
         Long previous = this.value[index];
-        this.value = ArrayUtils.remove(this.value, index);
-
+        this.value = ArrayUtil.remove(this.value, index);
         return previous;
     }
 
@@ -210,26 +200,24 @@ public class LongArrayTag extends ArrayTag<Long> {
 
     @Override
     public Iterator<Long> iterator() {
-        return Arrays.asList(ArrayUtils.toObject(this.value)).iterator();
+        return Arrays.asList(Primitives.wrap(this.value)).iterator();
     }
 
     @Override
     public void forEach(Consumer<? super Long> action) {
-        Arrays.asList(ArrayUtils.toObject(this.value)).forEach(action);
+        Arrays.asList(Primitives.wrap(this.value)).forEach(action);
     }
 
     @Override
     public Spliterator<Long> spliterator() {
-        return Arrays.asList(ArrayUtils.toObject(this.value)).spliterator();
+        return Arrays.asList(Primitives.wrap(this.value)).spliterator();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         LongArrayTag that = (LongArrayTag) o;
-
         return Arrays.equals(value, that.value);
     }
 
@@ -237,4 +225,5 @@ public class LongArrayTag extends ArrayTag<Long> {
     public int hashCode() {
         return Arrays.hashCode(value);
     }
+
 }

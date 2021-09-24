@@ -18,6 +18,7 @@ import java.io.IOException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ByteTag extends NumericalTag<Byte> {
+
     private byte value;
 
     /**
@@ -91,9 +92,8 @@ public class ByteTag extends NumericalTag<Byte> {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
-        if (this.getName() != null) {
+        if (this.getName() != null)
             json.addProperty("name", this.getName());
-        }
 
         json.addProperty("value", this.value);
 
@@ -102,14 +102,8 @@ public class ByteTag extends NumericalTag<Byte> {
 
     @Override
     public ByteTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
-        if (json.has("name")) {
-            this.setName(json.getAsJsonPrimitive("name").getAsString());
-        } else {
-            this.setName(null);
-        }
-
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.value = json.getAsJsonPrimitive("value").getAsByte();
-
         return this;
     }
 
@@ -117,9 +111,7 @@ public class ByteTag extends NumericalTag<Byte> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         ByteTag byteTag = (ByteTag) o;
-
         return value == byteTag.value;
     }
 
@@ -127,4 +119,5 @@ public class ByteTag extends NumericalTag<Byte> {
     public int hashCode() {
         return value;
     }
+
 }
