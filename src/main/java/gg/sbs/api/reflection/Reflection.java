@@ -1,5 +1,6 @@
 package gg.sbs.api.reflection;
 
+import com.google.common.base.Preconditions;
 import gg.sbs.api.reflection.accessor.ConstructorAccessor;
 import gg.sbs.api.reflection.accessor.FieldAccessor;
 import gg.sbs.api.reflection.accessor.MethodAccessor;
@@ -43,30 +44,13 @@ public class Reflection {
 	 * @param clazz The class to reflect.
 	 */
 	public Reflection(Class<?> clazz) {
+		Preconditions.checkNotNull(clazz, "Class cannot be NULL.");
 		clazz = Primitives.wrap(clazz);
+
 		try {
 			this.className = clazz.getSimpleName();
 		} catch (Exception ex) {
-			System.out.println("Variables for: " + clazz);
-			try {
-				System.out.println("Clazz string: " + clazz.toString());
-			} catch (Exception ignore) { }
-			try {
-				System.out.println("Clazz name: " + clazz.getName());
-			} catch (Exception ignore) { }
-			try {
-				System.out.println("Clazz canon name: " + clazz.getCanonicalName());
-			} catch (Exception ignore) { }
-			try {
-				System.out.println("Clazz type name: " + clazz.getTypeName());
-			} catch (Exception ignore) { }
-			try {
-				System.out.println("Package string: " + clazz.getPackage().toString());
-			} catch (Exception ignore) { }
-			try {
-				System.out.println("Package name: " + clazz.getPackage().getName());
-			} catch (Exception ignore) { }
-			throw new RuntimeException("Something horribly wrong!", ex);
+			throw new ReflectionException(FormatUtil.format("Unable to get simple name for ''{0}''.", clazz), ex);
 		}
 
 		if (clazz.getPackage() != null) {
@@ -162,7 +146,7 @@ public class Reflection {
 				return source.getLocation();
 		}
 
-		throw new ReflectionException(FormatUtil.format("Unable to locate the file location of ''{0}''!", clazz.getName()));
+		throw new ReflectionException(FormatUtil.format("Unable to locate the file location of ''{0}''.", clazz.getName()));
 	}
 
 	/**
@@ -420,7 +404,7 @@ public class Reflection {
 		if (this.getClazz().getSuperclass() != null)
 			return this.getSuperReflection().getMethod(name, paramTypes);
 
-		throw new ReflectionException(FormatUtil.format("The method ''{0}'' was not found with parameters ''{1}''!", name, Collections.singletonList(types)));
+		throw new ReflectionException(FormatUtil.format("The method ''{0}'' was not found with parameters ''{1}''.", name, Collections.singletonList(types)));
 	}
 
 	/**
