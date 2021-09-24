@@ -19,7 +19,7 @@ import java.util.zip.InflaterOutputStream;
  * variable types and stream creation.</p>
  */
 @SuppressWarnings("all")
-public class DataUtil {
+public final class DataUtil {
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -44,6 +44,8 @@ public class DataUtil {
 		for (int i = 0; i < 64; i++)
 			map2[map1[i]] = (byte) i;
 	}
+
+	private DataUtil() { }
 
 	public static String compress(String data) throws IOException {
 		return compress(data.getBytes());

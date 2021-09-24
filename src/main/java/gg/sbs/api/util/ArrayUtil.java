@@ -2,7 +2,6 @@ package gg.sbs.api.util;
 
 import gg.sbs.api.util.builder.HashCodeBuilder;
 import gg.sbs.api.util.mutable.MutableInt;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -22,7 +21,7 @@ import java.util.*;
  * <p>#ThreadSafe#
  */
 @SuppressWarnings("unchecked")
-public class ArrayUtil {
+public final class ArrayUtil {
 
     /**
      * An empty immutable {@code boolean} array.
@@ -8685,7 +8684,7 @@ public class ArrayUtil {
      */
     public static String[] toNoNullStringArray(final Collection<String> collection) {
         if (collection == null)
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return EMPTY_STRING_ARRAY;
 
         return toNoNullStringArray(collection.toArray());
     }
@@ -8707,7 +8706,7 @@ public class ArrayUtil {
                 list.add(e.toString());
         }
 
-        return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return list.toArray(EMPTY_STRING_ARRAY);
     }
 
 

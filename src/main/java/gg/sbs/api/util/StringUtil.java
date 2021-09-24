@@ -1350,7 +1350,7 @@ public class StringUtil {
      * @param defaultStr  the default CharSequence to return
      *  if the input is whitespace, empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see org.apache.commons.lang3.StringUtils#defaultString(String, String)
+     * @see StringUtils#defaultString(String, String)
      */
     public static <T extends CharSequence> T defaultIfBlank(final T str, final T defaultStr) {
         return isBlank(str) ? defaultStr : str;
@@ -1372,7 +1372,7 @@ public class StringUtil {
      * @param defaultStr  the default CharSequence to return
      *  if the input is empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see org.apache.commons.lang3.StringUtils#defaultString(String, String)
+     * @see StringUtils#defaultString(String, String)
      */
     public static <T extends CharSequence> T defaultIfEmpty(final T str, final T defaultStr) {
         return isEmpty(str) ? defaultStr : str;
@@ -1554,7 +1554,7 @@ public class StringUtil {
      *
      * @param sequence  the CharSequence to check, may be null
      * @param searchStrings the case-sensitive CharSequences to find, may be empty or contain {@code null}
-     * @see org.apache.commons.lang3.StringUtils#endsWith(CharSequence, CharSequence)
+     * @see StringUtils#endsWith(CharSequence, CharSequence)
      * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
      *   the input {@code sequence} ends in any of the provided case-sensitive {@code searchStrings}.
      */
@@ -1935,7 +1935,7 @@ public class StringUtil {
      * @param defaultSupplier the supplier of default CharSequence to return
      *  if the input is whitespace, empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see org.apache.commons.lang3.StringUtils#defaultString(String, String)
+     * @see StringUtils#defaultString(String, String)
      */
     public static <T extends CharSequence> T getIfBlank(final T str, final Supplier<T> defaultSupplier) {
         return isBlank(str) ? defaultSupplier == null ? null : defaultSupplier.get() : str;
@@ -1962,7 +1962,7 @@ public class StringUtil {
      * @param defaultSupplier  the supplier of default CharSequence to return
      *  if the input is empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see org.apache.commons.lang3.StringUtils#defaultString(String, String)
+     * @see StringUtils#defaultString(String, String)
      */
     public static <T extends CharSequence> T getIfEmpty(final T str, final Supplier<T> defaultSupplier) {
         return isEmpty(str) ? defaultSupplier == null ? null : defaultSupplier.get() : str;
@@ -7107,7 +7107,7 @@ public class StringUtil {
      *
      * @param sequence the CharSequence to check, may be null
      * @param searchStrings the case-sensitive CharSequence prefixes, may be empty or contain {@code null}
-     * @see org.apache.commons.lang3.StringUtils#startsWith(CharSequence, CharSequence)
+     * @see StringUtils#startsWith(CharSequence, CharSequence)
      * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
      *   the input {@code sequence} begins with any of the provided case-sensitive {@code searchStrings}.isEmpty
      */
@@ -7907,7 +7907,7 @@ public class StringUtil {
      *  <li>Lower case character converts to Upper case</li>
      * </ul>
      *
-     * <p>For a word based algorithm, see {@link org.apache.commons.lang3.text.WordUtils#swapCase(String)}.
+     * <p>For a word based algorithm, see {@link WordUtils#swapCase(String)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
@@ -7919,7 +7919,7 @@ public class StringUtil {
      * <p>NOTE: This method changed in Lang version 2.0.
      * It no longer performs a word based algorithm.
      * If you only use ASCII, you will notice no change.
-     * That functionality is available in org.apache.commons.lang3.text.WordUtils.</p>
+     * That functionality is available in WordUtils.</p>
      *
      * @param str  the String to swap case, may be null
      * @return the changed String, {@code null} if null String input
@@ -8237,7 +8237,7 @@ public class StringUtil {
      * <p>Uncapitalizes a String, changing the first character to lower case as
      * per {@link Character#toLowerCase(int)}. No other characters are changed.</p>
      *
-     * <p>For a word based algorithm, see {@link org.apache.commons.lang3.text.WordUtils#uncapitalize(String)}.
+     * <p>For a word based algorithm, see {@link WordUtils#uncapitalize(String)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
@@ -8250,7 +8250,7 @@ public class StringUtil {
      *
      * @param str the String to uncapitalize, may be null
      * @return the uncapitalized String, {@code null} if null String input
-     * @see org.apache.commons.lang3.text.WordUtils#uncapitalize(String)
+     * @see WordUtils#uncapitalize(String)
      * @see #capitalize(String)
      */
     public static String uncapitalize(final String str) {
