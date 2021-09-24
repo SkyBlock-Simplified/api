@@ -424,7 +424,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * @see HashCodeExclude
      */
     public static int reflectionHashCode(final Object object, final Collection<String> excludeFields) {
-        return reflectionHashCode(object, StringUtil.toNoNullStringArray(excludeFields));
+        return reflectionHashCode(object, ArrayUtil.toNoNullStringArray(excludeFields));
     }
 
     // -------------------------------------------------------------------------
