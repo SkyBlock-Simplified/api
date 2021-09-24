@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt.api.snbt;
+package gg.sbs.api.nbt.snbt;
 
 import lombok.Data;
 

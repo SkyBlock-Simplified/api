@@ -2,10 +2,10 @@ package gg.sbs.api.nbt;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
-import gg.sbs.api.nbt.api.snbt.SnbtConfig;
 import gg.sbs.api.nbt.io.NbtReader;
 import gg.sbs.api.nbt.io.NbtWriter;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.collection.CompoundTag;
 import gg.sbs.api.util.CompressionType;
 import gg.sbs.api.util.DataUtil;

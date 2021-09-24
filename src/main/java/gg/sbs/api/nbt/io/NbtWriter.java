@@ -1,6 +1,6 @@
 package gg.sbs.api.nbt.io;
 
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.nbt.tags.collection.CompoundTag;
 import lombok.AllArgsConstructor;
@@ -14,6 +14,7 @@ import java.io.IOException;
  */
 @AllArgsConstructor
 public class NbtWriter {
+
     private @NonNull TagTypeRegistry typeRegistry;
 
     /**
@@ -52,4 +53,5 @@ public class NbtWriter {
     public void setTypeRegistry(@NonNull TagTypeRegistry typeRegistry) {
         this.typeRegistry = typeRegistry;
     }
+
 }

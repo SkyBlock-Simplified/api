@@ -1,13 +1,13 @@
 package gg.sbs.api.nbt.tags.primitive;
 
 import com.google.gson.JsonObject;
-import gg.sbs.api.nbt.api.Tag;
-import gg.sbs.api.nbt.api.json.JsonSerializable;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
-import gg.sbs.api.nbt.api.snbt.SnbtConfig;
-import gg.sbs.api.nbt.api.snbt.SnbtSerializable;
+import gg.sbs.api.nbt.NbtStringUtils;
+import gg.sbs.api.nbt.json.JsonSerializable;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.snbt.SnbtConfig;
+import gg.sbs.api.nbt.snbt.SnbtSerializable;
+import gg.sbs.api.nbt.tags.Tag;
 import gg.sbs.api.nbt.tags.TagType;
-import gg.sbs.api.nbt.utils.NbtStringUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

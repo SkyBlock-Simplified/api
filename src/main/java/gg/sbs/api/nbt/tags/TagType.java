@@ -1,7 +1,7 @@
 package gg.sbs.api.nbt.tags;
 
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistryException;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.registry.TagTypeRegistryException;
 import gg.sbs.api.nbt.tags.array.ByteArrayTag;
 import gg.sbs.api.nbt.tags.array.IntArrayTag;
 import gg.sbs.api.nbt.tags.array.LongArrayTag;

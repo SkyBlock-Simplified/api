@@ -1,6 +1,6 @@
-package gg.sbs.api.nbt.api.registry;
+package gg.sbs.api.nbt.registry;
 
-import gg.sbs.api.nbt.api.Tag;
+import gg.sbs.api.nbt.tags.Tag;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.reflection.exceptions.ReflectionException;

@@ -1,4 +1,4 @@
-package gg.sbs.api.nbt.api.registry;
+package gg.sbs.api.nbt.registry;
 
 /**
  * Checked exception thrown when any issue arises relating to the {@link TagTypeRegistry}.

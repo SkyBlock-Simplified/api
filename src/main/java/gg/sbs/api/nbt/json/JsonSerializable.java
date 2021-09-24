@@ -1,8 +1,8 @@
-package gg.sbs.api.nbt.api.json;
+package gg.sbs.api.nbt.json;
 
 import com.google.gson.JsonObject;
-import gg.sbs.api.nbt.api.Tag;
-import gg.sbs.api.nbt.api.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.registry.TagTypeRegistry;
+import gg.sbs.api.nbt.tags.Tag;
 
 import java.io.IOException;
 
