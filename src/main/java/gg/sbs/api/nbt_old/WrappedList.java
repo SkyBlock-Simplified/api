@@ -1,6 +1,6 @@
 package gg.sbs.api.nbt_old;
 
-import com.google.common.primitives.Primitives;
+import gg.sbs.api.util.Primitives;
 import gg.sbs.api.SimplifiedAPI;
 
 import javax.annotation.Nonnull;

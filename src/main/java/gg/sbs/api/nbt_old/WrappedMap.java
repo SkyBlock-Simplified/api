@@ -1,7 +1,7 @@
 package gg.sbs.api.nbt_old;
 
 import com.google.common.base.Preconditions;
-import com.google.common.primitives.Primitives;
+import gg.sbs.api.util.Primitives;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
