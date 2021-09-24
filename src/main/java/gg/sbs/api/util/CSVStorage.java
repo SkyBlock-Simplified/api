@@ -20,13 +20,13 @@ public abstract class CSVStorage {
 	private final File file;
 
 	public CSVStorage(File folder, String fileName) {
-		Preconditions.checkArgument(StringUtil.notEmpty(fileName), "Filename cannot be NULL!");
+		Preconditions.checkArgument(StringUtil.isNotEmpty(fileName), "Filename cannot be NULL!");
 		this.file = new File(folder, fileName + (fileName.endsWith(".csv") ? "" : ".csv"));
 
 		try {
 			this.reload();
 		} catch (IOException ioex) {
-			throw new IllegalStateException(StringUtil.format("Unable to load ''{0}''!", this.getLocalFile().getName()), ioex);
+			throw new IllegalStateException(FormatUtil.format("Unable to load ''{0}''!", this.getLocalFile().getName()), ioex);
 		}
 	}
 

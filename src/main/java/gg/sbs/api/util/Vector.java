@@ -286,7 +286,7 @@ public class Vector implements Cloneable, Serializable {
 	}
 
 	public final String toString() {
-		return StringUtil.format("'{'{0},{1},{2}'}'", this.getX(), this.getY(), this.getZ());
+		return FormatUtil.format("'{'{0},{1},{2}'}'", this.getX(), this.getY(), this.getZ());
 	}
 
 	public final Vector zero() {

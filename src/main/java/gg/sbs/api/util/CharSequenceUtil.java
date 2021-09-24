@@ -10,13 +10,6 @@ public class CharSequenceUtil {
 
     private static final int NOT_FOUND = -1;
 
-    /**
-     * <p>{@code CharSequenceUtils} instances should NOT be constructed in
-     * standard programming. </p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean
-     * instance to operate.</p>
-     */
     private CharSequenceUtil() { }
 
     //-----------------------------------------------------------------------
@@ -275,7 +268,7 @@ public class CharSequenceUtil {
      * @return the resulting char array, never null.
      */
     public static char[] toCharArray(final CharSequence source) {
-        final int len = StringUtils.length(source);
+        final int len = StringUtil.length(source);
         if (len == 0) {
             return ArrayUtil.EMPTY_CHAR_ARRAY;
         }

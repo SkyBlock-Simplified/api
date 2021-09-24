@@ -70,7 +70,7 @@ public class HttpClient {
 				try (BufferedReader reader = new BufferedReader(streamReader)) {
 					String line;
 
-					while (StringUtil.notEmpty(line = reader.readLine())) {
+					while (StringUtil.isNotEmpty(line = reader.readLine())) {
 						buffer.append(line);
 						buffer.append('\n');
 					}
@@ -175,7 +175,7 @@ public class HttpClient {
 				try (BufferedReader reader = new BufferedReader(streamReader)) {
 					String line;
 
-					while (StringUtil.notEmpty(line = reader.readLine())) {
+					while (StringUtil.isNotEmpty(line = reader.readLine())) {
 						buffer.append(line);
 						buffer.append('\n');
 					}

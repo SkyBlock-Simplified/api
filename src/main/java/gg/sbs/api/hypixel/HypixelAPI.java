@@ -9,8 +9,8 @@ import gg.sbs.api.http.HttpStatus;
 import gg.sbs.api.http.exceptions.HttpConnectionException;
 import gg.sbs.api.mojang.MojangProfile;
 import gg.sbs.api.scheduler.Scheduler;
-import gg.sbs.api.util.StringUtil;
-import gg.sbs.api.util.callback.Callback;
+import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.callback.ResultCallback;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
@@ -63,7 +63,7 @@ public class HypixelAPI {
 		return GSON.fromJson(guildQuery, HypixelGuild.class);
 	}
 
-	public final void getHypixelGuild(MojangProfile profile, Callback<HypixelGuild, HypixelApiException> callback) {
+	public final void getHypixelGuild(MojangProfile profile, ResultCallback<HypixelGuild, HypixelApiException> callback) {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -113,7 +113,7 @@ public class HypixelAPI {
 		return hypixelProfile;
 	}
 
-	public final void getHypixelProfile(MojangProfile profile, Callback<HypixelProfile, HypixelApiException> callback) {
+	public final void getHypixelProfile(MojangProfile profile, ResultCallback<HypixelProfile, HypixelApiException> callback) {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -170,11 +170,11 @@ public class HypixelAPI {
 		return skyblockIslands;
 	}
 
-	public final void getSkyblockIsland(HypixelProfile hypixelProfile, Callback<SkyblockIsland, HypixelApiException> callback) {
+	public final void getSkyblockIsland(HypixelProfile hypixelProfile, ResultCallback<SkyblockIsland, HypixelApiException> callback) {
 		this.getSkyblockIsland(hypixelProfile, hypixelProfile.getFirstSkyblockProfile(), callback);
 	}
 
-	public final void getSkyblockIsland(HypixelProfile hypixelProfile, HypixelProfile.SkyblockProfile skyblockProfile, Callback<SkyblockIsland, HypixelApiException> callback) throws HypixelApiException {
+	public final void getSkyblockIsland(HypixelProfile hypixelProfile, HypixelProfile.SkyblockProfile skyblockProfile, ResultCallback<SkyblockIsland, HypixelApiException> callback) throws HypixelApiException {
 		Preconditions.checkArgument(callback != null, "Callback cannot be NULL!");
 
 		Scheduler.getInstance().runAsync(() -> {
@@ -224,10 +224,10 @@ public class HypixelAPI {
 							return body.get(endpoint.getFocus());
 						else {
 							String query = parameters.stream().map(parameter -> parameter.getName() + "=" + parameter.getValue()).collect(Collectors.joining("&"));
-							throw new HypixelApiException(HypixelApiException.Reason.API_EXCEPTION, endpoint, StringUtil.format("The provided parameters ({0}) are invalid.", query));
+							throw new HypixelApiException(HypixelApiException.Reason.API_EXCEPTION, endpoint, FormatUtil.format("The provided parameters ({0}) are invalid.", query));
 						}
 					} else
-						throw new HypixelApiException(HypixelApiException.Reason.API_EXCEPTION, endpoint, StringUtil.format("The built-in endpoint focus ({0}) is invalid.", endpoint.getFocus())); // Very bad
+						throw new HypixelApiException(HypixelApiException.Reason.API_EXCEPTION, endpoint, FormatUtil.format("The built-in endpoint focus ({0}) is invalid.", endpoint.getFocus())); // Very bad
 				} else {
 					String cause = body.get("cause").getAsString();
 
@@ -241,7 +241,7 @@ public class HypixelAPI {
 		} catch (URISyntaxException | MalformedURLException ex) {
 			throw new HypixelApiException(HypixelApiException.Reason.EXCEPTION, endpoint, ex.getMessage(), ex);
 		} catch (HttpConnectionException hcex) {
-			String message = StringUtil.format("Error {0}: {1}", hcex.getStatus().getCode(), hcex.getMessage());
+			String message = FormatUtil.format("Error {0}: {1}", hcex.getStatus().getCode(), hcex.getMessage());
 
 			if (hcex.getStatus() == HttpStatus.BAD_REQUEST) { // User Error
 				JsonObject body = new JsonParser().parse(hcex.getBody().toString()).getAsJsonObject();
@@ -294,7 +294,7 @@ public class HypixelAPI {
 		}
 
 		public URL getUrl() {
-			return Services.getUrl(StringUtil.format("{0}/{1}", Services.SERVICE_HYPIXEL_API.toString(), this.getEndpoint()));
+			return Services.getUrl(FormatUtil.format("{0}/{1}", Services.SERVICE_HYPIXEL_API.toString(), this.getEndpoint()));
 		}
 
 	}
@@ -328,17 +328,17 @@ public class HypixelAPI {
 		public static final URL SERVICE_HYPIXEL_API = getUrl("gg.sbs.api.hypixel.net");
 
 		public static URL getApiUrl(Endpoint endpoint) {
-			return getUrl(StringUtil.format("{0}/{1}", SERVICE_HYPIXEL_API.toString(), endpoint.getEndpoint()));
+			return getUrl(FormatUtil.format("{0}/{1}", SERVICE_HYPIXEL_API.toString(), endpoint.getEndpoint()));
 		}
 
 		public static URL getUrl(String host) {
 			if (!host.startsWith("https://") && !host.startsWith("http://"))
-				host = StringUtil.format("https://{0}", host);
+				host = FormatUtil.format("https://{0}", host);
 
 			try {
 				return new URL(host);
 			} catch (MalformedURLException muex) {
-				throw new IllegalArgumentException(StringUtil.format("Unable to create URL {0}!", host));
+				throw new IllegalArgumentException(FormatUtil.format("Unable to create URL {0}!", host));
 			}
 		}
 

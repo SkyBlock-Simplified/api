@@ -307,10 +307,10 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 			if (WrappedList.class.isAssignableFrom(value.getClass()))
 				value = ((WrappedList<?>)value).serialize();
 
-			output.add(RegexUtil.lameColor(StringUtil.format("{0}:{1}", entry.getKey(), value)));
+			output.add(RegexUtil.lameColor(FormatUtil.format("{0}:{1}", entry.getKey(), value)));
 		}
 
-		return StringUtil.format("'{'{0}'}'", (output.isEmpty() ? "" : StringUtil.implode(", ", output)));
+		return FormatUtil.format("'{'{0}'}'", (output.isEmpty() ? "" : StringUtil.implode(", ", output)));
 	}
 
 	@Override

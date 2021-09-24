@@ -142,7 +142,7 @@ public final class NbtFactory {
 		Preconditions.checkArgument(itemStack != null, "ItemStack cannot be NULL!");
 
 		if (Items.AIR.equals(itemStack.getItem()))
-			throw new UnsupportedOperationException(StringUtil.format("ItemStack type ''{0}'' cannot store NMS information!", itemStack.getItem()));
+			throw new UnsupportedOperationException(FormatUtil.format("ItemStack type ''{0}'' cannot store NMS information!", itemStack.getItem()));
 	}
 
 	/**
@@ -423,7 +423,7 @@ public final class NbtFactory {
 		NbtType type = NBT_ENUM.get(NBT_CLASS.inverse().get(Primitives.unwrap(primitive.getClass())));
 
 		if (type == null)
-			throw new IllegalArgumentException(StringUtil.format("Illegal type: {0} ({1})!", primitive.getClass(), primitive));
+			throw new IllegalArgumentException(FormatUtil.format("Illegal type: {0} ({1})!", primitive.getClass(), primitive));
 
 		return type;
 	}
@@ -512,7 +512,7 @@ public final class NbtFactory {
 			}
 		}
 
-		throw new IllegalArgumentException(StringUtil.format("Unexpected type: {0}!", nms));
+		throw new IllegalArgumentException(FormatUtil.format("Unexpected type: {0}!", nms));
 	}
 
 }

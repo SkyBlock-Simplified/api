@@ -828,7 +828,7 @@ public class NumberUtil {
         if (str == null) {
             return null;
         }
-        if (StringUtils.isBlank(str)) {
+        if (StringUtil.isBlank(str)) {
             throw new NumberFormatException("A blank string is not a valid number");
         }
         // Need to deal with all possible hex prefixes here
@@ -1161,7 +1161,7 @@ public class NumberUtil {
             return null;
         }
         // handle JDK1.3.1 bug where "" throws IndexOutOfBoundsException
-        if (StringUtils.isBlank(str)) {
+        if (StringUtil.isBlank(str)) {
             throw new NumberFormatException("A blank string is not a valid number");
         }
         return new BigDecimal(str);
@@ -1690,7 +1690,7 @@ public class NumberUtil {
      * @return {@code true} if str contains only Unicode numeric
      */
     public static boolean isDigits(final String str) {
-        return StringUtils.isNumeric(str);
+        return StringUtil.isNumeric(str);
     }
 
     /**
@@ -1715,7 +1715,7 @@ public class NumberUtil {
      * @return {@code true} if the string is a correctly formatted number
      */
     public static boolean isCreatable(final String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (StringUtil.isEmpty(str)) {
             return false;
         }
         final char[] chars = str.toCharArray();
@@ -1726,7 +1726,7 @@ public class NumberUtil {
         boolean foundDigit = false;
         // deal with any possible sign up front
         final int start = chars[0] == '-' || chars[0] == '+' ? 1 : 0;
-        if (sz > start + 1 && chars[start] == '0' && !StringUtils.contains(str, '.')) { // leading 0, skip if is a decimal number
+        if (sz > start + 1 && chars[start] == '0' && !StringUtil.contains(str, '.')) { // leading 0, skip if is a decimal number
             if (chars[start + 1] == 'x' || chars[start + 1] == 'X') { // leading 0x/0X
                 int i = start + 2;
                 if (i == sz) {
@@ -1844,7 +1844,7 @@ public class NumberUtil {
      * @return {@code true} if the string is a parsable number.
      */
     public static boolean isParsable(final String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (StringUtil.isEmpty(str)) {
             return false;
         }
         if (str.charAt(str.length() - 1) == '.') {

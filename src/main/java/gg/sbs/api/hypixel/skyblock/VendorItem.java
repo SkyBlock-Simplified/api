@@ -1,5 +1,6 @@
 package gg.sbs.api.hypixel.skyblock;
 
+import gg.sbs.api.SimplifiedAPI;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import gg.sbs.api.nbt_old.NbtCompound;
@@ -91,7 +92,7 @@ public enum VendorItem {
 	VendorItem(NPC npc, Skyblock.Item skyblockItem, double listedPrice, double actualPrice) {
 		this.npc = npc;
 		this.skyblockItem = skyblockItem;
-		//this.itemName = (StringUtil.isEmpty(itemName) ? name() : StringUtil.format(itemName, name(), skyblockItem.getItem().getRegistryName().getResourcePath(), skyblockItem.getItemId())).toLowerCase();
+		//this.itemName = (StringUtil.isEmpty(itemName) ? name() : FormatUtil.format(itemName, name(), skyblockItem.getItem().getRegistryName().getResourcePath(), skyblockItem.getItemId())).toLowerCase();
 		this.listedPrice = listedPrice;
 		this.actualPrice = actualPrice;
 	}
