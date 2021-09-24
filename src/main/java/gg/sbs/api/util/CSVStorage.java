@@ -1,32 +1,27 @@
 package gg.sbs.api.util;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.client.Minecraft;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class CSVStorage {
 
-	private static final File MINECRAFT_CONFIG = new File(Minecraft.getMinecraft().gameDir, "config");
 	private static final Pattern CSV_SPLIT = Pattern.compile(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 	private final File file;
 
-	public CSVStorage(String fileName) {
+	public CSVStorage(File folder, String fileName) {
 		Preconditions.checkArgument(StringUtil.notEmpty(fileName), "Filename cannot be NULL!");
-		this.file = new File(MINECRAFT_CONFIG, fileName + (fileName.endsWith(".csv") ? "" : ".csv"));
+		this.file = new File(folder, fileName + (fileName.endsWith(".csv") ? "" : ".csv"));
 
 		try {
 			this.reload();
@@ -54,17 +49,7 @@ public abstract class CSVStorage {
 	}
 
 	protected final InputStream getResource() {
-		URL url = this.getClassLoader().getResource(this.getLocalFile().getName());
-
-		if (url != null) {
-			try {
-				URLConnection connection = url.openConnection();
-				connection.setUseCaches(false);
-				return connection.getInputStream();
-			} catch (IOException ignore) { }
-		}
-
-		throw new IllegalArgumentException(StringUtil.format("No resource with name ''{0}'' found!"));
+		return ResourceUtil.getResource(this.getLocalFile().getName());
 	}
 
 	protected final File getLocalFile() {
@@ -93,29 +78,7 @@ public abstract class CSVStorage {
 	}
 
 	public final void save(boolean replace) {
-		try (InputStream inputStream = this.getResource()) {
-			File parent = this.file.getAbsoluteFile().getParentFile();
-
-			if (!parent.exists()) {
-				if (!parent.mkdirs())
-					throw new IllegalStateException(StringUtil.format("Unable to create parent directories for ''{0}''!", this.getLocalFile()));
-			}
-
-			if (this.getLocalFile().exists() && !replace)
-				throw new IllegalStateException("File already exists!");
-
-			this.getLocalFile().delete();
-
-			try (FileOutputStream outputStream = new FileOutputStream(this.getLocalFile())) {
-				byte[] buffer = new byte[1024];
-				int length;
-
-				while ((length = inputStream.read(buffer)) > 0)
-					outputStream.write(buffer, 0, length);
-			}
-		} catch (Exception ex) {
-			throw new IllegalStateException(StringUtil.format("Unable to save resource ''{0}'' to ''{1}''!", ex, this.getLocalFile().getName(), this.getLocalFile()));
-		}
+		ResourceUtil.saveResource(this.getLocalFile().getParentFile(), this.getLocalFile().getName(), replace);
 	}
 
 }
