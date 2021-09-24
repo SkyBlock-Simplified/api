@@ -66,7 +66,7 @@ public final class FormatUtil {
         if (!MESSAGE_CACHE.containsKey(format)) {
             MessageFormat messageFormat = null;
             String replaceFormat = (logImportant != null ? logImportant : "") + "$1" + (logColor != null ? logColor : "");
-            String newFormat = (prefixColor ? logColor : "") + RegexUtil.replace(format, RegexUtil.LOG_PATTERN4, replaceFormat);
+            String newFormat = (prefixColor ? logColor : "") + RegexUtil.replaceAll(format, RegexUtil.LOG_PATTERN4, replaceFormat);
 
             try {
                 messageFormat = new MessageFormat(newFormat);
