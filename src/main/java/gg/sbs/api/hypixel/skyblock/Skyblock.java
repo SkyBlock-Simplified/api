@@ -37,7 +37,6 @@ import gg.sbs.api.util.concurrent.ConcurrentMap;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import gg.sbs.api.util.Cache;
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -1519,8 +1518,8 @@ public class Skyblock {
                             (level - (rarity == Skyblock.Item.Rarity.RARE ? 1 : 0)) *(rarity.ordinal() > 2 ? 0.2 : rarity.ordinal() < 2 ? 0.1 : 0.1506)))
             )),
             HIGHER_GROUND(GIRAFFE, Skyblock.Item.Rarity.COMMON, "Grants {{0}} and\n{{1}} when mid\nair", (level, rarity) -> _i(
-                    StringUtil.format("+{0} %STRENGTH%", ChatFormatting.RED, level * (rarity == Skyblock.Item.Rarity.RARE ? 0.4 : 0.5)),
-                    StringUtil.format("+{0} %CRIT_CHANCE%", ChatFormatting.BLUE, smallDecimalFormat.format((rarity == Skyblock.Item.Rarity.RARE ? 20.1 : 24.2) + ((level - 1) * rarity.ordinal() == 4 ? 0.3617 : 0))) // TODO: Not 0
+                    FormatUtil.format("+{0} %STRENGTH%", ChatFormatting.RED, level * (rarity == Skyblock.Item.Rarity.RARE ? 0.4 : 0.5)),
+                    FormatUtil.format("+{0} %CRIT_CHANCE%", ChatFormatting.BLUE, smallDecimalFormat.format((rarity == Skyblock.Item.Rarity.RARE ? 20.1 : 24.2) + ((level - 1) * rarity.ordinal() == 4 ? 0.3617 : 0))) // TODO: Not 0
             )),
             LONG_NECK(GIRAFFE, Skyblock.Item.Rarity.LEGENDARY, "See enemies from afar and gain\n{{0}%} dodge chance", (level, rarity) -> _i(level * 0.25)),
 
@@ -1669,7 +1668,7 @@ public class Skyblock {
             // Tiger
             MERCILESS_SWIPE(TIGER, Skyblock.Item.Rarity.COMMON, "Attacks have a {{0}%} chance\nto strike twice", (level, rarity) -> _i(level * (rarity.ordinal() >= 3 ? 0.2: rarity.ordinal() == 0 ? 0.05 : 0.1))),
             HEMORRHAGE(TIGER, Skyblock.Item.Rarity.RARE, "Melee attacks reduce healing\nby {0} for {{1}s}", (level, rarity) -> _i(StringUtil.preformat("{{0}%}", ChatFormatting.GRAY, ChatFormatting.GOLD, level * (rarity.ordinal() >= 3 ? 0.55 : 0.3)), 10)),
-            APEX_PREDATOR(TIGER, Skyblock.Item.Rarity.LEGENDARY, "Deal {0} damage against\ntargets with no other mobs\nwithin 15 blocks", (level, rarity) -> _i(StringUtil.format("{+{0}%}", ChatFormatting.GRAY, ChatFormatting.RED, level * 0.2))),
+            APEX_PREDATOR(TIGER, Skyblock.Item.Rarity.LEGENDARY, "Deal {0} damage against\ntargets with no other mobs\nwithin 15 blocks", (level, rarity) -> _i(FormatUtil.format("{+{0}%}", ChatFormatting.GRAY, ChatFormatting.RED, level * 0.2))),
 
             // Turtle
             TURTLE_TACTICS(TURTLE, Skyblock.Item.Rarity.EPIC, "Gain {+{0}%} %DEFENSE%", (level, rarity) -> _i(smallDecimalFormat.format(3.2 + ((level - 1) * 0.1702)))),
@@ -1726,11 +1725,11 @@ public class Skyblock {
 
             public ConcurrentList<String> getLore(int petLevel, Skyblock.Item.Rarity rarity) {
                 String fullLore = this.transform.apply(petLevel, rarity);
-                fullLore = StringUtil.implode(StringUtil.format("\n{0}", ChatFormatting.GRAY.toString()), StringUtil.split("\n", fullLore));
+                fullLore = StringUtil.join(FormatUtil.format("\n{0}", ChatFormatting.GRAY.toString()), StringUtil.split("\n", fullLore));
 
                 for (Skyblock.Stat stat : Skyblock.Stat.values()) {
-                    String find = StringUtil.format("%{0}%", stat.name());
-                    String findSymbol = StringUtil.format("%{0}_SYMBOL%", stat.name());
+                    String find = FormatUtil.format("%{0}%", stat.name());
+                    String findSymbol = FormatUtil.format("%{0}_SYMBOL%", stat.name());
 
                     if (fullLore.contains(find))
                         fullLore = fullLore.replaceAll(find, stat.getFormattedDisplayName());
@@ -1834,11 +1833,11 @@ public class Skyblock {
 
             public ConcurrentList<String> getLore(int petLevel, Skyblock.Item.Rarity rarity) {
                 String fullLore = this.transform.apply(petLevel, rarity);
-                fullLore = StringUtil.implode(StringUtil.format("\n{0}", ChatFormatting.GRAY.toString()), StringUtil.split("\n", fullLore));
+                fullLore = StringUtil.join(FormatUtil.format("\n{0}", ChatFormatting.GRAY.toString()), StringUtil.split("\n", fullLore));
 
                 for (Skyblock.Stat stat : Skyblock.Stat.values()) {
-                    String find = StringUtil.format("%{0}%", stat.name());
-                    String findSymbol = StringUtil.format("%{0}_SYMBOL%", stat.name());
+                    String find = FormatUtil.format("%{0}%", stat.name());
+                    String findSymbol = FormatUtil.format("%{0}_SYMBOL%", stat.name());
 
                     if (fullLore.contains(find))
                         fullLore = fullLore.replaceAll(find, stat.getFormattedDisplayName());
@@ -1956,9 +1955,9 @@ public class Skyblock {
 
         public String getCommand() {
             if (this.hasCommand())
-                return StringUtil.format("{0}", (this == SKYBLOCK_MENU ? "sbmenu" : this.name().replace("_", "").toLowerCase()));
+                return FormatUtil.format("{0}", (this == SKYBLOCK_MENU ? "sbmenu" : this.name().replace("_", "").toLowerCase()));
             else
-                throw new RuntimeException(StringUtil.format("{0} has no command!", this.name()));
+                throw new RuntimeException(FormatUtil.format("{0} has no command!", this.name()));
         }
 
         public String getDisplayName() {

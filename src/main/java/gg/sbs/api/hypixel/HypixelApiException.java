@@ -1,6 +1,6 @@
 package gg.sbs.api.hypixel;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 /**
  * Custom exception for use by the HypixelAPI

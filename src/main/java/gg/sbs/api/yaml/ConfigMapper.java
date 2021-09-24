@@ -1,5 +1,6 @@
 package gg.sbs.api.yaml;
 
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
@@ -33,8 +34,8 @@ public abstract class ConfigMapper extends YamlMap {
 
 	protected ConfigMapper(File configDir, String fileName, String... header) {
 		if (StringUtil.isEmpty(fileName)) throw new IllegalArgumentException("Filename cannot be null!");
-		//this.configFile = new File(Minecraft.getMinecraft().gameDir, StringUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
-		this.configFile = new File(configDir, StringUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
+		//this.configFile = new File(Minecraft.getMinecraft().gameDir, FormatUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
+		this.configFile = new File(configDir, FormatUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
 		this.header = header;
 		DumperOptions options = new DumperOptions();
 		options.setIndent(2);
@@ -138,7 +139,7 @@ public abstract class ConfigMapper extends YamlMap {
 					keyChain.add(line.split(":")[0].trim());
 				}
 
-				String search = (!keyChain.isEmpty() ? StringUtil.implode(".", keyChain) : "");
+				String search = (!keyChain.isEmpty() ? StringUtil.join(".", keyChain) : "");
 				if (this.comments.containsKey(search)) {
 					for (String comment : comments.get(search)) {
 						writeLines.append(new String(new char[depth - 2]).replace("\0", " "));

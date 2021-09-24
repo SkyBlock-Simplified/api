@@ -10,8 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static gg.sbs.api.util.Consts.ONE_MINUTE_MS;
-
 public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
     private final List<T> items = new ArrayList<>();

@@ -1,16 +1,12 @@
 package gg.sbs.api.util.builder;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.TextStringBuilder;
 import org.apache.commons.text.matcher.StringMatcher;
 import org.apache.commons.text.matcher.StringMatcherFactory;
+
+import java.util.*;
 
 /**
  * Tokenizes a string based on delimiters (separators) and supporting quoting and ignored character concepts.

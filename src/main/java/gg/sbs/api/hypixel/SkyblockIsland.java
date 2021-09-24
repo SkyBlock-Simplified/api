@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 import gg.sbs.api.SimplifiedAPI;
 import gg.sbs.api.util.DataUtil;
+import gg.sbs.api.util.StringUtil;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -14,13 +15,11 @@ import gg.sbs.api.hypixel.skyblock.Skyblock;
 import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -74,7 +73,7 @@ public final class SkyblockIsland {
 				return profile;
 		}
 
-		throw new IllegalArgumentException(StringUtil.format("Profile ID {0} is not part of Skyblock Island {1}!", profileId, this.getIslandId()));
+		throw new IllegalArgumentException(FormatUtil.format("Profile ID {0} is not part of Skyblock Island {1}!", profileId, this.getIslandId()));
 	}
 
 	public ConcurrentList<Member> getMembers() {
@@ -166,10 +165,10 @@ public final class SkyblockIsland {
 				for (Skyblock.Collection item : items) {
 					collection.items.put(item, this.collection.getOrDefault(item.getName(), 0));
 
-					List<String> unlocked = this.unlocked_coll_tiers.stream().filter(tier -> tier.matches(StringUtil.format("^{0}_[\\d]+$", item.getName()))).collect(Collectors.toList());
+					List<String> unlocked = this.unlocked_coll_tiers.stream().filter(tier -> tier.matches(FormatUtil.format("^{0}_[\\d]+$", item.getName()))).collect(Collectors.toList());
 					unlocked.forEach(tier -> {
 						int current = collection.unlocked.getOrDefault(item, 0);
-						collection.unlocked.put(item, Math.max(current, Integer.parseInt(tier.replace(StringUtil.format("{0}_", item.getName()), ""))));
+						collection.unlocked.put(item, Math.max(current, Integer.parseInt(tier.replace(FormatUtil.format("{0}_", item.getName()), ""))));
 					});
 				}
 			}
@@ -210,8 +209,8 @@ public final class SkyblockIsland {
 			if (this.crafted_generators != null) {
 				minion.unlocked.addAll(
 						this.crafted_generators.stream()
-								.filter(item -> item.matches(StringUtil.format("^{0}_[\\d]+$", type.name())))
-								.map(item -> Integer.parseInt(item.replace(StringUtil.format("{0}_", type.name()), "")))
+								.filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", type.name())))
+								.map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", type.name()), "")))
 								.collect(Collectors.toList())
 				);
 			}
@@ -255,7 +254,7 @@ public final class SkyblockIsland {
 		}
 
 		public Skill getSkill(Skyblock.Skill skill) {
-			double experience = (double)new Reflection(Member.class).getValue(StringUtil.format("experience_skill_{0}", skill.name().toLowerCase()), this);
+			double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skill.name().toLowerCase()), this);
 			return new Skill(skill, experience);
 		}
 
@@ -1167,7 +1166,7 @@ public final class SkyblockIsland {
 		}
 
 		public boolean isHoldingItem() {
-			return StringUtil.notEmpty(this.heldItem);
+			return StringUtil.isNotEmpty(this.heldItem);
 		}
 
 		public static class HeldItem {
@@ -1188,7 +1187,7 @@ public final class SkyblockIsland {
 					end = 1;
 				} catch (Exception ignore) { }
 
-				this.itemName = StringUtil.implode("_", split, 0, split.length - end);
+				this.itemName = StringUtil.join("_", split, 0, split.length - end);
 
 				try {
 					item = Skyblock.Pet.Item.valueOf(this.itemName);
@@ -1234,7 +1233,7 @@ public final class SkyblockIsland {
 				this.claimed.put(Integer.parseInt(entry.getKey().replace("level_", "")), entry.getValue());
 
 			for (int i = 0; i < 4; i++)
-				this.kills.put(i + 1, (int)slayerBossRef.getValue(StringUtil.format("boss_kills_tier_{0}", i), slayerBoss));
+				this.kills.put(i + 1, (int)slayerBossRef.getValue(FormatUtil.format("boss_kills_tier_{0}", i), slayerBoss));
 		}
 
 		@Override

@@ -1,7 +1,7 @@
 package gg.sbs.api.database.integrated;
 
 import gg.sbs.api.database.integrated.factory.SQLWrapper;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 import java.sql.SQLException;
 
@@ -14,7 +14,7 @@ public class SQLServer extends SQLWrapper {
 	}
 
 	public SQLServer(String host, int port, String user, String pass, String schema) throws SQLException {
-		super("com.microsoft.jdbc.sqlserver.SQLServerDriver", StringUtil.format("jdbc:microsoft:sqlserver://{0}:{1,number,#};DatabaseName={2}", host, port, schema), user, pass);
+		super("com.microsoft.jdbc.sqlserver.SQLServerDriver", FormatUtil.format("jdbc:microsoft:sqlserver://{0}:{1,number,#};DatabaseName={2}", host, port, schema), user, pass);
 	}
 
 	/**

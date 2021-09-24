@@ -1,6 +1,6 @@
 package gg.sbs.api.database.integrated.notifications;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.FormatUtil;
 
 public enum TriggerEvent {
 

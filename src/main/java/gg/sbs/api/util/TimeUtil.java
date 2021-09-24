@@ -41,10 +41,10 @@ public class TimeUtil {
 		if (clock != null)
 			return clock;
 
-		clock = NumberUtil.isNumber(time) ? Integer.valueOf(time) : -1;
+		clock = NumberUtil.isCreatable(time) ? Integer.parseInt(time) : -1;
 
 		if (clock == -1)
-			throw new NumberFormatException(StringUtil.format("The provided time value {0} is neither a clock time or number!", clock));
+			throw new NumberFormatException(FormatUtil.format("The provided time value {0} is neither a clock time or number!", clock));
 
 		return Math.abs(clock);
 	}

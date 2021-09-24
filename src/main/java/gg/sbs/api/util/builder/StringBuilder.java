@@ -1,5 +1,8 @@
 package gg.sbs.api.util.builder;
 
+import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.StringUtil;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -9,9 +12,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import gg.sbs.api.util.ArrayUtil;
-import gg.sbs.api.util.StringUtil;
 
 /**
  * Builds a string from constituent parts providing a more flexible and powerful API than StringBuffer.

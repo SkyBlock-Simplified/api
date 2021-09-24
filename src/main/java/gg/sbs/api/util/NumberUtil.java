@@ -1,5 +1,8 @@
 package gg.sbs.api.util;
 
+import com.google.common.base.Preconditions;
+import gg.sbs.api.reflection.Reflection;
+
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -8,9 +11,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
-
-import com.google.common.base.Preconditions;
-import gg.sbs.api.reflection.Reflection;
 
 /**
  * <p>Provides extra functionality for Java Number classes.</p>

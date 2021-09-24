@@ -1,6 +1,6 @@
 package gg.sbs.api.util.callback;
 
-public interface Callback<R, T extends Throwable> {
+public interface ResultCallback<R, T extends Throwable> {
 
 	void handle(R result, T error);
 

@@ -310,7 +310,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 			output.add(RegexUtil.lameColor(FormatUtil.format("{0}:{1}", entry.getKey(), value)));
 		}
 
-		return FormatUtil.format("'{'{0}'}'", (output.isEmpty() ? "" : StringUtil.implode(", ", output)));
+		return FormatUtil.format("'{'{0}'}'", (output.isEmpty() ? "" : StringUtil.join(", ", output)));
 	}
 
 	@Override
