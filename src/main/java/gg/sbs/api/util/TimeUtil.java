@@ -13,6 +13,7 @@ public class TimeUtil {
 
 	public static final transient SimpleDateFormat SQL_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final ConcurrentMap<String, Integer> TIMES = Concurrent.newMap();
+	public static final long ONE_MINUTE_MS = 60_000;
 
 	static {
 		TIMES.put("dawn", 22000);
@@ -35,7 +36,7 @@ public class TimeUtil {
 	 * @param time to locate
 	 * @return ticks based on {@code time}
 	 */
-	public static long getClockTime(String time) {
+	public static long getMinecraftTime(String time) {
 		Integer clock = TIMES.get(time);
 
 		if (clock != null)
