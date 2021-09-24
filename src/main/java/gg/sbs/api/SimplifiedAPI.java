@@ -33,7 +33,6 @@ public class SimplifiedAPI {
     static {
         //serviceManager.provide(MojangRepository.class, new MojangRepository<MojangProfile>());
         serviceManager.provide(NbtFactory.class, NbtFactory.getInstance());
-        serviceManager.provide(ResourceUtil.class, new ResourceUtil());
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
 
         //serviceManager.provide(ModLogger.class, instance.getLogger());
@@ -60,10 +59,6 @@ public class SimplifiedAPI {
     @SuppressWarnings("unchecked")
     public static MojangRepository<MojangProfile> getMojangRepository() {
         return (MojangRepository<MojangProfile>) getServiceManager().getProvider(MojangRepository.class);
-    }
-
-    public static ResourceUtil getResourceUtil() {
-        return getServiceManager().getProvider(ResourceUtil.class);
     }
 
     public static NbtFactory getNbtFactory() {
