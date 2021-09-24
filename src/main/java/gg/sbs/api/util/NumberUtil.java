@@ -15,7 +15,7 @@ import gg.sbs.api.reflection.Reflection;
 /**
  * <p>Provides extra functionality for Java Number classes.</p>
  */
-public class NumberUtil2 {
+public class NumberUtil {
 
     /** Reusable Long constant for zero. */
     public static final Long LONG_ZERO = 0L;
@@ -82,7 +82,7 @@ public class NumberUtil2 {
         FORMAT_SUFFIX.put(1_000_000_000_000_000_000L, "E");
     }
 
-    private NumberUtil2() { }
+    private NumberUtil() { }
 
     public static int ceil(double number) {
         int floor = (int)number;

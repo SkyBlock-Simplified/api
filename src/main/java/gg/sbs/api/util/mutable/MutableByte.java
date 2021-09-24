@@ -1,6 +1,6 @@
 package gg.sbs.api.util.mutable;
 
-import gg.sbs.api.util.NumberUtil2;
+import gg.sbs.api.util.NumberUtil;
 
 /**
  * A mutable {@code byte} wrapper.
@@ -339,7 +339,7 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
      */
     @Override
     public int compareTo(final MutableByte other) {
-        return NumberUtil2.compare(this.value, other.value);
+        return NumberUtil.compare(this.value, other.value);
     }
 
     //-----------------------------------------------------------------------

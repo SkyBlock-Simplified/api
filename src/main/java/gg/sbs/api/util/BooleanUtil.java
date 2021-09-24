@@ -400,7 +400,7 @@ public class BooleanUtil {
      * @return one if {@code true}, zero if {@code false}
      */
     public static Integer toIntegerObject(final boolean bool) {
-        return bool ? NumberUtil2.INTEGER_ONE : NumberUtil2.INTEGER_ZERO;
+        return bool ? NumberUtil.INTEGER_ONE : NumberUtil.INTEGER_ZERO;
     }
 
     /**
@@ -421,7 +421,7 @@ public class BooleanUtil {
         if (bool == null) {
             return null;
         }
-        return bool ? NumberUtil2.INTEGER_ONE : NumberUtil2.INTEGER_ZERO;
+        return bool ? NumberUtil.INTEGER_ONE : NumberUtil.INTEGER_ZERO;
     }
 
     /**
