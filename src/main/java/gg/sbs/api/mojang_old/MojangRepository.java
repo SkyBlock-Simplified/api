@@ -1,4 +1,4 @@
-package gg.sbs.api.mojang;
+package gg.sbs.api.mojang_old;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.http_old.*;
 import gg.sbs.api.http_old.exceptions.HttpConnectionException;
-import gg.sbs.api.mojang.exceptions.ProfileNotFoundException;
+import gg.sbs.api.mojang_old.exceptions.ProfileNotFoundException;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.callback.ResultCallback;

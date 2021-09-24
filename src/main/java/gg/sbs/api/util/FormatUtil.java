@@ -1,6 +1,6 @@
 package gg.sbs.api.util;
 
-import gg.sbs.api.mojang.ChatFormatting;
+import gg.sbs.api.mojang_old.ChatFormatting;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;

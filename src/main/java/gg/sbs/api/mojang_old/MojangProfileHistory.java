@@ -1,4 +1,4 @@
-package gg.sbs.api.mojang;
+package gg.sbs.api.mojang_old;
 
 public class MojangProfileHistory {
 

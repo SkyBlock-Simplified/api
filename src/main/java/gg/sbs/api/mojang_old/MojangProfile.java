@@ -1,4 +1,4 @@
-package gg.sbs.api.mojang;
+package gg.sbs.api.mojang_old;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,7 +10,7 @@ import gg.sbs.api.http_old.HttpClient;
 import gg.sbs.api.http_old.HttpResponse;
 import gg.sbs.api.http_old.HttpStatus;
 import gg.sbs.api.http_old.exceptions.HttpConnectionException;
-import gg.sbs.api.mojang.exceptions.ProfileNotFoundException;
+import gg.sbs.api.mojang_old.exceptions.ProfileNotFoundException;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.callback.ResultCallback;
 import gg.sbs.api.util.StringUtil;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
-import static gg.sbs.api.mojang.MojangRepository.MOJANG_API_AVAILABLE;
+import static gg.sbs.api.mojang_old.MojangRepository.MOJANG_API_AVAILABLE;
 
 /**
  * Container for a players unique id and name.

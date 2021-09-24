@@ -21,8 +21,10 @@ import gg.sbs.api.data.sql.models.reforges.ReforgeRefreshable;
 import gg.sbs.api.data.sql.models.reforges.ReforgeRepository;
 import gg.sbs.api.httpclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.httpclients.hypixel.HypixelPlayerDataApi;
-import gg.sbs.api.mojang.MojangProfile;
-import gg.sbs.api.mojang.MojangRepository;
+import gg.sbs.api.httpclients.mojang.MojangApiBuilder;
+import gg.sbs.api.httpclients.mojang.MojangProfileApi;
+import gg.sbs.api.mojang_old.MojangProfile;
+import gg.sbs.api.mojang_old.MojangRepository;
 import gg.sbs.api.nbt_old.NbtFactory_old;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
@@ -57,6 +59,7 @@ public class SimplifiedAPI {
         serviceManager.provide(ReforgeRefreshable.class, new ReforgeRefreshable());
 
         serviceManager.provide(HypixelPlayerDataApi.class, HypixelApiBuilder.buildApi(HypixelPlayerDataApi.class));
+        serviceManager.provide(MojangProfileApi.class, MojangApiBuilder.buildApi(MojangProfileApi.class));
     }
 
     @SuppressWarnings("unchecked")

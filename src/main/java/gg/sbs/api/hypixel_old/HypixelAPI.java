@@ -7,7 +7,7 @@ import gg.sbs.api.http_old.HttpParameter;
 import gg.sbs.api.http_old.HttpResponse;
 import gg.sbs.api.http_old.HttpStatus;
 import gg.sbs.api.http_old.exceptions.HttpConnectionException;
-import gg.sbs.api.mojang.MojangProfile;
+import gg.sbs.api.mojang_old.MojangProfile;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.callback.ResultCallback;

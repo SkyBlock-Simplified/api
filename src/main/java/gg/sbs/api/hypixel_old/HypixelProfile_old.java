@@ -3,7 +3,7 @@ package gg.sbs.api.hypixel_old;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.hypixel_old.skyblock.RemoteLocation;
-import gg.sbs.api.mojang.ChatFormatting;
+import gg.sbs.api.mojang_old.ChatFormatting;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;

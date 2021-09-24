@@ -1,6 +1,6 @@
-package gg.sbs.api.mojang.exceptions;
+package gg.sbs.api.mojang_old.exceptions;
 
-import gg.sbs.api.mojang.MojangProfile;
+import gg.sbs.api.mojang_old.MojangProfile;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 

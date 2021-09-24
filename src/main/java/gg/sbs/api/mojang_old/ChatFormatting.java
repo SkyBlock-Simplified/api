@@ -1,4 +1,4 @@
-package gg.sbs.api.mojang;
+package gg.sbs.api.mojang_old;
 
 import com.google.common.base.Preconditions;
 import gg.sbs.api.util.FormatUtil;

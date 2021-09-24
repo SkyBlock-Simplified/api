@@ -1,6 +1,6 @@
 package gg.sbs.api.hypixel_old.skyblock;
 
-import gg.sbs.api.mojang.ChatFormatting;
+import gg.sbs.api.mojang_old.ChatFormatting;
 import gg.sbs.api.util.*;
 import gg.sbs.api.hypixel_old.SkyblockIsland;
 import gg.sbs.api.nbt_old.NbtCompound;
