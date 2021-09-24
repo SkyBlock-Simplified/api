@@ -325,7 +325,7 @@ public class HypixelAPI {
 		// API: http://wiki.vg/Mojang_API
 		// https://visage.surgeplay.com/index.html
 		public static final URL SERVICE_HYPIXEL = getUrl("hypixel.net");
-		public static final URL SERVICE_HYPIXEL_API = getUrl("gg.sbs.api.hypixel.net");
+		public static final URL SERVICE_HYPIXEL_API = getUrl("api.hypixel.net");
 
 		public static URL getApiUrl(Endpoint endpoint) {
 			return getUrl(FormatUtil.format("{0}/{1}", SERVICE_HYPIXEL_API.toString(), endpoint.getEndpoint()));

@@ -630,7 +630,7 @@ public abstract class MojangRepository<T extends MojangProfile> {
 		// https://visage.surgeplay.com/index.html
 		public static final URL SERVICE_MINECRAFT = getUrl("minecraft.net");
 		public static final URL SERVICE_MOJANG_ACCOUNT = getUrl("account.mojang.com");
-		public static final URL SERVICE_MOJANG_API = getUrl("gg.sbs.api.mojang.com");
+		public static final URL SERVICE_MOJANG_API = getUrl("api.mojang.com");
 		public static final URL SERVICE_MOJANG_AUTH = getUrl("auth.mojang.com");
 		public static final URL SERVICE_MOJANG_AUTHSERVER = getUrl("authserver.mojang.com");
 		public static final URL SERVICE_MOJANG_SESSION = getUrl("sessionserver.mojang.com");
