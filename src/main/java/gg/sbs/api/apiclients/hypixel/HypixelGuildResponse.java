@@ -1,4 +1,4 @@
-package gg.sbs.api.httpclients.hypixel;
+package gg.sbs.api.apiclients.hypixel;
 
 import com.google.gson.annotations.SerializedName;
 

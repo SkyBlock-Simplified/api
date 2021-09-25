@@ -1,4 +1,4 @@
-package gg.sbs.api.httpclients.mojang;
+package gg.sbs.api.apiclients.mojang;
 
 import com.google.gson.annotations.SerializedName;
 

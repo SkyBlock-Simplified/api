@@ -1,6 +1,6 @@
 package gg.sbs.api.util;
 
-import gg.sbs.api.mojang_old.ChatFormatting;
+import gg.sbs.api.apiclients.mojang.MojangChatFormatting;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
@@ -11,8 +11,8 @@ import java.util.LinkedHashMap;
 public final class FormatUtil {
 
     private static final transient LinkedHashMap<String, MessageFormat> MESSAGE_CACHE = new MaxSizeLinkedMap<>(100);
-    private static final ChatFormatting DEFAULT_IMPORTANT = ChatFormatting.AQUA;
-    private static final ChatFormatting DEFAULT_LOG = ChatFormatting.GRAY;
+    private static final MojangChatFormatting DEFAULT_IMPORTANT = MojangChatFormatting.AQUA;
+    private static final MojangChatFormatting DEFAULT_LOG = MojangChatFormatting.GRAY;
 
     private FormatUtil() { }
 
@@ -35,7 +35,7 @@ public final class FormatUtil {
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String format(String format, ChatFormatting logColor, Object... objects) {
+    public static String format(String format, MojangChatFormatting logColor, Object... objects) {
         return format(format, logColor, null, objects);
     }
 
@@ -48,7 +48,7 @@ public final class FormatUtil {
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String format(String format, ChatFormatting logColor, ChatFormatting logImportant, Object... objects) {
+    public static String format(String format, MojangChatFormatting logColor, MojangChatFormatting logImportant, Object... objects) {
         return format(format, false, logColor, logImportant, objects);
     }
 
@@ -62,7 +62,7 @@ public final class FormatUtil {
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String format(String format, boolean prefixColor, ChatFormatting logColor, ChatFormatting logImportant, Object... objects) {
+    public static String format(String format, boolean prefixColor, MojangChatFormatting logColor, MojangChatFormatting logImportant, Object... objects) {
         if (!MESSAGE_CACHE.containsKey(format)) {
             MessageFormat messageFormat = null;
             String replaceFormat = (logImportant != null ? logImportant : "") + "$1" + (logColor != null ? logColor : "");
@@ -104,7 +104,7 @@ public final class FormatUtil {
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String preformat(String format, ChatFormatting logColor, Object... objects) {
+    public static String preformat(String format, MojangChatFormatting logColor, Object... objects) {
         return format(format, true, logColor, DEFAULT_IMPORTANT.getColor(), objects);
     }
 
@@ -117,7 +117,7 @@ public final class FormatUtil {
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String preformat(String format, ChatFormatting logColor, ChatFormatting logImportant, Object... objects) {
+    public static String preformat(String format, MojangChatFormatting logColor, MojangChatFormatting logImportant, Object... objects) {
         return format(format, true, logColor, logImportant, objects);
     }
 

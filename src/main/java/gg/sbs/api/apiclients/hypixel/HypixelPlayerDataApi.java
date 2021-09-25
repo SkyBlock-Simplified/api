@@ -1,4 +1,4 @@
-package gg.sbs.api.httpclients.hypixel;
+package gg.sbs.api.apiclients.hypixel;
 
 import feign.HeaderMap;
 import feign.Param;

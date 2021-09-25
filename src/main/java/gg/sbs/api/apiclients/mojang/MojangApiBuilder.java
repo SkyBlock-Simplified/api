@@ -1,10 +1,9 @@
-package gg.sbs.api.httpclients.mojang;
+package gg.sbs.api.apiclients.mojang;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
-import gg.sbs.api.util.ResourceUtil;
 
 public class MojangApiBuilder {
     public static <T> T buildApi(Class<T> tClass) {

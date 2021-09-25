@@ -1,6 +1,6 @@
 package gg.sbs.api.yaml;
 
-import gg.sbs.api.scheduler.MinecraftScheduler;
+import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 import gg.sbs.api.yaml.annotations.Comment;

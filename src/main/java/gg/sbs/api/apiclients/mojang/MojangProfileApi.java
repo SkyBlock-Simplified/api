@@ -1,4 +1,4 @@
-package gg.sbs.api.httpclients.mojang;
+package gg.sbs.api.apiclients.mojang;
 
 import feign.Param;
 import feign.RequestLine;

@@ -19,13 +19,10 @@ import gg.sbs.api.data.sql.models.rarities.RarityRefreshable;
 import gg.sbs.api.data.sql.models.rarities.RarityRepository;
 import gg.sbs.api.data.sql.models.reforges.ReforgeRefreshable;
 import gg.sbs.api.data.sql.models.reforges.ReforgeRepository;
-import gg.sbs.api.httpclients.hypixel.HypixelApiBuilder;
-import gg.sbs.api.httpclients.hypixel.HypixelPlayerDataApi;
-import gg.sbs.api.httpclients.mojang.MojangApiBuilder;
-import gg.sbs.api.httpclients.mojang.MojangProfileApi;
-import gg.sbs.api.mojang_old.MojangProfile;
-import gg.sbs.api.mojang_old.MojangRepository;
-import gg.sbs.api.nbt_old.NbtFactory_old;
+import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
+import gg.sbs.api.apiclients.hypixel.HypixelPlayerDataApi;
+import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
+import gg.sbs.api.apiclients.mojang.MojangProfileApi;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
 
@@ -34,8 +31,6 @@ public class SimplifiedAPI {
     private static final ServiceManager serviceManager = new ServiceManager();
 
     static {
-        //serviceManager.provide(MojangRepository.class, new MojangRepository<MojangProfile>());
-        serviceManager.provide(NbtFactory_old.class, NbtFactory_old.getInstance());
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
 
         //serviceManager.provide(ModLogger.class, instance.getLogger());
@@ -60,15 +55,6 @@ public class SimplifiedAPI {
 
         serviceManager.provide(HypixelPlayerDataApi.class, HypixelApiBuilder.buildApi(HypixelPlayerDataApi.class));
         serviceManager.provide(MojangProfileApi.class, MojangApiBuilder.buildApi(MojangProfileApi.class));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static MojangRepository<MojangProfile> getMojangRepository() {
-        return (MojangRepository<MojangProfile>) getServiceManager().getProvider(MojangRepository.class);
-    }
-
-    public static NbtFactory_old getNbtFactory() {
-        return getServiceManager().getProvider(NbtFactory_old.class);
     }
 
     public static Scheduler getScheduler() {

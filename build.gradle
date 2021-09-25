@@ -1,19 +1,6 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name = "gradle"
-            url = "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
-    }
-}
-
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'// apply false
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'org.flywaydb.flyway' version '8.0.0-beta2'
     id 'maven-publish'
 }
@@ -73,18 +60,45 @@ shadowJar {
     relocate googleGuava, localGoogleGuava
 }
 
+sourceSets {
+    dev {
+        java {
+            srcDirs = ['src/main/java']
+            exclude '**/data/sql/integrated/**'
+            exclude '**/http_old/**'
+            exclude '**/hypixel_old/**'
+            exclude '**/mojang_old/**'
+            exclude '**/nbt_old/**'
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+            exclude '**/data/sql/integrated/**'
+            exclude '**/http_old/**'
+            exclude '**/hypixel_old/**'
+            exclude '**/mojang_old/**'
+            exclude '**/nbt_old/**'
+        }
+    }
+}
+
+configurations {
+    devImplementation.extendsFrom implementation
+    devCompileOnly.extendsFrom compileOnly
+    devAnnotationProcessor.extendsFrom annotationProcessor
+}
+
 // Exclude specific packages while they are being refactored
 task devJar(type: Jar, group: 'build') {
     archiveAppendix.value('dev')
     archiveBaseName.value(artifactIdProp)
     archiveVersion.value(versionProp)
 
-    from sourceSets.main.java
-    exclude '**/data/sql/integrated/**'
-    exclude '**/http_old/**'
-    exclude '**/hypixel_old/**'
-    exclude '**/mojang_old/**'
-    exclude '**/nbt_old/**'
+    from sourceSets.dev.java
+    from sourceSets.dev.output
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 publishing {

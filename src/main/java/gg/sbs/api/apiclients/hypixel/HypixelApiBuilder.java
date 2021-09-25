@@ -1,10 +1,9 @@
-package gg.sbs.api.httpclients.hypixel;
+package gg.sbs.api.apiclients.hypixel;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
-import gg.sbs.api.util.ResourceUtil;
 
 import java.util.HashMap;
 import java.util.Map;
