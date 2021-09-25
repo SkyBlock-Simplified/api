@@ -12,6 +12,6 @@ public class MojangApiBuilder {
                 .client(new OkHttpClient())
                 .encoder(new GsonEncoder())
                 .decoder(new GsonDecoder())
-                .target(tClass, ResourceUtil.getEnvironmentVariables().get("MOJANG_API_URL"));
+                .target(tClass, "https://api.skyblocksimplified.com");
     }
 }

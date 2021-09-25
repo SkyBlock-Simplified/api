@@ -12,7 +12,6 @@ public class HypixelPlayerResponse {
     public boolean isSuccess() {
         return success;
     }
-
     public HypixelPlayer getPlayer() {
         return player;
     }
@@ -20,20 +19,15 @@ public class HypixelPlayerResponse {
     public static class HypixelPlayer {
         @SerializedName("_id")
         private String id;
-
         private String uuid;
-
         @SerializedName("displayname")
         private String displayName;
-
         private long firstLogin;
         private List<String> knownAliases;
         private List<String> knownAliasesLower;
         private long lastLogin;
-
         @SerializedName("playername")
         private String playerName;
-
         private HypixelPlayerStats stats;
         private long lastLogout;
         private String monthlyPackageRank;
@@ -113,7 +107,6 @@ public class HypixelPlayerResponse {
     public static class HypixelPlayerStatsSkyBlockProfile {
         @SerializedName("profile_id")
         private String profileId;
-
         @SerializedName("cute_name")
         private String cuteName;
 
