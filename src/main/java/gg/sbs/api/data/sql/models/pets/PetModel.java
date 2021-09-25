@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql.models.pets;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -40,10 +41,6 @@ public class PetModel implements SqlModel {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -80,7 +77,8 @@ public class PetModel implements SqlModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean equals(Object o) {
+        if (!(o instanceof PetModel)) return false;
+        return id == ((PetModel) o).id;
     }
 }

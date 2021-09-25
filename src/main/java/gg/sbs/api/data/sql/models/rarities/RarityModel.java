@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql.models.rarities;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -25,10 +26,6 @@ public class RarityModel implements SqlModel {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -41,7 +38,8 @@ public class RarityModel implements SqlModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean equals(Object o) {
+        if (!(o instanceof RarityModel)) return false;
+        return id == ((RarityModel) o).id;
     }
 }

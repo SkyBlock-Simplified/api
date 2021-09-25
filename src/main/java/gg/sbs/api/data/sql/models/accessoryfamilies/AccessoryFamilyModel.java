@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql.models.accessoryfamilies;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.accessories.AccessoryModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -31,10 +32,6 @@ public class AccessoryFamilyModel implements SqlModel {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -63,7 +60,8 @@ public class AccessoryFamilyModel implements SqlModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean equals(Object o) {
+        if (!(o instanceof AccessoryFamilyModel)) return false;
+        return id == ((AccessoryFamilyModel) o).id;
     }
 }

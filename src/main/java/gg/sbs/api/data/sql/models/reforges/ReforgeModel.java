@@ -2,11 +2,13 @@ package gg.sbs.api.data.sql.models.reforges;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Ref;
 import java.time.Instant;
 import java.util.Map;
 
@@ -42,10 +44,6 @@ public class ReforgeModel implements SqlModel {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public ItemTypeModel getItemType() {
@@ -92,7 +90,8 @@ public class ReforgeModel implements SqlModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean equals(Object o) {
+        if (!(o instanceof ReforgeModel)) return false;
+        return id == ((ReforgeModel) o).id;
     }
 }

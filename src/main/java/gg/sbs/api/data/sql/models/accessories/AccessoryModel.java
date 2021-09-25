@@ -41,10 +41,6 @@ public class AccessoryModel implements SqlModel {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public AccessoryFamilyModel getFamily() {
         return family;
     }
@@ -81,7 +77,8 @@ public class AccessoryModel implements SqlModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean equals(Object o) {
+        if (!(o instanceof AccessoryModel)) return false;
+        return id == ((AccessoryModel) o).id;
     }
 }

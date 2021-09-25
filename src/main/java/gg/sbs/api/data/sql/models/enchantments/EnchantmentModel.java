@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql.models.enchantments;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -37,10 +38,6 @@ public class EnchantmentModel implements SqlModel {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public ItemTypeModel getItemType() {
@@ -79,7 +76,8 @@ public class EnchantmentModel implements SqlModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean equals(Object o) {
+        if (!(o instanceof EnchantmentModel)) return false;
+        return id == ((EnchantmentModel) o).id;
     }
 }

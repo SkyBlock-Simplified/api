@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql.models.potions;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -29,4 +30,41 @@ public class PotionModel implements SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getItemLevel() {
+        return itemLevel;
+    }
+
+    public void setItemLevel(int itemLevel) {
+        this.itemLevel = itemLevel;
+    }
+
+    public Map<String, Object> getEffects() {
+        return effects;
+    }
+
+    public void setEffects(Map<String, Object> effects) {
+        this.effects = effects;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof PotionModel)) return false;
+        return id == ((PotionModel) o).id;
+    }
 }
