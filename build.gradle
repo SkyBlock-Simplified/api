@@ -146,24 +146,24 @@ publishing {
             version = versionProp
             artifacts = [jar]
             pom.withXml {
-                def dependencies = asNode(null).appendNode('dependencies')
-                configurations.implementation.getFirstLevelModuleDependencies().each {
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
                     def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.moduleGroup)
-                    dependency.appendNode('artifactId', it.moduleName)
-                    dependency.appendNode('version', it.moduleVersion)
+                    dependency.appendNode('groupId', it.group)
+                    dependency.appendNode('artifactId', it.name)
+                    dependency.appendNode('version', it.version)
                 }
-                configurations.compileOnly.getFirstLevelModuleDependencies().each {
+                configurations.compileOnly.allDependencies.each {
                     def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.moduleGroup)
-                    dependency.appendNode('artifactId', it.moduleName)
-                    dependency.appendNode('version', it.moduleVersion)
+                    dependency.appendNode('groupId', it.group)
+                    dependency.appendNode('artifactId', it.name)
+                    dependency.appendNode('version', it.version)
                 }
-                configurations.annotationOnly.getFirstLevelModuleDependencies().each {
+                configurations.annotationProcessor.allDependencies.each {
                     def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.moduleGroup)
-                    dependency.appendNode('artifactId', it.moduleName)
-                    dependency.appendNode('version', it.moduleVersion)
+                    dependency.appendNode('groupId', it.group)
+                    dependency.appendNode('artifactId', it.name)
+                    dependency.appendNode('version', it.version)
                 }
             }
         }
