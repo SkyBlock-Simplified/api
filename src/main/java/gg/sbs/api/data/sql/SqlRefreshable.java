@@ -3,12 +3,11 @@ package gg.sbs.api.data.sql;
 import gg.sbs.api.SimplifiedAPI;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
@@ -27,5 +26,14 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
         List<T> itemsCopy = new ArrayList<>();
         Collections.copy(itemsCopy, items);
         return itemsCopy;
+    }
+
+    public <S> T findFirst(FilterFunction<T, S> f, S s) throws SQLException {
+        if (!itemsInitialized) throw new SQLException("Items have not been initialized yet");
+        return items.stream().filter(T -> f.returns(T) == s).findFirst().orElse(null);
+    }
+
+    public interface FilterFunction<T extends SqlModel, S> {
+        S returns(T t);
     }
 }
