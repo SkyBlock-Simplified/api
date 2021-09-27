@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "accessories")
-public class AccessoryModel implements SqlModel {
+public class AccessoryModel extends SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -80,5 +80,15 @@ public class AccessoryModel implements SqlModel {
     public boolean equals(Object o) {
         if (!(o instanceof AccessoryModel)) return false;
         return id == ((AccessoryModel) o).id;
+    }
+
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (family != null ? family.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (rarity != null ? rarity.hashCode() : 0);
+        result = 31 * result + (effects != null ? effects.hashCode() : 0);
+        result = 31 * result + (updatedAt != null ? updatedAt.hashCode() : 0);
+        return result;
     }
 }

@@ -29,29 +29,12 @@ import gg.sbs.api.service.ServiceManager;
 public class SimplifiedAPI {
 
     private static final ServiceManager serviceManager = new ServiceManager();
+    private static boolean databaseEnabled = false;
 
     static {
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
 
         //serviceManager.provide(ModLogger.class, instance.getLogger());
-
-        serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
-        serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
-        serviceManager.provide(EnchantmentRepository.class, new EnchantmentRepository());
-        serviceManager.provide(ItemTypeRepository.class, new ItemTypeRepository());
-        serviceManager.provide(PetRepository.class, new PetRepository());
-        serviceManager.provide(PotionRepository.class, new PotionRepository());
-        serviceManager.provide(RarityRepository.class, new RarityRepository());
-        serviceManager.provide(ReforgeRepository.class, new ReforgeRepository());
-
-        serviceManager.provide(AccessoryRefreshable.class, new AccessoryRefreshable());
-        serviceManager.provide(AccessoryFamilyRefreshable.class, new AccessoryFamilyRefreshable());
-        serviceManager.provide(EnchantmentRefreshable.class, new EnchantmentRefreshable());
-        serviceManager.provide(ItemTypeRefreshable.class, new ItemTypeRefreshable());
-        serviceManager.provide(PetRefreshable.class, new PetRefreshable());
-        serviceManager.provide(PotionRefreshable.class, new PotionRefreshable());
-        serviceManager.provide(RarityRefreshable.class, new RarityRefreshable());
-        serviceManager.provide(ReforgeRefreshable.class, new ReforgeRefreshable());
 
         serviceManager.provide(HypixelPlayerDataApi.class, HypixelApiBuilder.buildApi(HypixelPlayerDataApi.class));
         serviceManager.provide(MojangProfileApi.class, MojangApiBuilder.buildApi(MojangProfileApi.class));
@@ -63,6 +46,34 @@ public class SimplifiedAPI {
 
     private static ServiceManager getServiceManager() {
         return serviceManager;
+    }
+
+    public static void enableDatabase() {
+        if (!databaseEnabled) {
+            serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
+            serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
+            serviceManager.provide(EnchantmentRepository.class, new EnchantmentRepository());
+            serviceManager.provide(ItemTypeRepository.class, new ItemTypeRepository());
+            serviceManager.provide(PetRepository.class, new PetRepository());
+            serviceManager.provide(PotionRepository.class, new PotionRepository());
+            serviceManager.provide(RarityRepository.class, new RarityRepository());
+            serviceManager.provide(ReforgeRepository.class, new ReforgeRepository());
+
+            serviceManager.provide(AccessoryRefreshable.class, new AccessoryRefreshable());
+            serviceManager.provide(AccessoryFamilyRefreshable.class, new AccessoryFamilyRefreshable());
+            serviceManager.provide(EnchantmentRefreshable.class, new EnchantmentRefreshable());
+            serviceManager.provide(ItemTypeRefreshable.class, new ItemTypeRefreshable());
+            serviceManager.provide(PetRefreshable.class, new PetRefreshable());
+            serviceManager.provide(PotionRefreshable.class, new PotionRefreshable());
+            serviceManager.provide(RarityRefreshable.class, new RarityRefreshable());
+            serviceManager.provide(ReforgeRefreshable.class, new ReforgeRefreshable());
+
+            databaseEnabled = true;
+        }
+    }
+
+    public static void disableDatabase() {
+        SqlRefreshable.shutdown();
     }
 
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> rClass) {

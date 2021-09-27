@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "reforges")
-public class ReforgeModel implements SqlModel {
+public class ReforgeModel extends SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

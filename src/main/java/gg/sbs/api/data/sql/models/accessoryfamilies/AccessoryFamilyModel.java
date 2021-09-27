@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "accessory_families")
-public class AccessoryFamilyModel implements SqlModel {
+public class AccessoryFamilyModel extends SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -63,5 +63,14 @@ public class AccessoryFamilyModel implements SqlModel {
     public boolean equals(Object o) {
         if (!(o instanceof AccessoryFamilyModel)) return false;
         return id == ((AccessoryFamilyModel) o).id;
+    }
+
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (reforgesStack ? 1 : 0);
+        result = 31 * result + (itemsStack ? 1 : 0);
+        result = 31 * result + (updatedAt != null ? updatedAt.hashCode() : 0);
+        return result;
     }
 }

@@ -37,20 +37,6 @@ repositories {
     }
 }
 
-dependencies {
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.7'
-    implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.6'
-    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
-    implementation group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.5.7.Final'
-    implementation group: 'io.github.openfeign', name: 'feign-okhttp', version: '11.6'
-    implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.6'
-
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-}
-
 shadowJar {
     def googleGson = 'com.google.code.gson'
     def googleGuava = 'com.google.guava'
@@ -79,12 +65,47 @@ sourceSets {
             exclude '**/nbt_old/**'
         }
     }
+    devTest {
+        java {
+            srcDirs = ['src/test/java']
+            compileClasspath += sourceSets.dev.output
+            runtimeClasspath += sourceSets.dev.output
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
 }
+
+dependencies {
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.7'
+    implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.6'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
+    implementation group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.5.7.Final'
+    implementation group: 'io.github.openfeign', name: 'feign-okhttp', version: '11.6'
+    implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.6'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
 
 configurations {
     devImplementation.extendsFrom implementation
     devCompileOnly.extendsFrom compileOnly
     devAnnotationProcessor.extendsFrom annotationProcessor
+
+    devTestImplementation.extendsFrom implementation
+    devTestCompileOnly.extendsFrom compileOnly
+    devTestAnnotationProcessor.extendsFrom annotationProcessor
+    devTestImplementation.extendsFrom testImplementation
+    devTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 // Exclude specific packages while they are being refactored
@@ -171,7 +192,18 @@ publishing {
 }
 
 flyway {
-    url = 'jdbc:mariadb://' + env.get('DB_URL') + ':' + env.get('DB_PORT') + '/' + env.get('DB_DATABASE')
+    url = 'jdbc:mariadb://' + env.get('DB_HOST') + ':' + env.get('DB_PORT') + '/' + env.get('DB_DATABASE')
     user = env.get('DB_USER')
     password = env.get('DB_PASSWORD')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('devTest', Test) {
+    useJUnitPlatform()
+    group = 'verification'
+    testClassesDirs = sourceSets.devTest.output.classesDirs
+    classpath = sourceSets.devTest.runtimeClasspath
 }

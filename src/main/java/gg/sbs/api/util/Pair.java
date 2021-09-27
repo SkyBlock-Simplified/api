@@ -1,5 +1,7 @@
 package gg.sbs.api.util;
 
+import java.util.Objects;
+
 public class Pair<T, S> {
     private T first;
     private S second;
@@ -23,5 +25,18 @@ public class Pair<T, S> {
 
     public void setSecond(S second) {
         this.second = second;
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof Pair)) return false;
+        Pair<?, ?> that = (Pair<?, ?>) o;
+        if (!first.equals(that.first)) return false;
+        return second.equals(that.second);
+    }
+
+    public int hashCode() {
+        int result = first != null ? first.hashCode() : 0;
+        result = 31 * result + (second != null ? second.hashCode() : 0);
+        return result;
     }
 }

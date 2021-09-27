@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "skills")
-public class SkillModel implements SqlModel {
+public class SkillModel extends SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

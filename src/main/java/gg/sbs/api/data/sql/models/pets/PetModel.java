@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "pets")
-public class PetModel implements SqlModel {
+public class PetModel extends SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -80,5 +80,15 @@ public class PetModel implements SqlModel {
     public boolean equals(Object o) {
         if (!(o instanceof PetModel)) return false;
         return id == ((PetModel) o).id;
+    }
+
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (rarity != null ? rarity.hashCode() : 0);
+        result = 31 * result + (effectsBase != null ? effectsBase.hashCode() : 0);
+        result = 31 * result + (effectsPerLevel != null ? effectsPerLevel.hashCode() : 0);
+        result = 31 * result + (updatedAt != null ? updatedAt.hashCode() : 0);
+        return result;
     }
 }

@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "item_types")
-public class ItemTypeModel implements SqlModel {
+public class ItemTypeModel extends SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -41,5 +41,12 @@ public class ItemTypeModel implements SqlModel {
     public boolean equals(Object o) {
         if (!(o instanceof ItemTypeModel)) return false;
         return id == ((ItemTypeModel) o).id;
+    }
+
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (updatedAt != null ? updatedAt.hashCode() : 0);
+        return result;
     }
 }
