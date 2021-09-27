@@ -31,7 +31,7 @@ public class ReforgeModelTest {
                 new Pair<>(ReforgeModel::getName, "Vivid"),
                 new Pair<>(ReforgeModel::getRarity, uncommon)
         ));
-        int speed = SqlModel.getEffectOrZero(uncommonVivid::getEffects, "spd");
-        MatcherAssert.assertThat(speed, Matchers.equalTo(2));
+        double speed = SqlModel.getEffectOrZero(uncommonVivid::getEffects, "spd");
+        MatcherAssert.assertThat(speed, Matchers.equalTo(2.));
     }
 }
