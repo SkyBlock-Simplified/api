@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "accessory_families")
-public class AccessoryFamilyModel extends SqlModel {
+public class AccessoryFamilyModel implements SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

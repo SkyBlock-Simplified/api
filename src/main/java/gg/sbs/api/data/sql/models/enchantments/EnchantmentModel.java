@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql.models.enchantments;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "enchantments")
-public class EnchantmentModel extends SqlModel {
+public class EnchantmentModel extends SqlEffectsModel implements SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

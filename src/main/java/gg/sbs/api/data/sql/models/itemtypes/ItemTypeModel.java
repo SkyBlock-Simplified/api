@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "item_types")
-public class ItemTypeModel extends SqlModel {
+public class ItemTypeModel implements SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

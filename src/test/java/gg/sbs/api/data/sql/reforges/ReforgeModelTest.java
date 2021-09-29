@@ -1,7 +1,6 @@
 package gg.sbs.api.data.sql.reforges;
 
 import gg.sbs.api.SimplifiedAPI;
-import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import gg.sbs.api.data.sql.models.rarities.RarityRefreshable;
 import gg.sbs.api.data.sql.models.reforges.ReforgeModel;
@@ -31,7 +30,7 @@ public class ReforgeModelTest {
                 new Pair<>(ReforgeModel::getName, "Vivid"),
                 new Pair<>(ReforgeModel::getRarity, uncommon)
         ));
-        double speed = SqlModel.getEffectOrZero(uncommonVivid::getEffects, "spd");
+        double speed = uncommonVivid.getEffectNum("spd");
         MatcherAssert.assertThat(speed, Matchers.equalTo(2.));
     }
 }

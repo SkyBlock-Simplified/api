@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql.models.potions;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "potions")
-public class PotionModel extends SqlModel {
+public class PotionModel extends SqlEffectsModel implements SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

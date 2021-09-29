@@ -1,4 +1,4 @@
-ALTER TABLE `enchantments` DROP FOREIGN KEY IF EXISTS `enchantments_ibfk_1`;
+ALTER TABLE `enchantments` DROP FOREIGN KEY `enchantments_ibfk_1`;
 
 ALTER TABLE `enchantments` RENAME COLUMN `tool_type` TO `item_type`;
 
