@@ -19,9 +19,15 @@ public class AccessoryModel extends SqlEffectsModel implements SqlModel {
     @Column(name = "id", nullable = false)
     private long id;
 
+    @Column(name = "item_id", nullable = false)
+    private String itemId;
+
     @ManyToOne
-    @JoinColumn(name = "family", nullable = false)
+    @JoinColumn(name = "family", nullable = true)
     private AccessoryFamilyModel family;
+
+    @Column(name = "family_rank", nullable = true)
+    private int familyRank;
 
     @Column(name = "name", nullable = false, length = 127)
     private String name;
@@ -42,12 +48,28 @@ public class AccessoryModel extends SqlEffectsModel implements SqlModel {
         return id;
     }
 
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
     public AccessoryFamilyModel getFamily() {
         return family;
     }
 
     public void setFamily(AccessoryFamilyModel family) {
         this.family = family;
+    }
+
+    public int getFamilyRank() {
+        return familyRank;
+    }
+
+    public void setFamilyRank(int familyRank) {
+        this.familyRank = familyRank;
     }
 
     public String getName() {
