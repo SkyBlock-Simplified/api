@@ -3,7 +3,6 @@ package gg.sbs.api.data.sql.itemtypes;
 import gg.sbs.api.SimplifiedAPI;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRepository;
-import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

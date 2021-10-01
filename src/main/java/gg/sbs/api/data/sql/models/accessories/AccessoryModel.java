@@ -19,7 +19,7 @@ public class AccessoryModel extends SqlEffectsModel implements SqlModel {
     @Column(name = "id", nullable = false)
     private long id;
 
-    @Column(name = "item_id", nullable = false)
+    @Column(name = "item_id", nullable = false, length = 127)
     private String itemId;
 
     @ManyToOne

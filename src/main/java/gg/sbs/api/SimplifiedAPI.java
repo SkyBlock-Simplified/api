@@ -73,7 +73,10 @@ public class SimplifiedAPI {
     }
 
     public static void disableDatabase() {
-        SqlRefreshable.shutdown();
+        if (databaseEnabled) {
+            SqlRefreshable.shutdown();
+            databaseEnabled = false;
+        }
     }
 
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> rClass) {
