@@ -1,0 +1,1 @@
+ALTER TABLE `accessories` ADD COLUMN `family_rank` INT AFTER `family`;
