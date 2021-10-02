@@ -312,6 +312,10 @@ public class SkyBlockIsland {
             return petScore;
         }
 
+        public PlayerStats getPlayerStats() {
+            return new PlayerStats(this);
+        }
+
         public ConcurrentLinkedMap<String, Quest> getQuests() {
             return this.getQuests(null);
         }
@@ -370,6 +374,112 @@ public class SkyBlockIsland {
                     return armorContents;
             }
         }
+
+        public double getWeight(Skyblock.Stat stat) {
+            return this.getWeight().get(stat);
+        }
+
+        public ConcurrentMap<Skyblock.Stat, Double> getWeight() {
+            return null; // TODO
+        }
+
+        /*
+SKILL_WEIGHT_VALUES = {
+    'experience_skill_combat': {'exponent': 1.15797687265, 'divider': 275862},
+    'experience_skill_mining': {'exponent': 1.18207448, 'divider': 259634},
+    'experience_skill_farming': {'exponent': 1.217848139, 'divider': 220689},
+    'experience_skill_fishing': {'exponent': 1.406418, 'divider': 88274},
+    'experience_skill_foraging': {'exponent': 1.232826, 'divider': 259634},
+    'experience_skill_taming': {'exponent': 1.14744, 'divider': 441379},
+    'experience_skill_alchemy': {'exponent': 1.0, 'divider': 1103448},
+    'experience_skill_enchanting': {'exponent': 0.96976583, 'divider': 882758}
+}
+
+SLAYER_WEIGHT_VALUES = {
+    'zombie': {'divider': 2208, 'modifier': 0.15},
+    'spider': {'divider': 2118, 'modifier': 0.08},
+    'wolf': {'divider': 1962, 'modifier': 0.015},
+    'enderman': {'divider': 1430, 'modifier': 0.017}
+}
+
+DUNGEON_WEIGHT_VALUES = {
+    'catacomb': 0.0002149604615,
+    'healer': 0.0000045254834,
+    'mage': 0.0000045254834,
+    'berserk': 0.0000045254834,
+    'tank': 0.0000045254834,
+    'archer': 0.0000045254834
+}
+
+// TODO: Skill Weight Python Code
+async def get_skill_weight(skills_info):
+    skill_weight = {}
+    for key, value in skills_info.items():
+        if key not in BLACKLISTED_SKILLS:
+            skill_level = min(await get_skill_level(value['xp']), SKILLS_TEMPLATE[key]['max_level'])
+            if skill_level < SKILLS_TEMPLATE[key]['max_level']:
+                skill_level = skill_level + (value['xp'] - SKILL_XP_TABLE[skill_level]) / (SKILL_INDIVIDUAL_XP_TABLE[skill_level + 1])
+
+            base = math.pow(skill_level * 10, 0.5 + SKILL_WEIGHT_VALUES[key]['exponent'] + skill_level / 100) / 1250
+
+            if value['xp'] <= SKILL_XP_TABLE[SKILLS_TEMPLATE[key]['max_level']]:
+                skill_weight[value['name']] = {'weight': round(base), 'overflow': 0}
+            else:
+                overflow = math.pow((value['xp'] - SKILL_XP_TABLE[SKILLS_TEMPLATE[key]['max_level']]) / SKILL_WEIGHT_VALUES[key]['divider'], 0.968)
+                skill_weight[value['name']] = {'weight': round(base), 'overflow': round(overflow)}
+    return skill_weight
+
+
+// TODO: Slayer Weight Python Code
+async def get_slayer_weight(slayer_info):
+    slayer_weight = {}
+    for key, value in slayer_info.items():
+        divider = SLAYER_WEIGHT_VALUES[key]['divider']
+        modifier = SLAYER_WEIGHT_VALUES[key]['modifier']
+
+        if value['xp'] <= 1000000:
+            slayer_weight[value['name']] = {'weight': (round(value['xp'] / divider) if value['xp'] > 0 else 0), 'overflow': 0}
+
+        if value['xp'] > 1000000:
+            base = 1000000 / divider
+            remaining = value['xp'] - 1000000
+
+            overflow = 0
+            while remaining > 0:
+                left = min(remaining, 1000000)
+                overflow += math.pow(left / (divider * (1.5 + modifier)), 0.942)
+                remaining -= left
+                modifier += modifier
+
+            slayer_weight[value['name']] = {'weight': round(base), 'overflow': round(overflow)}
+    return slayer_weight
+
+// TODO: Dungeon Weight Python Code
+async def get_dungeon_weight(cata_xp, cata_level, class_xp):
+    dungeon_weight = {}
+    if cata_level != 50:
+        cata_level = cata_level + ((cata_xp - DUNGEON_XP_TABLE[cata_level]) / DUNGEON_INDIVIDUAL_XP_TABLE[cata_level + 1])
+
+    base = math.pow(cata_level, 4.5) * DUNGEON_WEIGHT_VALUES['catacomb']
+    if cata_xp <= DUNGEON_XP_TABLE[50]:
+        dungeon_weight['catacomb'] = {'weight': round(base), 'overflow': 0}
+    else:
+        dungeon_weight['catacomb'] = {'weight': round(base), 'overflow': round(math.pow((cata_xp - DUNGEON_XP_TABLE[50]) / ((4 * DUNGEON_XP_TABLE[50]) / base), 0.968))}
+
+    for key, value in class_xp.items():
+        class_level = await get_class_level(value)
+        if class_level != 50:
+            class_level += await get_progress(await get_class_level(value), value)
+        base = math.pow(class_level, 4.5) * DUNGEON_WEIGHT_VALUES[key]
+        if value <= DUNGEON_XP_TABLE[50]:
+            dungeon_weight[key] = {'weight': round(base), 'overflow': 0}
+        else:
+            dungeon_weight[key] = {'weight': round(base), 'overflow': round(
+                math.pow((value - DUNGEON_XP_TABLE[50]) / (4 * DUNGEON_XP_TABLE[50] / base), 0.968))}
+    return dungeon_weight
+         */
+
+
 /*
             // TODO: Stats Implementation
             private ConcurrentMap<String, Double> getFilteredStats(boolean onlyFound) {
@@ -1383,6 +1493,21 @@ public class SkyBlockIsland {
 
         public boolean isClaimed(int level) {
             return this.claimed.get(level);
+        }
+
+    }
+
+    public static class PlayerStats {
+
+        @Getter private final ConcurrentMap<Skyblock.Stat, Integer> stat = Concurrent.newMap();
+
+        private PlayerStats(Member member) {
+            Arrays.stream(Skyblock.Stat.values()).forEach(skyblockStat -> stat.put(skyblockStat, 0));
+            // TODO: Load stats from API data in member
+        }
+
+        public int getStat(Skyblock.Stat stat) {
+            return this.getStat().get(stat);
         }
 
     }
