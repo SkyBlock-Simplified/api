@@ -13,6 +13,7 @@ public class ItemTypeRepositoryTest {
     private static final ItemTypeRepository itemTypeRepository;
 
     static {
+        SimplifiedAPI.enableDatabase();
         itemTypeRepository = SimplifiedAPI.getSqlRepository(ItemTypeRepository.class);
     }
 
