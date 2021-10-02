@@ -51,11 +51,11 @@ public class ResourceItemsResponse {
         private String category;
 
         @Getter
-        private Map<String, Integer> stats;
+        private Map<String, Double> stats;
 
         @Getter
         @SerializedName("npc_sell_price")
-        private int npcSellPrice;
+        private double npcSellPrice;
 
         @Getter
         private boolean unstackable;

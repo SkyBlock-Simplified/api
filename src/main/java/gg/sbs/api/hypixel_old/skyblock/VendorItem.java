@@ -1,7 +1,5 @@
 package gg.sbs.api.hypixel_old.skyblock;
 
-import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.util.ListUtil;
 
 import java.util.Arrays;

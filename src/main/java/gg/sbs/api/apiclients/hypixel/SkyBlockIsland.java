@@ -1458,7 +1458,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         private final ConcurrentMap<Integer, Boolean> claimedSpecial = Concurrent.newMap();
         private final ConcurrentMap<Integer, Integer> kills = Concurrent.newMap();
         @Getter private final Skyblock.Slayer type;
-        @Getter private final int experience;
+        @Getter private final double experience;
 
         private Slayer(Skyblock.Slayer type, SlayerBoss slayerBoss) {
             this.type = type;
