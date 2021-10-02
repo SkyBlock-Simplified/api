@@ -1,6 +1,7 @@
 package gg.sbs.api.apiclients.hypixel.response;
 
 import com.google.gson.annotations.SerializedName;
+import gg.sbs.api.apiclients.hypixel.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.MojangChatFormatting;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.RegexUtil;
