@@ -352,7 +352,7 @@ public class Skyblock {
         private int hour;
         private int minute;
 
-        Date(Season season, int day, int hour, int minute) {
+        public Date(Season season, int day, int hour, int minute) {
             this.season = season;
             this.day = day;
             this.hour = hour;
@@ -373,6 +373,10 @@ public class Skyblock {
 
         public int getMinute() {
             return minute;
+        }
+
+        public long getTime() {
+            return 0L; // TODO: SkyBlockTime
         }
 
         protected void setDay(int day) {
@@ -402,7 +406,7 @@ public class Skyblock {
             EARLY_SUMMER("Early Summer"),
             SUMMER("Summer"),
             LATE_SUMMER("Late Summer"),
-            EARLY_FALLL("Early Fall"),
+            EARLY_FALL("Early Fall"),
             FALL("Fall"),
             LATE_FALL("Late Fall");
 
