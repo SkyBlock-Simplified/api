@@ -22,9 +22,9 @@ public class SkyBlockProfileResponse {
 
     @Getter private boolean success;
     @SerializedName("profile")
-    @Getter private Island island;
+    @Getter private SkyBlockIsland island;
 
-    public static class Island {
+    public static class Island2 {
 
         @SerializedName("profile_id")
         private String islandId;
@@ -32,6 +32,8 @@ public class SkyBlockProfileResponse {
         @SerializedName("community_upgrades")
         private CommunityUpgrades communityUpgrades;
         private Banking banking;
+        @SerializedName("cute_name")
+        private ProfileName profileName;
         private boolean membersCached;
         private Member currentMember; // TODO: Mod uses this, should be able to phase it out later
 
@@ -48,6 +50,18 @@ public class SkyBlockProfileResponse {
 
         public Optional<Banking> getBanking() {
             return Optional.of(this.banking);
+        }
+
+        public Collection getCollection(Skyblock.Skill type) {
+            Collection collection = new Collection(type);
+
+            for (Member profile : this.getMembers()) {
+                Collection profileCollection = profile.getCollection(type);
+                profileCollection.collected.forEach(entry -> collection.collected.put(entry.getKey(), Math.max(collection.collected.getOrDefault(entry.getKey(), 0), entry.getValue())));
+                collection.unlocked.putAll(profileCollection.unlocked);
+            }
+
+            return collection;
         }
 
         public Optional<CommunityUpgrades> getCommunityUpgrades() {
@@ -73,17 +87,9 @@ public class SkyBlockProfileResponse {
             this.cacheMembers();
             return Concurrent.newSet(this.members.values());
         }
-        
-        public Collection getCollection(Skyblock.Skill type) {
-            Collection collection = new Collection(type);
 
-            for (Member profile : this.getMembers()) {
-                Collection profileCollection = profile.getCollection(type);
-                profileCollection.collected.forEach(entry -> collection.collected.put(entry.getKey(), Math.max(collection.collected.getOrDefault(entry.getKey(), 0), entry.getValue())));
-                collection.unlocked.putAll(profileCollection.unlocked);
-            }
-
-            return collection;
+        public Optional<ProfileName> getProfileName() {
+            return Optional.of(this.profileName);
         }
 
         public Minion getMinion(Skyblock.Minion type) {
@@ -340,6 +346,53 @@ public class SkyBlockProfileResponse {
                 }
 
             }
+
+        }
+
+        public enum ProfileName {
+
+            @SerializedName("Apple")
+            APPLE,
+            @SerializedName("Banana")
+            BANANA,
+            @SerializedName("Blueberry")
+            BLUEBERRY,
+            @SerializedName("Coconut")
+            COCONUT,
+            @SerializedName("Cucumber")
+            CUCUMBER,
+            @SerializedName("Grapes")
+            GRAPES,
+            @SerializedName("Kiwi")
+            KIWI,
+            @SerializedName("Lemon")
+            LEMON,
+            @SerializedName("Lime")
+            LIME,
+            @SerializedName("Mango")
+            MANGO,
+            @SerializedName("Orange")
+            ORANGE,
+            @SerializedName("Papaya")
+            PAPAYA,
+            @SerializedName("Peach")
+            PEACH,
+            @SerializedName("Pear")
+            PEAR,
+            @SerializedName("Pineapple")
+            PINEAPPLE,
+            @SerializedName("Pomegranate")
+            POMEGRANATE,
+            @SerializedName("Raspberry")
+            RASPBERRY,
+            @SerializedName("Strawberry")
+            STRAWBERRY,
+            @SerializedName("Tomato")
+            TOMATO,
+            @SerializedName("Watermelon")
+            WATERMELON,
+            @SerializedName("Zucchini")
+            ZUCCHINI
 
         }
 
