@@ -1,4 +1,6 @@
-package gg.sbs.api.http_old;
+package gg.sbs.api.apiclients;
+
+import lombok.Getter;
 
 public enum HttpStatus {
 
@@ -91,20 +93,12 @@ public enum HttpStatus {
 	IO_ERROR(991, "IO Error"),
 	UNKNOWN_ERROR(999, "Unknown Error");
 
-	private final int code;
-	private final String message;
+	@Getter private final int code;
+	@Getter private final String message;
 
 	HttpStatus(int code, String message) {
 		this.code = code;
 		this.message = message;
-	}
-
-	public int getCode() {
-		return this.code;
-	}
-
-	public String getMessage() {
-		return this.message;
 	}
 
 	public static HttpStatus getByCode(int code) {

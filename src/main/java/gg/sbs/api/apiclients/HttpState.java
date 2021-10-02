@@ -1,4 +1,4 @@
-package gg.sbs.api.http_old;
+package gg.sbs.api.apiclients;
 
 public enum HttpState {
 
