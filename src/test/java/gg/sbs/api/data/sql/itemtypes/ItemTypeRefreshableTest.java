@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.itemtypes;
 
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.SqlException;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRefreshable;
@@ -14,8 +14,8 @@ public class ItemTypeRefreshableTest {
     private static final ItemTypeRefreshable itemTypeRefreshable;
 
     static {
-        SimplifiedAPI.enableDatabase();
-        itemTypeRefreshable = SimplifiedAPI.getSqlRefreshable(ItemTypeRefreshable.class);
+        SimplifiedApi.enableDatabase();
+        itemTypeRefreshable = SimplifiedApi.getSqlRefreshable(ItemTypeRefreshable.class);
     }
 
     @Test

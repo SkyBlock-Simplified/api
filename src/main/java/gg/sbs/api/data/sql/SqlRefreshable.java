@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql;
 
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.util.Pair;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
     private final Object initLock = new Object();
 
     public SqlRefreshable(Class<R> rClass, long fixedRateMs) {
-        tRepository = SimplifiedAPI.getSqlRepository(rClass);
+        tRepository = SimplifiedApi.getSqlRepository(rClass);
         synchronized (schedulerLock) {
             scheduler.scheduleAtFixedRate(this::refreshItems, 0, fixedRateMs, TimeUnit.MILLISECONDS);
         }

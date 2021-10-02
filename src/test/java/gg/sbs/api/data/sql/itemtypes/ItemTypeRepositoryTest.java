@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.itemtypes;
 
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRepository;
 import org.hamcrest.MatcherAssert;
@@ -13,7 +13,7 @@ public class ItemTypeRepositoryTest {
     private static final ItemTypeRepository itemTypeRepository;
 
     static {
-        itemTypeRepository = SimplifiedAPI.getSqlRepository(ItemTypeRepository.class);
+        itemTypeRepository = SimplifiedApi.getSqlRepository(ItemTypeRepository.class);
     }
 
     @Test

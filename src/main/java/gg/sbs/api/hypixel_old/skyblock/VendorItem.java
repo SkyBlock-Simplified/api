@@ -1,8 +1,6 @@
 package gg.sbs.api.hypixel_old.skyblock;
 
-import gg.sbs.api.SimplifiedAPI;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.util.ListUtil;
 
@@ -153,7 +151,7 @@ public enum VendorItem {
 			if (!itemStack.hasTagCompound())
 				return false;
 
-			NbtCompound nbt = SimplifiedAPI.getNbtFactory().fromItemStack(itemStack);
+			NbtCompound nbt = SimplifiedApi.getNbtFactory().fromItemStack(itemStack);
 			boolean idMatch;
 
 			if (!nbt.containsKey("ExtraAttributes"))

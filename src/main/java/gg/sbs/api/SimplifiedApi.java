@@ -1,5 +1,10 @@
 package gg.sbs.api;
 
+import gg.sbs.api.apiclients.RequestInterface;
+import gg.sbs.api.apiclients.hypixel.implementation.HypixelPlayerData;
+import gg.sbs.api.apiclients.hypixel.implementation.HypixelResourceData;
+import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
+import gg.sbs.api.apiclients.mojang.implementation.MojangData;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.SqlRefreshable;
 import gg.sbs.api.data.sql.SqlRepository;
@@ -20,13 +25,11 @@ import gg.sbs.api.data.sql.models.rarities.RarityRepository;
 import gg.sbs.api.data.sql.models.reforges.ReforgeRefreshable;
 import gg.sbs.api.data.sql.models.reforges.ReforgeRepository;
 import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
-import gg.sbs.api.apiclients.hypixel.HypixelPlayerDataApi;
 import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
-import gg.sbs.api.apiclients.mojang.MojangProfileApi;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
 
-public class SimplifiedAPI {
+public class SimplifiedApi {
 
     private static final ServiceManager serviceManager = new ServiceManager();
     private static boolean databaseEnabled = false;
@@ -34,10 +37,10 @@ public class SimplifiedAPI {
     static {
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
 
-        //serviceManager.provide(ModLogger.class, instance.getLogger());
-
-        serviceManager.provide(HypixelPlayerDataApi.class, HypixelApiBuilder.buildApi(HypixelPlayerDataApi.class));
-        serviceManager.provide(MojangProfileApi.class, MojangApiBuilder.buildApi(MojangProfileApi.class));
+        serviceManager.provide(HypixelPlayerData.class, new HypixelApiBuilder().build(HypixelPlayerData.class));
+        serviceManager.provide(HypixelResourceData.class, new HypixelApiBuilder().build(HypixelResourceData.class));
+        serviceManager.provide(HypixelSkyBlockData.class, new HypixelApiBuilder().build(HypixelSkyBlockData.class));
+        serviceManager.provide(MojangData.class, new MojangApiBuilder().build(MojangData.class));
     }
 
     public static Scheduler getScheduler() {
@@ -79,14 +82,16 @@ public class SimplifiedAPI {
         }
     }
 
-    public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> rClass) {
-        return getServiceManager().getProvider(rClass);
+    public static <T extends SqlModel, R extends SqlRepository<T>, E extends SqlRefreshable<T, R>> E getSqlRefreshable(Class<E> tClass) {
+        return getServiceManager().getProvider(tClass);
     }
 
-    public static <T extends SqlModel,
-            R extends SqlRepository<T>,
-            E extends SqlRefreshable<T, R>>
-    E getSqlRefreshable(Class<E> eClass) {
-        return getServiceManager().getProvider(eClass);
+    public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
+        return getServiceManager().getProvider(tClass);
     }
+
+    public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
+        return serviceManager.getProvider(tClass);
+    }
+
 }

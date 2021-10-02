@@ -5,7 +5,7 @@ import gg.sbs.api.util.Primitives;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;
@@ -39,7 +39,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 	}
 
 	private WrappedMap getStorageMap(Object key) {
-		return this.storeInTag(key) ? SimplifiedAPI.getNbtFactory().fromCompound(this.original.get(this.getStorageKey())) : this;
+		return this.storeInTag(key) ? SimplifiedApi.getNbtFactory().fromCompound(this.original.get(this.getStorageKey())) : this;
 	}
 
 	public String getStorageKey() {
@@ -51,19 +51,19 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 
 		if (!map.original.containsKey(SUPPORT)) {
 			if (!create)
-				return SimplifiedAPI.getNbtFactory().createCompound();
+				return SimplifiedApi.getNbtFactory().createCompound();
 
-			map.original.put(SUPPORT, SimplifiedAPI.getNbtFactory().createCompound().getHandle());
+			map.original.put(SUPPORT, SimplifiedApi.getNbtFactory().createCompound().getHandle());
 		}
 
-		return SimplifiedAPI.getNbtFactory().fromCompound(map.original.get(SUPPORT));
+		return SimplifiedApi.getNbtFactory().fromCompound(map.original.get(SUPPORT));
 	}
 
 	private void addSupportKey(String key, Class<?> clazz) {
 		NbtCompound support = this.getSupportNbt(true);
 
 		if (!support.containsKey(key))
-			support.put(key, SimplifiedAPI.getNbtFactory().createCompound());
+			support.put(key, SimplifiedApi.getNbtFactory().createCompound());
 
 		clazz = Primitives.wrap(clazz);
 		NbtCompound keyCompound = support.get(key);
@@ -296,7 +296,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 			Object value = entry.getValue();
 
 			if (byte[].class.isAssignableFrom(Primitives.unwrap(value.getClass())))
-				value = SimplifiedAPI.getNbtFactory().fromBytes((byte[])value);
+				value = SimplifiedApi.getNbtFactory().fromBytes((byte[])value);
 
 			if (value.getClass().isArray())
 				value = Arrays.deepToString((Object[])value);
