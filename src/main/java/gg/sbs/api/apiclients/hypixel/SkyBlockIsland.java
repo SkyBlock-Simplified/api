@@ -11,7 +11,9 @@ import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -153,7 +155,7 @@ public class SkyBlockIsland {
         @SerializedName("visited_zones")
         @Getter private ConcurrentList<String> visited_zones;
         @SerializedName("achievement_spawned_island_types")
-        @Getter private ConcurrentList<String> achievement_spawned_island_types;
+        @Getter private ConcurrentList<String> spawnedIslandTypes;
 
         // Miscellaneous
         @Getter private ConcurrentList<PetInfo> pets;
@@ -306,7 +308,7 @@ public class SkyBlockIsland {
 
             if (ListUtil.notEmpty(this.getPets())) {
                 for (PetInfo petInfo : this.getPets())
-                    petScore += petInfo.getTier().ordinal() + 1;
+                    petScore += petInfo.getRarity().ordinal() + 1;
             }
 
             return petScore;
@@ -363,7 +365,7 @@ public class SkyBlockIsland {
                     return quiverBagContents;
                 case POTIONS:
                     return potionBagContents;
-                case TALISMANS:
+                case ACCESSORIES:
                     return accessoryBagContents;
                 case CANDY:
                     return candyBagContents;
@@ -1281,7 +1283,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("exp")
         @Getter private double experience;
         @Getter private boolean active;
-        @Getter private Skyblock.Item.Rarity tier;
+        @SerializedName("tier")
+        @Getter private Skyblock.Item.Rarity rarity;
         @Getter private int candyUsed;
         private String heldItem;
         private String skin;
@@ -1290,7 +1293,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @Override
         public ConcurrentList<Integer> getExperienceTiers() {
-            return Skyblock.PET_EXP_TIER_SCALE.get(this.getTier());
+            return Skyblock.PET_EXP_TIER_SCALE.get(this.getRarity());
         }
 
         public Optional<String> getHeldItem() {
@@ -1302,12 +1305,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             return 100 + (this.getName().startsWith("GOLDEN_DRAGON") ? 100 : 0); // TODO: Max Level
         }
 
-        public Skyblock.Pet getPet() {
+        public Optional<Skyblock.Pet> getPet() {
+            Skyblock.Pet pet = null;
+
             try {
-                return Skyblock.Pet.valueOf(this.name);
-            } catch (Exception ex) {
-                return null;
-            }
+                pet = Skyblock.Pet.valueOf(this.name);
+            } catch (Exception exception) { }
+
+            return Optional.of(pet);
         }
 
         public String getPrettyName() {
@@ -1337,7 +1342,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         public static class Modifier {
 
             @Getter private String key;
-            @Getter private int map;
+            @SerializedName("amp")
+            @Getter private int amplifier;
 
         }
 
@@ -1499,15 +1505,126 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     public static class PlayerStats {
 
-        @Getter private final ConcurrentMap<Skyblock.Stat, Integer> stat = Concurrent.newMap();
+        @Getter private final ConcurrentMap<Skyblock.Stat, Data> stat = Concurrent.newMap();
 
         private PlayerStats(Member member) {
-            Arrays.stream(Skyblock.Stat.values()).forEach(skyblockStat -> stat.put(skyblockStat, 0));
+            Arrays.stream(Skyblock.Stat.values()).forEach(skyblockStat -> stat.put(skyblockStat, new Data(0, 0)));
             // TODO: Load stats from API data in member
+            // Optimal solution would be to go through everywhere stats can be,
+            // and parse stats dynamically instead of adding them one at a time
+
+            // TODO: Before Stats Calculation
+            // Always There: Accessory Bag, Cake Bag#items, Essence Bonus, Century Cakes
+            // Optional: Armor, Potions, Pet
+            // Requires Query: Weapon
+
+            try {
+                CompoundTag accessoryBag = member.getStorage(Storage.ACCESSORIES).getNbtData(); // Pull Cake Bag
+                CompoundTag armorInventory = member.getStorage(Storage.ARMOR).getNbtData();
+                ConcurrentList<CenturyCake> centuryCakes = member.getCenturyCakes();
+                ConcurrentMap<String, Integer> essencePerks = member.getEssencePerks();
+                ConcurrentList<Potion> activePotions = member.getActivePotions();
+
+                for (Skyblock.Skill sbSkill : Skyblock.Skill.values()) {
+                    Skill skill = member.getSkill(sbSkill);
+                    int level = skill.getLevel();
+                    // Pull skill stat bonus from resource tables
+                    // Store stats
+                }
+
+                // Should be a list
+                accessoryBag.values().stream().map(item -> (CompoundTag)item).forEach(accessory -> {
+                    // Pull base stats from AccessoryModel
+                    // Pull rarity and reforge from accessory
+                    // Pull stats from RarityModel and ReforgeModel
+                    // Perform modifiers based on Accessory modifiers
+                    // Store stats
+
+                    // Check if Cake Bag
+                    // Store number of cakes for Health
+                });
+
+                armorInventory.values().stream().map(item -> (CompoundTag)item).forEach(armorItem -> {
+                    // Pull rarity and reforge from armor item
+                    // Pull stats from RarityModel and ReforgeModel
+                    // Pull non-reforge stats from armor item lore
+                    // Store stats
+                });
+
+                centuryCakes.forEach(centuryCake -> {
+                    if (centuryCake.getExpiresAt().getEpochSecond() > Instant.now().getEpochSecond()) {
+                        int statIndex = centuryCake.getStat(); // 11: magic find
+                        String key = centuryCake.getKey(); // cake_magic_find
+                        int amount = centuryCake.getAmount();
+                        // Store amount into stat
+                    }
+                });
+
+                essencePerks.forEach(entry -> {
+                    if (entry.getKey().startsWith("permanent_")) {
+                        String skillKey = entry.getKey().replace("permanent_", "");
+                        int value = entry.getValue();
+                        // Convert value into total bonus
+                        // Store total bonus into stat
+                    }
+                });
+
+                activePotions.forEach(potion -> {
+                    String effect = potion.getEffect();
+                    // Get stat bonus from PotionModel
+
+                    potion.getModifiers().forEach(modifier -> {
+                        modifier.getKey(); // cola
+                        modifier.getAmplifier();
+
+                        // Get stat bonus from potion brew
+                        // Store into stat
+                    });
+
+                    // Store into stat
+                });
+
+                member.getPets().forEach(petInfo -> {
+                    if (petInfo.isActive()) {
+                        if (petInfo.getPet().isPresent()) { // TODO: Use PetModel
+                            // Pet has stats in database
+                            Skyblock.Pet pet = petInfo.getPet().get();
+                            ConcurrentList<Skyblock.Stat> petStats = pet.getStats();
+                            ConcurrentList<Object> statValues = pet.getData().apply(petInfo.getLevel(), petInfo.getRarity());
+
+                            for (int i = 0; i < petStats.size(); i++) {
+                                Skyblock.Stat petStat = petStats.get(i);
+                                double value = Double.parseDouble(statValues.get(i).toString());
+                                // Store stat
+                            }
+                        }
+                    }
+                });
+
+                // Parse item nbt lore for weapon query
+            } catch (IOException ioException) { }
         }
 
-        public int getStat(Skyblock.Stat stat) {
+        public Data getData(Skyblock.Stat stat) {
             return this.getStat().get(stat);
+        }
+
+        public static class Data {
+
+            @Setter(AccessLevel.PRIVATE)
+            @Getter private final int base;
+            @Setter(AccessLevel.PRIVATE)
+            @Getter private final int bonus;
+
+            private Data() {
+                this(0, 0);
+            }
+
+            private Data(int base, int bonus) {
+                this.base = base;
+                this.bonus = bonus;
+            }
+
         }
 
     }
@@ -1520,7 +1637,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         FISHING,
         QUIVER,
         POTIONS,
-        TALISMANS,
+        ACCESSORIES,
         CANDY,
         PERSONAL_VAULT
 
