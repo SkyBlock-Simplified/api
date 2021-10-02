@@ -118,7 +118,7 @@ public class HypixelPlayerResponse {
             return StringUtil.toUUID(this.uuid);
         }
 
-        public boolean isOnSkyblockIsland(SkyBlockProfileResponse.Island skyblockIsland) {
+        public boolean isOnSkyblockIsland(SkyBlockIsland skyblockIsland) {
             return this.isOnSkyblockIsland(skyblockIsland.getIslandId());
         }
 
