@@ -38,30 +38,32 @@ repositories {
 }
 
 shadowJar {
-    def googleGson = 'com.google.code.gson'
-    def googleGuava = 'com.google.guava'
-    def localGoogleGson = 'gg.sbs.api.google.gson'
-    def localGoogleGuava = 'gg.sbs.api.google.guava'
-    relocate googleGson, localGoogleGson
-    relocate googleGuava, localGoogleGuava
+    def remoteGson = 'com.google.code.gson'
+    def remoteOpenfeign = 'openfeign'
+    def remoteMariaJdbc = 'org.mariadb.jdbc'
+    def remoteHibernate = 'org.hibernate'
+
+    def localGson = 'gg.sbs.api.util.gson'
+    def localOpenfeign = 'gg.sbs.api.util.openfeign'
+    def localMariaJdbc = 'gg.sbs.api.data.sql.mariadb'
+    def localHibernate = 'gg.sbs.api.data.sql.hibernate'
+
+    relocate remoteGson, localGson
+    relocate remoteOpenfeign, localOpenfeign
+    relocate remoteMariaJdbc, localMariaJdbc
+    relocate remoteHibernate, localHibernate
 }
 
 sourceSets {
     dev {
         java {
             srcDirs = ['src/main/java']
-            exclude '**/data/sql/integrated/**'
-            exclude '**/http_old/**'
             exclude '**/hypixel_old/**'
-            exclude '**/mojang_old/**'
             exclude '**/nbt_old/**'
         }
         resources {
             srcDirs = ['src/main/resources']
-            exclude '**/data/sql/integrated/**'
-            exclude '**/http_old/**'
             exclude '**/hypixel_old/**'
-            exclude '**/mojang_old/**'
             exclude '**/nbt_old/**'
         }
     }
@@ -78,9 +80,9 @@ sourceSets {
 }
 
 dependencies {
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    //implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.7'
-    implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
+    //implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.6'
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
     implementation group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.5.7.Final'
