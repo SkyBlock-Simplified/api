@@ -116,7 +116,7 @@ public enum HttpStatus {
 		else if (this.getCode() >= 520 && this.getCode() <= 530)
 			return HttpState.CLOUDFLARE_ERROR;
 		else if (this.getCode() >= 500)
-			return HttpState.SERVER_RROR;
+			return HttpState.SERVER_ERROR;
 		else if (this.getCode() >= 400)
 			return HttpState.CLIENT_ERROR;
 		else if (this.getCode() >= 300)
