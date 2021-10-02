@@ -1,9 +1,9 @@
 package gg.sbs.api.data.yaml;
 
-import gg.sbs.api.data.yaml.annotations.Comment;
-import gg.sbs.api.data.yaml.annotations.Comments;
-import gg.sbs.api.data.yaml.converters.Converter;
-import gg.sbs.api.data.yaml.exceptions.InvalidConfigurationException;
+import gg.sbs.api.data.yaml.annotation.Comment;
+import gg.sbs.api.data.yaml.annotation.Comments;
+import gg.sbs.api.data.yaml.converter.YamlConverter;
+import gg.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 public class YamlConfig extends ConfigMapper implements Runnable {
 
-	protected static final transient ConcurrentSet<Class<? extends Converter>> GLOBAL_CUSTOM_CONVERTERS = Concurrent.newSet();
+	protected static final transient ConcurrentSet<Class<? extends YamlConverter>> GLOBAL_CUSTOM_CONVERTERS = Concurrent.newSet();
 
 	static {
 		// TODO: Migrate to Mod version
@@ -43,7 +43,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
 		GLOBAL_CUSTOM_CONVERTERS.forEach(this::addCustomConverter);
 	}
 
-	public static void addGlobalCustomConverter(Class<? extends Converter> converter) {
+	public static void addGlobalCustomConverter(Class<? extends YamlConverter> converter) {
 		GLOBAL_CUSTOM_CONVERTERS.add(converter);
 	}
 
@@ -80,8 +80,8 @@ public class YamlConfig extends ConfigMapper implements Runnable {
 			if (doSkip(field)) continue;
 			String path = this.getPathMode(field);
 
-			if (field.isAnnotationPresent(gg.sbs.api.data.yaml.annotations.Path.class))
-				path = field.getAnnotation(gg.sbs.api.data.yaml.annotations.Path.class).value();
+			if (field.isAnnotationPresent(gg.sbs.api.data.yaml.annotation.Path.class))
+				path = field.getAnnotation(gg.sbs.api.data.yaml.annotation.Path.class).value();
 
 			if (Modifier.isPrivate(field.getModifiers()))
 				field.setAccessible(true);
@@ -126,8 +126,8 @@ public class YamlConfig extends ConfigMapper implements Runnable {
 					comments.addAll(Arrays.asList(((Comments)annotation).value()));
 			}
 
-			if (field.isAnnotationPresent(gg.sbs.api.data.yaml.annotations.Path.class))
-				path = field.getAnnotation(gg.sbs.api.data.yaml.annotations.Path.class).value();
+			if (field.isAnnotationPresent(gg.sbs.api.data.yaml.annotation.Path.class))
+				path = field.getAnnotation(gg.sbs.api.data.yaml.annotation.Path.class).value();
 
 			if (!comments.isEmpty()) {
 				for (String comment : comments)

@@ -1,22 +1,22 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;
 
-public abstract class Converter {
+public abstract class YamlConverter {
 
 	protected final transient InternalConverter converter;
 
-	protected Converter(InternalConverter converter) {
+	protected YamlConverter(InternalConverter converter) {
 		this.converter = converter;
 	}
 
-	protected Converter getConverter(Class<?> type) {
+	protected YamlConverter getConverter(Class<?> type) {
 		return this.converter.getConverter(type);
 	}
 
-	protected final java.util.Set<Class<? extends Converter>> getCustomConverters() {
+	protected final java.util.Set<Class<? extends YamlConverter>> getCustomConverters() {
 		return this.converter.getCustomConverters();
 	}
 

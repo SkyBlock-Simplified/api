@@ -1,11 +1,11 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;
 
 @SuppressWarnings("unchecked")
-public final class BlockPosConverter extends Converter {
+public final class BlockPosConverter extends YamlConverter {
 
 	public BlockPosConverter(InternalConverter converter) {
 		super(converter);

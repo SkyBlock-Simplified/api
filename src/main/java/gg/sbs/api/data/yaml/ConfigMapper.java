@@ -1,6 +1,6 @@
 package gg.sbs.api.data.yaml;
 
-import gg.sbs.api.data.yaml.exceptions.InvalidConfigurationException;
+import gg.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.StringUtil;

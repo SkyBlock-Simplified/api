@@ -1,11 +1,11 @@
 package gg.sbs.api.data.yaml;
 
-import gg.sbs.api.data.yaml.annotations.ConfigMode;
-import gg.sbs.api.data.yaml.annotations.Path;
-import gg.sbs.api.data.yaml.annotations.PreserveStatic;
+import gg.sbs.api.data.yaml.annotation.ConfigMode;
+import gg.sbs.api.data.yaml.annotation.Path;
+import gg.sbs.api.data.yaml.annotation.PreserveStatic;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
-import gg.sbs.api.data.yaml.converters.Converter;
+import gg.sbs.api.data.yaml.converter.YamlConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -17,7 +17,7 @@ public abstract class YamlMap {
 
 	final transient InternalConverter converter = new InternalConverter();
 
-	public final void addCustomConverter(Class<? extends Converter> converter) {
+	public final void addCustomConverter(Class<? extends YamlConverter> converter) {
 		this.converter.addCustomConverter(converter);
 	}
 
@@ -32,7 +32,7 @@ public abstract class YamlMap {
 				Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(PreserveStatic.class) && !field.getAnnotation(PreserveStatic.class).value();
 	}
 
-	public final Set<Class<? extends Converter>> getCustomConverters() {
+	public final Set<Class<? extends YamlConverter>> getCustomConverters() {
 		return this.converter.getCustomConverters();
 	}
 
@@ -102,7 +102,7 @@ public abstract class YamlMap {
 			} catch (IllegalAccessException ignore) { }
 		}
 
-		Converter converter = this.converter.getConverter(Map.class);
+		YamlConverter converter = this.converter.getConverter(Map.class);
 		assert converter != null;
 		return (Map<String, Object>)converter.toConfig(HashMap.class, returnMap, null);
 	}

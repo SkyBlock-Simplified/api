@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 import gg.sbs.api.util.ListUtil;
@@ -7,7 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 
 @SuppressWarnings("unchecked")
-public class SetConverter extends Converter {
+public class SetConverter extends YamlConverter {
 
 	public SetConverter(InternalConverter converter) {
 		super(converter);
@@ -23,7 +23,7 @@ public class SetConverter extends Converter {
 		} catch (Exception ignore) { }
 
         if (genericType != null && genericType.getActualTypeArguments()[0] instanceof Class) {
-            Converter converter = this.getConverter((Class<?>)genericType.getActualTypeArguments()[0]);
+            YamlConverter converter = this.getConverter((Class<?>)genericType.getActualTypeArguments()[0]);
 
             if (converter != null) {
 	            for (Object value : values)
@@ -43,7 +43,7 @@ public class SetConverter extends Converter {
 
 		if (ListUtil.notEmpty(values)) {
 			for (Object value : values) {
-				Converter converter = this.getConverter(value.getClass());
+				YamlConverter converter = this.getConverter(value.getClass());
 				newSet.add(converter != null ? converter.toConfig(value.getClass(), value, null) : value);
 			}
 		}

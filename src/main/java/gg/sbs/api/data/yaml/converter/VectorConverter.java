@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 import gg.sbs.api.util.Vector;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class VectorConverter extends Converter {
+public class VectorConverter extends YamlConverter {
 
 	public VectorConverter(InternalConverter converter) {
 		super(converter);

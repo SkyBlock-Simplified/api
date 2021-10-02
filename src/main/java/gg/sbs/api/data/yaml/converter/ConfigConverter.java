@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.data.yaml.ConfigSection;
@@ -8,7 +8,7 @@ import gg.sbs.api.data.yaml.YamlMap;
 import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
-public class ConfigConverter extends Converter {
+public class ConfigConverter extends YamlConverter {
 
 	public ConfigConverter(InternalConverter converter) {
 		super(converter);

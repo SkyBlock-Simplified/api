@@ -1,10 +1,10 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;
 
-public class EnumConverter extends Converter {
+public class EnumConverter extends YamlConverter {
 
 	public EnumConverter(InternalConverter converter) {
 		super(converter);

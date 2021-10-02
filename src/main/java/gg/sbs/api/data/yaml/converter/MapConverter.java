@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.ConfigSection;
 import gg.sbs.api.data.yaml.InternalConverter;
@@ -7,7 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 
 @SuppressWarnings("unchecked")
-public class MapConverter extends Converter {
+public class MapConverter extends YamlConverter {
 
 	public MapConverter(InternalConverter converter) {
 		super(converter);
@@ -54,11 +54,11 @@ public class MapConverter extends Converter {
 					} else
 						clazz = (Class<?>)genericType.getActualTypeArguments()[1];
 
-					Converter converter = this.getConverter(clazz);
+					YamlConverter converter = this.getConverter(clazz);
 					map.put(key, (converter != null ? converter.fromConfig(clazz, entry.getValue(), (genericType.getActualTypeArguments()[1] instanceof ParameterizedType) ? (ParameterizedType)genericType.getActualTypeArguments()[1] : null) : entry.getValue()));
 				}
 			} else {
-				Converter converter = this.getConverter((Class<?>)genericType.getRawType());
+				YamlConverter converter = this.getConverter((Class<?>)genericType.getRawType());
 				if (converter != null) return converter.fromConfig((Class<?>)genericType.getRawType(), section, null);
 				return (section instanceof java.util.Map) ? (java.util.Map<?, ?>) section : ((ConfigSection)section).getRawMap();
 			}
@@ -78,7 +78,7 @@ public class MapConverter extends Converter {
 				if (value instanceof ConfigSection)
 					value = ((ConfigSection)value).getRawMap();
 
-				Converter converter = this.getConverter(value.getClass());
+				YamlConverter converter = this.getConverter(value.getClass());
 				map.put(key, (converter != null ? converter.fromConfig(value.getClass(), value, null) : value));
 			}
 		}
@@ -93,7 +93,7 @@ public class MapConverter extends Converter {
 		for (java.util.Map.Entry<Object, Object> entry : map.entrySet()) {
 			if (entry.getValue() == null) continue;
 			Class<?> clazz = entry.getValue().getClass();
-			Converter converter = this.getConverter(clazz);
+			YamlConverter converter = this.getConverter(clazz);
 			map.put(entry.getKey(), (converter != null ? converter.toConfig(clazz, entry.getValue(), null) : entry.getValue()));
 		}
 

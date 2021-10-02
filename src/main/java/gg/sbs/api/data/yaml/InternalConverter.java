@@ -1,9 +1,8 @@
 package gg.sbs.api.data.yaml;
 
-import gg.sbs.api.data.yaml.annotations.PreserveStatic;
-import gg.sbs.api.data.yaml.converters.*;
-import gg.sbs.api.data.yaml.exceptions.InvalidConverterException;
-import gg.sbs.api.yaml.converters.*;
+import gg.sbs.api.data.yaml.annotation.PreserveStatic;
+import gg.sbs.api.data.yaml.converter.*;
+import gg.sbs.api.data.yaml.exception.InvalidConverterException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,9 +15,9 @@ import java.util.Set;
 
 public class InternalConverter {
 
-	private final transient LinkedHashSet<Converter> converters = new LinkedHashSet<>();
-	private final transient LinkedHashSet<Converter> customConverters = new LinkedHashSet<>();
-	private final transient Set<Class<? extends Converter>> customConverterClasses = new HashSet<>();
+	private final transient LinkedHashSet<YamlConverter> converters = new LinkedHashSet<>();
+	private final transient LinkedHashSet<YamlConverter> customConverters = new LinkedHashSet<>();
+	private final transient Set<Class<? extends YamlConverter>> customConverterClasses = new HashSet<>();
 
 	public InternalConverter() {
 		this.addConverter(PrimitiveConverter.class);
@@ -31,11 +30,11 @@ public class InternalConverter {
 		this.addConverter(VectorConverter.class);
 	}
 
-	private void addConverter(Class<? extends Converter> converter) throws InvalidConverterException {
+	private void addConverter(Class<? extends YamlConverter> converter) throws InvalidConverterException {
 		this.addConverter(converter, this.converters);
 	}
 
-	private void addConverter(Class<? extends Converter> converter, LinkedHashSet<Converter> converters) throws InvalidConverterException {
+	private void addConverter(Class<? extends YamlConverter> converter, LinkedHashSet<YamlConverter> converters) throws InvalidConverterException {
 		try {
 			converters.add(converter.getConstructor(InternalConverter.class).newInstance(this));
 		} catch (NoSuchMethodException nsmException) {
@@ -49,14 +48,14 @@ public class InternalConverter {
 		}
 	}
 
-	protected void addCustomConverter(Class<? extends Converter> converter) throws InvalidConverterException {
+	protected void addCustomConverter(Class<? extends YamlConverter> converter) throws InvalidConverterException {
 		this.addConverter(converter, this.customConverters);
 		this.customConverterClasses.add(converter);
 	}
 
 	public void fromConfig(YamlMap yamlMap, Field field, ConfigSection root, String path) throws Exception {
 		Object obj = field.get(yamlMap);
-		Converter converter;
+		YamlConverter converter;
 
 		if (obj != null) {
 			converter = this.getConverter(obj.getClass());
@@ -91,13 +90,13 @@ public class InternalConverter {
 		field.set(yamlMap, root.get(path));
 	}
 
-	public final Converter getConverter(Class<?> type) {
-		for (Converter converter : this.customConverters) {
+	public final YamlConverter getConverter(Class<?> type) {
+		for (YamlConverter converter : this.customConverters) {
 			if (converter.supports(type))
 				return converter;
 		}
 
-		for (Converter converter : this.converters) {
+		for (YamlConverter converter : this.converters) {
 			if (converter.supports(type))
 				return converter;
 		}
@@ -105,13 +104,13 @@ public class InternalConverter {
 		return null;
 	}
 
-	public final Set<Class<? extends Converter>> getCustomConverters() {
+	public final Set<Class<? extends YamlConverter>> getCustomConverters() {
 		return Collections.unmodifiableSet(this.customConverterClasses);
 	}
 
 	public void toConfig(YamlMap yamlMap, Field field, ConfigSection root, String path) throws Exception {
 		Object obj = field.get(yamlMap);
-		Converter converter;
+		YamlConverter converter;
 
 		if (obj != null) {
 			converter = this.getConverter(obj.getClass());

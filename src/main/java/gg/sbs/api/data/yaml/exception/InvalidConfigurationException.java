@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.exceptions;
+package gg.sbs.api.data.yaml.exception;
 
 @SuppressWarnings("serial")
 public class InvalidConfigurationException extends YamlException {

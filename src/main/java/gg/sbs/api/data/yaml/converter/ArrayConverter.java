@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class ArrayConverter extends Converter {
+public class ArrayConverter extends YamlConverter {
 
 	public ArrayConverter(InternalConverter converter) {
 		super(converter);
@@ -31,7 +31,7 @@ public class ArrayConverter extends Converter {
 			Collections.addAll(values = new ArrayList(), (Object[]) section);
 
 		Object ret = java.lang.reflect.Array.newInstance(singleType, values.size());
-		Converter converter = this.getConverter(singleType);
+		YamlConverter converter = this.getConverter(singleType);
 
 		if (converter == null)
 			return values.toArray((Object[]) ret);
@@ -45,7 +45,7 @@ public class ArrayConverter extends Converter {
 	@Override
 	public Object toConfig(Class<?> type, Object obj, ParameterizedType genericType) throws Exception {
 		Class<?> singleType = type.getComponentType();
-		Converter converter = this.getConverter(singleType);
+		YamlConverter converter = this.getConverter(singleType);
 
 		if (converter == null)
 			return obj;

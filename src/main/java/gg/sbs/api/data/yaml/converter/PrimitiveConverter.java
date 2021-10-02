@@ -1,4 +1,4 @@
-package gg.sbs.api.data.yaml.converters;
+package gg.sbs.api.data.yaml.converter;
 
 import gg.sbs.api.data.yaml.InternalConverter;
 
@@ -6,7 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class PrimitiveConverter extends Converter {
+public class PrimitiveConverter extends YamlConverter {
 
 	private static final transient HashSet<String> types = new HashSet<>();
 
