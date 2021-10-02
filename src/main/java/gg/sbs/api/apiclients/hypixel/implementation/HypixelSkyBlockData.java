@@ -22,7 +22,6 @@ public interface HypixelSkyBlockData extends HypixelDataInterface {
     @RequestLine("GET /skyblock/profiles")
     SkyBlockProfilesResponse getProfiles(@HeaderMap Map<String, String> headerMap, @Param("uuid") UUID uniqueId);
 
-
     /*
 		AUCTION("skyblock/auction", "auctions")
 		AUCTIONS("skyblock/auctions", "auctions")
