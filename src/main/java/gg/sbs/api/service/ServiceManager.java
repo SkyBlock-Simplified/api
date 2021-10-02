@@ -2,8 +2,8 @@ package gg.sbs.api.service;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import gg.sbs.api.service.exceptions.RegisteredServiceException;
-import gg.sbs.api.service.exceptions.UnknownServiceException;
+import gg.sbs.api.service.exception.RegisteredServiceException;
+import gg.sbs.api.service.exception.UnknownServiceException;
 
 import java.util.Set;
 

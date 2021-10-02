@@ -3,13 +3,11 @@ package gg.sbs.api.data.sql.models.reforges;
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
-import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.sql.Ref;
 import java.time.Instant;
 import java.util.Map;
 

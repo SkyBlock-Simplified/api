@@ -1,4 +1,4 @@
-package gg.sbs.api.data.sql.integrated.factory.callbacks;
+package gg.sbs.api.data.sql.integrated.callback;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

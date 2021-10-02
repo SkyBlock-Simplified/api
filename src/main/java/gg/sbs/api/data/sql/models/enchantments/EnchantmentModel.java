@@ -3,7 +3,6 @@ package gg.sbs.api.data.sql.models.enchantments;
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
-import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import org.hibernate.annotations.UpdateTimestamp;
 

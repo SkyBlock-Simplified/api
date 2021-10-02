@@ -8,6 +8,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 abstract public class SqlRepository<T extends SqlModel> {
+
     protected List<T> findAllImpl(Class<T> tClass) {
         Session session = SqlSessionUtil.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -28,4 +29,5 @@ abstract public class SqlRepository<T extends SqlModel> {
     }
 
     abstract public List<T> findAll();
+
 }

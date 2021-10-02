@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Converter
 public class SqlJsonConverter implements AttributeConverter<Map<String, Object>, String> {
+
     @SuppressWarnings("unchecked")
     public Map<String, Object> convertToEntityAttribute(String attr) {
         if (attr == null) {
@@ -33,4 +34,5 @@ public class SqlJsonConverter implements AttributeConverter<Map<String, Object>,
             return "";
         }
     }
+
 }

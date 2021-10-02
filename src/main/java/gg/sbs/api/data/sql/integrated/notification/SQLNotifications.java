@@ -1,4 +1,4 @@
-package gg.sbs.api.data.sql.integrated.notifications;
+package gg.sbs.api.data.sql.integrated.notification;
 
 import gg.sbs.api.data.sql.integrated.pooling.SQLPooling;
 import gg.sbs.api.scheduler.Scheduler;

@@ -1,10 +1,11 @@
 package gg.sbs.api.data.sql.integrated.factory;
 
-import gg.sbs.api.data.sql.integrated.factory.callbacks.ResultSetCallback;
-import gg.sbs.api.data.sql.integrated.factory.callbacks.VoidResultSetCallback;
+import gg.sbs.api.data.sql.integrated.callback.ResultSetCallback;
+import gg.sbs.api.data.sql.integrated.callback.VoidResultSetCallback;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
+import lombok.Cleanup;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.UUID;
  * Factory sql classes to be inherited from when creating a wrapper.
  */
 public abstract class SQLFactory {
+    
     private final String driver;
     private final boolean driverAvailable;
     private final String url;
@@ -358,9 +360,8 @@ public abstract class SQLFactory {
      * @return Whatever you decide to return in the callback.
      */
     public final <T> T query(String sql, ResultSetCallback<T> callback, Object... args) throws SQLException {
-        try (Connection connection = this.getConnection()) {
-            return this.query(connection, sql, callback, args);
-        }
+        @Cleanup Connection connection = this.getConnection();
+        return this.query(connection, sql, callback, args);
     }
 
     /**

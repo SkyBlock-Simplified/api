@@ -1,4 +1,4 @@
-package gg.sbs.api.reflection.exceptions;
+package gg.sbs.api.reflection.exception;
 
 import gg.sbs.api.reflection.Reflection;
 

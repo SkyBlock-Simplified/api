@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.integrated.factory;
 
-import gg.sbs.api.data.sql.integrated.notifications.SQLNotifications;
+import gg.sbs.api.data.sql.integrated.notification.SQLNotifications;
 
 import java.io.File;
 import java.sql.SQLException;

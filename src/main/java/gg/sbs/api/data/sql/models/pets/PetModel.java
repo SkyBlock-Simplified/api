@@ -2,8 +2,6 @@ package gg.sbs.api.data.sql.models.pets;
 
 import gg.sbs.api.data.sql.SqlJsonConverter;
 import gg.sbs.api.data.sql.SqlModel;
-import gg.sbs.api.data.sql.models.SqlEffectsModel;
-import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import org.hibernate.annotations.UpdateTimestamp;
 

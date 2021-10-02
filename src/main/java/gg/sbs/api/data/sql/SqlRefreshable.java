@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql;
 
 import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.data.sql.exception.SqlException;
 import gg.sbs.api.util.Pair;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
+
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
     private static final Object schedulerLock = new Object();
 
@@ -79,4 +81,5 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
     public interface FilterFunction<T extends SqlModel, S> {
         S returns(T t);
     }
+
 }

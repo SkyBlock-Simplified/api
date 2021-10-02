@@ -1,6 +1,6 @@
 package gg.sbs.api.util.concurrent.atomic;
 
-import gg.sbs.api.reflection.exceptions.ReflectionException;
+import gg.sbs.api.reflection.exception.ReflectionException;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;

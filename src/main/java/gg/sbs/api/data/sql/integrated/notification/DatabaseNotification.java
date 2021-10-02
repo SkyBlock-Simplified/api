@@ -1,7 +1,7 @@
-package gg.sbs.api.data.sql.integrated.notifications;
+package gg.sbs.api.data.sql.integrated.notification;
 
+import gg.sbs.api.data.sql.integrated.callback.VoidResultSetCallback;
 import gg.sbs.api.data.sql.integrated.factory.SQLFactory;
-import gg.sbs.api.data.sql.integrated.factory.callbacks.VoidResultSetCallback;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
