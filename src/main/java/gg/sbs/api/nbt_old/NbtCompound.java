@@ -1,6 +1,6 @@
 package gg.sbs.api.nbt_old;
 
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 
@@ -48,7 +48,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 	 */
 	@Override
 	public NbtCompound clone() {
-		NbtCompound compound = SimplifiedAPI.getNbtFactory().createCompound();
+		NbtCompound compound = SimplifiedApi.getNbtFactory().createCompound();
 		compound.putAll(this);
 		return compound;
 	}
@@ -151,7 +151,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 				if (!createNew)
 					throw new IllegalArgumentException(FormatUtil.format("Cannot find ''{0}'' in ''{1}''.", entry, path));
 
-				current.put(entry, child = SimplifiedAPI.getNbtFactory().createCompound());
+				current.put(entry, child = SimplifiedApi.getNbtFactory().createCompound());
 			}
 
 			current = child;
@@ -241,7 +241,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 	 * @param stream The output stream.
 	 */
 	public void saveTo(OutputStream stream) {
-		SimplifiedAPI.getNbtFactory().saveStream(this, stream);
+		SimplifiedApi.getNbtFactory().saveStream(this, stream);
 	}
 
 }

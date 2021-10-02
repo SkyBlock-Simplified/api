@@ -2,7 +2,7 @@ package gg.sbs.api.reflection.accessor;
 
 
 import gg.sbs.api.reflection.Reflection;
-import gg.sbs.api.reflection.exceptions.ReflectionException;
+import gg.sbs.api.reflection.exception.ReflectionException;
 
 abstract class ReflectionAccessor<T> {
 

@@ -1,6 +1,6 @@
 package gg.sbs.api.nbt_old;
 
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 
 /**
  * Represents a root NBT list.
@@ -18,7 +18,7 @@ public final class NbtList<E> extends WrappedList<E> {
 
 	@Override
 	public NbtList<E> clone() {
-		return SimplifiedAPI.getNbtFactory().createList(this);
+		return SimplifiedApi.getNbtFactory().createList(this);
 	}
 
 }

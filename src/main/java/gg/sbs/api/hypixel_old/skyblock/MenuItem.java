@@ -1,9 +1,6 @@
 package gg.sbs.api.hypixel_old.skyblock;
 
 import gg.sbs.api.util.WordUtil;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 
 public enum MenuItem {
 

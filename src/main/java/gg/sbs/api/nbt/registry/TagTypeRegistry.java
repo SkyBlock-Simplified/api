@@ -3,7 +3,7 @@ package gg.sbs.api.nbt.registry;
 import gg.sbs.api.nbt.tags.Tag;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.reflection.Reflection;
-import gg.sbs.api.reflection.exceptions.ReflectionException;
+import gg.sbs.api.reflection.exception.ReflectionException;
 import gg.sbs.api.util.FormatUtil;
 import lombok.NonNull;
 

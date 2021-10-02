@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;
+import lombok.Getter;
 
 import java.awt.*;
 import java.util.regex.Pattern;
 
 public enum MojangChatFormatting {
+
     BLACK('0', 0x000000),
     DARK_BLUE('1', 0x0000AA),
     DARK_GREEN('2', 0x00AA00),
@@ -33,8 +35,8 @@ public enum MojangChatFormatting {
     RESET('r');
 
     public static final char COLOR_CHAR = '\u00a7';
-    private final char code;
-    private final boolean isFormat;
+    @Getter private final char code;
+    @Getter private final boolean isFormat;
     private final String jsonName;
     private final String toString;
     private final Color color;
@@ -82,10 +84,6 @@ public enum MojangChatFormatting {
         return null;
     }
 
-    public char getCode() {
-        return this.code;
-    }
-
     public Color getColor() {
         Preconditions.checkArgument(this.isColor(), "Format has no color!");
         return this.color;
@@ -109,10 +107,6 @@ public enum MojangChatFormatting {
 
     public boolean isColor() {
         return !this.isFormat() && this != RESET;
-    }
-
-    public boolean isFormat() {
-        return this.isFormat;
     }
 
     public MojangChatFormatting getNextFormat() {
@@ -149,4 +143,5 @@ public enum MojangChatFormatting {
     public String toString() {
         return this.toString;
     }
+
 }

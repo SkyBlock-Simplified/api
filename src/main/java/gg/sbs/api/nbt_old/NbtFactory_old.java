@@ -3,7 +3,7 @@ package gg.sbs.api.nbt_old;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.util.Primitives;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.util.ListUtil;
@@ -49,7 +49,7 @@ public final class NbtFactory_old {
 
 		if (!NBT_CLASS.inverse().containsKey(clazz)) {
 			if (clazz.isArray())
-				value = SimplifiedAPI.getNbtFactory().createList((Object[])value);
+				value = SimplifiedApi.getNbtFactory().createList((Object[])value);
 			else {
 				if (value instanceof Boolean)
 					value = (byte) ((boolean) value ? 1 : 0);
@@ -64,9 +64,9 @@ public final class NbtFactory_old {
 				else if (clazz.isEnum())
 					value = ((Enum<?>)value).name();
 				else if (Collection.class.isAssignableFrom(clazz))
-					value = SimplifiedAPI.getNbtFactory().createList((Collection<?>)value);
+					value = SimplifiedApi.getNbtFactory().createList((Collection<?>)value);
 				else if (Map.class.isAssignableFrom(clazz)) {
-					NbtCompound compound = SimplifiedAPI.getNbtFactory().createCompound();
+					NbtCompound compound = SimplifiedApi.getNbtFactory().createCompound();
 					compound.putAll((Map<String, Object>)value);
 					value = compound;
 				}
@@ -342,7 +342,7 @@ public final class NbtFactory_old {
 					PotionUtils.addPotionToItemStack(potionItemStack, potionType);
 				}
 
-				NbtCompound potionNbt = SimplifiedAPI.getNbtFactory().fromItemStack(potionItemStack);
+				NbtCompound potionNbt = SimplifiedApi.getNbtFactory().fromItemStack(potionItemStack);
 				potionNbt.put("HideFlags", 63);
 				potionNbt.putPath("display.Name", nbtCompound.getPath("display.Name"));
 				potionNbt.putPath("display.Lore", nbtCompound.getPath("display.Lore"));

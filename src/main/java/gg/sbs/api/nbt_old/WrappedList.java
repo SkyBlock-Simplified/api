@@ -1,7 +1,7 @@
 package gg.sbs.api.nbt_old;
 
 import gg.sbs.api.util.Primitives;
-import gg.sbs.api.SimplifiedAPI;
+import gg.sbs.api.SimplifiedApi;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -137,7 +137,7 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 			Object value = entry;
 
 			if (byte[].class.isAssignableFrom(Primitives.unwrap(value.getClass())))
-				value = SimplifiedAPI.getNbtFactory().fromBytes((byte[])value);
+				value = SimplifiedApi.getNbtFactory().fromBytes((byte[])value);
 
 			if (value.getClass().isArray()) {
 				assert value instanceof Object[]; // TODO: Possible error

@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.reforges;
 
-import gg.sbs.api.SimplifiedAPI;
-import gg.sbs.api.data.sql.SqlException;
+import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.data.sql.exception.SqlException;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import gg.sbs.api.data.sql.models.rarities.RarityRefreshable;
 import gg.sbs.api.data.sql.models.reforges.ReforgeModel;
@@ -16,9 +16,9 @@ public class ReforgeModelTest {
     private static final ReforgeRefreshable reforgeRefreshable;
 
     static {
-        SimplifiedAPI.enableDatabase();
-        rarityRefreshable = SimplifiedAPI.getSqlRefreshable(RarityRefreshable.class);
-        reforgeRefreshable = SimplifiedAPI.getSqlRefreshable(ReforgeRefreshable.class);
+        SimplifiedApi.enableDatabase();
+        rarityRefreshable = SimplifiedApi.getSqlRefreshable(RarityRefreshable.class);
+        reforgeRefreshable = SimplifiedApi.getSqlRefreshable(ReforgeRefreshable.class);
     }
 
     @Test
