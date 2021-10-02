@@ -1,12 +1,8 @@
-package gg.sbs.api.yaml.converters;
+package gg.sbs.api.data.yaml.converters;
 
-import gg.sbs.api.util.concurrent.Concurrent;
-import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import gg.sbs.api.yaml.InternalConverter;
+import gg.sbs.api.data.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
-import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public final class BlockPosConverter extends Converter {

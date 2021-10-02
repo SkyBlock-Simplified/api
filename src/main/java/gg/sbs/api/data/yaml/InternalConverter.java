@@ -1,8 +1,9 @@
-package gg.sbs.api.yaml;
+package gg.sbs.api.data.yaml;
 
-import gg.sbs.api.yaml.annotations.PreserveStatic;
+import gg.sbs.api.data.yaml.annotations.PreserveStatic;
+import gg.sbs.api.data.yaml.converters.*;
+import gg.sbs.api.data.yaml.exceptions.InvalidConverterException;
 import gg.sbs.api.yaml.converters.*;
-import gg.sbs.api.yaml.exceptions.InvalidConverterException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

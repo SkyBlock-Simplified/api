@@ -1,12 +1,12 @@
-package gg.sbs.api.yaml;
+package gg.sbs.api.data.yaml;
 
+import gg.sbs.api.data.yaml.exceptions.InvalidConfigurationException;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import gg.sbs.api.yaml.exceptions.InvalidConfigurationException;
 import org.yaml.snakeyaml.Dumper;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Loader;

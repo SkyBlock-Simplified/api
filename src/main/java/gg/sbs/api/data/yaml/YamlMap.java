@@ -1,11 +1,11 @@
-package gg.sbs.api.yaml;
+package gg.sbs.api.data.yaml;
 
+import gg.sbs.api.data.yaml.annotations.ConfigMode;
+import gg.sbs.api.data.yaml.annotations.Path;
+import gg.sbs.api.data.yaml.annotations.PreserveStatic;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
-import gg.sbs.api.yaml.annotations.ConfigMode;
-import gg.sbs.api.yaml.annotations.Path;
-import gg.sbs.api.yaml.annotations.PreserveStatic;
-import gg.sbs.api.yaml.converters.Converter;
+import gg.sbs.api.data.yaml.converters.Converter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

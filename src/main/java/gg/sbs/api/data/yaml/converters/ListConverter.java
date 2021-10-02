@@ -1,7 +1,7 @@
-package gg.sbs.api.yaml.converters;
+package gg.sbs.api.data.yaml.converters;
 
 import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.yaml.InternalConverter;
+import gg.sbs.api.data.yaml.InternalConverter;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;

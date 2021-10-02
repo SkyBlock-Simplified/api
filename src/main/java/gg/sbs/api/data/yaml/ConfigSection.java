@@ -1,4 +1,4 @@
-package gg.sbs.api.yaml;
+package gg.sbs.api.data.yaml;
 
 import gg.sbs.api.util.StringUtil;
 
