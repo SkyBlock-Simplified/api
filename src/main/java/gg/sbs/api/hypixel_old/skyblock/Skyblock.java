@@ -1772,8 +1772,8 @@ public class Skyblock {
             }
 
             public static ConcurrentList<Ability> getAbilities(SkyBlockIsland.PetInfo petInfo) {
-                ConcurrentList<Ability> abilities = getAbilities(petInfo.getPet());
-                abilities.removeIf(ability -> petInfo.getTier().ordinal() < ability.getRarity().ordinal());
+                ConcurrentList<Ability> abilities = getAbilities(petInfo.getPet().get()); // TODO: Optional Handling
+                abilities.removeIf(ability -> petInfo.getRarity().ordinal() < ability.getRarity().ordinal());
                 return abilities;
             }
 
