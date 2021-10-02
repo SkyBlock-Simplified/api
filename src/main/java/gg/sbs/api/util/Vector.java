@@ -2,6 +2,7 @@ package gg.sbs.api.util;
 
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
+import lombok.Getter;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -9,9 +10,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Vector implements Cloneable {
 
 	private static final double EPSILON = 1.0E-6D;
-	protected double x;
-	protected double y;
-	protected double z;
+	@Getter	protected double x;
+	@Getter protected double y;
+	@Getter protected double z;
 
 	public Vector() {
 		this(0, 0, 0);
@@ -155,18 +156,6 @@ public class Vector implements Cloneable {
 
 	public static Vector getRandom() {
 		return new Vector(ThreadLocalRandom.current().nextDouble(), ThreadLocalRandom.current().nextDouble(), ThreadLocalRandom.current().nextDouble());
-	}
-
-	public double getX() {
-		return this.x;
-	}
-
-	public double getY() {
-		return this.y;
-	}
-
-	public double getZ() {
-		return this.z;
 	}
 
 	@Override

@@ -1,9 +1,11 @@
 package gg.sbs.api.service;
 
+import lombok.Getter;
+
 public final class ServiceProvider<T> {
 
-	private final Class<T> service;
-	private final T provider;
+	@Getter private final Class<T> service;
+	@Getter private final T provider;
 
 	ServiceProvider(Class<T> service, T provider) {
 		this.service = service;
@@ -22,14 +24,6 @@ public final class ServiceProvider<T> {
 			return provider.getService().equals(this.getService());
 		} else
 			return false;
-	}
-
-	public T getProvider() {
-		return this.provider;
-	}
-
-	public Class<T> getService() {
-		return this.service;
 	}
 
 	@Override

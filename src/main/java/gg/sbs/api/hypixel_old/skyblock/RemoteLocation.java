@@ -10,34 +10,30 @@ public enum RemoteLocation {
 	// Skyblock General
 	PRIVATE_ISLAND("dynamic", "Private Island"),
 	HUB("hub", "Hub"),
-	DARK_AUCTION("dark_auction", Location.DARK_AUCTION),
+	DARK_AUCTION("dark_auction", "DARK_AUCTION"),
 	DUNGEON("dungeon", "Dungeons"),
 
 	// Mining
-	GOLD_MINE("mining_1", Location.GOLD_MINE),
-	DEEP_CAVERNS("mining_2", Location.DEEP_CAVERNS),
+	GOLD_MINE("mining_1", "GOLD_MINE"),
+	DEEP_CAVERNS("mining_2", "DEEP_CAVERNS"),
 
 	// Combat
-	SPIDERS_DEN("combat_1", Location.SPIDERS_DEN),
-	BLAZING_FORTRESS("combat_2", Location.BLAZING_FORTRESS),
-	THE_END("combat_3", Location.THE_END),
+	SPIDERS_DEN("combat_1", "SPIDERS_DEN"),
+	BLAZING_FORTRESS("combat_2", "BLAZING_FORTRESS"),
+	THE_END("combat_3", "THE_END"),
 
 	// Farming
-	THE_BARN("farming_1", Location.THE_BARN),
-	MUSHROOM_DESERT("farming_2", Location.MUSHROOM_DESERT),
+	THE_BARN("farming_1", "THE_BARN"),
+	MUSHROOM_DESERT("farming_2", "MUSHROOM_DESERT"),
 
 	// Foraging
 	THE_PARK("foraging_1", "The Park"),
 
 	// Jerry's Workshop
-	JERRYS_WORKSHOP("winter", Location.JERRYS_WORKSHOP);
+	JERRYS_WORKSHOP("winter", "JERRYS_WORKSHOP");
 
 	private final String apiName;
 	private final String scoreboardName;
-
-	RemoteLocation(String apiName, Location location) {
-		this(apiName, location.getScoreboardName());
-	}
 
 	RemoteLocation(String apiName, String scoreboardName) {
 		this.apiName = apiName;

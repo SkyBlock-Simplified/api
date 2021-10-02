@@ -1,9 +1,8 @@
 package gg.sbs.api.hypixel_old.skyblock;
 
+import gg.sbs.api.apiclients.hypixel.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.MojangChatFormatting;
 import gg.sbs.api.util.*;
-import gg.sbs.api.hypixel_old.SkyblockIsland;
-import gg.sbs.api.nbt_old.NbtCompound;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
@@ -32,18 +31,18 @@ public class Skyblock {
     private static Skyblock.Date date;
     private static boolean isOnSkyblock;
     private static String serverID;
-    private static Location location;
-    private static Location previousLocation = null;
+    //private static Location location;
+    //private static Location previousLocation = null;
     private static String previousServer = "";
 
     public static Skyblock.Date getDate() {
         return date;
     }
-
+/*
     public static Location getLocation() {
         return location;
     }
-
+*/
     public static String getServerID() {
         return serverID;
     }
@@ -56,7 +55,7 @@ public class Skyblock {
         date = new Skyblock.Date(Skyblock.Date.Season.EARLY_WINTER, 1, 1, 1);
         isOnSkyblock = false;
         serverID = "";
-        location = Location.UNKNOWN;
+        //location = Location.UNKNOWN;
     }
 
     /*private static void checkGameLocationDate() {
@@ -427,340 +426,340 @@ public class Skyblock {
     public enum Item {
 
         // Redstone Collection
-        REDSTONE_DUST("REDSTONE", Items.REDSTONE),
-        REDSTONE_BLOCK("REDSTONE_BLOCK", Blocks.REDSTONE_BLOCK, REDSTONE_DUST, CraftingTable.Recipe.ALL, new Recipe.Entry(REDSTONE_DUST, 1, 9)),
-        ENCHANTED_REDSTONE_DUST("ENCHANTED_REDSTONE", Items.REDSTONE, REDSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Group(REDSTONE_DUST, 32, 5), new Recipe.Group(REDSTONE_BLOCK, 32, 5)),
-        ENCHANTED_REDSTONE_BLOCK("ENCHANTED_REDSTONE_BLOCK", Blocks.REDSTONE_BLOCK, ENCHANTED_REDSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_REDSTONE_DUST, 32, 5)),
+        REDSTONE_DUST("REDSTONE", "Items.REDSTONE"),
+        REDSTONE_BLOCK("REDSTONE_BLOCK", "Blocks.REDSTONE_BLOCK", REDSTONE_DUST, CraftingTable.Recipe.ALL, new Recipe.Entry(REDSTONE_DUST, 1, 9)),
+        ENCHANTED_REDSTONE_DUST("ENCHANTED_REDSTONE", "Items.REDSTONE", REDSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Group(REDSTONE_DUST, 32, 5), new Recipe.Group(REDSTONE_BLOCK, 32, 5)),
+        ENCHANTED_REDSTONE_BLOCK("ENCHANTED_REDSTONE_BLOCK", "Blocks.REDSTONE_BLOCK", ENCHANTED_REDSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_REDSTONE_DUST, 32, 5)),
 
         // Oak Wood Collection
-        OAK_WOOD("LOG", Blocks.LOG),
-        OAK_WOOD_PLANK("WOOD", Blocks.PLANKS, OAK_WOOD, CraftingTable.Recipe.SINGLE, new Recipe.Entry(OAK_WOOD, 1)),
-        CHEST("CHEST", Blocks.CHEST, OAK_WOOD_PLANK, CraftingTable.Recipe.RING, new Recipe.Entry(OAK_WOOD_PLANK, 1, 8)),
-        ENCHANTED_OAK_WOOD("ENCHANTED_OAK_LOG", Blocks.LOG, OAK_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(OAK_WOOD, 32, 5)),
-        SMALL_STORAGE("SMALL_ENCHANTED_CHEST", Blocks.CHEST, OAK_WOOD, CraftingTable.Recipe.RING, new Recipe.Entry(OAK_WOOD, 8, 8)),
-        MEDIUM_STORAGE("MEDIUM_ENCHANTED_CHEST", Blocks.CHEST, ENCHANTED_OAK_WOOD, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_OAK_WOOD, 1, 8), new Recipe.Entry(SMALL_STORAGE, 1)),
-        LARGE_STORAGE("LARGE_ENCHANTED_CHEST", Blocks.CHEST, ENCHANTED_OAK_WOOD, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_OAK_WOOD, 32, 8), new Recipe.Entry(MEDIUM_STORAGE, 1)),
+        OAK_WOOD("LOG", "Blocks.LOG"),
+        OAK_WOOD_PLANK("WOOD", "Blocks.PLANKS", OAK_WOOD, CraftingTable.Recipe.SINGLE, new Recipe.Entry(OAK_WOOD, 1)),
+        CHEST("CHEST", "Blocks.CHEST", OAK_WOOD_PLANK, CraftingTable.Recipe.RING, new Recipe.Entry(OAK_WOOD_PLANK, 1, 8)),
+        ENCHANTED_OAK_WOOD("ENCHANTED_OAK_LOG", "Blocks.LOG", OAK_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(OAK_WOOD, 32, 5)),
+        SMALL_STORAGE("SMALL_ENCHANTED_CHEST", "Blocks.CHEST", OAK_WOOD, CraftingTable.Recipe.RING, new Recipe.Entry(OAK_WOOD, 8, 8)),
+        MEDIUM_STORAGE("MEDIUM_ENCHANTED_CHEST", "Blocks.CHEST", ENCHANTED_OAK_WOOD, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_OAK_WOOD, 1, 8), new Recipe.Entry(SMALL_STORAGE, 1)),
+        LARGE_STORAGE("LARGE_ENCHANTED_CHEST", "Blocks.CHEST", ENCHANTED_OAK_WOOD, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_OAK_WOOD, 32, 8), new Recipe.Entry(MEDIUM_STORAGE, 1)),
 
         // Spruce Wood Collection
-        SPRUCE_WOOD("LOG:1", Blocks.LOG, 1),
-        ENCHANTED_SPRUCE_WOOD("ENCHANTED_SPRUCE_LOG", Blocks.LOG, 1, SPRUCE_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(SPRUCE_WOOD, 32, 5)),
+        SPRUCE_WOOD("LOG:1", "Blocks.LOG", 1),
+        ENCHANTED_SPRUCE_WOOD("ENCHANTED_SPRUCE_LOG", "Blocks.LOG", 1, SPRUCE_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(SPRUCE_WOOD, 32, 5)),
 
         // Birch Wood Collection
-        BIRCH_WOOD("LOG:2", Blocks.LOG, 2),
-        ENCHANTED_BIRCH_WOOD("ENCHANTED_BIRCH_LOG", Blocks.LOG, 2, BIRCH_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(BIRCH_WOOD, 32, 5)),
+        BIRCH_WOOD("LOG:2", "Blocks.LOG", 2),
+        ENCHANTED_BIRCH_WOOD("ENCHANTED_BIRCH_LOG", "Blocks.LOG", 2, BIRCH_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(BIRCH_WOOD, 32, 5)),
 
         // Dark Oak Wood Collection
-        DARK_OAK_WOOD("LOG_2:1", Blocks.LOG2, 1),
-        ENCHANTED_DARK_OAK_WOOD("ENCHANTED_DARK_OAK_LOG", Blocks.LOG2, 1, DARK_OAK_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(DARK_OAK_WOOD, 32, 5)),
+        DARK_OAK_WOOD("LOG_2:1", "Blocks.LOG2", 1),
+        ENCHANTED_DARK_OAK_WOOD("ENCHANTED_DARK_OAK_LOG", "Blocks.LOG2", 1, DARK_OAK_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(DARK_OAK_WOOD, 32, 5)),
 
         // Acacia Wood Collection
-        ACACIA_WOOD("LOG_2", Blocks.LOG2),
-        ENCHANTED_ACACIA_WOOD("ENCHANTED_ACACIA_LOG", Blocks.LOG2, ACACIA_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(ACACIA_WOOD, 32, 5)),
+        ACACIA_WOOD("LOG_2", "Blocks.LOG2"),
+        ENCHANTED_ACACIA_WOOD("ENCHANTED_ACACIA_LOG", "Blocks.LOG2", ACACIA_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(ACACIA_WOOD, 32, 5)),
 
         // Jungle Wood Collection
-        JUNGLE_WOOD("LOG:3", Blocks.LOG, 3),
-        ENCHANTED_JUNGLE_WOOD("ENCHANTED_JUNGLE_LOG", Blocks.LOG, 3, JUNGLE_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(JUNGLE_WOOD, 32, 5)),
+        JUNGLE_WOOD("LOG:3", "Blocks.LOG", 3),
+        ENCHANTED_JUNGLE_WOOD("ENCHANTED_JUNGLE_LOG", "Blocks.LOG", 3, JUNGLE_WOOD, CraftingTable.Recipe.STAR, new Recipe.Entry(JUNGLE_WOOD, 32, 5)),
 
         // Cobblestone Collection
-        COBBLESTONE("COBBLESTONE", Blocks.COBBLESTONE),
-        ENCHANTED_COBBLESTONE("ENCHANTED_COBBLESTONE", Blocks.COBBLESTONE, COBBLESTONE, CraftingTable.Recipe.STAR, new Recipe.Entry(COBBLESTONE, 32, 5)),
-        COMPACTOR("COMPACTOR", Blocks.DROPPER, ENCHANTED_COBBLESTONE, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_COBBLESTONE, 1, 7), new Recipe.Entry(ENCHANTED_REDSTONE_DUST, 1)),
-        SUPER_COMPACTOR_3000("SUPER_COMPACTOR_3000", Blocks.DROPPER, ENCHANTED_COBBLESTONE, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_COBBLESTONE, 64, 7), new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 1)),
-        PERSONAL_COMPACTOR_4000("PERSONAL_COMPACTOR_4000", Blocks.DROPPER, ENCHANTED_REDSTONE_BLOCK, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 1, 7), new Recipe.Entry(SUPER_COMPACTOR_3000, 1)),
-        PERSONAL_COMPACTOR_5000("PERSONAL_COMPACTOR_5000", Blocks.DROPPER, ENCHANTED_REDSTONE_BLOCK, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 2, 7), new Recipe.Entry(PERSONAL_COMPACTOR_4000, 1)),
-        PERSONAL_COMPACTOR_6000("PERSONAL_COMPACTOR_6000", Blocks.DROPPER, ENCHANTED_REDSTONE_BLOCK, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 4, 7), new Recipe.Entry(PERSONAL_COMPACTOR_5000, 1)),
+        COBBLESTONE("COBBLESTONE", "Blocks.COBBLESTONE"),
+        ENCHANTED_COBBLESTONE("ENCHANTED_COBBLESTONE", "Blocks.COBBLESTONE", COBBLESTONE, CraftingTable.Recipe.STAR, new Recipe.Entry(COBBLESTONE, 32, 5)),
+        COMPACTOR("COMPACTOR", "Blocks.DROPPER", ENCHANTED_COBBLESTONE, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_COBBLESTONE, 1, 7), new Recipe.Entry(ENCHANTED_REDSTONE_DUST, 1)),
+        SUPER_COMPACTOR_3000("SUPER_COMPACTOR_3000", "Blocks.DROPPER", ENCHANTED_COBBLESTONE, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_COBBLESTONE, 64, 7), new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 1)),
+        PERSONAL_COMPACTOR_4000("PERSONAL_COMPACTOR_4000", "Blocks.DROPPER", ENCHANTED_REDSTONE_BLOCK, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 1, 7), new Recipe.Entry(SUPER_COMPACTOR_3000, 1)),
+        PERSONAL_COMPACTOR_5000("PERSONAL_COMPACTOR_5000", "Blocks.DROPPER", ENCHANTED_REDSTONE_BLOCK, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 2, 7), new Recipe.Entry(PERSONAL_COMPACTOR_4000, 1)),
+        PERSONAL_COMPACTOR_6000("PERSONAL_COMPACTOR_6000", "Blocks.DROPPER", ENCHANTED_REDSTONE_BLOCK, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_REDSTONE_BLOCK, 4, 7), new Recipe.Entry(PERSONAL_COMPACTOR_5000, 1)),
 
         // Coal Collection
-        COAL("COAL", Items.COAL),
-        COAL_BLOCK("COAL_BLOCK", Blocks.COAL_BLOCK, COAL, CraftingTable.Recipe.ALL, new Recipe.Entry(COAL, 1, 9)),
-        ENCHANTED_COAL("ENCHANTED_COAL", Items.COAL, COAL, CraftingTable.Recipe.STAR, new Recipe.Group(COAL, 32, 5), new Recipe.Group(COAL_BLOCK, 32, 5)),
-        ENCHANTED_COAL_BLOCK("ENCHANTED_COAL_BLOCK", Blocks.COAL_BLOCK, ENCHANTED_COAL, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_COAL, 32, 5)),
+        COAL("COAL", "Items.COAL"),
+        COAL_BLOCK("COAL_BLOCK", "Blocks.COAL_BLOCK", COAL, CraftingTable.Recipe.ALL, new Recipe.Entry(COAL, 1, 9)),
+        ENCHANTED_COAL("ENCHANTED_COAL", "Items.COAL", COAL, CraftingTable.Recipe.STAR, new Recipe.Group(COAL, 32, 5), new Recipe.Group(COAL_BLOCK, 32, 5)),
+        ENCHANTED_COAL_BLOCK("ENCHANTED_COAL_BLOCK", "Blocks.COAL_BLOCK", ENCHANTED_COAL, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_COAL, 32, 5)),
 
         // Iron Collection
-        IRON_INGOT("IRON_INGOT", Items.IRON_INGOT),
-        IRON_BLOCK("IRON_BLOCK", Blocks.IRON_BLOCK, IRON_INGOT, CraftingTable.Recipe.ALL, new Recipe.Entry(IRON_INGOT, 1, 9)),
-        ENCHANTED_IRON("ENCHANTED_IRON", Items.IRON_INGOT, IRON_INGOT, CraftingTable.Recipe.STAR, new Recipe.Group(IRON_INGOT, 32, 5), new Recipe.Group(IRON_BLOCK, 32, 5)),
-        ENCHANTED_IRON_BLOCK("ENCHANTED_IRON_BLOCK", Blocks.IRON_BLOCK, ENCHANTED_IRON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_IRON, 32, 5)),
-        HOPPER("HOPPER", Blocks.HOPPER, IRON_INGOT, CraftingTable.Recipe.HOPPER, new Recipe.Entry(IRON_INGOT, 1, 5), new Recipe.Entry(CHEST, 1)),
-        BUDGET_HOPPER("BUDGET_HOPPER", Blocks.HOPPER, ENCHANTED_IRON, CraftingTable.Recipe.HOPPER, new Recipe.Entry(ENCHANTED_IRON, 1, 5), new Recipe.Entry(CHEST, 1)),
-        ENCHANTED_HOPPER("ENCHANTED_HOPPER", Blocks.HOPPER, ENCHANTED_IRON_BLOCK, CraftingTable.Recipe.HOPPER, new Recipe.Entry(ENCHANTED_IRON_BLOCK, 1, 5), new Recipe.Entry(CHEST, 1)),
+        IRON_INGOT("IRON_INGOT", "Items.IRON_INGOT"),
+        IRON_BLOCK("IRON_BLOCK", "Blocks.IRON_BLOCK", IRON_INGOT, CraftingTable.Recipe.ALL, new Recipe.Entry(IRON_INGOT, 1, 9)),
+        ENCHANTED_IRON("ENCHANTED_IRON", "Items.IRON_INGOT", IRON_INGOT, CraftingTable.Recipe.STAR, new Recipe.Group(IRON_INGOT, 32, 5), new Recipe.Group(IRON_BLOCK, 32, 5)),
+        ENCHANTED_IRON_BLOCK("ENCHANTED_IRON_BLOCK", "Blocks.IRON_BLOCK", ENCHANTED_IRON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_IRON, 32, 5)),
+        HOPPER("HOPPER", "Blocks.HOPPER", IRON_INGOT, CraftingTable.Recipe.HOPPER, new Recipe.Entry(IRON_INGOT, 1, 5), new Recipe.Entry(CHEST, 1)),
+        BUDGET_HOPPER("BUDGET_HOPPER", "Blocks.HOPPER", ENCHANTED_IRON, CraftingTable.Recipe.HOPPER, new Recipe.Entry(ENCHANTED_IRON, 1, 5), new Recipe.Entry(CHEST, 1)),
+        ENCHANTED_HOPPER("ENCHANTED_HOPPER", "Blocks.HOPPER", ENCHANTED_IRON_BLOCK, CraftingTable.Recipe.HOPPER, new Recipe.Entry(ENCHANTED_IRON_BLOCK, 1, 5), new Recipe.Entry(CHEST, 1)),
 
         // Gold Collection
-        GOLD_INGOT("GOLD_INGOT", Items.GOLD_INGOT),
-        GOLD_NUGGET("GOLD_NUGGET", Items.GOLD_NUGGET, GOLD_INGOT, CraftingTable.Recipe.SINGLE, new Recipe.Entry(GOLD_INGOT, 1)),
-        GOLD_BLOCK("GOLD_BLOCK", Blocks.GOLD_BLOCK, GOLD_INGOT, CraftingTable.Recipe.ALL, new Recipe.Entry(GOLD_INGOT, 1, 9)),
-        ENCHANTED_GOLD("ENCHANTED_GOLD", Items.GOLD_INGOT, GOLD_INGOT, CraftingTable.Recipe.STAR, new Recipe.Group(GOLD_INGOT, 32, 5), new Recipe.Group(GOLD_BLOCK, 32, 5)),
-        ENCHANTED_GOLD_BLOCK("ENCHANTED_GOLD_BLOCK", Blocks.GOLD_BLOCK, ENCHANTED_GOLD, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GOLD, 32, 5)),
+        GOLD_INGOT("GOLD_INGOT", "Items.GOLD_INGOT"),
+        GOLD_NUGGET("GOLD_NUGGET", "Items.GOLD_NUGGET", GOLD_INGOT, CraftingTable.Recipe.SINGLE, new Recipe.Entry(GOLD_INGOT, 1)),
+        GOLD_BLOCK("GOLD_BLOCK", "Blocks.GOLD_BLOCK", GOLD_INGOT, CraftingTable.Recipe.ALL, new Recipe.Entry(GOLD_INGOT, 1, 9)),
+        ENCHANTED_GOLD("ENCHANTED_GOLD", "Items.GOLD_INGOT", GOLD_INGOT, CraftingTable.Recipe.STAR, new Recipe.Group(GOLD_INGOT, 32, 5), new Recipe.Group(GOLD_BLOCK, 32, 5)),
+        ENCHANTED_GOLD_BLOCK("ENCHANTED_GOLD_BLOCK", "Blocks.GOLD_BLOCK", ENCHANTED_GOLD, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GOLD, 32, 5)),
 
         // Diamond Collection
-        DIAMOND("DIAMOND", Items.DIAMOND),
-        DIAMOND_BLOCK("DIAMOND_BLOCK", Blocks.DIAMOND_BLOCK, DIAMOND, CraftingTable.Recipe.ALL, new Recipe.Entry(DIAMOND, 1, 9)),
-        ENCHANTED_DIAMOND("ENCHANTED_DIAMOND", Items.DIAMOND, DIAMOND, CraftingTable.Recipe.STAR, new Recipe.Group(DIAMOND, 32, 5), new Recipe.Group(DIAMOND_BLOCK, 32, 5)),
-        ENCHANTED_DIAMOND_BLOCK("ENCHANTED_DIAMOND_BLOCK", Blocks.DIAMOND_BLOCK, ENCHANTED_DIAMOND, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_DIAMOND, 32, 5)),
+        DIAMOND("DIAMOND", "Items.DIAMOND"),
+        DIAMOND_BLOCK("DIAMOND_BLOCK", "Blocks.DIAMOND_BLOCK", DIAMOND, CraftingTable.Recipe.ALL, new Recipe.Entry(DIAMOND, 1, 9)),
+        ENCHANTED_DIAMOND("ENCHANTED_DIAMOND", "Items.DIAMOND", DIAMOND, CraftingTable.Recipe.STAR, new Recipe.Group(DIAMOND, 32, 5), new Recipe.Group(DIAMOND_BLOCK, 32, 5)),
+        ENCHANTED_DIAMOND_BLOCK("ENCHANTED_DIAMOND_BLOCK", "Blocks.DIAMOND_BLOCK", ENCHANTED_DIAMOND, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_DIAMOND, 32, 5)),
 
         // Lapis Collection
-        LAPIS_LAZULI("INK_SACK:4", Items.DYE, 4),
-        LAPIS_BLOCK("LAPIS_BLOCK", Blocks.LAPIS_BLOCK, LAPIS_LAZULI, CraftingTable.Recipe.ALL, new Recipe.Entry(LAPIS_LAZULI, 1, 9)),
-        ENCHANTED_LAPIS_LAZULI("ENCHANTED_LAPIS_LAZULI", Items.DYE, 4, LAPIS_LAZULI, CraftingTable.Recipe.STAR, new Recipe.Group(LAPIS_LAZULI, 32, 5), new Recipe.Group(LAPIS_BLOCK, 32, 5)),
-        ENCHANTED_LAPIS_BLOCK("ENCHANTED_LAPIS_LAZULI_BLOCK", Blocks.LAPIS_BLOCK, ENCHANTED_LAPIS_LAZULI, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_LAPIS_LAZULI, 32, 5)),
+        LAPIS_LAZULI("INK_SACK:4", "Items.DYE", 4),
+        LAPIS_BLOCK("LAPIS_BLOCK", "Blocks.LAPIS_BLOCK", LAPIS_LAZULI, CraftingTable.Recipe.ALL, new Recipe.Entry(LAPIS_LAZULI, 1, 9)),
+        ENCHANTED_LAPIS_LAZULI("ENCHANTED_LAPIS_LAZULI", "Items.DYE", 4, LAPIS_LAZULI, CraftingTable.Recipe.STAR, new Recipe.Group(LAPIS_LAZULI, 32, 5), new Recipe.Group(LAPIS_BLOCK, 32, 5)),
+        ENCHANTED_LAPIS_BLOCK("ENCHANTED_LAPIS_LAZULI_BLOCK", "Blocks.LAPIS_BLOCK", ENCHANTED_LAPIS_LAZULI, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_LAPIS_LAZULI, 32, 5)),
 
         // Emerald Collection
-        EMERALD("COAL", Items.EMERALD),
-        EMERALD_BLOCK("EMERALD_BLOCK", Blocks.EMERALD_BLOCK, EMERALD, CraftingTable.Recipe.ALL, new Recipe.Entry(EMERALD, 1, 9)),
-        ENCHANTED_EMERALD("ENCHANTED_EMERALD", Items.EMERALD, EMERALD, CraftingTable.Recipe.STAR, new Recipe.Group(EMERALD, 32, 5), new Recipe.Group(EMERALD_BLOCK, 32, 5)),
-        ENCHANTED_EMERALD_BLOCK("ENCHANTED_EMERALD_BLOCK", Blocks.EMERALD_BLOCK, ENCHANTED_EMERALD, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_EMERALD, 32, 5)),
+        EMERALD("COAL", "Items.EMERALD"),
+        EMERALD_BLOCK("EMERALD_BLOCK", "Blocks.EMERALD_BLOCK", EMERALD, CraftingTable.Recipe.ALL, new Recipe.Entry(EMERALD, 1, 9)),
+        ENCHANTED_EMERALD("ENCHANTED_EMERALD", "Items.EMERALD", EMERALD, CraftingTable.Recipe.STAR, new Recipe.Group(EMERALD, 32, 5), new Recipe.Group(EMERALD_BLOCK, 32, 5)),
+        ENCHANTED_EMERALD_BLOCK("ENCHANTED_EMERALD_BLOCK", "Blocks.EMERALD_BLOCK", ENCHANTED_EMERALD, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_EMERALD, 32, 5)),
 
         // Quartz Collection
-        NETHER_QUARTZ("QUARTZ", Items.QUARTZ),
-        QUARTZ_BLOCK("QUARTZ_BLOCK", Blocks.QUARTZ_BLOCK, NETHER_QUARTZ, CraftingTable.Recipe.ALL, new Recipe.Entry(NETHER_QUARTZ, 1, 9)),
-        ENCHANTED_QUARTZ("ENCHANTED_QUARTZ", Items.QUARTZ, NETHER_QUARTZ, CraftingTable.Recipe.STAR, new Recipe.Group(NETHER_QUARTZ, 32, 5), new Recipe.Group(QUARTZ_BLOCK, 32, 5)),
-        ENCHANTED_QUARTZ_BLOCK("ENCHANTED_QUARTZ_BLOCK", Blocks.QUARTZ_BLOCK, ENCHANTED_QUARTZ, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_QUARTZ, 32, 5)),
-        MINION_EXPANDER("MINION_EXPANDER", Blocks.COMMAND_BLOCK, ENCHANTED_QUARTZ, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_QUARTZ, 2, 8), new Recipe.Entry(ENCHANTED_REDSTONE_DUST, 2)),
+        NETHER_QUARTZ("QUARTZ", "Items.QUARTZ"),
+        QUARTZ_BLOCK("QUARTZ_BLOCK", "Blocks.QUARTZ_BLOCK", NETHER_QUARTZ, CraftingTable.Recipe.ALL, new Recipe.Entry(NETHER_QUARTZ, 1, 9)),
+        ENCHANTED_QUARTZ("ENCHANTED_QUARTZ", "Items.QUARTZ", NETHER_QUARTZ, CraftingTable.Recipe.STAR, new Recipe.Group(NETHER_QUARTZ, 32, 5), new Recipe.Group(QUARTZ_BLOCK, 32, 5)),
+        ENCHANTED_QUARTZ_BLOCK("ENCHANTED_QUARTZ_BLOCK", "Blocks.QUARTZ_BLOCK", ENCHANTED_QUARTZ, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_QUARTZ, 32, 5)),
+        MINION_EXPANDER("MINION_EXPANDER", "Blocks.COMMAND_BLOCK", ENCHANTED_QUARTZ, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_QUARTZ, 2, 8), new Recipe.Entry(ENCHANTED_REDSTONE_DUST, 2)),
 
         // Obsidian Collection
-        OBSIDIAN("OBSIDIAN", Blocks.OBSIDIAN),
-        ENCHANTED_OBSIDIAN("ENCHANTED_OBSIDIAN", Blocks.OBSIDIAN, OBSIDIAN, CraftingTable.Recipe.STAR, new Recipe.Entry(OBSIDIAN, 32, 5)),
+        OBSIDIAN("OBSIDIAN", "Blocks.OBSIDIAN"),
+        ENCHANTED_OBSIDIAN("ENCHANTED_OBSIDIAN", "Blocks.OBSIDIAN", OBSIDIAN, CraftingTable.Recipe.STAR, new Recipe.Entry(OBSIDIAN, 32, 5)),
 
         // Glowstone Collection
-        GLOWSTONE_DUST("QUARTZ", Items.GLOWSTONE_DUST),
-        GLOWSTONE_BLOCK("GLOWSTONE_BLOCK", Blocks.GLOWSTONE, GLOWSTONE_DUST, CraftingTable.Recipe.BOX, new Recipe.Entry(GLOWSTONE_DUST, 1, 4)),
-        ENCHANTED_GLOWSTONE_DUST("ENCHANTED_GLOWSTONE_DUST", Items.GLOWSTONE_DUST, GLOWSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Group(GLOWSTONE_DUST, 32, 5), new Recipe.Group(GLOWSTONE_BLOCK, 32, 5)),
-        ENCHANTED_GLOWSTONE_BLOCK("ENCHANTED_GLOWSTONE_BLOCK", Blocks.GLOWSTONE, ENCHANTED_GLOWSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GLOWSTONE_DUST, 32, 5)),
+        GLOWSTONE_DUST("QUARTZ", "Items.GLOWSTONE_DUST"),
+        GLOWSTONE_BLOCK("GLOWSTONE_BLOCK", "Blocks.GLOWSTONE", GLOWSTONE_DUST, CraftingTable.Recipe.BOX, new Recipe.Entry(GLOWSTONE_DUST, 1, 4)),
+        ENCHANTED_GLOWSTONE_DUST("ENCHANTED_GLOWSTONE_DUST", "Items.GLOWSTONE_DUST", GLOWSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Group(GLOWSTONE_DUST, 32, 5), new Recipe.Group(GLOWSTONE_BLOCK, 32, 5)),
+        ENCHANTED_GLOWSTONE_BLOCK("ENCHANTED_GLOWSTONE_BLOCK", "Blocks.GLOWSTONE", ENCHANTED_GLOWSTONE_DUST, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GLOWSTONE_DUST, 32, 5)),
 
         // Gravel Collection
-        GRAVEL("GRAVEL", Blocks.GRAVEL),
-        FLINT("FLINT", Items.FLINT),
-        ENCHANTED_FLINT("ENCHANTED_FLINT", Items.FLINT, FLINT, CraftingTable.Recipe.STAR, new Recipe.Entry(FLINT, 32, 5)),
+        GRAVEL("GRAVEL", "Blocks.GRAVEL"),
+        FLINT("FLINT", "Items.FLINT"),
+        ENCHANTED_FLINT("ENCHANTED_FLINT", "Items.FLINT", FLINT, CraftingTable.Recipe.STAR, new Recipe.Entry(FLINT, 32, 5)),
 
         // Ice Collection
-        ICE("ICE", Blocks.ICE),
-        PACKED_ICE("PACKED_ICE", Blocks.PACKED_ICE),
-        ENCHANTED_ICE("ENCHANTED_ICE", Blocks.ICE, ICE, CraftingTable.Recipe.STAR, new Recipe.Group(PACKED_ICE, 32, 5), new Recipe.Group(ICE, 32, 5)),
-        ENCHANTED_PACKED_ICE("ENCHANTED_PACKED_ICE", Blocks.PACKED_ICE, ENCHANTED_ICE, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_ICE, 32, 5)),
+        ICE("ICE", "Blocks.ICE"),
+        PACKED_ICE("PACKED_ICE", "Blocks.PACKED_ICE"),
+        ENCHANTED_ICE("ENCHANTED_ICE", "Blocks.ICE", ICE, CraftingTable.Recipe.STAR, new Recipe.Group(PACKED_ICE, 32, 5), new Recipe.Group(ICE, 32, 5)),
+        ENCHANTED_PACKED_ICE("ENCHANTED_PACKED_ICE", "Blocks.PACKED_ICE", ENCHANTED_ICE, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_ICE, 32, 5)),
 
         // Netherrack Collection
-        NETHERRACK("NETHERRACK", Blocks.NETHERRACK),
+        NETHERRACK("NETHERRACK", "Blocks.NETHERRACK"),
 
         // Sand Collection
-        SAND("SAND", Blocks.SAND),
-        ENCHANTED_SAND("ENCHANTED_SAND", Blocks.SAND, SAND, CraftingTable.Recipe.STAR, new Recipe.Entry(SAND, 32, 5)),
+        SAND("SAND", "Blocks.SAND"),
+        ENCHANTED_SAND("ENCHANTED_SAND", "Blocks.SAND", SAND, CraftingTable.Recipe.STAR, new Recipe.Entry(SAND, 32, 5)),
 
         // End Stone Collection
-        END_STONE("ENDER_STONE", Blocks.END_STONE),
-        ENCHANTED_END_STONE("ENCHANTED_ENDSTONE", Blocks.END_STONE, END_STONE, CraftingTable.Recipe.STAR, new Recipe.Entry(END_STONE, 32, 5)),
+        END_STONE("ENDER_STONE", "Blocks.END_STONE"),
+        ENCHANTED_END_STONE("ENCHANTED_ENDSTONE", "Blocks.END_STONE", END_STONE, CraftingTable.Recipe.STAR, new Recipe.Entry(END_STONE, 32, 5)),
 
         // Snow Collection
-        SNOWBALL("SNOW_BALL", Items.SNOWBALL),
-        SNOW_BLOCK("SNOW_BLOCK", Blocks.SNOW, SNOWBALL, CraftingTable.Recipe.BOX, new Recipe.Entry(SNOWBALL, 1, 4)),
-        ENCHANTED_SNOW_BLOCK("ENCHANTED_SNOW_BLOCK", Blocks.SNOW, SNOW_BLOCK, CraftingTable.Recipe.STAR, new Recipe.Entry(SNOW_BLOCK, 32, 5)),
+        SNOWBALL("SNOW_BALL", "Items.SNOWBALL"),
+        SNOW_BLOCK("SNOW_BLOCK", "Blocks.SNOW", SNOWBALL, CraftingTable.Recipe.BOX, new Recipe.Entry(SNOWBALL, 1, 4)),
+        ENCHANTED_SNOW_BLOCK("ENCHANTED_SNOW_BLOCK", "Blocks.SNOW", SNOW_BLOCK, CraftingTable.Recipe.STAR, new Recipe.Entry(SNOW_BLOCK, 32, 5)),
 
         // Wheat Collection
-        WHEAT("WHEAT", Items.WHEAT),
-        SEEDS("SEEDS", Items.WHEAT_SEEDS),
-        HAY_BALE("HAY_BLOCK", Blocks.HAY_BLOCK, WHEAT, CraftingTable.Recipe.ALL, new Recipe.Entry(WHEAT, 1, 9)),
-        ENCHANTED_HAY_BALE("ENCHANTED_HAY_BLOCK", Blocks.HAY_BLOCK, HAY_BALE, CraftingTable.Recipe.ALL, new Recipe.Entry(HAY_BALE, 16, 9)),
-        BREAD("BREAD", Items.BREAD),
-        ENCHANTED_BREAD("ENCHANTED_BREAD", Items.BREAD, BREAD, CraftingTable.Recipe.DOUBLE_ROW, new Recipe.Entry(WHEAT, 10, 6)),
+        WHEAT("WHEAT", "Items.WHEAT"),
+        SEEDS("SEEDS", "Items.WHEAT_SEEDS"),
+        HAY_BALE("HAY_BLOCK", "Blocks.HAY_BLOCK", WHEAT, CraftingTable.Recipe.ALL, new Recipe.Entry(WHEAT, 1, 9)),
+        ENCHANTED_HAY_BALE("ENCHANTED_HAY_BLOCK", "Blocks.HAY_BLOCK", HAY_BALE, CraftingTable.Recipe.ALL, new Recipe.Entry(HAY_BALE, 16, 9)),
+        BREAD("BREAD", "Items.BREAD"),
+        ENCHANTED_BREAD("ENCHANTED_BREAD", "Items.BREAD", BREAD, CraftingTable.Recipe.DOUBLE_ROW, new Recipe.Entry(WHEAT, 10, 6)),
 
         // Carrot Collection
-        CARROT("CARROT_ITEM", Items.CARROT),
-        GOLDEN_CARROT("GOLDEN_CARROT", Items.GOLDEN_CARROT, CARROT, CraftingTable.Recipe.ALL, new Recipe.Entry(GOLD_NUGGET, 1, 8), new Recipe.Entry(CARROT, 1)),
-        ENCHANTED_CARROT("ENCHANTED_CARROT", Items.CARROT, CARROT, CraftingTable.Recipe.STAR, new Recipe.Entry(CARROT, 32, 5)),
-        ENCHANTED_GOLDEN_CARROT("ENCHANTED_GOLDEN_CARROT", Items.GOLDEN_CARROT, ENCHANTED_CARROT, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_CARROT, 32, 4), new Recipe.Entry(GOLDEN_CARROT, 32)),
+        CARROT("CARROT_ITEM", "Items.CARROT"),
+        GOLDEN_CARROT("GOLDEN_CARROT", "Items.GOLDEN_CARROT", CARROT, CraftingTable.Recipe.ALL, new Recipe.Entry(GOLD_NUGGET, 1, 8), new Recipe.Entry(CARROT, 1)),
+        ENCHANTED_CARROT("ENCHANTED_CARROT", "Items.CARROT", CARROT, CraftingTable.Recipe.STAR, new Recipe.Entry(CARROT, 32, 5)),
+        ENCHANTED_GOLDEN_CARROT("ENCHANTED_GOLDEN_CARROT", "Items.GOLDEN_CARROT", ENCHANTED_CARROT, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_CARROT, 32, 4), new Recipe.Entry(GOLDEN_CARROT, 32)),
 
         // Potato Collection
-        POTATO("POTATO_ITEM", Items.POTATO),
-        ENCHANTED_POTATO("ENCHANTED_POTATO", Items.POTATO, POTATO, CraftingTable.Recipe.STAR, new Recipe.Entry(POTATO, 32, 5)),
-        ENCHANTED_BAKED_POTATO("ENCHANTED_BAKED_POTATO", Items.BAKED_POTATO, ENCHANTED_POTATO, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_POTATO, 32, 5)),
+        POTATO("POTATO_ITEM", "Items.POTATO"),
+        ENCHANTED_POTATO("ENCHANTED_POTATO", "Items.POTATO", POTATO, CraftingTable.Recipe.STAR, new Recipe.Entry(POTATO, 32, 5)),
+        ENCHANTED_BAKED_POTATO("ENCHANTED_BAKED_POTATO", "Items.BAKED_POTATO", ENCHANTED_POTATO, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_POTATO, 32, 5)),
 
         // Pumpkin Collection
-        PUMPKIN("PUMPKIN", Blocks.PUMPKIN),
-        ENCHANTED_PUMPKIN("ENCHANTED_PUMPKIN", Blocks.PUMPKIN, PUMPKIN, CraftingTable.Recipe.STAR, new Recipe.Entry(PUMPKIN, 32, 5)),
+        PUMPKIN("PUMPKIN", "Blocks.PUMPKIN"),
+        ENCHANTED_PUMPKIN("ENCHANTED_PUMPKIN", "Blocks.PUMPKIN", PUMPKIN, CraftingTable.Recipe.STAR, new Recipe.Entry(PUMPKIN, 32, 5)),
 
         // Melon Collection
-        MELON("MELON", Items.MELON),
-        GLISTERING_MELON("SPECKLED_MELON", Items.SPECKLED_MELON, MELON, CraftingTable.Recipe.ALL, new Recipe.Entry(GOLD_NUGGET, 1, 8), new Recipe.Entry(MELON, 1)),
-        MELON_BLOCK("MELON_BLOCK", Blocks.MELON_BLOCK, MELON, CraftingTable.Recipe.ALL, new Recipe.Entry(MELON, 1, 9)),
-        ENCHANTED_MELON("ENCHANTED_MELON", Items.MELON, MELON, CraftingTable.Recipe.STAR, new Recipe.Group(MELON, 32, 5), new Recipe.Group(MELON_BLOCK, 32, 5)),
-        ENCHANTED_MELON_BLOCK("ENCHANTED_MELON_BLOCK", Blocks.MELON_BLOCK, ENCHANTED_MELON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_MELON, 32, 5)),
+        MELON("MELON", "Items.MELON"),
+        GLISTERING_MELON("SPECKLED_MELON", "Items.SPECKLED_MELON", MELON, CraftingTable.Recipe.ALL, new Recipe.Entry(GOLD_NUGGET, 1, 8), new Recipe.Entry(MELON, 1)),
+        MELON_BLOCK("MELON_BLOCK", "Blocks.MELON_BLOCK", MELON, CraftingTable.Recipe.ALL, new Recipe.Entry(MELON, 1, 9)),
+        ENCHANTED_MELON("ENCHANTED_MELON", "Items.MELON", MELON, CraftingTable.Recipe.STAR, new Recipe.Group(MELON, 32, 5), new Recipe.Group(MELON_BLOCK, 32, 5)),
+        ENCHANTED_MELON_BLOCK("ENCHANTED_MELON_BLOCK", "Blocks.MELON_BLOCK", ENCHANTED_MELON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_MELON, 32, 5)),
 
         // Mushroom Collection
-        BROWN_MUSHROOM("BROWN_MUSHROOM", Blocks.BROWN_MUSHROOM),
-        RED_MUSHROOM("RED_MUSHROOM", Blocks.RED_MUSHROOM),
-        BROWN_MUSHROOM_BLOCK("HUGE_MUSHROOM_1", Blocks.BROWN_MUSHROOM_BLOCK, BROWN_MUSHROOM, CraftingTable.Recipe.ALL, new Recipe.Entry(BROWN_MUSHROOM, 1, 9)),
-        RED_MUSHROOM_BLOCK("HUGE_MUSHROOM_2", Blocks.RED_MUSHROOM_BLOCK, RED_MUSHROOM, CraftingTable.Recipe.ALL, new Recipe.Entry(RED_MUSHROOM, 1, 9)),
-        ENCHANTED_BROWN_MUSHROOM("ENCHANTED_BROWN_MUSHROOM", Blocks.BROWN_MUSHROOM, BROWN_MUSHROOM, CraftingTable.Recipe.STAR, new Recipe.Entry(BROWN_MUSHROOM, 32, 5)),
-        ENCHANTED_RED_MUSHROOM("ENCHANTED_RED_MUSHROOM", Blocks.RED_MUSHROOM, RED_MUSHROOM, CraftingTable.Recipe.STAR, new Recipe.Entry(RED_MUSHROOM, 32, 5)),
-        ENCHANTED_BROWN_MUSHROOM_BLOCK("ENCHANTED_HUGE_MUSHROOM_1", Blocks.BROWN_MUSHROOM_BLOCK, BROWN_MUSHROOM_BLOCK, CraftingTable.Recipe.ALL, new Recipe.Entry(BROWN_MUSHROOM_BLOCK, 64, 9)),
-        ENCHANTED_RED_MUSHROOM_BLOCK("ENCHANTED_HUGE_MUSHROOM_2", Blocks.RED_MUSHROOM_BLOCK, RED_MUSHROOM_BLOCK, CraftingTable.Recipe.ALL, new Recipe.Entry(RED_MUSHROOM_BLOCK, 64, 9)),
+        BROWN_MUSHROOM("BROWN_MUSHROOM", "Blocks.BROWN_MUSHROOM"),
+        RED_MUSHROOM("RED_MUSHROOM", "Blocks.RED_MUSHROOM"),
+        BROWN_MUSHROOM_BLOCK("HUGE_MUSHROOM_1", "Blocks.BROWN_MUSHROOM_BLOCK", BROWN_MUSHROOM, CraftingTable.Recipe.ALL, new Recipe.Entry(BROWN_MUSHROOM, 1, 9)),
+        RED_MUSHROOM_BLOCK("HUGE_MUSHROOM_2", "Blocks.RED_MUSHROOM_BLOCK", RED_MUSHROOM, CraftingTable.Recipe.ALL, new Recipe.Entry(RED_MUSHROOM, 1, 9)),
+        ENCHANTED_BROWN_MUSHROOM("ENCHANTED_BROWN_MUSHROOM", "Blocks.BROWN_MUSHROOM", BROWN_MUSHROOM, CraftingTable.Recipe.STAR, new Recipe.Entry(BROWN_MUSHROOM, 32, 5)),
+        ENCHANTED_RED_MUSHROOM("ENCHANTED_RED_MUSHROOM", "Blocks.RED_MUSHROOM", RED_MUSHROOM, CraftingTable.Recipe.STAR, new Recipe.Entry(RED_MUSHROOM, 32, 5)),
+        ENCHANTED_BROWN_MUSHROOM_BLOCK("ENCHANTED_HUGE_MUSHROOM_1", "Blocks.BROWN_MUSHROOM_BLOCK", BROWN_MUSHROOM_BLOCK, CraftingTable.Recipe.ALL, new Recipe.Entry(BROWN_MUSHROOM_BLOCK, 64, 9)),
+        ENCHANTED_RED_MUSHROOM_BLOCK("ENCHANTED_HUGE_MUSHROOM_2", "Blocks.RED_MUSHROOM_BLOCK", RED_MUSHROOM_BLOCK, CraftingTable.Recipe.ALL, new Recipe.Entry(RED_MUSHROOM_BLOCK, 64, 9)),
 
         // Cocoa Beans Collection
-        COCOA_BEANS("INK_SACK:3", Items.DYE, 3),
-        ENCHANTED_COCOA_BEANS("ENCHANTED_COCOA", Items.DYE, 3, COCOA_BEANS, CraftingTable.Recipe.STAR, new Recipe.Entry(COCOA_BEANS, 32, 5)),
-        ENCHANTED_COOKIE("ENCHANTED_COOKIE", Items.COOKIE, ENCHANTED_COCOA_BEANS, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_COCOA_BEANS, 32, 4), new Recipe.Entry(WHEAT, 32)),
+        COCOA_BEANS("INK_SACK:3", "Items.DYE", 3),
+        ENCHANTED_COCOA_BEANS("ENCHANTED_COCOA", "Items.DYE", 3, COCOA_BEANS, CraftingTable.Recipe.STAR, new Recipe.Entry(COCOA_BEANS, 32, 5)),
+        ENCHANTED_COOKIE("ENCHANTED_COOKIE", "Items.COOKIE", ENCHANTED_COCOA_BEANS, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_COCOA_BEANS, 32, 4), new Recipe.Entry(WHEAT, 32)),
 
         // Cactus Collection
-        CACTUS("CACTUS", Blocks.CACTUS),
-        CACTUS_GREEN("INK_SACK:2", Items.DYE, 2),
-        ENCHANTED_CACTUS_GREEN("ENCHANTED_CACTUS_GREEN", Items.DYE, 2, CACTUS_GREEN, CraftingTable.Recipe.STAR, new Recipe.Entry(CACTUS_GREEN, 32, 5)),
-        ENCHANTED_CACTUS("ENCHANTED_CACTUS", Blocks.CACTUS, ENCHANTED_CACTUS_GREEN, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_CACTUS_GREEN, 32, 5)),
+        CACTUS("CACTUS", "Blocks.CACTUS"),
+        CACTUS_GREEN("INK_SACK:2", "Items.DYE", 2),
+        ENCHANTED_CACTUS_GREEN("ENCHANTED_CACTUS_GREEN", "Items.DYE", 2, CACTUS_GREEN, CraftingTable.Recipe.STAR, new Recipe.Entry(CACTUS_GREEN, 32, 5)),
+        ENCHANTED_CACTUS("ENCHANTED_CACTUS", "Blocks.CACTUS", ENCHANTED_CACTUS_GREEN, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_CACTUS_GREEN, 32, 5)),
 
         // Sugar Cane Collection
-        SUGAR_CANE("SUGAR_CANE", Items.REEDS),
-        SUGAR("SUGAR", Items.SUGAR, SUGAR_CANE, CraftingTable.Recipe.SINGLE, new Recipe.Entry(SUGAR_CANE, 1)),
-        PAPER("PAPER", Items.PAPER, SUGAR_CANE, CraftingTable.Recipe.TOP_ROW, new Recipe.Entry(SUGAR_CANE, 1, 3)),
-        ENCHANTED_SUGAR("ENCHANTED_SUGAR", Items.SUGAR, SUGAR_CANE, CraftingTable.Recipe.STAR, new Recipe.Group(SUGAR_CANE, 32, 5), new Recipe.Group(SUGAR, 32, 5)),
-        ENCHANTED_PAPER("ENCHANTED_PAPER", Items.PAPER, SUGAR_CANE, CraftingTable.Recipe.DIAGONAL, new Recipe.Entry(SUGAR_CANE, 64, 3)),
-        ENCHANTED_SUGAR_CANE("ENCHANTED_SUGAR_CANE", Items.REEDS, ENCHANTED_SUGAR, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_SUGAR, 32, 5)),
+        SUGAR_CANE("SUGAR_CANE", "Items.REEDS"),
+        SUGAR("SUGAR", "Items.SUGAR", SUGAR_CANE, CraftingTable.Recipe.SINGLE, new Recipe.Entry(SUGAR_CANE, 1)),
+        PAPER("PAPER", "Items.PAPER", SUGAR_CANE, CraftingTable.Recipe.TOP_ROW, new Recipe.Entry(SUGAR_CANE, 1, 3)),
+        ENCHANTED_SUGAR("ENCHANTED_SUGAR", "Items.SUGAR", SUGAR_CANE, CraftingTable.Recipe.STAR, new Recipe.Group(SUGAR_CANE, 32, 5), new Recipe.Group(SUGAR, 32, 5)),
+        ENCHANTED_PAPER("ENCHANTED_PAPER", "Items.PAPER", SUGAR_CANE, CraftingTable.Recipe.DIAGONAL, new Recipe.Entry(SUGAR_CANE, 64, 3)),
+        ENCHANTED_SUGAR_CANE("ENCHANTED_SUGAR_CANE", "Items.REEDS", ENCHANTED_SUGAR, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_SUGAR, 32, 5)),
 
         // Rabbit Collection
-        RABBIT("RABBIT", Items.RABBIT),
-        RABBIT_FOOT("RABBIT_FOOT", Items.RABBIT_FOOT),
-        ENCHANTED_RABBIT_FOOT("ENCHANTED_RABBIT_FOOT", Items.RABBIT_FOOT, RABBIT_FOOT, CraftingTable.Recipe.STAR, new Recipe.Entry(RABBIT_FOOT, 32, 5)),
-        RABBIT_HIDE("RABBIT_HIDE", Items.RABBIT_HIDE),
-        ENCHANTED_RABBIT_HIDE("ENCHANTED_RABBIT_HIDE", Items.RABBIT_HIDE, RABBIT_HIDE, CraftingTable.Recipe.ALL, new Recipe.Entry(RABBIT_HIDE, 64, 9)),
+        RABBIT("RABBIT", "Items.RABBIT"),
+        RABBIT_FOOT("RABBIT_FOOT", "Items.RABBIT_FOOT"),
+        ENCHANTED_RABBIT_FOOT("ENCHANTED_RABBIT_FOOT", "Items.RABBIT_FOOT", RABBIT_FOOT, CraftingTable.Recipe.STAR, new Recipe.Entry(RABBIT_FOOT, 32, 5)),
+        RABBIT_HIDE("RABBIT_HIDE", "Items.RABBIT_HIDE"),
+        ENCHANTED_RABBIT_HIDE("ENCHANTED_RABBIT_HIDE", "Items.RABBIT_HIDE", RABBIT_HIDE, CraftingTable.Recipe.ALL, new Recipe.Entry(RABBIT_HIDE, 64, 9)),
 
         // Feather Collection
-        FEATHER("FEATHER", Items.FEATHER),
-        ENCHANTED_FEATHER("ENCHANTED_FEATHER", Items.FEATHER, FEATHER, CraftingTable.Recipe.STAR, new Recipe.Entry(FEATHER, 32, 5)),
+        FEATHER("FEATHER", "Items.FEATHER"),
+        ENCHANTED_FEATHER("ENCHANTED_FEATHER", "Items.FEATHER", FEATHER, CraftingTable.Recipe.STAR, new Recipe.Entry(FEATHER, 32, 5)),
 
         // Leather Collection
-        RAW_BEEF("RAW_BEEF", Items.BEEF),
-        ENCHANTED_RAW_BEEF("ENCHANTED_RAW_BEEF", Items.BEEF, RAW_BEEF, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_BEEF, 32, 5)),
-        LEATHER("LEATHER", Items.LEATHER, RABBIT_HIDE, CraftingTable.Recipe.BOX, new Recipe.Entry(RABBIT_HIDE, 1, 4)),
-        ENCHANTED_LEATHER("ENCHANTED_LEATHER", Items.LEATHER, LEATHER, CraftingTable.Recipe.ALL, new Recipe.Entry(LEATHER, 64, 9)),
+        RAW_BEEF("RAW_BEEF", "Items.BEEF"),
+        ENCHANTED_RAW_BEEF("ENCHANTED_RAW_BEEF", "Items.BEEF", RAW_BEEF, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_BEEF, 32, 5)),
+        LEATHER("LEATHER", "Items.LEATHER", RABBIT_HIDE, CraftingTable.Recipe.BOX, new Recipe.Entry(RABBIT_HIDE, 1, 4)),
+        ENCHANTED_LEATHER("ENCHANTED_LEATHER", "Items.LEATHER", LEATHER, CraftingTable.Recipe.ALL, new Recipe.Entry(LEATHER, 64, 9)),
 
         // Porkchop Collection
-        RAW_PORKCHOP("PORK", Items.PORKCHOP),
-        ENCHANTED_RAW_PORKCHOP("ENCHANTED_PORK", Items.PORKCHOP, RAW_PORKCHOP, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_PORKCHOP, 32, 5)),
-        ENCHANTED_GRILLED_PORK("ENCHANTED_GRILLED_PORK", Items.COOKED_PORKCHOP, ENCHANTED_RAW_PORKCHOP, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_RAW_PORKCHOP, 32, 5)),
+        RAW_PORKCHOP("PORK", "Items.PORKCHOP"),
+        ENCHANTED_RAW_PORKCHOP("ENCHANTED_PORK", "Items.PORKCHOP", RAW_PORKCHOP, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_PORKCHOP, 32, 5)),
+        ENCHANTED_GRILLED_PORK("ENCHANTED_GRILLED_PORK", "Items.COOKED_PORKCHOP", ENCHANTED_RAW_PORKCHOP, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_RAW_PORKCHOP, 32, 5)),
 
         // Chicken Collection
-        RAW_CHICKEN("RAW_CHICKEN", Items.CHICKEN),
-        ENCHANTED_RAW_CHICKEN("ENCHANTED_RAW_CHICKEN", Items.CHICKEN, RAW_CHICKEN, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_CHICKEN, 32, 5)),
-        EGG("EGG", Items.EGG),
-        ENCHANTED_EGG("ENCHANTED_EGG", Items.EGG, EGG, CraftingTable.Recipe.ALL, new Recipe.Entry(EGG, 16, 9)),
-        ENCHANTED_SUPER_EGG("SUPER_EGG", Items.SPAWN_EGG, ENCHANTED_EGG, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_EGG, 16, 9)),
-        MILK_BUCKET("MILK_BUCKET", Items.MILK_BUCKET),
-        ENCHANTED_CAKE("ENCHANTED_CAKE", Items.CAKE, ENCHANTED_EGG, CraftingTable.Recipe.ALL, new Recipe.Entry(MILK_BUCKET, 1, 3), new Recipe.Entry(ENCHANTED_SUGAR, 1, 2), new Recipe.Entry(WHEAT, 1, 3), new Recipe.Entry(ENCHANTED_EGG, 1)),
+        RAW_CHICKEN("RAW_CHICKEN", "Items.CHICKEN"),
+        ENCHANTED_RAW_CHICKEN("ENCHANTED_RAW_CHICKEN", "Items.CHICKEN", RAW_CHICKEN, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_CHICKEN, 32, 5)),
+        EGG("EGG", "Items.EGG"),
+        ENCHANTED_EGG("ENCHANTED_EGG", "Items.EGG", EGG, CraftingTable.Recipe.ALL, new Recipe.Entry(EGG, 16, 9)),
+        ENCHANTED_SUPER_EGG("SUPER_EGG", "Items.SPAWN_EGG", ENCHANTED_EGG, CraftingTable.Recipe.ALL, new Recipe.Entry(ENCHANTED_EGG, 16, 9)),
+        MILK_BUCKET("MILK_BUCKET", "Items.MILK_BUCKET"),
+        ENCHANTED_CAKE("ENCHANTED_CAKE", "Items.CAKE", ENCHANTED_EGG, CraftingTable.Recipe.ALL, new Recipe.Entry(MILK_BUCKET, 1, 3), new Recipe.Entry(ENCHANTED_SUGAR, 1, 2), new Recipe.Entry(WHEAT, 1, 3), new Recipe.Entry(ENCHANTED_EGG, 1)),
 
         // Mutton Collection
-        MUTTON("MUTTON", Items.MUTTON),
-        ENCHANTED_MUTTON("ENCHANTED_MUTTON", Items.MUTTON, MUTTON, CraftingTable.Recipe.STAR, new Recipe.Entry(MUTTON, 32, 5)),
-        ENCHANTED_COOKED_MUTTON("ENCHANTED_COOKED_MUTTON", Items.COOKED_MUTTON, ENCHANTED_MUTTON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_MUTTON, 32, 5)),
-        WOOL("WOOL", Blocks.WOOL),
-        ENCHANTED_WOOL("ENCHANTED_WOOL", Blocks.WOOL, WOOL, CraftingTable.Recipe.STAR, new Recipe.Entry(WOOL, 32, 5)),
+        MUTTON("MUTTON", "Items.MUTTON"),
+        ENCHANTED_MUTTON("ENCHANTED_MUTTON", "Items.MUTTON", MUTTON, CraftingTable.Recipe.STAR, new Recipe.Entry(MUTTON, 32, 5)),
+        ENCHANTED_COOKED_MUTTON("ENCHANTED_COOKED_MUTTON", "Items.COOKED_MUTTON", ENCHANTED_MUTTON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_MUTTON, 32, 5)),
+        WOOL("WOOL", "Blocks.WOOL"),
+        ENCHANTED_WOOL("ENCHANTED_WOOL", "Blocks.WOOL", WOOL, CraftingTable.Recipe.STAR, new Recipe.Entry(WOOL, 32, 5)),
 
         // Nether Wart Collection
-        NETHER_WART("NETHER_STALK", Items.NETHER_WART),
-        ENCHANTED_NETHER_WART("ENCHANTED_NETHER_STALK", Items.NETHER_WART, NETHER_WART, CraftingTable.Recipe.STAR, new Recipe.Entry(NETHER_WART, 32, 5)),
+        NETHER_WART("NETHER_STALK", "Items.NETHER_WART"),
+        ENCHANTED_NETHER_WART("ENCHANTED_NETHER_STALK", "Items.NETHER_WART", NETHER_WART, CraftingTable.Recipe.STAR, new Recipe.Entry(NETHER_WART, 32, 5)),
 
         // Rotten Flesh Collection
-        ROTTEN_FLESH("ROTTEN_FLESH", Items.ROTTEN_FLESH),
-        ENCHANTED_ROTTEN_FLESH("ENCHANTED_ROTTEN_FLESH", Items.ROTTEN_FLESH, ROTTEN_FLESH, CraftingTable.Recipe.STAR, new Recipe.Entry(ROTTEN_FLESH, 32, 5)),
-        ZOMBIE_HEART("ZOMBIE_HEART", Items.SKULL, ENCHANTED_ROTTEN_FLESH, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_ROTTEN_FLESH, 32, 8)),
+        ROTTEN_FLESH("ROTTEN_FLESH", "Items.ROTTEN_FLESH"),
+        ENCHANTED_ROTTEN_FLESH("ENCHANTED_ROTTEN_FLESH", "Items.ROTTEN_FLESH", ROTTEN_FLESH, CraftingTable.Recipe.STAR, new Recipe.Entry(ROTTEN_FLESH, 32, 5)),
+        ZOMBIE_HEART("ZOMBIE_HEART", "Items.SKULL", ENCHANTED_ROTTEN_FLESH, CraftingTable.Recipe.RING, new Recipe.Entry(ENCHANTED_ROTTEN_FLESH, 32, 8)),
 
         // Bone Collection
-        BONE("BONE", Items.BONE),
-        ENCHANTED_BONE("ENCHANTED_BONE", Items.BONE, BONE, CraftingTable.Recipe.STAR, new Recipe.Entry(BONE, 32, 5)),
+        BONE("BONE", "Items.BONE"),
+        ENCHANTED_BONE("ENCHANTED_BONE", "Items.BONE", BONE, CraftingTable.Recipe.STAR, new Recipe.Entry(BONE, 32, 5)),
 
         // String Collection
-        STRING("STRING", Items.STRING),
-        ENCHANTED_STRING("ENCHANTED_STRING", Items.STRING, STRING, CraftingTable.Recipe.SINGLE_ROW, new Recipe.Entry(STRING, 64, 3)),
+        STRING("STRING", "Items.STRING"),
+        ENCHANTED_STRING("ENCHANTED_STRING", "Items.STRING", STRING, CraftingTable.Recipe.SINGLE_ROW, new Recipe.Entry(STRING, 64, 3)),
 
         // Spider Eye Collection
-        SPIDER_EYE("SPIDER_EYE", Items.SPIDER_EYE),
-        ENCHANTED_SPIDER_EYE("ENCHANTED_SPIDER_EYE", Items.SPIDER_EYE, SPIDER_EYE, CraftingTable.Recipe.STAR, new Recipe.Entry(SPIDER_EYE, 32, 5)),
-        ENCHANTED_FERMENTED_SPIDER_EYE("ENCHANTED_FERMENTED_SPIDER_EYE", Items.FERMENTED_SPIDER_EYE, ENCHANTED_SPIDER_EYE, CraftingTable.Recipe.CENTER3, new Recipe.Entry(BROWN_MUSHROOM, 64), new Recipe.Entry(SUGAR, 64), new Recipe.Entry(ENCHANTED_SPIDER_EYE, 64)),
+        SPIDER_EYE("SPIDER_EYE", "Items.SPIDER_EYE"),
+        ENCHANTED_SPIDER_EYE("ENCHANTED_SPIDER_EYE", "Items.SPIDER_EYE", SPIDER_EYE, CraftingTable.Recipe.STAR, new Recipe.Entry(SPIDER_EYE, 32, 5)),
+        ENCHANTED_FERMENTED_SPIDER_EYE("ENCHANTED_FERMENTED_SPIDER_EYE", "Items.FERMENTED_SPIDER_EYE", ENCHANTED_SPIDER_EYE, CraftingTable.Recipe.CENTER3, new Recipe.Entry(BROWN_MUSHROOM, 64), new Recipe.Entry(SUGAR, 64), new Recipe.Entry(ENCHANTED_SPIDER_EYE, 64)),
 
         // Gunpowder Collection
-        GUNPOWDER("SULPHUR", Items.GUNPOWDER),
-        ENCHANTED_GUNPOWDER("ENCHANTED_GUNPOWDER", Items.GUNPOWDER, GUNPOWDER, CraftingTable.Recipe.STAR, new Recipe.Entry(GUNPOWDER, 32, 5)),
-        ENCHANTED_FIREWORK_ROCKET("ENCHANTED_FIREWORK_ROCKET", Items.FIREWORKS, ENCHANTED_GUNPOWDER, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GUNPOWDER, 16, 4), new Recipe.Entry(PAPER, 16)),
+        GUNPOWDER("SULPHUR", "Items.GUNPOWDER"),
+        ENCHANTED_GUNPOWDER("ENCHANTED_GUNPOWDER", "Items.GUNPOWDER", GUNPOWDER, CraftingTable.Recipe.STAR, new Recipe.Entry(GUNPOWDER, 32, 5)),
+        ENCHANTED_FIREWORK_ROCKET("ENCHANTED_FIREWORK_ROCKET", "Items.FIREWORKS", ENCHANTED_GUNPOWDER, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GUNPOWDER, 16, 4), new Recipe.Entry(PAPER, 16)),
 
         // Blaze Rod Collection
-        BLAZE_ROD("BLAZE_ROD", Items.BLAZE_ROD),
-        BLAZE_POWDER("BLAZE_POWDER", Items.BLAZE_POWDER, BLAZE_ROD, CraftingTable.Recipe.SINGLE, new Recipe.Entry(BLAZE_ROD, 1)),
-        ENCHANTED_BLAZE_POWDER("ENCHANTED_BLAZE_POWDER", Items.BLAZE_POWDER, BLAZE_ROD, CraftingTable.Recipe.STAR, new Recipe.Entry(BLAZE_ROD, 32, 5)),
-        ENCHANTED_BLAZE_ROD("ENCHANTED_BLAZE_ROD", Items.BLAZE_POWDER, ENCHANTED_BLAZE_POWDER, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_BLAZE_POWDER, 32, 5)),
+        BLAZE_ROD("BLAZE_ROD", "Items.BLAZE_ROD"),
+        BLAZE_POWDER("BLAZE_POWDER", "Items.BLAZE_POWDER", BLAZE_ROD, CraftingTable.Recipe.SINGLE, new Recipe.Entry(BLAZE_ROD, 1)),
+        ENCHANTED_BLAZE_POWDER("ENCHANTED_BLAZE_POWDER", "Items.BLAZE_POWDER", BLAZE_ROD, CraftingTable.Recipe.STAR, new Recipe.Entry(BLAZE_ROD, 32, 5)),
+        ENCHANTED_BLAZE_ROD("ENCHANTED_BLAZE_ROD", "Items.BLAZE_POWDER", ENCHANTED_BLAZE_POWDER, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_BLAZE_POWDER, 32, 5)),
 
         // Ender Pearl Collection
-        ENDER_PEARL("ENDER_PEARL", Items.ENDER_PEARL),
-        ENCHANTED_ENDER_PEARL("ENCHANTED_ENDER_PEARL", Items.ENDER_PEARL, ENDER_PEARL, CraftingTable.Recipe.STAR, new Recipe.Entry(ENDER_PEARL, 4, 5)),
-        ENCHANTED_EYE_OF_ENDER("ENCHANTED_EYE_OF_ENDER", Items.ENDER_EYE, ENCHANTED_ENDER_PEARL, CraftingTable.Recipe.STAR, new Recipe.Entry(BLAZE_POWDER, 16, 4), new Recipe.Entry(ENCHANTED_ENDER_PEARL, 16)),
+        ENDER_PEARL("ENDER_PEARL", "Items.ENDER_PEARL"),
+        ENCHANTED_ENDER_PEARL("ENCHANTED_ENDER_PEARL", "Items.ENDER_PEARL", ENDER_PEARL, CraftingTable.Recipe.STAR, new Recipe.Entry(ENDER_PEARL, 4, 5)),
+        ENCHANTED_EYE_OF_ENDER("ENCHANTED_EYE_OF_ENDER", "Items.ENDER_EYE", ENCHANTED_ENDER_PEARL, CraftingTable.Recipe.STAR, new Recipe.Entry(BLAZE_POWDER, 16, 4), new Recipe.Entry(ENCHANTED_ENDER_PEARL, 16)),
 
         // Ghast Collection
-        GHAST_TEAR("GHAST_TEAR", Items.GHAST_TEAR),
-        ENCHANTED_GHAST_TEAR("ENCHANTED_GHAST_TEAR", Items.GHAST_TEAR, GHAST_TEAR, CraftingTable.Recipe.STAR, new Recipe.Entry(GHAST_TEAR, 1, 5)),
-        SILVER_FANG("SILVER_FANG", Items.GHAST_TEAR, ENCHANTED_GHAST_TEAR, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GHAST_TEAR, 5, 5)),
+        GHAST_TEAR("GHAST_TEAR", "Items.GHAST_TEAR"),
+        ENCHANTED_GHAST_TEAR("ENCHANTED_GHAST_TEAR", "Items.GHAST_TEAR", GHAST_TEAR, CraftingTable.Recipe.STAR, new Recipe.Entry(GHAST_TEAR, 1, 5)),
+        SILVER_FANG("SILVER_FANG", "Items.GHAST_TEAR", ENCHANTED_GHAST_TEAR, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_GHAST_TEAR, 5, 5)),
 
         // Slimeball Collection
-        SLIME_BALL("SLIME_BALL", Items.SLIME_BALL),
-        SLIME_BLOCK("SLIME_BLOCK", Blocks.SLIME_BLOCK, SLIME_BALL, CraftingTable.Recipe.ALL, new Recipe.Entry(SLIME_BALL, 1, 9)),
-        ENCHANTED_SLIME_BALL("ENCHANTED_SLIME_BALL", Items.SLIME_BALL, SLIME_BALL, CraftingTable.Recipe.STAR, new Recipe.Entry(SLIME_BALL, 32, 5)),
-        ENCHANTED_SLIME_BALL_ALT("ENCHANTED_SLIME_BALL", Items.SLIME_BALL, SLIME_BLOCK, CraftingTable.Recipe.STAR, new Recipe.Entry(SLIME_BLOCK, 32, 5)),
-        ENCHANTED_SLIME_BLOCK("ENCHANTED_SLIME_BALL", Items.SLIME_BALL, ENCHANTED_SLIME_BALL, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_SLIME_BALL, 32, 5)),
+        SLIME_BALL("SLIME_BALL", "Items.SLIME_BALL"),
+        SLIME_BLOCK("SLIME_BLOCK", "Blocks.SLIME_BLOCK", SLIME_BALL, CraftingTable.Recipe.ALL, new Recipe.Entry(SLIME_BALL, 1, 9)),
+        ENCHANTED_SLIME_BALL("ENCHANTED_SLIME_BALL", "Items.SLIME_BALL", SLIME_BALL, CraftingTable.Recipe.STAR, new Recipe.Entry(SLIME_BALL, 32, 5)),
+        ENCHANTED_SLIME_BALL_ALT("ENCHANTED_SLIME_BALL", "Items.SLIME_BALL", SLIME_BLOCK, CraftingTable.Recipe.STAR, new Recipe.Entry(SLIME_BLOCK, 32, 5)),
+        ENCHANTED_SLIME_BLOCK("ENCHANTED_SLIME_BALL", "Items.SLIME_BALL", ENCHANTED_SLIME_BALL, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_SLIME_BALL, 32, 5)),
 
         // Magma Cream Collection
-        MAGMA_CREAM("MAGMA_CREAM", Items.MAGMA_CREAM, SLIME_BALL, CraftingTable.Recipe.MIDDLE2, new Recipe.Entry(BLAZE_POWDER, 1), new Recipe.Entry(SLIME_BALL, 1)),
-        ENCHANTED_MAGMA_CREAM("ENCHANTED_MAGMA_CREAM", Items.MAGMA_CREAM, MAGMA_CREAM, CraftingTable.Recipe.STAR, new Recipe.Entry(MAGMA_CREAM, 32, 5)),
+        MAGMA_CREAM("MAGMA_CREAM", "Items.MAGMA_CREAM", SLIME_BALL, CraftingTable.Recipe.MIDDLE2, new Recipe.Entry(BLAZE_POWDER, 1), new Recipe.Entry(SLIME_BALL, 1)),
+        ENCHANTED_MAGMA_CREAM("ENCHANTED_MAGMA_CREAM", "Items.MAGMA_CREAM", MAGMA_CREAM, CraftingTable.Recipe.STAR, new Recipe.Entry(MAGMA_CREAM, 32, 5)),
 
         // Raw Fish Collection
-        RAW_FISH("RAW_FISH", Items.FISH),
-        ENCHANTED_RAW_FISH("ENCHANTED_RAW_FISH", Items.FISH, RAW_FISH, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_FISH, 32, 5)),
-        ENCHANTED_COOKED_FISH("ENCHANTED_COOKED_FISH", Items.COOKED_FISH, ENCHANTED_RAW_FISH, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_RAW_FISH, 32, 5)),
+        RAW_FISH("RAW_FISH", "Items.FISH"),
+        ENCHANTED_RAW_FISH("ENCHANTED_RAW_FISH", "Items.FISH", RAW_FISH, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_FISH, 32, 5)),
+        ENCHANTED_COOKED_FISH("ENCHANTED_COOKED_FISH", "Items.COOKED_FISH", ENCHANTED_RAW_FISH, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_RAW_FISH, 32, 5)),
 
         // Raw Salmon Collection
-        RAW_SALMON("RAW_FISH:1", Items.FISH, 1),
-        ENCHANTED_RAW_SALMON("ENCHANTED_RAW_SALMON", Items.FISH, 1, RAW_SALMON, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_SALMON, 32, 5)),
-        ENCHANTED_COOKED_SALMON("ENCHANTED_COOKED_SALMON", Items.FISH, 1, ENCHANTED_RAW_SALMON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_RAW_SALMON, 32, 5)),
+        RAW_SALMON("RAW_FISH:1", "Items.FISH", 1),
+        ENCHANTED_RAW_SALMON("ENCHANTED_RAW_SALMON", "Items.FISH", 1, RAW_SALMON, CraftingTable.Recipe.STAR, new Recipe.Entry(RAW_SALMON, 32, 5)),
+        ENCHANTED_COOKED_SALMON("ENCHANTED_COOKED_SALMON", "Items.FISH", 1, ENCHANTED_RAW_SALMON, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_RAW_SALMON, 32, 5)),
 
         // Clownfish Collection
-        CLOWNFISH("RAW_FISH:2", Items.FISH, 2),
-        ENCHANTED_CLOWNFISH("ENCHANTED_CLOWNFISH", Items.FISH, 2, CLOWNFISH, CraftingTable.Recipe.STAR, new Recipe.Entry(CLOWNFISH, 32, 5)),
+        CLOWNFISH("RAW_FISH:2", "Items.FISH", 2),
+        ENCHANTED_CLOWNFISH("ENCHANTED_CLOWNFISH", "Items.FISH", 2, CLOWNFISH, CraftingTable.Recipe.STAR, new Recipe.Entry(CLOWNFISH, 32, 5)),
 
         // Pufferfish Collection
-        PUFFERFISH("RAW_FISH:3", Items.FISH, 3),
-        ENCHANTED_PUFFERFISH("ENCHANTED_PUFFERFISH", Items.FISH, 3, PUFFERFISH, CraftingTable.Recipe.STAR, new Recipe.Entry(PUFFERFISH, 32, 5)),
+        PUFFERFISH("RAW_FISH:3", "Items.FISH", 3),
+        ENCHANTED_PUFFERFISH("ENCHANTED_PUFFERFISH", "Items.FISH", 3, PUFFERFISH, CraftingTable.Recipe.STAR, new Recipe.Entry(PUFFERFISH, 32, 5)),
 
         // Prismarine Shard Collection
-        PRISMARINE_SHARD("PRISMARINE_SHARD", Items.PRISMARINE_SHARD),
-        ENCHANTED_PRISMARINE_SHARD("ENCHANTED_PRISMARINE_SHARD", Items.PRISMARINE_SHARD, PRISMARINE_SHARD, CraftingTable.Recipe.STAR, new Recipe.Entry(PRISMARINE_SHARD, 32, 5)),
+        PRISMARINE_SHARD("PRISMARINE_SHARD", "Items.PRISMARINE_SHARD"),
+        ENCHANTED_PRISMARINE_SHARD("ENCHANTED_PRISMARINE_SHARD", "Items.PRISMARINE_SHARD", PRISMARINE_SHARD, CraftingTable.Recipe.STAR, new Recipe.Entry(PRISMARINE_SHARD, 32, 5)),
 
         // Prismarine Crystals Collection
-        PRISMARINE_CRYSTALS("PRISMARINE_CRYSTALS", Items.PRISMARINE_CRYSTALS),
-        ENCHANTED_PRISMARINE_CRYSTALS("ENCHANTED_PRISMARINE_CRYSTALS", Items.PRISMARINE_CRYSTALS, PRISMARINE_CRYSTALS, CraftingTable.Recipe.STAR, new Recipe.Entry(PRISMARINE_CRYSTALS, 32, 5)),
+        PRISMARINE_CRYSTALS("PRISMARINE_CRYSTALS", "Items.PRISMARINE_CRYSTALS"),
+        ENCHANTED_PRISMARINE_CRYSTALS("ENCHANTED_PRISMARINE_CRYSTALS", "Items.PRISMARINE_CRYSTALS", PRISMARINE_CRYSTALS, CraftingTable.Recipe.STAR, new Recipe.Entry(PRISMARINE_CRYSTALS, 32, 5)),
 
         // Clay Collection
-        CLAY("CLAY_BALL", Items.CLAY_BALL),
-        CLAY_BLOCK("CLAY", Blocks.CLAY, CLAY, CraftingTable.Recipe.BOX, new Recipe.Entry(CLAY, 1, 4)),
-        ENCHANTED_CLAY("ENCHANTED_CLAY_BALL", Items.CLAY_BALL, CLAY, CraftingTable.Recipe.STAR, new Recipe.Entry(CLAY, 32, 5)),
+        CLAY("CLAY_BALL", "Items.CLAY_BALL"),
+        CLAY_BLOCK("CLAY", "Blocks.CLAY", CLAY, CraftingTable.Recipe.BOX, new Recipe.Entry(CLAY, 1, 4)),
+        ENCHANTED_CLAY("ENCHANTED_CLAY_BALL", "Items.CLAY_BALL", CLAY, CraftingTable.Recipe.STAR, new Recipe.Entry(CLAY, 32, 5)),
 
         // Lily Pad Collection
-        LILY_PAD("WATER_LILY", Blocks.WATERLILY),
-        ENCHANTED_LILY_PAD("ENCHANTED_LILY_PAD", Blocks.WATERLILY, LILY_PAD, CraftingTable.Recipe.STAR, new Recipe.Entry(LILY_PAD, 32, 5)),
+        LILY_PAD("WATER_LILY", "Blocks.WATERLILY"),
+        ENCHANTED_LILY_PAD("ENCHANTED_LILY_PAD", "Blocks.WATERLILY", LILY_PAD, CraftingTable.Recipe.STAR, new Recipe.Entry(LILY_PAD, 32, 5)),
 
         // Ink Sack Collection
-        INK_SACK("INK_SACK", Items.DYE),
-        ENCHANTED_INK_SACK("ENCHANTED_INK_SACK", Items.DYE, INK_SACK, CraftingTable.Recipe.STAR, new Recipe.Entry(INK_SACK, 16, 5)),
+        INK_SACK("INK_SACK", "Items.DYE"),
+        ENCHANTED_INK_SACK("ENCHANTED_INK_SACK", "Items.DYE", INK_SACK, CraftingTable.Recipe.STAR, new Recipe.Entry(INK_SACK, 16, 5)),
 
         // Sponge Collection
-        SPONGE("SPONGE", Blocks.SPONGE),
-        ENCHANTED_SPONGE("ENCHANTED_SPONGE", Blocks.SPONGE, SPONGE, CraftingTable.Recipe.STAR, new Recipe.Entry(SPONGE, 8, 5)),
-        ENCHANTED_WET_SPONGE("ENCHANTED_WET_SPONGE", Blocks.SPONGE, ENCHANTED_SPONGE, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_SPONGE, 8, 5)),
+        SPONGE("SPONGE", "Blocks.SPONGE"),
+        ENCHANTED_SPONGE("ENCHANTED_SPONGE", "Blocks.SPONGE", SPONGE, CraftingTable.Recipe.STAR, new Recipe.Entry(SPONGE, 8, 5)),
+        ENCHANTED_WET_SPONGE("ENCHANTED_WET_SPONGE", "Blocks.SPONGE", ENCHANTED_SPONGE, CraftingTable.Recipe.STAR, new Recipe.Entry(ENCHANTED_SPONGE, 8, 5)),
 
         // Slayer
-        TARANTULA_WEB("TARANTULA_WEB", Blocks.WEB),
-        TARANTULA_SILK("TARANTULA_SILK", Items.STRING, TARANTULA_WEB, CraftingTable.Recipe.STAR, new Recipe.Entry(TARANTULA_WEB, 32, 4), new Recipe.Entry(ENCHANTED_FLINT, 32)),
-        REVENANT_FLESH("REVENANT_FLESH", Items.ROTTEN_FLESH),
-        REVENANT_VISCERA("REVENANT_VISCERA", Items.ROTTEN_FLESH, REVENANT_FLESH, CraftingTable.Recipe.STAR, new Recipe.Entry(REVENANT_FLESH, 32, 4), new Recipe.Entry(ENCHANTED_STRING, 32)),
-        WOLF_TOOTH("WOLF_TOOTH", Items.GHAST_TEAR),
-        GOLDEN_TOOTH("GOLDEN_TOOTH", Items.GHAST_TEAR, WOLF_TOOTH, CraftingTable.Recipe.STAR, new Recipe.Entry(GHAST_TEAR, 32, 4), new Recipe.Entry(ENCHANTED_GOLD, 32)),
+        TARANTULA_WEB("TARANTULA_WEB", "Blocks.WEB"),
+        TARANTULA_SILK("TARANTULA_SILK", "Items.STRING", TARANTULA_WEB, CraftingTable.Recipe.STAR, new Recipe.Entry(TARANTULA_WEB, 32, 4), new Recipe.Entry(ENCHANTED_FLINT, 32)),
+        REVENANT_FLESH("REVENANT_FLESH", "Items.ROTTEN_FLESH"),
+        REVENANT_VISCERA("REVENANT_VISCERA", "Items.ROTTEN_FLESH", REVENANT_FLESH, CraftingTable.Recipe.STAR, new Recipe.Entry(REVENANT_FLESH, 32, 4), new Recipe.Entry(ENCHANTED_STRING, 32)),
+        WOLF_TOOTH("WOLF_TOOTH", "Items.GHAST_TEAR"),
+        GOLDEN_TOOTH("GOLDEN_TOOTH", "Items.GHAST_TEAR", WOLF_TOOTH, CraftingTable.Recipe.STAR, new Recipe.Entry(GHAST_TEAR, 32, 4), new Recipe.Entry(ENCHANTED_GOLD, 32)),
 
         // Miscellaneous
-        ARROW("ARROW", Items.ARROW),
-        BOOK("BOOK", Items.BOOK, PAPER, CraftingTable.Recipe.BOX, new Recipe.Entry(PAPER, 1, 3), new Recipe.Entry(LEATHER, 1)),
-        ENCHANTED_BOOK("ENCHANTED_BOOK", Items.ENCHANTED_BOOK);
+        ARROW("ARROW", "Items.ARROW"),
+        BOOK("BOOK", "Items.BOOK", PAPER, CraftingTable.Recipe.BOX, new Recipe.Entry(PAPER, 1, 3), new Recipe.Entry(LEATHER, 1)),
+        ENCHANTED_BOOK("ENCHANTED_BOOK", "Items.ENCHANTED_BOOK");
 
         static {
             for (Item skyblockItem : values()) {
@@ -784,13 +783,13 @@ public class Skyblock {
         }
 
         private final String id;
-        private final net.minecraft.item.Item item;
+        private final String item;
         private final int meta;
         private final Item baseItem;
         private final Set<Recipe.Group> recipeGroups = new HashSet<>();
         private final CraftingTable.Recipe recipe;
         private final Set<Item> collection = new HashSet<>();
-
+/*
         Item(String id, Block block) {
             this(id, block, 0);
         }
@@ -798,15 +797,15 @@ public class Skyblock {
         Item(String id, Block block, int meta) {
             this(id, net.minecraft.item.Item.getItemFromBlock(block), meta);
         }
-
-        Item(String id, net.minecraft.item.Item item) {
+*/
+        Item(String id, String item) {
             this(id, item, 0);
         }
 
-        Item(String id, net.minecraft.item.Item item, int meta) {
+        Item(String id, String item, int meta) {
             this(id, item, meta, null, CraftingTable.Recipe.NONE, new Recipe.Group());
         }
-
+/*
         Item(String id, Block block, Item baseItem, CraftingTable.Recipe recipe, Recipe.Entry... recipeEntries) {
             this(id, block, 0, baseItem, recipe, recipeEntries);
         }
@@ -814,15 +813,15 @@ public class Skyblock {
         Item(String id, Block block, int meta, Item baseItem, CraftingTable.Recipe recipe, Recipe.Entry... recipeEntries) {
             this(id, net.minecraft.item.Item.getItemFromBlock(block), meta, baseItem, recipe, recipeEntries);
         }
-
-        Item(String id, net.minecraft.item.Item item, Item baseItem, CraftingTable.Recipe recipe, Recipe.Entry... recipeEntries) {
+*/
+        Item(String id, String item, Item baseItem, CraftingTable.Recipe recipe, Recipe.Entry... recipeEntries) {
             this(id, item, 0, baseItem, recipe, new Recipe.Group(recipeEntries));
         }
 
-        Item(String id, net.minecraft.item.Item item, int meta, Item baseItem, CraftingTable.Recipe recipe, Recipe.Entry... recipeEntries) {
+        Item(String id, String item, int meta, Item baseItem, CraftingTable.Recipe recipe, Recipe.Entry... recipeEntries) {
             this(id, item, meta, baseItem, recipe, new Recipe.Group(recipeEntries));
         }
-
+/*
         Item(String id, Block block, Item baseItem, CraftingTable.Recipe recipe, Recipe.Group... recipeGroups) {
             this(id, block, 0, baseItem, recipe, recipeGroups);
         }
@@ -830,12 +829,12 @@ public class Skyblock {
         Item(String id, Block block, int meta, Item baseItem, CraftingTable.Recipe recipe, Recipe.Group... recipeGroups) {
             this(id, net.minecraft.item.Item.getItemFromBlock(block), meta, baseItem, recipe, recipeGroups);
         }
-
-        Item(String id, net.minecraft.item.Item item, Item baseItem, CraftingTable.Recipe recipe, Recipe.Group... recipeGroups) {
+*/
+        Item(String id, String item, Item baseItem, CraftingTable.Recipe recipe, Recipe.Group... recipeGroups) {
             this(id, item, 0, baseItem, recipe, recipeGroups);
         }
 
-        Item(String id, net.minecraft.item.Item item, int meta, Item baseItem, CraftingTable.Recipe recipe, Recipe.Group... recipeGroups) {
+        Item(String id, String item, int meta, Item baseItem, CraftingTable.Recipe recipe, Recipe.Group... recipeGroups) {
             this.id = id;
             this.item = item;
             this.meta = meta;
@@ -844,7 +843,7 @@ public class Skyblock {
             this.recipeGroups.addAll(Arrays.asList(recipeGroups));
         }
 
-        public net.minecraft.item.Item getItem() {
+        public String getItem() {
             return this.item;
         }
 
@@ -871,11 +870,11 @@ public class Skyblock {
         public Set<String> getCollectionItemNames() {
             return this.collection.stream().map(Item::getItemName).collect(Collectors.toSet());
         }
-
+/*
         public ItemStack getItemStack() {
             return new ItemStack(this.getItem(), 1, this.getMeta());
         }
-
+*/
         public int getMeta() {
             return this.meta;
         }
@@ -887,7 +886,7 @@ public class Skyblock {
         public Set<Recipe.Group> getRecipeGroups() {
             return this.recipeGroups;
         }
-
+/*
         public int getStackSizeLimit() {
             return this.item.getItemStackLimit(null);
         }
@@ -916,7 +915,7 @@ public class Skyblock {
                 return skyblockItem.getItem().equals(itemStack.getItem()) && idMatch;
             }).collect(ListUtil.toSingleton());
         }
-
+*/
         public enum Rarity {
 
             COMMON(MojangChatFormatting.WHITE),
@@ -1772,7 +1771,7 @@ public class Skyblock {
                 return abilities;
             }
 
-            public static ConcurrentList<Ability> getAbilities(SkyblockIsland.PetInfo petInfo) {
+            public static ConcurrentList<Ability> getAbilities(SkyBlockIsland.PetInfo petInfo) {
                 ConcurrentList<Ability> abilities = getAbilities(petInfo.getPet());
                 abilities.removeIf(ability -> petInfo.getTier().ordinal() < ability.getRarity().ordinal());
                 return abilities;
@@ -1967,7 +1966,7 @@ public class Skyblock {
         public String getDisplayName() {
             return this.displayName;
         }
-
+/*
         public static InventoryType getInventoryType(Container container) {
             if (container instanceof ContainerPlayer)
                 return PLAYER;
@@ -1996,7 +1995,7 @@ public class Skyblock {
 
             return OTHER;
         }
-
+*/
         public boolean hasCommand() {
             return this.hasCommand;
         }
@@ -2006,7 +2005,7 @@ public class Skyblock {
         }
 
     }
-
+/*
     public enum Entity {
 
         // Vanilla
@@ -2146,6 +2145,7 @@ public class Skyblock {
         }
 
     }
+*/
 
     static {
         setDefaults();
