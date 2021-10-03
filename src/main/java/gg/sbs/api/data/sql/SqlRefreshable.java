@@ -32,7 +32,7 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
         scheduler.shutdown();
     }
 
-    private void refreshItems() {
+    public void refreshItems() {
         items = tRepository.findAll();
         synchronized (initLock) {
             itemsInitialized = true;
@@ -63,11 +63,11 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
         return waitForInitLock(() -> items.stream().filter(it -> f.returns(it).equals(s)).findFirst().orElse(null));
     }
 
-    @SafeVarargs
-    public final <S> T findFirstOrNull(Pair<FilterFunction<T, S>, S>... p) throws SqlException {
+    @SuppressWarnings({"unchecked", "varargs"}) // Written safely
+    public <S> T findFirstOrNull(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
         List<T> itemsCopy = waitForInitLock(() -> new ArrayList<>(items));
-        for (int i = 0; i < p.length && itemsCopy.size() > 0; i++) {
-            Pair<FilterFunction<T, S>, S> q = p[i];
+        for (int i = 0; i < predicates.length && itemsCopy.size() > 0; i++) {
+            Pair<FilterFunction<T, S>, S> q = predicates[i];
             itemsCopy = itemsCopy.stream()
                     .filter(it -> q.getFirst()
                             .returns(it)
