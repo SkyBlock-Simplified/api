@@ -8,6 +8,6 @@ public class PotionRefreshable extends SqlRefreshable<PotionModel, PotionReposit
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public PotionRefreshable() {
-        super(PotionRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

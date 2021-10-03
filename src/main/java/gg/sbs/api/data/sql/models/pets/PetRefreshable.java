@@ -8,6 +8,6 @@ public class PetRefreshable extends SqlRefreshable<PetModel, PetRepository> {
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public PetRefreshable() {
-        super(PetRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

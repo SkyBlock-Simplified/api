@@ -8,6 +8,6 @@ public class AccessoryRefreshable extends SqlRefreshable<AccessoryModel, Accesso
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public AccessoryRefreshable() {
-        super(AccessoryRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

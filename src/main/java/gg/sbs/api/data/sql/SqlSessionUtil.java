@@ -73,4 +73,13 @@ public class SqlSessionUtil {
         return sessionFactory.openSession();
     }
 
+    public static void createTransaction(SessionFunction f) {
+        Session session = openSession();
+        f.run(session);
+        session.close();
+    }
+
+    public interface SessionFunction {
+        void run(Session session);
+    }
 }

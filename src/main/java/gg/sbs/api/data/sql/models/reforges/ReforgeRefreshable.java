@@ -8,6 +8,6 @@ public class ReforgeRefreshable extends SqlRefreshable<ReforgeModel, ReforgeRepo
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public ReforgeRefreshable() {
-        super(ReforgeRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

@@ -8,6 +8,6 @@ public class CollectionRefreshable extends SqlRefreshable<CollectionModel, Colle
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public CollectionRefreshable() {
-        super(CollectionRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

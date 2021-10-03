@@ -8,6 +8,6 @@ public class EnchantmentRefreshable extends SqlRefreshable<EnchantmentModel, Enc
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public EnchantmentRefreshable() {
-        super(EnchantmentRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

@@ -8,6 +8,6 @@ public class AccessoryFamilyRefreshable extends SqlRefreshable<AccessoryFamilyMo
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public AccessoryFamilyRefreshable() {
-        super(AccessoryFamilyRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

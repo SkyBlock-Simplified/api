@@ -8,6 +8,6 @@ public class SkillRefreshable extends SqlRefreshable<SkillModel, SkillRepository
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public SkillRefreshable() {
-        super(SkillRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

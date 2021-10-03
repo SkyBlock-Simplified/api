@@ -8,6 +8,6 @@ public class RarityRefreshable extends SqlRefreshable<RarityModel, RarityReposit
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public RarityRefreshable() {
-        super(RarityRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }

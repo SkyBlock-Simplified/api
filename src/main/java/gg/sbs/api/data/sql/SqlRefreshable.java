@@ -4,6 +4,7 @@ import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.exception.SqlException;
 import gg.sbs.api.util.Pair;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -20,8 +21,12 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
     private List<T> items = new ArrayList<>();
     private Boolean itemsInitialized = false;
     private final Object initLock = new Object();
+    private final Class<R> rClass;
 
-    public SqlRefreshable(Class<R> rClass, long fixedRateMs) {
+    @SuppressWarnings("unchecked")
+    public SqlRefreshable(long fixedRateMs) {
+        ParameterizedType superClass = (ParameterizedType) this.getClass().getGenericSuperclass();
+        rClass = (Class<R>) superClass.getActualTypeArguments()[1];
         tRepository = SimplifiedApi.getSqlRepository(rClass);
         synchronized (schedulerLock) {
             scheduler.scheduleAtFixedRate(this::refreshItems, 0, fixedRateMs, TimeUnit.MILLISECONDS);

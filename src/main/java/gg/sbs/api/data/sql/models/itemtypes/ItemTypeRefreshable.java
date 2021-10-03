@@ -8,6 +8,6 @@ public class ItemTypeRefreshable extends SqlRefreshable<ItemTypeModel, ItemTypeR
     private static final long fixedRateMs = ONE_MINUTE_MS;
 
     public ItemTypeRefreshable() {
-        super(ItemTypeRepository.class, fixedRateMs);
+        super(fixedRateMs);
     }
 }
