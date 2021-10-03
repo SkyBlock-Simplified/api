@@ -4,7 +4,6 @@ import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.converters.DoubleListConverter;
 import gg.sbs.api.data.sql.converters.DoubleMapConverter;
 import gg.sbs.api.data.sql.converters.ObjectMapConverter;
-import gg.sbs.api.data.sql.converters.StringListConverter;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Table(name = "collections")
+@Table(name = "items")
 public class ItemModel implements SqlModel {
     @Getter
     @Id
