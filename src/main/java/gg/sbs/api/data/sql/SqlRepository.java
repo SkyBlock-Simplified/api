@@ -18,7 +18,7 @@ abstract public class SqlRepository<T extends SqlModel> {
         return session.createQuery(all).getResultList();
     }
 
-    @SuppressWarnings("unused") // Will use later
+    @SuppressWarnings("unused") // Might use later
     protected T findByIdImpl(Class<T> tClass, long i) {
         Session session = SqlSessionUtil.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -26,6 +26,11 @@ abstract public class SqlRepository<T extends SqlModel> {
         Root<T> rootEntry = cq.from(tClass);
         CriteriaQuery<T> filtered = cq.select(rootEntry).where(cb.equal(rootEntry.get("id"), i));
         return session.createQuery(filtered).getSingleResult();
+    }
+
+    public void save(T t) {
+        Session session = SqlSessionUtil.openSession();
+        session.saveOrUpdate(t);
     }
 
     abstract public List<T> findAll();
