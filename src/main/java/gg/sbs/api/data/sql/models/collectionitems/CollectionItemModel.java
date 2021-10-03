@@ -1,6 +1,7 @@
-package gg.sbs.api.data.sql.models.skills;
+package gg.sbs.api.data.sql.models.collectionitems;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.models.collections.CollectionModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,8 +10,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "skills")
-public class SkillModel implements SqlModel {
+@Table(name = "collection_items")
+public class CollectionItemModel implements SqlModel {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +20,14 @@ public class SkillModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "skill_key", nullable = false, length = 127)
-    private String skillKey;
+    @ManyToOne
+    @JoinColumn(name = "collection", nullable = false)
+    private CollectionModel collection;
+
+    @Getter
+    @Setter
+    @Column(name = "item_key", nullable = false, length = 127)
+    private String itemKey;
 
     @Getter
     @Setter
@@ -29,13 +36,8 @@ public class SkillModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "description", nullable = false, length = 127)
-    private String description;
-
-    @Getter
-    @Setter
-    @Column(name = "max_level", nullable = false)
-    private int maxLevel;
+    @Column(name = "max_tiers", nullable = false)
+    private int maxTiers;
 
     @Getter
     @UpdateTimestamp
@@ -45,25 +47,25 @@ public class SkillModel implements SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkillModel)) return false;
+        if (!(o instanceof CollectionItemModel)) return false;
 
-        SkillModel that = (SkillModel) o;
+        CollectionItemModel that = (CollectionItemModel) o;
 
         if (id != that.id) return false;
-        if (maxLevel != that.maxLevel) return false;
-        if (!skillKey.equals(that.skillKey)) return false;
+        if (maxTiers != that.maxTiers) return false;
+        if (!collection.equals(that.collection)) return false;
+        if (!itemKey.equals(that.itemKey)) return false;
         if (!name.equals(that.name)) return false;
-        if (!description.equals(that.description)) return false;
         return updatedAt.equals(that.updatedAt);
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + skillKey.hashCode();
+        result = 31 * result + collection.hashCode();
+        result = 31 * result + itemKey.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + maxLevel;
+        result = 31 * result + maxTiers;
         result = 31 * result + updatedAt.hashCode();
         return result;
     }

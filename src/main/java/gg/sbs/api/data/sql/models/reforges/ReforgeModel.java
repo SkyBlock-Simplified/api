@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.models.reforges;
 
-import gg.sbs.api.data.sql.SqlJsonConverter;
+import gg.sbs.api.data.sql.converters.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
@@ -47,7 +47,7 @@ public class ReforgeModel extends SqlEffectsModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "effects")
-    @Convert(converter = SqlJsonConverter.class)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter

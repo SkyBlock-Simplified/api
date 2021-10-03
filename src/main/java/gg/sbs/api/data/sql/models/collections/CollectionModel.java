@@ -1,4 +1,4 @@
-package gg.sbs.api.data.sql.models.skills;
+package gg.sbs.api.data.sql.models.collections;
 
 import gg.sbs.api.data.sql.SqlModel;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "skills")
-public class SkillModel implements SqlModel {
+@Table(name = "collections")
+public class CollectionModel implements SqlModel {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,23 +19,13 @@ public class SkillModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "skill_key", nullable = false, length = 127)
-    private String skillKey;
+    @Column(name = "collection_key", nullable = false, length = 127)
+    private String collectionKey;
 
     @Getter
     @Setter
     @Column(name = "name", nullable = false, length = 127)
     private String name;
-
-    @Getter
-    @Setter
-    @Column(name = "description", nullable = false, length = 127)
-    private String description;
-
-    @Getter
-    @Setter
-    @Column(name = "max_level", nullable = false)
-    private int maxLevel;
 
     @Getter
     @UpdateTimestamp
@@ -45,25 +35,21 @@ public class SkillModel implements SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkillModel)) return false;
+        if (!(o instanceof CollectionModel)) return false;
 
-        SkillModel that = (SkillModel) o;
+        CollectionModel that = (CollectionModel) o;
 
         if (id != that.id) return false;
-        if (maxLevel != that.maxLevel) return false;
-        if (!skillKey.equals(that.skillKey)) return false;
+        if (!collectionKey.equals(that.collectionKey)) return false;
         if (!name.equals(that.name)) return false;
-        if (!description.equals(that.description)) return false;
         return updatedAt.equals(that.updatedAt);
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + skillKey.hashCode();
+        result = 31 * result + collectionKey.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + maxLevel;
         result = 31 * result + updatedAt.hashCode();
         return result;
     }

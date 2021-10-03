@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.models.potions;
 
-import gg.sbs.api.data.sql.SqlJsonConverter;
+import gg.sbs.api.data.sql.converters.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class PotionModel extends SqlEffectsModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "effects")
-    @Convert(converter = SqlJsonConverter.class)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter

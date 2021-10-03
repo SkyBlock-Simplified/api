@@ -1,0 +1,1 @@
+ALTER TABLE `skill_levels` ADD COLUMN `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP() AFTER `unlocks`;

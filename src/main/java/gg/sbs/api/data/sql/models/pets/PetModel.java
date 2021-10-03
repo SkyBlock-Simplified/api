@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.models.pets;
 
-import gg.sbs.api.data.sql.SqlJsonConverter;
+import gg.sbs.api.data.sql.converters.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import lombok.Getter;
@@ -34,13 +34,13 @@ public class PetModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "effects_base")
-    @Convert(converter = SqlJsonConverter.class)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effectsBase;
 
     @Getter
     @Setter
     @Column(name = "effects_per_level")
-    @Convert(converter = SqlJsonConverter.class)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effectsPerLevel;
 
     @Getter

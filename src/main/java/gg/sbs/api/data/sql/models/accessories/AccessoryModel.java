@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.models.accessories;
 
-import gg.sbs.api.data.sql.SqlJsonConverter;
+import gg.sbs.api.data.sql.converters.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
@@ -53,7 +53,7 @@ public class AccessoryModel extends SqlEffectsModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = SqlJsonConverter.class)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter
