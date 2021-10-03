@@ -2,12 +2,17 @@ package gg.sbs.api.data.sql;
 
 import gg.sbs.api.data.sql.models.accessories.AccessoryModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
+import gg.sbs.api.data.sql.models.collectionitems.CollectionItemModel;
+import gg.sbs.api.data.sql.models.collectionitemtiers.CollectionItemTierModel;
+import gg.sbs.api.data.sql.models.collections.CollectionModel;
 import gg.sbs.api.data.sql.models.enchantments.EnchantmentModel;
+import gg.sbs.api.data.sql.models.items.ItemModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.pets.PetModel;
 import gg.sbs.api.data.sql.models.potions.PotionModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import gg.sbs.api.data.sql.models.reforges.ReforgeModel;
+import gg.sbs.api.data.sql.models.skilllevels.SkillLevelModel;
 import gg.sbs.api.data.sql.models.skills.SkillModel;
 import gg.sbs.api.util.ResourceUtil;
 import org.hibernate.Session;
@@ -48,13 +53,18 @@ public class SqlSessionUtil {
         for (Class<? extends SqlModel> model : Arrays.asList(
                 AccessoryModel.class,
                 AccessoryFamilyModel.class,
+                CollectionModel.class,
+                CollectionItemModel.class,
+                CollectionItemTierModel.class,
                 EnchantmentModel.class,
+                ItemModel.class,
                 ItemTypeModel.class,
                 PetModel.class,
                 PotionModel.class,
                 RarityModel.class,
                 ReforgeModel.class,
-                SkillModel.class
+                SkillModel.class,
+                SkillLevelModel.class
         )) configuration = configuration.addAnnotatedClass(model);
         return configuration.buildSessionFactory();
     }
