@@ -993,9 +993,25 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<Medal, Integer> medalInventory;
         @Getter private ConcurrentMap<Perk, Integer> perks;
         @SerializedName("unique_golds2")
-        @Getter private ConcurrentSet<String> uniqueGolds; // TODO: SQL
+        @Getter private ConcurrentSet<String> uniqueGolds; // TODO: SQL Collections
         @Getter private ConcurrentMap<String, Contest> contests;
         private boolean talked;
+
+        /*
+        SKYBLOCK_YEAR_114 = 1610718900
+        SKYBLOCK_YEAR_LENGTH = 446400
+        SKYBLOCK_MONTH_LENGTH = 37200
+        SKYBLOCK_DAY_LENGTH = 1200
+        def convert_to_date(skyblock_year, skyblock_month, skyblock_day):
+            current_time = SKYBLOCK_YEAR_114 - (SKYBLOCK_YEAR_LENGTH * (114 - int(skyblock_year))) + (SKYBLOCK_MONTH_LENGTH * skyblock_month - SKYBLOCK_MONTH_LENGTH) + (SKYBLOCK_DAY_LENGTH * skyblock_day - SKYBLOCK_DAY_LENGTH)
+            date = datetime.fromtimestamp(current_time).strftime('%b %d %Y')
+            return date
+         */
+        /* // TODO: Figure out what this means
+            "99:6_27:PUMPKIN"
+            "99:11_13:SUGAR_CANE"
+            "108:1_2:WHEAT"
+         */
 
         public int getMedals(Medal medal) {
             return this.getMedalInventory().get(medal);
@@ -1023,11 +1039,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                 return this.claimedRewards;
             }
 
-            /* // TODO: Figure out what this means
-                "99:6_27:PUMPKIN"
-                "99:11_13:SUGAR_CANE"
-                "108:1_2:WHEAT"
-             */
         }
 
         public enum Medal {
