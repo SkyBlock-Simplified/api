@@ -14,9 +14,9 @@ public class ResourceItemsResponse {
     private long lastUpdated;
 
     @Getter
-    private List<ResourceItem> items;
+    private List<Item> items;
 
-    public static class ResourceItem {
+    public static class Item {
         @Getter
         private String material;
 
