@@ -3,9 +3,9 @@ package gg.sbs.api.apiclients.hypixel.implementation;
 import feign.HeaderMap;
 import feign.Param;
 import feign.RequestLine;
-import gg.sbs.api.apiclients.hypixel.response.SkyBlockNewsResponse;
-import gg.sbs.api.apiclients.hypixel.response.SkyBlockProfileResponse;
-import gg.sbs.api.apiclients.hypixel.response.SkyBlockProfilesResponse;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockNewsResponse;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockProfileResponse;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockProfilesResponse;
 
 import java.util.Map;
 import java.util.UUID;

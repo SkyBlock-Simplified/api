@@ -1,4 +1,4 @@
-package gg.sbs.api.apiclients.hypixel.response;
+package gg.sbs.api.apiclients.hypixel.response.hypixel;
 
 import lombok.Getter;
 

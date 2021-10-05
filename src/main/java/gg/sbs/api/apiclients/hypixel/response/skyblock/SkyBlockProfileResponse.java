@@ -1,7 +1,6 @@
-package gg.sbs.api.apiclients.hypixel.response;
+package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
-import gg.sbs.api.apiclients.hypixel.SkyBlockIsland;
 import lombok.Getter;
 
 public class SkyBlockProfileResponse {

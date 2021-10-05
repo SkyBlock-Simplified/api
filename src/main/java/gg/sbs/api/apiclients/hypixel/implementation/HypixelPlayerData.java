@@ -3,7 +3,7 @@ package gg.sbs.api.apiclients.hypixel.implementation;
 import feign.HeaderMap;
 import feign.Param;
 import feign.RequestLine;
-import gg.sbs.api.apiclients.hypixel.response.*;
+import gg.sbs.api.apiclients.hypixel.response.hypixel.*;
 
 import java.util.Map;
 import java.util.UUID;

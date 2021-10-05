@@ -1,9 +1,9 @@
 package gg.sbs.api.apiclients.hypixel.implementation;
 
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.apiclients.hypixel.response.ResourceCollectionsResponse;
-import gg.sbs.api.apiclients.hypixel.response.ResourceItemsResponse;
-import gg.sbs.api.apiclients.hypixel.response.ResourceSkillsResponse;
+import gg.sbs.api.apiclients.hypixel.response.resource.ResourceCollectionsResponse;
+import gg.sbs.api.apiclients.hypixel.response.resource.ResourceItemsResponse;
+import gg.sbs.api.apiclients.hypixel.response.resource.ResourceSkillsResponse;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

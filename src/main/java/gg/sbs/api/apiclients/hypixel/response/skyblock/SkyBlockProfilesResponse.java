@@ -1,6 +1,5 @@
-package gg.sbs.api.apiclients.hypixel.response;
+package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
-import gg.sbs.api.apiclients.hypixel.SkyBlockIsland;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
 

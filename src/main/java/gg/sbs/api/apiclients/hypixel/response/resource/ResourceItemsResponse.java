@@ -1,4 +1,4 @@
-package gg.sbs.api.apiclients.hypixel.response;
+package gg.sbs.api.apiclients.hypixel.response.resource;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
