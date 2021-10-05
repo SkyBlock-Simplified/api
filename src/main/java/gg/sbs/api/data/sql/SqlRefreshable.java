@@ -7,6 +7,7 @@ import gg.sbs.api.util.Pair;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -74,9 +75,7 @@ public class SqlRefreshable<T extends SqlModel, R extends SqlRepository<T>> {
         for (int i = 0; i < predicates.length && itemsCopy.size() > 0; i++) {
             Pair<FilterFunction<T, S>, S> q = predicates[i];
             itemsCopy = itemsCopy.stream()
-                    .filter(it -> q.getFirst()
-                            .returns(it)
-                            .equals(q.getSecond()))
+                    .filter(it -> Objects.equals(q.getFirst().returns(it), q.getSecond()))
                     .collect(Collectors.toList());
         }
         if (itemsCopy.size() == 0) return null;

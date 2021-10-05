@@ -34,6 +34,7 @@ public class SqlSessionUtil {
         properties.putAll(
                 new HashMap<String, String>() {{
                     put("connection.driver_class", org.mariadb.jdbc.Driver.class.getCanonicalName());
+                    put("hibernate.show_sql", env.get("DB_DEBUG") == null ? "false" : "true");
                     put("hibernate.connection.url", "jdbc:mariadb://" + env.get("DB_HOST")
                             + ":" + env.get("DB_PORT")
                             + "/" + env.get("DB_DATABASE"));

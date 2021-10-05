@@ -83,6 +83,23 @@ public class ResourceItemsResponse {
 
         @Getter
         private ItemEssence essence;
+
+        @Getter
+        private String description;
+
+        @Getter
+        @SerializedName("ability_damage_scaling")
+        private double abilityDamageScaling;
+
+        @Getter
+        private Map<String, Integer> enchantments;
+
+        @Getter
+        private String crystal;
+
+        @Getter
+        @SerializedName("private_island")
+        private String privateIsland;
     }
 
     public static class ItemRequirements {
@@ -99,6 +116,10 @@ public class ResourceItemsResponse {
         @Getter
         @SerializedName("heart_of_the_mountain")
         private TierRequirement heartOfTheMountain;
+
+        @Getter
+        @SerializedName("target_practice_requirement")
+        private TargetPracticeRequirement targetPracticeRequirement;
     }
 
     public static class ItemCatacombsRequirements {
@@ -134,6 +155,11 @@ public class ResourceItemsResponse {
     public static class TierRequirement {
         @Getter
         private int tier;
+    }
+
+    public static class TargetPracticeRequirement {
+        @Getter
+        private String mode;
     }
 
     public static class ItemEssence {

@@ -10,5 +10,6 @@ public class SqlSessionUtilTest {
     public void openSession_ok() {
         Session session = SqlSessionUtil.openSession();
         MatcherAssert.assertThat(session, Matchers.notNullValue());
+        session.close();
     }
 }
