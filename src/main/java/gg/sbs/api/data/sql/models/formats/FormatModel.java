@@ -1,7 +1,6 @@
 package gg.sbs.api.data.sql.models.formats;
 
 import gg.sbs.api.data.sql.SqlModel;
-import gg.sbs.api.data.sql.models.locations.LocationModel;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;

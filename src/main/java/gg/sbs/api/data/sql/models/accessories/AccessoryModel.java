@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.models.accessories;
 
-import gg.sbs.api.data.sql.converter.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.converter.ObjectMapConverter;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;

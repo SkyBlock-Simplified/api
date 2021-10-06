@@ -2,7 +2,6 @@ package gg.sbs.api.data.sql.models.locationareas;
 
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.locations.LocationModel;
-import gg.sbs.api.data.sql.models.skills.SkillModel;
 import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,6 @@
 package gg.sbs.api.data.sql.models.locations;
 
 import gg.sbs.api.data.sql.SqlRefreshable;
-import gg.sbs.api.data.sql.models.items.ItemModel;
-import gg.sbs.api.data.sql.models.items.ItemRepository;
 
 import static gg.sbs.api.util.TimeUtil.ONE_MINUTE_MS;
 

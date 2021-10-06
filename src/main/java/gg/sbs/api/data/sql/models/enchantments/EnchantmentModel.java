@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.models.enchantments;
 
-import gg.sbs.api.data.sql.converter.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.data.sql.converter.ObjectMapConverter;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.util.builder.HashCodeBuilder;
