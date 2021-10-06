@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * SkyBlock DateTime converter.
  */
@@ -24,29 +28,23 @@ public class SkyBlockDate {
      */
     public static final long JACOB_LAUNCH = LAUNCH_DATE + (Length.YEAR_MS * 114);
 
-        /*
-        def convert_to_date(skyblock_year, skyblock_month, skyblock_day):
-            current_time = SKYBLOCK_YEAR_114 - (SKYBLOCK_YEAR_LENGTH * (114 - int(skyblock_year))) + (SKYBLOCK_MONTH_LENGTH * skyblock_month - SKYBLOCK_MONTH_LENGTH) + (SKYBLOCK_DAY_LENGTH * skyblock_day - SKYBLOCK_DAY_LENGTH)
-            date = datetime.fromtimestamp(current_time).strftime('%b %d %Y')
-            return date
-         */
-        /* // TODO: YEAR:MONTH_DAY
-            "99:6_27:PUMPKIN"
-            "99:11_13:SUGAR_CANE"
-            "108:1_2:WHEAT"
-         */
+    public static final SimpleDateFormat REAL_DATE_FORMAT = new SimpleDateFormat("MM dd yyyy HH:mm");
 
     /**
      * Get RealTime in milliseconds.
      */
-    @Getter private final long RealTime;
+    @Getter private final long realTime;
 
     public SkyBlockDate(int year, Season season, int day) {
         this(year, (season.ordinal() + 1), day);
     }
 
     public SkyBlockDate(int year, int month, int day) {
-        this((Length.YEAR_MS * year) + (Length.MONTH_MS * month) + (Length.DAY_MS * day));
+        this(year, month, day, 0);
+    }
+
+    public SkyBlockDate(int year, int month, int day, int hour) {
+        this((Length.YEAR_MS * (year - 1)) + (Length.MONTH_MS * month) + (Length.DAY_MS * (day - 1)) + (Length.HOUR_MS * hour));
     }
 
     public SkyBlockDate(long milliseconds) {
@@ -56,11 +54,11 @@ public class SkyBlockDate {
     public SkyBlockDate(long milliseconds, boolean isRealTime) {
         if (isRealTime) Preconditions.checkArgument(milliseconds > LAUNCH_DATE, "Milliseconds must be greater than launch date");
         else Preconditions.checkArgument((milliseconds + LAUNCH_DATE) > LAUNCH_DATE, "Milliseconds must be greater than zero");
-        this.RealTime = isRealTime ? milliseconds : milliseconds + LAUNCH_DATE;
+        this.realTime = isRealTime ? milliseconds : milliseconds + LAUNCH_DATE;
     }
 
     public SkyBlockDate(Season season, int day, int hour) {
-        this.RealTime = getRealTime(season, day, hour);
+        this.realTime = getRealTime(season, day, hour);
     }
 
     public static long getRealTime(Season season) {
@@ -100,8 +98,9 @@ public class SkyBlockDate {
      * @return day of the month
      */
     public int getDay() {
-        long monthMs = this.getSkyBlockTime() - (this.getYear() * Length.YEAR_MS);
-        return (int)((monthMs - (this.getMonth() * Length.MONTH_MS)) % Length.DAY_MS);
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
+        remainder = remainder - (this.getMonth() * SkyBlockDate.Length.MONTH_MS);
+        return (int)(remainder / SkyBlockDate.Length.DAY_MS) + 1;
     }
 
     /**
@@ -110,9 +109,10 @@ public class SkyBlockDate {
      * @return hour of the day
      */
     public int getHour() {
-        long monthMs = this.getSkyBlockTime() - (this.getYear() * Length.YEAR_MS);
-        long dayMs = monthMs - (this.getMonth() * Length.MONTH_MS);
-        return (int)((dayMs - (this.getDay() * Length.DAY_MS)) % Length.HOUR_MS);
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
+        remainder = remainder - (this.getMonth() * SkyBlockDate.Length.MONTH_MS);
+        remainder = remainder - ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
+        return (int)(remainder / SkyBlockDate.Length.HOUR_MS);
     }
 
     /**
@@ -121,7 +121,8 @@ public class SkyBlockDate {
      * @return month of the year
      */
     public int getMonth() {
-        return (int)((this.getSkyBlockTime() - (this.getYear() * Length.YEAR_MS)) % Length.MONTH_MS);
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
+        return (int)(remainder / SkyBlockDate.Length.MONTH_MS);
     }
 
     /**
@@ -148,7 +149,12 @@ public class SkyBlockDate {
      * @return number of years
      */
     public int getYear() {
-        return (int)(this.getSkyBlockTime() % Length.YEAR_MS);
+        return  (int)(this.getSkyBlockTime() / SkyBlockDate.Length.YEAR_MS) + 1;
+    }
+
+    @Override
+    public String toString() {
+        return REAL_DATE_FORMAT.format(new Date(this.getRealTime()));
     }
 
     /**
@@ -170,7 +176,7 @@ public class SkyBlockDate {
         WINTER("Winter"),
         LATE_WINTER("Late Winter");
 
-        @Getter private final String scoreboardString;
+        @Getter private final String name;
 
     }
 
