@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "location_areas")
 public class LocationAreaModel implements SqlModel {
 
     @Getter
