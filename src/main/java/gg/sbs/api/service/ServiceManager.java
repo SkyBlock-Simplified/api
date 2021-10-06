@@ -82,7 +82,7 @@ public class ServiceManager {
 		ConcurrentSet<T> providers = Concurrent.newSet();
 
 		for (ServiceProvider provider : this.serviceProviders) {
-			if (provider.getService().isAssignableFrom(service))
+			if (service.isAssignableFrom(provider.getService()))
 				providers.add((T)provider.getProvider());
 		}
 
@@ -105,7 +105,7 @@ public class ServiceManager {
 		ConcurrentSet<Class<T>> providers = Concurrent.newSet();
 
 		for (ServiceProvider provider : this.serviceProviders) {
-			if (provider.getService().isAssignableFrom(service))
+			if (service.isAssignableFrom(provider.getService()))
 				providers.add(provider.getService());
 		}
 
