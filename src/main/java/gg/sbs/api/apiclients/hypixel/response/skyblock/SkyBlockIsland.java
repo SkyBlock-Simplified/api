@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.models.collections.CollectionModel;
 import gg.sbs.api.data.sql.models.collections.CollectionRepository;
+import gg.sbs.api.data.sql.models.minions.MinionModel;
+import gg.sbs.api.data.sql.models.minions.MinionRepository;
 import gg.sbs.api.data.sql.models.skills.SkillModel;
 import gg.sbs.api.hypixel_old.skyblock.Skyblock;
 import gg.sbs.api.nbt.NbtFactory;
@@ -15,12 +17,11 @@ import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class SkyBlockIsland {
@@ -272,16 +273,15 @@ public class SkyBlockIsland {
         public MelodyHarp getMelodyHarp() {
             return new MelodyHarp(this.harpQuest);
         }
-        // TODO: MinionModel
-/*
-        public Minion getMinion(Skyblock.Minion type) {
+
+        public Minion getMinion(MinionModel type) {
             Minion minion = new Minion(type);
 
             if (this.craftedMinions != null) {
                 minion.unlocked.addAll(
                         this.craftedMinions.stream()
-                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", type.name())))
-                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", type.name()), "")))
+                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", type.getCollection().getKey())))
+                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", type.getCollection().getKey()), "")))
                                 .collect(Collectors.toList())
                 );
             }
@@ -290,9 +290,9 @@ public class SkyBlockIsland {
         }
 
         public ConcurrentList<Minion> getMinions() {
-            return Arrays.stream(Skyblock.Minion.values()).map(this::getMinion).collect(Concurrent.toList());
+            return SimplifiedApi.getSqlRepository(MinionRepository.class).findAll().stream().map(this::getMinion).collect(Concurrent.toList());
         }
-*/
+
         public ConcurrentLinkedMap<String, Objective> getObjectives() {
             return this.getObjectives(null);
         }
@@ -324,8 +324,8 @@ public class SkyBlockIsland {
             return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
-        public Skill getSkill(Skyblock.Skill skill) {
-            double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skill.name().toLowerCase()), this);
+        public Skill getSkill(SkillModel skill) {
+            double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skill.getName().toLowerCase()), this);
             return new Skill(skill, experience);
         }
 
@@ -344,13 +344,13 @@ public class SkyBlockIsland {
 
             return collection;
         }
-
+/*
         public double getSkillAverage() {
-            ConcurrentList<Skyblock.Skill> skills = Arrays.stream(Skyblock.Skill.values()).filter(skill -> !skill.isCosmetic()).collect(Concurrent.toList());
+            ConcurrentList<SkillModel> skills = Arrays.stream(Skyblock.Skill.values()).filter(skill -> !skill.isCosmetic()).collect(Concurrent.toList());
             double total = skills.stream().mapToInt(skill -> this.getSkill(skill).getLevel()).sum();
             return total / skills.size();
         }
-
+*/
         public NbtContent getStorage(Storage type) {
             switch (type) {
                 case INVENTORY:
@@ -505,25 +505,21 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 */
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Backpacks {
 
-        @Getter final ConcurrentList<NbtContent> contents;
-        @Getter final ConcurrentList<NbtContent> icons;
-
-        private Backpacks(ConcurrentList<NbtContent> contents, ConcurrentList<NbtContent> icons) {
-            this.contents = contents;
-            this.icons = icons;
-        }
+        @Getter private final ConcurrentList<NbtContent> contents;
+        @Getter private final ConcurrentList<NbtContent> icons;
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Banking {
 
         @Getter private double balance;
         @Getter private ConcurrentList<Banking.Transaction> transactions;
 
-        private Banking() { }
-
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Transaction {
 
             @Getter private double amount;
@@ -543,6 +539,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Experimentation {
 
         @SerializedName("claims_resets")
@@ -556,16 +553,13 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("numbers")
         private Table ultrasequencer;
 
-        private Experimentation() { }
-
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Table {
 
             @SerializedName("last_attempt")
             @Getter private SkyBlockDate.RealTime lastAttempt;
             @SerializedName("last_claimed")
             @Getter private SkyBlockDate.RealTime lastClaimed;
-
-            private Table() { }
 
             /*
             "attempts_0": 8,
@@ -590,6 +584,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GriffinBurrow {
 
         @SerializedName("ts")
@@ -601,17 +596,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private int tier; // TODO: Enum
         @Getter private int chain;
 
-        private GriffinBurrow() { }
-
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BasicObjective {
 
         @Getter private BasicObjective.Status status;
         @SerializedName("completed_at")
         @Getter private SkyBlockDate.RealTime completed;
-
-        private BasicObjective() { }
 
         public enum Status {
 
@@ -626,6 +618,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class CenturyCake {
 
         @Getter private int stat; // TODO: Is in order in stat menu, 12 = Pet Luck, 11 = Magic Find
@@ -636,16 +629,13 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Collection {
 
         @Getter private final SkillModel type;
         @SerializedName("items")
         @Getter private ConcurrentLinkedMap<CollectionModel, Integer> collected = Concurrent.newLinkedMap();
         @Getter private ConcurrentLinkedMap<CollectionModel, Integer> unlocked = Concurrent.newLinkedMap();
-
-        private Collection(SkillModel type) {
-            this.type = type;
-        }
 
         public int getCollected(CollectionModel collection) {
             return this.collected.get(collection);
@@ -657,6 +647,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class CommunityUpgrades {
 
         @SerializedName("currently_upgrading")
@@ -664,12 +655,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("upgrade_states")
         @Getter private ConcurrentList<CommunityUpgrades.UpgradeState> upgradeStates;
 
-        private CommunityUpgrades() { }
-
         public Optional<CommunityUpgrades.UpgradeState.Upgrade> getCurrentlyUpgrading() {
             return Optional.of(this.currentlyUpgrading);
         }
 
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class UpgradeState {
 
             @Getter private CommunityUpgrades.UpgradeState.Upgrade upgrade;
@@ -684,8 +674,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @Getter private String claimedBy;
             @SerializedName("fasttracked")
             @Getter private boolean fastTracked;
-
-            private UpgradeState() { }
 
             public enum Upgrade {
 
@@ -706,6 +694,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Dungeons {
 
         @SerializedName("dungeons_blah_blah")
@@ -718,8 +707,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<Dungeon.Class.Type, Dungeon.Class> playerClasses;
         @Getter private ConcurrentMap<String, Dungeon> dungeonTypes;
 
-        private Dungeons() { }
-
         public Optional<Dungeon> getDungeon(String dungeonName) {
             return Optional.of(this.getDungeonTypes().get(dungeonName));
         }
@@ -730,6 +717,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Dungeon extends ExperienceCalculator {
 
         @Getter private double experience;
@@ -775,8 +763,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<Floor, Integer> fastestSTierTime;
         @SerializedName("fastest_time_s_plus")
         @Getter private ConcurrentMap<Floor, Integer> fastestSPlusTierTime;
-
-        private Dungeon() { }
 
         public ConcurrentList<Run> getBestRuns(Floor floor) {
             return this.getBestRuns().get(floor);
@@ -857,14 +843,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             return 50;
         }
 
+        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Class extends ExperienceCalculator {
 
             @Getter private final Type type;
             @Getter private double experience;
-
-            private Class(Type type) {
-                this.type = type;
-            }
 
             @Override
             public ConcurrentList<Integer> getExperienceTiers() {
@@ -914,6 +897,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         }
 
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Run {
 
             // Time
@@ -949,12 +933,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @SerializedName("secrets_found")
             @Getter private int secretsFound;
 
-            private Run() { }
-
         }
 
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Essence {
 
         @Getter private final int undead;
@@ -965,18 +948,9 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private final int wither;
         @Getter private final int spider;
 
-        private Essence(int undead, int diamond, int dragon, int gold, int ice, int wither, int spider) {
-            this.undead = undead;
-            this.diamond = diamond;
-            this.dragon = dragon;
-            this.gold = gold;
-            this.ice = ice;
-            this.wither = wither;
-            this.spider = spider;
-        }
-
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ForgeItem {
 
         @Getter private String type;
@@ -987,6 +961,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class JacobsFarming {
 
         @SerializedName("medals_inv")
@@ -997,17 +972,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<String, Contest> contests;
         private boolean talked;
 
-        /*
-        SKYBLOCK_YEAR_114 = 1610718900
-        SKYBLOCK_YEAR_LENGTH = 446400
-        SKYBLOCK_MONTH_LENGTH = 37200
-        SKYBLOCK_DAY_LENGTH = 1200
-        def convert_to_date(skyblock_year, skyblock_month, skyblock_day):
-            current_time = SKYBLOCK_YEAR_114 - (SKYBLOCK_YEAR_LENGTH * (114 - int(skyblock_year))) + (SKYBLOCK_MONTH_LENGTH * skyblock_month - SKYBLOCK_MONTH_LENGTH) + (SKYBLOCK_DAY_LENGTH * skyblock_day - SKYBLOCK_DAY_LENGTH)
-            date = datetime.fromtimestamp(current_time).strftime('%b %d %Y')
-            return date
-         */
-        /* // TODO: Figure out what this means
+        /* // TODO: Change uniqueGolds and contents to use SkyBlockDate
             "99:6_27:PUMPKIN"
             "99:11_13:SUGAR_CANE"
             "108:1_2:WHEAT"
@@ -1025,7 +990,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             return this.talked;
         }
 
-        public class Contest {
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Contest {
 
             @Getter private int collected;
             @SerializedName("claimed_rewards")
@@ -1095,22 +1061,18 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             });
         }
 
+        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Song {
 
             @Getter private final int bestCompletion;
             @Getter private final int completions;
             @Getter private final int perfectCompletions;
 
-            private Song(int bestCompletion, int completions, int perfectCompletions) {
-                this.bestCompletion = bestCompletion;
-                this.completions = completions;
-                this.perfectCompletions = perfectCompletions;
-            }
-
         }
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Mining {
 
         private ConcurrentMap<String, Object> nodes;
@@ -1182,8 +1144,10 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             return this.toggles;
         }
 
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Biome {
 
+            @NoArgsConstructor(access = AccessLevel.PRIVATE)
             public static class Dwarven {
 
                 @SerializedName("statues_placed")
@@ -1191,6 +1155,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
             }
 
+            @NoArgsConstructor(access = AccessLevel.PRIVATE)
             public static class Precursor {
 
                 @SerializedName("parts_delivered")
@@ -1198,6 +1163,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
             }
 
+            @NoArgsConstructor(access = AccessLevel.PRIVATE)
             public static class Goblin {
 
                 @SerializedName("king_quest_active")
@@ -1209,6 +1175,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         }
 
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Crystal {
 
             private State state;
@@ -1248,24 +1215,20 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Minion {
-/*      TODO: MinionModel
-        @Getter private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
-        @Getter private final Skyblock.Minion type;
 
-        private Minion(Skyblock.Minion type) {
-            this.type = type;
-        }
-*/
+        @Getter private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
+        @Getter private final MinionModel type;
+
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NbtContent {
 
         private int type; // Always 0
         @SerializedName("data")
         @Getter private String rawData;
-
-        private NbtContent() { }
 
         public byte[] getData() {
             return DataUtil.decode(this.getRawData().toCharArray());
@@ -1277,14 +1240,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Objective extends BasicObjective {
 
         @Getter private int progress;
 
-        private Objective() { }
-
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class PetInfo extends ExperienceCalculator {
 
         @SerializedName("uuid")
@@ -1299,8 +1262,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private int candyUsed;
         private String heldItem;
         private String skin;
-
-        private PetInfo() { }
 
         @Override
         public ConcurrentList<Integer> getExperienceTiers() {
@@ -1341,6 +1302,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Potion {
 
         @Getter private String effect;
@@ -1350,6 +1312,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private boolean infinite;
         @Getter private ConcurrentList<Modifier> modifiers;
 
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Modifier {
 
             @Getter private String key;
@@ -1407,33 +1370,23 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Quest extends BasicObjective {
 
         @SerializedName("activated_at")
         @Getter private long activated;
-        private long activated_at_sb; // TODO: SkyBlockTime
-        private long completed_at_sb; // TODO: SkyBlockTime
-
-        private Quest() { }
-
-        public long getActivatedSb() {
-            return this.activated_at_sb;
-        }
-
-        public long getCompletedSb() {
-            return this.completed_at_sb;
-        }
+        @SerializedName("ativated_at_sb")
+        @Getter private SkyBlockDate.SkyBlockTime activatedAt;
+        @SerializedName("completed_at_sb")
+        @Getter private SkyBlockDate.SkyBlockTime completedAt;
 
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sack {
 
         @Getter private final Skyblock.Sack type;
         @Getter private ConcurrentLinkedMap<Skyblock.Item, Integer> stored = Concurrent.newLinkedMap();
-
-        private Sack(Skyblock.Sack type) {
-            this.type = type;
-        }
 
         public int getStored(Skyblock.Item item) {
             return this.stored.getOrDefault(item, (this.type.getItems().contains(item) ? 0 : -1));
@@ -1441,15 +1394,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Skill extends ExperienceCalculator {
 
-        @Getter private final Skyblock.Skill type;
+        @Getter private final SkillModel type;
         private final double experience;
-
-        private Skill(Skyblock.Skill type, double experience) {
-            this.type = type;
-            this.experience = experience;
-        }
 
         @Override
         public double getExperience() {
@@ -1458,12 +1407,12 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @Override
         public ConcurrentList<Integer> getExperienceTiers() {
-            return this.getType() == Skyblock.Skill.RUNECRAFTING ? Skyblock.RUNECRAFTING_EXP_SCALE : Skyblock.SKILL_EXP_SCALE; // TODO: Experience Table Loading
+            return this.getType().getName().equals("RUNECRAFTING") ? Skyblock.RUNECRAFTING_EXP_SCALE : Skyblock.SKILL_EXP_SCALE; // TODO: Experience Table Loading
         }
 
         @Override
         public int getMaxLevel() {
-            return (this.getType() == Skyblock.Skill.RUNECRAFTING ? 24 : 50); // TODO: Max Skill Loading
+            return this.getType().getMaxLevel();
         }
 
     }
@@ -1535,14 +1484,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                 ConcurrentList<CenturyCake> centuryCakes = member.getCenturyCakes();
                 ConcurrentMap<String, Integer> essencePerks = member.getEssencePerks();
                 ConcurrentList<Potion> activePotions = member.getActivePotions();
-
+/*
                 for (Skyblock.Skill sbSkill : Skyblock.Skill.values()) {
                     Skill skill = member.getSkill(sbSkill);
                     int level = skill.getLevel();
                     // Pull skill stat bonus from resource tables
                     // Store stats
                 }
-
+*/
                 // Should be a list
                 accessoryBag.values().stream().map(item -> (CompoundTag)item).forEach(accessory -> {
                     // Pull base stats from AccessoryModel
@@ -1620,20 +1569,16 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             return this.getStat().get(stat);
         }
 */
+        @AllArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Data {
 
             @Setter(AccessLevel.PRIVATE)
-            @Getter private final int base;
+            @Getter private int base;
             @Setter(AccessLevel.PRIVATE)
-            @Getter private final int bonus;
+            @Getter private int bonus;
 
             private Data() {
                 this(0, 0);
-            }
-
-            private Data(int base, int bonus) {
-                this.base = base;
-                this.bonus = bonus;
             }
 
         }
