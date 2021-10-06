@@ -23,7 +23,7 @@ public class SimplifiedConfig extends YamlConfig {
     private String databaseHost = ResourceUtil.getEnvironmentVariable("DATABASE_HOST");
 
     @Getter @Setter
-    private Integer databasePort = ResourceUtil.getEnvironmentVariable("DATABASE_PORT");
+    private Integer databasePort = Integer.parseInt(ResourceUtil.getEnvironmentVariable("DATABASE_PORT"));
 
     @Getter @Setter
     private String databaseSchema = ResourceUtil.getEnvironmentVariable("DATABASE_SCHEMA");
@@ -35,6 +35,6 @@ public class SimplifiedConfig extends YamlConfig {
     private String databasePassword = ResourceUtil.getEnvironmentVariable("DATABASE_PASSWORD");
 
     @Getter @Setter
-    private Boolean databaseDebug = ResourceUtil.getEnvironmentVariable("DATABASE_DEBUG");
+    private boolean databaseDebugMode = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_DEBUG"));
 
 }
