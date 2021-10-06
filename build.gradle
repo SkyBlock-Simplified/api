@@ -132,7 +132,7 @@ publishing {
             url = uri('https://maven.pkg.github.com/skyblock-simplified/sbs-api')
             credentials {
                 username = env.get('GITHUB_USER')
-                password = env.get('GITHUB_PAT')
+                password = env.get('GITHUB_TOKEN')
             }
         }
     }
@@ -195,9 +195,9 @@ publishing {
 }
 
 flyway {
-    url = 'jdbc:mariadb://' + env.get('DB_HOST') + ':' + env.get('DB_PORT') + '/' + env.get('DB_DATABASE')
-    user = env.get('DB_USER')
-    password = env.get('DB_PASSWORD')
+    url = 'jdbc:mariadb://' + env.get('DATABASE_HOST') + ':' + env.get('DATABASE_PORT') + '/' + env.get('DATABASE_DATABASE')
+    user = env.get('DATABASE_USER')
+    password = env.get('DATABASE_PASSWORD')
 }
 
 test {
