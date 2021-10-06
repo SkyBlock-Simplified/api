@@ -195,7 +195,7 @@ publishing {
 }
 
 flyway {
-    url = 'jdbc:mariadb://' + env.get('DATABASE_HOST') + ':' + env.get('DATABASE_PORT') + '/' + env.get('DATABASE_DATABASE')
+    url = 'jdbc:mariadb://' + env.get('DATABASE_HOST') + ':' + env.get('DATABASE_PORT') + '/' + env.get('DATABASE_SCHEMA')
     user = env.get('DATABASE_USER')
     password = env.get('DATABASE_PASSWORD')
 }
