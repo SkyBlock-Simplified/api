@@ -9,6 +9,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 public class HypixelResourceDataTest {
+
     private static final HypixelResourceData hypixelResourceData;
 
     static {
@@ -32,4 +33,5 @@ public class HypixelResourceDataTest {
         ResourceItemsResponse items = hypixelResourceData.getItems();
         MatcherAssert.assertThat(items.getItems().size(), Matchers.greaterThan(0));
     }
+
 }

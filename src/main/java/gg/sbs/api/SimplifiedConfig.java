@@ -1,6 +1,7 @@
 package gg.sbs.api;
 
 import gg.sbs.api.data.yaml.YamlConfig;
+import gg.sbs.api.util.NumberUtil;
 import gg.sbs.api.util.ResourceUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class SimplifiedConfig extends YamlConfig {
     private String databaseHost = ResourceUtil.getEnvironmentVariable("DATABASE_HOST");
 
     @Getter @Setter
-    private Integer databasePort = Integer.parseInt(ResourceUtil.getEnvironmentVariable("DATABASE_PORT"));
+    private Integer databasePort = NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_PORT"));
 
     @Getter @Setter
     private String databaseSchema = ResourceUtil.getEnvironmentVariable("DATABASE_SCHEMA");
