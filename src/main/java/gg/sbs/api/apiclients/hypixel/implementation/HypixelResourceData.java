@@ -6,6 +6,7 @@ import gg.sbs.api.apiclients.hypixel.response.resource.ResourceItemsResponse;
 import gg.sbs.api.apiclients.hypixel.response.resource.ResourceSkillsResponse;
 
 public interface HypixelResourceData extends HypixelDataInterface {
+
     @RequestLine("GET /resources/skyblock/skills")
     ResourceSkillsResponse getSkills();
 
@@ -14,4 +15,5 @@ public interface HypixelResourceData extends HypixelDataInterface {
 
     @RequestLine("GET /resources/skyblock/items")
     ResourceItemsResponse getItems();
+
 }
