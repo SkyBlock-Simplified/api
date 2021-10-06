@@ -20,7 +20,7 @@ public class RarityRefreshableTest {
     @Test
     public void getCachedList_ok() throws SqlException {
         RarityModel legendary = rarityRefreshable.findFirstOrNull(
-                new Pair<>(RarityModel::getHypixelName, "LEGENDARY"),
+                new Pair<>(RarityModel::getRarityTag, "LEGENDARY"),
                 new Pair<>(RarityModel::isHasHypixelName, Boolean.valueOf(true))
         );;
         MatcherAssert.assertThat(legendary, Matchers.notNullValue());
