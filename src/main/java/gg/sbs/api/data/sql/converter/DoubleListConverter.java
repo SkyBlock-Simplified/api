@@ -1,4 +1,4 @@
-package gg.sbs.api.data.sql.converters;
+package gg.sbs.api.data.sql.converter;
 
 import gg.sbs.api.SimplifiedApi;
 

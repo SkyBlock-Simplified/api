@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.models.skilllevels;
 
 import gg.sbs.api.data.sql.SqlModel;
-import gg.sbs.api.data.sql.converters.StringListConverter;
+import gg.sbs.api.data.sql.converter.StringListConverter;
 import gg.sbs.api.data.sql.models.skills.SkillModel;
 import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;

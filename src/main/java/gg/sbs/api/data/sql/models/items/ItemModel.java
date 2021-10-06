@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.models.items;
 
 import gg.sbs.api.data.sql.SqlModel;
-import gg.sbs.api.data.sql.converters.*;
+import gg.sbs.api.data.sql.converter.*;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
