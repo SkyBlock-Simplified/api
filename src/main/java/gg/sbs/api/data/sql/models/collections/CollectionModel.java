@@ -22,7 +22,7 @@ public class CollectionModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "collection_key", nullable = false, length = 127)
-    private String collectionKey;
+    private String key;
 
     @Getter
     @Setter
@@ -42,14 +42,14 @@ public class CollectionModel implements SqlModel {
         CollectionModel that = (CollectionModel) o;
 
         if (id != that.id) return false;
-        if (!collectionKey.equals(that.collectionKey)) return false;
+        if (!key.equals(that.key)) return false;
         if (!name.equals(that.name)) return false;
         return updatedAt.equals(that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.collectionKey).append(this.name).append(this.updatedAt).build();
+        return new HashCodeBuilder().append(this.id).append(this.key).append(this.name).append(this.updatedAt).build();
     }
 
 }
