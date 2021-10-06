@@ -44,6 +44,8 @@ public class SkillModel implements SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    // TODO: Load Exp Table
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
