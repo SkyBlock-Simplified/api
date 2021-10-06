@@ -41,7 +41,8 @@ public class PetModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "skill", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "skill", nullable = false)
     private SkillModel skill;
 
     @Getter
