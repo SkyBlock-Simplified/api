@@ -1,6 +1,10 @@
 package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
+import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.data.sql.models.collections.CollectionModel;
+import gg.sbs.api.data.sql.models.collections.CollectionRepository;
+import gg.sbs.api.data.sql.models.skills.SkillModel;
 import gg.sbs.api.hypixel_old.skyblock.Skyblock;
 import gg.sbs.api.nbt.NbtFactory;
 import gg.sbs.api.nbt.tags.collection.CompoundTag;
@@ -51,7 +55,7 @@ public class SkyBlockIsland {
         return Optional.of(this.banking);
     }
 
-    public Collection getCollection(Skyblock.Skill type) {
+    public Collection getCollection(SkillModel type) {
         Collection collection = new Collection(type);
 
         for (Member profile : this.getMembers()) {
@@ -94,7 +98,7 @@ public class SkyBlockIsland {
     public Optional<ProfileName> getProfileName() {
         return Optional.of(this.profileName);
     }
-
+/*  TODO: MinionModel
     public Minion getMinion(Skyblock.Minion type) {
         Minion minion = new Minion(type);
 
@@ -105,7 +109,7 @@ public class SkyBlockIsland {
 
         return minion;
     }
-
+*/
     public UUID getIslandId() {
         return StringUtil.toUUID(this.islandId);
     }
@@ -249,12 +253,15 @@ public class SkyBlockIsland {
             return new Backpacks(this.backpackContents, this.backpackIcons);
         }
 
-        public Collection getCollection(Skyblock.Skill type) {
+        public Collection getCollection(SkillModel type) {
             Collection collection = new Collection(type);
-            ConcurrentList<Skyblock.Collection> items = Skyblock.Collection.getItems(type);
+            SimplifiedApi.getSqlRepository(CollectionRepository.class).findAll().stream().filter(model -> model.getName().equals(type.getName())); // TODO: Foreign Keys
+
+            // TODO: CollectionItemModel
+            /*ConcurrentList<CollectionModel> items = Skyblock.Collection.getItems(type);
 
             if (this.collection != null) {
-                for (Skyblock.Collection item : items) {
+                for (CollectionModel item : items) {
                     collection.collected.put(item, this.collection.getOrDefault(item.getName(), 0));
 
                     List<String> unlocked = this.unlocked_coll_tiers.stream().filter(tier -> tier.matches(FormatUtil.format("^{0}_[\\d]+$", item.getName()))).collect(Collectors.toList());
@@ -263,7 +270,7 @@ public class SkyBlockIsland {
                         collection.unlocked.put(item, Math.max(current, Integer.parseInt(tier.replace(FormatUtil.format("{0}_", item.getName()), ""))));
                     });
                 }
-            }
+            }*/
 
             return collection;
         }
@@ -275,7 +282,8 @@ public class SkyBlockIsland {
         public MelodyHarp getMelodyHarp() {
             return new MelodyHarp(this.harpQuest);
         }
-
+        // TODO: MinionModel
+/*
         public Minion getMinion(Skyblock.Minion type) {
             Minion minion = new Minion(type);
 
@@ -294,7 +302,7 @@ public class SkyBlockIsland {
         public ConcurrentList<Minion> getMinions() {
             return Arrays.stream(Skyblock.Minion.values()).map(this::getMinion).collect(Concurrent.toList());
         }
-
+*/
         public ConcurrentLinkedMap<String, Objective> getObjectives() {
             return this.getObjectives(null);
         }
@@ -377,6 +385,7 @@ public class SkyBlockIsland {
             }
         }
 
+        /*
         public double getWeight(Skyblock.Stat stat) {
             return this.getWeight().get(stat);
         }
@@ -384,6 +393,7 @@ public class SkyBlockIsland {
         public ConcurrentMap<Skyblock.Stat, Double> getWeight() {
             return null; // TODO
         }
+        */
 
         /*
 SKILL_WEIGHT_VALUES = {
@@ -638,20 +648,20 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     public static class Collection {
 
-        @Getter private final Skyblock.Skill type;
+        @Getter private final SkillModel type;
         @SerializedName("items")
-        @Getter private ConcurrentLinkedMap<Skyblock.Collection, Integer> collected = Concurrent.newLinkedMap();
-        @Getter private ConcurrentLinkedMap<Skyblock.Collection, Integer> unlocked = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionModel, Integer> collected = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionModel, Integer> unlocked = Concurrent.newLinkedMap();
 
-        private Collection(Skyblock.Skill type) {
+        private Collection(SkillModel type) {
             this.type = type;
         }
 
-        public int getCollected(Skyblock.Collection collection) {
+        public int getCollected(CollectionModel collection) {
             return this.collected.get(collection);
         }
 
-        public int getUnlocked(Skyblock.Collection collection) {
+        public int getUnlocked(CollectionModel collection) {
             return this.unlocked.getOrDefault(collection, 0);
         }
 
@@ -1249,14 +1259,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     }
 
     public static class Minion {
-
+/*      TODO: MinionModel
         @Getter private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
         @Getter private final Skyblock.Minion type;
 
         private Minion(Skyblock.Minion type) {
             this.type = type;
         }
-
+*/
     }
 
     public static class NbtContent {
@@ -1515,11 +1525,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     }
 
     public static class PlayerStats {
-
+/*
         @Getter private final ConcurrentMap<Skyblock.Stat, Data> stat = Concurrent.newMap();
-
+*/
         private PlayerStats(Member member) {
-            Arrays.stream(Skyblock.Stat.values()).forEach(skyblockStat -> stat.put(skyblockStat, new Data(0, 0)));
+            //Arrays.stream(Skyblock.Stat.values()).forEach(skyblockStat -> stat.put(skyblockStat, new Data(0, 0)));
             // TODO: Load stats from API data in member
             // Optimal solution would be to go through everywhere stats can be,
             // and parse stats dynamically instead of adding them one at a time
@@ -1594,7 +1604,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
                     // Store into stat
                 });
-
+/*
                 member.getPets().forEach(petInfo -> {
                     if (petInfo.isActive()) {
                         if (petInfo.getPet().isPresent()) { // TODO: Use PetModel
@@ -1611,15 +1621,15 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                         }
                     }
                 });
-
+*/
                 // Parse item nbt lore for weapon query
             } catch (IOException ioException) { }
         }
-
+/*
         public Data getData(Skyblock.Stat stat) {
             return this.getStat().get(stat);
         }
-
+*/
         public static class Data {
 
             @Setter(AccessLevel.PRIVATE)

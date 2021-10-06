@@ -224,28 +224,28 @@ public class Skyblock {
 
     public enum Bag {
 
-        ENDER_CHEST(Collection.OBSIDIAN,
+        ENDER_CHEST("OBSIDIAN",
                 new Size(0, 27),
                 new Size(5, 36),
                 new Size(7, 45),
                 new Size(9, 54)),
-        FISHING_BAG(Collection.RAW_FISH,
+        FISHING_BAG("RAW_FISH",
                 new Size(3, 9),
                 new Size(7, 18),
                 new Size(9, 27),
                 new Size(10, 36),
                 new Size(11, 45)),
-        POTION_BAG(Collection.NETHER_WART,
+        POTION_BAG("NETHER_WART",
                 new Size(2, 9),
                 new Size(5, 18),
                 new Size(8, 27),
                 new Size(10, 36),
                 new Size(11, 45)),
-        QUIVER(Collection.STRING,
+        QUIVER("STRING",
                 new Size(3, 27),
                 new Size(6, 36),
                 new Size(9, 45)),
-        TALISMAN_BAG(Collection.REDSTONE,
+        TALISMAN_BAG("REDSTONE",
                 new Size(2, 3),
                 new Size(6, 9),
                 new Size(9, 15),
@@ -256,15 +256,15 @@ public class Skyblock {
                 new Size(14, 45)),
         ;
 
-        private final Collection collection;
+        private final String collection;
         private final ConcurrentList<Size> sizes;
 
-        Bag(Collection collection, Size... sizes) {
+        Bag(String collection, Size... sizes) {
             this.collection = collection;
             this.sizes = Concurrent.newList(sizes);
         }
 
-        public Collection getCollection() {
+        public String getCollection() {
             return this.collection;
         }
 
@@ -996,111 +996,7 @@ public class Skyblock {
         }
 
     }
-
-    public enum Collection {
-
-        WHEAT(Skill.FARMING, Item.WHEAT),
-        CARROT(Skill.FARMING, Item.CARROT),
-        POTATO(Skill.FARMING, Item.POTATO),
-        PUMPKIN(Skill.FARMING, Item.PUMPKIN),
-        MELON(Skill.FARMING, Item.MELON),
-        SEEDS(Skill.FARMING, Item.SEEDS, 6),
-        MUSHROOM(Skill.FARMING, Item.RED_MUSHROOM),
-        COCOA_BEANS(Skill.FARMING, Item.COCOA_BEANS),
-        CACTUS(Skill.FARMING, Item.CACTUS),
-        SUGAR_CANE(Skill.FARMING, Item.SUGAR_CANE),
-        FEATHER(Skill.FARMING, Item.FEATHER),
-        LEATHER(Skill.FARMING, Item.LEATHER, 10),
-        RAW_PORKCHOP(Skill.FARMING, Item.RAW_PORKCHOP),
-        RAW_CHICKEN(Skill.FARMING, Item.RAW_CHICKEN),
-        MUTTON(Skill.FARMING, Item.MUTTON),
-        RAW_RABBIT(Skill.FARMING, Item.RABBIT),
-        NETHER_WART(Skill.FARMING, Item.NETHER_WART, 11),
-
-        COBBLESTONE(Skill.MINING, Item.COBBLESTONE, 10),
-        COAL(Skill.MINING, Item.COAL),
-        IRON_INGOT(Skill.MINING, Item.IRON_INGOT),
-        GOLD_INGOT(Skill.MINING, Item.GOLD_INGOT),
-        DIAMOND(Skill.MINING, Item.DIAMOND),
-        LAPIS_LAZULI(Skill.MINING, Item.LAPIS_LAZULI, 10),
-        EMERALD(Skill.MINING, Item.EMERALD),
-        REDSTONE(Skill.MINING, Item.REDSTONE_DUST, 14),
-        NETHER_QUARTZ(Skill.MINING, Item.NETHER_QUARTZ),
-        OBSIDIAN(Skill.MINING, Item.OBSIDIAN, 10),
-        GLOWSTONE_DUST(Skill.MINING, Item.GLOWSTONE_DUST),
-        GRAVEL(Skill.MINING, Item.GRAVEL),
-        ICE(Skill.MINING, Item.ICE, 10),
-        NETHERRACK(Skill.MINING, Item.NETHERRACK, 3),
-        SAND(Skill.MINING, Item.SAND, 7),
-        END_STONE(Skill.MINING, Item.END_STONE, 10),
-
-        ROTTEN_FLESH(Skill.COMBAT, Item.ROTTEN_FLESH),
-        BONE(Skill.COMBAT, Item.BONE),
-        STRING(Skill.COMBAT, Item.STRING),
-        SPIDER_EYE(Skill.COMBAT, Item.SPIDER_EYE),
-        GUNPOWDER(Skill.COMBAT, Item.GUNPOWDER),
-        ENDER_PEARL(Skill.COMBAT, Item.ENDER_PEARL),
-        GHAST_TEAR(Skill.COMBAT, Item.GHAST_TEAR),
-        SLIME_BALL(Skill.COMBAT, Item.SLIME_BALL),
-        BLAZE_ROD(Skill.COMBAT, Item.BLAZE_ROD),
-        MAGMA_CREAM(Skill.COMBAT, Item.MAGMA_CREAM),
-
-        OAK_WOOD(Skill.FORAGING, Item.OAK_WOOD),
-        SPRUCE_WOOD(Skill.FORAGING, Item.SPRUCE_WOOD),
-        BIRCH_WOOD(Skill.FORAGING, Item.BIRCH_WOOD),
-        DARK_OAK_WOOD(Skill.FORAGING, Item.DARK_OAK_WOOD),
-        ACACIA_WOOD(Skill.FORAGING, Item.ACACIA_WOOD),
-        JUNGLE_WOOD(Skill.FORAGING, Item.JUNGLE_WOOD),
-
-        RAW_FISH(Skill.FISHING, Item.RAW_FISH, 11),
-        RAW_SALMON(Skill.FISHING, Item.RAW_SALMON),
-        CLOWNFISH(Skill.FISHING, Item.CLOWNFISH, 7),
-        PUFFERFISH(Skill.FISHING, Item.PUFFERFISH),
-        PRISMARINE_SHARD(Skill.FISHING, Item.PRISMARINE_SHARD, 5),
-        PRISMARINE_CRYSTALS(Skill.FISHING, Item.PRISMARINE_CRYSTALS, 7),
-        CLAY(Skill.FISHING, Item.CLAY, 5),
-        LILY_PAD(Skill.FISHING, Item.LILY_PAD),
-        INK_SACK(Skill.FISHING, Item.INK_SACK),
-        SPONGE(Skill.FISHING, Item.SPONGE);
-
-        private final Skill skill;
-        private final Skyblock.Item skyblockItem;
-        private final int maxTier;
-
-        Collection(Skill skill, Skyblock.Item skyblockItem) {
-            this(skill, skyblockItem, 9);
-        }
-
-        Collection(Skill skill, Skyblock.Item skyblockItem, int maxTier) {
-            this.skill = skill;
-            this.skyblockItem = skyblockItem;
-            this.maxTier = maxTier;
-        }
-
-        public int getMaxTier() {
-            return this.maxTier;
-        }
-
-        public String getName() {
-            return (this == MUSHROOM ? "MUSHROOM_COLLECTION" : this.skyblockItem.getItemId());
-        }
-
-        public Skill getSkill() {
-            return this.skill;
-        }
-
-        public Skyblock.Item getSkyblockItem() {
-            return this.skyblockItem;
-        }
-
-        public static ConcurrentList<Collection> getItems(Skill skill) {
-            ConcurrentList<Collection> items = Concurrent.newList();
-            Arrays.stream(values()).filter(item -> item.getSkill() == skill).forEach(items::add);
-            return items;
-        }
-
-    }
-
+/*
     public enum Minion {
 
         WHEAT(Collection.WHEAT),
@@ -1181,144 +1077,57 @@ public class Skyblock {
         }
 
     }
-
-    /*
-    {
-    id: "minecraft:skull",
-    Count: 1b,
-    tag: {
-        SkullOwner: {
-            Id: "f33f51a7-9691-4076-abda-f66e3d047a71",
-            Properties: {
-                textures: [{
-                    Signature: "c1Q0rQqA13TDB7leFcp1T0FJn3aCPFuNLU1MPPYSlZR9yY09MUYeSJy7nsNpIjmywo39Ra1GlFIpSKaWjg30BfYZOdw7ZJh+OCdWkYhWd44yHq5NMevMzmmWvAP2lc1zgn+P/2XwfmKzo0UueITq+gnpt3MbYojoAny8M/iLTGa+xlHnaUZR1M7Y8USBycET12xdqQNJ/pF4EXGwzZMStYXFYI+q4qNQUf0/4j8BnYOIYplWlxcGtU11DHvsyTWwauMfW6yHNj2HijwS2OHcean5P6II/TV3SoMwmE8DfDUPWU8rL5GJnZL0TUvwCgAvz0rxp8JLrZ68Ep80cvE7YviBeQAKa0KPkWszy+87eppupPyzbqmKlbM/FHlKFkHMh2pZK47+Y5vthROz2BAN+eqpn6YY/pVvYhHAVOYSOLo1r5ztSjHaN3WV8mpLN3G9qpGcW2hyMk43uFbUQ6PtfV7Ajza8iBJgQSjNmYPy4cu+nS31ipXF9Z1fkjqz5ZnIRVoJq7/IzgQrh085iBlvbTcmxNXJ+ccqfq860+Akib1JuRX+MEvv2KgZ12AkBgOY0IEqPo3AJTXm07f02cSvIN80V/q/VDaZ8QPp571DDPp+LILUSMyKQ61pA4yI4takYiYbs9KzWGChe9HuIs5Uxm6fuMHF+iDo0bOf4OSsV2Y=",
-                    Value: "ewogICJ0aW1lc3RhbXAiIDogMTYzMjQxNTQ0ODMzMiwKICAicHJvZmlsZUlkIiA6ICJmMzNmNTFhNzk2OTE0MDc2YWJkYWY2NmUzZDA0N2E3MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmFmdGVkRnVyeSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hMjc2ODQyYTZiYjA3MjU3YWFlNDAwODczN2I2NTAzYWJkOTJkNDgyNWY4NzkyNTE0YTM1Nzk3NzI3MzBiNTRiIgogICAgfSwKICAgICJDQVBFIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xNTNiMWEwZGZjYmFlOTUzY2RlYjZmMmMyYmY2YmY3OTk0MzIzOWIxMzcyNzgwZGE0NGJjYmIyOTI3MzEzMWRhIgogICAgfQogIH0KfQ=="
-                }]
-            },
-            Name: "CraftedFury"
-        },
-        display: {
-            Lore: [" §6 Mining Fortune §f768", "  §6☘ Farming Fortune §f224", "  §6☘ Foraging Fortune §f80", "  §5✧ Pristine §f1", "", "§7§eClick to view your profile!"],
-            Name: "§aYour SkyBlock Profile"
-        }
-    },
-    Damage: 3s
-}
-     */
-
-    public enum Stat {
-
-        DAMAGE('\u2741', MojangChatFormatting.RED),
-        HEALTH('\u2764', MojangChatFormatting.RED),
-        DEFENSE('\u2748', MojangChatFormatting.GREEN),
-        STRENGTH('\u2741', MojangChatFormatting.RED),
-        SPEED('\u2726', MojangChatFormatting.WHITE),
-        CRIT_CHANCE('\u2623', MojangChatFormatting.BLUE),
-        CRIT_DAMAGE('\u2620', MojangChatFormatting.BLUE),
-        INTELLIGENCE('\u270e', MojangChatFormatting.AQUA),
-        MINING_SPEED('\u2e15', MojangChatFormatting.GOLD),
-        BONUS_ATTACK_SPEED('\u2694', MojangChatFormatting.YELLOW),
-        SEA_CREATURE_CHANCE('\u03b1', MojangChatFormatting.DARK_AQUA),
-        MAGIC_FIND('\u272f', MojangChatFormatting.AQUA),
-        PET_LUCK('\u2663', MojangChatFormatting.LIGHT_PURPLE),
-        TRUE_DEFENSE('\u2742', MojangChatFormatting.WHITE),
-        FEROCITY('\u2afd', MojangChatFormatting.LIGHT_PURPLE),
-        ABILITY_DAMAGE('\u0e51', MojangChatFormatting.RED),
-        MINING_FORTUNE('\u2618', MojangChatFormatting.WHITE),
-        FARMING_FORTUNE('\u2618', MojangChatFormatting.WHITE),
-        FORAGING_FORTUNE('\u2618', MojangChatFormatting.WHITE),
-        PRISTINE('\u2727', MojangChatFormatting.DARK_PURPLE);
-
-        private final char symbolChar;
-        private final MojangChatFormatting color;
-
-        Stat(char symbolChar, MojangChatFormatting color) {
-            this.symbolChar = symbolChar;
-            this.color = color;
-        }
-
-        public MojangChatFormatting getColor() {
-            return this.color;
-        }
-
-        public String getDisplayName() {
-            return WordUtil.capitalizeFully(this.name().replaceAll("_", " "));
-        }
-
-        public String getFormattedDisplayName() {
-            return FormatUtil.preformat("{0} {1}{2}", this.color, this.getSymbol(), this.getDisplayName(), MojangChatFormatting.GRAY);
-        }
-
-        public String getSymbol() {
-            return StringUtil.unescapeJava(Character.toString(this.symbolChar));
-        }
-
-        public char getSymbolChar() {
-            return this.symbolChar;
-        }
-
-    }
-
+*/
     public enum Pet {
 
-        BABY_YETI(Type.FISHING_PET, InternalStat.BABY_YETI, (level, rarity) -> _i((level - 1) * 0.75, (level - 1) * 0.4)),
-        BAT(Type.MINING_PET, InternalStat.BAT, (level, rarity) -> _i(level, level / 20)),
-        BEE(Type.FARMING_PET, InternalStat.BEE, (level, rarity) -> _i(level / 2, 5 + ((level - 1) / 4), level / 10)),
-        BLACK_CAT(Type.COMBAT_PET, InternalStat.BLACK_CAT, (level, rarity) -> _i(level, (int)(level * 0.24))),
-        BLAZE(Type.COMBAT_PET, InternalStat.BLAZE, (level, rarity) -> _i(level, 10 + ((level - 1) / 5))),
-        BLUE_WHALE(Type.FISHING_PET, InternalStat.BLUE_WHALE, (level, rarity) -> _i(2 + ((level - 1) * 2))),
-        CHICKEN(Type.FARMING_PET, InternalStat.CHICKEN, (level, rarity) -> _i(2 + ((level - 1) * 2))),
-        DOLPHIN(Type.FISHING_PET, InternalStat.DOLPHIN, (level, rarity) -> _i(level, (int)(level / 20))),
-        ELEPHANT(Type.COMBAT_PET, InternalStat.ELEPHANT, (level, rarity) -> _i(level, (int)(level * 0.75))),
-        ENDERMAN(Type.COMBAT_PET, InternalStat.ENDERMAN, (level, rarity) -> _i(level * 0.75)),
-        ENDERMITE(Type.COMBAT_PET, InternalStat.ENDERMITE, (level, rarity) -> _i(level)),
-        ENDER_DRAGON(Type.COMBAT_PET, InternalStat.ENDER_DRAGON, (level, rarity) -> _i(level / 2, level / 10, level / 2)),
-        FLYING_FISH(Type.FISHING_PET, InternalStat.FLYING_FISH, (level, rarity) -> _i(rarity.ordinal() > 2 ? (level / 2) : (int)(level * 0.4), (rarity.ordinal() > 2 ? (level / 2) : (int)(level * 0.4)))),
-        GHOUL(Type.COMBAT_PET, InternalStat.GHOUL, (level, rarity) -> _i(level, level * 0.7)),
-        GIRAFFE(Type.FORAGING_PET, InternalStat.GIRAFFE, (level, rarity) -> _i(level, level / 20)),
-        GOLEM(Type.COMBAT_PET, InternalStat.GOLEM, (level, rarity) -> _i(1 + (int)((level - 1) * 1.5051), level / 2)),
-        GUARDIAN(Type.COMBAT_PET, InternalStat.GUARDIAN, (level, rarity) -> _i(level, level / 2)),
-        HORSE(Type.COMBAT_MOUNT, InternalStat.HORSE, (level, rarity) -> _i(level / 2, level / 4)),
-        HOUND(Type.COMBAT_PET, InternalStat.HOUND, (level, rarity) -> _i((int)(level * 0.4))),
-        JELLYFISH(Type.ALCHEMY_PET, InternalStat.JELLYFISH, (level, rarity) -> _i(2 + ((level - 1) * 2))),
-        JERRY(Type.COMBAT_PET, InternalStat.JERRY, (level, rarity) -> _i(level * -1)),
-        LION(Type.FORAGING_PET, InternalStat.LION, (level, rarity) -> _i(level / 2, level / 4)),
-        MAGMA_CUBE(Type.COMBAT_PET, InternalStat.MAGMA_CUBE, (level, rarity) -> _i(level / 2, level / 3, level / 5)),
-        MONKEY(Type.COMBAT_PET, InternalStat.MONKEY, (level, rarity) -> _i(level / 5, level / 2)),
-        OCELOT(Type.FORAGING_PET, InternalStat.OCELOT, (level, rarity) -> _i(level / 2)),
-        PARROT(Type.ALCHEMY_PET, InternalStat.PARROT, (level, rarity) -> _i(level / 10, level)),
-        PHOENIX(Type.COMBAT_PET, InternalStat.PHOENIX, (level, rarity) -> _i(10 + (level / 2), 51 + (level - 1))),
-        PIG(Type.FARMING_PET, InternalStat.PIG, (level, rarity) -> _i(level / 4)),
-        PIGMAN(Type.COMBAT_PET, InternalStat.PIGMAN, (level, rarity) -> _i(level / 2, level / 2)),
-        RABBIT(Type.COMBAT_PET, InternalStat.RABBIT, (level, rarity) -> _i(level, level / 5)),
-        ROCK(Type.COMBAT_PET, InternalStat.ROCK, (level, rarity) -> _i(level*2, level / 10)),
-        SHEEP(Type.ALCHEMY_PET, InternalStat.SHEEP, (level, rarity) -> _i(level, level / 2)),
-        SILVERFISH(Type.MINING_PET, InternalStat.SILVERFISH, (level, rarity) -> _i(level, level / 5)),
-        SKELETON(Type.COMBAT_PET, InternalStat.SKELETON, (level, rarity) -> _i((int)(level / 6.667), (int)(level / 3.333))),
-        SKELETON_HORSE(Type.COMBAT_MOUNT, InternalStat.SKELETON_HORSE, (level, rarity) -> _i(level, level  /  2)),
-        SNOWMAN(Type.COMBAT_PET, InternalStat.SNOWMAN, (level, rarity) -> _i(level / 3, level / 3, level / 3)),
-        SPIDER(Type.COMBAT_PET, InternalStat.SPIDER, (level, rarity) -> _i(level / 10, level / 10)),
-        SQUID(Type.FISHING_PET, InternalStat.SQUID, (level, rarity) -> _i(level / 2, level / 2)),
-        TARANTULA(Type.COMBAT_PET, InternalStat.TARANTULA, (level, rarity) -> _i(level / 10, level / 10, (int)(level / 3.33))),
-        TIGER(Type.COMBAT_PET, InternalStat.TIGER, (level, rarity) -> _i(5 + (level / 10), level / 20, level / 2)),
-        TURTLE(Type.COMBAT_PET, InternalStat.TURTLE, (level, rarity) -> _i(level / 2, level)),
-        WITHER_SKELETON(Type.MINING_PET, InternalStat.WITHER_SKELETON, (level, rarity) -> _i(level / 4, level / 4, level / 4, level / 4, level / 20)),
-        WOLF(Type.COMBAT_PET, InternalStat.WOLF, (level, rarity) -> _i(level / 10, level / 2, level / 6, level / 10)),
-        ZOMBIE(Type.COMBAT_PET, InternalStat.ZOMBIE, (level, rarity) -> _i(level / 2, (int)(level / 3.5)));
+        BABY_YETI,
+        BAT,
+        BEE,
+        BLACK_CAT,
+        BLAZE,
+        BLUE_WHALE,
+        CHICKEN,
+        DOLPHIN,
+        ELEPHANT,
+        ENDERMAN,
+        ENDERMITE,
+        ENDER_DRAGON,
+        FLYING_FISH,
+        GHOUL,
+        GIRAFFE,
+        GOLEM,
+        GUARDIAN,
+        HORSE,
+        HOUND,
+        JELLYFISH,
+        JERRY,
+        LION,
+        MAGMA_CUBE,
+        MONKEY,
+        OCELOT,
+        PARROT,
+        PHOENIX,
+        PIG,
+        PIGMAN,
+        RABBIT,
+        ROCK,
+        SHEEP,
+        SILVERFISH,
+        SKELETON,
+        SKELETON_HORSE,
+        SNOWMAN,
+        SPIDER,
+        SQUID,
+        TARANTULA,
+        TIGER,
+        TURTLE,
+        WITHER_SKELETON,
+        WOLF,
+        ZOMBIE;
 
-        private final Type type;
-        private final InternalStat internalStat;
-        private final BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data;
+        private final BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data = (level, rarity) -> _i();
 
-        Pet(Type type, InternalStat internalStat) {
-            this(type, internalStat, null);
-        }
-
-        Pet(Type type, InternalStat internalStat, BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data) {
-            this.type = type;
-            this.internalStat = internalStat;
-            this.data = data;
-        }
+        Pet() { }
 
         public ConcurrentList<Ability> getAbilities() {
             return Ability.getAbilities(this);
@@ -1329,100 +1138,21 @@ public class Skyblock {
         }
 
         public ConcurrentList<String> getLore(int petLevel, Skyblock.Item.Rarity rarity) {
-            ConcurrentList<Stat> stats = this.getStats();
+            ConcurrentList<Object> stats = Concurrent.newList();
             ConcurrentList<Object> statValues = this.data.apply(petLevel, rarity);
             ConcurrentList<String> lore = Concurrent.newList();
 
             for (int i = 0; i < stats.size(); i++) {
-                Stat stat = stats.get(i);
+                Object stat = stats.get(i);
                 double value = Double.parseDouble(statValues.get(i).toString());
-                lore.add(FormatUtil.preformat("{0}: {{1}}{{2}}", MojangChatFormatting.GRAY, MojangChatFormatting.GREEN, stat.getDisplayName(), (value < 1 ? "" : "+"), (int)value));
+                lore.add(FormatUtil.preformat("{0}: {{1}}{{2}}", MojangChatFormatting.GRAY, MojangChatFormatting.GREEN, "stat.getDisplayName()", (value < 1 ? "" : "+"), (int)value));
             }
 
             return lore;
         }
 
-        public ConcurrentList<Stat> getStats() {
-            return Concurrent.newList(this.internalStat.stats);
-        }
-
-        public Type getType() {
-            return this.type;
-        }
-
         private static ConcurrentList<Object> _i(Object... values) {
             return Concurrent.newList(values);
-        }
-
-        public enum Type {
-
-            FARMING_PET,
-            MINING_PET,
-            COMBAT_PET,
-            COMBAT_MOUNT,
-            FORAGING_PET,
-            FISHING_PET,
-            ALCHEMY_PET;
-
-            public String getPrettyName() {
-                return WordUtil.capitalizeFully(this.name().replace("_", " "));
-            }
-
-        }
-
-        private enum InternalStat {
-
-            BABY_YETI(Stat.INTELLIGENCE, Stat.STRENGTH),
-            BAT(Stat.INTELLIGENCE, Stat.SPEED),
-            BEE(Stat.INTELLIGENCE, Stat.STRENGTH, Stat.SPEED),
-            BLACK_CAT(Stat.INTELLIGENCE, Stat.SPEED),
-            BLAZE(Stat.INTELLIGENCE, Stat.DEFENSE),
-            BLUE_WHALE(Stat.HEALTH),
-            CHICKEN(Stat.HEALTH),
-            DOLPHIN(Stat.INTELLIGENCE, Stat.SEA_CREATURE_CHANCE),
-            ELEPHANT(Stat.HEALTH, Stat.INTELLIGENCE),
-            ENDERMAN(Stat.CRIT_DAMAGE),
-            ENDERMITE(Stat.INTELLIGENCE),
-            ENDER_DRAGON(Stat.CRIT_CHANCE, Stat.CRIT_DAMAGE),
-            FLYING_FISH(Stat.STRENGTH, Stat.DEFENSE),
-            GHOUL(Stat.HEALTH, Stat.INTELLIGENCE),
-            GIRAFFE(Stat.HEALTH, Stat.CRIT_CHANCE),
-            GOLEM(Stat.HEALTH, Stat.STRENGTH),
-            GUARDIAN(Stat.INTELLIGENCE, Stat.DEFENSE),
-            HORSE(Stat.INTELLIGENCE, Stat.SPEED),
-            HOUND(Stat.STRENGTH),
-            JELLYFISH(Stat.HEALTH),
-            JERRY(Stat.INTELLIGENCE),
-            LION(Stat.STRENGTH, Stat.SPEED),
-            MAGMA_CUBE(Stat.HEALTH, Stat.DEFENSE, Stat.STRENGTH),
-            MONKEY(Stat.SPEED, Stat.INTELLIGENCE),
-            OCELOT(Stat.SPEED),
-            PARROT(Stat.CRIT_DAMAGE, Stat.INTELLIGENCE),
-            PHOENIX(Stat.STRENGTH, Stat.INTELLIGENCE),
-            PIG(Stat.SPEED),
-            PIGMAN(Stat.STRENGTH, Stat.DEFENSE),
-            RABBIT(Stat.HEALTH, Stat.SPEED),
-            ROCK(Stat.DEFENSE, Stat.TRUE_DEFENSE),
-            SHEEP(Stat.INTELLIGENCE, Stat.ABILITY_DAMAGE),
-            SILVERFISH(Stat.DEFENSE, Stat.HEALTH),
-            SKELETON(Stat.CRIT_CHANCE, Stat.CRIT_DAMAGE),
-            SKELETON_HORSE(Stat.INTELLIGENCE, Stat.SPEED),
-            SNOWMAN(Stat.STRENGTH, Stat.CRIT_DAMAGE),
-            SPIDER(Stat.STRENGTH, Stat.CRIT_CHANCE),
-            SQUID(Stat.INTELLIGENCE, Stat.HEALTH),
-            TARANTULA(Stat.CRIT_CHANCE, Stat.CRIT_DAMAGE, Stat.STRENGTH),
-            TIGER(Stat.STRENGTH, Stat.CRIT_CHANCE, Stat.CRIT_DAMAGE),
-            TURTLE(Stat.HEALTH, Stat.DEFENSE),
-            WITHER_SKELETON(Stat.CRIT_DAMAGE, Stat.DEFENSE, Stat.STRENGTH, Stat.INTELLIGENCE, Stat.CRIT_CHANCE),
-            WOLF(Stat.CRIT_DAMAGE, Stat.HEALTH, Stat.SPEED, Stat.TRUE_DEFENSE),
-            ZOMBIE(Stat.CRIT_DAMAGE, Stat.HEALTH);
-
-            private final Stat[] stats;
-
-            InternalStat(Stat... stats) {
-                this.stats = stats;
-            }
-
         }
 
         public enum Ability {
@@ -1724,7 +1454,7 @@ public class Skyblock {
             public String getFormat() {
                 return this.format;
             }
-
+/*
             public ConcurrentList<String> getLore(int petLevel, Skyblock.Item.Rarity rarity) {
                 String fullLore = this.transform.apply(petLevel, rarity);
                 fullLore = StringUtil.join(FormatUtil.format("\n{0}", MojangChatFormatting.GRAY.toString()), StringUtil.split("\n", fullLore));
@@ -1742,7 +1472,7 @@ public class Skyblock {
 
                 return Concurrent.newList(StringUtil.split("\n", fullLore));
             }
-
+*/
             public Pet getPet() {
                 return this.pet;
             }
@@ -1774,140 +1504,6 @@ public class Skyblock {
                 ConcurrentList<Ability> abilities = getAbilities(petInfo.getPet().get()); // TODO: Optional Handling
                 abilities.removeIf(ability -> petInfo.getRarity().ordinal() < ability.getRarity().ordinal());
                 return abilities;
-            }
-
-        }
-
-        public enum Item {
-
-            // General
-            BIG_TEETH("Increases %CRIT_CHANCE% by {{0}}", (level, rarity) -> _i(5)),
-            IRON_CLAWS("Increases the pets %CRIT_DAMAGE%\nby {{0}%} and %CRIT_CHANCE% by {{1}%}", (level, rarity) -> _i(40, 40)),
-            HARDENED_SCALES("Increases %DEFENSE% by {{0}}", (level, rarity) -> _i(25)),
-            SHARPENED_CLAWS("Increases %CRIT_DAMAGE% by {{0}}", (level, rarity) -> _i(15)),
-            BUBBLEGUM("Your pet fuses its power with\nplaced {{1}} to give them\n{{0}x} duration", (level, rarity) -> _i(2, "Orbs")),
-            TIER_BOOST("Boosts the {{0}} of your pet by 1 tier!", (level, rarity) -> _i("rarity")),
-            TEXTBOOK("Increases the pets\n%INTELLIGENCE% by {{0}%}", (level, rarity) -> _i(100)),
-            LUCKY_CLOVER("Increases %MAGIC_FIND% by {{0}}", (level, rarity) -> _i(7)),
-            EXP_SHARE("While unequipped this pet\ngains {{0}%} of the equipped\npet''s xp, this is split between\nall pets holding the item", (level, rarity) -> _i(25)),
-
-            // Skills
-            ALL_SKILLS_BOOST("Gives +{{0}%} pet exp for all skills", (level, rarity) -> _i(10)),
-            FARMING_SKILL_BOOST("Gives +{{0}%} pet exp for Farming", (level, rarity) -> _i(10 + (rarity.ordinal() * 10))),
-            MINING_SKILL_BOOST("Gives +{{0}%} pet exp for Mining", (level, rarity) -> _i(10 + (rarity.ordinal() * 10))),
-            COMBAT_SKILL_BOOST("Gives +{{0}%} pet exp for Combat", (level, rarity) -> _i(10 + (rarity.ordinal() * 10))),
-            FORAGING_SKILL_BOOST("Gives +{{0}%} pet exp for Foraging", (level, rarity) -> _i(10 + (rarity.ordinal() * 10))),
-            FISHING_SKILL_BOOST("Gives +{{0}%} pet exp for Fishing", (level, rarity) -> _i(10 + (rarity.ordinal() * 10))),
-
-            UNKNOWN("Unknown pet item");
-
-            private final InternalStat internalStat;
-            private final String format;
-            private final BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data;
-            private final BiFunction<Integer, Skyblock.Item.Rarity, String> transform;
-
-            Item(String format) {
-                this(format, null);
-            }
-
-            Item(String format, BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data) {
-                this(format, null, data);
-            }
-
-            Item(String format, InternalStat internalStat, BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data) {
-                this.internalStat = internalStat;
-                this.format = format;
-                this.data = data;
-
-                if (this.data != null)
-                    this.transform = (l, r) -> FormatUtil.preformat(this.format, MojangChatFormatting.GRAY, MojangChatFormatting.GREEN, this.data.apply(l, r).toArray());
-                else
-                    this.transform = (l, r) -> FormatUtil.preformat(this.format, MojangChatFormatting.GRAY, MojangChatFormatting.GREEN);
-            }
-
-            public BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> getData() {
-                return this.data;
-            }
-
-            public String getFormat() {
-                return this.format;
-            }
-
-            public ConcurrentList<String> getLore(int petLevel, Skyblock.Item.Rarity rarity) {
-                String fullLore = this.transform.apply(petLevel, rarity);
-                fullLore = StringUtil.join(FormatUtil.format("\n{0}", MojangChatFormatting.GRAY.toString()), StringUtil.split("\n", fullLore));
-
-                for (Skyblock.Stat stat : Skyblock.Stat.values()) {
-                    String find = FormatUtil.format("%{0}%", stat.name());
-                    String findSymbol = FormatUtil.format("%{0}_SYMBOL%", stat.name());
-
-                    if (fullLore.contains(find))
-                        fullLore = fullLore.replaceAll(find, stat.getFormattedDisplayName());
-
-                    if (fullLore.contains(findSymbol))
-                        fullLore = fullLore.replaceAll(findSymbol, stat.getSymbol());
-                }
-
-                return Concurrent.newList(StringUtil.split("\n", fullLore));
-            }
-
-            public ConcurrentList<Stat> getStats() {
-                return Concurrent.newList(this.internalStat.stats);
-            }
-
-            public BiFunction<Integer, Skyblock.Item.Rarity, String> getTransform() {
-                return this.transform;
-            }
-
-            public Skyblock.Item.Rarity getUniqueRarity() {
-                return UniqueRarity.getRarity(this.name());
-            }
-
-            private enum InternalStat {
-
-                BIG_TEETH(Stat.CRIT_CHANCE),
-                IRON_CLAWS(Stat.CRIT_DAMAGE, Stat.CRIT_CHANCE),
-                HARDENED_SCALES(Stat.DEFENSE),
-                SHARPENED_CLAWS(Stat.CRIT_DAMAGE),
-                TEXTBOOK(Stat.INTELLIGENCE),
-                LUCKY_CLOVER(Stat.MAGIC_FIND);
-
-                private final Stat[] stats;
-
-                InternalStat(Stat... stats) {
-                    this.stats = stats;
-                }
-
-            }
-
-            private enum UniqueRarity {
-
-                BIG_TEETH(Skyblock.Item.Rarity.COMMON),
-                IRON_CLAWS(Skyblock.Item.Rarity.COMMON),
-                HARDENED_SCALES(Skyblock.Item.Rarity.UNCOMMON),
-                SHARPENED_CLAWS(Skyblock.Item.Rarity.UNCOMMON),
-                BUBBLEGUM(Skyblock.Item.Rarity.RARE),
-                TIER_BOOST(Skyblock.Item.Rarity.LEGENDARY),
-                TEXTBOOK(Skyblock.Item.Rarity.LEGENDARY),
-                LUCKY_CLOVER(Skyblock.Item.Rarity.EPIC),
-                EXP_SHARE(Skyblock.Item.Rarity.EPIC),
-                ALL_SKILLS_BOOST(Skyblock.Item.Rarity.COMMON);
-
-                private final Skyblock.Item.Rarity rarity;
-
-                UniqueRarity(Skyblock.Item.Rarity rarity) {
-                    this.rarity = rarity;
-                }
-
-                static Skyblock.Item.Rarity getRarity(String name) {
-                    for (UniqueRarity uniqueRarity : values()) {
-                        if (uniqueRarity.name().equals(name))
-                            return uniqueRarity.rarity;
-                    }
-
-                    return null;
-                }
-
             }
 
         }
@@ -2004,147 +1600,6 @@ public class Skyblock {
         }
 
     }
-/*
-    public enum Entity {
-
-        // Vanilla
-        BAT(EntityBat.class),
-        BLAZE(EntityBlaze.class),
-        CAVE_SPIDER(EntityCaveSpider.class),
-        CHICKEN(EntityChicken.class),
-        CREEPER(EntityCreeper.class),
-        COW(EntityCow.class),
-        ENDERMITE(EntityEndermite.class),
-        ENDERMAN(EntityEnderman.class),
-        GHAST(EntityGhast.class),
-        HORSE(EntityHorse.class),
-        MAGMA_CUBE(EntityMagmaCube.class),
-        PIG(EntityPig.class),
-        RABBIT(EntityRabbit.class),
-        SHEEP(EntitySheep.class),
-        SILVERFISH(EntitySilverfish.class),
-        SKELETON(EntitySkeleton.class),
-        SKELETON_HORSE(EntitySkeletonHorse.class),
-        SLIME(EntitySlime.class),
-        SPIDER(EntitySpider.class),
-        SQUID(EntitySquid.class),
-        WITCH(EntityWitch.class),
-        WITHER_SKELETON(EntityWitherSkeleton.class),
-        WOLF(EntityWolf.class),
-        ZOMBIE(EntityZombie.class),
-        ZOMBIE_PIGMAN(EntityPigZombie.class),
-        ZOMBIE_VILLAGER(EntityZombieVillager.class),
-
-        // Spooky Festival
-        HEADLESS_HORSEMAN(EntitySkeletonHorse.class, EntitySkeleton.class),
-        BAT_PINATA("Bat Pi�ata", EntityBat.class),
-
-        // Bosses
-        BROOD_MOTHER_CAVE_SPIDER("Brood Mother", EntityCaveSpider.class),
-        BROOD_MOTHER_SPIDDER("Brood Mother", EntitySpider.class),
-        MAGMA_CUBE_BOSS(EntityMagmaCube.class),
-        CORRUPTED_PROTECTOR(EntityGolem.class),
-
-        // Dragons
-        OLD_DRAGON(EntityDragon.class),
-        PROTECTOR_DRAGON(EntityDragon.class),
-        STRONG_DRAGON(EntityDragon.class),
-        SUPERIOR_DRAGON(EntityDragon.class),
-        UNSTABLE_DRAGON(EntityDragon.class),
-        WISE_DRAGON(EntityDragon.class),
-        YOUNG_DRAGON(EntityDragon.class),
-
-        // Fishing
-        CARROT_KING(EntityRabbit.class),
-        CATFISH(EntityOcelot.class),
-        DEEP_SEA_PROTECTOR(EntityIronGolem.class),
-        FROZEN_STEVE(EntityOtherPlayerMP.class),
-        FROSTY_THE_SNOWMAN(EntitySnowman.class),
-        GRINCH(EntityOtherPlayerMP.class),
-        GUARDIAN_DEFENDER(EntityGuardian.class),
-        LIQUID_HOT_MAGMA(EntityOtherPlayerMP.class),
-        MONSTER_OF_THE_DEEP(EntityChicken.class, EntityZombie.class),
-        NIGHT_SQUID(EntitySquid.class),
-        SEA_ARCHER(EntitySkeleton.class),
-        SEA_EMPEROR(EntityGuardian.class, EntitySkeleton.class),
-        SEA_GUARDIAN(EntityGuardian.class),
-        SEA_LEECH(EntitySilverfish.class),
-        SEA_WALKER(EntityZombie.class),
-        SEA_WITCH(EntityWitch.class),
-        WATER_HYDRA(EntityZombie.class),
-        YETI(EntityOtherPlayerMP.class),
-
-        // The End
-        WATCHER(EntityArmorStand.class),
-        OBSIDIAN_DEFENDER(EntityWitherSkeleton.class),
-        ZEALOT(EntityEnderman.class),
-        ENDER_CRYSTAL(EntityEnderCrystal.class),
-
-        // Spiders Den
-        DASHER_SPIDER(EntitySpider.class),
-        JOCKEY_SKELETON(EntitySkeleton.class),
-        SPIDER_JOCKEY(EntitySpider.class, EntitySkeleton.class),
-        SPLITTER_SPIDER(EntitySpider.class),
-        WEAVER_SPIDER(EntitySpider.class),
-
-        // Slayer - Revenant Horror
-        CRYPT_GHOUL(EntityZombie.class),
-        DEFORMED_REVENANT(EntityZombie.class),
-        GOLDEN_GHOUL(EntityZombie.class),
-        REVENANT_CHAMPION(EntityZombie.class),
-        REVENANT_HORROR(EntityZombie.class),
-        REVENANT_SYCOPHANT(EntityZombie.class),
-
-        // Slayer - Tarantula Broodfather
-        MUTANT_TARANTULA(EntitySpider.class),
-        TARANTULA_BEAST(EntitySpider.class),
-        TARANTULA_BROODFATHER(EntitySpider.class),
-        TARANTULA_VERMIN(EntitySpider.class),
-        VORACIOUS_SPIDER(EntitySpider.class),
-
-        // Slayer - Sven Packmaster
-        HOWLING_SPIRIT(EntityWolf.class),
-        OLD_WOLF(EntityWolf.class),
-        PACK_ENFORCER(EntityWolf.class),
-        PACK_SPIRIT(EntityWolf.class),
-        SOUL_OF_THE_ALPHA(EntityWolf.class),
-        SVEN_ALPHA("Alpha", EntityWolf.class),
-        SVEN_FOLLOWER(EntityWolf.class),
-        SVEN_PACKMASTER(EntityWolf.class),
-        VICIOUS_WOLF(EntityWolf.class),
-
-        // Deep Caverns
-        DIAMOND_ZOMBIE(EntityZombie.class),
-        DIAMOND_SKELETON(EntityZombie.class),
-        EMERALD_SLIME(EntitySlime.class),
-        LAPIS_ZOMBIE(EntityZombie.class),
-        REDSTONE_PIGMAN(EntityPigZombie.class),
-        SNEAKY_CREEPER(EntityCreeper.class);
-
-        private final String name;
-        private final ConcurrentList<Class<? extends net.minecraft.entity.Entity>> entities;
-
-        @SafeVarargs
-        Entity(Class<? extends net.minecraft.entity.Entity>... entities) {
-            this(null, entities);
-        }
-
-        @SafeVarargs
-        Entity(String name, Class<? extends net.minecraft.entity.Entity>... entities) {
-            this.name = (StringUtil.isEmpty(name) ? WordUtil.capitalizeFully(name().replace("_", " ")) : name);
-            this.entities = Concurrent.newList(entities);
-        }
-
-        public ConcurrentList<Class<? extends net.minecraft.entity.Entity>> getEntities() {
-            return this.entities;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-    }
-*/
 
     static {
         setDefaults();
