@@ -27,17 +27,16 @@ public enum MojangChatFormatting {
     LIGHT_PURPLE('d', 0xFF55FF),
     YELLOW('e', 0xFFFF55),
     WHITE('f', 0xFFFFFF),
-    MAGIC('k', true, "obfuscated"),
+    OBFUSCATED('k', true),
     BOLD('l', true),
     STRIKETHROUGH('m', true),
-    UNDERLINE('n', true, "underlined"),
+    UNDERLINED('n', true),
     ITALIC('o', true),
     RESET('r');
 
     public static final char COLOR_CHAR = '\u00a7';
     @Getter private final char code;
     @Getter private final boolean isFormat;
-    private final String jsonName;
     private final String toString;
     private final Color color;
 
@@ -54,17 +53,8 @@ public enum MojangChatFormatting {
     }
 
     MojangChatFormatting(char code, boolean isFormat, int rgb) {
-        this(code, isFormat, null, rgb);
-    }
-
-    MojangChatFormatting(char code, boolean isFormat, String jsonName) {
-        this(code, isFormat, jsonName, -1);
-    }
-
-    MojangChatFormatting(char code, boolean isFormat, String jsonName, int rgb) {
         this.code = code;
         this.isFormat = isFormat;
-        this.jsonName = jsonName;
         this.toString = new String(new char[]{COLOR_CHAR, code});
         this.color = (this.isColor() ? new Color(rgb) : null);
     }
@@ -95,10 +85,6 @@ public enum MojangChatFormatting {
 
     public Color getColor(int alpha) {
         return new Color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), alpha);
-    }
-
-    public String getJsonName() {
-        return StringUtil.isEmpty(this.jsonName) ? this.name().toLowerCase() : this.jsonName;
     }
 
     public int getRGB() {
