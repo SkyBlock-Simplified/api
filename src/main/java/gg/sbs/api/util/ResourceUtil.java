@@ -38,9 +38,8 @@ public final class ResourceUtil {
         return env;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T getEnvironmentVariable(String variableName) {
-        return (T)getEnvironmentVariables().get(variableName);
+    public static String getEnvironmentVariable(String variableName) {
+        return getEnvironmentVariables().get(variableName);
     }
 
     public static InputStream getResource(String resourcePath) {
