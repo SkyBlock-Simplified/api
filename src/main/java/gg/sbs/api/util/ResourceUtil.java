@@ -1,5 +1,8 @@
 package gg.sbs.api.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,10 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ResourceUtil {
-
-    private ResourceUtil() {
-    }
 
     public static Map<String, String> getEnvironmentVariables() {
         Map<String, String> env = new HashMap<>();
@@ -35,6 +36,11 @@ public final class ResourceUtil {
         // Load from OS
         env.putAll(System.getenv());
         return env;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getEnvironmentVariable(String variableName) {
+        return (T)getEnvironmentVariables().get(variableName);
     }
 
     public static InputStream getResource(String resourcePath) {

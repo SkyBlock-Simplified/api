@@ -49,6 +49,7 @@ import gg.sbs.api.data.sql.models.skills.SkillRepository;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
 
+import java.io.File;
 import java.time.Instant;
 import java.util.Map;
 
@@ -62,8 +63,16 @@ public class SimplifiedApi {
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeConverter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeConverter())
             .setPrettyPrinting().create();
+    private static final SimplifiedConfig config;
 
     static {
+        try {
+            File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            config = new SimplifiedConfig(currentDir.getParentFile(), "simplified");
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Will never get here
+        }
+
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
         serviceManager.provide(Gson.class, gson);
 
@@ -73,11 +82,19 @@ public class SimplifiedApi {
         serviceManager.provide(MojangData.class, new MojangApiBuilder().build(MojangData.class));
     }
 
+    public static File getCurrentDirectory() {
+        return getConfig().getParentDirectory();
+    }
+
+    public static SimplifiedConfig getConfig() {
+        return config;
+    }
+
     public static Scheduler getScheduler() {
         return getServiceManager().getProvider(Scheduler.class);
     }
 
-    private static ServiceManager getServiceManager() {
+    public static ServiceManager getServiceManager() {
         return serviceManager;
     }
 

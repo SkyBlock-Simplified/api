@@ -1,5 +1,8 @@
 package gg.sbs.api.data.sql;
 
+import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.SimplifiedConfig;
+import gg.sbs.api.data.sql.driver.MariaDBDriver;
 import gg.sbs.api.data.sql.models.accessories.AccessoryModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.collectionitems.CollectionItemModel;
@@ -14,6 +17,7 @@ import gg.sbs.api.data.sql.models.rarities.RarityModel;
 import gg.sbs.api.data.sql.models.reforges.ReforgeModel;
 import gg.sbs.api.data.sql.models.skilllevels.SkillLevelModel;
 import gg.sbs.api.data.sql.models.skills.SkillModel;
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ResourceUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,17 +33,19 @@ public class SqlSessionUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory() {
-        Map<String, String> env = ResourceUtil.getEnvironmentVariables();
+        SimplifiedConfig config = SimplifiedApi.getConfig();
+        //Map<String, String> env = ResourceUtil.getEnvironmentVariables();
         Properties properties = new Properties();
         properties.putAll(
                 new HashMap<String, String>() {{
-                    put("connection.driver_class", org.mariadb.jdbc.Driver.class.getCanonicalName());
-                    put("hibernate.show_sql", env.get("DB_DEBUG") == null ? "false" : "true");
-                    put("hibernate.connection.url", "jdbc:mariadb://" + env.get("DB_HOST")
+                    put("connection.driver_class", SqlDrivers.MariaDB.getDriverClass() /*org.mariadb.jdbc.Driver.class.getCanonicalName()*/);
+                    put("hibernate.show_sql", config.getDatabaseDebug().toString());
+                    put("hibernate.connection.url", SqlDrivers.MariaDB.getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema())
+                            /*"jdbc:mariadb://" + env.get("DB_HOST")
                             + ":" + env.get("DB_PORT")
-                            + "/" + env.get("DB_DATABASE"));
-                    put("hibernate.connection.username", env.get("DB_USER"));
-                    put("hibernate.connection.password", env.get("DB_PASSWORD"));
+                            + "/" + env.get("DB_DATABASE")*/);
+                    put("hibernate.connection.username", config.getDatabaseUser());
+                    put("hibernate.connection.password", config.getDatabasePassword());
                     put("hibernate.connection.provider_class",
                             org.hibernate.hikaricp.internal.HikariCPConnectionProvider.class.getCanonicalName());
                     put("hibernate.dialect", org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName());
@@ -51,7 +57,10 @@ public class SqlSessionUtil {
         );
 
         Configuration configuration = new Configuration().setProperties(properties);
-        for (Class<? extends SqlModel> model : Arrays.asList(
+        for (Class<? extends SqlModel> tClass : SimplifiedApi.getServiceManager().getServices(SqlModel.class))
+            configuration = configuration.addAnnotatedClass(tClass);
+
+        /*for (Class<? extends SqlModel> model : Arrays.asList(
                 AccessoryModel.class,
                 AccessoryFamilyModel.class,
                 CollectionModel.class,
@@ -66,7 +75,7 @@ public class SqlSessionUtil {
                 ReforgeModel.class,
                 SkillModel.class,
                 SkillLevelModel.class
-        )) configuration = configuration.addAnnotatedClass(model);
+        )) configuration = configuration.addAnnotatedClass(model);*/
         return configuration.buildSessionFactory();
     }
 
@@ -81,6 +90,9 @@ public class SqlSessionUtil {
     }
 
     public interface SessionFunction {
+
         void run(Session session);
+
     }
+
 }
