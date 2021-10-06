@@ -26,36 +26,12 @@ public class Skyblock {
     public final static ConcurrentMap<Item.Rarity, ConcurrentList<Integer>> PET_EXP_TIER_SCALE = Concurrent.newMap();
     public final static ConcurrentMap<Item.Rarity, Integer> PET_EXP_SCALE_OFFSET = Concurrent.newMap();
     public final static ConcurrentMap<Slayer, ConcurrentList<Integer>> SLAYER_EXP_SCALE = Concurrent.newMap();
-    public final static long START_DATE = 1560275700;
-    private static Skyblock.Date date;
-    private static boolean isOnSkyblock;
-    private static String serverID;
-    //private static Location location;
-    //private static Location previousLocation = null;
-    private static String previousServer = "";
 
-    public static Skyblock.Date getDate() {
-        return date;
-    }
 /*
     public static Location getLocation() {
         return location;
     }
 */
-    public static String getServerID() {
-        return serverID;
-    }
-
-    public static boolean isOnSkyblock() {
-        return isOnSkyblock;
-    }
-
-    private static void setDefaults() {
-        date = new Skyblock.Date(Skyblock.Date.Season.EARLY_WINTER, 1, 1, 1);
-        isOnSkyblock = false;
-        serverID = "";
-        //location = Location.UNKNOWN;
-    }
 
     /*private static void checkGameLocationDate() {
         if (MinecraftReflection.isWorldInstantiated()) {
@@ -339,85 +315,6 @@ public class Skyblock {
             }
 
             return null;
-        }
-
-    }
-
-    public static class Date {
-
-        private Season season;
-        private int day;
-        private int hour;
-        private int minute;
-
-        public Date(Season season, int day, int hour, int minute) {
-            this.season = season;
-            this.day = day;
-            this.hour = hour;
-            this.minute = minute;
-        }
-
-        public Season getSeason() {
-            return season;
-        }
-
-        public int getDay() {
-            return day;
-        }
-
-        public int getHour() {
-            return hour;
-        }
-
-        public int getMinute() {
-            return minute;
-        }
-
-        public long getTime() {
-            return 0L; // TODO: SkyBlockTime
-        }
-
-        protected void setDay(int day) {
-            this.day = day;
-        }
-
-        protected void setHour(int hour) {
-            this.hour = hour;
-        }
-
-        protected void setMinute(int minute) {
-            this.minute = minute;
-        }
-
-        protected void setSeason(Season season) {
-            this.season = season;
-        }
-
-        public enum Season {
-
-            EARLY_WINTER("Early Winter"),
-            WINTER("Winter"),
-            LATE_WINTER("Late Winter"),
-            EARLY_SPRING("Early Spring"),
-            SPRING("Spring"),
-            LATE_SPRING("Late Spring"),
-            EARLY_SUMMER("Early Summer"),
-            SUMMER("Summer"),
-            LATE_SUMMER("Late Summer"),
-            EARLY_FALL("Early Fall"),
-            FALL("Fall"),
-            LATE_FALL("Late Fall");
-
-            private String scoreboardString;
-
-            Season(String scoreboardString) {
-                this.scoreboardString = scoreboardString;
-            }
-
-            public String getScoreboardString() {
-                return scoreboardString;
-            }
-
         }
 
     }
@@ -1602,8 +1499,6 @@ public class Skyblock {
     }
 
     static {
-        setDefaults();
-
         SLAYER_EXP_SCALE.put(Slayer.REVENANT_HORROR, Concurrent.newList(5, 10, 185, 800, 4000, 15000, 80000, 300000, 600000));
         SLAYER_EXP_SCALE.put(Slayer.TARANTULA_BROODFATHER, Concurrent.newList(5, 10, 185, 800, 4000, 15000, 80000, 300000, 600000));
         SLAYER_EXP_SCALE.put(Slayer.SVEN_PACKMASTER, Concurrent.newList(5, 10, 185, 1300, 3500, 15000, 80000, 300000, 600000));
