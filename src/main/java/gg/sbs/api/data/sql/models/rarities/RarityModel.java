@@ -27,13 +27,18 @@ public class RarityModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "has_hypixel_name")
-    private boolean hasHypixelName;
+    @Column(name = "ordinal")
+    private int ordinal;
 
     @Getter
     @Setter
     @Column(name = "rarity_tag", length = 127)
     private String rarityTag;
+
+    @Getter
+    @Setter
+    @Column(name = "has_hypixel_name")
+    private boolean hasHypixelName;
 
     @Getter
     @UpdateTimestamp
