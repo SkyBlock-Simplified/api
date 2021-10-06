@@ -2,6 +2,7 @@ package gg.sbs.api.nbt;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.nbt.io.NbtReader;
 import gg.sbs.api.nbt.io.NbtWriter;
 import gg.sbs.api.nbt.registry.TagTypeRegistry;
@@ -45,7 +46,7 @@ public class NbtFactory {
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
      */
     public NbtFactory(@NonNull TagTypeRegistry typeRegistry) {
-        this(typeRegistry, new Gson());
+        this(typeRegistry, SimplifiedApi.getGson());
     }
 
     /**

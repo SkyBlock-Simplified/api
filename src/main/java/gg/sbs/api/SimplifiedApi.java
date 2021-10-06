@@ -1,9 +1,17 @@
 package gg.sbs.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import feign.gson.DoubleToIntMapTypeAdapter;
 import gg.sbs.api.apiclients.RequestInterface;
+import gg.sbs.api.apiclients.converter.InstantTypeConverter;
+import gg.sbs.api.apiclients.converter.SkyBlockRealTimeTypeConverter;
+import gg.sbs.api.apiclients.converter.SkyBlockTimeTypeConverter;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelPlayerData;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelResourceData;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockDate;
 import gg.sbs.api.apiclients.mojang.implementation.MojangData;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.SqlRefreshable;
@@ -41,13 +49,23 @@ import gg.sbs.api.data.sql.models.skills.SkillRepository;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
 
+import java.time.Instant;
+import java.util.Map;
+
 public class SimplifiedApi {
 
     private static final ServiceManager serviceManager = new ServiceManager();
     private static boolean databaseEnabled = false;
+    private static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            .registerTypeAdapter(Instant.class, new InstantTypeConverter())
+            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeConverter())
+            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeConverter())
+            .setPrettyPrinting().create();
 
     static {
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
+        serviceManager.provide(Gson.class, gson);
 
         serviceManager.provide(HypixelPlayerData.class, new HypixelApiBuilder().build(HypixelPlayerData.class));
         serviceManager.provide(HypixelResourceData.class, new HypixelApiBuilder().build(HypixelResourceData.class));
@@ -106,6 +124,10 @@ public class SimplifiedApi {
         }
     }
 
+    public static Gson getGson() {
+        return getServiceManager().getProvider(Gson.class);
+    }
+
     public static <T extends SqlModel, R extends SqlRepository<T>, E extends SqlRefreshable<T, R>> E getSqlRefreshable(Class<E> tClass) {
         return getServiceManager().getProvider(tClass);
     }
@@ -115,7 +137,7 @@ public class SimplifiedApi {
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
-        return serviceManager.getProvider(tClass);
+        return getServiceManager().getProvider(tClass);
     }
 
 }

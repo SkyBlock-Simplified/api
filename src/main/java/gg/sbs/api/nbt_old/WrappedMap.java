@@ -259,7 +259,7 @@ abstract class WrappedMap extends AbstractMap<String, Object> implements Wrapper
 	}
 
 	public void putJson(JsonObject json) {
-		this.putAll(new Gson().<Map<String, Object>>fromJson(json.toString(), new TypeToken<Map<String, Object>>(){}.getType()));
+		this.putAll(SimplifiedApi.getGson().fromJson(json.toString(), new TypeToken<Map<String, Object>>(){}.getType()));
 	}
 
 	@Override

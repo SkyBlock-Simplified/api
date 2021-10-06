@@ -1,7 +1,6 @@
 package gg.sbs.api.data.sql.converters;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import gg.sbs.api.SimplifiedApi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -17,9 +16,7 @@ public class ObjectMapConverter implements AttributeConverter<Map<String, Object
             return new HashMap<>();
         }
         try {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            return gson.fromJson(attr, HashMap.class);
+            return SimplifiedApi.getGson().fromJson(attr, HashMap.class);
         } catch (Exception e) {
             return new HashMap<>();
         }
@@ -27,9 +24,7 @@ public class ObjectMapConverter implements AttributeConverter<Map<String, Object
 
     public String convertToDatabaseColumn(Map<String, Object> attr) {
         try {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            return gson.toJson(attr);
+            return SimplifiedApi.getGson().toJson(attr);
         } catch (Exception e) {
             return "";
         }
