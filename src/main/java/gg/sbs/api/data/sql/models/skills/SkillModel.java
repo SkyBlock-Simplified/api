@@ -40,6 +40,11 @@ public class SkillModel implements SqlModel {
     private int maxLevel;
 
     @Getter
+    @Setter
+    @Column(name = "item_id", length = 127)
+    private String itemId;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
