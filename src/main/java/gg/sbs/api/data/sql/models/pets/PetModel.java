@@ -1,8 +1,10 @@
 package gg.sbs.api.data.sql.models.pets;
 
-import gg.sbs.api.data.sql.converters.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
+import gg.sbs.api.data.sql.models.skills.SkillModel;
+import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,11 +16,17 @@ import java.util.Map;
 @Entity
 @Table(name = "pets")
 public class PetModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
+
+    @Getter
+    @Setter
+    @Column(name = "item_id", nullable = false, length = 127)
+    private String item_id;
 
     @Getter
     @Setter
@@ -28,20 +36,18 @@ public class PetModel implements SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity", nullable = false)
-    private RarityModel rarity;
+    @JoinColumn(name = "lowest_rarity", nullable = false)
+    private RarityModel lowestRarity;
 
     @Getter
     @Setter
-    @Column(name = "effects_base")
-    @Convert(converter = ObjectMapConverter.class)
-    private Map<String, Object> effectsBase;
+    @Column(name = "skill", nullable = false)
+    private SkillModel skill;
 
     @Getter
     @Setter
-    @Column(name = "effects_per_level")
-    @Convert(converter = ObjectMapConverter.class)
-    private Map<String, Object> effectsPerLevel;
+    @Column(name = "type", nullable = false)
+    private int type;
 
     @Getter
     @UpdateTimestamp
@@ -56,21 +62,17 @@ public class PetModel implements SqlModel {
         PetModel petModel = (PetModel) o;
 
         if (id != petModel.id) return false;
-        if (!name.equals(petModel.name)) return false;
-        if (!rarity.equals(petModel.rarity)) return false;
-        if (!effectsBase.equals(petModel.effectsBase)) return false;
-        if (!effectsPerLevel.equals(petModel.effectsPerLevel)) return false;
+        if (!StringUtil.equals(this.item_id, petModel.item_id)) return false;
+        if (!StringUtil.equals(this.name, petModel.name)) return false;
+        if (!lowestRarity.equals(petModel.lowestRarity)) return false;
+        if (!skill.equals(petModel.skill)) return false;
+        if (type != petModel.type) return false;
         return updatedAt.equals(petModel.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
-        result = 31 * result + rarity.hashCode();
-        result = 31 * result + effectsBase.hashCode();
-        result = 31 * result + effectsPerLevel.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.name).append(this.lowestRarity).append(this.skill).append(this.type).append(this.updatedAt).build();
     }
+
 }
