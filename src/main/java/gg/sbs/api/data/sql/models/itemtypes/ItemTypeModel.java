@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql.models.itemtypes;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "item_types")
 public class ItemTypeModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,9 +43,7 @@ public class ItemTypeModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.name).append(this.updatedAt).build();
     }
+
 }

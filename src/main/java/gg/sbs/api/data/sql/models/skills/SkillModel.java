@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql.models.skills;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "skills")
 public class SkillModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,12 +61,7 @@ public class SkillModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + skillKey.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + maxLevel;
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.skillKey).append(this.name).append(this.description).append(this.maxLevel).append(this.updatedAt).build();
     }
+
 }

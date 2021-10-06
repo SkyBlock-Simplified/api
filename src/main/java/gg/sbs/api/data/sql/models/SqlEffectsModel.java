@@ -3,6 +3,7 @@ package gg.sbs.api.data.sql.models;
 import java.util.Map;
 
 public abstract class SqlEffectsModel {
+
     public abstract Map<String, Object> getEffects();
 
     @SuppressWarnings("unchecked cast") // Checked
@@ -23,4 +24,5 @@ public abstract class SqlEffectsModel {
         if (value == null) return "";
         return value;
     }
+
 }

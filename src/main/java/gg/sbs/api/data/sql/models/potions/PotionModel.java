@@ -3,6 +3,7 @@ package gg.sbs.api.data.sql.models.potions;
 import gg.sbs.api.data.sql.converters.ObjectMapConverter;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Entity
 @Table(name = "potions")
 public class PotionModel extends SqlEffectsModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,11 +59,7 @@ public class PotionModel extends SqlEffectsModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
-        result = 31 * result + itemLevel;
-        result = 31 * result + effects.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.name).append(this.itemLevel).append(this.effects).append(this.updatedAt).build();
     }
+
 }

@@ -5,6 +5,7 @@ import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,6 +17,7 @@ import java.util.Map;
 @Entity
 @Table(name = "reforges")
 public class ReforgeModel extends SqlEffectsModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,13 +75,7 @@ public class ReforgeModel extends SqlEffectsModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + itemType.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + rarity.hashCode();
-        result = 31 * result + (isStone ? 1 : 0);
-        result = 31 * result + effects.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.itemType).append(this.name).append(this.rarity).append(this.isStone).append(this.effects).append(this.updatedAt).build();
     }
+
 }

@@ -11,6 +11,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 abstract public class SqlRepository<T extends SqlModel> {
+
     private final Class<T> tClass;
 
     @SuppressWarnings("unchecked")
@@ -108,4 +109,5 @@ abstract public class SqlRepository<T extends SqlModel> {
         tx.commit();
         session.close();
     }
+
 }

@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql.models.accessoryfamilies;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "accessory_families")
 public class AccessoryFamilyModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,11 +55,7 @@ public class AccessoryFamilyModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (reforgesStack ? 1 : 0);
-        result = 31 * result + (itemsStack ? 1 : 0);
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.name).append(this.reforgesStack).append(this.itemsStack).append(this.updatedAt).build();
     }
+
 }

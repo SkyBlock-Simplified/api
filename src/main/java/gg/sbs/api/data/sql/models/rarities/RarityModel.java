@@ -1,6 +1,7 @@
 package gg.sbs.api.data.sql.models.rarities;
 
 import gg.sbs.api.data.sql.SqlModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "rarities")
 public class RarityModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +32,8 @@ public class RarityModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "hypixel_name", length = 127)
-    private String hypixelName;
+    @Column(name = "rarity_tag", length = 127)
+    private String rarityTag;
 
     @Getter
     @UpdateTimestamp
@@ -48,17 +50,13 @@ public class RarityModel implements SqlModel {
         if (id != that.id) return false;
         if (hasHypixelName != that.hasHypixelName) return false;
         if (!name.equals(that.name)) return false;
-        if (!Objects.equals(hypixelName, that.hypixelName)) return false;
+        if (!Objects.equals(rarityTag, that.rarityTag)) return false;
         return updatedAt.equals(that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (hasHypixelName ? 1 : 0);
-        result = 31 * result + (hypixelName != null ? hypixelName.hashCode() : 0);
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.name).append(this.hasHypixelName).append(this.rarityTag).append(this.updatedAt).build();
     }
+
 }

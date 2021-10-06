@@ -3,6 +3,7 @@ package gg.sbs.api.data.sql.models.skilllevels;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.converters.StringListConverter;
 import gg.sbs.api.data.sql.models.skills.SkillModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "skill_levels")
 public class SkillLevelModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,15 +66,7 @@ public class SkillLevelModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = (int) (id ^ (id >>> 32));
-        result = 31 * result + skill.hashCode();
-        result = 31 * result + skillLevel;
-        temp = Double.doubleToLongBits(totalExpRequired);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + unlocks.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.skill).append(this.skillLevel).append(this.totalExpRequired).append(this.unlocks).append(this.updatedAt).build();
     }
+
 }

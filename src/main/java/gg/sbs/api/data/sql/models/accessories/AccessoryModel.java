@@ -5,6 +5,7 @@ import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.SqlEffectsModel;
 import gg.sbs.api.data.sql.models.accessoryfamilies.AccessoryFamilyModel;
 import gg.sbs.api.data.sql.models.rarities.RarityModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "accessories")
 public class AccessoryModel extends SqlEffectsModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,14 +82,7 @@ public class AccessoryModel extends SqlEffectsModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + itemId.hashCode();
-        result = 31 * result + (family != null ? family.hashCode() : 0);
-        result = 31 * result + familyRank;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + rarity.hashCode();
-        result = 31 * result + effects.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.itemId).append(this.family).append(this.familyRank).append(this.name).append(this.rarity).append(this.effects).append(this.updatedAt).build();
     }
+
 }

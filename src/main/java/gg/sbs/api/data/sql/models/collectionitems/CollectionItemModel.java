@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql.models.collectionitems;
 
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.models.collections.CollectionModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "collection_items")
 public class CollectionItemModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,12 +63,7 @@ public class CollectionItemModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + collection.hashCode();
-        result = 31 * result + itemKey.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + maxTiers;
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.collection).append(this.itemKey).append(this.name).append(this.maxTiers).append(this.updatedAt).build();
     }
+
 }

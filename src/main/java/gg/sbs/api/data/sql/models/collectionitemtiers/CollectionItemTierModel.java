@@ -3,6 +3,7 @@ package gg.sbs.api.data.sql.models.collectionitemtiers;
 import gg.sbs.api.data.sql.SqlModel;
 import gg.sbs.api.data.sql.converters.StringListConverter;
 import gg.sbs.api.data.sql.models.collectionitems.CollectionItemModel;
+import gg.sbs.api.util.builder.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "collection_item_tiers")
 public class CollectionItemTierModel implements SqlModel {
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,16 +66,8 @@ public class CollectionItemTierModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = (int) (id ^ (id >>> 32));
-        result = 31 * result + collectionItem.hashCode();
-        result = 31 * result + tier;
-        temp = Double.doubleToLongBits(amountRequired);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + unlocks.hashCode();
-        result = 31 * result + updatedAt.hashCode();
-        return result;
+        return new HashCodeBuilder().append(this.id).append(this.collectionItem).append(this.tier).append(this.amountRequired).append(this.unlocks).append(this.updatedAt).build();
     }
+
 }
 
