@@ -20,9 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class SkyBlockIsland {
@@ -132,15 +130,15 @@ public class SkyBlockIsland {
         @Getter
         private UUID uniqueId;
         @SerializedName("first_join")
-        @Getter private Instant firstJoin; // Unix Timestamp (in milliseconds)
+        @Getter private SkyBlockDate.RealTime firstJoin; // Real Time
         @SerializedName("first_join_hub")
-        @Getter private long firstJoinHub; // TODO: SkyBlockTime
+        @Getter private SkyBlockDate.SkyBlockTime firstJoinHub; // SkyBlock Time
         @SerializedName("last_death")
-        @Getter private long lastDeath; // TODO: SkyBlockTime
+        @Getter private SkyBlockDate.SkyBlockTime lastDeath; // SkyBlock Time
         @SerializedName("death_count")
         @Getter private int deathCount;
         @SerializedName("last_save")
-        @Getter private Instant lastSave; // Unix Timestamp (in milliseconds)
+        @Getter private SkyBlockDate.RealTime lastSave; // Real Time
         @SerializedName("coin_purse")
         @Getter private double purse;
         @SerializedName("fishing_treasure_caught")
@@ -241,14 +239,6 @@ public class SkyBlockIsland {
         @SerializedName("backpack_icons")
         private ConcurrentList<NbtContent> backpackIcons;
 
-        public long getFirstJoinHub2() {
-            return (Skyblock.START_DATE + this.firstJoinHub) * 1000; // TODO: SkyBlockTime
-        }
-
-        public long getLastDeath2() {
-            return (Skyblock.START_DATE + this.lastDeath) * 1000; // TODO: SkyBlockTime
-        }
-
         public Backpacks getBackpacks() {
             return new Backpacks(this.backpackContents, this.backpackIcons);
         }
@@ -308,7 +298,7 @@ public class SkyBlockIsland {
         }
 
         public ConcurrentLinkedMap<String, Objective> getObjectives(BasicObjective.Status status) {
-            return this.objectives.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getEpochSecond())).collect(Concurrent.toLinkedMap());
+            return this.objectives.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
         public int getPetScore() {
@@ -331,7 +321,7 @@ public class SkyBlockIsland {
         }
 
         public ConcurrentLinkedMap<String, Quest> getQuests(BasicObjective.Status status) {
-            return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getEpochSecond())).collect(Concurrent.toLinkedMap());
+            return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
         public Skill getSkill(Skyblock.Skill skill) {
@@ -537,7 +527,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         public static class Transaction {
 
             @Getter private double amount;
-            @Getter private Instant timestamp;
+            @Getter private SkyBlockDate.RealTime timestamp;
             @Getter private Banking.Transaction.Action action;
             @SerializedName("initiator_name")
             @Getter private String initiatorName;
@@ -558,7 +548,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("claims_resets")
         @Getter private int resetClaims;
         @SerializedName("claims_resets_timestamp")
-        @Getter private Instant resetClaimsTimestamp;
+        @Getter private SkyBlockDate.RealTime resetClaimsTimestamp;
         @SerializedName("pairings")
         private Table superpairs;
         @SerializedName("simon")
@@ -571,9 +561,9 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         public static class Table {
 
             @SerializedName("last_attempt")
-            @Getter private Instant lastAttempt;
+            @Getter private SkyBlockDate.RealTime lastAttempt;
             @SerializedName("last_claimed")
-            @Getter private Instant lastClaimed;
+            @Getter private SkyBlockDate.RealTime lastClaimed;
 
             private Table() { }
 
@@ -603,7 +593,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     public static class GriffinBurrow {
 
         @SerializedName("ts")
-        @Getter private Instant timestamp;
+        @Getter private SkyBlockDate.RealTime timestamp;
         @Getter private int x;
         @Getter private int y;
         @Getter private int z;
@@ -619,7 +609,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @Getter private BasicObjective.Status status;
         @SerializedName("completed_at")
-        @Getter private Instant completed;
+        @Getter private SkyBlockDate.RealTime completed;
 
         private BasicObjective() { }
 
@@ -642,7 +632,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private String key;
         @Getter private int amount;
         @SerializedName("expire_at")
-        @Getter private Instant expiresAt;
+        @Getter private SkyBlockDate.RealTime expiresAt;
 
     }
 
@@ -685,11 +675,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @Getter private CommunityUpgrades.UpgradeState.Upgrade upgrade;
             @Getter private int tier;
             @SerializedName("started_ms")
-            @Getter private Instant started;
+            @Getter private SkyBlockDate.RealTime started;
             @SerializedName("started_by")
             @Getter private String startedBy;
             @SerializedName("claimed_ms")
-            @Getter private Instant claimed;
+            @Getter private SkyBlockDate.RealTime claimed;
             @SerializedName("claimed_by")
             @Getter private String claimedBy;
             @SerializedName("fasttracked")
@@ -927,7 +917,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         public static class Run {
 
             // Time
-            @Getter private Instant timestamp;
+            @Getter private SkyBlockDate.RealTime timestamp;
             @SerializedName("elapsed_time")
             @Getter private int elapsedTime;
 
@@ -991,7 +981,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @Getter private String type;
         @Getter private String id;
-        @Getter private Instant startTime;
+        @Getter private SkyBlockDate.RealTime startTime;
         @Getter private int slot;
         @Getter private boolean notified;
 
@@ -1077,7 +1067,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @Getter private final boolean talismanClaimed;
         @Getter private final String selectedSong;
-        @Getter private final Instant selectedSongTimestamp;
+        @Getter private final SkyBlockDate.RealTime selectedSongTimestamp;
         @Getter private final ConcurrentMap<String, Song> songs = Concurrent.newMap();
 
         @SuppressWarnings("all")
@@ -1085,7 +1075,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             ConcurrentLinkedMap<String, Object> newHarpQuest = Concurrent.newLinkedMap(harpQuest);
             this.talismanClaimed = (boolean)newHarpQuest.remove("claimed_talisman");
             this.selectedSong = (String)newHarpQuest.remove("selected_song");
-            this.selectedSongTimestamp = Instant.ofEpochSecond((long)newHarpQuest.remove("selected_song_epoch"));
+            this.selectedSongTimestamp = new SkyBlockDate.RealTime((long)newHarpQuest.remove("selected_song_epoch") * 1000);
             ConcurrentLinkedMap<String, ConcurrentMap<String, Integer>> songMap = Concurrent.newLinkedMap();
 
             newHarpQuest.forEach(entry -> {
@@ -1126,7 +1116,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         private ConcurrentMap<String, Object> nodes;
         private ConcurrentMap<String, Boolean> toggles;
         @SerializedName("last_reset")
-        @Getter private Instant lastReset;
+        @Getter private SkyBlockDate.RealTime lastReset;
         @Getter private int experience;
         @SerializedName("received_free_tier")
         @Getter private boolean receivedFreeTier;
@@ -1139,7 +1129,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("selected_pickaxe_ability")
         @Getter private String selectedPickaxeAbility;
         @SerializedName("greater_mines_last_access")
-        @Getter private Instant lastAccessToGreaterMines;
+        @Getter private SkyBlockDate.RealTime lastAccessToGreaterMines;
         @Getter private ConcurrentMap<Crystal.Type, Crystal> crystals;
 
         // Powder
@@ -1573,7 +1563,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                 });
 
                 centuryCakes.forEach(centuryCake -> {
-                    if (centuryCake.getExpiresAt().getEpochSecond() > Instant.now().getEpochSecond()) {
+                    if (centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis()) {
                         int statIndex = centuryCake.getStat(); // 11: magic find
                         String key = centuryCake.getKey(); // cake_magic_find
                         int amount = centuryCake.getAmount();

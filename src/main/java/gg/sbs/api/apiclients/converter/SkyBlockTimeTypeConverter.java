@@ -1,20 +1,20 @@
 package gg.sbs.api.apiclients.converter;
 
 import com.google.gson.*;
-import gg.sbs.api.hypixel_old.skyblock.Skyblock;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockDate;
 
 import java.lang.reflect.Type;
 
-public class SkyBlockTimeTypeConverter extends TypeConverter<Skyblock.Date> {
+public class SkyBlockTimeTypeConverter extends TypeConverter<SkyBlockDate.SkyBlockTime> {
 
     @Override
-    public JsonElement serialize(Skyblock.Date src, Type srcType, JsonSerializationContext context) {
-        return new JsonPrimitive(src.getTime());
+    public JsonElement serialize(SkyBlockDate.SkyBlockTime src, Type srcType, JsonSerializationContext context) {
+        return new JsonPrimitive(src.getSkyBlockTime());
     }
 
     @Override
-    public Skyblock.Date deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-        return new Skyblock.Date(Skyblock.Date.Season.EARLY_FALL, 0, 0, 0);
+    public SkyBlockDate.SkyBlockTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+        return new SkyBlockDate.SkyBlockTime(json.getAsLong());
     }
 
 }
