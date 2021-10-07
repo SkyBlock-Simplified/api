@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -149,6 +150,15 @@ public class SkyBlockDate {
      */
     public int getYear() {
         return  (int)(this.getSkyBlockTime() / SkyBlockDate.Length.YEAR_MS) + 1;
+    }
+
+    /**
+     * Convert SkyBlockDate to Instant.
+     *
+     * @return instance of Instant
+     */
+    public Instant toInstant() {
+        return Instant.ofEpochMilli(this.getRealTime());
     }
 
     @Override
