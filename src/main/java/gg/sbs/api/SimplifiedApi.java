@@ -6,12 +6,14 @@ import com.google.gson.reflect.TypeToken;
 import feign.gson.DoubleToIntMapTypeAdapter;
 import gg.sbs.api.apiclients.RequestInterface;
 import gg.sbs.api.apiclients.converter.InstantTypeConverter;
+import gg.sbs.api.apiclients.converter.NbtContentTypeConverter;
 import gg.sbs.api.apiclients.converter.SkyBlockRealTimeTypeConverter;
 import gg.sbs.api.apiclients.converter.SkyBlockTimeTypeConverter;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelPlayerData;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelResourceData;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockDate;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.implementation.MojangData;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.SqlRefreshable;
@@ -78,6 +80,7 @@ public class SimplifiedApi {
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Instant.class, new InstantTypeConverter())
+            .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeConverter())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeConverter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeConverter())
             .setPrettyPrinting().create();
