@@ -3,6 +3,7 @@ package gg.sbs.api.apiclients.hypixel.implementation;
 import feign.HeaderMap;
 import feign.Param;
 import feign.RequestLine;
+import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockBazaarResponse;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockNewsResponse;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockProfileResponse;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockProfilesResponse;
@@ -22,10 +23,12 @@ public interface HypixelSkyBlockData extends HypixelDataInterface {
     @RequestLine("GET /skyblock/profiles")
     SkyBlockProfilesResponse getProfiles(@HeaderMap Map<String, String> headerMap, @Param("uuid") UUID uniqueId);
 
+    @RequestLine("GET /skyblock/bazaar")
+    SkyBlockBazaarResponse getBazaar();
+
     /*
 		AUCTION("skyblock/auction", "auctions")
 		AUCTIONS("skyblock/auctions", "auctions")
-		BANK("skyblock/bank", "bank")
      */
 
 }
