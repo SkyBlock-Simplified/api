@@ -28,10 +28,26 @@ import gg.sbs.api.data.sql.models.collections.CollectionRefreshable;
 import gg.sbs.api.data.sql.models.collections.CollectionRepository;
 import gg.sbs.api.data.sql.models.enchantments.EnchantmentRefreshable;
 import gg.sbs.api.data.sql.models.enchantments.EnchantmentRepository;
+import gg.sbs.api.data.sql.models.fairysouls.FairySoulRefreshable;
+import gg.sbs.api.data.sql.models.fairysouls.FairySoulRepository;
+import gg.sbs.api.data.sql.models.formats.FormatRefreshable;
+import gg.sbs.api.data.sql.models.formats.FormatRepository;
 import gg.sbs.api.data.sql.models.items.ItemRefreshable;
 import gg.sbs.api.data.sql.models.items.ItemRepository;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRefreshable;
 import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRepository;
+import gg.sbs.api.data.sql.models.locationareas.LocationAreaRefreshable;
+import gg.sbs.api.data.sql.models.locationareas.LocationAreaRepository;
+import gg.sbs.api.data.sql.models.locations.LocationRefreshable;
+import gg.sbs.api.data.sql.models.locations.LocationRepository;
+import gg.sbs.api.data.sql.models.minionitems.MinionItemRefreshable;
+import gg.sbs.api.data.sql.models.minionitems.MinionItemRepository;
+import gg.sbs.api.data.sql.models.minions.MinionRefreshable;
+import gg.sbs.api.data.sql.models.minions.MinionRepository;
+import gg.sbs.api.data.sql.models.miniontiers.MinionTierRefreshable;
+import gg.sbs.api.data.sql.models.miniontiers.MinionTierRepository;
+import gg.sbs.api.data.sql.models.miniontierupgrades.MinionTierUpgradeRefreshable;
+import gg.sbs.api.data.sql.models.miniontierupgrades.MinionTierUpgradeRepository;
 import gg.sbs.api.data.sql.models.pets.PetRefreshable;
 import gg.sbs.api.data.sql.models.pets.PetRepository;
 import gg.sbs.api.data.sql.models.potions.PotionRefreshable;
@@ -46,6 +62,8 @@ import gg.sbs.api.data.sql.models.skilllevels.SkillLevelRefreshable;
 import gg.sbs.api.data.sql.models.skilllevels.SkillLevelRepository;
 import gg.sbs.api.data.sql.models.skills.SkillRefreshable;
 import gg.sbs.api.data.sql.models.skills.SkillRepository;
+import gg.sbs.api.data.sql.models.stats.StatRefreshable;
+import gg.sbs.api.data.sql.models.stats.StatRepository;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
 
@@ -100,35 +118,55 @@ public class SimplifiedApi {
 
     public static void enableDatabase() {
         if (!databaseEnabled) {
+            // Repositories
             serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
             serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
             serviceManager.provide(CollectionRepository.class, new CollectionRepository());
             serviceManager.provide(CollectionItemRepository.class, new CollectionItemRepository());
             serviceManager.provide(CollectionItemTierRepository.class, new CollectionItemTierRepository());
             serviceManager.provide(EnchantmentRepository.class, new EnchantmentRepository());
+            serviceManager.provide(FairySoulRepository.class, new FairySoulRepository());
+            serviceManager.provide(FormatRepository.class, new FormatRepository());
             serviceManager.provide(ItemRepository.class, new ItemRepository());
             serviceManager.provide(ItemTypeRepository.class, new ItemTypeRepository());
+            serviceManager.provide(LocationRepository.class, new LocationRepository());
+            serviceManager.provide(LocationAreaRepository.class, new LocationAreaRepository());
+            serviceManager.provide(MinionRepository.class, new MinionRepository());
+            serviceManager.provide(MinionItemRepository.class, new MinionItemRepository());
+            serviceManager.provide(MinionTierRepository.class, new MinionTierRepository());
+            serviceManager.provide(MinionTierUpgradeRepository.class, new MinionTierUpgradeRepository());
             serviceManager.provide(PetRepository.class, new PetRepository());
             serviceManager.provide(PotionRepository.class, new PotionRepository());
             serviceManager.provide(RarityRepository.class, new RarityRepository());
             serviceManager.provide(ReforgeRepository.class, new ReforgeRepository());
             serviceManager.provide(SkillRepository.class, new SkillRepository());
             serviceManager.provide(SkillLevelRepository.class, new SkillLevelRepository());
+            serviceManager.provide(StatRepository.class, new StatRepository());
 
+            // Refreshables
             serviceManager.provide(AccessoryRefreshable.class, new AccessoryRefreshable());
             serviceManager.provide(AccessoryFamilyRefreshable.class, new AccessoryFamilyRefreshable());
             serviceManager.provide(CollectionRefreshable.class, new CollectionRefreshable());
             serviceManager.provide(CollectionItemRefreshable.class, new CollectionItemRefreshable());
             serviceManager.provide(CollectionItemTierRefreshable.class, new CollectionItemTierRefreshable());
             serviceManager.provide(EnchantmentRefreshable.class, new EnchantmentRefreshable());
+            serviceManager.provide(FairySoulRefreshable.class, new FairySoulRefreshable());
+            serviceManager.provide(FormatRefreshable.class, new FormatRefreshable());
             serviceManager.provide(ItemRefreshable.class, new ItemRefreshable());
             serviceManager.provide(ItemTypeRefreshable.class, new ItemTypeRefreshable());
+            serviceManager.provide(LocationRefreshable.class, new LocationRefreshable());
+            serviceManager.provide(LocationAreaRefreshable.class, new LocationAreaRefreshable());
+            serviceManager.provide(MinionRefreshable.class, new MinionRefreshable());
+            serviceManager.provide(MinionItemRefreshable.class, new MinionItemRefreshable());
+            serviceManager.provide(MinionTierRefreshable.class, new MinionTierRefreshable());
+            serviceManager.provide(MinionTierUpgradeRefreshable.class, new MinionTierUpgradeRefreshable());
             serviceManager.provide(PetRefreshable.class, new PetRefreshable());
             serviceManager.provide(PotionRefreshable.class, new PotionRefreshable());
             serviceManager.provide(RarityRefreshable.class, new RarityRefreshable());
             serviceManager.provide(ReforgeRefreshable.class, new ReforgeRefreshable());
             serviceManager.provide(SkillRefreshable.class, new SkillRefreshable());
             serviceManager.provide(SkillLevelRefreshable.class, new SkillLevelRefreshable());
+            serviceManager.provide(StatRefreshable.class, new StatRefreshable());
 
             databaseEnabled = true;
         }
