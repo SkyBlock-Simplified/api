@@ -18,9 +18,9 @@ public class SqlSessionUtil {
         SimplifiedConfig config = SimplifiedApi.getConfig();
 
         Properties properties = new Properties() {{
-            put("connection.driver_class", SqlDrivers.MariaDB.getDriverClass());
+            put("connection.driver_class", SqlDriver.MariaDB.getDriverClass());
             put("hibernate.show_sql", String.valueOf(config.isDatabaseDebugMode()));
-            put("hibernate.connection.url", SqlDrivers.MariaDB.getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
+            put("hibernate.connection.url", SqlDriver.MariaDB.getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
             put("hibernate.connection.provider_class", org.hibernate.hikaricp.internal.HikariCPConnectionProvider.class.getCanonicalName());
