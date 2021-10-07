@@ -2,8 +2,11 @@ package gg.sbs.api.apiclients.hypixel.response.resource;
 
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceSkillsResponse {
 
     @Getter private boolean success;
@@ -12,6 +15,7 @@ public class ResourceSkillsResponse {
     @Getter private ConcurrentMap<String, Skill> collections;
     @Getter private ConcurrentMap<String, Skill> skills;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Skill {
 
         @Getter private String name;
@@ -21,6 +25,7 @@ public class ResourceSkillsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SkillLevel {
 
         @Getter private int level;

@@ -2,8 +2,11 @@ package gg.sbs.api.apiclients.hypixel.response.resource;
 
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceCollectionsResponse {
 
     @Getter private boolean success;
@@ -11,6 +14,7 @@ public class ResourceCollectionsResponse {
     @Getter private String version;
     @Getter ConcurrentMap<String, Collection> collections;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Collection {
 
         @Getter private String name;
@@ -18,6 +22,7 @@ public class ResourceCollectionsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class CollectionItem {
 
         @Getter private String name;
@@ -26,6 +31,7 @@ public class ResourceCollectionsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class CollectionTier {
 
         @Getter private int tier;

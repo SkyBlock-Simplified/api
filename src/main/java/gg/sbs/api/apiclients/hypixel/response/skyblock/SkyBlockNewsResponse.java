@@ -3,17 +3,21 @@ package gg.sbs.api.apiclients.hypixel.response.skyblock;
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockNewsResponse {
 
     @Getter private boolean success;
     @SerializedName("items")
     @Getter private ConcurrentList<Article> articles;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Article {
 
         @SerializedName("item.material")

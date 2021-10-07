@@ -3,14 +3,18 @@ package gg.sbs.api.apiclients.hypixel.response.resource;
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceItemsResponse {
 
     @Getter private boolean success;
     @Getter private long lastUpdated;
     @Getter private ConcurrentList<Item> items;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Item {
 
         @Getter private String material;
@@ -48,6 +52,7 @@ public class ResourceItemsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ItemRequirements {
 
         @SerializedName("dungeon_completion")
@@ -61,12 +66,14 @@ public class ResourceItemsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ItemCatacombsRequirements {
 
         @Getter private TypeLevelRequirement dungeon;
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class TypeLevelRequirement {
 
         @Getter private String type;
@@ -74,6 +81,7 @@ public class ResourceItemsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class TypeTierRequirement {
 
         @Getter private String type;
@@ -81,6 +89,7 @@ public class ResourceItemsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SlayerLevelRequirement {
 
         @SerializedName("slayer_boss_type")
@@ -89,18 +98,21 @@ public class ResourceItemsResponse {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class TierRequirement {
 
         @Getter private int tier;
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class TargetPracticeRequirement {
 
         @Getter private String mode;
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ItemEssence {
 
         @SerializedName("essence_type")
