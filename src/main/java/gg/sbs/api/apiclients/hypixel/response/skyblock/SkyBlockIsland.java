@@ -969,14 +969,30 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<Perk, Integer> perks;
         @SerializedName("unique_golds2")
         @Getter private ConcurrentSet<String> uniqueGolds; // TODO: SQL Collections
-        @Getter private ConcurrentMap<String, Contest> contests;
+        private ConcurrentMap<String, Contest> contests = Concurrent.newMap();
+        private ConcurrentList<Contest> contestData;
         private boolean talked;
 
-        /* // TODO: Change uniqueGolds and contents to use SkyBlockDate
-            "99:6_27:PUMPKIN"
-            "99:11_13:SUGAR_CANE"
-            "108:1_2:WHEAT"
-         */
+        public ConcurrentList<Contest> getContests() {
+            if (ListUtil.isEmpty(this.contestData)) {
+                this.contests.forEach(entry -> {
+                    Contest contest = entry.getValue();
+
+                    String[] dataString = entry.getKey().split(":");
+                    String[] calendarString = dataString[1].split("_");
+                    int year = NumberUtil.toInt(dataString[0]);
+                    int month = NumberUtil.toInt(calendarString[0]);
+                    int day = NumberUtil.toInt(calendarString[1]);
+                    String collectionName = StringUtil.join(dataString, ":", 2, dataString.length);
+
+                    contest.skyBlockDate = new SkyBlockDate(year, month, day);
+                    contest.collectionName = collectionName;
+                    this.contestData.add(contest);
+                });
+            }
+
+            return this.contestData;
+        }
 
         public int getMedals(Medal medal) {
             return this.getMedalInventory().get(medal);
@@ -1001,8 +1017,19 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @SerializedName("claimed_participants")
             @Getter private int participants;
 
+            @Getter private SkyBlockDate skyBlockDate;
+            @Getter private String collectionName;
+
             public boolean hasClaimedRewards() {
                 return this.claimedRewards;
+            }
+
+            @NoArgsConstructor(access = AccessLevel.PRIVATE)
+            public static class Data {
+
+                @Getter private SkyBlockDate skyBlockDate;
+                @Getter private String collectionName;
+
             }
 
         }
