@@ -969,14 +969,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<Perk, Integer> perks;
         @SerializedName("unique_golds2")
         @Getter private ConcurrentSet<String> uniqueGolds; // TODO: SQL Collections
-        @Getter private ConcurrentMap<String, Contest> contests;
+        @Getter private ConcurrentMap<Data, Contest> contests;
         private boolean talked;
-
-        /* // TODO: Change uniqueGolds and contents to use SkyBlockDate
-            "99:6_27:PUMPKIN"
-            "99:11_13:SUGAR_CANE"
-            "108:1_2:WHEAT"
-         */
 
         public int getMedals(Medal medal) {
             return this.getMedalInventory().get(medal);
@@ -1004,6 +998,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             public boolean hasClaimedRewards() {
                 return this.claimedRewards;
             }
+
+        }
+
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Data {
+
+            @Getter private SkyBlockDate skyBlockDate;
+            @Getter private String collectionName;
 
         }
 
