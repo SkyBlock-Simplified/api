@@ -1,6 +1,7 @@
 package gg.sbs.api.apiclients;
 
 import feign.Feign;
+import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
@@ -16,10 +17,15 @@ public abstract class ApiBuilder<I extends RequestInterface> {
     }
 
     public final <T extends I> T build(Class<T> tClass) {
+        ErrorDecoder ed = new ErrorDecoder.Default();
+        // TODO: Implement custom error handlers for
+        //       ApiBuilder instances
+
         return Feign.builder()
                 .client(new OkHttpClient())
                 .encoder(new GsonEncoder(SimplifiedApi.getGson()))
                 .decoder(new GsonDecoder(SimplifiedApi.getGson()))
+
                 .target(tClass, this.getUrl());
     }
 

@@ -8,13 +8,13 @@ import java.lang.reflect.Type;
 public class SkyBlockRealTimeTypeConverter extends TypeConverter<SkyBlockDate.RealTime> {
 
     @Override
-    public JsonElement serialize(SkyBlockDate.RealTime src, Type srcType, JsonSerializationContext context) {
-        return new JsonPrimitive(src.getRealTime());
+    public SkyBlockDate.RealTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+        return new SkyBlockDate.RealTime(json.getAsLong());
     }
 
     @Override
-    public SkyBlockDate.RealTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-        return new SkyBlockDate.RealTime(json.getAsLong());
+    public JsonElement serialize(SkyBlockDate.RealTime src, Type srcType, JsonSerializationContext context) {
+        return new JsonPrimitive(src.getRealTime());
     }
 
 }
