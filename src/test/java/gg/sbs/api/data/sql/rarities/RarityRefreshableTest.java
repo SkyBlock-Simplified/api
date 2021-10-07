@@ -2,8 +2,8 @@ package gg.sbs.api.data.sql.rarities;
 
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.exception.SqlException;
-import gg.sbs.api.data.sql.models.rarities.RarityModel;
-import gg.sbs.api.data.sql.models.rarities.RarityRefreshable;
+import gg.sbs.api.data.sql.model.rarities.RarityModel;
+import gg.sbs.api.data.sql.model.rarities.RarityRefreshable;
 import gg.sbs.api.util.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -14,7 +14,7 @@ public class RarityRefreshableTest {
 
     static {
         SimplifiedApi.enableDatabase();
-        rarityRefreshable = SimplifiedApi.getSqlRefreshable(gg.sbs.api.data.sql.models.rarities.RarityRefreshable.class);
+        rarityRefreshable = SimplifiedApi.getSqlRefreshable(gg.sbs.api.data.sql.model.rarities.RarityRefreshable.class);
     }
 
     @Test

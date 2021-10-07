@@ -1,10 +1,8 @@
 package gg.sbs.api.data.sql.items;
 
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.data.sql.models.items.ItemModel;
-import gg.sbs.api.data.sql.models.items.ItemRepository;
-import gg.sbs.api.data.sql.models.itemtypes.ItemTypeModel;
-import gg.sbs.api.data.sql.models.itemtypes.ItemTypeRepository;
+import gg.sbs.api.data.sql.model.items.ItemModel;
+import gg.sbs.api.data.sql.model.items.ItemRepository;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

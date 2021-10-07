@@ -10,6 +10,7 @@ import java.util.Map;
 @Converter
 public class DoubleMapConverter implements AttributeConverter<Map<String, Double>, String> {
 
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, Double> convertToEntityAttribute(String attr) {
         if (attr == null) {
@@ -22,6 +23,7 @@ public class DoubleMapConverter implements AttributeConverter<Map<String, Double
         }
     }
 
+    @Override
     public String convertToDatabaseColumn(Map<String, Double> attr) {
         try {
             return SimplifiedApi.getGson().toJson(attr);

@@ -2,6 +2,7 @@ package gg.sbs.api.data.sql;
 
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.exception.SqlException;
+import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.util.Pair;
 
 import java.lang.reflect.ParameterizedType;

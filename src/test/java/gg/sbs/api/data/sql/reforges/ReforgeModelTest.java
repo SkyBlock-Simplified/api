@@ -2,10 +2,10 @@ package gg.sbs.api.data.sql.reforges;
 
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.exception.SqlException;
-import gg.sbs.api.data.sql.models.rarities.RarityModel;
-import gg.sbs.api.data.sql.models.rarities.RarityRefreshable;
-import gg.sbs.api.data.sql.models.reforges.ReforgeModel;
-import gg.sbs.api.data.sql.models.reforges.ReforgeRefreshable;
+import gg.sbs.api.data.sql.model.rarities.RarityModel;
+import gg.sbs.api.data.sql.model.rarities.RarityRefreshable;
+import gg.sbs.api.data.sql.model.reforges.ReforgeModel;
+import gg.sbs.api.data.sql.model.reforges.ReforgeRefreshable;
 import gg.sbs.api.util.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

@@ -1,8 +1,8 @@
 package gg.sbs.api.data.sql.skilllevels;
 
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.data.sql.models.skilllevels.SkillLevelModel;
-import gg.sbs.api.data.sql.models.skilllevels.SkillLevelRepository;
+import gg.sbs.api.data.sql.model.skilllevels.SkillLevelModel;
+import gg.sbs.api.data.sql.model.skilllevels.SkillLevelRepository;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

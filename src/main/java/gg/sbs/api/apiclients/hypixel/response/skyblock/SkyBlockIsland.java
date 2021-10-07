@@ -2,11 +2,11 @@ package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.data.sql.models.collections.CollectionModel;
-import gg.sbs.api.data.sql.models.collections.CollectionRepository;
-import gg.sbs.api.data.sql.models.minions.MinionModel;
-import gg.sbs.api.data.sql.models.minions.MinionRepository;
-import gg.sbs.api.data.sql.models.skills.SkillModel;
+import gg.sbs.api.data.sql.model.collections.CollectionModel;
+import gg.sbs.api.data.sql.model.collections.CollectionRepository;
+import gg.sbs.api.data.sql.model.minions.MinionModel;
+import gg.sbs.api.data.sql.model.minions.MinionRepository;
+import gg.sbs.api.data.sql.model.skills.SkillModel;
 import gg.sbs.api.hypixel_old.skyblock.Skyblock;
 import gg.sbs.api.nbt.NbtFactory;
 import gg.sbs.api.nbt.tags.collection.CompoundTag;

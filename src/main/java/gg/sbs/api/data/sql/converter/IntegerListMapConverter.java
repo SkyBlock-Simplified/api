@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class IntegerListMapConverter implements AttributeConverter<Map<String, List<Integer>>, String> {
 
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, List<Integer>> convertToEntityAttribute(String attr) {
         if (attr == null) {
@@ -21,6 +22,7 @@ public class IntegerListMapConverter implements AttributeConverter<Map<String, L
         }
     }
 
+    @Override
     public String convertToDatabaseColumn(Map<String, List<Integer>> attr) {
         try {
             return SimplifiedApi.getGson().toJson(attr);

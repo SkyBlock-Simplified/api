@@ -2,8 +2,8 @@ package gg.sbs.api.data.sql.collections;
 
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.exception.SqlException;
-import gg.sbs.api.data.sql.models.collections.CollectionModel;
-import gg.sbs.api.data.sql.models.collections.CollectionRefreshable;
+import gg.sbs.api.data.sql.model.collections.CollectionModel;
+import gg.sbs.api.data.sql.model.collections.CollectionRefreshable;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

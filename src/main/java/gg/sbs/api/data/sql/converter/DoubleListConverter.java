@@ -10,6 +10,7 @@ import java.util.List;
 @Converter
 public class DoubleListConverter implements AttributeConverter<List<Double>, String> {
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<Double> convertToEntityAttribute(String attr) {
         if (attr == null) {
@@ -22,6 +23,7 @@ public class DoubleListConverter implements AttributeConverter<List<Double>, Str
         }
     }
 
+    @Override
     public String convertToDatabaseColumn(List<Double> attr) {
         try {
             return SimplifiedApi.getGson().toJson(attr);

@@ -6,10 +6,13 @@ import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import java.util.regex.Pattern;
 
+@Converter
 public class UnicodeConverter implements AttributeConverter<Character, String> {
 
+    @Override
     public Character convertToEntityAttribute(String attr) {
         if (attr == null)
             return null;
@@ -21,11 +24,12 @@ public class UnicodeConverter implements AttributeConverter<Character, String> {
         }
     }
 
+    @Override
     public String convertToDatabaseColumn(Character attr) {
         try {
             return RegexUtil.replaceAll(StringUtil.escapeJava(attr.toString()), Pattern.compile("^\\+u"));
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 
