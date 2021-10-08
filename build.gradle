@@ -89,6 +89,7 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.5.7.Final'
     implementation group: 'io.github.openfeign', name: 'feign-okhttp', version: '11.6'
     implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.6'
+    implementation group: 'redis.clients', name: 'jedis', version: '3.7.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'

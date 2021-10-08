@@ -27,12 +27,12 @@ public class FairySoulModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "x", nullable = false)
+    @Column(name = "y", nullable = false)
     private double y;
 
     @Getter
     @Setter
-    @Column(name = "x", nullable = false)
+    @Column(name = "z", nullable = false)
     private double z;
 
     @Getter

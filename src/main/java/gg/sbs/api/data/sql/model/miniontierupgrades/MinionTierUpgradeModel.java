@@ -23,6 +23,7 @@ public class MinionTierUpgradeModel implements SqlModel {
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "minion_tier", nullable = false)
     private MinionTierModel minionTier;
 
@@ -33,7 +34,8 @@ public class MinionTierUpgradeModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "item_cost", length = 127)
+    @ManyToOne
+    @JoinColumn(name = "item_cost")
     private CollectionItemModel itemCost;
 
     @Getter
