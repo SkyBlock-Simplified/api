@@ -4,6 +4,7 @@ import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.SimplifiedConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.lang.reflect.ParameterizedType;
@@ -46,16 +47,50 @@ public class SqlSessionUtil {
         return sessionFactory.openSession();
     }
 
-    public static void createTransaction(SessionFunction f) {
+    public static void withSession(VoidSessionFunction f) {
         Session session = openSession();
         f.run(session);
         session.close();
     }
 
-    public interface SessionFunction {
+    public interface VoidSessionFunction {
 
         void run(Session session);
 
+    }
+
+    public static <S> S withSession(ReturnSessionFunction<S> f) {
+
+        Session session = openSession();
+        S result = f.run(session);
+        session.close();
+        return result;
+
+    }
+
+    public interface ReturnSessionFunction<S> {
+
+        S run(Session session);
+
+    }
+
+    public static void withTransaction(VoidSessionFunction f) {
+        Session session = openSession();
+        Transaction tx = session.beginTransaction();
+        f.run(session);
+        session.flush();
+        tx.commit();
+        session.close();
+    }
+
+    public static <S> S withTransaction(ReturnSessionFunction<S> f) {
+        Session session = openSession();
+        Transaction tx = session.beginTransaction();
+        S result = f.run(session);
+        session.flush();
+        tx.commit();
+        session.close();
+        return result;
     }
 
 }

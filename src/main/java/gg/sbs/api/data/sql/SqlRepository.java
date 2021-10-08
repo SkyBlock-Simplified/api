@@ -3,7 +3,6 @@ package gg.sbs.api.data.sql;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.util.Pair;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,10 +29,7 @@ abstract public class SqlRepository<T extends SqlModel> {
     }
 
     public List<T> findAll() {
-        Session session = SqlSessionUtil.openSession();
-        List<T> result = findAll(session);
-        session.close();
-        return result;
+        return SqlSessionUtil.withSession((SqlSessionUtil.ReturnSessionFunction<List<T>>) this::findAll);
     }
 
     public <S> T findFirstOrNull(Session session, String field, S value) {
@@ -45,10 +41,9 @@ abstract public class SqlRepository<T extends SqlModel> {
     }
 
     public <S> T findFirstOrNull(String field, S value) {
-        Session session = SqlSessionUtil.openSession();
-        T result = findFirstOrNull(session, field, value);
-        session.close();
-        return result;
+        return SqlSessionUtil.withSession(session -> {
+            return findFirstOrNull(session, field, value);
+        });
     }
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
@@ -65,10 +60,9 @@ abstract public class SqlRepository<T extends SqlModel> {
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
     public <S> T findFirstOrNull(Pair<String, S>... predicates) {
-        Session session = SqlSessionUtil.openSession();
-        T result = findFirstOrNull(session, predicates);
-        session.close();
-        return result;
+        return SqlSessionUtil.withSession(session -> {
+            return findFirstOrNull(session, predicates);
+        });
     }
 
     public long save(Session session, T t) {
@@ -76,13 +70,9 @@ abstract public class SqlRepository<T extends SqlModel> {
     }
 
     public long save(T t) {
-        Session session = SqlSessionUtil.openSession();
-        Transaction tx = session.beginTransaction();
-        long result = save(session, t);
-        session.flush();
-        tx.commit();
-        session.close();
-        return result;
+        return SqlSessionUtil.withTransaction(session -> {
+            return save(session, t);
+        });
     }
 
     public void update(Session session, T t) {
@@ -90,12 +80,9 @@ abstract public class SqlRepository<T extends SqlModel> {
     }
 
     public void update(T t) {
-        Session session = SqlSessionUtil.openSession();
-        Transaction tx = session.beginTransaction();
-        update(session, t);
-        session.flush();
-        tx.commit();
-        session.close();
+        SqlSessionUtil.withTransaction(session -> {
+            update(session, t);
+        });
     }
 
     public void saveOrUpdate(Session session, T t) {
@@ -103,12 +90,9 @@ abstract public class SqlRepository<T extends SqlModel> {
     }
 
     public void saveOrUpdate(T t) {
-        Session session = SqlSessionUtil.openSession();
-        Transaction tx = session.beginTransaction();
-        saveOrUpdate(session, t);
-        session.flush();
-        tx.commit();
-        session.close();
+        SqlSessionUtil.withTransaction(session -> {
+            saveOrUpdate(session, t);
+        });
     }
 
 }
