@@ -35,7 +35,6 @@ public class MinionItemModel implements SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
     @Column(name = "yield", nullable = false)
     private double yield;
 

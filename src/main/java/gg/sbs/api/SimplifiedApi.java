@@ -9,62 +9,38 @@ import gg.sbs.api.apiclients.converter.InstantTypeConverter;
 import gg.sbs.api.apiclients.converter.NbtContentTypeConverter;
 import gg.sbs.api.apiclients.converter.SkyBlockRealTimeTypeConverter;
 import gg.sbs.api.apiclients.converter.SkyBlockTimeTypeConverter;
+import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelPlayerData;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelResourceData;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockDate;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
-import gg.sbs.api.apiclients.mojang.implementation.MojangData;
-import gg.sbs.api.data.sql.model.SqlModel;
-import gg.sbs.api.data.sql.SqlRefreshable;
-import gg.sbs.api.data.sql.SqlRepository;
-import gg.sbs.api.data.sql.model.accessories.AccessoryRefreshable;
-import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
-import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRefreshable;
-import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRepository;
-import gg.sbs.api.data.sql.model.collectionitems.CollectionItemRefreshable;
-import gg.sbs.api.data.sql.model.collectionitems.CollectionItemRepository;
-import gg.sbs.api.data.sql.model.collectionitemtiers.CollectionItemTierRefreshable;
-import gg.sbs.api.data.sql.model.collectionitemtiers.CollectionItemTierRepository;
-import gg.sbs.api.data.sql.model.collections.CollectionRefreshable;
-import gg.sbs.api.data.sql.model.collections.CollectionRepository;
-import gg.sbs.api.data.sql.model.enchantments.EnchantmentRefreshable;
-import gg.sbs.api.data.sql.model.enchantments.EnchantmentRepository;
-import gg.sbs.api.data.sql.model.fairysouls.FairySoulRefreshable;
-import gg.sbs.api.data.sql.model.fairysouls.FairySoulRepository;
-import gg.sbs.api.data.sql.model.formats.FormatRefreshable;
-import gg.sbs.api.data.sql.model.formats.FormatRepository;
-import gg.sbs.api.data.sql.model.items.ItemRefreshable;
-import gg.sbs.api.data.sql.model.items.ItemRepository;
-import gg.sbs.api.data.sql.model.itemtypes.ItemTypeRefreshable;
-import gg.sbs.api.data.sql.model.itemtypes.ItemTypeRepository;
-import gg.sbs.api.data.sql.model.locationareas.LocationAreaRefreshable;
-import gg.sbs.api.data.sql.model.locationareas.LocationAreaRepository;
-import gg.sbs.api.data.sql.model.locations.LocationRefreshable;
-import gg.sbs.api.data.sql.model.locations.LocationRepository;
-import gg.sbs.api.data.sql.model.minionitems.MinionItemRefreshable;
-import gg.sbs.api.data.sql.model.minionitems.MinionItemRepository;
-import gg.sbs.api.data.sql.model.minions.MinionRefreshable;
-import gg.sbs.api.data.sql.model.minions.MinionRepository;
-import gg.sbs.api.data.sql.model.miniontiers.MinionTierRefreshable;
-import gg.sbs.api.data.sql.model.miniontiers.MinionTierRepository;
-import gg.sbs.api.data.sql.model.miniontierupgrades.MinionTierUpgradeRefreshable;
-import gg.sbs.api.data.sql.model.miniontierupgrades.MinionTierUpgradeRepository;
-import gg.sbs.api.data.sql.model.pets.PetRefreshable;
-import gg.sbs.api.data.sql.model.pets.PetRepository;
-import gg.sbs.api.data.sql.model.potions.PotionRefreshable;
-import gg.sbs.api.data.sql.model.potions.PotionRepository;
-import gg.sbs.api.data.sql.model.rarities.RarityRefreshable;
-import gg.sbs.api.data.sql.model.rarities.RarityRepository;
-import gg.sbs.api.data.sql.model.reforges.ReforgeRefreshable;
-import gg.sbs.api.data.sql.model.reforges.ReforgeRepository;
-import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
-import gg.sbs.api.data.sql.model.skilllevels.SkillLevelRefreshable;
+import gg.sbs.api.apiclients.mojang.implementation.MojangData;
+import gg.sbs.api.data.sql.SqlRepository;
+import gg.sbs.api.data.sql.model.SqlModel;
+import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
+import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRepository;
+import gg.sbs.api.data.sql.model.collectionitems.CollectionItemRepository;
+import gg.sbs.api.data.sql.model.collectionitemtiers.CollectionItemTierRepository;
+import gg.sbs.api.data.sql.model.collections.CollectionRepository;
+import gg.sbs.api.data.sql.model.enchantments.EnchantmentRepository;
+import gg.sbs.api.data.sql.model.fairysouls.FairySoulRepository;
+import gg.sbs.api.data.sql.model.formats.FormatRepository;
+import gg.sbs.api.data.sql.model.items.ItemRepository;
+import gg.sbs.api.data.sql.model.itemtypes.ItemTypeRepository;
+import gg.sbs.api.data.sql.model.locationareas.LocationAreaRepository;
+import gg.sbs.api.data.sql.model.locations.LocationRepository;
+import gg.sbs.api.data.sql.model.minionitems.MinionItemRepository;
+import gg.sbs.api.data.sql.model.minions.MinionRepository;
+import gg.sbs.api.data.sql.model.miniontiers.MinionTierRepository;
+import gg.sbs.api.data.sql.model.miniontierupgrades.MinionTierUpgradeRepository;
+import gg.sbs.api.data.sql.model.pets.PetRepository;
+import gg.sbs.api.data.sql.model.potions.PotionRepository;
+import gg.sbs.api.data.sql.model.rarities.RarityRepository;
+import gg.sbs.api.data.sql.model.reforges.ReforgeRepository;
 import gg.sbs.api.data.sql.model.skilllevels.SkillLevelRepository;
-import gg.sbs.api.data.sql.model.skills.SkillRefreshable;
 import gg.sbs.api.data.sql.model.skills.SkillRepository;
-import gg.sbs.api.data.sql.model.stats.StatRefreshable;
 import gg.sbs.api.data.sql.model.stats.StatRepository;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.service.ServiceManager;
@@ -78,7 +54,8 @@ public class SimplifiedApi {
     private static final ServiceManager serviceManager = new ServiceManager();
     private static boolean databaseEnabled = false;
     private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {
+            }.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Instant.class, new InstantTypeConverter())
             .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeConverter())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeConverter())
@@ -121,7 +98,6 @@ public class SimplifiedApi {
 
     public static void enableDatabase() {
         if (!databaseEnabled) {
-            // Repositories
             serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
             serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
             serviceManager.provide(CollectionRepository.class, new CollectionRepository());
@@ -146,48 +122,19 @@ public class SimplifiedApi {
             serviceManager.provide(SkillLevelRepository.class, new SkillLevelRepository());
             serviceManager.provide(StatRepository.class, new StatRepository());
 
-            // Refreshables
-            serviceManager.provide(AccessoryRefreshable.class, new AccessoryRefreshable());
-            serviceManager.provide(AccessoryFamilyRefreshable.class, new AccessoryFamilyRefreshable());
-            serviceManager.provide(CollectionRefreshable.class, new CollectionRefreshable());
-            serviceManager.provide(CollectionItemRefreshable.class, new CollectionItemRefreshable());
-            serviceManager.provide(CollectionItemTierRefreshable.class, new CollectionItemTierRefreshable());
-            serviceManager.provide(EnchantmentRefreshable.class, new EnchantmentRefreshable());
-            serviceManager.provide(FairySoulRefreshable.class, new FairySoulRefreshable());
-            serviceManager.provide(FormatRefreshable.class, new FormatRefreshable());
-            serviceManager.provide(ItemRefreshable.class, new ItemRefreshable());
-            serviceManager.provide(ItemTypeRefreshable.class, new ItemTypeRefreshable());
-            serviceManager.provide(LocationRefreshable.class, new LocationRefreshable());
-            serviceManager.provide(LocationAreaRefreshable.class, new LocationAreaRefreshable());
-            serviceManager.provide(MinionRefreshable.class, new MinionRefreshable());
-            serviceManager.provide(MinionItemRefreshable.class, new MinionItemRefreshable());
-            serviceManager.provide(MinionTierRefreshable.class, new MinionTierRefreshable());
-            serviceManager.provide(MinionTierUpgradeRefreshable.class, new MinionTierUpgradeRefreshable());
-            serviceManager.provide(PetRefreshable.class, new PetRefreshable());
-            serviceManager.provide(PotionRefreshable.class, new PotionRefreshable());
-            serviceManager.provide(RarityRefreshable.class, new RarityRefreshable());
-            serviceManager.provide(ReforgeRefreshable.class, new ReforgeRefreshable());
-            serviceManager.provide(SkillRefreshable.class, new SkillRefreshable());
-            serviceManager.provide(SkillLevelRefreshable.class, new SkillLevelRefreshable());
-            serviceManager.provide(StatRefreshable.class, new StatRefreshable());
-
             databaseEnabled = true;
         }
     }
 
     public static void disableDatabase() {
         if (databaseEnabled) {
-            SqlRefreshable.shutdown();
+            SqlRepository.shutdownRefreshers();
             databaseEnabled = false;
         }
     }
 
     public static Gson getGson() {
         return getServiceManager().getProvider(Gson.class);
-    }
-
-    public static <T extends SqlModel, R extends SqlRepository<T>, E extends SqlRefreshable<T, R>> E getSqlRefreshable(Class<E> tClass) {
-        return getServiceManager().getProvider(tClass);
     }
 
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
