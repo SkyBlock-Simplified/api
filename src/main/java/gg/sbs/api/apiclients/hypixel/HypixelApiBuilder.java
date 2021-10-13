@@ -1,7 +1,10 @@
 package gg.sbs.api.apiclients.hypixel;
 
 import com.google.common.base.Preconditions;
+import feign.FeignException;
+import feign.codec.ErrorDecoder;
 import gg.sbs.api.apiclients.ApiBuilder;
+import gg.sbs.api.apiclients.exception.HypixelApiException;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelDataInterface;
 import lombok.Getter;
 
@@ -29,6 +32,13 @@ public final class HypixelApiBuilder extends ApiBuilder<HypixelDataInterface> {
         return new HashMap<String, String>() {{
            put("API-Key", HypixelApiBuilder.this.getApiKey());
         }};
+    }
+
+    @Override
+    public ErrorDecoder getErrorDecoder() {
+        return (methodKey, response) -> {
+            throw new HypixelApiException(FeignException.errorStatus(methodKey, response));
+        };
     }
 
 }
