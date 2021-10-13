@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.integrated.factory;
 
-import gg.sbs.api.data.sql.integrated.callback.ResultSetCallback;
-import gg.sbs.api.data.sql.integrated.callback.VoidResultSetCallback;
+import gg.sbs.api.data.sql.integrated.function.ResultSetFunction;
+import gg.sbs.api.data.sql.integrated.function.VoidResultSetFunction;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
@@ -359,7 +359,7 @@ public abstract class SQLFactory {
      * @param args     Arguments to pass to the query.
      * @return Whatever you decide to return in the callback.
      */
-    public final <T> T query(String sql, ResultSetCallback<T> callback, Object... args) throws SQLException {
+    public final <T> T query(String sql, ResultSetFunction<T> callback, Object... args) throws SQLException {
         @Cleanup Connection connection = this.getConnection();
         return this.query(connection, sql, callback, args);
     }
@@ -371,7 +371,7 @@ public abstract class SQLFactory {
      * @param callback Callback t process results with.
      * @param args     Arguments to pass to the query.
      */
-    public final void query(String sql, VoidResultSetCallback callback, Object... args) throws SQLException {
+    public final void query(String sql, VoidResultSetFunction callback, Object... args) throws SQLException {
         try (Connection connection = this.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 assignArgs(statement, args);
@@ -384,7 +384,7 @@ public abstract class SQLFactory {
         }
     }
 
-    protected final <T> T query(Connection connection, String sql, ResultSetCallback<T> callback, Object... args) throws SQLException {
+    protected final <T> T query(Connection connection, String sql, ResultSetFunction<T> callback, Object... args) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             assignArgs(statement, args);
 
@@ -404,7 +404,7 @@ public abstract class SQLFactory {
      * @param callback Callback to process results with.
      * @param args     Arguments to pass to the query.
      */
-    public final void queryAsync(final String sql, final VoidResultSetCallback callback, final Object... args) {
+    public final void queryAsync(final String sql, final VoidResultSetFunction callback, final Object... args) {
         Scheduler.getInstance().runAsync(() -> {
             try {
                 this.query(sql, callback, args);

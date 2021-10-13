@@ -1,19 +1,24 @@
 package gg.sbs.api.data.sql.integrated.notification;
 
-import gg.sbs.api.data.sql.integrated.callback.VoidResultSetCallback;
+import gg.sbs.api.data.sql.integrated.function.ResultSetFunction;
+import gg.sbs.api.data.sql.integrated.function.VoidResultSetFunction;
 import gg.sbs.api.data.sql.integrated.factory.SQLFactory;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
+import lombok.SneakyThrows;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 
 /**
  * An sql listener used to check for updates to its associated table and notify plugins.
  */
+@SuppressWarnings("all")
 public class DatabaseNotification {
 
 	private final ConcurrentList<String> primaryColumnNames = Concurrent.newList();
@@ -91,13 +96,17 @@ public class DatabaseNotification {
 
 		final ConcurrentMap<String, Object> deleted = Concurrent.newMap();
 
-		this.sql.query(FormatUtil.format("SELECT old_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), result -> {
-			if (result.next()) {
-				String[] _old = result.getString("old_data").split(",");
-				int keyCount = primaryColumnNames.size();
+		this.sql.query(FormatUtil.format("SELECT old_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), new VoidResultSetFunction() {
+			@Override
+			@SneakyThrows
+			public void handle(ResultSet result) {
+				if (result.next()) {
+					String[] _old = result.getString("old_data").split(",");
+					int keyCount = primaryColumnNames.size();
 
-				for (int i = 0; i < keyCount; i++)
-					deleted.put(primaryColumnNames.get(i), _old[i]);
+					for (int i = 0; i < keyCount; i++)
+						deleted.put(primaryColumnNames.get(i), _old[i]);
+				}
 			}
 		}, this.getSchema(), this.getTable(), this.getEvent().toUppercase(), this.previousId);
 
@@ -141,21 +150,25 @@ public class DatabaseNotification {
 	 * @param callback Callback class to handle retrieved data.
 	 * @throws SQLException If you attempt to retrieve updated data when deleting a record.
 	 */
-	public final void getUpdatedRow(final VoidResultSetCallback callback) throws SQLException {
+	public final void getUpdatedRow(final VoidResultSetFunction callback) throws SQLException {
 		if (this.getEvent() == TriggerEvent.DELETE)
 			throw new SQLException("Cannot retrieve a deleted record!");
 
-		this.sql.query(FormatUtil.format("SELECT new_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), result -> {
-			if (result.next()) {
-				ConcurrentList<String> whereClause = Concurrent.newList();
-				int keyCount = primaryColumnNames.size();
-				String[] _new = result.getString("new_data").split(",");
+		this.sql.query(FormatUtil.format("SELECT new_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), new VoidResultSetFunction() {
+			@Override
+			@SneakyThrows
+			public void handle(ResultSet result) {
+				if (result.next()) {
+					ConcurrentList<String> whereClause = Concurrent.newList();
+					int keyCount = primaryColumnNames.size();
+					String[] _new = result.getString("new_data").split(",");
 
-				if (keyCount > 0) {
-					for (int i = 0; i < keyCount; i++)
-						whereClause.add(FormatUtil.format("SUBSTRING_INDEX(SUBSTRING_INDEX({0}{1}{0}, '','', {2}), '','', -1) = ?", sql.getIdentifierQuoteString(), primaryColumnNames.get(i), (i + 1)));
+					if (keyCount > 0) {
+						for (int i = 0; i < keyCount; i++)
+							whereClause.add(FormatUtil.format("SUBSTRING_INDEX(SUBSTRING_INDEX({0}{1}{0}, '','', {2}), '','', -1) = ?", sql.getIdentifierQuoteString(), primaryColumnNames.get(i), (i + 1)));
 
-					sql.query(FormatUtil.format("SELECT * FROM {0} WHERE {1};", getTable(), StringUtil.join(" AND ", whereClause)), callback, (Object[])_new);
+						sql.query(FormatUtil.format("SELECT * FROM {0} WHERE {1};", getTable(), StringUtil.join(" AND ", whereClause)), callback, (Object[])_new);
+					}
 				}
 			}
 		}, this.getSchema(), this.getTable(), this.getEvent().toUppercase(), this.previousId);
@@ -172,10 +185,14 @@ public class DatabaseNotification {
 
 	private void loadPrimaryKeys() throws SQLException {
 		this.primaryColumnNames.clear();
-		this.primaryColumnNames.addAll(this.sql.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_KEY = ?;", result -> {
-			ConcurrentList<String> keyNames = Concurrent.newList();
-			while (result.next()) keyNames.add(result.getString("COLUMN_NAME"));
-			return keyNames;
+		this.primaryColumnNames.addAll(this.sql.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_KEY = ?;", new ResultSetFunction<Collection<? extends String>>() {
+			@Override
+			@SneakyThrows
+			public Collection<? extends String> handle(ResultSet result) {
+				ConcurrentList<String> keyNames = Concurrent.newList();
+				while (result.next()) keyNames.add(result.getString("COLUMN_NAME"));
+				return keyNames;
+			}
 		}, this.getSchema(), this.getTable(), "PRI"));
 	}
 
@@ -183,18 +200,22 @@ public class DatabaseNotification {
 		if (this.isStopped()) return false;
 
 		try {
-			return this.sql.query(FormatUtil.format("SELECT id, sql_action FROM {0} WHERE table_name = ? AND id > ? AND sql_action IN (?, ?, ?) ORDER BY id {1}SC LIMIT 1;", SQLNotifications.ACTIVITY_TABLE, (this.previousId == 0 ? "DE" : "A")), result -> {
-				if (result.next()) {
-					int last = result.getInt("id");
+			return this.sql.query(FormatUtil.format("SELECT id, sql_action FROM {0} WHERE table_name = ? AND id > ? AND sql_action IN (?, ?, ?) ORDER BY id {1}SC LIMIT 1;", SQLNotifications.ACTIVITY_TABLE, (this.previousId == 0 ? "DE" : "A")), new ResultSetFunction<Boolean>() {
+				@Override
+				@SneakyThrows
+				public Boolean handle(ResultSet result) {
+					if (result.next()) {
+						int last = result.getInt("id");
 
-					if (last > previousId) {
-						previousId = last;
-						event = TriggerEvent.fromString(result.getString("sql_action"));
-						return true;
+						if (last > previousId) {
+							previousId = last;
+							event = TriggerEvent.fromString(result.getString("sql_action"));
+							return true;
+						}
 					}
-				}
 
-				return false;
+					return false;
+				}
 			}, this.getTable(), this.previousId, "INSERT", "UPDATE", "DELETE");
 		} catch (SQLException sqlException) {
 			// TODO: LOG
@@ -237,19 +258,23 @@ public class DatabaseNotification {
 
 	private boolean triggersExist() {
 		try {
-			return this.sql.query("SELECT TRIGGER_NAME, ACTION_STATEMENT FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_SCHEMA = ? AND TRIGGER_NAME IN (?, ?, ?);", result -> {
-				int valid = 0;
+			return this.sql.query("SELECT TRIGGER_NAME, ACTION_STATEMENT FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_SCHEMA = ? AND TRIGGER_NAME IN (?, ?, ?);", new ResultSetFunction<Boolean>() {
+				@Override
+				@SneakyThrows
+				public Boolean handle(ResultSet result) {
+					int valid = 0;
 
-				while (result.next()) {
-					String action = result.getString("ACTION_STATEMENT");
+					while (result.next()) {
+						String action = result.getString("ACTION_STATEMENT");
 
-					if (action.startsWith(FormatUtil.format("INSERT INTO {0}.{1}", this.getSchema(), SQLNotifications.ACTIVITY_TABLE))) {
-						if (action.contains(FormatUtil.format("VALUES (''{0}'', ''{1}''", this.getSchema(), this.getTable())))
-							valid++;
+						if (action.startsWith(FormatUtil.format("INSERT INTO {0}.{1}", DatabaseNotification.this.getSchema(), SQLNotifications.ACTIVITY_TABLE))) {
+							if (action.contains(FormatUtil.format("VALUES (''{0}'', ''{1}''", DatabaseNotification.this.getSchema(), DatabaseNotification.this.getTable())))
+								valid++;
+						}
 					}
-				}
 
-				return valid == 3;
+					return valid == 3;
+				}
 			}, this.getSchema(), this.getName(TriggerEvent.INSERT), this.getName(TriggerEvent.UPDATE), this.getName(TriggerEvent.DELETE));
 		} catch (Exception ex) {
 			// TODO: Log
