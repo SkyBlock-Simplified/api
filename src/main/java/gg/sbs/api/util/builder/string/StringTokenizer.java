@@ -1,4 +1,4 @@
-package gg.sbs.api.util.builder;
+package gg.sbs.api.util.builder.string;
 
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.matcher.StringMatcher;
@@ -627,10 +627,12 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
             if (chars == null) {
                 // still call tokenize as subclass may do some work
                 final List<String> split = tokenize(null, 0, 0);
-                tokens = split.toArray(new String[split.size()]);
+                int size = split.size();
+                tokens = split.toArray(new String[size]);
             } else {
                 final List<String> split = tokenize(chars, 0, chars.length);
-                tokens = split.toArray(new String[split.size()]);
+                int size = split.size();
+                tokens = split.toArray(new String[size]);
             }
         }
     }
@@ -1110,6 +1112,7 @@ public class StringTokenizer implements ListIterator<String>, Cloneable {
      * @return a new instance of this Tokenizer which has been reset.
      */
     @Override
+    @SuppressWarnings("all")
     public Object clone() {
         try {
             return cloneReset();

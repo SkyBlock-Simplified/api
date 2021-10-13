@@ -17,8 +17,6 @@ import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockDate;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
 import gg.sbs.api.apiclients.mojang.implementation.MojangData;
-import gg.sbs.api.apiclients.mojang.response.MojangProfileResponse;
-import gg.sbs.api.apiclients.mojang.response.MojangStatusResponse;
 import gg.sbs.api.data.sql.SqlRepository;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
@@ -48,6 +46,8 @@ import gg.sbs.api.manager.builder.BuilderManager;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.manager.service.ServiceManager;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 
@@ -92,6 +92,8 @@ public class SimplifiedApi {
         builderManager.provide(HypixelPlayerData.class, HypixelApiBuilder.class);
         builderManager.provide(HypixelResourceData.class, HypixelApiBuilder.class);
         builderManager.provide(HypixelSkyBlockData.class, HypixelApiBuilder.class);
+        builderManager.provide(String.class, StringBuilder.class);
+        builderManager.provide(Integer.class, HashCodeBuilder.class);
 
         // Provide Api Implementations
         serviceManager.provide(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));

@@ -1,7 +1,9 @@
-package gg.sbs.api.util.builder;
+package gg.sbs.api.util.builder.string;
 
 import gg.sbs.api.util.ArrayUtil;
 import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.builder.Builder;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -103,7 +105,7 @@ public class StringBuilder implements CharSequence, Appendable, Serializable, Bu
 
         /** {@inheritDoc} */
         @Override
-        public int read(final char[] b, final int off, int len) {
+        public int read(@NotNull final char[] b, final int off, int len) {
             if (off < 0 || len < 0 || off > b.length || off + len > b.length || off + len < 0) {
                 throw new IndexOutOfBoundsException();
             }
@@ -206,13 +208,13 @@ public class StringBuilder implements CharSequence, Appendable, Serializable, Bu
 
         /** {@inheritDoc} */
         @Override
-        public void write(final char[] cbuf) {
+        public void write(@NotNull final char[] cbuf) {
             StringBuilder.this.append(cbuf);
         }
 
         /** {@inheritDoc} */
         @Override
-        public void write(final char[] cbuf, final int off, final int len) {
+        public void write(@NotNull final char[] cbuf, final int off, final int len) {
             StringBuilder.this.append(cbuf, off, len);
         }
 
@@ -224,13 +226,13 @@ public class StringBuilder implements CharSequence, Appendable, Serializable, Bu
 
         /** {@inheritDoc} */
         @Override
-        public void write(final String str) {
+        public void write(@NotNull final String str) {
             StringBuilder.this.append(str);
         }
 
         /** {@inheritDoc} */
         @Override
-        public void write(final String str, final int off, final int len) {
+        public void write(@NotNull final String str, final int off, final int len) {
             StringBuilder.this.append(str, off, len);
         }
 

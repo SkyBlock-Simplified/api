@@ -1,4 +1,6 @@
-package gg.sbs.api.manager.builder.implementation;
+package gg.sbs.api.util.builder;
+
+import gg.sbs.api.util.builder.CoreBuilder;
 
 public interface ClassBuilder<T> extends CoreBuilder {
 

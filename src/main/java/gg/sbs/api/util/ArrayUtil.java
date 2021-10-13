@@ -1,6 +1,6 @@
 package gg.sbs.api.util;
 
-import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import gg.sbs.api.util.mutable.MutableInt;
 
 import java.lang.reflect.Array;

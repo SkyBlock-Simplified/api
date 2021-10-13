@@ -6,7 +6,7 @@ import gg.sbs.api.data.sql.converter.IntegerListMapConverter;
 import gg.sbs.api.data.sql.converter.IntegerMapConverter;
 import gg.sbs.api.data.sql.converter.ObjectMapConverter;
 import gg.sbs.api.data.sql.model.rarities.RarityModel;
-import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;

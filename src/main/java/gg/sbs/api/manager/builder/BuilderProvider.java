@@ -1,8 +1,8 @@
 package gg.sbs.api.manager.builder;
 
-import gg.sbs.api.manager.builder.implementation.CoreBuilder;
+import gg.sbs.api.util.builder.CoreBuilder;
 import gg.sbs.api.reflection.Reflection;
-import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 
 public final class BuilderProvider<T, B extends CoreBuilder> {

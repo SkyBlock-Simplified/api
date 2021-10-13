@@ -1,7 +1,8 @@
-package gg.sbs.api.util.builder;
+package gg.sbs.api.util.builder.hashcode;
 
 import com.google.common.base.Preconditions;
 import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.builder.Builder;
 import lombok.NonNull;
 
 import java.lang.reflect.AccessibleObject;

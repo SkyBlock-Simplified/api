@@ -1,6 +1,6 @@
 package gg.sbs.api.util;
 
-import gg.sbs.api.util.builder.StringBuilder;
+import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.translate.*;
 
 import java.io.IOException;

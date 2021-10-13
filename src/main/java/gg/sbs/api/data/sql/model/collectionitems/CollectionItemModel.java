@@ -2,7 +2,7 @@ package gg.sbs.api.data.sql.model.collectionitems;
 
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.collections.CollectionModel;
-import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;

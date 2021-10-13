@@ -3,7 +3,7 @@ package gg.sbs.api.data.sql.model.miniontiers;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.items.ItemModel;
 import gg.sbs.api.data.sql.model.minions.MinionModel;
-import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;

@@ -1,4 +1,4 @@
-package gg.sbs.api.util.builder;
+package gg.sbs.api.util.builder.hashcode;
 
 /**
  * Wrap an identity key (System.identityHashCode())

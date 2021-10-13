@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import gg.sbs.api.manager.builder.exception.InvalidBuilderException;
 import gg.sbs.api.manager.builder.exception.RegisteredBuilderException;
 import gg.sbs.api.manager.builder.exception.UnknownBuilderException;
-import gg.sbs.api.manager.builder.implementation.CoreBuilder;
+import gg.sbs.api.util.builder.CoreBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 
@@ -86,7 +86,6 @@ public class BuilderManager {
 
 		if (this.isRegistered(service))
 			throw new RegisteredBuilderException(service);
-
 
 		ParameterizedType superClass = (ParameterizedType) builder.getGenericSuperclass();
 		Class<?> tClass = (Class<T>) superClass.getActualTypeArguments()[0];

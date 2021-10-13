@@ -6,7 +6,7 @@ import gg.sbs.api.apiclients.mojang.MojangChatFormatting;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.RegexUtil;
 import gg.sbs.api.util.StringUtil;
-import gg.sbs.api.util.builder.StringBuilder;
+import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;

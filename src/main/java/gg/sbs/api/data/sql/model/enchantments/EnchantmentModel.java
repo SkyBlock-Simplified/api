@@ -3,7 +3,7 @@ package gg.sbs.api.data.sql.model.enchantments;
 import gg.sbs.api.data.sql.converter.ObjectMapConverter;
 import gg.sbs.api.data.sql.model.SqlEffectsModel;
 import gg.sbs.api.data.sql.model.itemtypes.ItemTypeModel;
-import gg.sbs.api.util.builder.HashCodeBuilder;
+import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
