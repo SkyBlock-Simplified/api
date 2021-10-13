@@ -38,4 +38,7 @@ public class SimplifiedConfig extends YamlConfig {
     @Getter @Setter
     private boolean databaseDebugMode = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_DEBUG"));
 
+    @Getter @Setter
+    private String hypixelApiKey = ResourceUtil.getEnvironmentVariable("HYPIXEL_API_KEY");
+
 }
