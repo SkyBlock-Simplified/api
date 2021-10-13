@@ -1,5 +1,6 @@
 package gg.sbs.api.util.math;
 
+import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.math.function.Function;
 import gg.sbs.api.util.math.function.Functions;
 import gg.sbs.api.util.math.operator.Operator;
@@ -14,13 +15,9 @@ import java.util.*;
 public class ExpressionBuilder {
 
     private final String expression;
-
     private final Map<String, Function> userFunctions;
-
     private final Map<String, Operator> userOperators;
-
     private final Set<String> variableNames;
-
     private boolean implicitMultiplication = true;
 
     /**
@@ -29,9 +26,9 @@ public class ExpressionBuilder {
      * @param expression the expression to be parsed
      */
     public ExpressionBuilder(String expression) {
-        if (expression == null || expression.trim().length() == 0) {
+        if (expression == null || expression.trim().length() == 0)
             throw new IllegalArgumentException("Expression can not be empty");
-        }
+
         this.expression = expression;
         this.userOperators = new HashMap<>(4);
         this.userFunctions = new HashMap<>(4);
@@ -56,9 +53,9 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder functions(Function... functions) {
-        for (Function f : functions) {
+        for (Function f : functions)
             this.userFunctions.put(f.getName(), f);
-        }
+
         return this;
     }
 
@@ -69,9 +66,9 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder functions(List<Function> functions) {
-        for (Function f : functions) {
+        for (Function f : functions)
             this.userFunctions.put(f.getName(), f);
-        }
+
         return this;
     }
 
@@ -127,10 +124,10 @@ public class ExpressionBuilder {
 
     private void checkOperatorSymbol(Operator op) {
         String name = op.getSymbol();
+
         for (char ch : name.toCharArray()) {
-            if (!Operator.isAllowedOperatorChar(ch)) {
-                throw new IllegalArgumentException("The operator symbol '" + name + "' is invalid");
-            }
+            if (!Operator.isAllowedOperatorChar(ch))
+                throw new IllegalArgumentException(FormatUtil.format("The operator symbol ''{0}'' is invalid", name));
         }
     }
 
@@ -141,9 +138,9 @@ public class ExpressionBuilder {
      * @return the ExpressionBuilder instance
      */
     public ExpressionBuilder operator(Operator... operators) {
-        for (Operator o : operators) {
+        for (Operator o : operators)
             this.operator(o);
-        }
+
         return this;
     }
 
@@ -166,9 +163,8 @@ public class ExpressionBuilder {
      * @return an {@link Expression} instance which can be used to evaluate the result of the expression
      */
     public Expression build() {
-        if (expression.length() == 0) {
+        if (expression.length() == 0)
             throw new IllegalArgumentException("The expression can not be empty");
-        }
 
         /* set the constants' varibale names */
         variableNames.add("pi");
@@ -178,9 +174,9 @@ public class ExpressionBuilder {
 
         /* Check if there are duplicate vars/functions */
         for (String var : variableNames) {
-            if (Functions.getBuiltinFunction(var) != null || userFunctions.containsKey(var)) {
-                throw new IllegalArgumentException("A variable can not have the same name as a function [" + var + "]");
-            }
+            if (Functions.getBuiltinFunction(var) != null || userFunctions.containsKey(var))
+                throw new IllegalArgumentException(FormatUtil.format("A variable can not have the same name as a function [{0}]", var));
+
         }
 
         return new Expression(ShuntingYard.convertToRPN(this.expression, this.userFunctions, this.userOperators,

@@ -1,13 +1,17 @@
 package gg.sbs.api.util.math.tokenizer;
 
 import gg.sbs.api.util.math.operator.Operator;
+import lombok.Getter;
 
 /**
  * Represents an operator used in expressions
  */
 public class OperatorToken extends Token {
 
-    private final Operator operator;
+    /**
+     * Get the operator for that token
+     */
+    @Getter private final Operator operator;
 
     /**
      * Create a new instance
@@ -20,15 +24,6 @@ public class OperatorToken extends Token {
             throw new IllegalArgumentException("Operator is unknown for token.");
         }
         this.operator = op;
-    }
-
-    /**
-     * Get the operator for that token
-     *
-     * @return the operator
-     */
-    public Operator getOperator() {
-        return operator;
     }
 
 }

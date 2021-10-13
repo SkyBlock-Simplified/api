@@ -1,11 +1,16 @@
 package gg.sbs.api.util.math.tokenizer;
 
+import lombok.Getter;
+
 /**
  * Represents a number in the expression
  */
 public final class NumberToken extends Token {
 
-    private final double value;
+    /**
+     * Get the value of the number
+     */
+    @Getter private final double value;
 
     /**
      * Create a new instance
@@ -19,15 +24,6 @@ public final class NumberToken extends Token {
 
     NumberToken(final char[] expression, final int offset, final int len) {
         this(Double.parseDouble(String.valueOf(expression, offset, len)));
-    }
-
-    /**
-     * Get the value of the number
-     *
-     * @return the value
-     */
-    public double getValue() {
-        return value;
     }
 
 }

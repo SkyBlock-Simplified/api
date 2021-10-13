@@ -1,13 +1,28 @@
 package gg.sbs.api.util.math.function;
 
+import gg.sbs.api.util.FormatUtil;
+import lombok.Getter;
+
 /**
  * A class representing a Function which can be used in an expression
  */
 public abstract class Function {
 
-    private final String name;
+    /**
+     * Get the name of the Function
+     */
+    @Getter private final String name;
+    @Getter protected final int minArguments;
+    @Getter protected final int maxArguments;
 
-    protected final int numArguments;
+    /**
+     * Create a new Function with a given name that takes a single argument
+     *
+     * @param name the name of the Function
+     */
+    public Function(String name) {
+        this(name, 1, 1);
+    }
 
     /**
      * Create a new Function with a given name and number of arguments
@@ -16,43 +31,40 @@ public abstract class Function {
      * @param numArguments the number of arguments the function takes
      */
     public Function(String name, int numArguments) {
-        if (numArguments < 0) {
-            throw new IllegalArgumentException("The number of function arguments can not be less than 0 for '" +
-                    name + "'");
-        }
-        if (!isValidFunctionName(name)) {
+        this(name, numArguments, numArguments);
+    }
+
+    /**
+     * Create a new Function with a given name and number of arguments
+     *
+     * @param name         the name of the Function
+     * @param minArguments the minimum number of arguments the function takes
+     * @param maxArguments the maximum number of arguments the function takes
+     */
+    public Function(String name, int minArguments, int maxArguments) {
+        if (minArguments < 0 || minArguments > maxArguments)
+            throw new IllegalArgumentException(FormatUtil.format("The number of function arguments can not be less than 0 or more than ''{0}'' for ''{1}''", maxArguments, name));
+
+        if (!isValidFunctionName(name))
             throw new IllegalArgumentException("The function name '" + name + "' is invalid");
-        }
+
         this.name = name;
-        this.numArguments = numArguments;
-
+        this.minArguments = minArguments;
+        this.maxArguments = maxArguments;
     }
 
     /**
-     * Create a new Function with a given name that takes a single argument
-     *
-     * @param name the name of the Function
-     */
-    public Function(String name) {
-        this(name, 1);
-    }
-
-    /**
-     * Get the name of the Function
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Get the number of arguments for this function
+     * Get the number of arguments of a function with fixed arguments length.
+     * This function may be called only on functions with a fixed number of arguments and will throw an @UnsupportedOperationException otherwise.
+     * When using functions with variable arguments length use @getMaxNumArguments and @getMinNumArguments instead.
      *
      * @return the number of arguments
      */
     public int getNumArguments() {
-        return numArguments;
+        if (this.minArguments != this.maxArguments)
+            throw new UnsupportedOperationException("Calling getNumArgument() is not supported for var arg functions, please use getMaxNumArguments() or getMinNumArguments()");
+
+        return this.minArguments;
     }
 
     /**
