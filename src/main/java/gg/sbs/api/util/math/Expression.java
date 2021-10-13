@@ -198,7 +198,7 @@ public class Expression {
                 FunctionToken func = (FunctionToken) token;
                 final int numArguments = func.getArgumentCount();
 
-                if (numArguments < func.getFunction().getMinArguments() || numArguments > func.getFunction().getMaxArguments())
+                if (numArguments < func.getFunction().getMinArguments() || numArguments > func.getFunction().getMaxArguments() || output.isEmpty())
                     throw new IllegalArgumentException(FormatUtil.format("Invalid number of arguments available for ''{0}'' function", func.getFunction().getName()));
 
                 /* collect the arguments from the stack */
@@ -353,7 +353,6 @@ public class Expression {
                 throw new UnsupportedOperationException("The token type '"+token.getClass().getName()+"' is not supported in this function yet");
         }
     }
-
 
     private List<List<Token>> getTokensArguments(List<Token> tokens, int numOperands) {
         List<List<Token>> tArgs = new ArrayList<>(2);
