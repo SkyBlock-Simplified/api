@@ -4,6 +4,10 @@ import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.apiclients.exception.HypixelApiException;
 import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
+import gg.sbs.api.data.sql.exception.SqlException;
+import gg.sbs.api.data.sql.model.items.ItemModel;
+import gg.sbs.api.data.sql.model.items.ItemRepository;
+import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import org.hamcrest.Matcher;
@@ -20,6 +24,7 @@ public class SkyBlockIslandTest {
     private static final HypixelApiBuilder hypixelApi;
 
     static {
+        SimplifiedApi.enableDatabase();
         hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
         hypixelApi = SimplifiedApi.getServiceManager().getProvider(HypixelApiBuilder.class);
     }
@@ -39,6 +44,13 @@ public class SkyBlockIslandTest {
             SkyBlockIsland.Member member = optionalMember.get();
             //ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
+            SkyBlockIsland.PetInfo activePet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).collect(ListUtil.toSingleton());
+
+            if (activePet.getHeldItem().isPresent()) {
+                ItemModel itemModel = activePet.getHeldItem().get();
+                MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
+            }
+
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
         } catch (HypixelApiException exception) {
             MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));

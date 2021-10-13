@@ -3,9 +3,14 @@ package gg.sbs.api.apiclients.hypixel.response.skyblock;
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.data.sql.model.collections.CollectionModel;
-import gg.sbs.api.data.sql.model.collections.CollectionRepository;
+import gg.sbs.api.data.sql.model.items.ItemModel;
+import gg.sbs.api.data.sql.model.items.ItemRepository;
 import gg.sbs.api.data.sql.model.minions.MinionModel;
 import gg.sbs.api.data.sql.model.minions.MinionRepository;
+import gg.sbs.api.data.sql.model.pets.PetModel;
+import gg.sbs.api.data.sql.model.pets.PetRepository;
+import gg.sbs.api.data.sql.model.rarities.RarityModel;
+import gg.sbs.api.data.sql.model.rarities.RarityRepository;
 import gg.sbs.api.data.sql.model.skills.SkillModel;
 import gg.sbs.api.hypixel_old.skyblock.Skyblock;
 import gg.sbs.api.nbt.NbtFactory;
@@ -259,13 +264,11 @@ public class SkyBlockIsland {
             return new Backpacks(this.backpackContents, this.backpackIcons);
         }
 
+        @SneakyThrows
         public Collection getCollection(SkillModel type) {
             Collection collection = new Collection(type);
-            SimplifiedApi.getSqlRepository(CollectionRepository.class).findAll().stream().filter(model -> model.getName().equals(type.getName())); // TODO: Foreign Keys
-
-            // TODO: CollectionItemModel
-            /*ConcurrentList<CollectionModel> items = Skyblock.Collection.getItems(type);
-
+            //SimplifiedApi.getSqlRepository(CollectionRepository.class).findAllCached().stream().filter(model -> model.getName().equals(type.getName())); // TODO: Foreign Keys
+/*
             if (this.collection != null) {
                 for (CollectionModel item : items) {
                     collection.collected.put(item, this.collection.getOrDefault(item.getName(), 0));
@@ -276,8 +279,8 @@ public class SkyBlockIsland {
                         collection.unlocked.put(item, Math.max(current, Integer.parseInt(tier.replace(FormatUtil.format("{0}_", item.getName()), ""))));
                     });
                 }
-            }*/
-
+            }
+*/
             return collection;
         }
 
@@ -321,7 +324,7 @@ public class SkyBlockIsland {
 
             if (ListUtil.notEmpty(this.getPets())) {
                 for (PetInfo petInfo : this.getPets())
-                    petScore += petInfo.getRarity().ordinal() + 1;
+                    petScore += petInfo.getRarity().getOrdinal() + 1;
             }
 
             return petScore;
@@ -1307,37 +1310,43 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private double experience;
         @Getter private boolean active;
         @SerializedName("tier")
-        @Getter private Skyblock.Item.Rarity rarity;
+        private String rarity;
         @Getter private int candyUsed;
         private String heldItem;
         private String skin;
 
         @Override
         public ConcurrentList<Integer> getExperienceTiers() {
-            return Skyblock.PET_EXP_TIER_SCALE.get(this.getRarity());
+            return Concurrent.newList(); // TODO: SQL
+            //return Skyblock.PET_EXP_TIER_SCALE.get(this.getRarity());
         }
 
-        public Optional<String> getHeldItem() {
-            return StringUtil.isNotEmpty(this.heldItem) ? Optional.of(this.heldItem) : Optional.empty(); // TODO: SQL
+        @SneakyThrows
+        public Optional<ItemModel> getHeldItem() {
+            return Optional.of(SimplifiedApi.getSqlRepository(ItemRepository.class).findFirstOrNullCached(ItemModel::getItemId, this.heldItem));
         }
 
         @Override
         public int getMaxLevel() {
-            return 100 + (this.getName().startsWith("GOLDEN_DRAGON") ? 100 : 0); // TODO: Max Level
+            return this.getPet().getMaxLevel();
         }
 
-        public Optional<Skyblock.Pet> getPet() {
-            Skyblock.Pet pet = null;
-
-            try {
-                pet = Skyblock.Pet.valueOf(this.name);
-            } catch (Exception exception) { }
-
-            return Optional.of(pet);
+        @SneakyThrows
+        public PetModel getPet() {
+            return SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetModel::getName, this.name);
         }
 
         public String getPrettyName() {
             return WordUtil.capitalizeFully(this.getName().replace("_", " "));
+        }
+
+        @SneakyThrows
+        public RarityModel getRarity() {
+            return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RarityModel::getRarityTag, this.rarity);
+        }
+
+        public String getDefaultSkin() {
+            return this.getPet().getSkin();
         }
 
         public Optional<String> getSkin() {
