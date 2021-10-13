@@ -216,7 +216,7 @@ public class SkyBlockDate {
     public static class SkyBlockTime extends SkyBlockDate {
 
         public SkyBlockTime(long milliseconds) {
-            super(milliseconds, false);
+            super(milliseconds * 1000, false);
         }
 
     }
