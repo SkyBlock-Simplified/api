@@ -4,6 +4,7 @@ import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.SimplifiedConfig;
 import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.function.VoidSessionFunction;
+import gg.sbs.api.data.sql.model.SqlModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

@@ -7,6 +7,7 @@ import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
 import gg.sbs.api.data.sql.exception.SqlException;
 import gg.sbs.api.data.sql.model.items.ItemModel;
 import gg.sbs.api.data.sql.model.items.ItemRepository;
+import gg.sbs.api.data.sql.model.pets.PetModel;
 import gg.sbs.api.util.ListUtil;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
@@ -40,15 +41,17 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
-            //ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
+            ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
             Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
 
             optionalWolfPet.ifPresent(wolfInfo -> {
                 optionalDragonPet.ifPresent(dragInfo -> {
-                    int wolf_hs = wolfInfo.getPet().hashCode();
-                    int drag_hs = dragInfo.getPet().hashCode();
+                    PetModel wolfPet = wolfInfo.getPet();
+                    PetModel dragPet = dragInfo.getPet();
+                    int wolf_hs = wolfPet.hashCode();
+                    int drag_hs = dragPet.hashCode();
 
                     MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
 
