@@ -42,8 +42,11 @@ import gg.sbs.api.data.sql.model.reforges.ReforgeRepository;
 import gg.sbs.api.data.sql.model.skilllevels.SkillLevelRepository;
 import gg.sbs.api.data.sql.model.skills.SkillRepository;
 import gg.sbs.api.data.sql.model.stats.StatRepository;
+import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.scheduler.Scheduler;
-import gg.sbs.api.service.ServiceManager;
+import gg.sbs.api.manager.service.ServiceManager;
+import gg.sbs.api.util.concurrent.Concurrent;
+import gg.sbs.api.util.concurrent.ConcurrentSet;
 
 import java.io.File;
 import java.time.Instant;
@@ -53,9 +56,9 @@ public class SimplifiedApi {
 
     private static final ServiceManager serviceManager = new ServiceManager();
     private static boolean databaseEnabled = false;
+    private static boolean databaseRegistered = false;
     private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {
-            }.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Instant.class, new InstantTypeConverter())
             .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeConverter())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeConverter())
@@ -64,6 +67,7 @@ public class SimplifiedApi {
     private static final SimplifiedConfig config;
 
     static {
+        // Load Config
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             config = new SimplifiedConfig(currentDir.getParentFile(), "simplified");
@@ -74,22 +78,49 @@ public class SimplifiedApi {
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
         serviceManager.provide(Gson.class, gson);
 
+        // Provide Api Builders
+        MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
         hypixelApiBuilder.setApiKey(config.getHypixelApiKey());
+        serviceManager.provide(MojangApiBuilder.class, mojangApiBuilder);
         serviceManager.provide(HypixelApiBuilder.class, hypixelApiBuilder);
 
+        // Provide Api Implementations
         serviceManager.provide(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
         serviceManager.provide(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
         serviceManager.provide(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
-        serviceManager.provide(MojangData.class, new MojangApiBuilder().build(MojangData.class));
+        serviceManager.provide(MojangData.class, mojangApiBuilder.build(MojangData.class));
+    }
+
+    public static void enableDatabase() {
+        if (!databaseRegistered) {
+            // Provide SqlRepositories
+            for (Class<? extends SqlRepository<?>> repository : getSqlRepositoryClasses())
+                serviceManager.provideRaw(repository, new Reflection(repository).newInstance());
+
+            databaseRegistered = true;
+        }
+
+        databaseEnabled = true;
+    }
+
+    public static void disableDatabase() {
+        if (databaseEnabled) {
+            SqlRepository.shutdownRefreshers();
+            databaseEnabled = false;
+        }
+    }
+
+    public static SimplifiedConfig getConfig() {
+        return config;
     }
 
     public static File getCurrentDirectory() {
         return getConfig().getParentDirectory();
     }
 
-    public static SimplifiedConfig getConfig() {
-        return config;
+    public static Gson getGson() {
+        return getServiceManager().getProvider(Gson.class);
     }
 
     public static Scheduler getScheduler() {
@@ -100,45 +131,32 @@ public class SimplifiedApi {
         return serviceManager;
     }
 
-    public static void enableDatabase() {
-        if (!databaseEnabled) {
-            serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
-            serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
-            serviceManager.provide(CollectionRepository.class, new CollectionRepository());
-            serviceManager.provide(CollectionItemRepository.class, new CollectionItemRepository());
-            serviceManager.provide(CollectionItemTierRepository.class, new CollectionItemTierRepository());
-            serviceManager.provide(EnchantmentRepository.class, new EnchantmentRepository());
-            serviceManager.provide(FairySoulRepository.class, new FairySoulRepository());
-            serviceManager.provide(FormatRepository.class, new FormatRepository());
-            serviceManager.provide(ItemRepository.class, new ItemRepository());
-            serviceManager.provide(ItemTypeRepository.class, new ItemTypeRepository());
-            serviceManager.provide(LocationRepository.class, new LocationRepository());
-            serviceManager.provide(LocationAreaRepository.class, new LocationAreaRepository());
-            serviceManager.provide(MinionRepository.class, new MinionRepository());
-            serviceManager.provide(MinionItemRepository.class, new MinionItemRepository());
-            serviceManager.provide(MinionTierRepository.class, new MinionTierRepository());
-            serviceManager.provide(MinionTierUpgradeRepository.class, new MinionTierUpgradeRepository());
-            serviceManager.provide(PetRepository.class, new PetRepository());
-            serviceManager.provide(PotionRepository.class, new PotionRepository());
-            serviceManager.provide(RarityRepository.class, new RarityRepository());
-            serviceManager.provide(ReforgeRepository.class, new ReforgeRepository());
-            serviceManager.provide(SkillRepository.class, new SkillRepository());
-            serviceManager.provide(SkillLevelRepository.class, new SkillLevelRepository());
-            serviceManager.provide(StatRepository.class, new StatRepository());
-
-            databaseEnabled = true;
-        }
-    }
-
-    public static void disableDatabase() {
-        if (databaseEnabled) {
-            SqlRepository.shutdownRefreshers();
-            databaseEnabled = false;
-        }
-    }
-
-    public static Gson getGson() {
-        return getServiceManager().getProvider(Gson.class);
+    public static ConcurrentSet<Class<? extends SqlRepository<?>>> getSqlRepositoryClasses() {
+        return Concurrent.newSet(
+                AccessoryRepository.class,
+                AccessoryFamilyRepository.class,
+                CollectionRepository.class,
+                CollectionItemRepository.class,
+                CollectionItemTierRepository.class,
+                EnchantmentRepository.class,
+                FairySoulRepository.class,
+                FormatRepository.class,
+                ItemRepository.class,
+                ItemTypeRepository.class,
+                LocationRepository.class,
+                LocationAreaRepository.class,
+                MinionRepository.class,
+                MinionItemRepository.class,
+                MinionTierRepository.class,
+                MinionTierUpgradeRepository.class,
+                PetRepository.class,
+                PotionRepository.class,
+                RarityRepository.class,
+                ReforgeRepository.class,
+                SkillRepository.class,
+                SkillLevelRepository.class,
+                StatRepository.class
+        );
     }
 
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {

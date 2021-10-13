@@ -1,9 +1,10 @@
-package gg.sbs.api.service;
+package gg.sbs.api.manager.service;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import gg.sbs.api.service.exception.RegisteredServiceException;
-import gg.sbs.api.service.exception.UnknownServiceException;
+import gg.sbs.api.manager.service.exception.InvalidServiceException;
+import gg.sbs.api.manager.service.exception.RegisteredServiceException;
+import gg.sbs.api.manager.service.exception.UnknownServiceException;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 
@@ -129,7 +130,26 @@ public class ServiceManager {
 		if (this.isRegistered(service))
 			throw new RegisteredServiceException(service);
 
-		this.serviceProviders.add(new ServiceProvider<>(service, instance));
+		this.serviceProviders.add(new ServiceProvider(service, instance));
+	}
+
+	/**
+	 * Registers an instance for the given service class.
+	 *
+	 * @param service Service class.
+	 * @param instance Instance of service.
+	 * @throws RegisteredServiceException When the given class already has a registered service.
+	 */
+	public final void provideRaw(Class<?> service, Object instance) throws RegisteredServiceException {
+		Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
+
+		if (this.isRegistered(service))
+			throw new RegisteredServiceException(service);
+
+		if (!service.isAssignableFrom(instance.getClass()))
+			throw new InvalidServiceException(service, instance);
+
+		this.serviceProviders.add(new ServiceProvider(service, instance));
 	}
 
 }

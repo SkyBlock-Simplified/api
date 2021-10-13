@@ -1,4 +1,4 @@
-package gg.sbs.api.service;
+package gg.sbs.api.manager.service;
 
 import lombok.Getter;
 

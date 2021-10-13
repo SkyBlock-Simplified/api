@@ -35,7 +35,7 @@ public class SqlSessionUtil {
 
         // Add all inheritors of SqlModel
         Configuration configuration = new Configuration().setProperties(properties);
-        for (Class<?> rClass : SimplifiedApi.getServiceManager().getServices(SqlRepository.class)) {
+        for (Class<?> rClass : SimplifiedApi.getSqlRepositoryClasses()) {
             ParameterizedType superClass = (ParameterizedType) rClass.getGenericSuperclass();
             Class<?> tClass = (Class<?>) superClass.getActualTypeArguments()[0];
             configuration = configuration.addAnnotatedClass(tClass);

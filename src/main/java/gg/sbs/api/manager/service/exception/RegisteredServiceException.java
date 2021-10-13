@@ -1,4 +1,4 @@
-package gg.sbs.api.service.exception;
+package gg.sbs.api.manager.service.exception;
 
 import gg.sbs.api.util.FormatUtil;
 
