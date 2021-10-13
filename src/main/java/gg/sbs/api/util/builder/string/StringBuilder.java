@@ -56,7 +56,7 @@ import java.util.Objects;
  * {@link java.lang.StringBuilder}.
  * </p>
  */
-public class StringBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
+public class StringBuilder implements Builder<String>, CharSequence, Appendable, Serializable {
 
     /**
      * Inner class to allow StrBuilder to operate as a reader.

@@ -21,12 +21,10 @@ import java.util.UUID;
 public class SkyBlockIslandTest {
 
     private static final HypixelSkyBlockData hypixelSkyBlockData;
-    private static final HypixelApiBuilder hypixelApi;
 
     static {
         SimplifiedApi.enableDatabase();
         hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
-        hypixelApi = SimplifiedApi.getServiceManager().getProvider(HypixelApiBuilder.class);
     }
 
     @Test

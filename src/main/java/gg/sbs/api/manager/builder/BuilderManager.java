@@ -9,6 +9,7 @@ import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * Manager for builders that assist in constructing classes.
@@ -87,11 +88,32 @@ public class BuilderManager {
 		if (this.isRegistered(service))
 			throw new RegisteredBuilderException(service);
 
-		ParameterizedType superClass = (ParameterizedType) builder.getGenericSuperclass();
-		Class<?> tClass = (Class<T>) superClass.getActualTypeArguments()[0];
+		try { // Classes
+			Type[] types = builder.getGenericInterfaces();
+			ParameterizedType superClass = (ParameterizedType) builder.getGenericSuperclass();
+			Class<?> tClass = (Class<T>) superClass.getActualTypeArguments()[0];
 
-		if (!tClass.isAssignableFrom(service))
-			throw new InvalidBuilderException(service, builder);
+			if (!tClass.isAssignableFrom(service))
+				throw new InvalidBuilderException(service, builder);
+		} catch (ClassCastException exception) { // Types
+			boolean pass = false;
+
+			for (Type type : builder.getGenericInterfaces()) {
+				if (type instanceof ParameterizedType) {
+					String x = "x";
+					ParameterizedType superClass = (ParameterizedType) type;
+					Class<?> tClass = (Class<T>) superClass.getActualTypeArguments()[0];
+
+					if (tClass.isAssignableFrom(service)) {
+						pass = true;
+						break;
+					}
+				}
+			}
+
+			if (!pass)
+				throw new InvalidBuilderException(service, builder);
+		}
 
 		this.builderProviders.add(new BuilderProvider(service, builder));
 	}
