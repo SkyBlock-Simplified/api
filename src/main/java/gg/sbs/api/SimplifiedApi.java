@@ -105,7 +105,6 @@ public class SimplifiedApi {
     public static void enableDatabase() {
         if (!databaseRegistered) {
             // Provide SqlRepositories
-
             /*serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
             serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
             serviceManager.provide(CollectionRepository.class, new CollectionRepository());
@@ -129,8 +128,9 @@ public class SimplifiedApi {
             serviceManager.provide(SkillRepository.class, new SkillRepository());
             serviceManager.provide(SkillLevelRepository.class, new SkillLevelRepository());
             serviceManager.provide(StatRepository.class, new StatRepository());*/
-            for (Class<? extends SqlRepository<?>> repository : getSqlRepositoryClasses())
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getSqlRepositoryClasses())
                 serviceManager.provideRaw(repository, new Reflection(repository).newInstance());
+            // TODO: This works but generates an error, see bottom of class
 
             databaseRegistered = true;
         }
@@ -169,7 +169,7 @@ public class SimplifiedApi {
         return serviceManager;
     }
 
-    public static ConcurrentSet<Class<? extends SqlRepository<?>>> getSqlRepositoryClasses() {
+    public static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getSqlRepositoryClasses() {
         return Concurrent.newSet(
                 AccessoryRepository.class,
                 AccessoryFamilyRepository.class,
@@ -204,5 +204,82 @@ public class SimplifiedApi {
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
         return getServiceManager().getProvider(tClass);
     }
+
+    /*
+    org.hibernate.type.SerializationException: could not deserialize
+	at org.hibernate.internal.util.SerializationHelper.doDeserialize(SerializationHelper.java:243)
+	at org.hibernate.internal.util.SerializationHelper.deserialize(SerializationHelper.java:287)
+	at org.hibernate.type.descriptor.java.SerializableTypeDescriptor.fromBytes(SerializableTypeDescriptor.java:138)
+	at org.hibernate.type.descriptor.java.SerializableTypeDescriptor.wrap(SerializableTypeDescriptor.java:113)
+	at org.hibernate.type.descriptor.java.SerializableTypeDescriptor.wrap(SerializableTypeDescriptor.java:29)
+	at org.hibernate.type.descriptor.sql.VarbinaryTypeDescriptor$2.doExtract(VarbinaryTypeDescriptor.java:60)
+	at org.hibernate.type.descriptor.sql.BasicExtractor.extract(BasicExtractor.java:47)
+	at org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:257)
+	at org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:253)
+	at org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:243)
+	at org.hibernate.type.AbstractStandardBasicType.hydrate(AbstractStandardBasicType.java:329)
+	at org.hibernate.persister.entity.AbstractEntityPersister.hydrate(AbstractEntityPersister.java:3212)
+	at org.hibernate.persister.entity.Loadable.hydrate(Loadable.java:94)
+	at org.hibernate.loader.plan.exec.process.internal.EntityReferenceInitializerImpl.loadFromResultSet(EntityReferenceInitializerImpl.java:342)
+	at org.hibernate.loader.plan.exec.process.internal.EntityReferenceInitializerImpl.hydrateEntityState(EntityReferenceInitializerImpl.java:269)
+	at org.hibernate.loader.plan.exec.process.internal.AbstractRowReader.readRow(AbstractRowReader.java:80)
+	at org.hibernate.loader.plan.exec.internal.EntityLoadQueryDetails$EntityLoaderRowReader.readRow(EntityLoadQueryDetails.java:288)
+	at org.hibernate.loader.plan.exec.process.internal.ResultSetProcessorImpl.extractRows(ResultSetProcessorImpl.java:157)
+	at org.hibernate.loader.plan.exec.process.internal.ResultSetProcessorImpl.extractResults(ResultSetProcessorImpl.java:94)
+	at org.hibernate.loader.plan.exec.internal.AbstractLoadPlanBasedLoader.executeLoad(AbstractLoadPlanBasedLoader.java:105)
+	at org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader.load(AbstractLoadPlanBasedEntityLoader.java:285)
+	at org.hibernate.persister.entity.AbstractEntityPersister.doLoad(AbstractEntityPersister.java:4519)
+	at org.hibernate.persister.entity.AbstractEntityPersister.load(AbstractEntityPersister.java:4509)
+	at org.hibernate.event.internal.DefaultLoadEventListener.loadFromDatasource(DefaultLoadEventListener.java:571)
+	at org.hibernate.event.internal.DefaultLoadEventListener.doLoad(DefaultLoadEventListener.java:539)
+	at org.hibernate.event.internal.DefaultLoadEventListener.load(DefaultLoadEventListener.java:208)
+	at org.hibernate.event.internal.DefaultLoadEventListener.proxyOrLoad(DefaultLoadEventListener.java:327)
+	at org.hibernate.event.internal.DefaultLoadEventListener.doOnLoad(DefaultLoadEventListener.java:108)
+	at org.hibernate.event.internal.DefaultLoadEventListener.onLoad(DefaultLoadEventListener.java:74)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:118)
+	at org.hibernate.internal.SessionImpl.fireLoadNoChecks(SessionImpl.java:1215)
+	at org.hibernate.internal.SessionImpl.internalLoad(SessionImpl.java:1080)
+	at org.hibernate.type.EntityType.resolveIdentifier(EntityType.java:697)
+	at org.hibernate.type.EntityType.resolve(EntityType.java:464)
+	at org.hibernate.type.ManyToOneType.resolve(ManyToOneType.java:240)
+	at org.hibernate.engine.internal.TwoPhaseLoad$EntityResolver.lambda$static$0(TwoPhaseLoad.java:576)
+	at org.hibernate.engine.internal.TwoPhaseLoad.initializeEntityEntryLoadedState(TwoPhaseLoad.java:221)
+	at org.hibernate.engine.internal.TwoPhaseLoad.initializeEntity(TwoPhaseLoad.java:155)
+	at org.hibernate.engine.internal.TwoPhaseLoad.initializeEntity(TwoPhaseLoad.java:126)
+	at org.hibernate.loader.Loader.initializeEntitiesAndCollections(Loader.java:1201)
+	at org.hibernate.loader.Loader.processResultSet(Loader.java:1009)
+	at org.hibernate.loader.Loader.doQuery(Loader.java:967)
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:357)
+	at org.hibernate.loader.Loader.doList(Loader.java:2868)
+	at org.hibernate.loader.Loader.doList(Loader.java:2850)
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2682)
+	at org.hibernate.loader.Loader.list(Loader.java:2677)
+	at org.hibernate.loader.hql.QueryLoader.list(QueryLoader.java:540)
+	at org.hibernate.hql.internal.ast.QueryTranslatorImpl.list(QueryTranslatorImpl.java:400)
+	at org.hibernate.engine.query.spi.HQLQueryPlan.performList(HQLQueryPlan.java:219)
+	at org.hibernate.internal.SessionImpl.list(SessionImpl.java:1443)
+	at org.hibernate.query.internal.AbstractProducedQuery.doList(AbstractProducedQuery.java:1649)
+	at org.hibernate.query.internal.AbstractProducedQuery.list(AbstractProducedQuery.java:1617)
+	at org.hibernate.query.Query.getResultList(Query.java:165)
+	at org.hibernate.query.criteria.internal.compile.CriteriaQueryTypeQueryAdapter.getResultList(CriteriaQueryTypeQueryAdapter.java:76)
+	at gg.sbs.api.data.sql.SqlRepository.findAll(SqlRepository.java:106)
+	at gg.sbs.api.data.sql.SqlSessionUtil.withSession(SqlSessionUtil.java:60)
+	at gg.sbs.api.data.sql.SqlRepository.findAll(SqlRepository.java:110)
+	at gg.sbs.api.data.sql.SqlRepository.refreshItems(SqlRepository.java:55)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.io.StreamCorruptedException: invalid stream header: 31363733
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:938)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:396)
+	at org.hibernate.internal.util.SerializationHelper$CustomObjectInputStream.<init>(SerializationHelper.java:309)
+	at org.hibernate.internal.util.SerializationHelper$CustomObjectInputStream.<init>(SerializationHelper.java:299)
+	at org.hibernate.internal.util.SerializationHelper.doDeserialize(SerializationHelper.java:218)
+	... 65 more
+     */
 
 }

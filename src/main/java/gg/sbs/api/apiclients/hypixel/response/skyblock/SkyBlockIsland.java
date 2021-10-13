@@ -1336,7 +1336,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @SneakyThrows
         public PetModel getPet() {
-            return SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetModel::getName, this.name);
+            return SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetModel::getItemId, this.name);
         }
 
         public String getPrettyName() {

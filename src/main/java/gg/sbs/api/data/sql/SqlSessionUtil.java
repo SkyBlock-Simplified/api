@@ -4,7 +4,6 @@ import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.SimplifiedConfig;
 import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.function.VoidSessionFunction;
-import gg.sbs.api.data.sql.model.SqlModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -22,7 +21,11 @@ public class SqlSessionUtil {
 
         Properties properties = new Properties() {{
             put("connection.driver_class", SqlDriver.MariaDB.getDriverClass());
-            put("hibernate.show_sql", String.valueOf(config.isDatabaseDebugMode()));
+            put("hibernate.show_sql", config.isDatabaseDebugMode());
+            put("hibernate.format_sql", config.isDatabaseDebugMode());
+            put("hibernate.generate_statistics", false);
+            put("hibernate.use_sql_comments", false);
+            put("log4j.logger.net.sf.hibernate", "FATAL");
             put("hibernate.connection.url", SqlDriver.MariaDB.getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
@@ -34,12 +37,12 @@ public class SqlSessionUtil {
             put("hikari.useServerPrepStmts", "true");
         }};
 
-        // Add all inheritors of SqlModel
+        // Add all inheritors of SqlModel from their Repositories
         Configuration configuration = new Configuration().setProperties(properties);
         for (Class<?> rClass : SimplifiedApi.getSqlRepositoryClasses()) {
             ParameterizedType superClass = (ParameterizedType) rClass.getGenericSuperclass();
             Class<?> tClass = (Class<?>) superClass.getActualTypeArguments()[0];
-            configuration = configuration.addAnnotatedClass(tClass);
+            configuration.addAnnotatedClass(tClass);
         }
 
         return configuration.buildSessionFactory();
