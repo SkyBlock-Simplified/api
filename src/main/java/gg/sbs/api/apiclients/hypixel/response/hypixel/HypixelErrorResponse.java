@@ -5,7 +5,8 @@ import lombok.Getter;
 public class HypixelErrorResponse {
 
     @Getter private boolean success;
-    @Getter private String cause;
+    @SuppressWarnings("cause")
+    @Getter private String reason;
     @Getter private boolean throttle;
     @Getter private boolean global;
 
