@@ -44,13 +44,19 @@ public class SkyBlockIslandTest {
             SkyBlockIsland.Member member = optionalMember.get();
             //ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
-            Optional<SkyBlockIsland.PetInfo> optionalActivePet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
+            Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
+            Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
 
-            optionalActivePet.ifPresent(petInfo -> {
-                SkyBlockIsland.PetInfo activePet = optionalActivePet.get();
+            optionalWolfPet.ifPresent(wolfInfo -> {
+                optionalDragonPet.ifPresent(dragInfo -> {
+                    int wolf_hs = wolfInfo.getPet().hashCode();
+                    int drag_hs = dragInfo.getPet().hashCode();
 
-                activePet.getHeldItem().ifPresent(itemModel -> {
-                    MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
+                    MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
+
+                    wolfInfo.getHeldItem().ifPresent(itemModel -> {
+                        MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
+                    });
                 });
             });
 
