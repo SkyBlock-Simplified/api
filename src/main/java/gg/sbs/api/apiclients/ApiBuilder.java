@@ -20,15 +20,12 @@ public abstract class ApiBuilder<I extends RequestInterface> {
     }
 
     public final <T extends I> T build(Class<T> tClass) {
-        ErrorDecoder ed = new ErrorDecoder.Default();
-        // TODO: Implement custom error handlers for
-        //       ApiBuilder instances
-
         return Feign.builder()
                 .client(new OkHttpClient())
                 .encoder(new GsonEncoder(SimplifiedApi.getGson()))
                 .decoder(new GsonDecoder(SimplifiedApi.getGson()))
                 .requestInterceptor(template -> ApiBuilder.this.buildHeaders().forEach(template::header))
+                .errorDecoder(this.getErrorDecoder())
                 .target(tClass, this.getUrl());
     }
 
@@ -38,6 +35,10 @@ public abstract class ApiBuilder<I extends RequestInterface> {
 
     public Map<String, String> buildHeaders() {
         return Concurrent.newMap();
+    }
+
+    public ErrorDecoder getErrorDecoder() {
+        return new ErrorDecoder.Default();
     }
 
 }
