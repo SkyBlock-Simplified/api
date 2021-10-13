@@ -1,7 +1,6 @@
 package gg.sbs.api.apiclients.converter;
 
 import com.google.gson.*;
-import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
 import gg.sbs.api.reflection.Reflection;
 
@@ -11,18 +10,19 @@ public class NbtContentTypeConverter extends TypeConverter<SkyBlockIsland.NbtCon
 
     @Override
     public SkyBlockIsland.NbtContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (json.isJsonPrimitive()) { // Auctions are bad
-            Reflection reflection = new Reflection(SkyBlockIsland.NbtContent.class);
-            SkyBlockIsland.NbtContent nbtContent = (SkyBlockIsland.NbtContent) new Reflection(SkyBlockIsland.NbtContent.class).newInstance();
-            reflection.setValue(String.class, nbtContent, json.getAsString());
-            return nbtContent;
-        } else
-            return SimplifiedApi.getGson().fromJson(json, SkyBlockIsland.NbtContent.class);
+        Reflection reflection = new Reflection(SkyBlockIsland.NbtContent.class);
+        SkyBlockIsland.NbtContent nbtContent = (SkyBlockIsland.NbtContent) new Reflection(SkyBlockIsland.NbtContent.class).newInstance();
+        String data = json.isJsonPrimitive() ? json.getAsString() : json.getAsJsonObject().get("data").getAsString(); // Auctions are bad
+        reflection.setValue(String.class, nbtContent, data);
+        return nbtContent;
     }
 
     @Override
     public JsonElement serialize(SkyBlockIsland.NbtContent src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(SimplifiedApi.getGson().toJson(src));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", 0);
+        jsonObject.addProperty("data", src.getRawData());
+        return jsonObject;
     }
 
 }
