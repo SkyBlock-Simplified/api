@@ -1,0 +1,1 @@
+ALTER TABLE `fairy_souls` ADD COLUMN `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP() AFTER `location`;
