@@ -6,6 +6,7 @@ import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
 import gg.sbs.api.util.StringUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
+import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class SkyBlockIslandTest {
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
         } catch (HypixelApiException exception) {
-            String error = "error";
+            MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));
         }
     }
 
