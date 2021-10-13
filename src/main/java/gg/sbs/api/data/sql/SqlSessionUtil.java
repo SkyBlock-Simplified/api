@@ -2,6 +2,8 @@ package gg.sbs.api.data.sql;
 
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.SimplifiedConfig;
+import gg.sbs.api.data.sql.function.ReturnSessionFunction;
+import gg.sbs.api.data.sql.function.VoidSessionFunction;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -46,46 +48,32 @@ public class SqlSessionUtil {
         return sessionFactory.openSession();
     }
 
-    public static void withSession(VoidSessionFunction f) {
+    public static void withSession(VoidSessionFunction function) {
         Session session = openSession();
-        f.run(session);
+        function.handle(session);
         session.close();
     }
 
-    public interface VoidSessionFunction {
-
-        void run(Session session);
-
-    }
-
-    public static <S> S withSession(ReturnSessionFunction<S> f) {
-
+    public static <S> S withSession(ReturnSessionFunction<S> function) {
         Session session = openSession();
-        S result = f.run(session);
+        S result = function.handle(session);
         session.close();
         return result;
-
     }
 
-    public interface ReturnSessionFunction<S> {
-
-        S run(Session session);
-
-    }
-
-    public static void withTransaction(VoidSessionFunction f) {
+    public static void withTransaction(VoidSessionFunction function) {
         Session session = openSession();
         Transaction tx = session.beginTransaction();
-        f.run(session);
+        function.handle(session);
         session.flush();
         tx.commit();
         session.close();
     }
 
-    public static <S> S withTransaction(ReturnSessionFunction<S> f) {
+    public static <S> S withTransaction(ReturnSessionFunction<S> function) {
         Session session = openSession();
         Transaction tx = session.beginTransaction();
-        S result = f.run(session);
+        S result = function.handle(session);
         session.flush();
         tx.commit();
         session.close();
