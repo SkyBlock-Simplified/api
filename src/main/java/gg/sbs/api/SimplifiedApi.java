@@ -17,6 +17,8 @@ import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockDate;
 import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
 import gg.sbs.api.apiclients.mojang.implementation.MojangData;
+import gg.sbs.api.apiclients.mojang.response.MojangProfileResponse;
+import gg.sbs.api.apiclients.mojang.response.MojangStatusResponse;
 import gg.sbs.api.data.sql.SqlRepository;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
@@ -42,6 +44,7 @@ import gg.sbs.api.data.sql.model.reforges.ReforgeRepository;
 import gg.sbs.api.data.sql.model.skilllevels.SkillLevelRepository;
 import gg.sbs.api.data.sql.model.skills.SkillRepository;
 import gg.sbs.api.data.sql.model.stats.StatRepository;
+import gg.sbs.api.manager.builder.BuilderManager;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.scheduler.Scheduler;
 import gg.sbs.api.manager.service.ServiceManager;
@@ -55,6 +58,7 @@ import java.util.Map;
 public class SimplifiedApi {
 
     private static final ServiceManager serviceManager = new ServiceManager();
+    private static final BuilderManager builderManager = new BuilderManager();
     private static boolean databaseEnabled = false;
     private static boolean databaseRegistered = false;
     private static final Gson gson = new GsonBuilder()
@@ -82,8 +86,12 @@ public class SimplifiedApi {
         MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
         hypixelApiBuilder.setApiKey(config.getHypixelApiKey());
-        serviceManager.provide(MojangApiBuilder.class, mojangApiBuilder);
-        serviceManager.provide(HypixelApiBuilder.class, hypixelApiBuilder);
+
+        // Provide Api Builders
+        builderManager.provide(MojangData.class, MojangApiBuilder.class);
+        builderManager.provide(HypixelPlayerData.class, HypixelApiBuilder.class);
+        builderManager.provide(HypixelResourceData.class, HypixelApiBuilder.class);
+        builderManager.provide(HypixelSkyBlockData.class, HypixelApiBuilder.class);
 
         // Provide Api Implementations
         serviceManager.provide(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
@@ -109,6 +117,10 @@ public class SimplifiedApi {
             SqlRepository.shutdownRefreshers();
             databaseEnabled = false;
         }
+    }
+
+    public static BuilderManager getBuilderManager() {
+        return builderManager;
     }
 
     public static SimplifiedConfig getConfig() {

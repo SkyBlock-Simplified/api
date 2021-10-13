@@ -27,7 +27,7 @@ public class ServiceManager {
 	 * @return if class has a registered instance
 	 */
 	public final boolean isRegistered(Class<?> service) {
-		Preconditions.checkArgument(service != null, "Service cannot be NULL!");
+		Preconditions.checkNotNull(service, "Service cannot be NULL");
 
 		for (ServiceProvider provider : this.serviceProviders) {
 			if (provider.getService().isAssignableFrom(service))
@@ -125,7 +125,7 @@ public class ServiceManager {
 	 * @throws RegisteredServiceException When the given class already has a registered service.
 	 */
 	public final <T> void provide(Class<T> service, T instance) throws RegisteredServiceException {
-		Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
+		Preconditions.checkArgument(instance != null, "Instance cannot be NULL");
 
 		if (this.isRegistered(service))
 			throw new RegisteredServiceException(service);
@@ -141,7 +141,7 @@ public class ServiceManager {
 	 * @throws RegisteredServiceException When the given class already has a registered service.
 	 */
 	public final void provideRaw(Class<?> service, Object instance) throws RegisteredServiceException {
-		Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
+		Preconditions.checkNotNull(instance, "Instance cannot be NULL");
 
 		if (this.isRegistered(service))
 			throw new RegisteredServiceException(service);

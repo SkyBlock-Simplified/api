@@ -8,6 +8,7 @@ package gg.sbs.api.util.builder;
  * identityHashCodes that can occur.
  */
 final class IDKey {
+
     private final Object value;
     private final int id;
 

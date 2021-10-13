@@ -6,12 +6,14 @@ import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
 import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.manager.builder.implementation.BasicBuilder;
+import gg.sbs.api.manager.builder.implementation.ClassBuilder;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 
 import java.util.Map;
 
-public abstract class ApiBuilder<I extends RequestInterface> {
+public abstract class ApiBuilder<R extends RequestInterface> implements ClassBuilder<R> {
 
     private final String url;
 
@@ -19,7 +21,8 @@ public abstract class ApiBuilder<I extends RequestInterface> {
         this.url = url;
     }
 
-    public final <T extends I> T build(Class<T> tClass) {
+    @Override
+    public final <T extends R> T build(Class<T> tClass) {
         return Feign.builder()
                 .client(new OkHttpClient())
                 .encoder(new GsonEncoder(SimplifiedApi.getGson()))
