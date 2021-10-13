@@ -1,10 +1,10 @@
 package gg.sbs.api.data.sql.model.items;
 
-import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.converter.DoubleMapConverter;
 import gg.sbs.api.data.sql.converter.IntegerListMapConverter;
 import gg.sbs.api.data.sql.converter.IntegerMapConverter;
 import gg.sbs.api.data.sql.converter.ObjectMapConverter;
+import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.rarities.RarityModel;
 import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;

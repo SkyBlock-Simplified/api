@@ -3,9 +3,9 @@ package gg.sbs.api.data.yaml;
 import gg.sbs.api.data.yaml.annotation.ConfigMode;
 import gg.sbs.api.data.yaml.annotation.Path;
 import gg.sbs.api.data.yaml.annotation.PreserveStatic;
+import gg.sbs.api.data.yaml.converter.YamlConverter;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
-import gg.sbs.api.data.yaml.converter.YamlConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

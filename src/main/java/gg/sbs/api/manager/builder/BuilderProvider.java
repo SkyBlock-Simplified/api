@@ -1,7 +1,7 @@
 package gg.sbs.api.manager.builder;
 
-import gg.sbs.api.util.builder.CoreBuilder;
 import gg.sbs.api.reflection.Reflection;
+import gg.sbs.api.util.builder.CoreBuilder;
 import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 

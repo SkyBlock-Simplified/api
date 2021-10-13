@@ -1,9 +1,9 @@
 package gg.sbs.api.data.yaml.converter;
 
-import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.data.yaml.ConfigSection;
 import gg.sbs.api.data.yaml.InternalConverter;
 import gg.sbs.api.data.yaml.YamlMap;
+import gg.sbs.api.reflection.Reflection;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Map;

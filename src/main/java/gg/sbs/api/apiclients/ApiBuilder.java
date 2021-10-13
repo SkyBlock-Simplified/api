@@ -1,13 +1,13 @@
 package gg.sbs.api.apiclients;
 
-import feign.*;
+import feign.Feign;
 import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.util.builder.ClassBuilder;
 import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.builder.ClassBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
 
 import java.util.Map;
