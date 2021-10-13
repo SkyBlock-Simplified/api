@@ -25,7 +25,7 @@ public class PetModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "item_id", nullable = false, length = 127)
-    private String item_id;
+    private String itemId;
 
     @Getter
     @Setter
@@ -51,6 +51,11 @@ public class PetModel implements SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "skin", nullable = false)
+    private String skin;
+
+    @Getter
+    @Setter
     @Column(name = "max_level", nullable = false)
     private int maxLevel = 100;
 
@@ -67,17 +72,18 @@ public class PetModel implements SqlModel {
         PetModel petModel = (PetModel) o;
 
         if (id != petModel.id) return false;
-        if (!StringUtil.equals(this.item_id, petModel.item_id)) return false;
+        if (!StringUtil.equals(this.itemId, petModel.itemId)) return false;
         if (!StringUtil.equals(this.name, petModel.name)) return false;
         if (!lowestRarity.equals(petModel.lowestRarity)) return false;
         if (!skill.equals(petModel.skill)) return false;
         if (type != petModel.type) return false;
+        if (!StringUtil.equals(this.skin, petModel.skin)) return false;
         return updatedAt.equals(petModel.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.name).append(this.lowestRarity).append(this.skill).append(this.type).append(this.updatedAt).build();
+        return new HashCodeBuilder().append(this.id).append(this.itemId).append(this.name).append(this.lowestRarity).append(this.skill).append(this.type).append(this.skin).append(this.updatedAt).build();
     }
 
 }
