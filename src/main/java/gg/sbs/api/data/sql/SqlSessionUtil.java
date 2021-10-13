@@ -15,7 +15,6 @@ public class SqlSessionUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory() {
-        SimplifiedApi.enableDatabase();
         SimplifiedConfig config = SimplifiedApi.getConfig();
 
         Properties properties = new Properties() {{
