@@ -9,7 +9,8 @@ public class SkyBlockTimeTypeConverter extends TypeConverter<SkyBlockDate.SkyBlo
 
     @Override
     public SkyBlockDate.SkyBlockTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-        return new SkyBlockDate.SkyBlockTime(json.getAsLong());
+        long milliseconds = json.getAsLong();
+        return milliseconds != 0L ? new SkyBlockDate.SkyBlockTime(milliseconds) : null;
     }
 
     @Override
