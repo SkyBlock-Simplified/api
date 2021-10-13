@@ -799,11 +799,11 @@ public class Skyblock {
         private final BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> data = (level, rarity) -> _i();
 
         Pet() { }
-
+/*
         public ConcurrentList<Ability> getAbilities() {
             return Ability.getAbilities(this);
         }
-
+*/
         public BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> getData() {
             return this.data;
         }
@@ -1159,7 +1159,7 @@ public class Skyblock {
             public BiFunction<Integer, Skyblock.Item.Rarity, String> getTransform() {
                 return this.transform;
             }
-
+/*
             public static ConcurrentList<Ability> getAbilities(Pet pet) {
                 ConcurrentList<Ability> abilities = Concurrent.newList();
 
@@ -1176,7 +1176,7 @@ public class Skyblock {
                 abilities.removeIf(ability -> petInfo.getRarity().ordinal() < ability.getRarity().ordinal());
                 return abilities;
             }
-
+*/
         }
 
     }
