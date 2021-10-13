@@ -72,7 +72,7 @@ public class StatModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.key).append(this.name).append(this.symbol).append(this.format).append(this.ordinal).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

@@ -66,7 +66,7 @@ public class EnchantmentModel extends SqlEffectsModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.itemType).append(this.name).append(this.itemLevel).append(this.effects).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

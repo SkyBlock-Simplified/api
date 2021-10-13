@@ -208,11 +208,7 @@ public class ItemModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.name).append(this.material).append(this.durability).append(this.skin).append(this.furniture).append(this.rarity)
-                .append(this.itemId).append(this.generator).append(this.generatorTier).append(this.glowing).append(this.category).append(this.stats).append(this.npcSellPrice)
-                .append(this.unstackable).append(this.dungeonItem).append(this.color).append(this.tieredStats).append(this.gearScore).append(this.requirements)
-                .append(this.catacombsRequirements).append(this.essence).append(this.description).append(this.abilityDamageScaling).append(this.enchantments).append(this.crystal)
-                .append(this.privateIsland).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

@@ -68,7 +68,7 @@ public class SkillModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.skillKey).append(this.name).append(this.description).append(this.maxLevel).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

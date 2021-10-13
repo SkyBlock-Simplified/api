@@ -66,7 +66,7 @@ public class CollectionItemTierModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.collectionItem).append(this.tier).append(this.amountRequired).append(this.unlocks).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

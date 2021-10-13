@@ -83,7 +83,7 @@ public class PetModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.itemId).append(this.name).append(this.lowestRarity).append(this.skill).append(this.type).append(this.skin).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

@@ -74,7 +74,7 @@ public class ReforgeModel extends SqlEffectsModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.itemType).append(this.name).append(this.rarity).append(this.isStone).append(this.effects).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

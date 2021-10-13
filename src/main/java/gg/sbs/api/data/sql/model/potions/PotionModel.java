@@ -58,7 +58,7 @@ public class PotionModel extends SqlEffectsModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.name).append(this.itemLevel).append(this.effects).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

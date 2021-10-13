@@ -65,7 +65,7 @@ public class MinionTierUpgradeModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.minionTier).append(this.coinCost).append(this.itemCost).append(this.itemQuantity).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

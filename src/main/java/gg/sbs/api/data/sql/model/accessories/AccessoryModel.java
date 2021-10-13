@@ -81,7 +81,7 @@ public class AccessoryModel extends SqlEffectsModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.itemId).append(this.family).append(this.familyRank).append(this.name).append(this.rarity).append(this.effects).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

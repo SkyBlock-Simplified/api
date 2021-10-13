@@ -63,7 +63,7 @@ public class CollectionItemModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.collection).append(this.itemKey).append(this.name).append(this.maxTiers).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

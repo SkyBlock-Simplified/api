@@ -66,7 +66,7 @@ public class SkillLevelModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.skill).append(this.skillLevel).append(this.totalExpRequired).append(this.unlocks).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

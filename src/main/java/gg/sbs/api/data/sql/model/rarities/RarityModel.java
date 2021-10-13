@@ -61,7 +61,7 @@ public class RarityModel implements SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.id).append(this.name).append(this.hasHypixelName).append(this.rarityTag).append(this.updatedAt).build();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }
