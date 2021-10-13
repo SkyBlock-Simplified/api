@@ -28,7 +28,7 @@ public class SkyBlockIsland {
 
     @SerializedName("profile_id")
     private String islandId;
-    private ConcurrentMap<String, Member> members;
+    private ConcurrentLinkedMap<String, Member> members;
     @SerializedName("community_upgrades")
     private CommunityUpgrades communityUpgrades;
     private Banking banking;
@@ -78,6 +78,15 @@ public class SkyBlockIsland {
         return Optional.of(this.gameMode);
     }
 
+    public Optional<Member> getMember(int index) {
+        this.cacheMembers();
+
+        if (!this.members.isEmpty())
+            return Optional.of(Concurrent.newList(this.members.values()).get(index));
+
+        return Optional.empty();
+    }
+
     public Optional<Member> getMember(UUID uniqueId) {
         this.cacheMembers();
 
@@ -89,9 +98,9 @@ public class SkyBlockIsland {
         return Optional.empty();
     }
 
-    public ConcurrentSet<Member> getMembers() {
+    public ConcurrentList<Member> getMembers() {
         this.cacheMembers();
-        return Concurrent.newSet(this.members.values());
+        return Concurrent.newList(this.members.values());
     }
 
     public Optional<ProfileName> getProfileName() {
@@ -128,8 +137,7 @@ public class SkyBlockIsland {
     public static class Member {
 
         // Player Stats
-        @Getter
-        private UUID uniqueId;
+        @Getter private UUID uniqueId;
         @SerializedName("first_join")
         @Getter private SkyBlockDate.RealTime firstJoin; // Real Time
         @SerializedName("first_join_hub")
@@ -204,12 +212,19 @@ public class SkyBlockIsland {
         private double experience_skill_runecrafting = -1;
 
         // Essence
+        @SerializedName("essence_undead")
         private int essenceUndead;
+        @SerializedName("essence_diamond")
         private int essenceDiamond;
+        @SerializedName("essence_dragon")
         private int essenceDragon;
+        @SerializedName("essence_gold")
         private int essenceGold;
+        @SerializedName("essence_ice")
         private int essenceIce;
+        @SerializedName("essence_wither")
         private int essenceWither;
+        @SerializedName("essence_spider")
         private int essenceSpider;
         @SerializedName("perks")
         @Getter private ConcurrentMap<String, Integer> essencePerks;
@@ -236,9 +251,9 @@ public class SkyBlockIsland {
         @SerializedName("personal_vault_contents")
         private NbtContent personalVaultContents;
         @SerializedName("backpack_contents")
-        private ConcurrentList<NbtContent> backpackContents;
+        private ConcurrentMap<Integer, NbtContent> backpackContents;
         @SerializedName("backpack_icons")
-        private ConcurrentList<NbtContent> backpackIcons;
+        private ConcurrentMap<Integer, NbtContent> backpackIcons;
 
         public Backpacks getBackpacks() {
             return new Backpacks(this.backpackContents, this.backpackIcons);
@@ -508,8 +523,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Backpacks {
 
-        @Getter private final ConcurrentList<NbtContent> contents;
-        @Getter private final ConcurrentList<NbtContent> icons;
+        @Getter private final ConcurrentMap<Integer, NbtContent> contents;
+        @Getter private final ConcurrentMap<Integer, NbtContent> icons;
 
     }
 
@@ -970,7 +985,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("unique_golds2")
         @Getter private ConcurrentSet<String> uniqueGolds; // TODO: SQL Collections
         private ConcurrentMap<String, Contest> contests = Concurrent.newMap();
-        private ConcurrentList<Contest> contestData;
+        private ConcurrentList<Contest> contestData = Concurrent.newList();
         private boolean talked;
 
         public ConcurrentList<Contest> getContests() {
@@ -1136,19 +1151,25 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private int usedGemstonePowder;
 
         // Daily Ores
+        @SerializedName("daily_ores_mined")
         @Getter private int dailyOresMined;
+        @SerializedName("daily_ores_mined_mithril_ore")
         @Getter private int dailyOresMinedMithrilOre;
+        @SerializedName("daily_ores_mined_gemstone")
         @Getter private int dailyOresMinedGemstone;
+        @SerializedName("daily_ores_mined_day")
         @Getter private int dailyOresMinedDay;
+        @SerializedName("daily_ores_mined_day_mithril_ore")
         @Getter private int dailyOresMinedDayMithrilOre;
+        @SerializedName("daily_ores_mined_day_gemstone")
         @Getter private int dailyOresMinedDayGemstone;
 
         // Biomes
-        @SerializedName("dwarven")
+        @SerializedName("biomes.dwarven")
         @Getter private Biome.Dwarven dwarvenMinesBiome;
-        @SerializedName("precursor")
+        @SerializedName("biomes.precursor")
         @Getter private Biome.Precursor precursorCityBiome;
-        @SerializedName("goblin")
+        @SerializedName("biomes.goblin")
         @Getter private Biome.Goblin goblinHideoutBiome;
 
         public Crystal getCrystal(Crystal.Type type) {
@@ -1186,7 +1207,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             public static class Precursor {
 
                 @SerializedName("parts_delivered")
-                @Getter private ConcurrentList<Object> deliveredparts;
+                @Getter private ConcurrentList<Object> deliveredParts;
 
             }
 
@@ -1206,6 +1227,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         public static class Crystal {
 
             private State state;
+            @SerializedName("total_placed")
             @Getter private int totalPlaced;
 
             public State getState() {
