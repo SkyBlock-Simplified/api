@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "fairysouls")
+@Table(name = "fairy_souls")
 public class FairySoulModel implements SqlModel {
 
     @Getter
