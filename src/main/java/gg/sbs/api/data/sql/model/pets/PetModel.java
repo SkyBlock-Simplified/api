@@ -50,6 +50,11 @@ public class PetModel implements SqlModel {
     private int type;
 
     @Getter
+    @Setter
+    @Column(name = "max_level", nullable = false)
+    private int maxLevel = 100;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
