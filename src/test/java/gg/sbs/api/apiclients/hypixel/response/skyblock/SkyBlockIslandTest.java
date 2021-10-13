@@ -44,12 +44,15 @@ public class SkyBlockIslandTest {
             SkyBlockIsland.Member member = optionalMember.get();
             //ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
-            SkyBlockIsland.PetInfo activePet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).collect(ListUtil.toSingleton());
+            Optional<SkyBlockIsland.PetInfo> optionalActivePet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
 
-            if (activePet.getHeldItem().isPresent()) {
-                ItemModel itemModel = activePet.getHeldItem().get();
-                MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
-            }
+            optionalActivePet.ifPresent(petInfo -> {
+                SkyBlockIsland.PetInfo activePet = optionalActivePet.get();
+
+                activePet.getHeldItem().ifPresent(itemModel -> {
+                    MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
+                });
+            });
 
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
         } catch (HypixelApiException exception) {

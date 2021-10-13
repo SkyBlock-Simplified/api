@@ -56,7 +56,7 @@ public class SkyBlockIsland {
     }
 
     public Optional<Banking> getBanking() {
-        return Optional.of(this.banking);
+        return Optional.ofNullable(this.banking);
     }
 
     public Collection getCollection(SkillModel type) {
@@ -72,15 +72,15 @@ public class SkyBlockIsland {
     }
 
     public Optional<CommunityUpgrades> getCommunityUpgrades() {
-        return Optional.of(communityUpgrades);
+        return Optional.ofNullable(communityUpgrades);
     }
 
     public Optional<Member> getCurrentMember() {
-        return Optional.of(this.currentMember);
+        return Optional.ofNullable(this.currentMember);
     }
 
     public Optional<String> getGameMode() {
-        return Optional.of(this.gameMode);
+        return Optional.ofNullable(this.gameMode);
     }
 
     public Optional<Member> getMember(int index) {
@@ -109,7 +109,7 @@ public class SkyBlockIsland {
     }
 
     public Optional<ProfileName> getProfileName() {
-        return Optional.of(this.profileName);
+        return Optional.ofNullable(this.profileName);
     }
 /*  TODO: MinionModel
     public Minion getMinion(Skyblock.Minion type) {
@@ -674,7 +674,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentList<CommunityUpgrades.UpgradeState> upgradeStates;
 
         public Optional<CommunityUpgrades.UpgradeState.Upgrade> getCurrentlyUpgrading() {
-            return Optional.of(this.currentlyUpgrading);
+            return Optional.ofNullable(this.currentlyUpgrading);
         }
 
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -726,7 +726,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<String, Dungeon> dungeonTypes;
 
         public Optional<Dungeon> getDungeon(String dungeonName) {
-            return Optional.of(this.getDungeonTypes().get(dungeonName));
+            return Optional.ofNullable(this.getDungeonTypes().get(dungeonName));
         }
 
         public Dungeon.Class getPlayerClass(Dungeon.Class.Type type) {
@@ -1323,7 +1323,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @SneakyThrows
         public Optional<ItemModel> getHeldItem() {
-            return Optional.of(SimplifiedApi.getSqlRepository(ItemRepository.class).findFirstOrNullCached(ItemModel::getItemId, this.heldItem));
+            return Optional.ofNullable(SimplifiedApi.getSqlRepository(ItemRepository.class).findFirstOrNullCached(ItemModel::getItemId, this.heldItem));
         }
 
         @Override
@@ -1350,7 +1350,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public Optional<String> getSkin() {
-            return Optional.of(this.skin);
+            return Optional.ofNullable(this.skin);
         }
 
         @Override

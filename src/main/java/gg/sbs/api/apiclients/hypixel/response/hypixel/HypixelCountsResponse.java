@@ -17,7 +17,7 @@ public class HypixelCountsResponse {
         private ConcurrentMap<String, Integer> modes;
 
         public Optional<ConcurrentMap<String, Integer>> getModes() {
-            return Optional.of(this.modes);
+            return Optional.ofNullable(this.modes);
         }
 
     }
