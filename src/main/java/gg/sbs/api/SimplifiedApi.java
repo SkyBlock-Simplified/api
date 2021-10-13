@@ -74,9 +74,13 @@ public class SimplifiedApi {
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
         serviceManager.provide(Gson.class, gson);
 
-        serviceManager.provide(HypixelPlayerData.class, new HypixelApiBuilder().build(HypixelPlayerData.class));
-        serviceManager.provide(HypixelResourceData.class, new HypixelApiBuilder().build(HypixelResourceData.class));
-        serviceManager.provide(HypixelSkyBlockData.class, new HypixelApiBuilder().build(HypixelSkyBlockData.class));
+        HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
+        hypixelApiBuilder.setApiKey(config.getHypixelApiKey());
+        serviceManager.provide(HypixelApiBuilder.class, hypixelApiBuilder);
+
+        serviceManager.provide(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
+        serviceManager.provide(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
+        serviceManager.provide(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
         serviceManager.provide(MojangData.class, new MojangApiBuilder().build(MojangData.class));
     }
 
