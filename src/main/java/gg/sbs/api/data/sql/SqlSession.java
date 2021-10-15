@@ -3,30 +3,6 @@ package gg.sbs.api.data.sql;
 import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.function.VoidSessionFunction;
 import gg.sbs.api.data.sql.model.SqlModel;
-import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
-import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRepository;
-import gg.sbs.api.data.sql.model.collectionitems.CollectionItemRepository;
-import gg.sbs.api.data.sql.model.collectionitemtiers.CollectionItemTierRepository;
-import gg.sbs.api.data.sql.model.collections.CollectionRepository;
-import gg.sbs.api.data.sql.model.enchantments.EnchantmentRepository;
-import gg.sbs.api.data.sql.model.fairysouls.FairySoulRepository;
-import gg.sbs.api.data.sql.model.formats.FormatRepository;
-import gg.sbs.api.data.sql.model.items.ItemRepository;
-import gg.sbs.api.data.sql.model.itemtypes.ItemTypeRepository;
-import gg.sbs.api.data.sql.model.locationareas.LocationAreaRepository;
-import gg.sbs.api.data.sql.model.locations.LocationRepository;
-import gg.sbs.api.data.sql.model.minionitems.MinionItemRepository;
-import gg.sbs.api.data.sql.model.minions.MinionRepository;
-import gg.sbs.api.data.sql.model.miniontiers.MinionTierRepository;
-import gg.sbs.api.data.sql.model.miniontierupgrades.MinionTierUpgradeRepository;
-import gg.sbs.api.data.sql.model.pets.PetRepository;
-import gg.sbs.api.data.sql.model.potions.PotionRepository;
-import gg.sbs.api.data.sql.model.rarities.RarityRepository;
-import gg.sbs.api.data.sql.model.reforges.ReforgeRepository;
-import gg.sbs.api.data.sql.model.skilllevels.SkillLevelRepository;
-import gg.sbs.api.data.sql.model.skills.SkillRepository;
-import gg.sbs.api.data.sql.model.stats.StatRepository;
-import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 import lombok.Getter;
 import org.hibernate.Session;
@@ -53,19 +29,17 @@ public final class SqlSession {
             put("hibernate.format_sql", config.isDatabaseDebugMode());
             put("hibernate.generate_statistics", false);
             put("hibernate.use_sql_comments", false);
-            put("log4j.logger.net.sf.hibernate", "FATAL");
             put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
-            put("hibernate.connection.provider_class", org.hibernate.hikaricp.internal.HikariCPConnectionProvider.class.getCanonicalName());
-            put("hibernate.dialect", org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName()); // TODO: Move to SqlDriver
+            put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
+            put("hibernate.dialect", config.getDatabaseDriver().getDialectClass());
             put("hikari.prepStmtCacheSize", "250");
             put("hikari.prepStmtCacheSqlLimit", "2048");
             put("hikari.cachePrepStmts", "true");
             put("hikari.useServerPrepStmts", "true");
         }};
 
-        System.out.println("Canon: " + org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName());
         // Add all inheritors of SqlModel from their Repositories
         Configuration configuration = new Configuration().setProperties(properties);
         for (Class<?> rClass : this.repositories) {
