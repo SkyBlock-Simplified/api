@@ -1,7 +1,5 @@
 package gg.sbs.api.data.sql;
 
-import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.SimplifiedConfig;
 import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.function.VoidSessionFunction;
 import gg.sbs.api.data.sql.model.SqlModel;
@@ -30,6 +28,7 @@ import gg.sbs.api.data.sql.model.skills.SkillRepository;
 import gg.sbs.api.data.sql.model.stats.StatRepository;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
+import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -38,103 +37,78 @@ import org.hibernate.cfg.Configuration;
 import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
 
-public class SqlSessionUtil {
+public final class SqlSession {
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();
+    @Getter private final SessionFactory sessionFactory;
+    @Getter private final SqlConfig config;
+    @Getter private final ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
 
-    private static SessionFactory buildSessionFactory() {
-        SimplifiedConfig config = SimplifiedApi.getConfig();
+    public SqlSession(SqlConfig config, ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
+        this.config = config;
+        this.repositories = repositories;
 
         Properties properties = new Properties() {{
-            put("connection.driver_class", SqlDriver.MariaDB.getDriverClass());
+            put("connection.driver_class", config.getDatabaseDriver().getDriverClass());
             put("hibernate.show_sql", config.isDatabaseDebugMode());
             put("hibernate.format_sql", config.isDatabaseDebugMode());
             put("hibernate.generate_statistics", false);
             put("hibernate.use_sql_comments", false);
             put("log4j.logger.net.sf.hibernate", "FATAL");
-            put("hibernate.connection.url", SqlDriver.MariaDB.getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
+            put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
             put("hibernate.connection.provider_class", org.hibernate.hikaricp.internal.HikariCPConnectionProvider.class.getCanonicalName());
-            put("hibernate.dialect", org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName());
+            put("hibernate.dialect", org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName()); // TODO: Move to SqlDriver
             put("hikari.prepStmtCacheSize", "250");
             put("hikari.prepStmtCacheSqlLimit", "2048");
             put("hikari.cachePrepStmts", "true");
             put("hikari.useServerPrepStmts", "true");
         }};
 
+        System.out.println("Canon: " + org.hibernate.dialect.MariaDB103Dialect.class.getCanonicalName());
         // Add all inheritors of SqlModel from their Repositories
         Configuration configuration = new Configuration().setProperties(properties);
-        for (Class<?> rClass : getSqlRepositoryClasses()) {
+        for (Class<?> rClass : this.repositories) {
             ParameterizedType superClass = (ParameterizedType) rClass.getGenericSuperclass();
             Class<?> tClass = (Class<?>) superClass.getActualTypeArguments()[0];
             configuration.addAnnotatedClass(tClass);
         }
 
-        return configuration.buildSessionFactory();
+        this.sessionFactory = configuration.buildSessionFactory();
     }
 
-    public static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getSqlRepositoryClasses() {
-        return Concurrent.newSet(
-                AccessoryRepository.class,
-                AccessoryFamilyRepository.class,
-                CollectionRepository.class,
-                CollectionItemRepository.class,
-                CollectionItemTierRepository.class,
-                EnchantmentRepository.class,
-                FairySoulRepository.class,
-                FormatRepository.class,
-                ItemRepository.class,
-                ItemTypeRepository.class,
-                LocationRepository.class,
-                LocationAreaRepository.class,
-                MinionRepository.class,
-                MinionItemRepository.class,
-                MinionTierRepository.class,
-                MinionTierUpgradeRepository.class,
-                PetRepository.class,
-                PotionRepository.class,
-                RarityRepository.class,
-                ReforgeRepository.class,
-                SkillRepository.class,
-                SkillLevelRepository.class,
-                StatRepository.class
-        );
+    public Session openSession() {
+        return this.sessionFactory.openSession();
     }
 
-
-    public static Session openSession() {
-        return sessionFactory.openSession();
-    }
-
-    public static void withSession(VoidSessionFunction function) {
-        Session session = openSession();
+    public void with(VoidSessionFunction function) {
+        Session session = this.openSession();
         function.handle(session);
         session.close();
     }
 
-    public static <S> S withSession(ReturnSessionFunction<S> function) {
-        Session session = openSession();
+    public <S> S with(ReturnSessionFunction<S> function) {
+        Session session = this.openSession();
         S result = function.handle(session);
         session.close();
         return result;
     }
 
-    public static void withTransaction(VoidSessionFunction function) {
-        Session session = openSession();
-        Transaction tx = session.beginTransaction();
+    public void transaction(VoidSessionFunction function) {
+        Session session = this.openSession();
+        Transaction transaction = session.beginTransaction();
         function.handle(session);
         session.flush();
-        tx.commit();
+        transaction.commit();
         session.close();
     }
 
-    public static <S> S withTransaction(ReturnSessionFunction<S> function) {
-        Session session = openSession();
-        Transaction tx = session.beginTransaction();
+    public <S> S transaction(ReturnSessionFunction<S> function) {
+        Session session = this.openSession();
+        Transaction transaction = session.beginTransaction();
         S result = function.handle(session);
         session.flush();
-        tx.commit();
+        transaction.commit();
         session.close();
         return result;
     }

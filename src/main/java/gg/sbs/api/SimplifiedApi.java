@@ -18,7 +18,7 @@ import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
 import gg.sbs.api.apiclients.mojang.implementation.MojangData;
 import gg.sbs.api.data.sql.SqlRepository;
-import gg.sbs.api.data.sql.SqlSessionUtil;
+import gg.sbs.api.data.sql.SqlSession;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
 import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRepository;
@@ -47,6 +47,7 @@ import gg.sbs.api.manager.builder.BuilderManager;
 import gg.sbs.api.manager.service.ServiceManager;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.scheduler.Scheduler;
+import gg.sbs.api.util.TimeUtil;
 import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
@@ -105,9 +106,14 @@ public class SimplifiedApi {
 
     public static void enableDatabase() {
         if (!databaseRegistered) {
+            // Load SqlSession
+            SqlSession sqlSession = new SqlSession(getConfig(), getSqlRepositoryClasses());
+            serviceManager.provide(SqlSession.class, sqlSession);
+
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : SqlSessionUtil.getSqlRepositoryClasses())
-                serviceManager.provideRaw(repository, new Reflection(repository).newInstance());
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getSqlRepositoryClasses()) {
+                serviceManager.provideRaw(repository, new Reflection(repository).newInstance(sqlSession));
+            }
             // TODO: This works but generates an error, see bottom of class
 
             databaseRegistered = true;
@@ -143,12 +149,44 @@ public class SimplifiedApi {
         return getServiceManager().getProvider(Scheduler.class);
     }
 
-    public static ServiceManager getServiceManager() {
+    private static ServiceManager getServiceManager() {
         return serviceManager;
     }
 
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
         return getServiceManager().getProvider(tClass);
+    }
+
+    public static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getSqlRepositoryClasses() {
+        return Concurrent.newSet(
+                AccessoryRepository.class,
+                AccessoryFamilyRepository.class,
+                CollectionRepository.class,
+                CollectionItemRepository.class,
+                CollectionItemTierRepository.class,
+                EnchantmentRepository.class,
+                FairySoulRepository.class,
+                FormatRepository.class,
+                ItemRepository.class,
+                ItemTypeRepository.class,
+                LocationRepository.class,
+                LocationAreaRepository.class,
+                MinionRepository.class,
+                MinionItemRepository.class,
+                MinionTierRepository.class,
+                MinionTierUpgradeRepository.class,
+                PetRepository.class,
+                PotionRepository.class,
+                RarityRepository.class,
+                ReforgeRepository.class,
+                SkillRepository.class,
+                SkillLevelRepository.class,
+                StatRepository.class
+        );
+    }
+
+    public static SqlSession getSqlSession() {
+        return getServiceManager().getProvider(SqlSession.class);
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {

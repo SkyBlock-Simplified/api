@@ -10,6 +10,9 @@ import gg.sbs.api.util.Pair;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.function.ReturnFunction;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,28 +26,44 @@ import java.util.concurrent.TimeUnit;
 
 import static gg.sbs.api.util.TimeUtil.ONE_MINUTE_MS;
 
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public abstract class SqlRepository<T extends SqlModel> {
 
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
     private static final Object schedulerLock = new Object();
 
-    private final Class<T> tClass;
-    private ConcurrentList<T> items = Concurrent.newList();
-    private Boolean itemsInitialized = false;
     private final Object initLock = new Object();
+    private final ConcurrentList<T> items = Concurrent.newList();
+    private final Class<T> tClass;
+    private final SqlSession sqlSession;
+    private Boolean itemsInitialized = false;
 
+    /**
+     * Creates a new repository of type {@link T}.
+     * Defaults to autocaching every 1 minute.
+     *
+     * @param sqlSession the sql session to use
+     */
+    public SqlRepository(@NonNull SqlSession sqlSession) {
+        this(sqlSession, ONE_MINUTE_MS);
+    }
+
+    /**
+     * Creates a new repository of type {@link T}.
+     * Refreshes cache every {@param fixedUpdateRateMs} milliseconds.
+     *
+     * @param sqlSession the sql session to use
+     * @param fixedUpdateRateMs how many milliseconds to wait between refreshing the cache
+     */
     @SuppressWarnings("unchecked")
-    public SqlRepository(long fixedRateMs) {
+    public SqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
+        this.sqlSession = sqlSession;
         ParameterizedType superClass = (ParameterizedType) this.getClass().getGenericSuperclass();
         this.tClass = (Class<T>) superClass.getActualTypeArguments()[0];
 
         synchronized (schedulerLock) {
-            scheduler.scheduleAtFixedRate(this::refreshItems, 0, fixedRateMs, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(this::refreshItems, 0, fixedUpdateRateMs, TimeUnit.MILLISECONDS);
         }
-    }
-
-    public SqlRepository() {
-        this(ONE_MINUTE_MS);
     }
 
     public static void shutdownRefreshers() {
@@ -52,15 +71,16 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public void refreshItems() {
-        this.items = findAll();
+        this.items.clear();
+        this.items.addAll(this.findAll());
 
-        synchronized (initLock) {
+        synchronized (this.initLock) {
             this.itemsInitialized = true;
             this.initLock.notifyAll();
         }
     }
 
-    private <S> S waitForInitLock(ReturnFunction<S> function) throws SqlException {
+    private <S> S waitForInitLock(@NonNull ReturnFunction<S> function) throws SqlException {
         try {
             synchronized (this.initLock) {
                 while (!this.itemsInitialized)
@@ -77,7 +97,7 @@ public abstract class SqlRepository<T extends SqlModel> {
         return waitForInitLock(() -> Concurrent.newList(this.items));
     }
 
-    public <S> T findFirstOrNullCached(FilterFunction<T, S> function, S value) throws SqlException {
+    public <S> T findFirstOrNullCached(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
         return waitForInitLock(
                 () -> items.stream()
                         .filter(it -> Objects.equals(function.handle(it), value))
@@ -103,7 +123,7 @@ public abstract class SqlRepository<T extends SqlModel> {
         else return itemsCopy.get(0);
     }
 
-    public ConcurrentList<T> findAll(Session session) {
+    public ConcurrentList<T> findAll(@NonNull Session session) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(this.tClass);
         Root<T> rootEntry = cq.from(this.tClass);
@@ -112,25 +132,25 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public ConcurrentList<T> findAll() {
-        return SqlSessionUtil.withSession((ReturnSessionFunction<ConcurrentList<T>>) this::findAll);
+        return this.sqlSession.with((ReturnSessionFunction<ConcurrentList<T>>) this::findAll);
     }
 
-    public <S> T findFirstOrNull(Session session, String field, S value) {
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(this.tClass);
-        Root<T> rootEntry = cq.from(this.tClass);
-        CriteriaQuery<T> filtered = cq.select(rootEntry).where(cb.equal(rootEntry.get(field), value));
+    public <S> T findFirstOrNull(@NonNull Session session, String field, S value) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(this.tClass);
+        Root<T> rootEntry = query.from(this.tClass);
+        CriteriaQuery<T> filtered = query.select(rootEntry).where(builder.equal(rootEntry.get(field), value));
         return session.createQuery(filtered).getSingleResult();
     }
 
     public <S> T findFirstOrNull(String field, S value) {
-        return SqlSessionUtil.withSession(session -> {
+        return this.sqlSession.with(session -> {
             return findFirstOrNull(session, field, value);
         });
     }
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
-    public <S> T findFirstOrNull(Session session, Pair<String, S>... predicates) {
+    public <S> T findFirstOrNull(@NonNull Session session, Pair<String, S>... predicates) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(this.tClass);
         Root<T> rootEntry = cq.from(this.tClass);
@@ -144,38 +164,38 @@ public abstract class SqlRepository<T extends SqlModel> {
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
     public <S> T findFirstOrNull(Pair<String, S>... predicates) {
-        return SqlSessionUtil.withSession(session -> {
+        return this.sqlSession.with(session -> {
             return findFirstOrNull(session, predicates);
         });
     }
 
-    public long save(Session session, T t) {
-        return (long) (Long) session.save(t);
+    public long save(Session session, T model) {
+        return (long) session.save(model);
     }
 
-    public long save(T t) {
-        return SqlSessionUtil.withTransaction(session -> {
-            return save(session, t);
+    public long save(T model) {
+        return this.sqlSession.transaction(session -> {
+            return save(session, model);
         });
     }
 
-    public void update(Session session, T t) {
-        session.update(t);
+    public void update(@NonNull Session session, T model) {
+        session.update(model);
     }
 
-    public void update(T t) {
-        SqlSessionUtil.withTransaction(session -> {
-            update(session, t);
+    public void update(T model) {
+        this.sqlSession.transaction(session -> {
+            update(session, model);
         });
     }
 
-    public void saveOrUpdate(Session session, T t) {
-        session.saveOrUpdate(t);
+    public void saveOrUpdate(@NonNull Session session, T model) {
+        session.saveOrUpdate(model);
     }
 
-    public void saveOrUpdate(T t) {
-        SqlSessionUtil.withTransaction(session -> {
-            saveOrUpdate(session, t);
+    public void saveOrUpdate(T model) {
+        this.sqlSession.transaction(session -> {
+            saveOrUpdate(session, model);
         });
     }
 
