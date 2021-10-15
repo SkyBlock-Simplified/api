@@ -79,13 +79,14 @@ public class SimplifiedApi {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             config = new SimplifiedConfig(currentDir.getParentFile(), "simplified");
         } catch (Exception exception) {
-            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Will never get here
+            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
 
+        // Provide Services
         serviceManager.provide(Scheduler.class, Scheduler.getInstance());
         serviceManager.provide(Gson.class, gson);
 
-        // Provide Api Builders
+        // Create Api Builders
         MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
         hypixelApiBuilder.setApiKey(config.getHypixelApiKey());
