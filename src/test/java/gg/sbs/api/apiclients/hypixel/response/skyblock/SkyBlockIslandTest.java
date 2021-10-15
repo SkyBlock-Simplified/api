@@ -47,17 +47,21 @@ public class SkyBlockIslandTest {
             Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
 
             optionalWolfPet.ifPresent(wolfInfo -> {
+                wolfInfo.getHeldItem().ifPresent(itemModel -> {
+                    MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
+                });
+
                 optionalDragonPet.ifPresent(dragInfo -> {
                     PetModel wolfPet = wolfInfo.getPet();
                     PetModel dragPet = dragInfo.getPet();
+
+                    MatcherAssert.assertThat(wolfPet, Matchers.notNullValue());
+                    MatcherAssert.assertThat(dragPet, Matchers.notNullValue());
+
                     int wolf_hs = wolfPet.hashCode();
                     int drag_hs = dragPet.hashCode();
 
                     MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
-
-                    wolfInfo.getHeldItem().ifPresent(itemModel -> {
-                        MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
-                    });
                 });
             });
 
