@@ -13,6 +13,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class ReforgeRepositoryTest {
     private static final ItemTypeRepository itemTypeRepository;
     private static final RarityRepository rarityRepository;
@@ -23,6 +25,12 @@ public class ReforgeRepositoryTest {
         itemTypeRepository = SimplifiedApi.getSqlRepository(ItemTypeRepository.class);
         rarityRepository = SimplifiedApi.getSqlRepository(RarityRepository.class);
         reforgeRepository = SimplifiedApi.getSqlRepository(ReforgeRepository.class);
+    }
+
+    @Test
+    public void findAll_ok() {
+        List<ReforgeModel> reforges = reforgeRepository.findAll();
+        MatcherAssert.assertThat(reforges.size(), Matchers.greaterThan(0));
     }
 
     @Test

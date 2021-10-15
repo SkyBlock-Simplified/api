@@ -78,7 +78,12 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public <S> T findFirstOrNullCached(FilterFunction<T, S> function, S value) throws SqlException {
-        return waitForInitLock(() -> this.items.stream().filter(it -> function.handle(it).equals(value)).findFirst().orElse(null));
+        return waitForInitLock(
+                () -> items.stream()
+                        .filter(it -> Objects.equals(function.handle(it), value))
+                        .findFirst()
+                        .orElse(null)
+        );
     }
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely

@@ -18,6 +18,7 @@ import gg.sbs.api.apiclients.hypixel.response.skyblock.SkyBlockIsland;
 import gg.sbs.api.apiclients.mojang.MojangApiBuilder;
 import gg.sbs.api.apiclients.mojang.implementation.MojangData;
 import gg.sbs.api.data.sql.SqlRepository;
+import gg.sbs.api.data.sql.SqlSessionUtil;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
 import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRepository;
@@ -105,30 +106,7 @@ public class SimplifiedApi {
     public static void enableDatabase() {
         if (!databaseRegistered) {
             // Provide SqlRepositories
-            /*serviceManager.provide(AccessoryRepository.class, new AccessoryRepository());
-            serviceManager.provide(AccessoryFamilyRepository.class, new AccessoryFamilyRepository());
-            serviceManager.provide(CollectionRepository.class, new CollectionRepository());
-            serviceManager.provide(CollectionItemRepository.class, new CollectionItemRepository());
-            serviceManager.provide(CollectionItemTierRepository.class, new CollectionItemTierRepository());
-            serviceManager.provide(EnchantmentRepository.class, new EnchantmentRepository());
-            serviceManager.provide(FairySoulRepository.class, new FairySoulRepository());
-            serviceManager.provide(FormatRepository.class, new FormatRepository());
-            serviceManager.provide(ItemRepository.class, new ItemRepository());
-            serviceManager.provide(ItemTypeRepository.class, new ItemTypeRepository());
-            serviceManager.provide(LocationRepository.class, new LocationRepository());
-            serviceManager.provide(LocationAreaRepository.class, new LocationAreaRepository());
-            serviceManager.provide(MinionRepository.class, new MinionRepository());
-            serviceManager.provide(MinionItemRepository.class, new MinionItemRepository());
-            serviceManager.provide(MinionTierRepository.class, new MinionTierRepository());
-            serviceManager.provide(MinionTierUpgradeRepository.class, new MinionTierUpgradeRepository());
-            serviceManager.provide(PetRepository.class, new PetRepository());
-            serviceManager.provide(PotionRepository.class, new PotionRepository());
-            serviceManager.provide(RarityRepository.class, new RarityRepository());
-            serviceManager.provide(ReforgeRepository.class, new ReforgeRepository());
-            serviceManager.provide(SkillRepository.class, new SkillRepository());
-            serviceManager.provide(SkillLevelRepository.class, new SkillLevelRepository());
-            serviceManager.provide(StatRepository.class, new StatRepository());*/
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getSqlRepositoryClasses())
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : SqlSessionUtil.getSqlRepositoryClasses())
                 serviceManager.provideRaw(repository, new Reflection(repository).newInstance());
             // TODO: This works but generates an error, see bottom of class
 
@@ -167,34 +145,6 @@ public class SimplifiedApi {
 
     public static ServiceManager getServiceManager() {
         return serviceManager;
-    }
-
-    public static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getSqlRepositoryClasses() {
-        return Concurrent.newSet(
-                AccessoryRepository.class,
-                AccessoryFamilyRepository.class,
-                CollectionRepository.class,
-                CollectionItemRepository.class,
-                CollectionItemTierRepository.class,
-                EnchantmentRepository.class,
-                FairySoulRepository.class,
-                FormatRepository.class,
-                ItemRepository.class,
-                ItemTypeRepository.class,
-                LocationRepository.class,
-                LocationAreaRepository.class,
-                MinionRepository.class,
-                MinionItemRepository.class,
-                MinionTierRepository.class,
-                MinionTierUpgradeRepository.class,
-                PetRepository.class,
-                PotionRepository.class,
-                RarityRepository.class,
-                ReforgeRepository.class,
-                SkillRepository.class,
-                SkillLevelRepository.class,
-                StatRepository.class
-        );
     }
 
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
