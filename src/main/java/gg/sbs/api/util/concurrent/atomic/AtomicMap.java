@@ -1,6 +1,7 @@
 package gg.sbs.api.util.concurrent.atomic;
 
 import gg.sbs.api.reflection.exception.ReflectionException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,7 +19,7 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final void clear() {
+	public void clear() {
 		this.ref.get().clear();
 	}
 
@@ -32,8 +33,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.ref.get().containsValue(value);
 	}
 
-	@Override
-	public final Set<Entry<K, V>> entrySet() {
+	@Override @NotNull
+	public Set<Entry<K, V>> entrySet() {
 		return this.ref.get().entrySet();
 	}
 
@@ -57,7 +58,7 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.entrySet().iterator();
 	}
 
-	@Override
+	@Override @NotNull
 	public final Set<K> keySet() {
 		return this.ref.get().keySet();
 	}
@@ -67,9 +68,9 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		try {
 			Map<K, V> map = current.getClass().newInstance();
 			map.putAll(current);
-			return (M)map;
+			return (M) map;
 		} catch (Exception ex) {
-			throw new ReflectionException("Unable to create new map instance of " + current.getClass().getSimpleName() + "!"); // Cannot use StringUtil!
+			throw new ReflectionException("Unable to create new map instance of " + current.getClass().getSimpleName() + "!"); // Cannot use FormatUtil
 		}
 	}
 
@@ -78,7 +79,7 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final V put(K key, V value) {
+	public V put(K key, V value) {
 		while (true) {
 			M current = this.ref.get();
 			M modified = this.newMap(current);
@@ -90,7 +91,7 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final void putAll(Map<? extends K, ? extends V> map) {
+	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
 		while (true) {
 			M current = this.ref.get();
 			M modified = this.newMap(current);
@@ -102,7 +103,7 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final V putIfAbsent(K key, V value) {
+	public V putIfAbsent(K key, V value) {
 		while (true) {
 			M current = this.ref.get();
 			M modified = this.newMap(current);
@@ -118,7 +119,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final V remove(Object key) {
+	@SuppressWarnings("all")
+	public V remove(Object key) {
 		while (true) {
 			M current = this.ref.get();
 
@@ -134,7 +136,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final boolean remove(Object key, Object value) {
+	@SuppressWarnings("all")
+	public boolean remove(Object key, Object value) {
 		while (true) {
 			M current = this.ref.get();
 
@@ -163,8 +166,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.entrySet().stream();
 	}
 
-	@Override
-	public final Collection<V> values() {
+	@Override @NotNull
+	public Collection<V> values() {
 		return this.ref.get().values();
 	}
 
