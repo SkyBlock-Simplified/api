@@ -21,6 +21,7 @@ import gg.sbs.api.apiclients.mojang.implementation.MojangData;
 import gg.sbs.api.data.sql.SqlRepository;
 import gg.sbs.api.data.sql.SqlSession;
 import gg.sbs.api.data.sql.model.SqlModel;
+import gg.sbs.api.data.sql.model.SqlRefreshTime;
 import gg.sbs.api.data.sql.model.accessories.AccessoryRepository;
 import gg.sbs.api.data.sql.model.accessoryfamilies.AccessoryFamilyRepository;
 import gg.sbs.api.data.sql.model.collectionitems.CollectionItemRepository;
@@ -91,7 +92,7 @@ public class SimplifiedApi {
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
         hypixelApiBuilder.setApiKey(config.getHypixelApiKey());
 
-        // Provide Api Builders
+        // Provide Builders
         builderManager.provide(MojangData.class, MojangApiBuilder.class);
         builderManager.provide(HypixelPlayerData.class, HypixelApiBuilder.class);
         builderManager.provide(HypixelResourceData.class, HypixelApiBuilder.class);
@@ -99,7 +100,7 @@ public class SimplifiedApi {
         builderManager.provide(String.class, StringBuilder.class);
         builderManager.provide(Integer.class, HashCodeBuilder.class);
 
-        // Provide Api Implementations
+        // Provide Client Api Implementations
         serviceManager.provide(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
         serviceManager.provide(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
         serviceManager.provide(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
@@ -114,7 +115,16 @@ public class SimplifiedApi {
 
             // Provide SqlRepositories
             for (Class<? extends SqlRepository<? extends SqlModel>> repository : getSqlRepositoryClasses()) {
-                serviceManager.provideRaw(repository, new Reflection(repository).newInstance(sqlSession));
+                long refreshTime = TimeUtil.ONE_MINUTE_MS;
+
+                // Get Custom Refresh Time
+                if (repository.isAnnotationPresent(SqlRefreshTime.class)) {
+                    SqlRefreshTime annoRefreshTime = repository.getAnnotation(SqlRefreshTime.class);
+                    refreshTime = annoRefreshTime.value();
+                }
+
+                // Provide Repository
+                serviceManager.provideRaw(repository, new Reflection(repository).newInstance(sqlSession, refreshTime));
             }
             // TODO: This works but generates an error, see bottom of class
 

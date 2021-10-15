@@ -6,23 +6,25 @@ public abstract class SqlEffectsModel implements SqlModel {
 
     public abstract Map<String, Object> getEffects();
 
-    @SuppressWarnings("unchecked cast") // Checked
-    public <T> T getEffect(Class<T> tClass, String key) {
-        Object value = getEffects().get(key);
-        if (tClass.isInstance(value)) return (T) value;
-        return null;
+    public <T> T getEffect(String key) {
+        return this.getEffect(key, null);
     }
 
-    public double getEffectNum(String key) {
-        Double value = getEffect(Double.class, key);
-        if (value == null) return 0.;
-        return value;
-    }
+    @SuppressWarnings("unchecked cast")
+    public <T> T getEffect(String key, Object defaultValue) {
+        Object value = this.getEffects().get(key);
 
-    public String getEffectStr(String key) {
-        String value = getEffect(String.class, key);
-        if (value == null) return "";
-        return value;
+        if (value != null) {
+            try {
+                return (T) value;
+            } catch (Exception ignore) { }
+        }
+
+        try {
+            return (T) defaultValue;
+        } catch (Exception defaultException) {
+            throw new IllegalArgumentException("Default value does not match type T");
+        }
     }
 
 }
