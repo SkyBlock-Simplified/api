@@ -1,5 +1,6 @@
 package gg.sbs.api;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -186,6 +187,8 @@ public class SimplifiedApi {
     }
 
     public static SqlSession getSqlSession() {
+        Preconditions.checkArgument(databaseRegistered, "Database has not been registered");
+        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled");
         return getServiceManager().getProvider(SqlSession.class);
     }
 

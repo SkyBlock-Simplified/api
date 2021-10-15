@@ -12,6 +12,8 @@ public abstract class SqlDriver {
 
     public abstract int getDefaultPort();
 
+    public abstract String getDialectClass();
+
     public abstract String getDriverClass();
 
     public final boolean isDriverAvailable() {
@@ -31,8 +33,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public final int getDefaultPort() {
+        public int getDefaultPort() {
             return 3306;
+        }
+
+        @Override
+        public String getDialectClass() {
+            return "org.hibernate.dialect.MariaDB103Dialect";
         }
 
         @Override
@@ -50,8 +57,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public final int getDefaultPort() {
+        public int getDefaultPort() {
             return 3306;
+        }
+
+        @Override
+        public String getDialectClass() {
+            return "org.hibernate.dialect.MySQL8Dialect";
         }
 
         @Override
@@ -69,8 +81,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public final int getDefaultPort() {
+        public int getDefaultPort() {
             return 1571;
+        }
+
+        @Override
+        public String getDialectClass() {
+            return "org.hibernate.dialect.Oracle12cDialect";
         }
 
         @Override
@@ -88,8 +105,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public final int getDefaultPort() {
+        public int getDefaultPort() {
             return 5432;
+        }
+
+        @Override
+        public String getDialectClass() {
+            return "org.hibernate.dialect.PostgreSQL10Dialect";
         }
 
         @Override
@@ -107,8 +129,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public final int getDefaultPort() {
+        public int getDefaultPort() {
             return 1433;
+        }
+
+        @Override
+        public String getDialectClass() {
+            return "org.hibernate.dialect.SQLServer2012Dialect";
         }
 
         @Override
