@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A concurrent list that allows for simultaneously fast reading, iteration and
+ * A concurrent list that allows for simultaneous fast reading, iteration and
  * modification utilizing {@link AtomicReference}.
  * <p>
  * The AtomicReference changes the methods that modify the list by replacing the
@@ -42,8 +42,7 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 		super(new ArrayList<>(collection));
 	}
 
-	@Nonnull
-	@Override
+	@Override @Nonnull
 	public ConcurrentList<E> subList(int fromIndex, int toIndex) {
 		return Concurrent.newList(super.subList(fromIndex, toIndex));
 	}

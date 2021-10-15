@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A concurrent set that allows for simultaneously fast reading, iteration and
+ * A concurrent set that allows for simultaneous fast reading, iteration and
  * modification utilizing {@link AtomicReference}.
  * <p>
  * The AtomicReference changes the methods that modify the set by replacing the
