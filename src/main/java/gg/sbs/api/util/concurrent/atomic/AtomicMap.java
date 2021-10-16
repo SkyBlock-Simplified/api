@@ -53,13 +53,13 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.ref.get().isEmpty();
 	}
 
-	@Override
-	public Iterator<Entry<K, V>> iterator() {
+	@Override @NotNull
+	public final Iterator<Entry<K, V>> iterator() {
 		return this.entrySet().iterator();
 	}
 
 	@Override @NotNull
-	public final Set<K> keySet() {
+	public Set<K> keySet() {
 		return this.ref.get().keySet();
 	}
 
