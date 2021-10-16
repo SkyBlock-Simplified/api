@@ -5,14 +5,12 @@ import gg.sbs.api.reflection.accessor.ConstructorAccessor;
 import gg.sbs.api.reflection.accessor.FieldAccessor;
 import gg.sbs.api.reflection.accessor.MethodAccessor;
 import gg.sbs.api.reflection.exception.ReflectionException;
-import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.Primitives;
+import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.helper.StringUtil;
 
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -423,6 +421,69 @@ public class Reflection {
 	 */
 	public final String getSubPackage() {
 		return this.subPackage;
+	}
+
+	/**
+	 * Gets the generic class specified at index 0.
+	 *
+	 * @param tClass the class to check for generics
+	 * @param <T> the type to return as
+	 * @return the generic superclass
+	 */
+	public static <T> Class<T> getSuperClass(Class<?> tClass) {
+		return getSuperClass(tClass, 0);
+	}
+
+	/**
+	 * Gets the generic class specified at the specified index.
+	 *
+	 * @param tClass the class to check for generics
+	 * @param index the index to check for generics
+	 * @param <T> the type to return as
+	 * @return the generic superclass
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> getSuperClass(Class<?> tClass, int index) {
+		try { // Classes
+			ParameterizedType superClass = (ParameterizedType) tClass.getGenericSuperclass();
+			return (Class<T>) superClass.getActualTypeArguments()[index];
+		} catch (ClassCastException exception) { // Types
+			try {
+				for (Type type : tClass.getGenericInterfaces()) {
+					if (type instanceof ParameterizedType) {
+						ParameterizedType superClass = (ParameterizedType) type;
+						return (Class<T>) superClass.getActualTypeArguments()[index];
+					}
+				}
+			} catch (Exception ignore) { }
+		}
+
+		throw new ReflectionException(FormatUtil.format("Unable to locate generic class in {0} at index {1}"));
+	}
+
+	/**
+	 * Gets a generic class array specified at index 0.
+	 *
+	 * @param tClass the class to check for generics
+	 * @param <T> the type to return as
+	 * @return the generic superclass array
+	 */
+	public static <T> Class<T[]> getSuperClassArray(Class<?> tClass) {
+		return getSuperClassArray(tClass, 0);
+	}
+
+	/**
+	 * Gets a generic class array specified at the specified index.
+	 *
+	 * @param tClass the class to check for generics
+	 * @param index the index to check for generics
+	 * @param <T> the type to return as
+	 * @return the generic superclass array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T[]> getSuperClassArray(Class<?> tClass, int index) {
+		ParameterizedType superClass = (ParameterizedType) tClass.getGenericSuperclass();
+		return (Class<T[]>) Array.newInstance((Class<T>) superClass.getActualTypeArguments()[index], 0).getClass();
 	}
 
 	/**

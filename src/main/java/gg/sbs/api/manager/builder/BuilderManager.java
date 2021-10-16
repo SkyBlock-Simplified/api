@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import gg.sbs.api.manager.builder.exception.InvalidBuilderException;
 import gg.sbs.api.manager.builder.exception.RegisteredBuilderException;
 import gg.sbs.api.manager.builder.exception.UnknownBuilderException;
+import gg.sbs.api.reflection.Reflection;
+import gg.sbs.api.reflection.exception.ReflectionException;
 import gg.sbs.api.util.builder.CoreBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
@@ -88,34 +90,16 @@ public class BuilderManager {
 		if (this.isRegistered(service))
 			throw new RegisteredBuilderException(service);
 
-		try { // Classes
-			Type[] types = builder.getGenericInterfaces();
-			ParameterizedType superClass = (ParameterizedType) builder.getGenericSuperclass();
-			Class<?> tClass = (Class<T>) superClass.getActualTypeArguments()[0];
+		try {
+			Class<?> tClass = Reflection.getSuperClass(builder);
 
-			if (!tClass.isAssignableFrom(service))
-				throw new InvalidBuilderException(service, builder);
-		} catch (ClassCastException exception) { // Types
-			boolean pass = false;
-
-			for (Type type : builder.getGenericInterfaces()) {
-				if (type instanceof ParameterizedType) {
-					String x = "x";
-					ParameterizedType superClass = (ParameterizedType) type;
-					Class<?> tClass = (Class<T>) superClass.getActualTypeArguments()[0];
-
-					if (tClass.isAssignableFrom(service)) {
-						pass = true;
-						break;
-					}
-				}
+			if (tClass.isAssignableFrom(service)) {
+				this.builderProviders.add(new BuilderProvider(service, builder));
+				return;
 			}
+		} catch (ReflectionException ignore) { }
 
-			if (!pass)
-				throw new InvalidBuilderException(service, builder);
-		}
-
-		this.builderProviders.add(new BuilderProvider(service, builder));
+		throw new InvalidBuilderException(service, builder);
 	}
 
 }
