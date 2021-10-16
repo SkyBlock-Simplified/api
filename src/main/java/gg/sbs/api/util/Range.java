@@ -14,7 +14,6 @@ import java.util.Comparator;
  * <p>#ThreadSafe# if the objects and comparator are thread-safe</p>
  *
  * @param <T> The type of range values.
- * @since 3.0
  */
 public final class Range<T> implements Serializable {
 
@@ -35,11 +34,6 @@ public final class Range<T> implements Serializable {
         }
     }
 
-    /**
-     * Serialization version.
-     * @see java.io.Serializable
-     */
-    private static final long serialVersionUID = 1L;
     /**
      * <p>Obtains a range with the specified minimum and maximum values (both inclusive).</p>
      *
@@ -493,15 +487,15 @@ public final class Range<T> implements Serializable {
      *
      * <p>This uses {@link java.util.Formattable} to perform the formatting. Three variables may
      * be used to embed the minimum, maximum and comparator.
-     * Use {@code %1$s} for the minimum element, {@code %2$s} for the maximum element
-     * and {@code %3$s} for the comparator.
+     * Use {@code {0}} for the minimum element, {@code {1}} for the maximum element
+     * and {@code {2}} for the comparator.
      * The default format used by {@code toString()} is {@code [%1$s..%2$s]}.</p>
      *
-     * @param format  the format string, optionally containing {@code %1$s}, {@code %2$s} and  {@code %3$s}, not null
+     * @param format the format string, optionally containing {@code %1$s}, {@code %2$s} and  {@code %3$s}, not null
      * @return the formatted string, not null
      */
     public String toString(final String format) {
-        return String.format(format, minimum, maximum, comparator);
+        return FormatUtil.format(format, minimum, maximum, comparator);
     }
 
 }
