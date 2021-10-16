@@ -1,6 +1,8 @@
 package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import com.google.common.base.Preconditions;
+import gg.sbs.api.util.concurrent.Concurrent;
+import gg.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -27,6 +30,8 @@ public class SkyBlockDate {
      * The time Jacob relaunched in RealTime.
      */
     public static final long JACOB_LAUNCH = LAUNCH_DATE + (Length.YEAR_MS * 114);
+
+    public static ConcurrentList<String> ZOO_CYCLE = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
 
     public static final SimpleDateFormat REAL_DATE_FORMAT = new SimpleDateFormat("MM dd yyyy HH:mm");
 
