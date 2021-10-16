@@ -7,11 +7,10 @@ import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import org.yaml.snakeyaml.Dumper;
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Loader;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -23,20 +22,17 @@ public abstract class ConfigMapper extends YamlMap {
 	private final transient Yaml yaml;
 	private final transient ConcurrentLinkedMap<String, ConcurrentList<String>> comments = Concurrent.newLinkedMap();
 	private final transient String[] header;
-	//private final transient NullRepresenter representer = new NullRepresenter();
 	transient File configFile;
 	transient ConfigSection root;
 
 	protected ConfigMapper(File configDir, String fileName, String... header) {
 		if (StringUtil.isEmpty(fileName)) throw new IllegalArgumentException("Filename cannot be null!");
-		//this.configFile = new File(Minecraft.getMinecraft().gameDir, FormatUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
 		this.configFile = new File(configDir, FormatUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
 		this.header = header;
-		DumperOptions options = new DumperOptions();
-		options.setIndent(2);
-		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		//this.representer.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		this.yaml = new Yaml(new Loader(new CustomClassLoaderConstructor(ConfigMapper.class.getClassLoader())), new Dumper(options));
+		DumperOptions dumperOptions = new DumperOptions();
+		dumperOptions.setIndent(2);
+		dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+		this.yaml = new Yaml(new CustomClassLoaderConstructor(ConfigMapper.class.getClassLoader()), new Representer(), dumperOptions);
 	}
 
 	public void addComment(String key, String value) {
@@ -134,7 +130,7 @@ public abstract class ConfigMapper extends YamlMap {
 					keyChain.add(line.split(":")[0].trim());
 				}
 
-				String search = (!keyChain.isEmpty() ? StringUtil.join(".", keyChain) : "");
+				String search = StringUtil.join(".", keyChain);
 				if (this.comments.containsKey(search)) {
 					for (String comment : comments.get(search)) {
 						writeLines.append(new String(new char[depth - 2]).replace("\0", " "));
