@@ -1,12 +1,16 @@
 package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
+import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.data.sql.model.rarities.RarityModel;
+import gg.sbs.api.data.sql.model.rarities.RarityRepository;
 import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.UUID;
 
@@ -29,10 +33,10 @@ public class SkyBlockAuction {
     @SerializedName("end")
     @Getter private SkyBlockDate.RealTime endsAt;
     @SerializedName("item_lore")
-    @Getter private String lore; // TODO: Split by \n into list
+    private String lore;
     @Getter private String extra;
     @SerializedName("tier")
-    @Getter private String rarity; // TODO: Convert to RarityModel?
+    private String rarity;
     @SerializedName("starting_big")
     @Getter private long startingBid;
     @SerializedName("item_bytes")
@@ -59,6 +63,15 @@ public class SkyBlockAuction {
 
     public UUID getIslandId() {
         return StringUtil.toUUID(this.islandId);
+    }
+
+    public ConcurrentList<String> getLore() {
+        return Concurrent.newUnmodifiableList(StringUtil.split(this.lore, '\n'));
+    }
+
+    @SneakyThrows
+    public RarityModel getRarity() {
+        return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RarityModel::getRarityTag, this.rarity);
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
