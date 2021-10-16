@@ -6,10 +6,10 @@ import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.util.Pair;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.function.ReturnFunction;
+import gg.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -111,9 +111,9 @@ public abstract class SqlRepository<T extends SqlModel> {
         ConcurrentList<T> itemsCopy = waitForInitLock(() -> Concurrent.newList(this.items));
 
         for (int i = 0; i < predicates.length && itemsCopy.size() > 0; i++) {
-            Pair<FilterFunction<T, S>, S> q = predicates[i];
+            Pair<FilterFunction<T, S>, S> pair = predicates[i];
             itemsCopy = itemsCopy.stream()
-                    .filter(it -> Objects.equals(q.getFirst().handle(it), q.getSecond()))
+                    .filter(it -> Objects.equals(pair.getKey().handle(it), pair.getValue()))
                     .collect(Concurrent.toList());
         }
 
@@ -157,7 +157,7 @@ public abstract class SqlRepository<T extends SqlModel> {
         CriteriaQuery<T> filtered = cq.select(rootEntry);
 
         for (Pair<String, S> predicate : predicates)
-            filtered = filtered.where(cb.equal(rootEntry.get(predicate.getFirst()), predicate.getSecond()));
+            filtered = filtered.where(cb.equal(rootEntry.get(predicate.getKey()), predicate.getValue()));
 
         return session.createQuery(filtered).getSingleResult();
     }

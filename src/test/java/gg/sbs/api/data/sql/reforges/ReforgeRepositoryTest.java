@@ -8,7 +8,7 @@ import gg.sbs.api.data.sql.model.rarities.RarityModel;
 import gg.sbs.api.data.sql.model.rarities.RarityRepository;
 import gg.sbs.api.data.sql.model.reforges.ReforgeModel;
 import gg.sbs.api.data.sql.model.reforges.ReforgeRepository;
-import gg.sbs.api.util.Pair;
+import gg.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class ReforgeRepositoryTest {
+
     private static final ItemTypeRepository itemTypeRepository;
     private static final RarityRepository rarityRepository;
     private static final ReforgeRepository reforgeRepository;
@@ -43,10 +44,11 @@ public class ReforgeRepositoryTest {
                 RarityModel::getRarityTag, "LEGENDARY"
         );
         ReforgeModel spicy = reforgeRepository.findFirstOrNullCached(
-                new Pair<>(ReforgeModel::getItemType, sword),
-                new Pair<>(ReforgeModel::getRarity, legendary),
-                new Pair<>(ReforgeModel::getName, "Spicy")
+                Pair.of(ReforgeModel::getItemType, sword),
+                Pair.of(ReforgeModel::getRarity, legendary),
+                Pair.of(ReforgeModel::getName, "Spicy")
         );
         MatcherAssert.assertThat(spicy, Matchers.notNullValue());
     }
+
 }
