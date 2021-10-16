@@ -3,9 +3,10 @@ package gg.sbs.api.util.concurrent.atomic;
 import gg.sbs.api.reflection.exception.ReflectionException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public abstract class AtomicCollection<E, T extends AbstractCollection<E>> extends AbstractCollection<E> implements Collection<E> {
@@ -46,12 +47,12 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 	}
 
 	@Override
-	public final boolean contains(Object item) {
+	public boolean contains(Object item) {
 		return ref.get().contains(item);
 	}
 
 	@Override
-	public final boolean containsAll(@NotNull Collection<?> collection) {
+	public boolean containsAll(@NotNull Collection<?> collection) {
 		return this.ref.get().containsAll(collection);
 	}
 
@@ -61,7 +62,7 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 	}
 
 	@Override @NotNull
-	public final Iterator<E> iterator() {
+	public Iterator<E> iterator() {
 		return this.ref.get().iterator();
 	} // Iterator#remove calls AtomicList#remove
 
@@ -77,7 +78,7 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 	}
 
 	@Override
-	public final Stream<E> parallelStream() {
+	public Stream<E> parallelStream() {
 		return this.ref.get().parallelStream();
 	}
 
@@ -128,18 +129,18 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 	}
 
 	@Override
-	public final Stream<E> stream() {
+	public Stream<E> stream() {
 		return this.ref.get().stream();
 	}
 
 	@Override @NotNull
-	public final Object[] toArray() {
+	public Object[] toArray() {
 		return this.ref.get().toArray();
 	}
 
 	@Override @NotNull
 	@SuppressWarnings("SuspiciousToArrayCall")
-	public final <U> U[] toArray(@NotNull U[] array) {
+	public <U> U[] toArray(@NotNull U[] array) {
 		return this.ref.get().toArray(array);
 	}
 

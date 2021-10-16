@@ -1,7 +1,6 @@
 package gg.sbs.api.util.concurrent;
 
 import gg.sbs.api.util.concurrent.atomic.AtomicCollection;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,37 +37,6 @@ public class ConcurrentCollection<E> extends AtomicCollection<E, AbstractCollect
 	 */
 	public ConcurrentCollection(Collection<? extends E> collection) {
 		super(new ArrayList<>(collection));
-	}
-
-	@Override
-	public boolean add(E element) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean addAll(@NotNull Collection<? extends E> collection) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void clear() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	@SuppressWarnings("all")
-	public boolean remove(Object element) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean removeAll(@NotNull Collection<?> collection) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean retainAll(@NotNull Collection<?> collection) {
-		throw new UnsupportedOperationException();
 	}
 
 }

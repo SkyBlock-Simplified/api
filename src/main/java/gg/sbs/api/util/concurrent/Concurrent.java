@@ -4,6 +4,9 @@ import gg.sbs.api.util.FormatUtil;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedList;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedSet;
+import gg.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableCollection;
+import gg.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableList;
+import gg.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableSet;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,6 +17,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+/**
+ * Helper class to build a new concurrent collection instance.
+ */
 public final class Concurrent {
 
 	private static final ConcurrentSet<Collector.Characteristics> CHARACTERISTICS = Concurrent.newSet(Collector.Characteristics.CONCURRENT, Collector.Characteristics.IDENTITY_FINISH);
@@ -26,6 +32,19 @@ public final class Concurrent {
 
 	private static <T> BinaryOperator<T> throwingMerger() {
 		return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}", key)); };
+	}
+
+	public static <E> ConcurrentCollection<E> newCollection() {
+		return new ConcurrentCollection<>();
+	}
+
+	@SafeVarargs
+	public static <E> ConcurrentCollection<E> newCollection(E... array) {
+		return new ConcurrentCollection<>(array);
+	}
+
+	public static <E> ConcurrentCollection<E> newCollection(Collection<? extends E> collection) {
+		return new ConcurrentCollection<>(collection);
 	}
 
 	public static <E> ConcurrentDeque<E> newDeque() {
@@ -53,6 +72,7 @@ public final class Concurrent {
 	public static <E> ConcurrentList<E> newList(Collection<? extends E> collection) {
 		return new ConcurrentList<>(collection);
 	}
+
 
 	public static <K, V> ConcurrentMap<K, V> newMap() {
 		return new ConcurrentMap<>();
@@ -128,6 +148,49 @@ public final class Concurrent {
 
 	public static <E> ConcurrentLinkedSet<E> newLinkedSet(Collection<? extends E> collection) {
 		return new ConcurrentLinkedSet<>(collection);
+	}
+
+	public static <E> ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection() {
+		return new ConcurrentUnmodifiableCollection<>();
+	}
+
+	@SafeVarargs
+	public static <E> ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection(E... array) {
+		return new ConcurrentUnmodifiableCollection<>(array);
+	}
+
+	public static <E> ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection(Collection<? extends E> collection) {
+		return new ConcurrentUnmodifiableCollection<>(collection);
+	}
+
+	public static <E> ConcurrentUnmodifiableList<E> newUnmodifiableList() {
+		return new ConcurrentUnmodifiableList<>();
+	}
+
+	@SafeVarargs
+	public static <E> ConcurrentUnmodifiableList<E> newUnmodifiableList(E... array) {
+		return new ConcurrentUnmodifiableList<>(array);
+	}
+
+	public static <E> ConcurrentUnmodifiableList<E> newUnmodifiableList(Collection<? extends E> collection) {
+		return new ConcurrentUnmodifiableList<>(collection);
+	}
+
+	public static <E> ConcurrentUnmodifiableSet<E> newUnmodifiableSet() {
+		return new ConcurrentUnmodifiableSet<>();
+	}
+
+	@SafeVarargs
+	public static <E> ConcurrentUnmodifiableSet<E> newUnmodifiableSet(E... array) {
+		return new ConcurrentUnmodifiableSet<>(array);
+	}
+
+	public static <E> ConcurrentUnmodifiableSet<E> newUnmodifiableSet(Collection<? extends E> collection) {
+		return new ConcurrentUnmodifiableSet<>(collection);
+	}
+
+	public static <E> Collector<E, ?, ConcurrentCollection<E>> toCollection() {
+		return new ConcurrentCollector<>(ConcurrentCollection::new, ConcurrentCollection::add, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
 	}
 
 	public static <E> Collector<E, ?, ConcurrentList<E>> toList() {
