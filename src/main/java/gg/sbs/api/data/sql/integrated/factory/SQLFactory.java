@@ -3,8 +3,8 @@ package gg.sbs.api.data.sql.integrated.factory;
 import gg.sbs.api.data.sql.integrated.function.ResultSetFunction;
 import gg.sbs.api.data.sql.integrated.function.VoidResultSetFunction;
 import gg.sbs.api.scheduler.Scheduler;
-import gg.sbs.api.util.FormatUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import lombok.Cleanup;
 
 import java.io.File;

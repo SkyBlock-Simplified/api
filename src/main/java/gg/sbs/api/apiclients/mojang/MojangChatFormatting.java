@@ -1,9 +1,9 @@
 package gg.sbs.api.apiclients.mojang;
 
 import com.google.common.base.Preconditions;
-import gg.sbs.api.util.FormatUtil;
-import gg.sbs.api.util.RegexUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.RegexUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
 import java.awt.*;

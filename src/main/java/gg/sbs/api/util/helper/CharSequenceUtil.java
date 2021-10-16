@@ -1,4 +1,4 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 /**
  * <p>Operations on {@link CharSequence} that are

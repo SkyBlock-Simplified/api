@@ -1,4 +1,4 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.translate.*;

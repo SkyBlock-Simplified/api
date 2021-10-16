@@ -1,7 +1,7 @@
 package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;

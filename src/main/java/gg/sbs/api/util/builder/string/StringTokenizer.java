@@ -1,6 +1,6 @@
 package gg.sbs.api.util.builder.string;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.matcher.StringMatcher;
 import gg.sbs.api.util.matcher.StringMatcherFactory;
 

@@ -1,7 +1,7 @@
 package gg.sbs.api.util.matcher;
 
-import gg.sbs.api.util.ArrayUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.ArrayUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 /**
  * Provides access to matchers defined in this package.

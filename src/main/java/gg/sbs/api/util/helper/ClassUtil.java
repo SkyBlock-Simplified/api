@@ -1,4 +1,4 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

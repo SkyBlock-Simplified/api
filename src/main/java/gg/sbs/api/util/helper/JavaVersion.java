@@ -1,4 +1,7 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
+
+import gg.sbs.api.reflection.Reflection;
+import lombok.NonNull;
 
 /**
  * <p>An enum representing all the versions of the Java specification.
@@ -6,6 +9,7 @@ package gg.sbs.api.util;
  * <em>java.specification.version</em> System property. </p>
  */
 public enum JavaVersion {
+
     JAVA_0_9(1.5f, "0.9"),
     JAVA_1_1(1.1f, "1.1"),
     JAVA_1_2(1.2f, "1.2"),

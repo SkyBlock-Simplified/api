@@ -1,6 +1,6 @@
 package gg.sbs.api.data.yaml;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

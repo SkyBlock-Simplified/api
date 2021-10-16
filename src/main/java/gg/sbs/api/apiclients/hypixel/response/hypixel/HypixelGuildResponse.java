@@ -2,8 +2,8 @@ package gg.sbs.api.apiclients.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.apiclients.mojang.MojangChatFormatting;
-import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.ListUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
 import lombok.Getter;

@@ -7,7 +7,7 @@ import gg.sbs.api.nbt.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.nbt.tags.primitive.ByteTag;
-import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.helper.ArrayUtil;
 import gg.sbs.api.util.Primitives;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

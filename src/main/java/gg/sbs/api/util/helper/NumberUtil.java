@@ -1,4 +1,4 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 import com.google.common.base.Preconditions;
 import gg.sbs.api.reflection.Reflection;

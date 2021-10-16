@@ -1,7 +1,7 @@
 package gg.sbs.api.util.builder.string;
 
-import gg.sbs.api.util.ArrayUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.ArrayUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.builder.Builder;
 import org.jetbrains.annotations.NotNull;
 

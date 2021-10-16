@@ -1,6 +1,6 @@
 package gg.sbs.api.apiclients.hypixel.response.hypixel;
 
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
 import java.util.UUID;

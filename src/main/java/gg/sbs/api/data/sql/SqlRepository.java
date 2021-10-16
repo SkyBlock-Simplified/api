@@ -4,8 +4,8 @@ import gg.sbs.api.data.sql.exception.SqlException;
 import gg.sbs.api.data.sql.function.FilterFunction;
 import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.model.SqlModel;
-import gg.sbs.api.util.FormatUtil;
-import gg.sbs.api.util.ListUtil;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.ListUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.function.ReturnFunction;
@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static gg.sbs.api.util.TimeUtil.ONE_MINUTE_MS;
+import static gg.sbs.api.util.helper.TimeUtil.ONE_MINUTE_MS;
 
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public abstract class SqlRepository<T extends SqlModel> {

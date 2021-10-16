@@ -1,6 +1,6 @@
 package gg.sbs.api.util.math.function;
 
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 
 /**

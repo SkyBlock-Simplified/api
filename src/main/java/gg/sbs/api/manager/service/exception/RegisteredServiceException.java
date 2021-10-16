@@ -1,6 +1,6 @@
 package gg.sbs.api.manager.service.exception;
 
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 
 public final class RegisteredServiceException extends UnsupportedOperationException {
 

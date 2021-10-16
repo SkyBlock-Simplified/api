@@ -1,6 +1,6 @@
 package gg.sbs.api.data.sql.model;
 
-import gg.sbs.api.util.TimeUtil;
+import gg.sbs.api.util.helper.TimeUtil;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

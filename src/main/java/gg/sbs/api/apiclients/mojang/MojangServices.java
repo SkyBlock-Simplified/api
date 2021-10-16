@@ -1,6 +1,6 @@
 package gg.sbs.api.apiclients.mojang;
 
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -1,4 +1,4 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import gg.sbs.api.util.mutable.MutableInt;

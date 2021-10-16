@@ -1,8 +1,8 @@
 package gg.sbs.api.nbt_old;
 
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.util.FormatUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 import java.io.OutputStream;
 import java.util.*;

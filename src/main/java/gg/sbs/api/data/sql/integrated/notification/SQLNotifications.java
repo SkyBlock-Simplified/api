@@ -2,8 +2,8 @@ package gg.sbs.api.data.sql.integrated.notification;
 
 import gg.sbs.api.data.sql.integrated.pooling.SQLPooling;
 import gg.sbs.api.scheduler.Scheduler;
-import gg.sbs.api.util.FormatUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
 

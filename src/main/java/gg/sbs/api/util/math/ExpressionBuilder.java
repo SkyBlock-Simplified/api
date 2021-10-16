@@ -1,6 +1,6 @@
 package gg.sbs.api.util.math;
 
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.math.function.Function;
 import gg.sbs.api.util.math.function.Functions;
 import gg.sbs.api.util.math.operator.Operator;

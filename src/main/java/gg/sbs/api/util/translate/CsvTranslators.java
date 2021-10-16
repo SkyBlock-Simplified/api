@@ -1,7 +1,7 @@
 package gg.sbs.api.util.translate;
 
-import gg.sbs.api.util.CharUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.CharUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 import java.io.IOException;
 import java.io.Writer;

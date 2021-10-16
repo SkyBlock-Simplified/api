@@ -1,6 +1,6 @@
 package gg.sbs.api.util.mutable;
 
-import gg.sbs.api.util.BooleanUtil;
+import gg.sbs.api.util.helper.BooleanUtil;
 
 import java.io.Serializable;
 

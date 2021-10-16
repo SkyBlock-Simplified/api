@@ -11,7 +11,7 @@ import gg.sbs.api.nbt.snbt.SnbtConfig;
 import gg.sbs.api.nbt.snbt.SnbtSerializable;
 import gg.sbs.api.nbt.tags.Tag;
 import gg.sbs.api.nbt.tags.TagType;
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 

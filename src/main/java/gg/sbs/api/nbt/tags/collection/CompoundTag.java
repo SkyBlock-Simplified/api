@@ -14,7 +14,7 @@ import gg.sbs.api.nbt.tags.array.ByteArrayTag;
 import gg.sbs.api.nbt.tags.array.IntArrayTag;
 import gg.sbs.api.nbt.tags.array.LongArrayTag;
 import gg.sbs.api.nbt.tags.primitive.*;
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 

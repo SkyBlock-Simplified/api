@@ -1,6 +1,6 @@
 package gg.sbs.api.util.mutable;
 
-import gg.sbs.api.util.NumberUtil;
+import gg.sbs.api.util.helper.NumberUtil;
 
 /**
  * A mutable {@code byte} wrapper.

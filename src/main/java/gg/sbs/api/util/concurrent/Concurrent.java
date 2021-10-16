@@ -1,6 +1,6 @@
 package gg.sbs.api.util.concurrent;
 
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedList;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import gg.sbs.api.util.concurrent.linked.ConcurrentLinkedSet;

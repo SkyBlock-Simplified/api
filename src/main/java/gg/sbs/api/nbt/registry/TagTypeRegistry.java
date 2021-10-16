@@ -4,7 +4,7 @@ import gg.sbs.api.nbt.tags.Tag;
 import gg.sbs.api.nbt.tags.TagType;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.reflection.exception.ReflectionException;
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import lombok.NonNull;
 
 import java.util.HashMap;

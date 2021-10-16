@@ -2,16 +2,10 @@ package gg.sbs.api.apiclients.hypixel.response.skyblock;
 
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.apiclients.exception.HypixelApiException;
-import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
 import gg.sbs.api.apiclients.hypixel.implementation.HypixelSkyBlockData;
-import gg.sbs.api.data.sql.exception.SqlException;
-import gg.sbs.api.data.sql.model.items.ItemModel;
-import gg.sbs.api.data.sql.model.items.ItemRepository;
 import gg.sbs.api.data.sql.model.pets.PetModel;
-import gg.sbs.api.util.ListUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;
-import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

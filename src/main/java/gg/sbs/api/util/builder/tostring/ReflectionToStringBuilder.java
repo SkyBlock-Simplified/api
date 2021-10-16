@@ -1,7 +1,7 @@
 package gg.sbs.api.util.builder.tostring;
 
-import gg.sbs.api.util.ArrayUtil;
-import gg.sbs.api.util.ClassUtil;
+import gg.sbs.api.util.helper.ArrayUtil;
+import gg.sbs.api.util.helper.ClassUtil;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;

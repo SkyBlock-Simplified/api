@@ -1,9 +1,9 @@
 package gg.sbs.api.data.sql.converter;
 
-import gg.sbs.api.util.CharUtil;
-import gg.sbs.api.util.FormatUtil;
-import gg.sbs.api.util.RegexUtil;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.CharUtil;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.RegexUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

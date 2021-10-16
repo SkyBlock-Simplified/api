@@ -1,7 +1,6 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 import lombok.NonNull;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -1153,7 +1152,7 @@ public class SystemUtil {
      * @param requiredVersion the required version, for example 1.31f
      * @return {@code true} if the actual version is equal or greater than the required version
      */
-    public static boolean isJavaVersionAtLeast(@NonNull JavaVersion requiredVersion) {
+    public static boolean isJavaVersionAtLeast(JavaVersion requiredVersion) {
         return JAVA_SPECIFICATION_VERSION_AS_ENUM.atLeast(requiredVersion);
     }
 
@@ -1169,6 +1168,7 @@ public class SystemUtil {
      * @param versionPrefix the prefix for the expected Java version
      * @return true if matches, or false if not or can't determine
      */
+    @SuppressWarnings("all")
     static boolean isJavaVersionMatch(String version, String versionPrefix) {
         if (version == null)
             return false;
@@ -1188,6 +1188,7 @@ public class SystemUtil {
      * @param osVersionPrefix the prefix for the expected OS version
      * @return true if matches, or false if not or can't determine
      */
+    @SuppressWarnings("all")
     static boolean isOSMatch(String osName, String osVersion, String osNamePrefix, String osVersionPrefix) {
         if (osName == null || osVersion == null)
             return false;
@@ -1205,6 +1206,7 @@ public class SystemUtil {
      * @param osNamePrefix the prefix for the expected OS name
      * @return true if matches, or false if not or can't determine
      */
+    @SuppressWarnings("all")
     static boolean isOSNameMatch(String osName, String osNamePrefix) {
         if (osName == null)
             return false;

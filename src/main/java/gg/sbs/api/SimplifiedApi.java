@@ -49,7 +49,7 @@ import gg.sbs.api.manager.builder.BuilderManager;
 import gg.sbs.api.manager.service.ServiceManager;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.scheduler.Scheduler;
-import gg.sbs.api.util.TimeUtil;
+import gg.sbs.api.util.helper.TimeUtil;
 import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;

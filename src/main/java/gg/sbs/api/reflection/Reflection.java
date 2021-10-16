@@ -5,9 +5,9 @@ import gg.sbs.api.reflection.accessor.ConstructorAccessor;
 import gg.sbs.api.reflection.accessor.FieldAccessor;
 import gg.sbs.api.reflection.accessor.MethodAccessor;
 import gg.sbs.api.reflection.exception.ReflectionException;
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.Primitives;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;

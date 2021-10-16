@@ -3,7 +3,7 @@ package gg.sbs.api.data.sql.model.pets;
 import gg.sbs.api.data.sql.model.SqlModel;
 import gg.sbs.api.data.sql.model.rarities.RarityModel;
 import gg.sbs.api.data.sql.model.skills.SkillModel;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;

@@ -9,7 +9,7 @@ import gg.sbs.api.nbt.registry.TagTypeRegistry;
 import gg.sbs.api.nbt.snbt.SnbtConfig;
 import gg.sbs.api.nbt.tags.collection.CompoundTag;
 import gg.sbs.api.util.CompressionType;
-import gg.sbs.api.util.DataUtil;
+import gg.sbs.api.util.helper.DataUtil;
 import lombok.Cleanup;
 import lombok.NonNull;
 

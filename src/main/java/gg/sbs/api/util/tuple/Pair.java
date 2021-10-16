@@ -1,6 +1,6 @@
 package gg.sbs.api.util.tuple;
 
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.builder.CompareToBuilder;
 
 import java.util.Map;

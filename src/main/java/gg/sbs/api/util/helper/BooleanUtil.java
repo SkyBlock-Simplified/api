@@ -1,4 +1,6 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
+
+import gg.sbs.api.util.Primitives;
 
 /**
  * <p>Operations on boolean primitives and Boolean objects.</p>

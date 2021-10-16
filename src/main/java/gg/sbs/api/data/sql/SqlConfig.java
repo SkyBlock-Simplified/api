@@ -1,8 +1,8 @@
 package gg.sbs.api.data.sql;
 
 import gg.sbs.api.data.yaml.YamlConfig;
-import gg.sbs.api.util.NumberUtil;
-import gg.sbs.api.util.ResourceUtil;
+import gg.sbs.api.util.helper.NumberUtil;
+import gg.sbs.api.util.helper.ResourceUtil;
 import lombok.Getter;
 import lombok.Setter;
 

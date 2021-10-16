@@ -1,6 +1,6 @@
 package gg.sbs.api.util.builder;
 
-import gg.sbs.api.util.ArrayUtil;
+import gg.sbs.api.util.helper.ArrayUtil;
 import gg.sbs.api.util.builder.tostring.ReflectionToStringBuilder;
 import gg.sbs.api.util.tuple.Pair;
 

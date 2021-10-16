@@ -1,6 +1,6 @@
 package gg.sbs.api.util.matcher;
 
-import gg.sbs.api.util.CharSequenceUtil;
+import gg.sbs.api.util.helper.CharSequenceUtil;
 
 /**
  * Determines if a character array portion matches.

@@ -1,7 +1,7 @@
 package gg.sbs.api.data.sql.integrated;
 
 import gg.sbs.api.data.sql.integrated.factory.SQLWrapper;
-import gg.sbs.api.util.FormatUtil;
+import gg.sbs.api.util.helper.FormatUtil;
 
 import java.sql.SQLException;
 

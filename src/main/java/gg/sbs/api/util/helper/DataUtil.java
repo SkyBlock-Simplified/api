@@ -1,8 +1,9 @@
-package gg.sbs.api.util;
+package gg.sbs.api.util.helper;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import gg.sbs.api.util.CompressionType;
 import lombok.Cleanup;
 
 import java.io.*;

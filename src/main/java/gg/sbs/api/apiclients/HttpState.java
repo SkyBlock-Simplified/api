@@ -1,7 +1,7 @@
 package gg.sbs.api.apiclients;
 
-import gg.sbs.api.util.StringUtil;
-import gg.sbs.api.util.WordUtil;
+import gg.sbs.api.util.helper.StringUtil;
+import gg.sbs.api.util.helper.WordUtil;
 import lombok.Getter;
 
 public enum HttpState {

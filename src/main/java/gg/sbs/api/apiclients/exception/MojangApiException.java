@@ -3,7 +3,7 @@ package gg.sbs.api.apiclients.exception;
 import feign.FeignException;
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.apiclients.mojang.response.MojangErrorResponse;
-import gg.sbs.api.util.StringUtil;
+import gg.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
