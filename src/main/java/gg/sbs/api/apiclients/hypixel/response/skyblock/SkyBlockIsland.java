@@ -1331,12 +1331,12 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @Override
         public int getMaxLevel() {
-            return this.getPet().getMaxLevel();
+            return this.getPet().get().getMaxLevel();
         }
 
         @SneakyThrows
-        public PetModel getPet() {
-            return SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetModel::getItemId, this.name);
+        public Optional<PetModel> getPet() {
+            return Optional.of(SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetModel::getItemId, this.name));
         }
 
         public String getPrettyName() {
@@ -1349,7 +1349,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public String getDefaultSkin() {
-            return this.getPet().getSkin();
+            return this.getPet().get().getSkin();
         }
 
         public Optional<String> getSkin() {
@@ -1604,12 +1604,13 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
                     // Store into stat
                 });
-/*
+
                 member.getPets().forEach(petInfo -> {
                     if (petInfo.isActive()) {
-                        if (petInfo.getPet().isPresent()) { // TODO: Use PetModel
-                            // Pet has stats in database
+                        petInfo.getPet().ifPresent(pet -> {
+                            /*// Pet has stats in database
                             Skyblock.Pet pet = petInfo.getPet().get();
+
                             ConcurrentList<Skyblock.Stat> petStats = pet.getStats();
                             ConcurrentList<Object> statValues = pet.getData().apply(petInfo.getLevel(), petInfo.getRarity());
 
@@ -1617,11 +1618,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                                 Skyblock.Stat petStat = petStats.get(i);
                                 double value = Double.parseDouble(statValues.get(i).toString());
                                 // Store stat
-                            }
-                        }
+                            }*/
+                        });
                     }
                 });
-*/
+
                 // Parse item nbt lore for weapon query
             } catch (IOException ioException) { }
         }
