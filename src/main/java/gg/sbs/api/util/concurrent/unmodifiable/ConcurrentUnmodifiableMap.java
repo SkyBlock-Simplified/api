@@ -49,14 +49,17 @@ public class ConcurrentUnmodifiableMap<K, V> extends AtomicMap<K, V, HashMap<K, 
     @Override @NotNull
     public final Set<Entry<K, V>> entrySet() {
         if (this.unmodifiableEntrySet == null)
-            this.unmodifiableEntrySet = new UnmodifiableEntrySet<>(this.ref.get().entrySet());
+            this.unmodifiableEntrySet = new UnmodifiableEntrySet<>(super.entrySet());
 
         return this.unmodifiableEntrySet;
     }
 
     @Override @NotNull
     public final Set<K> keySet() {
-        return Concurrent.newUnmodifiableSet(super.keySet());
+        if (this.unmodifiableKeySet == null)
+            this.unmodifiableKeySet = Concurrent.newUnmodifiableSet(super.keySet());
+
+        return this.unmodifiableKeySet;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends AtomicMap<K, V, HashMap<K, 
     @Override @NotNull
     public final Collection<V> values() {
         if (this.unmodifiableValues == null)
-            this.unmodifiableValues = Concurrent.newUnmodifiableCollection(this.ref.get().values());
+            this.unmodifiableValues = Concurrent.newUnmodifiableCollection(super.values());
 
         return this.unmodifiableValues;
     }
