@@ -4,11 +4,11 @@ import gg.sbs.api.data.sql.exception.SqlException;
 import gg.sbs.api.data.sql.function.FilterFunction;
 import gg.sbs.api.data.sql.function.ReturnSessionFunction;
 import gg.sbs.api.data.sql.model.SqlModel;
-import gg.sbs.api.util.helper.FormatUtil;
-import gg.sbs.api.util.helper.ListUtil;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.function.ReturnFunction;
+import gg.sbs.api.util.helper.FormatUtil;
+import gg.sbs.api.util.helper.ListUtil;
 import gg.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -71,8 +71,10 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public void refreshItems() {
+        this.itemsInitialized = false;
+        ConcurrentList<T> items = this.findAll();
         this.items.clear();
-        this.items.addAll(this.findAll());
+        this.items.addAll(items);
 
         synchronized (this.initLock) {
             this.itemsInitialized = true;
