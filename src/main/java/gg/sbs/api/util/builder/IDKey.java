@@ -1,4 +1,4 @@
-package gg.sbs.api.util.builder.hashcode;
+package gg.sbs.api.util.builder;
 
 /**
  * Wrap an identity key (System.identityHashCode())
@@ -7,7 +7,7 @@ package gg.sbs.api.util.builder.hashcode;
  * This is necessary to disambiguate the occasional duplicate
  * identityHashCodes that can occur.
  */
-final class IDKey {
+public final class IDKey {
 
     private final Object value;
     private final int id;
@@ -16,7 +16,7 @@ final class IDKey {
      * Constructor for IDKey
      * @param _value The value
      */
-    IDKey(final Object _value) {
+    public IDKey(final Object _value) {
         // This is the Object hash code
         id = System.identityHashCode(_value);
         // There have been some cases (LANG-459) that return the
