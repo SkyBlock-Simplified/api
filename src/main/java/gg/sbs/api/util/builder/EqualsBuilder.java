@@ -298,14 +298,10 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @return <code>true</code> if the two Objects have tested equals.
      *
      */
-    public static boolean reflectionEquals(Object lhs, Object rhs, boolean testTransients, Class<?> reflectUpToClass,
-            String... excludeFields) {
-        if (lhs == rhs) {
-            return true;
-        }
-        if (lhs == null || rhs == null) {
-            return false;
-        }
+    public static boolean reflectionEquals(Object lhs, Object rhs, boolean testTransients, Class<?> reflectUpToClass, String... excludeFields) {
+        if (lhs == rhs) return true;
+        if (lhs == null || rhs == null) return false;
+
         // Find the leaf class since there may be transients in the leaf
         // class or in classes between the leaf and root.
         // If we are not testing transients or a subclass has no ivars,
