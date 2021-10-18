@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gg.sbs.api.SimplifiedApi;
-import gg.sbs.api.util.Primitives;
 import gg.sbs.api.reflection.Reflection;
+import gg.sbs.api.util.Primitives;
 import gg.sbs.api.util.helper.ListUtil;
 
 import java.io.ByteArrayInputStream;

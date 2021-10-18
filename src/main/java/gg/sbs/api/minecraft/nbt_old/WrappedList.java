@@ -1,7 +1,7 @@
 package gg.sbs.api.minecraft.nbt_old;
 
-import gg.sbs.api.util.Primitives;
 import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.util.Primitives;
 
 import javax.annotation.Nonnull;
 import java.util.*;

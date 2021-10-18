@@ -1,15 +1,15 @@
 package gg.sbs.api.minecraft.nbt_old;
 
 import com.google.common.base.Preconditions;
-import gg.sbs.api.util.Primitives;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import gg.sbs.api.SimplifiedApi;
 import gg.sbs.api.reflection.Reflection;
-import gg.sbs.api.util.helper.RegexUtil;
-import gg.sbs.api.util.helper.StringUtil;
+import gg.sbs.api.util.Primitives;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentSet;
+import gg.sbs.api.util.helper.RegexUtil;
+import gg.sbs.api.util.helper.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.*;
