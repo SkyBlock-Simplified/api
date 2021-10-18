@@ -426,6 +426,17 @@ public class Reflection {
 	/**
 	 * Gets the generic class specified at index 0.
 	 *
+	 * @param obj the instance to check for generics
+	 * @param <T> the type to return as
+	 * @return the generic superclass
+	 */
+	public static <T> Class<T> getSuperClass(Object obj) {
+		return getSuperClass(obj.getClass(), 0);
+	}
+
+	/**
+	 * Gets the generic class specified at index 0.
+	 *
 	 * @param tClass the class to check for generics
 	 * @param <T> the type to return as
 	 * @return the generic superclass
