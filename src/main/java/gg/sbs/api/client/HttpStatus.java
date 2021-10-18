@@ -101,7 +101,6 @@ public enum HttpStatus {
 	@Getter private final String message;
 	@Getter private final HttpState state;
 
-
 	HttpStatus(int code) {
 		this(code, null, null);
 	}
