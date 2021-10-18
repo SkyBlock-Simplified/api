@@ -1,11 +1,11 @@
 package gg.sbs.api.minecraft.ping;
 
-import java.util.List;
-
 import gg.sbs.api.util.helper.RegexUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @ToString

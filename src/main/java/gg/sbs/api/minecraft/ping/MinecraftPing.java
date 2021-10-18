@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gg.sbs.api.SimplifiedApi;
+import gg.sbs.api.minecraft.text.MinecraftTextObject;
 import gg.sbs.api.util.helper.DataUtil;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -122,9 +123,8 @@ public class MinecraftPing {
             JsonObject descriptionJsonObject = jsonObject.get("description").getAsJsonObject();
 
             if (descriptionJsonObject.has("extra")) {
-                // TODO: Custom TextComponent
-                //descriptionJsonObject.addProperty("text", new TextComponent(ComponentSerializer.parse(descriptionJsonObject.get("extra").getAsJsonArray().toString())).toLegacyText());
-                //jsonObject.add("description", descriptionJsonObject);
+                descriptionJsonObject.addProperty("text", MinecraftTextObject.fromJson(descriptionJsonObject.get("extra").getAsJsonObject()).toLegacy());
+                jsonObject.add("description", descriptionJsonObject);
             }
         } else {
             // For those versions that work with String MOTDs
