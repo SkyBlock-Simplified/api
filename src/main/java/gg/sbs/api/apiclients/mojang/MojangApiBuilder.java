@@ -4,9 +4,9 @@ import feign.FeignException;
 import feign.codec.ErrorDecoder;
 import gg.sbs.api.apiclients.ApiBuilder;
 import gg.sbs.api.apiclients.exception.MojangApiException;
-import gg.sbs.api.apiclients.mojang.implementation.MojangDataInterface;
+import gg.sbs.api.apiclients.mojang.implementation.MojangRequestInterface;
 
-public final class MojangApiBuilder extends ApiBuilder<MojangDataInterface> {
+public final class MojangApiBuilder extends ApiBuilder<MojangRequestInterface> {
 
     public MojangApiBuilder() {
         super("api.skyblocksimplified.com");

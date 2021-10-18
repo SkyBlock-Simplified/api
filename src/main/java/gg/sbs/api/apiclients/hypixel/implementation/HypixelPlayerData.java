@@ -6,7 +6,7 @@ import gg.sbs.api.apiclients.hypixel.response.hypixel.*;
 
 import java.util.UUID;
 
-public interface HypixelPlayerData extends HypixelDataInterface {
+public interface HypixelPlayerData extends HypixelRequestInterface {
 
     @RequestLine("GET /counts")
     HypixelCountsResponse getCounts();

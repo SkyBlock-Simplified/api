@@ -6,7 +6,7 @@ import gg.sbs.api.apiclients.hypixel.response.skyblock.*;
 
 import java.util.UUID;
 
-public interface HypixelSkyBlockData extends HypixelDataInterface {
+public interface HypixelSkyBlockData extends HypixelRequestInterface {
 
     @RequestLine("GET /skyblock/news")
     SkyBlockNewsResponse getNews();

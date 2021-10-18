@@ -7,7 +7,7 @@ import gg.sbs.api.apiclients.mojang.response.MojangStatusResponse;
 
 import java.util.UUID;
 
-public interface MojangData extends MojangDataInterface {
+public interface MojangData extends MojangRequestInterface {
 
     @RequestLine("GET /mojang2/user/{username}")
     MojangProfileResponse getProfileFromUsername(@Param("username") String username);

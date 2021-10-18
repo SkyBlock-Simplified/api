@@ -5,7 +5,7 @@ import feign.FeignException;
 import feign.codec.ErrorDecoder;
 import gg.sbs.api.apiclients.ApiBuilder;
 import gg.sbs.api.apiclients.exception.HypixelApiException;
-import gg.sbs.api.apiclients.hypixel.implementation.HypixelDataInterface;
+import gg.sbs.api.apiclients.hypixel.implementation.HypixelRequestInterface;
 import gg.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public final class HypixelApiBuilder extends ApiBuilder<HypixelDataInterface> {
+public final class HypixelApiBuilder extends ApiBuilder<HypixelRequestInterface> {
 
     public static final Pattern apiKeyRegex = Pattern.compile("[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12}");
     @Getter private UUID apiKey;
