@@ -1,6 +1,6 @@
 package gg.sbs.api.util.helper;
 
-import gg.sbs.api.apiclients.hypixel.HypixelApiBuilder;
+import gg.sbs.api.client.hypixel.HypixelApiBuilder;
 import gg.sbs.api.util.MaxSizeLinkedMap;
 import gg.sbs.api.util.comparator.LastCharCompare;
 

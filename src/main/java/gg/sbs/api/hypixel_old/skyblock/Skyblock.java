@@ -1,6 +1,6 @@
 package gg.sbs.api.hypixel_old.skyblock;
 
-import gg.sbs.api.apiclients.mojang.MojangChatFormatting;
+import gg.sbs.api.client.mojang.MojangChatFormatting;
 import gg.sbs.api.util.concurrent.Concurrent;
 import gg.sbs.api.util.concurrent.ConcurrentList;
 import gg.sbs.api.util.concurrent.ConcurrentMap;
@@ -1300,7 +1300,7 @@ public class Skyblock {
                 1386700, 1496700, 1616700, 1746700, 1886700);
 
         for (Map.Entry<Item.Rarity, Integer> entry : PET_EXP_SCALE_OFFSET)
-            PET_EXP_TIER_SCALE.put(entry.getKey(), Skyblock.PET_EXP_SCALE.subList(entry.getValue(), entry.getValue() + 99));
+            PET_EXP_TIER_SCALE.put(entry.getKey(), Skyblock.PET_EXP_SCALE.subList(entry.getValue(), entry.getValue() + 99)); // TODO: Add 0 to PET_EXP_SCALE, Add 1 to 99
 
         SKILL_EXP_SCALE = Concurrent.newList(
                 50, 125, 200, 300, 500, 750, 1000, 1500, 2000, 3500, 5000, 7500, 10000,
