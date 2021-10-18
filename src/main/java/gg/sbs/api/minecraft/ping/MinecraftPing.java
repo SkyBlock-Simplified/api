@@ -18,7 +18,9 @@ import java.net.Socket;
 
 public class MinecraftPing {
 
-    public static final byte PACKET_HANDSHAKE = 0x00, PACKET_STATUSREQUEST = 0x00, PACKET_PING = 0x01;
+    public static final byte PACKET_HANDSHAKE = 0x00;
+    public static final byte PACKET_STATUSREQUEST = 0x00;
+    public static final byte PACKET_PING = 0x01;
     public static final int PROTOCOL_VERSION = 4;
     public static final int STATUS_HANDSHAKE = 1;
 
@@ -112,7 +114,7 @@ public class MinecraftPing {
         if (id == -1) throw new IOException("Server prematurely ended stream.");
         if (id != PACKET_PING) throw new IOException("Server returned invalid packet.");
 
-        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         JsonElement descriptionJsonElement = jsonObject.get("description");
 
         if (descriptionJsonElement.isJsonObject()) {
