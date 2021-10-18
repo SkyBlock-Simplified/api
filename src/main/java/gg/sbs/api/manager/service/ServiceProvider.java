@@ -1,34 +1,15 @@
 package gg.sbs.api.manager.service;
 
+import gg.sbs.api.manager.Provider;
 import lombok.Getter;
 
-public final class ServiceProvider<T> {
+public final class ServiceProvider extends Provider {
 
-	@Getter private final Class<T> service;
-	@Getter private final T provider;
+	@Getter private final Object provider;
 
-	ServiceProvider(Class<T> service, T provider) {
-		this.service = service;
+	ServiceProvider(Class<?> service, Object provider) {
+		super(service);
 		this.provider = provider;
-	}
-
-	@Override
-	@SuppressWarnings("rawtypes")
-	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
-		else if (obj == this)
-			return true;
-		else if (obj instanceof ServiceProvider) {
-			ServiceProvider provider = (ServiceProvider)obj;
-			return provider.getService().equals(this.getService());
-		} else
-			return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return this.getService().hashCode();
 	}
 
 }
