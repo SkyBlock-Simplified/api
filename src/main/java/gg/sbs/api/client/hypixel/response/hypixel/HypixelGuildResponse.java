@@ -1,7 +1,7 @@
 package gg.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
-import gg.sbs.api.client.mojang.MojangChatFormatting;
+import gg.sbs.api.minecraft.text.MojangChatFormatting;
 import gg.sbs.api.util.helper.ListUtil;
 import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.concurrent.ConcurrentList;

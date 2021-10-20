@@ -1,4 +1,4 @@
-package gg.sbs.api.client.mojang;
+package gg.sbs.api.minecraft.text;
 
 import com.google.common.base.Preconditions;
 import gg.sbs.api.util.helper.FormatUtil;

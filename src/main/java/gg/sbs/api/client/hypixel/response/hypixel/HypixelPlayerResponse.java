@@ -2,7 +2,7 @@ package gg.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
 import gg.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
-import gg.sbs.api.client.mojang.MojangChatFormatting;
+import gg.sbs.api.minecraft.text.MojangChatFormatting;
 import gg.sbs.api.util.helper.FormatUtil;
 import gg.sbs.api.util.helper.RegexUtil;
 import gg.sbs.api.util.helper.StringUtil;

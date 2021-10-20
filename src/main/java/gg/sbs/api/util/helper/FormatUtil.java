@@ -1,6 +1,6 @@
 package gg.sbs.api.util.helper;
 
-import gg.sbs.api.client.mojang.MojangChatFormatting;
+import gg.sbs.api.minecraft.text.MojangChatFormatting;
 import gg.sbs.api.util.MaxSizeLinkedMap;
 
 import java.text.MessageFormat;
