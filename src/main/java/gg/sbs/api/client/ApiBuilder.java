@@ -1,6 +1,8 @@
 package gg.sbs.api.client;
 
 import feign.Feign;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
 import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
@@ -26,7 +28,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
                 .client(new OkHttpClient())
                 .encoder(new GsonEncoder(SimplifiedApi.getGson()))
                 .decoder(new GsonDecoder(SimplifiedApi.getGson()))
-                .requestInterceptor(template -> ApiBuilder.this.buildHeaders().forEach(template::header))
+                .requestInterceptor(template -> ApiBuilder.this.getHeaders().forEach(template::header))
                 .errorDecoder(this.getErrorDecoder())
                 .target(tClass, this.getUrl());
     }
@@ -35,7 +37,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
         return FormatUtil.format("https://{0}", this.url);
     }
 
-    public Map<String, String> buildHeaders() {
+    public Map<String, String> getHeaders() {
         return Concurrent.newMap();
     }
 

@@ -42,6 +42,10 @@ public final class ResourceUtil {
         return getEnvironmentVariables().get(variableName);
     }
 
+    public static String getEnvironmentVariable(String variableName, String defaultValue) {
+        return getEnvironmentVariables().getOrDefault(variableName, defaultValue);
+    }
+
     public static InputStream getResource(String resourcePath) {
         return ResourceUtil.class.getResourceAsStream(resourcePath);
     }

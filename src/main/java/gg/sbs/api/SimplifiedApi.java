@@ -49,7 +49,6 @@ import gg.sbs.api.manager.builder.BuilderManager;
 import gg.sbs.api.manager.service.ServiceManager;
 import gg.sbs.api.reflection.Reflection;
 import gg.sbs.api.scheduler.Scheduler;
-import gg.sbs.api.util.helper.StringUtil;
 import gg.sbs.api.util.helper.TimeUtil;
 import gg.sbs.api.util.builder.string.StringBuilder;
 import gg.sbs.api.util.concurrent.Concurrent;
@@ -98,15 +97,11 @@ public class SimplifiedApi {
         builderManager.add(HypixelSkyBlockData.class, HypixelApiBuilder.class);
         builderManager.add(String.class, StringBuilder.class);
 
-        if (StringUtil.isNotEmpty(config.getHypixelApiKey())) {
-            hypixelApiBuilder.setApiKey(config.getHypixelApiKey());
-
-            // Provide Client Api Implementations
-            serviceManager.add(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
-            serviceManager.add(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
-            serviceManager.add(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
-            serviceManager.add(MojangData.class, mojangApiBuilder.build(MojangData.class));
-        }
+        // Provide Client Api Implementations
+        serviceManager.add(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
+        serviceManager.add(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
+        serviceManager.add(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
+        serviceManager.add(MojangData.class, mojangApiBuilder.build(MojangData.class));
     }
 
     public static void enableDatabase() {

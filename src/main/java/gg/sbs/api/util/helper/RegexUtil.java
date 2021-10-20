@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * @see Pattern
  */
 public class RegexUtil {
+
     private static final transient LinkedHashMap<String, String> ORDERED_MESSAGES = new MaxSizeLinkedMap<>(100);
     private static final transient LastCharCompare CODE_COMPARE = new LastCharCompare();
     private static final transient String ALL_PATTERN = "[0-9A-FK-ORa-fk-or]";
@@ -535,4 +536,5 @@ public class RegexUtil {
     public static String strip(String message, Pattern pattern) {
         return replaceAll(message, pattern, "");
     }
+
 }
