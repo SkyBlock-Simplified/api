@@ -45,12 +45,12 @@ shadowJar {
     def remoteHibernate = 'org.hibernate'
     def remoteYaml = 'org.yaml.snakeyaml'
 
-    def localGson = 'gg.sbs.api.util.google.gson'
-    def localCommon = 'gg.sbs.api.util.google.common'
-    def localOpenfeign = 'gg.sbs.api.util.openfeign'
-    def localMariaJdbc = 'gg.sbs.api.data.sql.mariadb'
-    def localHibernate = 'gg.sbs.api.data.sql.hibernate'
-    def localYaml = 'gg.sbs.api.data.yaml.snake'
+    def localGson = 'dev.sbs.api.util.google.gson'
+    def localCommon = 'dev.sbs.api.util.google.common'
+    def localOpenfeign = 'dev.sbs.api.util.openfeign'
+    def localMariaJdbc = 'dev.sbs.api.data.sql.mariadb'
+    def localHibernate = 'dev.sbs.api.data.sql.hibernate'
+    def localYaml = 'dev.sbs.api.data.yaml.snake'
 
     relocate remoteGson, localGson
     relocate remoteCommon, localCommon
