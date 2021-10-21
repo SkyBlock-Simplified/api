@@ -8,6 +8,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.Primitives;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
+import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 

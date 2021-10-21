@@ -6,6 +6,7 @@ import com.google.common.collect.HashBiMap;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.Primitives;
+import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 
 import java.io.ByteArrayInputStream;
@@ -132,11 +133,11 @@ public final class NbtFactory_old {
 		return INSTANCE;
 	}
 
-	/**
+	/*
 	 * Ensure that the given item can store NBT information.
 	 *
 	 * @param itemStack The item to check.
-	 */
+	 *
 	private void checkItem(ItemStack itemStack) {
 		Preconditions.checkArgument(itemStack != null, "ItemStack cannot be NULL!");
 
@@ -148,7 +149,7 @@ public final class NbtFactory_old {
 	 * Ensure that the given entity can store NBT information.
 	 *
 	 * @param entity The entity to check.
-	 */
+	 *
 	private void checkEntity(Entity entity) {
 		Preconditions.checkArgument(entity != null, "Entity cannot be NULL!");
 	}
@@ -157,10 +158,10 @@ public final class NbtFactory_old {
 	 * Ensure that the given tile entity can store NBT information.
 	 *
 	 * @param tileEntity The tile entity to check.
-	 */
+	 *
 	private void checkTileEntity(TileEntity tileEntity) {
 		Preconditions.checkArgument(tileEntity != null, "TileEntity cannot be NULL!");
-	}
+	}*/
 
 	/**
 	 * Construct a new NbtList of unspecified type.
@@ -200,7 +201,7 @@ public final class NbtFactory_old {
 	 * @return The created tag.
 	 */
 	private static Object createNbtTag(NbtType type, Object value) {
-		Object tag = NBT_BASE.invokeMethod(NBT_BASE.getClazz(), null, type.getId());
+		Object tag = null;//NBT_BASE.invokeMethod(NBT_BASE.getClazz(), null, type.getId());
 
 		if (value != null)
 			new Reflection(tag.getClass()).setValue(type.getFieldType(), tag, value);
@@ -222,13 +223,13 @@ public final class NbtFactory_old {
 		return new NbtCompound(handle, false);
 	}
 
-	/**
+	/*
 	 * Construct a wrapper for an NBT tag stored in an entity. This is where
 	 * auxillary data such as entity data and coordinates are stored.
 	 *
 	 * @param entity The entity to wrap.
 	 * @return A wrapper for the entitys NBT tag.
-	 */
+	 *
 	public final NbtEntityCompound fromEntity(Entity entity) {
 		this.checkEntity(entity);
 		entity.getEntityData(); // Create tag if it doesn't exist
@@ -253,7 +254,7 @@ public final class NbtFactory_old {
 	 *
 	 * @param itemStack The item to wrap.
 	 * @return A wrapper for the items NBT tag.
-	 */
+	 *
 	public final NbtItemCompound fromItemStack(ItemStack itemStack) {
 		this.checkItem(itemStack);
 
@@ -274,7 +275,7 @@ public final class NbtFactory_old {
 	 *
 	 * @param tileEntity The tile entity to wrap.
 	 * @return A wrapper for the entitys NBT tag.
-	 */
+	 *
 	public final NbtTileEntityCompound fromTileEntity(TileEntity tileEntity) {
 		this.checkTileEntity(tileEntity);
 		tileEntity.getTileData(); // Create tag if it doesn't exist
@@ -310,7 +311,7 @@ public final class NbtFactory_old {
 				if (attributeID.startsWith("ENCHANTED_")) {
 					// This fixes enchanted potatoes having the wrong id (potato block).
 					if (nbtCompound.get("id") instanceof Short) {
-						if (nbtCompound.<Short>get("id") == 142/* && "ENCHANTED_POTATO".equals(attributeID)*/) // Potato Block
+						if (nbtCompound.<Short>get("id") == 142) // Potato Block
 							item = Item.getItemById(392);
 						else if (nbtCompound.<Short>get("id") == 141) // Carrot Block
 							item = Item.getItemById(391);
@@ -357,7 +358,7 @@ public final class NbtFactory_old {
 
 
 		return ItemStack.EMPTY;
-	}
+	}*/
 
 	/**
 	 * Gets a new NBT wrapper for the given NBTTagList.
@@ -388,7 +389,8 @@ public final class NbtFactory_old {
 	 * @return A new NBT compound.
 	 */
 	public final NbtCompound fromStream(InputStream stream) {
-		return this.fromCompound(NBT_COMPRESSED_TOOLS.invokeMethod(NBT_TAG_COMPOUND.getClazz(), null, stream));
+		return null;
+		//return this.fromCompound(NBT_COMPRESSED_TOOLS.invokeMethod(NBT_TAG_COMPOUND.getClazz(), null, stream));
 	}
 
 	/**
@@ -409,7 +411,8 @@ public final class NbtFactory_old {
 	 * @return The corresponding type.
 	 */
 	protected static NbtType getNbtType(Object nms) {
-		return NBT_ENUM.get(NBT_BASE.invokeMethod(Byte.class, nms));
+		return null;
+		//return NBT_ENUM.get(NBT_BASE.invokeMethod(Byte.class, nms));
 	}
 
 	/**
@@ -434,15 +437,15 @@ public final class NbtFactory_old {
 	 * @param stream The output stream.
 	 */
 	public void saveStream(NbtCompound source, OutputStream stream) {
-		NBT_COMPRESSED_TOOLS.invokeMethod(Void.class, null, source.getHandle(), stream);
+		//NBT_COMPRESSED_TOOLS.invokeMethod(Void.class, null, source.getHandle(), stream);
 	}
 
-	/**
+	/*
 	 * Set the NBT compound tag of a given item stack.
 	 *
 	 * @param itemStack The item stack, cannot be air.
 	 * @param compound The NbtCompound to save, null to remove it.
-	 */
+	 *
 	public final void setItemTag(ItemStack itemStack, NbtCompound compound) {
 		this.checkItem(itemStack);
 		itemStack.deserializeNBT((NBTTagCompound)compound.getHandle());
@@ -453,7 +456,7 @@ public final class NbtFactory_old {
 	 *
 	 * @param entity The entity.
 	 * @param compound The NbtCompound to save, null to remove it.
-	 */
+	 *
 	public final void setEntityTag(Entity entity, NbtCompound compound) {
 		this.checkEntity(entity);
 		entity.deserializeNBT((NBTTagCompound)compound.getHandle());
@@ -464,11 +467,11 @@ public final class NbtFactory_old {
 	 *
 	 * @param tileEntity The tile entity.
 	 * @param compound The NbtCompound to save, null to remove it.
-	 */
+	 *
 	public final void setTileEntityTag(TileEntity tileEntity, NbtCompound compound) {
 		this.checkTileEntity(tileEntity);
 		tileEntity.deserializeNBT((NBTTagCompound)compound.getHandle());
-	}
+	}*/
 
 	/**
 	 * Convert wrapped List and Map objects into their respective NBT counterparts.
@@ -498,7 +501,7 @@ public final class NbtFactory_old {
 		if (nms == null)
 			return null;
 
-		if (NBT_BASE.getClazz().isAssignableFrom(nms.getClass())) {
+		//if (NBT_BASE.getClazz().isAssignableFrom(nms.getClass())) {
 			final NbtType type = getNbtType(nms);
 
 			switch (type) {
@@ -509,9 +512,9 @@ public final class NbtFactory_old {
 				default:
 					return getDataField(type, nms);
 			}
-		}
+		//}
 
-		throw new IllegalArgumentException(FormatUtil.format("Unexpected type: {0}!", nms));
+		//throw new IllegalArgumentException(FormatUtil.format("Unexpected type: {0}!", nms));
 	}
 
 }

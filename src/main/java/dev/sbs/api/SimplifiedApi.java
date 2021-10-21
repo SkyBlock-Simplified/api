@@ -20,6 +20,7 @@ import dev.sbs.api.data.sql.model.pets.PetRepository;
 import dev.sbs.api.data.sql.model.potions.PotionRepository;
 import dev.sbs.api.data.sql.model.skills.SkillRepository;
 import dev.sbs.api.data.sql.model.stats.StatRepository;
+import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.concurrent.Concurrent;
@@ -152,6 +153,10 @@ public class SimplifiedApi {
 
     public static Gson getGson() {
         return getServiceManager().get(Gson.class);
+    }
+
+    public static NbtFactory_old getNbtFactory() {
+        return NbtFactory_old.getInstance(); // TODO: DO NOT USE THIS
     }
 
     public static Scheduler getScheduler() {

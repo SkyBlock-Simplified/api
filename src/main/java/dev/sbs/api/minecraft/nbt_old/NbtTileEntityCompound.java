@@ -1,11 +1,8 @@
 package dev.sbs.api.minecraft.nbt_old;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-
-/**
+/*
  * NBT Wrapper for an Entity.
- */
+ *
 public final class NbtTileEntityCompound extends WrappedCompound<TileEntity> {
 
 	NbtTileEntityCompound(TileEntity tileEntity, Object handle) {
@@ -22,9 +19,9 @@ public final class NbtTileEntityCompound extends WrappedCompound<TileEntity> {
 			this.save();
 	}*/
 
-	@Override
+	/*@Override
 	protected void save() {
 		this.getWrapped().deserializeNBT((NBTTagCompound)this.getHandle());
 	}
 
-}
+}*/

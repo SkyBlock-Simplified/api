@@ -1,6 +1,5 @@
 package dev.sbs.api.minecraft.nbt_old;
 
-import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 
@@ -48,9 +47,10 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 	 */
 	@Override
 	public NbtCompound clone() {
-		NbtCompound compound = SimplifiedApi.getNbtFactory().createCompound();
+		/*NbtCompound compound = SimplifiedApi.getNbtFactory().createCompound();
 		compound.putAll(this);
-		return compound;
+		return compound;*/
+		return null;
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 				if (!createNew)
 					throw new IllegalArgumentException(FormatUtil.format("Cannot find ''{0}'' in ''{1}''.", entry, path));
 
-				current.put(entry, child = SimplifiedApi.getNbtFactory().createCompound());
+				//current.put(entry, child = SimplifiedApi.getNbtFactory().createCompound());
 			}
 
 			current = child;
@@ -241,7 +241,7 @@ public class NbtCompound extends WrappedMap implements Cloneable {
 	 * @param stream The output stream.
 	 */
 	public void saveTo(OutputStream stream) {
-		SimplifiedApi.getNbtFactory().saveStream(this, stream);
+		//SimplifiedApi.getNbtFactory().saveStream(this, stream);
 	}
 
 }

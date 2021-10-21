@@ -1,12 +1,9 @@
 package dev.sbs.api.minecraft.nbt_old;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-
-/**
+/*
  * NBT Wrapper for an Entity.
  */
-public final class NbtEntityCompound extends WrappedCompound<Entity> {
+/*public final class NbtEntityCompound extends WrappedCompound<Entity> {
 
 	NbtEntityCompound(Entity entity, Object handle) {
 		super(entity, handle, "ForgeData");
@@ -22,9 +19,9 @@ public final class NbtEntityCompound extends WrappedCompound<Entity> {
 			this.save();
 	}*/
 
-	@Override
+	/*@Override
 	protected void save() {
 		this.getWrapped().deserializeNBT((NBTTagCompound)this.getHandle());
 	}
 
-}
+}*/

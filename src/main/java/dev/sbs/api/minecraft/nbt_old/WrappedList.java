@@ -37,8 +37,8 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 		E nbt = this.unwrapIncoming(element);
 
 		// Set the list type if its the first element
-		if (this.size() == 0)
-			NbtFactory_old.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory_old.getNbtType(nbt).getId());
+		//if (this.size() == 0)
+		//	NbtFactory_old.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory_old.getNbtType(nbt).getId());
 
 		return this.original.add(nbt);
 	}
@@ -48,8 +48,8 @@ abstract class WrappedList<E> extends AbstractList<E> implements Wrapper {
 		E nbt = this.unwrapIncoming(element);
 
 		// Set the list type if its the first element
-		if (this.size() == 0)
-			NbtFactory_old.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory_old.getNbtType(nbt).getId());
+		//if (this.size() == 0)
+		//	NbtFactory_old.NBT_TAG_LIST.setValue(Byte.class, this.handle, NbtFactory_old.getNbtType(nbt).getId());
 
 		this.original.add(index, nbt);
 	}

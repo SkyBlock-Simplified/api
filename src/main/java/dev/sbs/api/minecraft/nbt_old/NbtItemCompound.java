@@ -1,12 +1,8 @@
 package dev.sbs.api.minecraft.nbt_old;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-/**
+/*
  * NBT Wrapper for an ItemStack.
- */
+ *
 public final class NbtItemCompound extends WrappedCompound<ItemStack> {
 
 	NbtItemCompound(ItemStack item, Object handle) {
@@ -27,4 +23,4 @@ public final class NbtItemCompound extends WrappedCompound<ItemStack> {
 		}
 	}
 
-}
+}*/
