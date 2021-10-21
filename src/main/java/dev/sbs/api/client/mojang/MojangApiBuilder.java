@@ -9,7 +9,7 @@ import feign.codec.ErrorDecoder;
 public final class MojangApiBuilder extends ApiBuilder<MojangRequestInterface> {
 
     public MojangApiBuilder() {
-        super("api.skyblocksimplified.com");
+        super("api.sbs.dev");
     }
 
     @Override
