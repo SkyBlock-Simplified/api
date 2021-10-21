@@ -108,11 +108,11 @@ public class SimplifiedApi {
     public static void enableDatabase() {
         if (!databaseRegistered) {
             // Load SqlSession
-            SqlSession sqlSession = new SqlSession(getConfig(), getSqlRepositoryClasses());
+            SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getSqlRepositoryClasses()) {
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses()) {
                 long refreshTime = TimeUtil.ONE_MINUTE_MS;
 
                 // Get Custom Refresh Time
@@ -124,7 +124,6 @@ public class SimplifiedApi {
                 // Provide Repository
                 serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession, refreshTime));
             }
-            // TODO: This works but generates an error, see bottom of class
 
             databaseRegistered = true;
         }
@@ -156,7 +155,7 @@ public class SimplifiedApi {
     }
 
     public static NbtFactory_old getNbtFactory() {
-        return NbtFactory_old.getInstance(); // TODO: DO NOT USE THIS
+        return NbtFactory_old.getInstance(); // DO NOT USE THIS
     }
 
     public static Scheduler getScheduler() {
@@ -171,7 +170,7 @@ public class SimplifiedApi {
         return getServiceManager().get(tClass);
     }
 
-    public static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getSqlRepositoryClasses() {
+    private static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
         return Concurrent.newSet(
                 AccessoryRepository.class,
                 AccessoryFamilyRepository.class,
