@@ -10,20 +10,10 @@ import java.net.URL;
 
 public class MojangStatusResponse {
 
-    @Getter private boolean success;
-    private int httpCode;
-    private ConcurrentMap<Service, State> status;
-
-    public ConcurrentMap<Service, State> getAllStatus() {
-        return this.status;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return HttpStatus.getByCode(this.httpCode);
-    }
+    @Getter private ConcurrentMap<Service, State> allStates;
 
     public State getState(Service service) {
-        return this.status.get(service);
+        return this.allStates.get(service);
     }
 
     public enum Service {
@@ -53,14 +43,14 @@ public class MojangStatusResponse {
 
     }
 
-    public enum State {
+    public static class State {
 
-        @SerializedName("green")
-        NO_ISSUES,
-        @SerializedName("yellow")
-        SOME_ISSUES,
-        @SerializedName("red")
-        SERVICE_UNAVAILABLE
+        @Getter private boolean success;
+        private int code;
+
+        public HttpStatus getHttpStatus() {
+            return HttpStatus.getByCode(this.code);
+        }
 
     }
 
