@@ -6,7 +6,6 @@ import dev.sbs.api.util.math.operator.Operator;
 import dev.sbs.api.util.math.operator.Operators;
 import dev.sbs.api.util.math.tokenizer.*;
 import dev.sbs.api.util.helper.FormatUtil;
-import gg.sbs.api.util.math.tokenizer.*;
 import lombok.Getter;
 import lombok.Setter;
 

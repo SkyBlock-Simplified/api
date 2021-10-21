@@ -3,7 +3,6 @@ package dev.sbs.api.client.hypixel.implementation;
 import dev.sbs.api.client.hypixel.response.skyblock.*;
 import feign.Param;
 import feign.RequestLine;
-import gg.sbs.api.client.hypixel.response.skyblock.*;
 
 import java.util.UUID;
 

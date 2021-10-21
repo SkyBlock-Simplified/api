@@ -8,7 +8,6 @@ import dev.sbs.api.minecraft.nbt.tags.array.LongArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.*;
-import gg.sbs.api.minecraft.nbt.tags.primitive.*;
 
 /**
  * Defines the 12 standard NBT tag types and their IDs supported by this library, laid out in the Notchian spec.
