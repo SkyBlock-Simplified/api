@@ -7,6 +7,7 @@ plugins {
 
 static def loadEnv() {
     def env = [:]
+
     try {
         def file = new File('.env')
         def scanner = new Scanner(file)
@@ -17,8 +18,8 @@ static def loadEnv() {
                 env.put(pair[0], pair.length == 2 ? pair[1] : '')
             }
         }
-    } catch (FileNotFoundException ignored) {
-    }
+    } catch (FileNotFoundException ignored) { }
+
     env.putAll(System.getenv())
     return env
 }
@@ -64,11 +65,9 @@ sourceSets {
     dev {
         java {
             srcDirs = ['src/main/java']
-            exclude '**/nbt_old/**'
         }
         resources {
             srcDirs = ['src/main/resources']
-            exclude '**/nbt_old/**'
         }
     }
     devTest {
@@ -171,7 +170,7 @@ publishing {
             groupId = groupIdProp
             artifactId = artifactIdProp
             version = versionProp
-            artifacts = [jar]
+            artifacts = [shadowJar]
             pom.withXml {
                 def dependencies = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.each {

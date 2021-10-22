@@ -1,18 +1,10 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
-import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 public class SkyBlockDateTest {
-
-    private static final HypixelSkyBlockData hypixelSkyBlockData;
-
-    static {
-        hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
-    }
 
     @Test
     public void getDate_ok() {
