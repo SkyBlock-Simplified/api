@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql.integrated.factory;
 
 import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
-import dev.sbs.api.data.sql.integrated.function.VoidResultSetFunction;
+import dev.sbs.api.data.sql.integrated.function.ResultSetConsumer;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
@@ -371,14 +371,14 @@ public abstract class SQLFactory {
      * @param callback Callback t process results with.
      * @param args     Arguments to pass to the query.
      */
-    public final void query(String sql, VoidResultSetFunction callback, Object... args) throws SQLException {
+    public final void query(String sql, ResultSetConsumer callback, Object... args) throws SQLException {
         try (Connection connection = this.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 assignArgs(statement, args);
 
                 try (ResultSet result = statement.executeQuery()) {
                     if (callback != null)
-                        callback.handle(result);
+                        callback.accept(result);
                 }
             }
         }
@@ -390,7 +390,7 @@ public abstract class SQLFactory {
 
             try (ResultSet result = statement.executeQuery()) {
                 if (callback != null)
-                    return callback.handle(result);
+                    return callback.apply(result);
             }
         }
 
@@ -404,12 +404,11 @@ public abstract class SQLFactory {
      * @param callback Callback to process results with.
      * @param args     Arguments to pass to the query.
      */
-    public final void queryAsync(final String sql, final VoidResultSetFunction callback, final Object... args) {
+    public final void queryAsync(final String sql, final ResultSetConsumer callback, final Object... args) {
         Scheduler.getInstance().runAsync(() -> {
             try {
                 this.query(sql, callback, args);
-            } catch (SQLException ignore) {
-            }
+            } catch (SQLException ignore) { }
         });
     }
 

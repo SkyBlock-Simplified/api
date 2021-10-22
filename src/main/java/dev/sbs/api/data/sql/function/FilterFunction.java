@@ -1,10 +1,9 @@
 package dev.sbs.api.data.sql.function;
 
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.util.function.ReturnParameterFunction;
 
-public interface FilterFunction<P extends SqlModel, R> extends ReturnParameterFunction<R, P> {
+import java.util.function.Function;
 
-    R handle(P parameter);
+public interface FilterFunction<T extends SqlModel, R> extends Function<T, R> {
 
 }

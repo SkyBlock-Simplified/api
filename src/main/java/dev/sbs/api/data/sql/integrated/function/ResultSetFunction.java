@@ -1,11 +1,8 @@
 package dev.sbs.api.data.sql.integrated.function;
 
-import dev.sbs.api.util.function.ReturnParameterFunction;
-
 import java.sql.ResultSet;
+import java.util.function.Function;
 
-public interface ResultSetFunction<T> extends ReturnParameterFunction<T, ResultSet> {
-
-	T handle(ResultSet result);
+public interface ResultSetFunction<R> extends Function<ResultSet, R> {
 
 }

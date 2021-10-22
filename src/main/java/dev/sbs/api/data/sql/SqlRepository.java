@@ -8,7 +8,6 @@ import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.util.function.ReturnFunction;
 import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -23,6 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static dev.sbs.api.util.helper.TimeUtil.ONE_MINUTE_MS;
 
@@ -82,13 +82,13 @@ public abstract class SqlRepository<T extends SqlModel> {
         }
     }
 
-    private <S> S waitForInitLock(@NonNull ReturnFunction<S> function) throws SqlException {
+    private <S> S waitForInitLock(@NonNull Supplier<S> function) throws SqlException {
         try {
             synchronized (this.initLock) {
                 while (!this.itemsInitialized)
                     this.initLock.wait();
 
-                return function.handle();
+                return function.get();
             }
         } catch (InterruptedException exception) {
             throw new SqlException(FormatUtil.format("Could not wait for items to be initialized: {0}", exception.getMessage()), exception);
@@ -102,7 +102,7 @@ public abstract class SqlRepository<T extends SqlModel> {
     public <S> T findFirstOrNullCached(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
         return waitForInitLock(
                 () -> items.stream()
-                        .filter(it -> Objects.equals(function.handle(it), value))
+                        .filter(it -> Objects.equals(function.apply(it), value))
                         .findFirst()
                         .orElse(null)
         );
@@ -115,7 +115,7 @@ public abstract class SqlRepository<T extends SqlModel> {
         for (int i = 0; i < predicates.length && itemsCopy.size() > 0; i++) {
             Pair<FilterFunction<T, S>, S> pair = predicates[i];
             itemsCopy = itemsCopy.stream()
-                    .filter(it -> Objects.equals(pair.getKey().handle(it), pair.getValue()))
+                    .filter(it -> Objects.equals(pair.getKey().apply(it), pair.getValue()))
                     .collect(Concurrent.toList());
         }
 

@@ -1,10 +1,9 @@
 package dev.sbs.api.data.sql.function;
 
-import dev.sbs.api.util.function.VoidParameterFunction;
 import org.hibernate.Session;
 
-public interface VoidSessionFunction extends VoidParameterFunction<Session> {
+import java.util.function.Consumer;
 
-    void handle(Session session);
+public interface VoidSessionFunction extends Consumer<Session> {
 
 }

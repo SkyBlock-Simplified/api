@@ -57,13 +57,13 @@ public final class SqlSession {
 
     public void with(VoidSessionFunction function) {
         Session session = this.openSession();
-        function.handle(session);
+        function.accept(session);
         session.close();
     }
 
     public <S> S with(ReturnSessionFunction<S> function) {
         Session session = this.openSession();
-        S result = function.handle(session);
+        S result = function.apply(session);
         session.close();
         return result;
     }
@@ -71,7 +71,7 @@ public final class SqlSession {
     public void transaction(VoidSessionFunction function) {
         Session session = this.openSession();
         Transaction transaction = session.beginTransaction();
-        function.handle(session);
+        function.accept(session);
         session.flush();
         transaction.commit();
         session.close();
@@ -80,7 +80,7 @@ public final class SqlSession {
     public <S> S transaction(ReturnSessionFunction<S> function) {
         Session session = this.openSession();
         Transaction transaction = session.beginTransaction();
-        S result = function.handle(session);
+        S result = function.apply(session);
         session.flush();
         transaction.commit();
         session.close();

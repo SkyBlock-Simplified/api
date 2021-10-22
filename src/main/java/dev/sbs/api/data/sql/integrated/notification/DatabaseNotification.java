@@ -6,7 +6,7 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
-import dev.sbs.api.data.sql.integrated.function.VoidResultSetFunction;
+import dev.sbs.api.data.sql.integrated.function.ResultSetConsumer;
 import dev.sbs.api.data.sql.integrated.factory.SQLFactory;
 import lombok.SneakyThrows;
 
@@ -96,10 +96,10 @@ public class DatabaseNotification {
 
 		final ConcurrentMap<String, Object> deleted = Concurrent.newMap();
 
-		this.sql.query(FormatUtil.format("SELECT old_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), new VoidResultSetFunction() {
+		this.sql.query(FormatUtil.format("SELECT old_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), new ResultSetConsumer() {
 			@Override
 			@SneakyThrows
-			public void handle(ResultSet result) {
+			public void accept(ResultSet result) {
 				if (result.next()) {
 					String[] _old = result.getString("old_data").split(",");
 					int keyCount = primaryColumnNames.size();
@@ -150,14 +150,14 @@ public class DatabaseNotification {
 	 * @param callback Callback class to handle retrieved data.
 	 * @throws SQLException If you attempt to retrieve updated data when deleting a record.
 	 */
-	public final void getUpdatedRow(final VoidResultSetFunction callback) throws SQLException {
+	public final void getUpdatedRow(final ResultSetConsumer callback) throws SQLException {
 		if (this.getEvent() == TriggerEvent.DELETE)
 			throw new SQLException("Cannot retrieve a deleted record!");
 
-		this.sql.query(FormatUtil.format("SELECT new_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), new VoidResultSetFunction() {
+		this.sql.query(FormatUtil.format("SELECT new_data FROM {0} WHERE schema_name = ? AND table_name = ? AND sql_action = ? AND id = ?;", SQLNotifications.ACTIVITY_TABLE), new ResultSetConsumer() {
 			@Override
 			@SneakyThrows
-			public void handle(ResultSet result) {
+			public void accept(ResultSet result) {
 				if (result.next()) {
 					ConcurrentList<String> whereClause = Concurrent.newList();
 					int keyCount = primaryColumnNames.size();
@@ -188,7 +188,7 @@ public class DatabaseNotification {
 		this.primaryColumnNames.addAll(this.sql.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_KEY = ?;", new ResultSetFunction<Collection<? extends String>>() {
 			@Override
 			@SneakyThrows
-			public Collection<? extends String> handle(ResultSet result) {
+			public Collection<? extends String> apply(ResultSet result) {
 				ConcurrentList<String> keyNames = Concurrent.newList();
 				while (result.next()) keyNames.add(result.getString("COLUMN_NAME"));
 				return keyNames;
@@ -203,7 +203,7 @@ public class DatabaseNotification {
 			return this.sql.query(FormatUtil.format("SELECT id, sql_action FROM {0} WHERE table_name = ? AND id > ? AND sql_action IN (?, ?, ?) ORDER BY id {1}SC LIMIT 1;", SQLNotifications.ACTIVITY_TABLE, (this.previousId == 0 ? "DE" : "A")), new ResultSetFunction<Boolean>() {
 				@Override
 				@SneakyThrows
-				public Boolean handle(ResultSet result) {
+				public Boolean apply(ResultSet result) {
 					if (result.next()) {
 						int last = result.getInt("id");
 
@@ -261,7 +261,7 @@ public class DatabaseNotification {
 			return this.sql.query("SELECT TRIGGER_NAME, ACTION_STATEMENT FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_SCHEMA = ? AND TRIGGER_NAME IN (?, ?, ?);", new ResultSetFunction<Boolean>() {
 				@Override
 				@SneakyThrows
-				public Boolean handle(ResultSet result) {
+				public Boolean apply(ResultSet result) {
 					int valid = 0;
 
 					while (result.next()) {
