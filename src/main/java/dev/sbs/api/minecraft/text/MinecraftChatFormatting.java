@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.awt.*;
 import java.util.regex.Pattern;
 
-public enum MojangChatFormatting {
+public enum MinecraftChatFormatting {
 
     BLACK('0', 0x000000),
     DARK_BLUE('1', 0x0000AA),
@@ -30,32 +30,32 @@ public enum MojangChatFormatting {
     OBFUSCATED('k', true),
     BOLD('l', true),
     STRIKETHROUGH('m', true),
-    UNDERLINED('n', true),
+    UNDERLINE('n', true),
     ITALIC('o', true),
     RESET('r');
 
-    public static final char COLOR_CHAR = '\u00a7';
+    public static final char SECTION_SYMBOL = '\u00a7';
     @Getter private final char code;
     @Getter private final boolean isFormat;
     private final String toString;
     private final Color color;
 
-    MojangChatFormatting(char code) {
+    MinecraftChatFormatting(char code) {
         this(code, -1);
     }
 
-    MojangChatFormatting(char code, int rgb) {
+    MinecraftChatFormatting(char code, int rgb) {
         this(code, false, rgb);
     }
 
-    MojangChatFormatting(char code, boolean isFormat) {
+    MinecraftChatFormatting(char code, boolean isFormat) {
         this(code, isFormat, -1);
     }
 
-    MojangChatFormatting(char code, boolean isFormat, int rgb) {
+    MinecraftChatFormatting(char code, boolean isFormat, int rgb) {
         this.code = code;
         this.isFormat = isFormat;
-        this.toString = new String(new char[]{COLOR_CHAR, code});
+        this.toString = new String(new char[] { SECTION_SYMBOL, code });
         this.color = (this.isColor() ? new Color(rgb) : null);
     }
 
@@ -65,8 +65,8 @@ public enum MojangChatFormatting {
      * @param code The code to search for.
      * @return The mapped color, or null if non exists.
      */
-    public static MojangChatFormatting getByChar(char code) {
-        for (MojangChatFormatting color : values()) {
+    public static MinecraftChatFormatting getByChar(char code) {
+        for (MinecraftChatFormatting color : values()) {
             if (color.code == code)
                 return color;
         }
@@ -95,11 +95,15 @@ public enum MojangChatFormatting {
         return !this.isFormat() && this != RESET;
     }
 
-    public MojangChatFormatting getNextFormat() {
+    public static boolean isValid(char code) {
+        return getByChar(code) != null;
+    }
+
+    public MinecraftChatFormatting getNextFormat() {
         return this.getNextFormat(ordinal());
     }
 
-    private MojangChatFormatting getNextFormat(int ordinal) {
+    private MinecraftChatFormatting getNextFormat(int ordinal) {
         int nextColor = ordinal + 1;
 
         if (nextColor > values().length - 1)
@@ -123,6 +127,14 @@ public enum MojangChatFormatting {
     public static String translateAlternateColorCodes(char altColorChar, String value) {
         Pattern replaceAltColor = Pattern.compile(FormatUtil.format("(?<!{0}){0}([0-9a-fk-orA-FK-OR])", altColorChar));
         return RegexUtil.replaceColor(value, replaceAltColor);
+    }
+
+    public String toLegacyString() {
+        return this.toString;
+    }
+
+    public String toJsonString() {
+        return this.name().toLowerCase();
     }
 
     @Override

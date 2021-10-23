@@ -17,7 +17,7 @@ public final class MinecraftTextBuilder implements Builder<MinecraftTextObject> 
         this.current = root;
     }
 
-    public MinecraftTextBuilder color(ChatColor color) {
+    public MinecraftTextBuilder color(MinecraftChatFormatting color) {
         this.current.setColor(color);
         return this;
     }

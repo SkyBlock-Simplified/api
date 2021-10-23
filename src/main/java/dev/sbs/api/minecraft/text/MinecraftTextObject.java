@@ -1,5 +1,6 @@
 package dev.sbs.api.minecraft.text;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,7 +24,7 @@ import java.util.List;
 public final class MinecraftTextObject {
 
     private String text;
-    private ChatColor color;
+    private MinecraftChatFormatting color;
     private ClickEvent clickEvent;
     private HoverEvent hoverEvent;
     private boolean italic, bold, underlined, obfuscated, strikethrough;
@@ -33,8 +34,9 @@ public final class MinecraftTextObject {
         this.setText(text);
     }
 
-    public void setColor(ChatColor color) {
-        this.color = color;
+    public void setColor(MinecraftChatFormatting format) {
+        Preconditions.checkArgument(format.isColor(), "Format must be a color");
+        this.color = format;
     }
 
     public void setExtra(List<MinecraftTextObject> extra) {
@@ -75,7 +77,7 @@ public final class MinecraftTextObject {
             MinecraftTextObject textObject = new MinecraftTextObject(jsonObject.get("text").getAsString());
             if (jsonObject.has("clickEvent")) textObject.setClickEvent(ClickEvent.fromJson(jsonObject.get("clickEvent").getAsJsonObject()));
             if (jsonObject.has("hoverEvent")) textObject.setHoverEvent(HoverEvent.fromJson(jsonObject.get("hoverEvent").getAsJsonObject()));
-            if (jsonObject.has("color")) textObject.setColor(ChatColor.valueOf(jsonObject.get("color").getAsString().toUpperCase()));
+            if (jsonObject.has("color")) textObject.setColor(MinecraftChatFormatting.valueOf(jsonObject.get("color").getAsString().toUpperCase()));
             if (jsonObject.has("obfuscated")) textObject.setObfuscated(jsonObject.get("obfuscated").getAsBoolean());
             if (jsonObject.has("italic")) textObject.setItalic(jsonObject.get("italic").getAsBoolean());
             if (jsonObject.has("bold")) textObject.setBold(jsonObject.get("bold").getAsBoolean());
@@ -106,16 +108,17 @@ public final class MinecraftTextObject {
     /**
      * This function takes in a legacy text string and converts it into a {@link MinecraftTextObject}.
      * <p>
-     * Legacy text strings use the {@link ChatColor#SECTION_SYMBOL}. Many keyboards do not have this symbol however,
+     * Legacy text strings use the {@link MinecraftChatFormatting#SECTION_SYMBOL}. Many keyboards do not have this symbol however,
      * which is probably why it was chosen. To get around this, it is common practice to substitute
      * the symbol for another, then translate it later. Often '&' is used, but this can differ from person
-     * to person. In case the string does not have a {@link ChatColor#SECTION_SYMBOL}, the method also checks for the
+     * to person. In case the string does not have a {@link MinecraftChatFormatting#SECTION_SYMBOL}, the method also checks for the
      * {@param characterSubstitute}
      *
      * @param legacyText          The text to make into an object
      * @param characterSubstitute The character substitute
      * @return A TextObject representing the legacy text.
      */
+    @SuppressWarnings("all")
     public static MinecraftTextObject fromLegacy(String legacyText, char characterSubstitute) {
         MinecraftTextBuilder builder = MinecraftTextBuilder.of("");
         MinecraftTextObject currentObject = new MinecraftTextObject("");
@@ -124,14 +127,14 @@ public final class MinecraftTextObject {
         for (int i = 0; i < legacyText.length(); i++) {
             char c = legacyText.charAt(i);
 
-            if (c == ChatColor.SECTION_SYMBOL || c == characterSubstitute) {
+            if (c == MinecraftChatFormatting.SECTION_SYMBOL || c == characterSubstitute) {
                 if ((i + 1) > legacyText.length() - 1)
                     continue; // do nothing.
 
                 // peek at the next character.
                 char peek = legacyText.charAt(i + 1);
 
-                if (ChatColor.isValid(peek)) {
+                if (MinecraftChatFormatting.isValid(peek)) {
                     i += 1; // if valid
                     if (text.length() > 0) {
                         currentObject.setText(text.toString()); // create a new text object
@@ -140,7 +143,7 @@ public final class MinecraftTextObject {
                         text.setLength(0); // reset the buffer
                     }
 
-                    ChatColor color = ChatColor.getByCharCode(peek);
+                    MinecraftChatFormatting color = MinecraftChatFormatting.getByChar(peek);
 
                     switch (color) {
                         case OBFUSCATED:
@@ -160,7 +163,7 @@ public final class MinecraftTextObject {
                             break;
                         case RESET:
                             // Reset everything.
-                            currentObject.setColor(ChatColor.WHITE);
+                            currentObject.setColor(MinecraftChatFormatting.WHITE);
                             currentObject.setObfuscated(false);
                             currentObject.setBold(false);
                             currentObject.setItalic(false);
@@ -187,27 +190,27 @@ public final class MinecraftTextObject {
     }
 
     public String toLegacy() {
-        return toLegacy(ChatColor.SECTION_SYMBOL);
+        return toLegacy(MinecraftChatFormatting.SECTION_SYMBOL);
     }
 
     /**
      * Takes an {@link MinecraftTextObject} and transforms it into a legacy string.
      *
-     * @param charSubstitute - The substitute character to use if you do not want to use {@link ChatColor#SECTION_SYMBOL}
+     * @param charSubstitute - The substitute character to use if you do not want to use {@link MinecraftChatFormatting#SECTION_SYMBOL}
      * @return A legacy string representation of a text object
      */
     public String toLegacy(char charSubstitute) {
         StringBuilder builder = new StringBuilder();
-        if (this.getColor() != null) builder.append(charSubstitute).append(this.getColor().charCode());
-        if (this.isObfuscated()) builder.append(charSubstitute).append(ChatColor.OBFUSCATED.charCode());
-        if (this.isBold()) builder.append(charSubstitute).append(ChatColor.BOLD.charCode());
-        if (this.isStrikethrough()) builder.append(charSubstitute).append(ChatColor.STRIKETHROUGH.charCode());
-        if (this.isUnderlined()) builder.append(charSubstitute).append(ChatColor.UNDERLINE.charCode());
-        if (this.isItalic()) builder.append(charSubstitute).append(ChatColor.ITALIC.charCode());
+        if (this.getColor() != null) builder.append(charSubstitute).append(this.getColor().getCode());
+        if (this.isObfuscated()) builder.append(charSubstitute).append(MinecraftChatFormatting.OBFUSCATED.getCode());
+        if (this.isBold()) builder.append(charSubstitute).append(MinecraftChatFormatting.BOLD.getCode());
+        if (this.isStrikethrough()) builder.append(charSubstitute).append(MinecraftChatFormatting.STRIKETHROUGH.getCode());
+        if (this.isUnderlined()) builder.append(charSubstitute).append(MinecraftChatFormatting.UNDERLINE.getCode());
+        if (this.isItalic()) builder.append(charSubstitute).append(MinecraftChatFormatting.ITALIC.getCode());
 
-        if (this.getColor() == ChatColor.RESET) {
+        if (this.getColor() == MinecraftChatFormatting.RESET) {
             builder.setLength(0);
-            builder.append(charSubstitute).append(ChatColor.RESET.charCode());
+            builder.append(charSubstitute).append(MinecraftChatFormatting.RESET.getCode());
         }
 
         if (StringUtil.isNotEmpty(this.getText()))

@@ -1,6 +1,6 @@
 package dev.sbs.api.hypixel_old.skyblock;
 
-import dev.sbs.api.minecraft.text.MojangChatFormatting;
+import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
@@ -671,23 +671,23 @@ public class Skyblock {
 */
         public enum Rarity {
 
-            COMMON(MojangChatFormatting.WHITE),
-            UNCOMMON(MojangChatFormatting.GREEN),
-            RARE(MojangChatFormatting.BLUE),
-            EPIC(MojangChatFormatting.DARK_PURPLE),
-            LEGENDARY(MojangChatFormatting.GOLD),
-            MYTHIC(MojangChatFormatting.LIGHT_PURPLE),
-            SPECIAL(MojangChatFormatting.RED),
-            VERY_SPECIAL(MojangChatFormatting.RED),
-            SUPREME(MojangChatFormatting.DARK_RED);
+            COMMON(MinecraftChatFormatting.WHITE),
+            UNCOMMON(MinecraftChatFormatting.GREEN),
+            RARE(MinecraftChatFormatting.BLUE),
+            EPIC(MinecraftChatFormatting.DARK_PURPLE),
+            LEGENDARY(MinecraftChatFormatting.GOLD),
+            MYTHIC(MinecraftChatFormatting.LIGHT_PURPLE),
+            SPECIAL(MinecraftChatFormatting.RED),
+            VERY_SPECIAL(MinecraftChatFormatting.RED),
+            SUPREME(MinecraftChatFormatting.DARK_RED);
 
-            private final MojangChatFormatting color;
+            private final MinecraftChatFormatting color;
 
-            Rarity(MojangChatFormatting color) {
+            Rarity(MinecraftChatFormatting color) {
                 this.color = color;
             }
 
-            public MojangChatFormatting getColor() {
+            public MinecraftChatFormatting getColor() {
                 return this.color;
             }
 
@@ -818,7 +818,7 @@ public class Skyblock {
             for (int i = 0; i < stats.size(); i++) {
                 Object stat = stats.get(i);
                 double value = Double.parseDouble(statValues.get(i).toString());
-                lore.add(FormatUtil.preformat("{0}: {{1}}{{2}}", MojangChatFormatting.GRAY, MojangChatFormatting.GREEN, "stat.getDisplayName()", (value < 1 ? "" : "+"), (int)value));
+                lore.add(FormatUtil.preformat("{0}: {{1}}{{2}}", MinecraftChatFormatting.GRAY, MinecraftChatFormatting.GREEN, "stat.getDisplayName()", (value < 1 ? "" : "+"), (int)value));
             }
 
             return lore;
@@ -845,7 +845,7 @@ public class Skyblock {
                     smallDecimalFormat.format((rarity.ordinal() == 4 ? 1.2 : rarity.ordinal() == 0 ? 1 : 1.1) + ((level - 1) * (rarity == Skyblock.Item.Rarity.COMMON ? 0.02 : ((((rarity.ordinal() * 5) - (rarity.ordinal() == 4 ? 1.2 : 1.1)) / 99) + 0.0001)))),
                     //smallDecimalFormat.format((rarity.ordinal() == 4 ? 1.2 : rarity.ordinal() == 0 ? 1 : 1.1) + ((level - 1) * Concurrent.newList(0.02, 0.0, 0.0899, 0.1405, 0.1899).get(rarity.ordinal()))),
                     smallDecimalFormat.format((rarity.ordinal() == 0 ? 1 : 1.1) + ((level - 1) * Concurrent.newList(0.02, 0.0, 0.0697, 0.1102, 0.1405).get(rarity.ordinal()))),
-                    FormatUtil.preformat("Max 15 bees", MojangChatFormatting.DARK_GRAY)
+                    FormatUtil.preformat("Max 15 bees", MinecraftChatFormatting.DARK_GRAY)
             )),
             BUZZ_BUZZ_BUZZ(BEE, Skyblock.Item.Rarity.RARE, "Has {{0}%} chance for flowers\nto drop an extra one", (level, rarity) -> _i(
                     (rarity == Skyblock.Item.Rarity.LEGENDARY ? 1 : 0.5) + ((level - 1) * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 1 : rarity == Skyblock.Item.Rarity.EPIC ? 1.005 : 1))
@@ -859,16 +859,16 @@ public class Skyblock {
 
             // Blaze
             NETHER_EMBODIMENT(BLAZE, Skyblock.Item.Rarity.EPIC, "Increases all stats by {{0}%}\nwhen on the Blazing Fortress", (level, rarity) -> _i(level * 0.2)),
-            BLING_ARMOR(BLAZE, Skyblock.Item.Rarity.EPIC, "Upgrades {{0}} stats\nand ability by {{1}%}", (level, rarity) -> _i(FormatUtil.preformat("Blaze Armor", MojangChatFormatting.RED), level * 0.4)),
+            BLING_ARMOR(BLAZE, Skyblock.Item.Rarity.EPIC, "Upgrades {{0}} stats\nand ability by {{1}%}", (level, rarity) -> _i(FormatUtil.preformat("Blaze Armor", MinecraftChatFormatting.RED), level * 0.4)),
             FUSION__STYLE_POTATO(BLAZE, Skyblock.Item.Rarity.EPIC, "Double effects of hot potato\nbooks"),
 
             // Blue Whale
-            INGEST(BLUE_WHALE, Skyblock.Item.Rarity.COMMON, "All potions heal {0}", (level, rarity) -> _i(FormatUtil.preformat("+{0}%HEALTH_SYMBOL%", MojangChatFormatting.RED,level * (0.5 + rarity.ordinal())))),
+            INGEST(BLUE_WHALE, Skyblock.Item.Rarity.COMMON, "All potions heal {0}", (level, rarity) -> _i(FormatUtil.preformat("+{0}%HEALTH_SYMBOL%", MinecraftChatFormatting.RED,level * (0.5 + rarity.ordinal())))),
             BULK(BLUE_WHALE, Skyblock.Item.Rarity.RARE, "Gain {{0}%DEFENSE%} per\n{1}", (level, rarity) -> _i(
                     smallDecimalFormat.format(level / 33.33),
-                    FormatUtil.preformat("{0} Max %HEALTH%", MojangChatFormatting.RED, smallDecimalFormat.format(30 - ((rarity.ordinal() - 2) * 2.5)))
+                    FormatUtil.preformat("{0} Max %HEALTH%", MinecraftChatFormatting.RED, smallDecimalFormat.format(30 - ((rarity.ordinal() - 2) * 2.5)))
             )),
-            ARCHIMEDES(BLUE_WHALE, Skyblock.Item.Rarity.LEGENDARY, "Gain {0}", (level, rarity) -> _i(FormatUtil.preformat("+{0}% Max %HEALTH%", MojangChatFormatting.RED, smallDecimalFormat.format(0.1 + ((level - 1) * 0.2015))))),
+            ARCHIMEDES(BLUE_WHALE, Skyblock.Item.Rarity.LEGENDARY, "Gain {0}", (level, rarity) -> _i(FormatUtil.preformat("+{0}% Max %HEALTH%", MinecraftChatFormatting.RED, smallDecimalFormat.format(0.1 + ((level - 1) * 0.2015))))),
 
             // Chicken
             LIGHT_FEET(CHICKEN, Skyblock.Item.Rarity.COMMON, "Reduces fall damage by {{0}%}", (level, rarity) -> _i(level * (0.3 + (rarity.ordinal() > 2 ? 0.2 : rarity.ordinal() > 1 ? 0.1 : 0)))),
@@ -886,7 +886,7 @@ public class Skyblock {
             // Elephant
             STOMP(ELEPHANT, Skyblock.Item.Rarity.COMMON, "Gain {{0} %DEFENSE%} for every\n100 %SPEED%", (level, rarity) -> _i(level * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 0.2 : 0.1))),
             WALKING_FORTRESS(ELEPHANT, Skyblock.Item.Rarity.RARE, "Gain {0} for every\n10 %DEFENSE%", (level, rarity) -> _i(
-                    FormatUtil.preformat("{0} %HEALTH%", MojangChatFormatting.RED, smallDecimalFormat.format(level / 10))
+                    FormatUtil.preformat("{0} %HEALTH%", MinecraftChatFormatting.RED, smallDecimalFormat.format(level / 10))
             )),
             TRUNK_EFFICIENCY(ELEPHANT, Skyblock.Item.Rarity.LEGENDARY, "Grants a {{0}%} chance to\nget double crops while farming", (level, rarity) -> _i(level * 0.2)),
 
@@ -899,7 +899,7 @@ public class Skyblock {
             MORE_STONKS(ENDERMITE, Skyblock.Item.Rarity.COMMON, "Gain more exp orbs for\nbreaking end stone and gain a\n+{{0}%} chance to get an\nextra block dropped", (level, rarity) -> _i(
                     level * (0.4 + (rarity.ordinal() >= 2 ? 0.1 : 0))
             )),
-            PEARL_MUNCHER(ENDERMITE, Skyblock.Item.Rarity.RARE, "Upon picking up an ender\npearl, consume it and gain {{0}}\n{1}", (level, rarity) -> _i(5 + ((level - 1) * 0.0506), FormatUtil.preformat("coins", MojangChatFormatting.GOLD))),
+            PEARL_MUNCHER(ENDERMITE, Skyblock.Item.Rarity.RARE, "Upon picking up an ender\npearl, consume it and gain {{0}}\n{1}", (level, rarity) -> _i(5 + ((level - 1) * 0.0506), FormatUtil.preformat("coins", MinecraftChatFormatting.GOLD))),
             PEARL_POWERED(ENDERMITE, Skyblock.Item.Rarity.LEGENDARY, "Upon consuming an ender pearl,\ngain +{{0}} speed for 10 seconds", (level, rarity) -> _i(10.4 + ((level - 1) * 0.4))),
 
             // Ender Dragon
@@ -919,12 +919,12 @@ public class Skyblock {
 
             // Giraffe
             GOOD_HEART(GIRAFFE, Skyblock.Item.Rarity.COMMON, "Regen {0} per second", (level, rarity) -> _i(
-                    FormatUtil.preformat("{{0} %HEALTH_SYMBOL%}", MojangChatFormatting.GRAY, MojangChatFormatting.RED,smallDecimalFormat.format((rarity == Skyblock.Item.Rarity.RARE ? 0.1 : 0) +
+                    FormatUtil.preformat("{{0} %HEALTH_SYMBOL%}", MinecraftChatFormatting.GRAY, MinecraftChatFormatting.RED,smallDecimalFormat.format((rarity == Skyblock.Item.Rarity.RARE ? 0.1 : 0) +
                             (level - (rarity == Skyblock.Item.Rarity.RARE ? 1 : 0)) *(rarity.ordinal() > 2 ? 0.2 : rarity.ordinal() < 2 ? 0.1 : 0.1506)))
             )),
             HIGHER_GROUND(GIRAFFE, Skyblock.Item.Rarity.COMMON, "Grants {{0}} and\n{{1}} when mid\nair", (level, rarity) -> _i(
-                    FormatUtil.format("+{0} %STRENGTH%", MojangChatFormatting.RED, level * (rarity == Skyblock.Item.Rarity.RARE ? 0.4 : 0.5)),
-                    FormatUtil.format("+{0} %CRIT_CHANCE%", MojangChatFormatting.BLUE, smallDecimalFormat.format((rarity == Skyblock.Item.Rarity.RARE ? 20.1 : 24.2) + ((level - 1) * rarity.ordinal() == 4 ? 0.3617 : 0))) // TODO: Not 0
+                    FormatUtil.format("+{0} %STRENGTH%", MinecraftChatFormatting.RED, level * (rarity == Skyblock.Item.Rarity.RARE ? 0.4 : 0.5)),
+                    FormatUtil.format("+{0} %CRIT_CHANCE%", MinecraftChatFormatting.BLUE, smallDecimalFormat.format((rarity == Skyblock.Item.Rarity.RARE ? 20.1 : 24.2) + ((level - 1) * rarity.ordinal() == 4 ? 0.3617 : 0))) // TODO: Not 0
             )),
             LONG_NECK(GIRAFFE, Skyblock.Item.Rarity.LEGENDARY, "See enemies from afar and gain\n{{0}%} dodge chance", (level, rarity) -> _i(level * 0.25)),
 
@@ -935,10 +935,10 @@ public class Skyblock {
 
             // Guardian
             LAZERBEAM(GUARDIAN, Skyblock.Item.Rarity.COMMON, "Zaps your enemies for {0}\nyour Intelligence every {{1}s}", (level, rarity) -> _i(
-                    FormatUtil.preformat("{{0}x}", MojangChatFormatting.GRAY, MojangChatFormatting.AQUA, smallDecimalFormat.format(0.2 + ((level - 1) * (rarity == Skyblock.Item.Rarity.COMMON ? 0.01819 : ((((rarity.ordinal() * 5) - 0.2) / 99) + 0.0001))))), 3
+                    FormatUtil.preformat("{{0}x}", MinecraftChatFormatting.GRAY, MinecraftChatFormatting.AQUA, smallDecimalFormat.format(0.2 + ((level - 1) * (rarity == Skyblock.Item.Rarity.COMMON ? 0.01819 : ((((rarity.ordinal() * 5) - 0.2) / 99) + 0.0001))))), 3
             )),
             ENCHANTING_EXP_BOOST(GUARDIAN, Skyblock.Item.Rarity.RARE, "Boosts your Enchanting exp\nby {{0}%}", (level, rarity) -> _i(level * (rarity == Skyblock.Item.Rarity.RARE ? 0.25 : 0.3))),
-            MANA_POOL(GUARDIAN, Skyblock.Item.Rarity.LEGENDARY, "Regenerate {{0}} extra mana,\ndoubled when near or in water", (level, rarity) -> _i(FormatUtil.preformat("{0}%", MojangChatFormatting.AQUA, level * 0.3))),
+            MANA_POOL(GUARDIAN, Skyblock.Item.Rarity.LEGENDARY, "Regenerate {{0}} extra mana,\ndoubled when near or in water", (level, rarity) -> _i(FormatUtil.preformat("{0}%", MinecraftChatFormatting.AQUA, level * 0.3))),
 
             // Hound
             SCAVENGER(HOUND, Skyblock.Item.Rarity.EPIC, "Grain +{{0}} coins per\nmonster kill", (level, rarity) -> _i(0.1 + ((level - 1) * 0.0495))),
@@ -958,11 +958,11 @@ public class Skyblock {
             // Jerry
             JERRY_1(JERRY, Skyblock.Item.Rarity.UNCOMMON, "Gain {{0}%} chance to deal\nyour regular damage", (level, rarity) -> _i(50)),
             JERRY_2(JERRY, Skyblock.Item.Rarity.EPIC, "Gain {{0}%} chance to\nreceive a normal amount of drops\nfrom mobs", (level, rarity) -> _i(100)),
-            JERRY_3(JERRY, Skyblock.Item.Rarity.LEGENDARY, "Actually adds {{0}} %DAMAGE% to\nthe Aspect of the Jerry", (level, rarity) -> _i(FormatUtil.preformat(smallDecimalFormat.format(level / 10), MojangChatFormatting.RED))),
+            JERRY_3(JERRY, Skyblock.Item.Rarity.LEGENDARY, "Actually adds {{0}} %DAMAGE% to\nthe Aspect of the Jerry", (level, rarity) -> _i(FormatUtil.preformat(smallDecimalFormat.format(level / 10), MinecraftChatFormatting.RED))),
 
             // Lion
             PRIMAL_FORCE(LION, Skyblock.Item.Rarity.COMMON, "Adds {0} %DAMAGE% to\nyour weapons", (level, rarity) -> _i(
-                    FormatUtil.preformat("+{0}", MojangChatFormatting.RED, smallDecimalFormat.format((rarity.ordinal() * 0.05) + ((level - 1) * (rarity == Skyblock.Item.Rarity.COMMON ? 0.03 : (rarity.ordinal() * 0.05)))))
+                    FormatUtil.preformat("+{0}", MinecraftChatFormatting.RED, smallDecimalFormat.format((rarity.ordinal() * 0.05) + ((level - 1) * (rarity == Skyblock.Item.Rarity.COMMON ? 0.03 : (rarity.ordinal() * 0.05)))))
             )),
             FIRST_POUNCE(LION, Skyblock.Item.Rarity.RARE, "Increases damage dealt\nby {{0}%} on your first\nhit on a mob", (level, rarity) -> _i(
                     (rarity == Skyblock.Item.Rarity.LEGENDARY ? 1 : 0.5) + ((level - 1) * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 1 : rarity == Skyblock.Item.Rarity.EPIC ? 1.005 : 1))
@@ -990,8 +990,8 @@ public class Skyblock {
             FLAMBOYANT(PARROT, Skyblock.Item.Rarity.EPIC, "Adds {{0}} levels to\nintimidation accessories", (level, rarity) -> _i(smallDecimalFormat.format(level / (rarity.ordinal() == 4 ? 5 : 6.666)))),
             REPEAT(PARROT, Skyblock.Item.Rarity.EPIC, "Boosts potions duration by\n{{0}%}", (level, rarity) -> _i(5.3 + ((level - 1) * 0.350505))),
             BIRD_DISCOURSE(PARROT, Skyblock.Item.Rarity.LEGENDARY, "Gives {0} to\nplayers within {{1}} blocks\n{2}", (level, rarity) -> _i(
-                    FormatUtil.preformat("+{0} %STRENGTH%", MojangChatFormatting.RED, 5.2 + ((level - 1) * 0.250505)),
-                    20, FormatUtil.preformat("Doesnt Stack", MojangChatFormatting.DARK_GRAY)
+                    FormatUtil.preformat("+{0} %STRENGTH%", MinecraftChatFormatting.RED, 5.2 + ((level - 1) * 0.250505)),
+                    20, FormatUtil.preformat("Doesnt Stack", MinecraftChatFormatting.DARK_GRAY)
             )),
 
             // Pig
@@ -1007,14 +1007,14 @@ public class Skyblock {
 
             // Phoenix
             REKINDLE(PHOENIX, Skyblock.Item.Rarity.EPIC, "Before death, become {0}\nand gain {1} %STRENGTH%\nfor {{2}} seconds\n{3}", (level, rarity) -> _i(
-                    FormatUtil.preformat("immune", MojangChatFormatting.YELLOW),
-                    FormatUtil.preformat("{0}", MojangChatFormatting.RED, Math.round(10.1 + ((level - 1) * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 0.202 : 0.1)))),
+                    FormatUtil.preformat("immune", MinecraftChatFormatting.YELLOW),
+                    FormatUtil.preformat("{0}", MinecraftChatFormatting.RED, Math.round(10.1 + ((level - 1) * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 0.202 : 0.1)))),
                     smallDecimalFormat.format(2 + ((level - 1) * 0.02)),
-                    FormatUtil.preformat("3 minutes cooldown", MojangChatFormatting.DARK_GRAY)
+                    FormatUtil.preformat("3 minutes cooldown", MinecraftChatFormatting.DARK_GRAY)
             )),
             FOURTH_FLARE(PHOENIX, Skyblock.Item.Rarity.EPIC, "On 4th melee strike, {0}\nmobs, dealing {{1}} your\n%CRIT_DAMAGE% each second\nfor {{2}} seconds", (level, rarity) -> _i(
-                    FormatUtil.preformat("ignite", MojangChatFormatting.GOLD),
-                    FormatUtil.preformat("{0}x", MojangChatFormatting.RED, smallDecimalFormat.format(1.1 + ((level - 1) * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 0.1405 : 0.121)))), // epic: 0.07?
+                    FormatUtil.preformat("ignite", MinecraftChatFormatting.GOLD),
+                    FormatUtil.preformat("{0}x", MinecraftChatFormatting.RED, smallDecimalFormat.format(1.1 + ((level - 1) * (rarity == Skyblock.Item.Rarity.LEGENDARY ? 0.1405 : 0.121)))), // epic: 0.07?
                     smallDecimalFormat.format(2 + (level / 33.33))
             )),
             MAGIC_BIRD(PHOENIX, Skyblock.Item.Rarity.LEGENDARY, "You may always fly on your\nprivate island"),
@@ -1056,7 +1056,7 @@ public class Skyblock {
             STRONG_ARM(SNOWMAN, Skyblock.Item.Rarity.LEGENDARY, "Increases the snowball fire\nrate by {{0}%}", (level, rarity) -> _i(level)),
 
             // Spider
-            ONE_WITH_THE_SPIDER(SPIDER, Skyblock.Item.Rarity.COMMON, "Gain {{0}} %STRENGTH% for\nevery nerby spider\n{1}", (level, rarity) -> _i(level * 0.1, FormatUtil.preformat("Max 10 spiders", MojangChatFormatting.DARK_GRAY))),
+            ONE_WITH_THE_SPIDER(SPIDER, Skyblock.Item.Rarity.COMMON, "Gain {{0}} %STRENGTH% for\nevery nerby spider\n{1}", (level, rarity) -> _i(level * 0.1, FormatUtil.preformat("Max 10 spiders", MinecraftChatFormatting.DARK_GRAY))),
             WEB_WEAVER(SPIDER, Skyblock.Item.Rarity.RARE, "Upon hitting a monster it\nbecomes slowed by {{0}%}", (level, rarity) -> _i(level * 0.4)),
             SPIDER_WHISPERER(SPIDER, Skyblock.Item.Rarity.LEGENDARY, "Spider and tarantula minions\nwork {{0}%} faster while on\nyour island", (level, rarity) -> _i(level * 0.3)),
 
@@ -1072,21 +1072,21 @@ public class Skyblock {
 
             // Tiger
             MERCILESS_SWIPE(TIGER, Skyblock.Item.Rarity.COMMON, "Attacks have a {{0}%} chance\nto strike twice", (level, rarity) -> _i(level * (rarity.ordinal() >= 3 ? 0.2: rarity.ordinal() == 0 ? 0.05 : 0.1))),
-            HEMORRHAGE(TIGER, Skyblock.Item.Rarity.RARE, "Melee attacks reduce healing\nby {0} for {{1}s}", (level, rarity) -> _i(FormatUtil.preformat("{{0}%}", MojangChatFormatting.GRAY, MojangChatFormatting.GOLD, level * (rarity.ordinal() >= 3 ? 0.55 : 0.3)), 10)),
-            APEX_PREDATOR(TIGER, Skyblock.Item.Rarity.LEGENDARY, "Deal {0} damage against\ntargets with no other mobs\nwithin 15 blocks", (level, rarity) -> _i(FormatUtil.format("{+{0}%}", MojangChatFormatting.GRAY, MojangChatFormatting.RED, level * 0.2))),
+            HEMORRHAGE(TIGER, Skyblock.Item.Rarity.RARE, "Melee attacks reduce healing\nby {0} for {{1}s}", (level, rarity) -> _i(FormatUtil.preformat("{{0}%}", MinecraftChatFormatting.GRAY, MinecraftChatFormatting.GOLD, level * (rarity.ordinal() >= 3 ? 0.55 : 0.3)), 10)),
+            APEX_PREDATOR(TIGER, Skyblock.Item.Rarity.LEGENDARY, "Deal {0} damage against\ntargets with no other mobs\nwithin 15 blocks", (level, rarity) -> _i(FormatUtil.format("{+{0}%}", MinecraftChatFormatting.GRAY, MinecraftChatFormatting.RED, level * 0.2))),
 
             // Turtle
             TURTLE_TACTICS(TURTLE, Skyblock.Item.Rarity.EPIC, "Gain {+{0}%} %DEFENSE%", (level, rarity) -> _i(smallDecimalFormat.format(3.2 + ((level - 1) * 0.1702)))),
             GENIUS_AMNIOTE(TURTLE, Skyblock.Item.Rarity.EPIC, "Gain {+{0}} %DEFENSE% and\nregen {{1}} per second when\nnear or in water", (level, rarity) -> _i(
                     smallDecimalFormat.format(5.5 + ((level - 1) * (rarity.ordinal() == 4 ? 0.45 : 0.347))),
-                    FormatUtil.preformat("+{0} %HEALTH_SYMBOL%", MojangChatFormatting.RED, smallDecimalFormat.format(0.2 + ((level - 1) * (rarity.ordinal() == 4 ? 0.2513 : 0.2))))
+                    FormatUtil.preformat("+{0} %HEALTH_SYMBOL%", MinecraftChatFormatting.RED, smallDecimalFormat.format(0.2 + ((level - 1) * (rarity.ordinal() == 4 ? 0.2513 : 0.2))))
             )),
             UNFLIPPABLE(TURTLE, Skyblock.Item.Rarity.LEGENDARY, "Gain {{0}} to knockback", (level, rarity) -> _i("immunity")),
 
             // Wither Skeleton
             STRONG_BONES(WITHER_SKELETON, Skyblock.Item.Rarity.COMMON, "Take {{0}%} less damage from\nskeletons", (level, rarity) -> _i(level * 0.3)),
             WITHER_BLOOD(WITHER_SKELETON, Skyblock.Item.Rarity.RARE, "Deal {{0}%} more damage to\nwither mobs", (level, rarity) -> _i(level * 0.5)),
-            DEATHS_TOUCH(WITHER_SKELETON, Skyblock.Item.Rarity.LEGENDARY, "Upon hitting an enemy inflict\nthe wither effect for {{0}%}\ndamage over 3 seconds\n{1}", (level, rarity) -> _i(level * 2, FormatUtil.preformat("Does not Stack", MojangChatFormatting.DARK_GRAY))),
+            DEATHS_TOUCH(WITHER_SKELETON, Skyblock.Item.Rarity.LEGENDARY, "Upon hitting an enemy inflict\nthe wither effect for {{0}%}\ndamage over 3 seconds\n{1}", (level, rarity) -> _i(level * 2, FormatUtil.preformat("Does not Stack", MinecraftChatFormatting.DARK_GRAY))),
 
             // Wolf
             APLHA_DOG(WOLF, Skyblock.Item.Rarity.COMMON, "Take {{0}%} less damage from\nwolves", (level, rarity) -> _i(level * (rarity.ordinal() >= 3 ? 0.3 : rarity.ordinal() == 0 ? 0.1 : 0.2))),
@@ -1115,9 +1115,9 @@ public class Skyblock {
                 this.data = data;
 
                 if (this.data != null)
-                    this.transform = (l, r) -> FormatUtil.preformat(this.format, MojangChatFormatting.GRAY, MojangChatFormatting.GREEN, this.data.apply(l, r).toArray());
+                    this.transform = (l, r) -> FormatUtil.preformat(this.format, MinecraftChatFormatting.GRAY, MinecraftChatFormatting.GREEN, this.data.apply(l, r).toArray());
                 else
-                    this.transform = (l, r) -> FormatUtil.preformat(this.format, MojangChatFormatting.GRAY, MojangChatFormatting.GREEN);
+                    this.transform = (l, r) -> FormatUtil.preformat(this.format, MinecraftChatFormatting.GRAY, MinecraftChatFormatting.GREEN);
             }
 
             public BiFunction<Integer, Skyblock.Item.Rarity, ConcurrentList<Object>> getData() {

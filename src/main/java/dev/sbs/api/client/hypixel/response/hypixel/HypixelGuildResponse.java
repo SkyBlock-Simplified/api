@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.minecraft.text.MojangChatFormatting;
+import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.concurrent.ConcurrentList;
@@ -37,7 +37,7 @@ public class HypixelGuildResponse {
         @Getter private int coinsEver;
         @Getter private Instant created;
         @Getter private boolean publiclyListed;
-        @Getter private MojangChatFormatting tagColor;
+        @Getter private MinecraftChatFormatting tagColor;
         @Getter private ConcurrentList<Member> members;
         @Getter private ConcurrentList<Rank> ranks;
         @Getter private ConcurrentMap<String, Integer> achievements;

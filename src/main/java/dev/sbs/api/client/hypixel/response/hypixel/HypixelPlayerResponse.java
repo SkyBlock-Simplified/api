@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.minecraft.text.MojangChatFormatting;
+import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
@@ -100,17 +100,17 @@ public class HypixelPlayerResponse {
             if (StringUtil.isNotEmpty(this.prefix))
                 rank = Rank.getRank(RegexUtil.strip(this.prefix, RegexUtil.VANILLA_PATTERN).replaceAll("[\\W]", ""));
 
-            MojangChatFormatting rankFormat = rank.getFormat();
-            MojangChatFormatting plusFormat = rank.getFormat();
+            MinecraftChatFormatting rankFormat = rank.getFormat();
+            MinecraftChatFormatting plusFormat = rank.getFormat();
 
             if (rank == Rank.SUPERSTAR && StringUtil.isNotEmpty(this.monthlyRankColor))
-                rankFormat = MojangChatFormatting.valueOf(this.monthlyRankColor);
+                rankFormat = MinecraftChatFormatting.valueOf(this.monthlyRankColor);
 
             if (StringUtil.isNotEmpty(this.rankPlusColor))
-                plusFormat = MojangChatFormatting.valueOf(this.rankPlusColor);
+                plusFormat = MinecraftChatFormatting.valueOf(this.rankPlusColor);
 
             if (rank == Rank.PIG)
-                plusFormat = MojangChatFormatting.AQUA;
+                plusFormat = MinecraftChatFormatting.AQUA;
 
             return new RankInfo(rank, rankFormat, plusFormat);
         }
@@ -141,34 +141,34 @@ public class HypixelPlayerResponse {
 
     public enum Rank {
 
-        OWNER(MojangChatFormatting.RED),
-        ADMIN(MojangChatFormatting.RED),
-        BUILD_TEAM(MojangChatFormatting.DARK_AQUA),
-        MODERATOR(MojangChatFormatting.DARK_GREEN, "MOD"),
-        HELPER(MojangChatFormatting.BLUE),
-        JR_HELPER(MojangChatFormatting.BLUE),
-        YOUTUBER(MojangChatFormatting.RED, "YOUTUBE"),
-        SUPERSTAR(MojangChatFormatting.GOLD, "MVP", 2),
-        MVP_PLUS(MojangChatFormatting.AQUA, "MVP", 1),
-        MVP(MojangChatFormatting.AQUA),
-        VIP_PLUS(MojangChatFormatting.GREEN, "VIP", 1),
-        VIP(MojangChatFormatting.GREEN),
-        PIG(MojangChatFormatting.LIGHT_PURPLE, "PIG", 3),
-        NONE(MojangChatFormatting.GRAY);
+        OWNER(MinecraftChatFormatting.RED),
+        ADMIN(MinecraftChatFormatting.RED),
+        BUILD_TEAM(MinecraftChatFormatting.DARK_AQUA),
+        MODERATOR(MinecraftChatFormatting.DARK_GREEN, "MOD"),
+        HELPER(MinecraftChatFormatting.BLUE),
+        JR_HELPER(MinecraftChatFormatting.BLUE),
+        YOUTUBER(MinecraftChatFormatting.RED, "YOUTUBE"),
+        SUPERSTAR(MinecraftChatFormatting.GOLD, "MVP", 2),
+        MVP_PLUS(MinecraftChatFormatting.AQUA, "MVP", 1),
+        MVP(MinecraftChatFormatting.AQUA),
+        VIP_PLUS(MinecraftChatFormatting.GREEN, "VIP", 1),
+        VIP(MinecraftChatFormatting.GREEN),
+        PIG(MinecraftChatFormatting.LIGHT_PURPLE, "PIG", 3),
+        NONE(MinecraftChatFormatting.GRAY);
 
-        @Getter private final MojangChatFormatting format;
+        @Getter private final MinecraftChatFormatting format;
         @Getter private final String name;
         @Getter private final int plusCount;
 
-        Rank(MojangChatFormatting format) {
+        Rank(MinecraftChatFormatting format) {
             this(format, null);
         }
 
-        Rank(MojangChatFormatting format, String name) {
+        Rank(MinecraftChatFormatting format, String name) {
             this(format, name, 0);
         }
 
-        Rank(MojangChatFormatting format, String name, int plusCount) {
+        Rank(MinecraftChatFormatting format, String name, int plusCount) {
             this.format = format;
             this.name = (StringUtil.isEmpty(name) ? name() : name).replace("_", " ");
             this.plusCount = plusCount;
@@ -190,11 +190,11 @@ public class HypixelPlayerResponse {
     public static class RankInfo {
 
         @Getter private final Rank rank;
-        @Getter private final MojangChatFormatting rankFormat;
-        @Getter private final MojangChatFormatting plusFormat;
+        @Getter private final MinecraftChatFormatting rankFormat;
+        @Getter private final MinecraftChatFormatting plusFormat;
         @Getter private final String pluses;
 
-        RankInfo(Rank rank, MojangChatFormatting rankFormat, MojangChatFormatting plusFormat) {
+        RankInfo(Rank rank, MinecraftChatFormatting rankFormat, MinecraftChatFormatting plusFormat) {
             this.rank = rank;
             this.rankFormat = rankFormat;
             this.plusFormat = plusFormat;
@@ -208,7 +208,7 @@ public class HypixelPlayerResponse {
         public String toString() {
             String sfPluses = FormatUtil.preformat("{0}", this.getPlusFormat(), this.getPluses());
             String sfRank = FormatUtil.preformat("{0}", this.getRankFormat(), this.getRank().getName());
-            return FormatUtil.format("{0}[{1}{2}{3}]", MojangChatFormatting.WHITE.toString(), sfRank, sfPluses, MojangChatFormatting.WHITE.toString());
+            return FormatUtil.format("{0}[{1}{2}{3}]", MinecraftChatFormatting.WHITE.toString(), sfRank, sfPluses, MinecraftChatFormatting.WHITE.toString());
         }
 
     }
