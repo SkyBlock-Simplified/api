@@ -1,7 +1,7 @@
 package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.translate.*;
+import org.apache.commons.text.translate.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

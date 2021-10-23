@@ -45,6 +45,7 @@ shadowJar {
     def remoteMariaJdbc = 'org.mariadb.jdbc'
     def remoteHibernate = 'org.hibernate'
     def remoteYaml = 'org.yaml.snakeyaml'
+    def remoteApacheText = 'org.apache.commons.text'
 
     def localGson = 'dev.sbs.api.util.google.gson'
     def localCommon = 'dev.sbs.api.util.google.common'
@@ -52,6 +53,7 @@ shadowJar {
     def localMariaJdbc = 'dev.sbs.api.data.sql.mariadb'
     def localHibernate = 'dev.sbs.api.data.sql.hibernate'
     def localYaml = 'dev.sbs.api.data.yaml.snake'
+    def localApacheText = 'dev.sbs.api.util.text'
 
     relocate remoteGson, localGson
     relocate remoteCommon, localCommon
@@ -59,6 +61,7 @@ shadowJar {
     relocate remoteMariaJdbc, localMariaJdbc
     relocate remoteHibernate, localHibernate
     relocate remoteYaml, localYaml
+    relocate remoteApacheText, localApacheText
 }
 
 sourceSets {
@@ -91,6 +94,8 @@ dependencies {
     implementation group: 'io.github.openfeign', name: 'feign-okhttp', version: '11.6'
     implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.6'
     implementation group: 'redis.clients', name: 'jedis', version: '3.7.0'
+
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
