@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceItemsResponse {
 
@@ -35,7 +37,7 @@ public class ResourceItemsResponse {
         @Getter private boolean dungeonItem;
         @Getter private String color;
         @SerializedName("tiered_stats")
-        @Getter private ConcurrentMap<String, ConcurrentList<Integer>> tieredStats;
+        @Getter private ConcurrentMap<String, List<Integer>> tieredStats;
         @SerializedName("gear_score")
         @Getter private int gearScore;
         @Getter private ItemRequirements requirements;
