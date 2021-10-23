@@ -2,9 +2,11 @@ package dev.sbs.api.util.helper;
 
 import dev.sbs.api.minecraft.text.MojangChatFormatting;
 import dev.sbs.api.util.MaxSizeLinkedMap;
+import org.apache.commons.text.StringSubstitutor;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Format strings using {@link MessageFormat}.
@@ -29,45 +31,17 @@ public final class FormatUtil {
     }
 
     /**
-     * Returns a formatted string using {@link MessageFormat}.
+     * Returns a formatted string using {@link MessageFormat} and {@link StringSubstitutor}.
      *
      * @param format The string to format objects with
-     * @param logColor The default color for log messages
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String format(String format, MojangChatFormatting logColor, Object... objects) {
-        return format(format, logColor, null, objects);
-    }
-
-    /**
-     * Returns a formatted string using {@link MessageFormat}.
-     *
-     * @param format The string to format objects with
-     * @param logColor The default color for log messages
-     * @param logImportant The important color for log messages
-     * @param objects The objects to be used for replacement
-     * @return The formatted string
-     */
-    public static String format(String format, MojangChatFormatting logColor, MojangChatFormatting logImportant, Object... objects) {
-        return format(format, false, logColor, logImportant, objects);
-    }
-
-    /**
-     * Returns a formatted string using {@link MessageFormat}.
-     *
-     * @param format The string to format objects with
-     * @param prefixColor Prefix string with logColor
-     * @param logColor The default color for log messages
-     * @param logImportant The important color for log messages
-     * @param objects The objects to be used for replacement
-     * @return The formatted string
-     */
-    public static String format(String format, boolean prefixColor, MojangChatFormatting logColor, MojangChatFormatting logImportant, Object... objects) {
+    public static String format(String format, Map<String, Object> placeholders, Object... objects) {
         if (!MESSAGE_CACHE.containsKey(format)) {
             MessageFormat messageFormat = null;
-            String replaceFormat = (logImportant != null ? logImportant : "") + "$1" + (logColor != null ? logColor : "");
-            String newFormat = (prefixColor ? logColor : "") + RegexUtil.replaceAll(format, RegexUtil.LOG_PATTERN4, replaceFormat);
+            String replaceFormat = "$1";
+            String newFormat = RegexUtil.replaceAll(format, RegexUtil.LOG_PATTERN4, replaceFormat);
 
             try {
                 messageFormat = new MessageFormat(newFormat);
@@ -83,7 +57,13 @@ public final class FormatUtil {
         }
 
         MessageFormat messageFormat = MESSAGE_CACHE.get(format);
-        return (messageFormat != null ? messageFormat.format(objects) : format);
+        String result = (messageFormat != null ? messageFormat.format(objects) : format);
+
+        // Handle Placeholders
+        if (placeholders != null)
+            result = StringSubstitutor.replace(result, placeholders);
+
+        return result;
     }
 
     /**
