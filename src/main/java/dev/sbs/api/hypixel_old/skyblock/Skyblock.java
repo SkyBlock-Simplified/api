@@ -21,7 +21,6 @@ public class Skyblock {
     private static final ConcurrentSet<String> skyblockInAllLanguages = Concurrent.newSet("SKYBLOCK", "\u7A7A\u5C9B\u751F\u5B58");
     private static final DecimalFormat smallDecimalFormat = new DecimalFormat("#0.#");
     public final static ConcurrentLinkedMap<Integer, Integer> UNIQUE_CRAFTS = Concurrent.newLinkedMap();
-    public final static ConcurrentList<Integer> SKILL_EXP_SCALE;
     public final static ConcurrentList<Integer> RUNECRAFTING_EXP_SCALE;
     public final static ConcurrentList<Integer> PET_EXP_SCALE;
     public final static ConcurrentList<Integer> PET_SCORE_BREAKPOINTS;
@@ -1301,13 +1300,6 @@ public class Skyblock {
 
         for (Map.Entry<Item.Rarity, Integer> entry : PET_EXP_SCALE_OFFSET)
             PET_EXP_TIER_SCALE.put(entry.getKey(), Skyblock.PET_EXP_SCALE.subList(entry.getValue(), entry.getValue() + 99)); // TODO: Add 0 to PET_EXP_SCALE, Add 1 to 99
-
-        SKILL_EXP_SCALE = Concurrent.newList(
-                50, 125, 200, 300, 500, 750, 1000, 1500, 2000, 3500, 5000, 7500, 10000,
-                15000, 20000, 30000, 50000, 75000, 100000, 200000, 300000, 400000, 500000,
-                600000, 700000, 800000, 900000, 1000000, 1100000, 1200000, 1300000, 1400000,
-                1500000, 1600000, 1700000, 1800000, 1900000, 2000000, 2100000, 2200000, 2300000,
-                2400000, 2500000, 2600000, 2750000, 2900000, 3100000, 3400000, 3700000, 4000000);
 
         RUNECRAFTING_EXP_SCALE = Concurrent.newList(
                 50, 100, 125, 160, 200, 250, 315, 400, 500, 625, 785, 1000, 1250,

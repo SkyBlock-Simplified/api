@@ -2,12 +2,12 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.data.sql.model.itemtypes.ItemTypeModel;
-import dev.sbs.api.data.sql.model.itemtypes.ItemTypeRepository;
-import dev.sbs.api.data.sql.model.rarities.RarityModel;
-import dev.sbs.api.data.sql.model.rarities.RarityRepository;
-import dev.sbs.api.data.sql.model.reforges.ReforgeModel;
-import dev.sbs.api.data.sql.model.reforges.ReforgeRepository;
+import dev.sbs.api.model.sql.itemtypes.ItemTypeModel;
+import dev.sbs.api.model.sql.itemtypes.ItemTypeRepository;
+import dev.sbs.api.model.sql.rarities.RarityModel;
+import dev.sbs.api.model.sql.rarities.RarityRepository;
+import dev.sbs.api.model.sql.reforges.ReforgeModel;
+import dev.sbs.api.model.sql.reforges.ReforgeRepository;
 import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

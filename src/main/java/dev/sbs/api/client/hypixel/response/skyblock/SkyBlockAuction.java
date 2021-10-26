@@ -2,8 +2,8 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.sql.model.rarities.RarityModel;
-import dev.sbs.api.data.sql.model.rarities.RarityRepository;
+import dev.sbs.api.model.sql.rarities.RarityModel;
+import dev.sbs.api.model.sql.rarities.RarityRepository;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
