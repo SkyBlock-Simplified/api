@@ -13,10 +13,17 @@ import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.mojang.implementation.MojangData;
 import dev.sbs.api.data.sql.model.SqlRefreshTime;
+import dev.sbs.api.model.sql.fairysouls.dungeonfairysouls.DungeonFairySoulRepository;
 import dev.sbs.api.model.sql.formats.FormatRepository;
 import dev.sbs.api.model.sql.items.ItemRepository;
 import dev.sbs.api.model.sql.minions.MinionRepository;
+import dev.sbs.api.model.sql.npcs.NpcRepository;
 import dev.sbs.api.model.sql.pets.PetRepository;
+import dev.sbs.api.model.sql.pets.petabilities.PetAbilityRepository;
+import dev.sbs.api.model.sql.pets.petabilitystats.PetAbilityStatRepository;
+import dev.sbs.api.model.sql.pets.petitemstats.PetItemStatRepository;
+import dev.sbs.api.model.sql.pets.petstats.PetStatRepository;
+import dev.sbs.api.model.sql.pets.pettypes.PetTypeRepository;
 import dev.sbs.api.model.sql.potions.PotionRepository;
 import dev.sbs.api.model.sql.skills.SkillRepository;
 import dev.sbs.api.model.sql.stats.StatRepository;
@@ -35,21 +42,21 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.sql.accessories.AccessoryRepository;
-import dev.sbs.api.model.sql.accessoryfamilies.AccessoryFamilyRepository;
-import dev.sbs.api.model.sql.collectionitems.CollectionItemRepository;
-import dev.sbs.api.model.sql.collectionitemtiers.CollectionItemTierRepository;
+import dev.sbs.api.model.sql.accessories.accessoryfamilies.AccessoryFamilyRepository;
+import dev.sbs.api.model.sql.collections.collectionitems.CollectionItemRepository;
+import dev.sbs.api.model.sql.collections.collectionitemtiers.CollectionItemTierRepository;
 import dev.sbs.api.model.sql.collections.CollectionRepository;
 import dev.sbs.api.model.sql.enchantments.EnchantmentRepository;
 import dev.sbs.api.model.sql.fairysouls.FairySoulRepository;
-import dev.sbs.api.model.sql.itemtypes.ItemTypeRepository;
-import dev.sbs.api.model.sql.locationareas.LocationAreaRepository;
+import dev.sbs.api.model.sql.items.itemtypes.ItemTypeRepository;
+import dev.sbs.api.model.sql.locations.locationareas.LocationAreaRepository;
 import dev.sbs.api.model.sql.locations.LocationRepository;
-import dev.sbs.api.model.sql.minionitems.MinionItemRepository;
-import dev.sbs.api.model.sql.miniontiers.MinionTierRepository;
-import dev.sbs.api.model.sql.miniontierupgrades.MinionTierUpgradeRepository;
+import dev.sbs.api.model.sql.minions.minionitems.MinionItemRepository;
+import dev.sbs.api.model.sql.minions.miniontiers.MinionTierRepository;
+import dev.sbs.api.model.sql.minions.miniontierupgrades.MinionTierUpgradeRepository;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
 import dev.sbs.api.model.sql.reforges.ReforgeRepository;
-import dev.sbs.api.model.sql.skilllevels.SkillLevelRepository;
+import dev.sbs.api.model.sql.skills.skilllevels.SkillLevelRepository;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.util.helper.TimeUtil;
@@ -177,6 +184,7 @@ public class SimplifiedApi {
                 CollectionRepository.class,
                 CollectionItemRepository.class,
                 CollectionItemTierRepository.class,
+                DungeonFairySoulRepository.class,
                 EnchantmentRepository.class,
                 FairySoulRepository.class,
                 FormatRepository.class,
@@ -188,7 +196,13 @@ public class SimplifiedApi {
                 MinionItemRepository.class,
                 MinionTierRepository.class,
                 MinionTierUpgradeRepository.class,
+                NpcRepository.class,
                 PetRepository.class,
+                PetAbilityRepository.class,
+                PetAbilityStatRepository.class,
+                PetItemStatRepository.class,
+                PetStatRepository.class,
+                PetTypeRepository.class,
                 PotionRepository.class,
                 RarityRepository.class,
                 ReforgeRepository.class,

@@ -2,11 +2,11 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.model.sql.itemtypes.ItemTypeModel;
-import dev.sbs.api.model.sql.itemtypes.ItemTypeRepository;
-import dev.sbs.api.model.sql.rarities.RarityModel;
+import dev.sbs.api.model.sql.items.itemtypes.ItemTypeSqlModel;
+import dev.sbs.api.model.sql.items.itemtypes.ItemTypeRepository;
+import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
-import dev.sbs.api.model.sql.reforges.ReforgeModel;
+import dev.sbs.api.model.sql.reforges.ReforgeSqlModel;
 import dev.sbs.api.model.sql.reforges.ReforgeRepository;
 import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
@@ -30,23 +30,23 @@ public class ReforgeRepositoryTest {
 
     @Test
     public void findAll_ok() {
-        List<ReforgeModel> reforges = reforgeRepository.findAll();
+        List<ReforgeSqlModel> reforges = reforgeRepository.findAll();
         MatcherAssert.assertThat(reforges.size(), Matchers.greaterThan(0));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void getCachedList_ok() throws SqlException {
-        ItemTypeModel sword = itemTypeRepository.findFirstOrNullCached(
-                ItemTypeModel::getName, "Sword"
+        ItemTypeSqlModel sword = itemTypeRepository.findFirstOrNullCached(
+                ItemTypeSqlModel::getName, "Sword"
         );
-        RarityModel legendary = rarityRepository.findFirstOrNullCached(
-                RarityModel::getRarityTag, "LEGENDARY"
+        RaritySqlModel legendary = rarityRepository.findFirstOrNullCached(
+                RaritySqlModel::getRarityTag, "LEGENDARY"
         );
-        ReforgeModel spicy = reforgeRepository.findFirstOrNullCached(
-                Pair.of(ReforgeModel::getItemType, sword),
-                Pair.of(ReforgeModel::getRarity, legendary),
-                Pair.of(ReforgeModel::getName, "Spicy")
+        ReforgeSqlModel spicy = reforgeRepository.findFirstOrNullCached(
+                Pair.of(ReforgeSqlModel::getItemType, sword),
+                Pair.of(ReforgeSqlModel::getRarity, legendary),
+                Pair.of(ReforgeSqlModel::getName, "Spicy")
         );
         MatcherAssert.assertThat(spicy, Matchers.notNullValue());
     }

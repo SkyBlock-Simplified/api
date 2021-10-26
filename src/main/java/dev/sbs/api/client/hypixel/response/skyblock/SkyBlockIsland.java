@@ -2,13 +2,13 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.model.sql.items.ItemModel;
+import dev.sbs.api.model.sql.items.ItemSqlModel;
 import dev.sbs.api.model.sql.items.ItemRepository;
-import dev.sbs.api.model.sql.minions.MinionModel;
+import dev.sbs.api.model.sql.minions.MinionSqlModel;
 import dev.sbs.api.model.sql.minions.MinionRepository;
-import dev.sbs.api.model.sql.pets.PetModel;
+import dev.sbs.api.model.sql.pets.PetSqlModel;
 import dev.sbs.api.model.sql.pets.PetRepository;
-import dev.sbs.api.model.sql.skills.SkillModel;
+import dev.sbs.api.model.sql.skills.SkillSqlModel;
 import dev.sbs.api.hypixel_old.skyblock.Skyblock;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
@@ -19,8 +19,8 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.*;
-import dev.sbs.api.model.sql.collections.CollectionModel;
-import dev.sbs.api.model.sql.rarities.RarityModel;
+import dev.sbs.api.model.sql.collections.CollectionSqlModel;
+import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
 import lombok.*;
 
@@ -62,7 +62,7 @@ public class SkyBlockIsland {
         return Optional.ofNullable(this.banking);
     }
 
-    public Collection getCollection(SkillModel type) {
+    public Collection getCollection(SkillSqlModel type) {
         Collection collection = new Collection(type);
 
         for (Member profile : this.getMembers()) {
@@ -268,7 +268,7 @@ public class SkyBlockIsland {
         }
 
         @SneakyThrows
-        public Collection getCollection(SkillModel type) {
+        public Collection getCollection(SkillSqlModel type) {
             Collection collection = new Collection(type);
             //SimplifiedApi.getSqlRepository(CollectionRepository.class).findAllCached().stream().filter(model -> model.getName().equals(type.getName())); // TODO: Foreign Keys
 /*
@@ -295,14 +295,14 @@ public class SkyBlockIsland {
             return new MelodyHarp(this.harpQuest);
         }
 
-        public Minion getMinion(MinionModel type) {
+        public Minion getMinion(MinionSqlModel type) {
             Minion minion = new Minion(type);
 
             if (this.craftedMinions != null) {
                 minion.unlocked.addAll(
                         this.craftedMinions.stream()
-                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", type.getCollection().getKey())))
-                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", type.getCollection().getKey()), "")))
+                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", type.getCollection().getSkill().getKey())))
+                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", type.getCollection().getSkill().getKey()), "")))
                                 .collect(Collectors.toList())
                 );
             }
@@ -345,7 +345,7 @@ public class SkyBlockIsland {
             return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
-        public Skill getSkill(SkillModel skill) {
+        public Skill getSkill(SkillSqlModel skill) {
             double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skill.getName().toLowerCase()), this);
             return new Skill(skill, experience);
         }
@@ -653,16 +653,16 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Collection {
 
-        @Getter private final SkillModel type;
+        @Getter private final SkillSqlModel type;
         @SerializedName("items")
-        @Getter private ConcurrentLinkedMap<CollectionModel, Integer> collected = Concurrent.newLinkedMap();
-        @Getter private ConcurrentLinkedMap<CollectionModel, Integer> unlocked = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionSqlModel, Integer> collected = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionSqlModel, Integer> unlocked = Concurrent.newLinkedMap();
 
-        public int getCollected(CollectionModel collection) {
+        public int getCollected(CollectionSqlModel collection) {
             return this.collected.get(collection);
         }
 
-        public int getUnlocked(CollectionModel collection) {
+        public int getUnlocked(CollectionSqlModel collection) {
             return this.unlocked.getOrDefault(collection, 0);
         }
 
@@ -1274,7 +1274,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     public static class Minion {
 
         @Getter private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
-        @Getter private final MinionModel type;
+        @Getter private final MinionSqlModel type;
 
     }
 
@@ -1325,8 +1325,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         @SneakyThrows
-        public Optional<ItemModel> getHeldItem() {
-            return Optional.ofNullable(SimplifiedApi.getSqlRepository(ItemRepository.class).findFirstOrNullCached(ItemModel::getItemId, this.heldItem));
+        public Optional<ItemSqlModel> getHeldItem() {
+            return Optional.ofNullable(SimplifiedApi.getSqlRepository(ItemRepository.class).findFirstOrNullCached(ItemSqlModel::getItemId, this.heldItem));
         }
 
         @Override
@@ -1335,8 +1335,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         @SneakyThrows
-        public Optional<PetModel> getPet() {
-            return Optional.of(SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetModel::getItemId, this.name));
+        public Optional<PetSqlModel> getPet() {
+            return Optional.of(SimplifiedApi.getSqlRepository(PetRepository.class).findFirstOrNullCached(PetSqlModel::getKey, this.name));
         }
 
         public String getPrettyName() {
@@ -1344,8 +1344,8 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         @SneakyThrows
-        public RarityModel getRarity() {
-            return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RarityModel::getRarityTag, this.rarity);
+        public RaritySqlModel getRarity() {
+            return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RaritySqlModel::getKey, this.rarity);
         }
 
         public String getDefaultSkin() {
@@ -1458,7 +1458,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Skill extends ExperienceCalculator {
 
-        @Getter private final SkillModel type;
+        @Getter private final SkillSqlModel type;
         private final double experience;
 
         @Override

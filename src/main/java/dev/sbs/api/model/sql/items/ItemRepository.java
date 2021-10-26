@@ -4,7 +4,7 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import lombok.NonNull;
 
-public class ItemRepository extends SqlRepository<ItemModel> {
+public class ItemRepository extends SqlRepository<ItemSqlModel> {
 
     public ItemRepository(@NonNull SqlSession sqlSession) {
         super(sqlSession);

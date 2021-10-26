@@ -4,7 +4,7 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import lombok.NonNull;
 
-public class MinionRepository extends SqlRepository<MinionModel> {
+public class MinionRepository extends SqlRepository<MinionSqlModel> {
 
     public MinionRepository(@NonNull SqlSession sqlSession) {
         super(sqlSession);

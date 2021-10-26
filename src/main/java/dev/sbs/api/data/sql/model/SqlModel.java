@@ -1,5 +1,7 @@
 package dev.sbs.api.data.sql.model;
 
-public interface SqlModel {
+import dev.sbs.api.data.Model;
+
+public interface SqlModel extends Model {
 
 }

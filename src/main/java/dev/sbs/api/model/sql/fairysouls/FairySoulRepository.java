@@ -4,7 +4,7 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import lombok.NonNull;
 
-public class FairySoulRepository extends SqlRepository<FairySoulModel> {
+public class FairySoulRepository extends SqlRepository<FairySoulSqlModel> {
 
     public FairySoulRepository(@NonNull SqlSession sqlSession) {
         super(sqlSession);
