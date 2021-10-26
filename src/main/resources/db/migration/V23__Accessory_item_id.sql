@@ -1,1 +1,0 @@
-ALTER TABLE `accessories` ADD COLUMN `item_id` VARCHAR(127) NOT NULL AFTER `id`;
