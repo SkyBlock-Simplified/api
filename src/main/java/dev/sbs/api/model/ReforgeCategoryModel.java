@@ -2,7 +2,7 @@ package dev.sbs.api.model;
 
 import dev.sbs.api.data.Model;
 
-public interface ItemCategoryModel extends Model {
+public interface ReforgeCategoryModel extends Model {
 
     String getKey();
 

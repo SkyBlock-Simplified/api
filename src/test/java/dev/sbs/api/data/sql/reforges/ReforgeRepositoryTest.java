@@ -2,8 +2,8 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.model.sql.items.itemtypes.ItemCategorySqlModel;
-import dev.sbs.api.model.sql.items.itemtypes.ItemCategoryRepository;
+import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategorySqlModel;
+import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategoryRepository;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
 import dev.sbs.api.model.sql.reforges.ReforgeSqlModel;
@@ -17,13 +17,13 @@ import java.util.List;
 
 public class ReforgeRepositoryTest {
 
-    private static final ItemCategoryRepository itemTypeRepository;
+    private static final ReforgeCategoryRepository itemTypeRepository;
     private static final RarityRepository rarityRepository;
     private static final ReforgeRepository reforgeRepository;
 
     static {
         SimplifiedApi.enableDatabase();
-        itemTypeRepository = SimplifiedApi.getSqlRepository(ItemCategoryRepository.class);
+        itemTypeRepository = SimplifiedApi.getSqlRepository(ReforgeCategoryRepository.class);
         rarityRepository = SimplifiedApi.getSqlRepository(RarityRepository.class);
         reforgeRepository = SimplifiedApi.getSqlRepository(ReforgeRepository.class);
     }
@@ -37,8 +37,8 @@ public class ReforgeRepositoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void getCachedList_ok() throws SqlException {
-        ItemCategorySqlModel sword = itemTypeRepository.findFirstOrNullCached(
-                ItemCategorySqlModel::getName, "Sword"
+        ReforgeCategorySqlModel sword = itemTypeRepository.findFirstOrNullCached(
+                ReforgeCategorySqlModel::getName, "Sword"
         );
         RaritySqlModel legendary = rarityRepository.findFirstOrNullCached(
                 RaritySqlModel::getKey, "LEGENDARY"

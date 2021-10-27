@@ -6,9 +6,11 @@ import java.util.Map;
 
 public interface ReforgeModel extends Model {
 
+    String getKey();
+
     String getName();
 
-    ItemCategoryModel getItemType();
+    ReforgeCategoryModel getItemType();
 
     RarityModel getRarity();
 

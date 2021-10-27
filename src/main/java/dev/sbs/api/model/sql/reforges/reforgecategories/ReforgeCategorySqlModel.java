@@ -1,7 +1,7 @@
-package dev.sbs.api.model.sql.items.itemtypes;
+package dev.sbs.api.model.sql.reforges.reforgecategories;
 
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.model.ItemCategoryModel;
+import dev.sbs.api.model.ReforgeCategoryModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +11,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "item_categories")
-public class ItemCategorySqlModel implements ItemCategoryModel, SqlModel {
+@Table(name = "reforge_categories")
+public class ReforgeCategorySqlModel implements ReforgeCategoryModel, SqlModel {
 
     @Getter
     @Id
@@ -38,9 +38,9 @@ public class ItemCategorySqlModel implements ItemCategoryModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemCategorySqlModel)) return false;
+        if (!(o instanceof ReforgeCategorySqlModel)) return false;
 
-        ItemCategorySqlModel that = (ItemCategorySqlModel) o;
+        ReforgeCategorySqlModel that = (ReforgeCategorySqlModel) o;
 
         if (id != that.id) return false;
         if (!name.equals(that.name)) return false;
