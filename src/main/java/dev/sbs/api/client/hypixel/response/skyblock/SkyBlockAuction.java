@@ -71,7 +71,7 @@ public class SkyBlockAuction {
 
     @SneakyThrows
     public RaritySqlModel getRarity() {
-        return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RaritySqlModel::getRarityTag, this.rarity);
+        return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RaritySqlModel::getKey, this.rarity);
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
