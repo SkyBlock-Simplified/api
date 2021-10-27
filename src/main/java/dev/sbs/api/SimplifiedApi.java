@@ -48,7 +48,7 @@ import dev.sbs.api.model.sql.collections.collectionitemtiers.CollectionItemTierR
 import dev.sbs.api.model.sql.collections.CollectionRepository;
 import dev.sbs.api.model.sql.enchantments.EnchantmentRepository;
 import dev.sbs.api.model.sql.fairysouls.FairySoulRepository;
-import dev.sbs.api.model.sql.items.itemtypes.ItemTypeRepository;
+import dev.sbs.api.model.sql.items.itemtypes.ItemCategoryRepository;
 import dev.sbs.api.model.sql.locations.locationareas.LocationAreaRepository;
 import dev.sbs.api.model.sql.locations.LocationRepository;
 import dev.sbs.api.model.sql.minions.minionitems.MinionItemRepository;
@@ -189,7 +189,7 @@ public class SimplifiedApi {
                 FairySoulRepository.class,
                 FormatRepository.class,
                 ItemRepository.class,
-                ItemTypeRepository.class,
+                ItemCategoryRepository.class,
                 LocationRepository.class,
                 LocationAreaRepository.class,
                 MinionRepository.class,

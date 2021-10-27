@@ -2,8 +2,8 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.model.sql.items.itemtypes.ItemTypeSqlModel;
-import dev.sbs.api.model.sql.items.itemtypes.ItemTypeRepository;
+import dev.sbs.api.model.sql.items.itemtypes.ItemCategorySqlModel;
+import dev.sbs.api.model.sql.items.itemtypes.ItemCategoryRepository;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
 import dev.sbs.api.model.sql.reforges.ReforgeSqlModel;
@@ -17,13 +17,13 @@ import java.util.List;
 
 public class ReforgeRepositoryTest {
 
-    private static final ItemTypeRepository itemTypeRepository;
+    private static final ItemCategoryRepository itemTypeRepository;
     private static final RarityRepository rarityRepository;
     private static final ReforgeRepository reforgeRepository;
 
     static {
         SimplifiedApi.enableDatabase();
-        itemTypeRepository = SimplifiedApi.getSqlRepository(ItemTypeRepository.class);
+        itemTypeRepository = SimplifiedApi.getSqlRepository(ItemCategoryRepository.class);
         rarityRepository = SimplifiedApi.getSqlRepository(RarityRepository.class);
         reforgeRepository = SimplifiedApi.getSqlRepository(ReforgeRepository.class);
     }
@@ -37,11 +37,11 @@ public class ReforgeRepositoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void getCachedList_ok() throws SqlException {
-        ItemTypeSqlModel sword = itemTypeRepository.findFirstOrNullCached(
-                ItemTypeSqlModel::getName, "Sword"
+        ItemCategorySqlModel sword = itemTypeRepository.findFirstOrNullCached(
+                ItemCategorySqlModel::getName, "Sword"
         );
         RaritySqlModel legendary = rarityRepository.findFirstOrNullCached(
-                RaritySqlModel::getRarityTag, "LEGENDARY"
+                RaritySqlModel::getKey, "LEGENDARY"
         );
         ReforgeSqlModel spicy = reforgeRepository.findFirstOrNullCached(
                 Pair.of(ReforgeSqlModel::getItemType, sword),

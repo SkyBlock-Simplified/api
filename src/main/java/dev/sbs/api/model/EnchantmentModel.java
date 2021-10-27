@@ -10,7 +10,7 @@ public interface EnchantmentModel extends Model {
 
     String getName();
 
-    ItemTypeModel getItemType();
+    ItemCategoryModel getItemType();
 
     int getItemLevel();
 

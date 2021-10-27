@@ -3,7 +3,7 @@ package dev.sbs.api.model.sql.reforges;
 import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.data.sql.model.SqlEffectsModel;
 import dev.sbs.api.model.ReforgeModel;
-import dev.sbs.api.model.sql.items.itemtypes.ItemTypeSqlModel;
+import dev.sbs.api.model.sql.items.itemtypes.ItemCategorySqlModel;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class ReforgeSqlModel extends SqlEffectsModel implements ReforgeModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_type_key", nullable = false)
-    private ItemTypeSqlModel itemType;
+    private ItemCategorySqlModel itemType;
 
     @Getter
     @Setter

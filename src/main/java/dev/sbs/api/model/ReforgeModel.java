@@ -8,7 +8,7 @@ public interface ReforgeModel extends Model {
 
     String getName();
 
-    ItemTypeModel getItemType();
+    ItemCategoryModel getItemType();
 
     RarityModel getRarity();
 

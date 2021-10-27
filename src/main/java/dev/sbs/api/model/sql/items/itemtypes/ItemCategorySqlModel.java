@@ -1,7 +1,7 @@
 package dev.sbs.api.model.sql.items.itemtypes;
 
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.model.ItemTypeModel;
+import dev.sbs.api.model.ItemCategoryModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +11,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "item_types")
-public class ItemTypeSqlModel implements ItemTypeModel, SqlModel {
+@Table(name = "item_categories")
+public class ItemCategorySqlModel implements ItemCategoryModel, SqlModel {
 
     @Getter
     @Id
@@ -38,9 +38,9 @@ public class ItemTypeSqlModel implements ItemTypeModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemTypeSqlModel)) return false;
+        if (!(o instanceof ItemCategorySqlModel)) return false;
 
-        ItemTypeSqlModel that = (ItemTypeSqlModel) o;
+        ItemCategorySqlModel that = (ItemCategorySqlModel) o;
 
         if (id != that.id) return false;
         if (!name.equals(that.name)) return false;
