@@ -1,7 +1,9 @@
-package dev.sbs.api.model.sql.rarities;
+package dev.sbs.api.model.sql.slayers.slayerlevels;
 
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.model.RarityModel;
+import dev.sbs.api.model.SlayerLevelModel;
+import dev.sbs.api.model.SlayerModel;
+import dev.sbs.api.model.sql.slayers.SlayerSqlModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -12,8 +14,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "rarities")
-public class RaritySqlModel implements RarityModel, SqlModel {
+@Table(name = "slayers")
+public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
 
     @Getter
     @Id
@@ -23,28 +25,18 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127)
-    private String key;
+    @Column(name = "slayer_key", nullable = false, length = 127)
+    private SlayerSqlModel slayer;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
-    private String name;
+    @Column(name = "level", nullable = false)
+    private int level;
 
     @Getter
     @Setter
-    @Column(name = "ordinal")
-    private int ordinal;
-
-    @Getter
-    @Setter
-    @Column(name = "key_valid")
-    private boolean keyValid;
-
-    @Getter
-    @Setter
-    @Column(name = "pet_exp_offset")
-    private int petExpOffset;
+    @Column(name = "total_exp_required", nullable = false)
+    private double totalExpRequired;
 
     @Getter
     @UpdateTimestamp
@@ -54,14 +46,13 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RaritySqlModel)) return false;
+        if (!(o instanceof SlayerLevelSqlModel)) return false;
 
-        RaritySqlModel that = (RaritySqlModel) o;
+        SlayerLevelSqlModel that = (SlayerLevelSqlModel) o;
 
         if (id != that.id) return false;
-        if (keyValid != that.keyValid) return false;
-        if (!StringUtil.equals(key, that.key)) return false;
-        if (!StringUtil.equals(name, that.name)) return false;
+        if (level != that.level) return false;
+        if (totalExpRequired != that.totalExpRequired) return false;
         return updatedAt.equals(that.updatedAt);
     }
 

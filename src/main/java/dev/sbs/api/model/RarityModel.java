@@ -12,4 +12,6 @@ public interface RarityModel extends Model {
 
     boolean isKeyValid();
 
+    int getPetExpOffset();
+
 }

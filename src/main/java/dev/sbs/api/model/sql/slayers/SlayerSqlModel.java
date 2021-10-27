@@ -1,7 +1,9 @@
-package dev.sbs.api.model.sql.rarities;
+package dev.sbs.api.model.sql.slayers;
 
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.model.RarityModel;
+import dev.sbs.api.model.SkillModel;
+import dev.sbs.api.model.SlayerModel;
+import dev.sbs.api.model.sql.items.ItemSqlModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -12,8 +14,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "rarities")
-public class RaritySqlModel implements RarityModel, SqlModel {
+@Table(name = "slayers")
+public class SlayerSqlModel implements SlayerModel, SqlModel {
 
     @Getter
     @Id
@@ -32,21 +34,6 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     private String name;
 
     @Getter
-    @Setter
-    @Column(name = "ordinal")
-    private int ordinal;
-
-    @Getter
-    @Setter
-    @Column(name = "key_valid")
-    private boolean keyValid;
-
-    @Getter
-    @Setter
-    @Column(name = "pet_exp_offset")
-    private int petExpOffset;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -54,12 +41,11 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RaritySqlModel)) return false;
+        if (!(o instanceof SlayerSqlModel)) return false;
 
-        RaritySqlModel that = (RaritySqlModel) o;
+        SlayerSqlModel that = (SlayerSqlModel) o;
 
         if (id != that.id) return false;
-        if (keyValid != that.keyValid) return false;
         if (!StringUtil.equals(key, that.key)) return false;
         if (!StringUtil.equals(name, that.name)) return false;
         return updatedAt.equals(that.updatedAt);

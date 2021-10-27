@@ -2,16 +2,22 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.model.*;
+import dev.sbs.api.model.sql.collections.collectionitems.CollectionItemRepository;
 import dev.sbs.api.model.sql.items.ItemSqlModel;
 import dev.sbs.api.model.sql.items.ItemRepository;
-import dev.sbs.api.model.sql.minions.MinionSqlModel;
 import dev.sbs.api.model.sql.minions.MinionRepository;
 import dev.sbs.api.model.sql.pets.PetSqlModel;
 import dev.sbs.api.model.sql.pets.PetRepository;
+import dev.sbs.api.model.sql.pets.petexpscales.PetExpScaleRepository;
+import dev.sbs.api.model.sql.skills.SkillRepository;
 import dev.sbs.api.model.sql.skills.SkillSqlModel;
 import dev.sbs.api.hypixel_old.skyblock.Skyblock;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import dev.sbs.api.model.sql.skills.skilllevels.SkillLevelRepository;
+import dev.sbs.api.model.sql.slayers.slayerlevels.SlayerLevelRepository;
+import dev.sbs.api.model.sql.stats.StatRepository;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
@@ -19,16 +25,13 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.*;
-import dev.sbs.api.model.sql.collections.CollectionSqlModel;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
+import dev.sbs.api.util.tuple.Pair;
 import lombok.*;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
@@ -114,18 +117,23 @@ public class SkyBlockIsland {
     public Optional<ProfileName> getProfileName() {
         return Optional.ofNullable(this.profileName);
     }
-/*  TODO: MinionModel
-    public Minion getMinion(Skyblock.Minion type) {
-        Minion minion = new Minion(type);
+
+    @SneakyThrows
+    public Minion getMinion(String minionName) {
+        return this.getMinion(SimplifiedApi.getSqlRepository(MinionRepository.class).findFirstOrNullCached(Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+    }
+
+    public Minion getMinion(MinionModel minionModel) {
+        Minion minion = new Minion(minionModel);
 
         for (Member member : this.getMembers()) {
-            Minion profileMinion = member.getMinion(type);
+            Minion profileMinion = member.getMinion(minionModel);
             minion.unlocked.addAll(profileMinion.unlocked);
         }
 
         return minion;
     }
-*/
+
     public UUID getIslandId() {
         return StringUtil.toUUID(this.islandId);
     }
@@ -268,22 +276,27 @@ public class SkyBlockIsland {
         }
 
         @SneakyThrows
-        public Collection getCollection(SkillSqlModel type) {
+        public Collection getCollection(SkillModel type) {
             Collection collection = new Collection(type);
-            //SimplifiedApi.getSqlRepository(CollectionRepository.class).findAllCached().stream().filter(model -> model.getName().equals(type.getName())); // TODO: Foreign Keys
-/*
-            if (this.collection != null) {
-                for (CollectionModel item : items) {
-                    collection.collected.put(item, this.collection.getOrDefault(item.getName(), 0));
+            ConcurrentList<CollectionItemModel> items = SimplifiedApi.getSqlRepository(CollectionItemRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .filter(model -> model.getCollection().getSkill().getKey().equals(type.getKey()))
+                    .collect(Concurrent.toList());
 
-                    List<String> unlocked = this.unlocked_coll_tiers.stream().filter(tier -> tier.matches(FormatUtil.format("^{0}_[\\d]+$", item.getName()))).collect(Collectors.toList());
+            // TODO: CHECK this.collection AND this.unlocked_coll_tiers
+            if (this.collection != null) {
+                for (CollectionItemModel item : items) {
+                    collection.collected.put(item, this.collection.getOrDefault(item.getItem().getItemId(), 0));
+
+                    List<String> unlocked = this.unlocked_coll_tiers.stream().filter(tier -> tier.matches(FormatUtil.format("^{0}_[\\d]+$", item.getItem().getItemId()))).collect(Collectors.toList());
                     unlocked.forEach(tier -> {
                         int current = collection.unlocked.getOrDefault(item, 0);
-                        collection.unlocked.put(item, Math.max(current, Integer.parseInt(tier.replace(FormatUtil.format("{0}_", item.getName()), ""))));
+                        collection.unlocked.put(item, Math.max(current, Integer.parseInt(tier.replace(FormatUtil.format("{0}_", item.getItem().getItemId()), ""))));
                     });
                 }
             }
-*/
+
             return collection;
         }
 
@@ -295,14 +308,19 @@ public class SkyBlockIsland {
             return new MelodyHarp(this.harpQuest);
         }
 
-        public Minion getMinion(MinionSqlModel type) {
-            Minion minion = new Minion(type);
+        @SneakyThrows
+        public Minion getMinion(String minionName) {
+            return this.getMinion(SimplifiedApi.getSqlRepository(MinionRepository.class).findFirstOrNullCached(Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+        }
+
+        public Minion getMinion(MinionModel minionModel) {
+            Minion minion = new Minion(minionModel);
 
             if (this.craftedMinions != null) {
                 minion.unlocked.addAll(
                         this.craftedMinions.stream()
-                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", type.getCollection().getSkill().getKey())))
-                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", type.getCollection().getSkill().getKey()), "")))
+                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", minionModel.getCollection().getSkill().getKey())))
+                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", minionModel.getCollection().getSkill().getKey()), "")))
                                 .collect(Collectors.toList())
                 );
             }
@@ -345,13 +363,18 @@ public class SkyBlockIsland {
             return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
-        public Skill getSkill(SkillSqlModel skill) {
-            double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skill.getName().toLowerCase()), this);
-            return new Skill(skill, experience);
+        @SneakyThrows
+        public Skill getSkill(String skillName) {
+            return this.getSkill(SimplifiedApi.getSqlRepository(SkillRepository.class).findFirstOrNullCached(Pair.of(SkillModel::getKey, skillName), Pair.of(SkillModel::getName, skillName)));
         }
 
-        public Slayer getSlayer(Skyblock.Slayer type) {
-            return new Slayer(type, this.slayer_bosses.get(type.getName()));
+        public Skill getSkill(SkillModel skillModel) {
+            double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
+            return new Skill(skillModel, experience);
+        }
+
+        public Slayer getSlayer(SlayerModel type) {
+            return new Slayer(type, this.slayer_bosses.get(type.getKey()));
         }
 
         public Sack getSack(Skyblock.Sack type) {
@@ -396,13 +419,14 @@ public class SkyBlockIsland {
             }
         }
 
+        // TODO: Weight
         /*
         public double getWeight(Skyblock.Stat stat) {
             return this.getWeight().get(stat);
         }
 
         public ConcurrentMap<Skyblock.Stat, Double> getWeight() {
-            return null; // TODO
+            return null;
         }
         */
 
@@ -434,7 +458,6 @@ DUNGEON_WEIGHT_VALUES = {
     'archer': 0.0000045254834
 }
 
-// TODO: Skill Weight Python Code
 async def get_skill_weight(skills_info):
     skill_weight = {}
     for key, value in skills_info.items():
@@ -452,8 +475,6 @@ async def get_skill_weight(skills_info):
                 skill_weight[value['name']] = {'weight': round(base), 'overflow': round(overflow)}
     return skill_weight
 
-
-// TODO: Slayer Weight Python Code
 async def get_slayer_weight(slayer_info):
     slayer_weight = {}
     for key, value in slayer_info.items():
@@ -477,7 +498,6 @@ async def get_slayer_weight(slayer_info):
             slayer_weight[value['name']] = {'weight': round(base), 'overflow': round(overflow)}
     return slayer_weight
 
-// TODO: Dungeon Weight Python Code
 async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     dungeon_weight = {}
     if cata_level != 50:
@@ -583,6 +603,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @Getter private SkyBlockDate.RealTime lastClaimed;
 
             /*
+            TODO: Is this incomplete?
             "attempts_0": 8,
             "bonus_clicks": 3,
             "claims_0": 8,
@@ -613,9 +634,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private int x;
         @Getter private int y;
         @Getter private int z;
-        @Getter private int type; // TODO: Enum?
-        @Getter private int tier; // TODO: Enum
+        @Getter private int type;
+        @Getter private int tier;
         @Getter private int chain;
+
+        // TODO: Enum for type and tier?
 
     }
 
@@ -642,27 +665,32 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class CenturyCake {
 
-        @Getter private int stat; // TODO: Is in order in stat menu, 12 = Pet Luck, 11 = Magic Find
+        private int stat; // This is in ordinal order in stat menu
         @Getter private String key;
         @Getter private int amount;
         @SerializedName("expire_at")
         @Getter private SkyBlockDate.RealTime expiresAt;
+
+        @SneakyThrows
+        public StatModel getStat() {
+            return SimplifiedApi.getSqlRepository(StatRepository.class).findFirstOrNullCached(StatModel::getOrdinal, this.stat);
+        }
 
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Collection {
 
-        @Getter private final SkillSqlModel type;
+        @Getter private final SkillModel type;
         @SerializedName("items")
-        @Getter private ConcurrentLinkedMap<CollectionSqlModel, Integer> collected = Concurrent.newLinkedMap();
-        @Getter private ConcurrentLinkedMap<CollectionSqlModel, Integer> unlocked = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionItemModel, Integer> collected = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionItemModel, Integer> unlocked = Concurrent.newLinkedMap();
 
-        public int getCollected(CollectionSqlModel collection) {
+        public int getCollected(CollectionItemModel collection) {
             return this.collected.get(collection);
         }
 
-        public int getUnlocked(CollectionSqlModel collection) {
+        public int getUnlocked(CollectionItemModel collection) {
             return this.unlocked.getOrDefault(collection, 0);
         }
 
@@ -989,7 +1017,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<Medal, Integer> medalInventory;
         @Getter private ConcurrentMap<Perk, Integer> perks;
         @SerializedName("unique_golds2")
-        @Getter private ConcurrentSet<String> uniqueGolds; // TODO: SQL Collections
+        private ConcurrentSet<String> uniqueGolds;
         private ConcurrentMap<String, Contest> contests = Concurrent.newMap();
         private ConcurrentList<Contest> contestData = Concurrent.newList();
         private boolean talked;
@@ -1021,6 +1049,15 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         public int getPerk(Perk perk) {
             return this.getPerks().get(perk);
+        }
+
+        @SneakyThrows
+        public ConcurrentSet<CollectionItemModel> getUniqueGolds() {
+            return SimplifiedApi.getSqlRepository(CollectionItemRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .filter(collectionItem -> uniqueGolds.contains(collectionItem.getItem().getItemId()))
+                    .collect(Concurrent.toSet());
         }
 
         public boolean hasTalked() {
@@ -1274,7 +1311,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     public static class Minion {
 
         @Getter private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
-        @Getter private final MinionSqlModel type;
+        @Getter private final MinionModel type;
 
     }
 
@@ -1319,9 +1356,15 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         private String skin;
 
         @Override
+        @SneakyThrows
         public ConcurrentList<Integer> getExperienceTiers() {
-            return Concurrent.newList(); // TODO: SQL
-            //return Skyblock.PET_EXP_TIER_SCALE.get(this.getRarity());
+            int petExpOffset = this.getRarity().getPetExpOffset();
+            return SimplifiedApi.getSqlRepository(PetExpScaleRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .filter(petExpScale -> petExpScale.getId() >= petExpOffset && petExpScale.getId() <= (petExpOffset + 100))
+                    .map(PetExpScaleModel::getValue)
+                    .collect(Concurrent.toList());
         }
 
         @SneakyThrows
@@ -1458,7 +1501,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Skill extends ExperienceCalculator {
 
-        @Getter private final SkillSqlModel type;
+        @Getter private final SkillModel type;
         private final double experience;
 
         @Override
@@ -1467,8 +1510,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         @Override
+        @SneakyThrows
         public ConcurrentList<Integer> getExperienceTiers() {
-            return this.getType().getName().equals("RUNECRAFTING") ? Skyblock.RUNECRAFTING_EXP_SCALE : Skyblock.SKILL_EXP_SCALE; // TODO: Experience Table Loading
+            return SimplifiedApi.getSqlRepository(SkillLevelRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .filter(slayerLevel -> slayerLevel.getSkill().getKey().equals(this.getType().getKey()))
+                    .map(SkillLevelModel::getLevel)
+                    .collect(Concurrent.toList());
         }
 
         @Override
@@ -1484,10 +1533,10 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         private final ConcurrentMap<Integer, Boolean> claimed = Concurrent.newMap();
         private final ConcurrentMap<Integer, Boolean> claimedSpecial = Concurrent.newMap();
         private final ConcurrentMap<Integer, Integer> kills = Concurrent.newMap();
-        @Getter private final Skyblock.Slayer type;
+        @Getter private final SlayerModel type;
         @Getter private final double experience;
 
-        private Slayer(Skyblock.Slayer type, SlayerBoss slayerBoss) {
+        private Slayer(SlayerModel type, SlayerBoss slayerBoss) {
             this.type = type;
             this.experience = slayerBoss.xp;
 
@@ -1505,8 +1554,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         @Override
+        @SneakyThrows
         public ConcurrentList<Integer> getExperienceTiers() {
-            return Skyblock.SLAYER_EXP_SCALE.get(this.getType());
+            return SimplifiedApi.getSqlRepository(SlayerLevelRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .filter(slayerLevel -> slayerLevel.getSlayer().getKey().equals(this.getType().getKey()))
+                    .map(SlayerLevelModel::getLevel)
+                    .collect(Concurrent.toList());
         }
 
         public int getKills(int tier) {
@@ -1534,7 +1589,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             // Optimal solution would be to go through everywhere stats can be,
             // and parse stats dynamically instead of adding them one at a time
 
-            // TODO: Before Stats Calculation
+            // Before Stats Calculation
             // Always There: Accessory Bag, Cake Bag#items, Essence Bonus, Century Cakes
             // Optional: Armor, Potions, Pet
             // Requires Query: Weapon
@@ -1574,7 +1629,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
                 centuryCakes.forEach(centuryCake -> {
                     if (centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis()) {
-                        int statIndex = centuryCake.getStat(); // 11: magic find
+                        StatModel stat = centuryCake.getStat(); // ordinal 11: magic find
                         String key = centuryCake.getKey(); // cake_magic_find
                         int amount = centuryCake.getAmount();
                         // Store amount into stat

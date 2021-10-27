@@ -21,12 +21,15 @@ import dev.sbs.api.model.sql.npcs.NpcRepository;
 import dev.sbs.api.model.sql.pets.PetRepository;
 import dev.sbs.api.model.sql.pets.petabilities.PetAbilityRepository;
 import dev.sbs.api.model.sql.pets.petabilitystats.PetAbilityStatRepository;
+import dev.sbs.api.model.sql.pets.petexpscales.PetExpScaleRepository;
 import dev.sbs.api.model.sql.pets.petitemstats.PetItemStatRepository;
 import dev.sbs.api.model.sql.pets.petstats.PetStatRepository;
 import dev.sbs.api.model.sql.pets.pettypes.PetTypeRepository;
 import dev.sbs.api.model.sql.potions.PotionRepository;
 import dev.sbs.api.model.sql.reforges.reforgestats.ReforgeStatRepository;
 import dev.sbs.api.model.sql.skills.SkillRepository;
+import dev.sbs.api.model.sql.slayers.SlayerRepository;
+import dev.sbs.api.model.sql.slayers.slayerlevels.SlayerLevelRepository;
 import dev.sbs.api.model.sql.stats.StatRepository;
 import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
 import dev.sbs.api.reflection.Reflection;
@@ -174,6 +177,7 @@ public class SimplifiedApi {
         return serviceManager;
     }
 
+    // TODO: Replace with inherited repository that's implemented by SQL, Web
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
         return getServiceManager().get(tClass);
     }
@@ -203,6 +207,7 @@ public class SimplifiedApi {
                 PetItemStatRepository.class,
                 PetStatRepository.class,
                 PetTypeRepository.class,
+                PetExpScaleRepository.class,
                 PotionRepository.class,
                 RarityRepository.class,
                 ReforgeRepository.class,
@@ -210,6 +215,8 @@ public class SimplifiedApi {
                 ReforgeTypeRepository.class,
                 SkillRepository.class,
                 SkillLevelRepository.class,
+                SlayerRepository.class,
+                SlayerLevelRepository.class,
                 StatRepository.class
         );
     }
