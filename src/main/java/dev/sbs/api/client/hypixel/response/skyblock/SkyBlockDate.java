@@ -17,22 +17,8 @@ import java.util.Date;
  */
 public class SkyBlockDate {
 
-    /**
-     * The time SkyBlock launched in RealTime.
-     */
-    public static final long LAUNCH_DATE = 1560275700000L;
-    /**
-     * The time the Zoo launched in RealTime.
-     */
-    public static final long ZOO_LAUNCH = LAUNCH_DATE + (Length.YEAR_MS * 66);
-    /**
-     * The time Jacob relaunched in RealTime.
-     */
-    public static final long JACOB_LAUNCH = LAUNCH_DATE + (Length.YEAR_MS * 114);
-
-    public static ConcurrentList<String> ZOO_CYCLE = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
-
-    public static final SimpleDateFormat REAL_DATE_FORMAT = new SimpleDateFormat("MM dd yyyy HH:mm");
+    @Getter private static final ConcurrentList<String> zooCycle = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
+    private static final SimpleDateFormat realDateFormat = new SimpleDateFormat("MM dd yyyy HH:mm");
 
     /**
      * Get RealTime in milliseconds.
@@ -56,9 +42,9 @@ public class SkyBlockDate {
     }
 
     public SkyBlockDate(long milliseconds, boolean isRealTime) {
-        if (isRealTime) Preconditions.checkArgument(milliseconds > LAUNCH_DATE, "Milliseconds must be greater than launch date");
-        else Preconditions.checkArgument((milliseconds + LAUNCH_DATE) > LAUNCH_DATE, "Milliseconds must be greater than zero");
-        this.realTime = isRealTime ? milliseconds : milliseconds + LAUNCH_DATE;
+        if (isRealTime) Preconditions.checkArgument(milliseconds > Launch.SKYBLOCK, "Milliseconds must be greater than launch date.");
+        else Preconditions.checkArgument((milliseconds + Launch.SKYBLOCK) > Launch.SKYBLOCK, "Milliseconds must be greater than zero.");
+        this.realTime = isRealTime ? milliseconds : milliseconds + Launch.SKYBLOCK;
     }
 
     public SkyBlockDate(Season season, int day, int hour) {
@@ -74,9 +60,9 @@ public class SkyBlockDate {
     }
 
     public static long getRealTime(Season season, int day, int hour) {
-        Preconditions.checkNotNull(season, "Season cannot be NULL");
-        Preconditions.checkArgument(day > 0 && day < 32, "Day must be between 1 and 31 inclusive");
-        Preconditions.checkArgument(hour > 0 && hour < 25, "Hour must be between 1 and 24 inclusive");
+        Preconditions.checkNotNull(season, "Season cannot be NULL.");
+        Preconditions.checkArgument(day > 0 && day < 32, "Day must be between 1 and 31 inclusive.");
+        Preconditions.checkArgument(hour > 0 && hour < 25, "Hour must be between 1 and 24 inclusive.");
         long month_millis = (season.ordinal() + 1) * Length.MONTH_MS;
         long day_millis = day * Length.DAY_MS;
         long hour_millis = hour * Length.HOUR_MS;
@@ -93,7 +79,7 @@ public class SkyBlockDate {
     }
 
     public static long getSkyBlockTime(Season season, int day, int hour) {
-        return getRealTime(season, day, hour) - LAUNCH_DATE;
+        return getRealTime(season, day, hour) - Launch.SKYBLOCK;
     }
 
     /**
@@ -144,7 +130,7 @@ public class SkyBlockDate {
      * @return skyblock time
      */
     public long getSkyBlockTime() {
-        return this.getRealTime() - LAUNCH_DATE;
+        return this.getRealTime() - Launch.SKYBLOCK;
     }
 
     /**
@@ -167,7 +153,7 @@ public class SkyBlockDate {
 
     @Override
     public String toString() {
-        return REAL_DATE_FORMAT.format(new Date(this.getRealTime()));
+        return realDateFormat.format(new Date(this.getRealTime()));
     }
 
     /**
@@ -194,6 +180,26 @@ public class SkyBlockDate {
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Launch {
+
+        /**
+         * The time SkyBlock launched in RealTime.
+         */
+        public static final long SKYBLOCK = 1560275700000L;
+
+        /**
+         * The time the Zoo launched in RealTime.
+         */
+        public static final long ZOO = SKYBLOCK + (Length.YEAR_MS * 66);
+
+        /**
+         * The time Jacob relaunched in RealTime.
+         */
+        public static final long JACOB = SKYBLOCK + (Length.YEAR_MS * 114);
+
+    }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Length {
 
         public static final long HOURS_TOTAL = 24;
@@ -205,7 +211,7 @@ public class SkyBlockDate {
         public static final long MONTH_MS = DAYS_TOTAL * DAY_MS; // 37200000
         public static final long YEAR_MS = MONTHS_TOTAL * MONTH_MS; // 446400000
 
-        public static final long ZOO_CYCLE_MS = YEAR_MS / 2;
+        public static final long ZOO_CYCLE_MS = YEAR_MS / 2; // 223200000
 
     }
 
