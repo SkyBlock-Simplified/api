@@ -1,10 +1,8 @@
 package dev.sbs.api.model.sql.pets.petstats;
 
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.model.PetAbilityStatModel;
 import dev.sbs.api.model.PetStatModel;
 import dev.sbs.api.model.sql.pets.PetSqlModel;
-import dev.sbs.api.model.sql.pets.petabilities.PetAbilitySqlModel;
 import dev.sbs.api.model.sql.stats.StatSqlModel;
 import lombok.Getter;
 import lombok.Setter;

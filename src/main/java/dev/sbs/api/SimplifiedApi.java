@@ -25,6 +25,7 @@ import dev.sbs.api.model.sql.pets.petitemstats.PetItemStatRepository;
 import dev.sbs.api.model.sql.pets.petstats.PetStatRepository;
 import dev.sbs.api.model.sql.pets.pettypes.PetTypeRepository;
 import dev.sbs.api.model.sql.potions.PotionRepository;
+import dev.sbs.api.model.sql.reforges.reforgestats.ReforgeStatRepository;
 import dev.sbs.api.model.sql.skills.SkillRepository;
 import dev.sbs.api.model.sql.stats.StatRepository;
 import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
@@ -48,7 +49,7 @@ import dev.sbs.api.model.sql.collections.collectionitemtiers.CollectionItemTierR
 import dev.sbs.api.model.sql.collections.CollectionRepository;
 import dev.sbs.api.model.sql.enchantments.EnchantmentRepository;
 import dev.sbs.api.model.sql.fairysouls.FairySoulRepository;
-import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategoryRepository;
+import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeRepository;
 import dev.sbs.api.model.sql.locations.locationareas.LocationAreaRepository;
 import dev.sbs.api.model.sql.locations.LocationRepository;
 import dev.sbs.api.model.sql.minions.minionitems.MinionItemRepository;
@@ -189,7 +190,6 @@ public class SimplifiedApi {
                 FairySoulRepository.class,
                 FormatRepository.class,
                 ItemRepository.class,
-                ReforgeCategoryRepository.class,
                 LocationRepository.class,
                 LocationAreaRepository.class,
                 MinionRepository.class,
@@ -206,6 +206,8 @@ public class SimplifiedApi {
                 PotionRepository.class,
                 RarityRepository.class,
                 ReforgeRepository.class,
+                ReforgeStatRepository.class,
+                ReforgeTypeRepository.class,
                 SkillRepository.class,
                 SkillLevelRepository.class,
                 StatRepository.class

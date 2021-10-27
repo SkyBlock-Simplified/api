@@ -2,9 +2,7 @@ package dev.sbs.api.model.sql.pets.petitemstats;
 
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.PetItemStatModel;
-import dev.sbs.api.model.PetStatModel;
 import dev.sbs.api.model.sql.items.ItemSqlModel;
-import dev.sbs.api.model.sql.pets.PetSqlModel;
 import dev.sbs.api.model.sql.stats.StatSqlModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.List;
 
 @Entity
 @Table(name = "pet_item_stats")

@@ -4,15 +4,11 @@ import dev.sbs.api.data.Model;
 
 import java.util.Map;
 
-public interface EnchantmentModel extends Model {
+public interface ReforgeStatModel extends Model {
 
     String getKey();
 
-    String getName();
-
-    ReforgeTypeModel getItemType();
-
-    int getItemLevel();
+    RarityModel getRarity();
 
     Map<String, Object> getEffects();
 

@@ -2,8 +2,8 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategorySqlModel;
-import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategoryRepository;
+import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeSqlModel;
+import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeRepository;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.rarities.RarityRepository;
 import dev.sbs.api.model.sql.reforges.ReforgeSqlModel;
@@ -17,13 +17,13 @@ import java.util.List;
 
 public class ReforgeRepositoryTest {
 
-    private static final ReforgeCategoryRepository itemTypeRepository;
+    private static final ReforgeTypeRepository itemTypeRepository;
     private static final RarityRepository rarityRepository;
     private static final ReforgeRepository reforgeRepository;
 
     static {
         SimplifiedApi.enableDatabase();
-        itemTypeRepository = SimplifiedApi.getSqlRepository(ReforgeCategoryRepository.class);
+        itemTypeRepository = SimplifiedApi.getSqlRepository(ReforgeTypeRepository.class);
         rarityRepository = SimplifiedApi.getSqlRepository(RarityRepository.class);
         reforgeRepository = SimplifiedApi.getSqlRepository(ReforgeRepository.class);
     }
@@ -37,14 +37,14 @@ public class ReforgeRepositoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void getCachedList_ok() throws SqlException {
-        ReforgeCategorySqlModel sword = itemTypeRepository.findFirstOrNullCached(
-                ReforgeCategorySqlModel::getName, "Sword"
+        ReforgeTypeSqlModel sword = itemTypeRepository.findFirstOrNullCached(
+                ReforgeTypeSqlModel::getName, "Sword"
         );
         RaritySqlModel legendary = rarityRepository.findFirstOrNullCached(
                 RaritySqlModel::getKey, "LEGENDARY"
         );
         ReforgeSqlModel spicy = reforgeRepository.findFirstOrNullCached(
-                Pair.of(ReforgeSqlModel::getItemType, sword),
+                Pair.of(ReforgeSqlModel::getCategory, sword),
                 Pair.of(ReforgeSqlModel::getRarity, legendary),
                 Pair.of(ReforgeSqlModel::getName, "Spicy")
         );

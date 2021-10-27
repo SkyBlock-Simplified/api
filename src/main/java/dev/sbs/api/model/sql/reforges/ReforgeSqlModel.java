@@ -1,10 +1,8 @@
 package dev.sbs.api.model.sql.reforges;
 
-import dev.sbs.api.data.sql.converter.ObjectMapConverter;
-import dev.sbs.api.data.sql.model.SqlEffectsModel;
+import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.ReforgeModel;
-import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategorySqlModel;
-import dev.sbs.api.model.sql.rarities.RaritySqlModel;
+import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeSqlModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,11 +10,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.Map;
 
 @Entity
 @Table(name = "reforges")
-public class ReforgeSqlModel extends SqlEffectsModel implements ReforgeModel {
+public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Getter
     @Id
@@ -37,25 +34,13 @@ public class ReforgeSqlModel extends SqlEffectsModel implements ReforgeModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_type_key", nullable = false)
-    private ReforgeCategorySqlModel itemType;
+    @JoinColumn(name = "reforge_type_key", nullable = false)
+    private ReforgeTypeSqlModel type;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "rarity", nullable = false)
-    private RaritySqlModel rarity;
-
-    @Getter
-    @Setter
-    @Column(name = "is_stone", nullable = false)
+    @Column(name = "stone", nullable = false)
     private boolean stone;
-
-    @Getter
-    @Setter
-    @Column(name = "effects")
-    @Convert(converter = ObjectMapConverter.class)
-    private Map<String, Object> effects;
 
     @Getter
     @UpdateTimestamp
@@ -71,10 +56,7 @@ public class ReforgeSqlModel extends SqlEffectsModel implements ReforgeModel {
 
         if (id != that.id) return false;
         if (stone != that.stone) return false;
-        if (!itemType.equals(that.itemType)) return false;
         if (!name.equals(that.name)) return false;
-        if (!rarity.equals(that.rarity)) return false;
-        if (!effects.equals(that.effects)) return false;
         return updatedAt.equals(that.updatedAt);
     }
 

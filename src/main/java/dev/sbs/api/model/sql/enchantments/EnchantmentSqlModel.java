@@ -4,7 +4,7 @@ import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.data.sql.model.SqlEffectsModel;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.EnchantmentModel;
-import dev.sbs.api.model.sql.reforges.reforgecategories.ReforgeCategorySqlModel;
+import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeSqlModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +38,7 @@ public class EnchantmentSqlModel extends SqlEffectsModel implements EnchantmentM
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_type_key", nullable = false)
-    private ReforgeCategorySqlModel itemType;
+    private ReforgeTypeSqlModel itemType;
 
     @Getter
     @Setter
