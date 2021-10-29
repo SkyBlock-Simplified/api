@@ -29,7 +29,8 @@ public class AccessorySqlModel extends SqlEffectsModel implements AccessoryModel
 
     @Getter
     @Setter
-    @Column(name = "item_id", nullable = false, length = 127)
+    @ManyToOne
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

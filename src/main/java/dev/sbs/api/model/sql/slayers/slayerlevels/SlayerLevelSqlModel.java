@@ -14,7 +14,7 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "slayers")
+@Table(name = "slayer_levels")
 public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
 
     @Getter
@@ -25,7 +25,8 @@ public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "slayer_key", nullable = false, length = 127)
+    @ManyToOne
+    @JoinColumn(name = "slayer_key", nullable = false)
     private SlayerSqlModel slayer;
 
     @Getter
