@@ -36,12 +36,7 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "priority", nullable = false)
-    private int priority;
-
-    @Getter
-    @Setter
-    @Column(name = "priority", nullable = false)
+    @Column(name = "rarities", nullable = false)
     //@Convert(converter = RaritySqlModelListConverter.class)
     //private List<RaritySqlModel> rarities;
     private List<Integer> rarities;

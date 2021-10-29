@@ -3,6 +3,7 @@ package dev.sbs.api.model.sql.pets.petabilitystats;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.PetAbilityStatModel;
 import dev.sbs.api.model.sql.pets.petabilities.PetAbilitySqlModel;
+import dev.sbs.api.model.sql.stats.StatSqlModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -29,15 +30,16 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "priority", nullable = false)
-    private int priority;
-
-    @Getter
-    @Setter
-    @Column(name = "priority", nullable = false)
+    @Column(name = "rarities")
     //@Convert(converter = RaritySqlModelListConverter.class)
     //private List<RaritySqlModel> rarities;
     private List<Integer> rarities;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "stat")
+    private StatSqlModel stat;
 
     @Getter
     @Setter

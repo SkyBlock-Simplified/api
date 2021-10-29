@@ -8,9 +8,9 @@ public interface PetAbilityStatModel extends Model {
 
     PetAbilityModel getAbility();
 
-    int getPriority();
-
     List<Integer> getRarities();
+
+    StatModel getStat();
 
     double getBaseValue();
 

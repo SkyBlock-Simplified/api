@@ -10,6 +10,8 @@ public interface PetAbilityModel extends Model {
 
     PetModel getPet();
 
+    int getPriority();
+
     String getDescription();
 
 }

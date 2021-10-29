@@ -38,6 +38,11 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "priority", nullable = false)
+    private int priority;
+
+    @Getter
+    @Setter
     @Column(name = "description", nullable = false, length = 127)
     private String description;
 
