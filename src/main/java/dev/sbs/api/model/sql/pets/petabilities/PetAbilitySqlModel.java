@@ -38,8 +38,8 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "priority", nullable = false)
-    private int priority;
+    @Column(name = "ordinal", nullable = false)
+    private int ordinal;
 
     @Getter
     @Setter
