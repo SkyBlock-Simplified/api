@@ -2,6 +2,7 @@ package dev.sbs.api.model.sql.fairysouls;
 
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.FairySoulModel;
+import dev.sbs.api.model.LocationModel;
 import dev.sbs.api.model.sql.locations.LocationSqlModel;
 import dev.sbs.api.model.sql.locations.locationareas.LocationAreaSqlModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;

@@ -1,6 +1,7 @@
 package dev.sbs.api.model.sql.locations;
 
 import dev.sbs.api.data.sql.model.SqlModel;
+import dev.sbs.api.model.LocationModel;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,13 +12,18 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "locations")
-public class LocationSqlModel implements SqlModel {
+public class LocationSqlModel implements LocationModel, SqlModel {
 
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
+
+    @Getter
+    @Setter
+    @Column(name = "key", nullable = false, length = 127)
+    private String key;
 
     @Getter
     @Setter

@@ -46,7 +46,6 @@ public class Skyblock {
 
     }
 
-
     public enum Item {
 
         // Redstone Collection

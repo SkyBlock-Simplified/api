@@ -1,8 +1,8 @@
 package dev.sbs.api.util.builder.string;
 
-import dev.sbs.api.util.matcher.StringMatcher;
-import dev.sbs.api.util.matcher.StringMatcherFactory;
 import dev.sbs.api.util.helper.StringUtil;
+import org.apache.commons.text.matcher.StringMatcher;
+import org.apache.commons.text.matcher.StringMatcherFactory;
 
 import java.util.*;
 
