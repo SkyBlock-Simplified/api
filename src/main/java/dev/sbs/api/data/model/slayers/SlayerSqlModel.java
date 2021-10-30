@@ -36,17 +36,9 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof SlayerSqlModel)) return false;
-
-        SlayerSqlModel that = (SlayerSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!StringUtil.equals(key, that.key)) return false;
-        if (!StringUtil.equals(name, that.name)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

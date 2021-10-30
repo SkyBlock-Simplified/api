@@ -60,18 +60,9 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof FairySoulSqlModel)) return false;
-
-        FairySoulSqlModel that = (FairySoulSqlModel) o;
-
-        if (id != that.id) return false;
-        if (x != that.x) return false;
-        if (y != that.y) return false;
-        if (z != that.z) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

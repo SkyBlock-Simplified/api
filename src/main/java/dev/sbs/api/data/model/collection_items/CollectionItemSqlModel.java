@@ -45,18 +45,9 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof CollectionItemSqlModel)) return false;
-
-        CollectionItemSqlModel that = (CollectionItemSqlModel) o;
-
-        if (id != that.id) return false;
-        if (maxTiers != that.maxTiers) return false;
-        if (!collection.equals(that.collection)) return false;
-        if (!item.equals(that.item)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

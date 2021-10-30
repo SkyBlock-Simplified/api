@@ -30,7 +30,6 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     @JoinColumn(name = "ability_key", nullable = false, referencedColumnName = "key")
     private PetAbilitySqlModel ability;
 
-
     @Getter
     @Setter
     @Column(name = "rarities")
@@ -61,6 +60,7 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }

@@ -31,16 +31,9 @@ public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof PetExpScaleSqlModel)) return false;
-
-        PetExpScaleSqlModel petModel = (PetExpScaleSqlModel) o;
-
-        if (id != petModel.id) return false;
-        if (value != petModel.value) return false;
-        return updatedAt.equals(petModel.updatedAt);*/
     }
 
     @Override

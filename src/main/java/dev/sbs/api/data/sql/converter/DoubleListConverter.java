@@ -13,9 +13,9 @@ public class DoubleListConverter implements AttributeConverter<List<Double>, Str
     @Override
     @SuppressWarnings("unchecked")
     public List<Double> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return new ArrayList<>();
-        }
+
         try {
             return SimplifiedApi.getGson().fromJson(attr, ArrayList.class);
         } catch (Exception e) {

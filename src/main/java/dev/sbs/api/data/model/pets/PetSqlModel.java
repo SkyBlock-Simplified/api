@@ -67,21 +67,9 @@ public class PetSqlModel implements PetModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof PetSqlModel)) return false;
-
-        PetSqlModel petModel = (PetSqlModel) o;
-
-        if (id != petModel.id) return false;
-        if (!StringUtil.equals(this.key, petModel.key)) return false;
-        if (!StringUtil.equals(this.name, petModel.name)) return false;
-        if (!lowestRarity.equals(petModel.lowestRarity)) return false;
-        if (!skill.equals(petModel.skill)) return false;
-        if (!petType.equals(petModel.petType)) return false;
-        if (!StringUtil.equals(this.skin, petModel.skin)) return false;
-        return updatedAt.equals(petModel.updatedAt);*/
     }
 
     @Override

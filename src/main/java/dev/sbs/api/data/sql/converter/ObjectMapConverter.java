@@ -13,9 +13,9 @@ public class ObjectMapConverter implements AttributeConverter<Map<String, Object
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, Object> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return new HashMap<>();
-        }
+
         try {
             return SimplifiedApi.getGson().fromJson(attr, HashMap.class);
         } catch (Exception e) {

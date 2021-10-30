@@ -45,17 +45,9 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof MinionTierSqlModel)) return false;
-
-        MinionTierSqlModel that = (MinionTierSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!minion.equals(that.minion)) return false;
-        if (!item.equals(that.item)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

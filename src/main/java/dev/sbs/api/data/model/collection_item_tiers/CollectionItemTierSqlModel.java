@@ -51,19 +51,9 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof CollectionItemTierSqlModel)) return false;
-
-        CollectionItemTierSqlModel that = (CollectionItemTierSqlModel) o;
-
-        if (id != that.id) return false;
-        if (tier != that.tier) return false;
-        if (Double.compare(that.amountRequired, amountRequired) != 0) return false;
-        if (!collectionItem.equals(that.collectionItem)) return false;
-        if (!unlocks.equals(that.unlocks)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

@@ -43,17 +43,9 @@ public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof SlayerLevelSqlModel)) return false;
-
-        SlayerLevelSqlModel that = (SlayerLevelSqlModel) o;
-
-        if (id != that.id) return false;
-        if (level != that.level) return false;
-        if (totalExpRequired != that.totalExpRequired) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

@@ -36,16 +36,9 @@ public class ReforgeTypeSqlModel implements ReforgeTypeModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof ReforgeTypeSqlModel)) return false;
-
-        ReforgeTypeSqlModel that = (ReforgeTypeSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!name.equals(that.name)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

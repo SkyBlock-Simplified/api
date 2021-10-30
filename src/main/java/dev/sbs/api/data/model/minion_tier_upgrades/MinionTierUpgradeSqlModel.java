@@ -50,19 +50,9 @@ public class MinionTierUpgradeSqlModel implements SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof MinionTierUpgradeSqlModel)) return false;
-
-        MinionTierUpgradeSqlModel that = (MinionTierUpgradeSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!minionTier.equals(that.minionTier)) return false;
-        if (coinCost != that.coinCost) return false;
-        if (itemCost != that.itemCost) return false;
-        if (itemQuantity != that.itemQuantity) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

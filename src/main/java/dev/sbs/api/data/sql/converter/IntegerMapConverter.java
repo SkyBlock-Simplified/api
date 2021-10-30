@@ -13,9 +13,9 @@ public class IntegerMapConverter implements AttributeConverter<Map<String, Integ
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, Integer> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return new HashMap<>();
-        }
+
         try {
             return SimplifiedApi.getGson().fromJson(attr, HashMap.class);
         } catch (Exception e) {

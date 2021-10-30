@@ -55,19 +55,9 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     // TODO: Load Exp Table
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof SkillSqlModel)) return false;
-
-        SkillSqlModel that = (SkillSqlModel) o;
-
-        if (id != that.id) return false;
-        if (maxLevel != that.maxLevel) return false;
-        if (!StringUtil.equals(key, that.key)) return false;
-        if (!StringUtil.equals(name, that.name)) return false;
-        if (!description.equals(that.description)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

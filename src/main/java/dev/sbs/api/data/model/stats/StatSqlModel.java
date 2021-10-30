@@ -55,20 +55,9 @@ public class StatSqlModel implements StatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof StatSqlModel)) return false;
-
-        StatSqlModel that = (StatSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!StringUtil.equals(key, that.key)) return false;
-        if (!StringUtil.equals(name, that.name)) return false;
-        if (symbol != that.symbol) return false;
-        if (!format.equals(that.format)) return false;
-        if (ordinal != that.ordinal) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

@@ -9,11 +9,10 @@ import java.util.List;
 public class RaritySqlModelListConverter implements AttributeConverter<List<RaritySqlModel>, String> {
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<RaritySqlModel> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return null;
-        }
+
         try {
             return null;
             //return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RaritySqlModel::getOrdinal, attr);

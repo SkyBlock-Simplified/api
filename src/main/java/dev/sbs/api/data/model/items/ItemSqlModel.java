@@ -170,41 +170,9 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof ItemSqlModel)) return false;
-
-        ItemSqlModel itemModel = (ItemSqlModel) o;
-
-        if (id != itemModel.id) return false;
-        if (durability != itemModel.durability) return false;
-        if (generatorTier != itemModel.generatorTier) return false;
-        if (glowing != itemModel.glowing) return false;
-        if (Double.compare(itemModel.npcSellPrice, npcSellPrice) != 0) return false;
-        if (unstackable != itemModel.unstackable) return false;
-        if (dungeonItem != itemModel.dungeonItem) return false;
-        if (gearScore != itemModel.gearScore) return false;
-        if (Double.compare(itemModel.abilityDamageScaling, abilityDamageScaling) != 0) return false;
-        if (!name.equals(itemModel.name)) return false;
-        if (!Objects.equals(material, itemModel.material)) return false;
-        if (!Objects.equals(skin, itemModel.skin)) return false;
-        if (!Objects.equals(furniture, itemModel.furniture)) return false;
-        if (!Objects.equals(rarity, itemModel.rarity)) return false;
-        if (!itemId.equals(itemModel.itemId)) return false;
-        if (!Objects.equals(generator, itemModel.generator)) return false;
-        if (!Objects.equals(category, itemModel.category)) return false;
-        if (!Objects.equals(stats, itemModel.stats)) return false;
-        if (!Objects.equals(color, itemModel.color)) return false;
-        if (!Objects.equals(tieredStats, itemModel.tieredStats)) return false;
-        if (!Objects.equals(requirements, itemModel.requirements)) return false;
-        if (!Objects.equals(catacombsRequirements, itemModel.catacombsRequirements)) return false;
-        if (!Objects.equals(essence, itemModel.essence)) return false;
-        if (!Objects.equals(description, itemModel.description)) return false;
-        if (!Objects.equals(enchantments, itemModel.enchantments)) return false;
-        if (!Objects.equals(crystal, itemModel.crystal)) return false;
-        if (!Objects.equals(privateIsland, itemModel.privateIsland)) return false;
-        return updatedAt.equals(itemModel.updatedAt);*/
     }
 
     @Override

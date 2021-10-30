@@ -36,6 +36,7 @@ public class PetTypeSqlModel implements PetTypeModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }

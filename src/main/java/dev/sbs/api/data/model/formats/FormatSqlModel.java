@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.formats;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.sql.converter.ColorConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "rgb", length = 1)
+    @Convert(converter = ColorConverter.class)
     private Color rgb;
 
     @Getter
@@ -47,19 +49,9 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof FormatSqlModel)) return false;
-
-        FormatSqlModel that = (FormatSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!StringUtil.equals(key, that.key)) return false;
-        if (code != that.code) return false;
-        if (!rgb.equals(that.rgb)) return false;
-        if (format != that.format) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

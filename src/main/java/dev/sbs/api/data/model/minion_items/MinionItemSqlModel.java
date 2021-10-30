@@ -45,17 +45,9 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof MinionItemSqlModel)) return false;
-
-        MinionItemSqlModel that = (MinionItemSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!minion.equals(that.minion)) return false;
-        if (!collectionItem.equals(that.collectionItem)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

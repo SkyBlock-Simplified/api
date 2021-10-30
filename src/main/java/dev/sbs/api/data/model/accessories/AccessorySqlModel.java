@@ -65,21 +65,9 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof AccessorySqlModel)) return false;
-
-        AccessorySqlModel that = (AccessorySqlModel) o;
-
-        if (id != that.id) return false;
-        if (familyRank != that.familyRank) return false;
-        if (!item.equals(that.item)) return false;
-        if (!Objects.equals(family, that.family)) return false;
-        if (!name.equals(that.name)) return false;
-        if (!rarity.equals(that.rarity)) return false;
-        if (!effects.equals(that.effects)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

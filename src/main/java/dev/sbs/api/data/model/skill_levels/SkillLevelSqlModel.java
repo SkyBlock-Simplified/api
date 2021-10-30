@@ -51,19 +51,9 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof SkillLevelSqlModel)) return false;
-
-        SkillLevelSqlModel that = (SkillLevelSqlModel) o;
-
-        if (id != that.id) return false;
-        if (level != that.level) return false;
-        if (Double.compare(that.totalExpRequired, totalExpRequired) != 0) return false;
-        if (!skill.equals(that.skill)) return false;
-        if (!unlocks.equals(that.unlocks)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

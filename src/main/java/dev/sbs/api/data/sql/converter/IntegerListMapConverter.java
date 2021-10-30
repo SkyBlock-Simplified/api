@@ -12,9 +12,9 @@ public class IntegerListMapConverter implements AttributeConverter<Map<String, L
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, List<Integer>> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return new HashMap<>();
-        }
+
         try {
             return SimplifiedApi.getGson().fromJson(attr, HashMap.class);
         } catch (Exception e) {

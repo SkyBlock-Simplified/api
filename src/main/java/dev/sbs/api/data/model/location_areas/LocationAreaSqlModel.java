@@ -43,17 +43,9 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
     private Instant updatedAt;
 
     @Override
+    @SuppressWarnings("all")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
-        /*if (this == o) return true;
-        if (!(o instanceof LocationAreaSqlModel)) return false;
-
-        LocationAreaSqlModel that = (LocationAreaSqlModel) o;
-
-        if (id != that.id) return false;
-        if (!name.equals(that.name)) return false;
-        if (!location.equals(that.location)) return false;
-        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override
