@@ -12,7 +12,6 @@ import dev.sbs.api.model.sql.pets.PetRepository;
 import dev.sbs.api.model.sql.pets.petexpscales.PetExpScaleRepository;
 import dev.sbs.api.model.sql.skills.SkillRepository;
 import dev.sbs.api.model.sql.skills.SkillSqlModel;
-import dev.sbs.api.hypixel_old.skyblock.Skyblock;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.model.sql.skills.skilllevels.SkillLevelRepository;
@@ -31,11 +30,14 @@ import dev.sbs.api.util.tuple.Pair;
 import lombok.*;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class SkyBlockIsland {
+
+    private static final DecimalFormat smallDecimalFormat = new DecimalFormat("#0.#"); // TODO: Decimal formatting
 
     @SerializedName("profile_id")
     private String islandId;
@@ -377,8 +379,9 @@ public class SkyBlockIsland {
             return new Slayer(type, this.slayer_bosses.get(type.getKey()));
         }
 
-        public Sack getSack(Skyblock.Sack type) {
-            Sack collection = new Sack(type);
+        public Sack getSack(String type) {
+            return null;
+            /*Sack collection = new Sack(type);
             ConcurrentList<Skyblock.Item> items = type.getItems();
 
             if (this.sackCounts != null) {
@@ -386,7 +389,7 @@ public class SkyBlockIsland {
                     collection.stored.put(item, this.sackCounts.getOrDefault(item.getItemName(), 0));
             }
 
-            return collection;
+            return collection;*/
         }
 /*
         public double getSkillAverage() {
@@ -1489,11 +1492,12 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sack {
 
-        @Getter private final Skyblock.Sack type;
-        @Getter private ConcurrentLinkedMap<Skyblock.Item, Integer> stored = Concurrent.newLinkedMap();
+        @Getter private final String type;
+        @Getter private ConcurrentLinkedMap<String, Integer> stored = Concurrent.newLinkedMap(); // TODO: SackModel
 
-        public int getStored(Skyblock.Item item) {
-            return this.stored.getOrDefault(item, (this.type.getItems().contains(item) ? 0 : -1));
+        public int getStored(String item) {
+            return 0;
+            //return this.stored.getOrDefault(item, (this.type.getItems().contains(item) ? 0 : -1));
         }
 
     }
