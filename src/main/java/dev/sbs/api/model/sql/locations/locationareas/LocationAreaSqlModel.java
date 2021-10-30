@@ -34,7 +34,7 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location", nullable = false)
+    @JoinColumn(name = "location_key", nullable = false)
     private LocationSqlModel location;
 
     @Getter

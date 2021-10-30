@@ -24,7 +24,7 @@ public class FormatSqlModel implements FormatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "format_key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

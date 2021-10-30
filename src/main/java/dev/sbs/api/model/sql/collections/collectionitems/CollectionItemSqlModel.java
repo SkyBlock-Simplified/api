@@ -36,11 +36,6 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
-    private String name;
-
-    @Getter
-    @Setter
     @Column(name = "max_tiers", nullable = false)
     private int maxTiers;
 
@@ -60,7 +55,6 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
         if (maxTiers != that.maxTiers) return false;
         if (!collection.equals(that.collection)) return false;
         if (!item.equals(that.item)) return false;
-        if (!name.equals(that.name)) return false;
         return updatedAt.equals(that.updatedAt);
     }
 

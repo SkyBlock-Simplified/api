@@ -25,7 +25,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion", nullable = false)
+    @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
     @Getter

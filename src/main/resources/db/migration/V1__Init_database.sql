@@ -7216,8 +7216,8 @@ INSERT INTO `pet_ability_stats` (`id`, `ability_key`, `stat_key`, `rarities`, `b
 /*!40000 ALTER TABLE `pet_ability_stats` ENABLE KEYS */;
 
 -- Dumping structure for table skyblocksimplified.pet_exp_scale
-DROP TABLE IF EXISTS `pet_exp_scale`;
-CREATE TABLE IF NOT EXISTS `pet_exp_scale` (
+DROP TABLE IF EXISTS `pet_exp_scales`;
+CREATE TABLE IF NOT EXISTS `pet_exp_scales` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` int(11) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -7226,9 +7226,9 @@ CREATE TABLE IF NOT EXISTS `pet_exp_scale` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table skyblocksimplified.pet_exp_scale: ~120 rows (approximately)
-DELETE FROM `pet_exp_scale`;
-/*!40000 ALTER TABLE `pet_exp_scale` DISABLE KEYS */;
-INSERT INTO `pet_exp_scale` (`id`, `value`, `updated_at`) VALUES
+DELETE FROM `pet_exp_scales`;
+/*!40000 ALTER TABLE `pet_exp_scales` DISABLE KEYS */;
+INSERT INTO `pet_exp_scales` (`id`, `value`, `updated_at`) VALUES
 	(1, 0, '2021-10-26 23:56:51'),
 	(2, 100, '2021-10-26 23:56:51'),
 	(3, 110, '2021-10-26 23:56:51'),
@@ -7349,7 +7349,7 @@ INSERT INTO `pet_exp_scale` (`id`, `value`, `updated_at`) VALUES
 	(118, 1616700, '2021-10-26 23:56:51'),
 	(119, 1746700, '2021-10-26 23:56:51'),
 	(120, 1886700, '2021-10-26 23:56:51');
-/*!40000 ALTER TABLE `pet_exp_scale` ENABLE KEYS */;
+/*!40000 ALTER TABLE `pet_exp_scales` ENABLE KEYS */;
 
 -- Dumping structure for table skyblocksimplified.pet_item_stats
 DROP TABLE IF EXISTS `pet_item_stats`;

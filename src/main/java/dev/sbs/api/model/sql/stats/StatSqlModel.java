@@ -42,7 +42,7 @@ public class StatSqlModel implements StatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "format", nullable = false)
+    @JoinColumn(name = "format_key", nullable = false)
     private FormatSqlModel format;
 
     @Getter

@@ -31,7 +31,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_item_key")
+    @JoinColumn(name = "collection_item_id")
     private CollectionItemSqlModel collectionItem;
 
     @Getter

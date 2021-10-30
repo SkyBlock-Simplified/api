@@ -38,7 +38,7 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat")
+    @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 
     @Getter

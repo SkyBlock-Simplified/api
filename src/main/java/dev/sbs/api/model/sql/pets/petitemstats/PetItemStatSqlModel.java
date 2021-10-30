@@ -40,7 +40,7 @@ public class PetItemStatSqlModel implements PetItemStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "base_value", nullable = false)
+    @Column(name = "percentage", nullable = false)
     private boolean percentage;
 
     @Getter

@@ -40,7 +40,7 @@ public class MinionTierUpgradeSqlModel implements SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "item_quantity", nullable = false)
     private int itemQuantity;
 
     @Getter

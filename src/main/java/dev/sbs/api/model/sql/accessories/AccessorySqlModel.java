@@ -41,13 +41,13 @@ public class AccessorySqlModel extends SqlEffectsModel implements AccessoryModel
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity", nullable = false)
+    @JoinColumn(name = "rarity_key", nullable = false)
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "family")
+    @JoinColumn(name = "family_key")
     private AccessoryFamilySqlModel family;
 
     @Getter
