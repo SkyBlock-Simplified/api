@@ -1,5 +1,6 @@
 package dev.sbs.api.model.sql.pets.petabilitystats;
 
+import dev.sbs.api.data.sql.converter.IntegerListConverter;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.PetAbilityStatModel;
 import dev.sbs.api.model.sql.pets.petabilities.PetAbilitySqlModel;
@@ -33,6 +34,7 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     @Column(name = "rarities")
     //@Convert(converter = RaritySqlModelListConverter.class)
     //private List<RaritySqlModel> rarities;
+    @Convert(converter = IntegerListConverter.class)
     private List<Integer> rarities;
 
     @Getter
