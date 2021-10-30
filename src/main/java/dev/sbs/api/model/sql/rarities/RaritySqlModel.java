@@ -2,6 +2,7 @@ package dev.sbs.api.model.sql.rarities;
 
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.RarityModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -52,8 +53,9 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof RaritySqlModel)) return false;
 
         RaritySqlModel that = (RaritySqlModel) o;
@@ -62,7 +64,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
         if (keyValid != that.keyValid) return false;
         if (!StringUtil.equals(key, that.key)) return false;
         if (!StringUtil.equals(name, that.name)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

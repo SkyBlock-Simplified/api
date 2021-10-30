@@ -3,6 +3,7 @@ package dev.sbs.api.model.sql.locations.locationareas;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.LocationAreaModel;
 import dev.sbs.api.model.sql.locations.LocationSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,8 +44,9 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof LocationAreaSqlModel)) return false;
 
         LocationAreaSqlModel that = (LocationAreaSqlModel) o;
@@ -52,7 +54,7 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
         if (id != that.id) return false;
         if (!name.equals(that.name)) return false;
         if (!location.equals(that.location)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

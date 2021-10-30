@@ -2,12 +2,15 @@ package dev.sbs.api.model.sql.fairysouls.dungeonfairysouls;
 
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.DungeonFairySoulModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 @Table(name = "dungeon_fairy_souls")
@@ -44,5 +47,15 @@ public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
 
 }

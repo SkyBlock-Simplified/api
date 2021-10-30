@@ -7,6 +7,7 @@ import dev.sbs.api.model.AccessoryModel;
 import dev.sbs.api.model.sql.accessories.accessoryfamilies.AccessoryFamilySqlModel;
 import dev.sbs.api.model.sql.items.ItemSqlModel;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,8 +68,9 @@ public class AccessorySqlModel extends SqlEffectsModel implements AccessoryModel
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof AccessorySqlModel)) return false;
 
         AccessorySqlModel that = (AccessorySqlModel) o;
@@ -80,7 +82,7 @@ public class AccessorySqlModel extends SqlEffectsModel implements AccessoryModel
         if (!name.equals(that.name)) return false;
         if (!rarity.equals(that.rarity)) return false;
         if (!effects.equals(that.effects)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

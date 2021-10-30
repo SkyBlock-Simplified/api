@@ -5,6 +5,7 @@ import dev.sbs.api.model.PetModel;
 import dev.sbs.api.model.sql.pets.pettypes.PetTypeSqlModel;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
 import dev.sbs.api.model.sql.skills.SkillSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -68,8 +69,9 @@ public class PetSqlModel implements PetModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof PetSqlModel)) return false;
 
         PetSqlModel petModel = (PetSqlModel) o;
@@ -81,7 +83,7 @@ public class PetSqlModel implements PetModel, SqlModel {
         if (!skill.equals(petModel.skill)) return false;
         if (!petType.equals(petModel.petType)) return false;
         if (!StringUtil.equals(this.skin, petModel.skin)) return false;
-        return updatedAt.equals(petModel.updatedAt);
+        return updatedAt.equals(petModel.updatedAt);*/
     }
 
     @Override

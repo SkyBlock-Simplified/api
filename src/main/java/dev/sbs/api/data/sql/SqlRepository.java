@@ -91,38 +91,12 @@ public abstract class SqlRepository<T extends SqlModel> {
                 return function.get();
             }
         } catch (InterruptedException exception) {
-            throw new SqlException(FormatUtil.format("Could not wait for items to be initialized: {0}", exception.getMessage()), exception);
+            throw new SqlException("Could not wait for items to be initialized.", exception);
         }
     }
 
-    public ConcurrentList<T> findAllCached() throws SqlException {
-        return waitForInitLock(() -> Concurrent.newList(this.items));
-    }
-
-    public <S> T findFirstOrNullCached(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
-        return waitForInitLock(
-                () -> items.stream()
-                        .filter(it -> Objects.equals(function.apply(it), value))
-                        .findFirst()
-                        .orElse(null)
-        );
-    }
-
-    @SuppressWarnings({"unchecked", "varargs"}) // Written safely
-    public <S> T findFirstOrNullCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
-        ConcurrentList<T> itemsCopy = waitForInitLock(() -> Concurrent.newList(this.items));
-
-        for (int i = 0; i < predicates.length && itemsCopy.size() > 0; i++) {
-            Pair<FilterFunction<T, S>, S> pair = predicates[i];
-            itemsCopy = itemsCopy.stream()
-                    .filter(it -> Objects.equals(pair.getKey().apply(it), pair.getValue()))
-                    .collect(Concurrent.toList());
-        }
-
-        if (ListUtil.isEmpty(itemsCopy))
-            return null;
-
-        else return itemsCopy.get(0);
+    public ConcurrentList<T> findAll() {
+        return this.sqlSession.with((ReturnSessionFunction<ConcurrentList<T>>) this::findAll);
     }
 
     public ConcurrentList<T> findAll(@NonNull Session session) {
@@ -133,8 +107,30 @@ public abstract class SqlRepository<T extends SqlModel> {
         return Concurrent.newList(session.createQuery(all).getResultList());
     }
 
-    public ConcurrentList<T> findAll() {
-        return this.sqlSession.with((ReturnSessionFunction<ConcurrentList<T>>) this::findAll);
+    public ConcurrentList<T> findAllCached() throws SqlException {
+        return this.waitForInitLock(() -> Concurrent.newList(this.items));
+    }
+
+    @SuppressWarnings({"unchecked", "varargs"}) // Written safely
+    public <S> ConcurrentList<T> findAllOrEmptyCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
+        ConcurrentList<T> itemsCopy = this.waitForInitLock(() -> Concurrent.newList(this.items));
+        ConcurrentList<T> allItems = Concurrent.newList();
+
+        if (ListUtil.notEmpty(itemsCopy)) {
+            allItems.addAll(itemsCopy.stream()
+                    .filter(it -> {
+                        boolean match = false;
+
+                        for (Pair<FilterFunction<T, S>, S> pair : predicates)
+                            match |= Objects.equals(pair.getKey().apply(it), pair.getValue());
+
+                        return match;
+                    })
+                    .collect(Concurrent.toList())
+            );
+        }
+
+        return allItems;
     }
 
     public <S> T findFirstOrNull(@NonNull Session session, String field, S value) {
@@ -169,6 +165,30 @@ public abstract class SqlRepository<T extends SqlModel> {
         return this.sqlSession.with(session -> {
             return findFirstOrNull(session, predicates);
         });
+    }
+
+    public <S> T findFirstOrNullCached(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
+        return this.waitForInitLock(
+                () -> items.stream()
+                        .filter(it -> Objects.equals(function.apply(it), value))
+                        .findFirst()
+                        .orElse(null)
+        );
+    }
+
+    @SuppressWarnings({"unchecked", "varargs"}) // Written safely
+    public <S> T findFirstOrNullCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
+        ConcurrentList<T> itemsCopy = this.waitForInitLock(() -> Concurrent.newList(this.items));
+
+        if (ListUtil.notEmpty(itemsCopy)) {
+            for (Pair<FilterFunction<T, S>, S> pair : predicates) {
+                itemsCopy = itemsCopy.stream()
+                        .filter(it -> Objects.equals(pair.getKey().apply(it), pair.getValue()))
+                        .collect(Concurrent.toList());
+            }
+        }
+
+        return ListUtil.isEmpty(itemsCopy) ? null : itemsCopy.get(0);
     }
 
     public long save(Session session, T model) {
