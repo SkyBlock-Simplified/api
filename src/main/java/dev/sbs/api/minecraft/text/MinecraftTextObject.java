@@ -34,6 +34,10 @@ public final class MinecraftTextObject {
         this.setText(text);
     }
 
+    public MinecraftTextBuilder builder() {
+        return MinecraftTextBuilder.of(this);
+    }
+
     public void setColor(MinecraftChatFormatting format) {
         Preconditions.checkArgument(format.isColor(), "Format must be a color");
         this.color = format;
@@ -143,7 +147,7 @@ public final class MinecraftTextObject {
                         text.setLength(0); // reset the buffer
                     }
 
-                    MinecraftChatFormatting color = MinecraftChatFormatting.getByChar(peek);
+                    MinecraftChatFormatting color = MinecraftChatFormatting.of(peek);
 
                     switch (color) {
                         case OBFUSCATED:

@@ -58,6 +58,8 @@ import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
+import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
+import dev.sbs.api.minecraft.text.MinecraftTextObject;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
@@ -108,6 +110,7 @@ public class SimplifiedApi {
         builderManager.add(HypixelResourceData.class, HypixelApiBuilder.class);
         builderManager.add(HypixelSkyBlockData.class, HypixelApiBuilder.class);
         builderManager.add(String.class, StringBuilder.class);
+        builderManager.add(MinecraftTextObject.class, MinecraftTextBuilder.class);
 
         // Provide Client Api Implementations
         serviceManager.add(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
