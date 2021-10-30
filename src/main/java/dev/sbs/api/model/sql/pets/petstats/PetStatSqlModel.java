@@ -34,12 +34,14 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @JoinColumn(name = "stat_key", nullable = false)
     private StatSqlModel stat;
 
+    /*
     @Getter
     @Setter
     @Column(name = "rarities", nullable = false)
     //@Convert(converter = RaritySqlModelListConverter.class)
     //private List<RaritySqlModel> rarities;
     private List<Integer> rarities;
+     */
 
     @Getter
     @Setter
@@ -56,4 +58,9 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    // TODO: Fix rarities column
+    @Override
+    public List<Integer> getRarities() {
+        return null;
+    }
 }
