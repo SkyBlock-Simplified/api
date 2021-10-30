@@ -1,5 +1,7 @@
 package dev.sbs.api.data;
 
-public interface Model {
+import java.io.Serializable;
+
+public interface Model extends Serializable {
 
 }
