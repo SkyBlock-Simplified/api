@@ -1,14 +1,13 @@
 package dev.sbs.api.data.sql;
 
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.ListUtil;
-import dev.sbs.api.util.tuple.Pair;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.model.SqlModel;
-import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.concurrent.Concurrent;
+import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.helper.ListUtil;
+import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -113,7 +112,7 @@ public abstract class SqlRepository<T extends SqlModel> {
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
     public <S> ConcurrentList<T> findAllOrEmptyCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
-        ConcurrentList<T> itemsCopy = this.waitForInitLock(() -> Concurrent.newList(this.items));
+        ConcurrentList<T> itemsCopy = this.findAllCached();
         ConcurrentList<T> allItems = Concurrent.newList();
 
         if (ListUtil.notEmpty(itemsCopy)) {
@@ -178,7 +177,7 @@ public abstract class SqlRepository<T extends SqlModel> {
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
     public <S> T findFirstOrNullCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
-        ConcurrentList<T> itemsCopy = this.waitForInitLock(() -> Concurrent.newList(this.items));
+        ConcurrentList<T> itemsCopy = this.findAllCached();
 
         if (ListUtil.notEmpty(itemsCopy)) {
             for (Pair<FilterFunction<T, S>, S> pair : predicates) {
