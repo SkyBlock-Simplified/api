@@ -1,12 +1,12 @@
 package dev.sbs.api.data.sql.function;
 
-import dev.sbs.api.data.sql.model.SqlModel;
+import dev.sbs.api.data.model.Model;
 import lombok.NonNull;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-public interface FilterFunction<T extends SqlModel, R> extends Function<T, R> {
+public interface FilterFunction<T extends Model, R> extends Function<T, R> {
 
     /**
      * {@inheritDoc}
@@ -27,7 +27,7 @@ public interface FilterFunction<T extends SqlModel, R> extends Function<T, R> {
      * @param <T3> The return type
      * @return The method reference between {@link T1} and {@link T3}
      */
-    static <T1 extends SqlModel, T2 extends SqlModel, T3> FilterFunction<T1, T3> combine(FilterFunction<T1, T2> first, FilterFunction<T2, T3> second) {
+    static <T1 extends Model, T2 extends Model, T3> FilterFunction<T1, T3> combine(FilterFunction<T1, T2> first, FilterFunction<T2, T3> second) {
         return first.andThen(second);
     }
 

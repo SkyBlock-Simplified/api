@@ -1,9 +1,9 @@
 package dev.sbs.api.data.yaml.converter;
 
-import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.data.yaml.ConfigSection;
 import dev.sbs.api.data.yaml.InternalConverter;
 import dev.sbs.api.data.yaml.YamlMap;
+import dev.sbs.api.reflection.Reflection;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Map;
