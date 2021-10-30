@@ -1,7 +1,7 @@
 package dev.sbs.api.data.yaml.converter;
 
-import dev.sbs.api.util.Vector;
 import dev.sbs.api.data.yaml.InternalConverter;
+import dev.sbs.api.util.Vector;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;

@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql.integrated.pooling;
 
+import dev.sbs.api.data.sql.integrated.factory.SQLFactory;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentDeque;
-import dev.sbs.api.data.sql.integrated.factory.SQLFactory;
 
 import java.io.File;
 import java.sql.Connection;

@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql;
 
+import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
-import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.ListUtil;

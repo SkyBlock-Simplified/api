@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql.integrated.factory;
 
-import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
 import dev.sbs.api.data.sql.integrated.function.ResultSetConsumer;
+import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
