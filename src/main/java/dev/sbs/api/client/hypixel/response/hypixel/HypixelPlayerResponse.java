@@ -206,8 +206,8 @@ public class HypixelPlayerResponse {
 
         @Override
         public String toString() {
-            String sfPluses = FormatUtil.preformat("{0}", this.getPlusFormat(), this.getPluses());
-            String sfRank = FormatUtil.preformat("{0}", this.getRankFormat(), this.getRank().getName());
+            String sfPluses = FormatUtil.format("{0}{1}", this.getPlusFormat(), this.getPluses());
+            String sfRank = FormatUtil.format("{0}", this.getRankFormat(), this.getRank().getName());
             return FormatUtil.format("{0}[{1}{2}{3}]", MinecraftChatFormatting.WHITE.toString(), sfRank, sfPluses, MinecraftChatFormatting.WHITE.toString());
         }
 
