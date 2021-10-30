@@ -123,7 +123,11 @@ public class MinecraftPing {
             JsonObject descriptionJsonObject = jsonObject.get("description").getAsJsonObject();
 
             if (descriptionJsonObject.has("extra")) {
-                descriptionJsonObject.addProperty("text", MinecraftTextObject.fromJson(descriptionJsonObject.get("extra").getAsJsonObject()).toLegacy());
+                MinecraftTextObject textObject = MinecraftTextObject.fromJson(descriptionJsonObject.get("extra").getAsJsonObject());
+
+                if (textObject != null)
+                    descriptionJsonObject.addProperty("text", textObject.toLegacy());
+
                 jsonObject.add("description", descriptionJsonObject);
             }
         } else {
