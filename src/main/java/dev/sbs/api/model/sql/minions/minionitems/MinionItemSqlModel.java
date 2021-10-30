@@ -4,6 +4,7 @@ import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.MinionItemModel;
 import dev.sbs.api.model.sql.collections.collectionitems.CollectionItemSqlModel;
 import dev.sbs.api.model.sql.minions.MinionSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,8 +46,9 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof MinionItemSqlModel)) return false;
 
         MinionItemSqlModel that = (MinionItemSqlModel) o;
@@ -54,7 +56,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
         if (id != that.id) return false;
         if (!minion.equals(that.minion)) return false;
         if (!collectionItem.equals(that.collectionItem)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

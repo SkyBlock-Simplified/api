@@ -3,6 +3,7 @@ package dev.sbs.api.model.sql.minions.miniontierupgrades;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.sql.collections.collectionitems.CollectionItemSqlModel;
 import dev.sbs.api.model.sql.minions.miniontiers.MinionTierSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,8 +50,9 @@ public class MinionTierUpgradeSqlModel implements SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof MinionTierUpgradeSqlModel)) return false;
 
         MinionTierUpgradeSqlModel that = (MinionTierUpgradeSqlModel) o;
@@ -60,7 +62,7 @@ public class MinionTierUpgradeSqlModel implements SqlModel {
         if (coinCost != that.coinCost) return false;
         if (itemCost != that.itemCost) return false;
         if (itemQuantity != that.itemQuantity) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

@@ -2,6 +2,7 @@ package dev.sbs.api.model.sql.accessories.accessoryfamilies;
 
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.AccessoryFamilyModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,8 +47,9 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof AccessoryFamilySqlModel)) return false;
 
         AccessoryFamilySqlModel that = (AccessoryFamilySqlModel) o;
@@ -56,7 +58,7 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
         if (reforgesStackable != that.reforgesStackable) return false;
         if (itemsStackable != that.itemsStackable) return false;
         if (!name.equals(that.name)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

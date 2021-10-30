@@ -2,6 +2,7 @@ package dev.sbs.api.model.sql.formats;
 
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.FormatModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -48,8 +49,9 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof FormatSqlModel)) return false;
 
         FormatSqlModel that = (FormatSqlModel) o;
@@ -59,7 +61,7 @@ public class FormatSqlModel implements FormatModel, SqlModel {
         if (code != that.code) return false;
         if (!rgb.equals(that.rgb)) return false;
         if (format != that.format) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

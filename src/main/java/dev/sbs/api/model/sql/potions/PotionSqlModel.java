@@ -3,6 +3,7 @@ package dev.sbs.api.model.sql.potions;
 import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.data.sql.model.SqlEffectsModel;
 import dev.sbs.api.model.PotionModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,8 +45,9 @@ public class PotionSqlModel extends SqlEffectsModel implements PotionModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof PotionSqlModel)) return false;
 
         PotionSqlModel that = (PotionSqlModel) o;
@@ -54,7 +56,7 @@ public class PotionSqlModel extends SqlEffectsModel implements PotionModel {
         if (itemLevel != that.itemLevel) return false;
         if (!name.equals(that.name)) return false;
         if (!effects.equals(that.effects)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

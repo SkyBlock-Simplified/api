@@ -5,6 +5,7 @@ import dev.sbs.api.model.FairySoulModel;
 import dev.sbs.api.model.LocationModel;
 import dev.sbs.api.model.sql.locations.LocationSqlModel;
 import dev.sbs.api.model.sql.locations.locationareas.LocationAreaSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,8 +62,9 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof FairySoulSqlModel)) return false;
 
         FairySoulSqlModel that = (FairySoulSqlModel) o;
@@ -71,7 +73,7 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
         if (x != that.x) return false;
         if (y != that.y) return false;
         if (z != that.z) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

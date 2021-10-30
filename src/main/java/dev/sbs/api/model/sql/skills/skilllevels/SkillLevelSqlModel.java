@@ -4,6 +4,7 @@ import dev.sbs.api.data.sql.converter.StringListConverter;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.SkillLevelModel;
 import dev.sbs.api.model.sql.skills.SkillSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,8 +52,9 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof SkillLevelSqlModel)) return false;
 
         SkillLevelSqlModel that = (SkillLevelSqlModel) o;
@@ -62,7 +64,7 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
         if (Double.compare(that.totalExpRequired, totalExpRequired) != 0) return false;
         if (!skill.equals(that.skill)) return false;
         if (!unlocks.equals(that.unlocks)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

@@ -3,6 +3,7 @@ package dev.sbs.api.model.sql.collections;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.CollectionModel;
 import dev.sbs.api.model.sql.skills.SkillSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,15 +34,16 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof CollectionSqlModel)) return false;
 
         CollectionSqlModel that = (CollectionSqlModel) o;
 
         if (id != that.id) return false;
         if (!skill.equals(that.skill)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

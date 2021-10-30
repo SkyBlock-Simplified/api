@@ -4,6 +4,7 @@ import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.SlayerLevelModel;
 import dev.sbs.api.model.SlayerModel;
 import dev.sbs.api.model.sql.slayers.SlayerSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -45,8 +46,9 @@ public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof SlayerLevelSqlModel)) return false;
 
         SlayerLevelSqlModel that = (SlayerLevelSqlModel) o;
@@ -54,7 +56,7 @@ public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
         if (id != that.id) return false;
         if (level != that.level) return false;
         if (totalExpRequired != that.totalExpRequired) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

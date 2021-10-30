@@ -7,6 +7,7 @@ import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.ItemModel;
 import dev.sbs.api.model.sql.rarities.RaritySqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -171,8 +172,9 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof ItemSqlModel)) return false;
 
         ItemSqlModel itemModel = (ItemSqlModel) o;
@@ -204,7 +206,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
         if (!Objects.equals(enchantments, itemModel.enchantments)) return false;
         if (!Objects.equals(crystal, itemModel.crystal)) return false;
         if (!Objects.equals(privateIsland, itemModel.privateIsland)) return false;
-        return updatedAt.equals(itemModel.updatedAt);
+        return updatedAt.equals(itemModel.updatedAt);*/
     }
 
     @Override

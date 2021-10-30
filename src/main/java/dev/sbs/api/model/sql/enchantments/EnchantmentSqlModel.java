@@ -5,6 +5,7 @@ import dev.sbs.api.data.sql.model.SqlEffectsModel;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.EnchantmentModel;
 import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,8 +58,9 @@ public class EnchantmentSqlModel extends SqlEffectsModel implements EnchantmentM
     private Instant updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof EnchantmentSqlModel)) return false;
 
         EnchantmentSqlModel that = (EnchantmentSqlModel) o;
@@ -68,7 +70,7 @@ public class EnchantmentSqlModel extends SqlEffectsModel implements EnchantmentM
         if (!itemType.equals(that.itemType)) return false;
         if (!name.equals(that.name)) return false;
         if (!effects.equals(that.effects)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override

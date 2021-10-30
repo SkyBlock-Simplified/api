@@ -3,6 +3,7 @@ package dev.sbs.api.model.sql.skills;
 import dev.sbs.api.data.sql.model.SqlModel;
 import dev.sbs.api.model.SkillModel;
 import dev.sbs.api.model.sql.items.ItemSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -55,8 +56,9 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     // TODO: Load Exp Table
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+        /*if (this == o) return true;
         if (!(o instanceof SkillSqlModel)) return false;
 
         SkillSqlModel that = (SkillSqlModel) o;
@@ -66,7 +68,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
         if (!StringUtil.equals(key, that.key)) return false;
         if (!StringUtil.equals(name, that.name)) return false;
         if (!description.equals(that.description)) return false;
-        return updatedAt.equals(that.updatedAt);
+        return updatedAt.equals(that.updatedAt);*/
     }
 
     @Override
