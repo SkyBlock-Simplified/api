@@ -35,7 +35,7 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "reforge_type_key", nullable = false)
+    @JoinColumn(name = "reforge_type_key", nullable = false, referencedColumnName = "key")
     private ReforgeTypeSqlModel type;
 
     @Getter

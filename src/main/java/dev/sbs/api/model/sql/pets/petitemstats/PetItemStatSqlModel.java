@@ -27,13 +27,13 @@ public class PetItemStatSqlModel implements PetItemStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", nullable = false, referencedColumnName = "key")
     private StatSqlModel stat;
 
     @Getter

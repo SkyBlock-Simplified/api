@@ -26,13 +26,13 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion_key", nullable = false)
+    @JoinColumn(name = "minion_key", nullable = false, referencedColumnName = "key")
     private MinionSqlModel minion;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "tier", nullable = false)
+    @JoinColumn(name = "tier", nullable = false, referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @Getter

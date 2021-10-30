@@ -32,7 +32,7 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key", nullable = false)
+    @JoinColumn(name = "rarity_key", nullable = false, referencedColumnName = "key")
     private RaritySqlModel rarity;
 
     @Getter

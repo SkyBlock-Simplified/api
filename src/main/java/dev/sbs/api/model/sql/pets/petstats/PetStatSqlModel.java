@@ -29,15 +29,15 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_key", nullable = false)
+    @JoinColumn(name = "pet_key", nullable = false, referencedColumnName = "key")
     private PetSqlModel pet;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", nullable = false, referencedColumnName = "key")
     private StatSqlModel stat;
-    
+
     @Getter
     @Setter
     @Column(name = "rarities", nullable = false)

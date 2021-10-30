@@ -26,13 +26,13 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_key", nullable = false)
+    @JoinColumn(name = "collection_key", nullable = false, referencedColumnName = "skill_key")
     private CollectionSqlModel collection;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @Getter

@@ -57,7 +57,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key")
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
     private RaritySqlModel rarity;
 
     @Getter

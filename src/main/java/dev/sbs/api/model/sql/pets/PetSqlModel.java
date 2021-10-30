@@ -38,19 +38,19 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "lowest_rarity_key", nullable = false)
+    @JoinColumn(name = "lowest_rarity_key", nullable = false, referencedColumnName = "key")
     private RaritySqlModel lowestRarity;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false)
+    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
     private SkillSqlModel skill;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_type_key", nullable = false)
+    @JoinColumn(name = "pet_type_key", nullable = false, referencedColumnName = "key")
     private PetTypeSqlModel petType;
 
     @Getter

@@ -46,7 +46,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @Getter

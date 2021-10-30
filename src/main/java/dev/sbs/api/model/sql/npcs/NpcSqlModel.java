@@ -47,13 +47,13 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key", nullable = false)
+    @JoinColumn(name = "location_key", nullable = false, referencedColumnName = "key")
     private LocationSqlModel location;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_area_key", nullable = false)
+    @JoinColumn(name = "location_area_key", nullable = false, referencedColumnName = "key")
     private LocationAreaSqlModel locationArea;
 
     @Getter

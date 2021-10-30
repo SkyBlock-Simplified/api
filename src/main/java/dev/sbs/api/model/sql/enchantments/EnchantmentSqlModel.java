@@ -38,7 +38,7 @@ public class EnchantmentSqlModel extends SqlEffectsModel implements EnchantmentM
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_type_key", nullable = false)
+    @JoinColumn(name = "item_type_key", nullable = false, referencedColumnName = "key")
     private ReforgeTypeSqlModel itemType;
 
     @Getter

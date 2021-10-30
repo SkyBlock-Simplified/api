@@ -27,7 +27,7 @@ public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "value", nullable = false, length = 127)
     private int value;
 
     @Getter

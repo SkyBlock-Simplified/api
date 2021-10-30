@@ -36,7 +36,7 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_key", nullable = false)
+    @JoinColumn(name = "pet_key", nullable = false, referencedColumnName = "key")
     private PetSqlModel pet;
 
     @Getter

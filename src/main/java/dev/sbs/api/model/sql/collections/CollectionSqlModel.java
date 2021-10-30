@@ -25,7 +25,7 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false)
+    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
     private SkillSqlModel skill;
 
     @Getter
