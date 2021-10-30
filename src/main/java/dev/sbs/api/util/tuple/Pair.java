@@ -1,7 +1,7 @@
 package dev.sbs.api.util.tuple;
 
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.builder.CompareToBuilder;
+import dev.sbs.api.util.helper.FormatUtil;
 
 import java.util.Map;
 
@@ -92,7 +92,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @return negative if this is less, zero if equal, positive if greater
      */
     public int compareTo(Pair<L, R> other) {
-      return new CompareToBuilder().append(getLeft(), other.getLeft())
+        return new CompareToBuilder().append(getLeft(), other.getLeft())
               .append(getRight(), other.getRight()).toComparison();
     }
 
