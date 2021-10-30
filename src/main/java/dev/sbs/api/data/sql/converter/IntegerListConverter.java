@@ -13,9 +13,9 @@ public class IntegerListConverter implements AttributeConverter<List<Integer>, S
     @Override
     @SuppressWarnings("unchecked")
     public List<Integer> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return new ArrayList<>();
-        }
+
         try {
             return SimplifiedApi.getGson().fromJson(attr, ArrayList.class);
         } catch (Exception e) {

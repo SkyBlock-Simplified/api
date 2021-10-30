@@ -60,12 +60,27 @@ public enum MinecraftChatFormatting {
     }
 
     /**
+     * Get the color represented by the specified name.
+     *
+     * @param name The name to search for.
+     * @return The mapped format, or null if none exists.
+     */
+    public static MinecraftChatFormatting of(String name) {
+        for (MinecraftChatFormatting color : values()) {
+            if (color.name().equals(name))
+                return color;
+        }
+
+        return null;
+    }
+
+    /**
      * Get the color represented by the specified code.
      *
      * @param code The code to search for.
-     * @return The mapped color, or null if non exists.
+     * @return The mapped format, or null if none exists.
      */
-    public static MinecraftChatFormatting getByChar(char code) {
+    public static MinecraftChatFormatting of(char code) {
         for (MinecraftChatFormatting color : values()) {
             if (color.code == code)
                 return color;
@@ -96,7 +111,7 @@ public enum MinecraftChatFormatting {
     }
 
     public static boolean isValid(char code) {
-        return getByChar(code) != null;
+        return of(code) != null;
     }
 
     public MinecraftChatFormatting getNextFormat() {

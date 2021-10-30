@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql;
 
-import dev.sbs.api.util.concurrent.ConcurrentSet;
+import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.function.VoidSessionFunction;
-import dev.sbs.api.data.sql.model.SqlModel;
+import dev.sbs.api.util.concurrent.ConcurrentSet;
 import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

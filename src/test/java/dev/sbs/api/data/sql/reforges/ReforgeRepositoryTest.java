@@ -2,15 +2,15 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.model.ReforgeStatModel;
-import dev.sbs.api.model.sql.reforges.reforgestats.ReforgeStatRepository;
-import dev.sbs.api.model.sql.reforges.reforgestats.ReforgeStatSqlModel;
-import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeSqlModel;
-import dev.sbs.api.model.sql.reforges.reforgetypes.ReforgeTypeRepository;
-import dev.sbs.api.model.sql.rarities.RaritySqlModel;
-import dev.sbs.api.model.sql.rarities.RarityRepository;
-import dev.sbs.api.model.sql.reforges.ReforgeSqlModel;
-import dev.sbs.api.model.sql.reforges.ReforgeRepository;
+import dev.sbs.api.data.model.reforge_stats.ReforgeStatModel;
+import dev.sbs.api.data.model.reforge_stats.ReforgeStatSqlRepository;
+import dev.sbs.api.data.model.reforge_stats.ReforgeStatSqlModel;
+import dev.sbs.api.data.model.reforge_types.ReforgeTypeSqlModel;
+import dev.sbs.api.data.model.reforge_types.ReforgeTypeSqlRepository;
+import dev.sbs.api.data.model.rarities.RaritySqlModel;
+import dev.sbs.api.data.model.rarities.RaritySqlRepository;
+import dev.sbs.api.data.model.reforges.ReforgeSqlModel;
+import dev.sbs.api.data.model.reforges.ReforgeSqlRepository;
 import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -20,17 +20,17 @@ import java.util.List;
 
 public class ReforgeRepositoryTest {
 
-    private static final ReforgeTypeRepository itemTypeRepository;
-    private static final RarityRepository rarityRepository;
-    private static final ReforgeRepository reforgeRepository;
-    private static final ReforgeStatRepository reforgeStatRepository;
+    private static final ReforgeTypeSqlRepository itemTypeRepository;
+    private static final RaritySqlRepository rarityRepository;
+    private static final ReforgeSqlRepository reforgeRepository;
+    private static final ReforgeStatSqlRepository reforgeStatRepository;
 
     static {
         SimplifiedApi.enableDatabase();
-        itemTypeRepository = SimplifiedApi.getSqlRepository(ReforgeTypeRepository.class);
-        rarityRepository = SimplifiedApi.getSqlRepository(RarityRepository.class);
-        reforgeRepository = SimplifiedApi.getSqlRepository(ReforgeRepository.class);
-        reforgeStatRepository = SimplifiedApi.getSqlRepository(ReforgeStatRepository.class);
+        itemTypeRepository = SimplifiedApi.getSqlRepository(ReforgeTypeSqlRepository.class);
+        rarityRepository = SimplifiedApi.getSqlRepository(RaritySqlRepository.class);
+        reforgeRepository = SimplifiedApi.getSqlRepository(ReforgeSqlRepository.class);
+        reforgeStatRepository = SimplifiedApi.getSqlRepository(ReforgeStatSqlRepository.class);
     }
 
     @Test

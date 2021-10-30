@@ -1,9 +1,9 @@
 package dev.sbs.api.data.yaml;
 
+import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;

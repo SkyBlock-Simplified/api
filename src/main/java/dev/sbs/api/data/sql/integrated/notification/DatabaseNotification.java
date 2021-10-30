@@ -1,13 +1,13 @@
 package dev.sbs.api.data.sql.integrated.notification;
 
+import dev.sbs.api.data.sql.integrated.factory.SQLFactory;
+import dev.sbs.api.data.sql.integrated.function.ResultSetConsumer;
+import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
-import dev.sbs.api.data.sql.integrated.function.ResultSetConsumer;
-import dev.sbs.api.data.sql.integrated.factory.SQLFactory;
 import lombok.SneakyThrows;
 
 import java.sql.ResultSet;

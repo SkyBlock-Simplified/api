@@ -9,8 +9,8 @@ import dev.sbs.api.util.concurrent.ConcurrentList;
 public final class MinecraftTextBuilder implements Builder<MinecraftTextObject> {
     
     private MinecraftTextObject root;
-    private MinecraftTextObject current; // The current text object. This will change when we append text for example
-    private final ConcurrentList<MinecraftTextObject> extra = Concurrent.newList(); // The storage of the extra items
+    private MinecraftTextObject current; // The current text object. This will change when we append text.
+    private final ConcurrentList<MinecraftTextObject> extra = Concurrent.newList(); // The storage of extra text objects.
 
     private MinecraftTextBuilder(MinecraftTextObject root) {
         this.root = root;
@@ -78,8 +78,11 @@ public final class MinecraftTextBuilder implements Builder<MinecraftTextObject> 
     }
 
     public MinecraftTextBuilder append(String text) {
-        // essentially this completes what ever object we were on. No turning back!
-        return this.appendJson(new MinecraftTextObject(text));
+        return this.append(new MinecraftTextObject(text));
+    }
+
+    public MinecraftTextBuilder append(MinecraftTextObject textObject) {
+        return this.appendJson(textObject); // This completes the object we're on. No turning back!
     }
 
     public MinecraftTextBuilder appendJson(MinecraftTextObject object) {
@@ -94,13 +97,16 @@ public final class MinecraftTextBuilder implements Builder<MinecraftTextObject> 
 
     @Override
     public MinecraftTextObject build() {
-        // currently we're only adding the extras to the root.
-        this.root.setExtra(extra);
+        this.root.setExtra(extra); // currently we're only adding the extras to the root.
         return this.root;
     }
 
+    public static MinecraftTextBuilder of(MinecraftTextObject textObject) {
+        return new MinecraftTextBuilder(textObject);
+    }
+
     public static MinecraftTextBuilder of(String text) {
-        return new MinecraftTextBuilder(new MinecraftTextObject(text));
+        return of(new MinecraftTextObject(text));
     }
 
     public static MinecraftTextBuilder empty() {

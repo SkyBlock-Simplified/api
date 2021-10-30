@@ -13,9 +13,9 @@ public class DoubleMapConverter implements AttributeConverter<Map<String, Double
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, Double> convertToEntityAttribute(String attr) {
-        if (attr == null) {
+        if (attr == null)
             return new HashMap<>();
-        }
+
         try {
             return SimplifiedApi.getGson().fromJson(attr, HashMap.class);
         } catch (Exception e) {
