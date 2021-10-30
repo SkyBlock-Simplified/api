@@ -25,7 +25,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion")
+    @JoinColumn(name = "minion_key")
     private MinionSqlModel minion;
 
     @Getter
