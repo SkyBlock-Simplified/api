@@ -51,8 +51,8 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "expression", nullable = false)
-    private String expression;
+    @Column(name = "level_bonus", nullable = false)
+    private double levelBonus;
 
     @Getter
     @UpdateTimestamp

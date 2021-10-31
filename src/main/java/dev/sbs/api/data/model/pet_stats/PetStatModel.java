@@ -16,6 +16,6 @@ public interface PetStatModel extends Model {
 
     double getBaseValue();
 
-    String getExpression();
+    double getLevelBonus();
 
 }
