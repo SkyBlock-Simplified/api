@@ -1,7 +1,8 @@
-package dev.sbs.api.data.model.potions;
+package dev.sbs.api.data.model.potion_brews;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.formats.FormatSqlModel;
+import dev.sbs.api.data.model.npcs.NpcSqlModel;
+import dev.sbs.api.data.model.rarities.RaritySqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -12,8 +13,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "potions")
-public class PotionSqlModel implements PotionModel, SqlModel {
+@Table(name = "potion_brews")
+public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
 
     @Getter
     @Id
@@ -34,8 +35,8 @@ public class PotionSqlModel implements PotionModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
-    private FormatSqlModel format;
+    @JoinColumn(name = "rarity_key", nullable = false, referencedColumnName = "key")
+    private RaritySqlModel rarity;
 
     @Getter
     @Setter
@@ -44,8 +45,19 @@ public class PotionSqlModel implements PotionModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "buff", nullable = false)
-    private boolean buff;
+    @ManyToOne
+    @JoinColumn(name = "source_npc_key", nullable = false, referencedColumnName = "key")
+    private NpcSqlModel npc;
+
+    @Getter
+    @Setter
+    @Column(name = "coin_cost", nullable = false)
+    private int coinCost;
+
+    @Getter
+    @Setter
+    @Column(name = "percentage", nullable = false)
+    private boolean percentage;
 
     @Getter
     @UpdateTimestamp

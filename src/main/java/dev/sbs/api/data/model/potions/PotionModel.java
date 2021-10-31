@@ -1,15 +1,18 @@
 package dev.sbs.api.data.model.potions;
 
-import dev.sbs.api.data.model.EffectsModel;
+import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.formats.FormatModel;
 
-import java.util.Map;
+public interface PotionModel extends Model {
 
-public interface PotionModel extends EffectsModel {
+    String getKey();
 
     String getName();
 
-    int getItemLevel();
+    FormatModel getFormat();
 
-    Map<String, Object> getEffects();
+    String getDescription();
+
+    boolean isBuff();
 
 }

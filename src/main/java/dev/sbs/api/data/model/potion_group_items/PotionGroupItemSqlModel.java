@@ -1,7 +1,8 @@
-package dev.sbs.api.data.model.potions;
+package dev.sbs.api.data.model.potion_group_items;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.formats.FormatSqlModel;
+import dev.sbs.api.data.model.potion_groups.PotionGroupSqlModel;
+import dev.sbs.api.data.model.potion_tiers.PotionTierSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -12,8 +13,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "potions")
-public class PotionSqlModel implements PotionModel, SqlModel {
+@Table(name = "potion_group_items")
+public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
 
     @Getter
     @Id
@@ -23,29 +24,21 @@ public class PotionSqlModel implements PotionModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127)
-    private String key;
-
-    @Getter
-    @Setter
-    @Column(name = "name", nullable = false, length = 127)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "potion_group_key", nullable = false, referencedColumnName = "key")
+    private PotionGroupSqlModel potionGroup;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
-    private FormatSqlModel format;
+    @JoinColumn(name = "potion_key", nullable = false, referencedColumnName = "potion_key")
+    private PotionTierSqlModel potion;
 
     @Getter
     @Setter
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @Getter
-    @Setter
-    @Column(name = "buff", nullable = false)
-    private boolean buff;
+    @ManyToOne
+    @JoinColumn(name = "potion_tier", nullable = false, referencedColumnName = "tier")
+    private int Tier;
 
     @Getter
     @UpdateTimestamp

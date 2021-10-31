@@ -1,7 +1,7 @@
-package dev.sbs.api.data.model.potions;
+package dev.sbs.api.data.model.potion_brew_buffs;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.formats.FormatSqlModel;
+import dev.sbs.api.data.model.potion_brews.PotionBrewSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -12,8 +12,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "potions")
-public class PotionSqlModel implements PotionModel, SqlModel {
+@Table(name = "potion_brew_buffs")
+public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
 
     @Getter
     @Id
@@ -23,29 +23,24 @@ public class PotionSqlModel implements PotionModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127)
-    private String key;
-
-    @Getter
-    @Setter
-    @Column(name = "name", nullable = false, length = 127)
-    private String name;
-
-    @Getter
-    @Setter
     @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
-    private FormatSqlModel format;
+    @JoinColumn(name = "potion_brew_key", nullable = false, referencedColumnName = "key")
+    private PotionBrewSqlModel potionBrew;
 
     @Getter
     @Setter
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "buff_key", nullable = false, length = 127)
+    private String buffKey;
 
     @Getter
     @Setter
-    @Column(name = "buff", nullable = false)
-    private boolean buff;
+    @Column(name = "buff_value", nullable = false, length = 127)
+    private double buffValue;
+
+    @Getter
+    @Setter
+    @Column(name = "percentage", nullable = false)
+    private boolean percentage;
 
     @Getter
     @UpdateTimestamp

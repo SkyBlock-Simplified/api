@@ -1,7 +1,7 @@
-package dev.sbs.api.data.model.potions;
+package dev.sbs.api.data.model.potion_mixins;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.formats.FormatSqlModel;
+import dev.sbs.api.data.model.slayers.SlayerSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -10,10 +10,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Map;
 
 @Entity
-@Table(name = "potions")
-public class PotionSqlModel implements PotionModel, SqlModel {
+@Table(name = "potion_mixins")
+public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 
     @Getter
     @Id
@@ -34,18 +35,23 @@ public class PotionSqlModel implements PotionModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
-    private FormatSqlModel format;
+    @JoinColumn(name = "slayer_key", nullable = false, referencedColumnName = "key")
+    private SlayerSqlModel slayerRequirement;
 
     @Getter
     @Setter
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "slayer_level", nullable = false)
+    private int slayerLevelRequirement;
 
     @Getter
     @Setter
-    @Column(name = "buff", nullable = false)
-    private boolean buff;
+    @Column(name = "effects", nullable = false)
+    private Map<String, Object> effects;
+
+    @Getter
+    @Setter
+    @Column(name = "buff_effects", nullable = false)
+    private Map<String, Object> buffEffects;
 
     @Getter
     @UpdateTimestamp

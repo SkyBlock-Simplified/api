@@ -1,7 +1,6 @@
-package dev.sbs.api.data.model.potions;
+package dev.sbs.api.data.model.potion_groups;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.formats.FormatSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -10,10 +9,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Map;
 
 @Entity
-@Table(name = "potions")
-public class PotionSqlModel implements PotionModel, SqlModel {
+@Table(name = "potion_groups")
+public class PotionGroupSqlModel implements PotionGroupModel, SqlModel {
 
     @Getter
     @Id
@@ -33,19 +33,8 @@ public class PotionSqlModel implements PotionModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
-    private FormatSqlModel format;
-
-    @Getter
-    @Setter
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @Getter
-    @Setter
-    @Column(name = "buff", nullable = false)
-    private boolean buff;
+    @Column(name = "extra_effects", nullable = false)
+    private Map<String, Object> extraEffects;
 
     @Getter
     @UpdateTimestamp
