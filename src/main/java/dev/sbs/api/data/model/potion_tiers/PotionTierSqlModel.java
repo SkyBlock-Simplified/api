@@ -47,8 +47,8 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "sell_cost", nullable = false)
-    private int sellCost;
+    @Column(name = "sell_price", nullable = false)
+    private double sellPrice;
 
     @Getter
     @Setter

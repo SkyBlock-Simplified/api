@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.potions;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.formats.FormatSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -30,12 +29,6 @@ public class PotionSqlModel implements PotionModel, SqlModel {
     @Setter
     @Column(name = "name", nullable = false, length = 127)
     private String name;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
-    private FormatSqlModel format;
 
     @Getter
     @Setter
