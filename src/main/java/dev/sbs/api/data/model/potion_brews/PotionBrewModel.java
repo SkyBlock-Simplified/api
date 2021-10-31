@@ -16,7 +16,7 @@ public interface PotionBrewModel extends Model {
 
     NpcModel getNpc();
 
-    double getCoinCost();
+    int getCoinCost();
 
     boolean isPercentage();
 

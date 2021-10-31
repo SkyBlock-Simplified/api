@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.potion_mixins;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.slayers.SlayerSqlModel;
+import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -46,11 +47,13 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
     @Getter

@@ -39,6 +39,11 @@ public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "key", nullable = false, length = 127)
+    private String key;
+
+    @Getter
+    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 

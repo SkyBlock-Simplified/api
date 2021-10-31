@@ -1,7 +1,9 @@
 package dev.sbs.api.data.model.potion_tiers;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.potions.PotionSqlModel;
+import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -37,7 +39,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "ingredient_item_id", nullable = false, referencedColumnName = "item_id")
-    private String ingredientItem;
+    private ItemSqlModel ingredientItem;
 
     @Getter
     @Setter
@@ -52,11 +54,13 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
+    @Convert(converter = ObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
     @Getter
