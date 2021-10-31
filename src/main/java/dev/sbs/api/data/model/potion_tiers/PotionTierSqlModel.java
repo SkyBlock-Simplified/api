@@ -41,7 +41,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "experience_yield", nullable = false)
+    @Column(name = "exp_yield", nullable = false)
     private int experienceYield;
 
     @Getter

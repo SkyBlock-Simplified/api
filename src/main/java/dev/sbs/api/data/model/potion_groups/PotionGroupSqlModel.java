@@ -32,11 +32,6 @@ public class PotionGroupSqlModel implements PotionGroupModel, SqlModel {
     private String name;
 
     @Getter
-    @Setter
-    @Column(name = "extra_effects", nullable = false)
-    private Map<String, Object> extraEffects;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
