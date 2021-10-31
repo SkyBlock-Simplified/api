@@ -16,6 +16,8 @@ public interface PetAbilityStatModel extends Model {
 
     double getBaseValue();
 
-    String getExpression();
+    double getLevelBonus();
+
+    boolean isRoundingNeeded();
 
 }

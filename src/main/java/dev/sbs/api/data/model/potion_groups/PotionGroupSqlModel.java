@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.Map;
 
 @Entity
 @Table(name = "potion_groups")

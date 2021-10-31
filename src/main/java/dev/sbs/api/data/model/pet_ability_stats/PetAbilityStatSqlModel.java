@@ -51,8 +51,13 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "expression", nullable = false)
-    private String expression;
+    @Column(name = "level_bonus", nullable = false)
+    private double levelBonus;
+
+    @Getter
+    @Setter
+    @Column(name = "round", nullable = false)
+    private boolean roundingNeeded;
 
     @Getter
     @UpdateTimestamp
