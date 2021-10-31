@@ -42,6 +42,12 @@ import dev.sbs.api.data.model.pet_item_stats.PetItemStatSqlRepository;
 import dev.sbs.api.data.model.pet_stats.PetStatSqlRepository;
 import dev.sbs.api.data.model.pet_types.PetTypeSqlRepository;
 import dev.sbs.api.data.model.pets.PetSqlRepository;
+import dev.sbs.api.data.model.potion_brew_buffs.PotionBrewBuffSqlRepository;
+import dev.sbs.api.data.model.potion_brews.PotionBrewSqlRepository;
+import dev.sbs.api.data.model.potion_group_items.PotionGroupItemSqlRepository;
+import dev.sbs.api.data.model.potion_groups.PotionGroupSqlRepository;
+import dev.sbs.api.data.model.potion_mixins.PotionMixinSqlRepository;
+import dev.sbs.api.data.model.potion_tiers.PotionTierSqlRepository;
 import dev.sbs.api.data.model.potions.PotionSqlRepository;
 import dev.sbs.api.data.model.rarities.RaritySqlRepository;
 import dev.sbs.api.data.model.reforge_stats.ReforgeStatSqlRepository;
@@ -189,37 +195,43 @@ public class SimplifiedApi {
         return Concurrent.newSet(
                 AccessorySqlRepository.class,
                 AccessoryFamilySqlRepository.class,
-                CollectionSqlRepository.class,
-                CollectionItemSqlRepository.class,
                 CollectionItemTierSqlRepository.class,
+                CollectionItemSqlRepository.class,
+                CollectionSqlRepository.class,
                 DungeonFairySoulSqlRepository.class,
                 EnchantmentSqlRepository.class,
                 FairySoulSqlRepository.class,
                 FormatSqlRepository.class,
                 ItemSqlRepository.class,
-                LocationSqlRepository.class,
                 LocationAreaSqlRepository.class,
-                MinionSqlRepository.class,
+                LocationSqlRepository.class,
                 MinionItemSqlRepository.class,
-                MinionTierSqlRepository.class,
                 MinionTierUpgradeSqlRepository.class,
+                MinionTierSqlRepository.class,
+                MinionSqlRepository.class,
                 NpcSqlRepository.class,
-                PetSqlRepository.class,
                 PetAbilitySqlRepository.class,
                 PetAbilityStatSqlRepository.class,
+                PetExpScaleSqlRepository.class,
                 PetItemStatSqlRepository.class,
                 PetStatSqlRepository.class,
                 PetTypeSqlRepository.class,
-                PetExpScaleSqlRepository.class,
+                PetSqlRepository.class,
+                PotionBrewBuffSqlRepository.class,
+                PotionBrewSqlRepository.class,
+                PotionGroupItemSqlRepository.class,
+                PotionGroupSqlRepository.class,
+                PotionMixinSqlRepository.class,
+                PotionTierSqlRepository.class,
                 PotionSqlRepository.class,
                 RaritySqlRepository.class,
-                ReforgeSqlRepository.class,
                 ReforgeStatSqlRepository.class,
                 ReforgeTypeSqlRepository.class,
-                SkillSqlRepository.class,
+                ReforgeSqlRepository.class,
                 SkillLevelSqlRepository.class,
-                SlayerSqlRepository.class,
+                SkillSqlRepository.class,
                 SlayerLevelSqlRepository.class,
+                SlayerSqlRepository.class,
                 StatSqlRepository.class
         );
     }
