@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.potion_tiers;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.potions.PotionSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -38,7 +37,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "ingredient_item_id", nullable = false, referencedColumnName = "item_id")
-    private ItemSqlModel item;
+    private String ingredientItem;
 
     @Getter
     @Setter

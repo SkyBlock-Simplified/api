@@ -7569,14 +7569,12 @@ CREATE TABLE IF NOT EXISTS `potions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `key` varchar(127) NOT NULL,
   `name` varchar(127) NOT NULL,
-  `format_key` varchar(127) NOT NULL DEFAULT 'WHITE',
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `buff` tinyint(1) NOT NULL DEFAULT 1,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`),
   KEY `potions_ibfk_1` (`format_key`),
-  CONSTRAINT `potions_ibfk_1` FOREIGN KEY (`format_key`) REFERENCES `formats` (`key`),
   CONSTRAINT `potions_chk_1` CHECK (`buff` between 0 and 1)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -7700,7 +7698,7 @@ CREATE TABLE IF NOT EXISTS `potion_tiers` (
   `tier` tinyint(1) NOT NULL,
   `ingredient_item_id` varchar(127) NOT NULL,
   `exp_yield` int(11) NOT NULL DEFAULT 0,
-  `sell_cost` double(10,0) NOT NULL DEFAULT 0,
+  `sell_price` double(10,0) NOT NULL DEFAULT 0,
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `buff_effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
