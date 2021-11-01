@@ -55,11 +55,6 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     private int coinCost;
 
     @Getter
-    @Setter
-    @Column(name = "percentage", nullable = false)
-    private boolean percentage;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

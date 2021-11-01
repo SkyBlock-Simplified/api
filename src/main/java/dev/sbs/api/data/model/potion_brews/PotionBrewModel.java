@@ -18,6 +18,4 @@ public interface PotionBrewModel extends Model {
 
     int getCoinCost();
 
-    boolean isPercentage();
-
 }
