@@ -1,8 +1,8 @@
-package dev.sbs.api.data.model.pet_item_stats;
+package dev.sbs.api.data.model.pet_items;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.items.ItemSqlModel;
-import dev.sbs.api.data.model.stats.StatSqlModel;
+import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -11,10 +11,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Map;
 
 @Entity
-@Table(name = "pet_item_stats")
-public class PetItemStatSqlModel implements PetItemStatModel, SqlModel {
+@Table(name = "pet_items")
+public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Getter
     @Id
@@ -30,19 +31,25 @@ public class PetItemStatSqlModel implements PetItemStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false, referencedColumnName = "key")
-    private StatSqlModel stat;
-
-    @Getter
-    @Setter
-    @Column(name = "stat_value", nullable = false)
-    private int statValue;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Getter
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
+
+    @Getter
+    @Setter
+    @Column(name = "effects", nullable = false)
+    @Convert(converter = ObjectMapConverter.class)
+    private Map<String, Object> effects;
+
+    @Getter
+    @Setter
+    @Column(name = "buff_effects", nullable = false)
+    @Convert(converter = ObjectMapConverter.class)
+    private Map<String, Object> buffEffects;
 
     @Getter
     @UpdateTimestamp

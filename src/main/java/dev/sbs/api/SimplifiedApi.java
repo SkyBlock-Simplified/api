@@ -38,7 +38,7 @@ import dev.sbs.api.data.model.npcs.NpcSqlRepository;
 import dev.sbs.api.data.model.pet_abilities.PetAbilitySqlRepository;
 import dev.sbs.api.data.model.pet_ability_stats.PetAbilityStatSqlRepository;
 import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
-import dev.sbs.api.data.model.pet_item_stats.PetItemStatSqlRepository;
+import dev.sbs.api.data.model.pet_items.PetItemSqlRepository;
 import dev.sbs.api.data.model.pet_stats.PetStatSqlRepository;
 import dev.sbs.api.data.model.pet_types.PetTypeSqlRepository;
 import dev.sbs.api.data.model.pets.PetSqlRepository;
@@ -213,7 +213,7 @@ public class SimplifiedApi {
                 PetAbilitySqlRepository.class,
                 PetAbilityStatSqlRepository.class,
                 PetExpScaleSqlRepository.class,
-                PetItemStatSqlRepository.class,
+                PetItemSqlRepository.class,
                 PetStatSqlRepository.class,
                 PetTypeSqlRepository.class,
                 PetSqlRepository.class,

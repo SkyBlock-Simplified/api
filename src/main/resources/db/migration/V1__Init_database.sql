@@ -7354,16 +7354,16 @@ DROP TABLE IF EXISTS `pet_item_stats`;
 CREATE TABLE IF NOT EXISTS `pet_item_stats` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `item_id` varchar(127) NOT NULL,
-  `stat_key` varchar(127) NOT NULL,
-  `stat_value` int(11) NOT NULL,
   `percentage` tinyint(4) NOT NULL DEFAULT 0,
+  `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `item_id` (`item_id`),
   KEY `stat_key` (`stat_key`),
   CONSTRAINT `pet_item_stats_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`),
   CONSTRAINT `pet_item_stats_ibfk_2` FOREIGN KEY (`stat_key`) REFERENCES `stats` (`key`),
-  CONSTRAINT `pet_item_stats_chk_1` CHECK (`percentage` between 0 and 1)
+  CONSTRAINT `pet_item_stats_chk_1` CHECK (`percentage` between 0 and 1),
+  CONSTRAINT `pet_item_stats_chk_2` CHECK (json_valid(`effects`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table skyblocksimplified.pet_item_stats: ~0 rows (approximately)
@@ -7634,11 +7634,9 @@ CREATE TABLE IF NOT EXISTS `potion_groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `key` varchar(127) NOT NULL,
   `name` varchar(127) NOT NULL,
-  `extra_effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `key` (`key`),
-  CONSTRAINT `potion_groups_chk_1` CHECK (json_valid(`extra_effects`))
+  UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table skyblocksimplified.potion_groups: ~0 rows (approximately)
