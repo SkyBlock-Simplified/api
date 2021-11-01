@@ -48,6 +48,11 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     private ItemSqlModel item;
 
     @Getter
+    @Setter
+    @Column(name = "cosmetic", nullable = false)
+    private boolean cosmetic;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

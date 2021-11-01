@@ -15,4 +15,6 @@ public interface SkillModel extends Model {
 
     ItemModel getItem();
 
+    boolean isCosmetic();
+
 }
