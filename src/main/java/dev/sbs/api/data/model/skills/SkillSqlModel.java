@@ -53,6 +53,16 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     private boolean cosmetic;
 
     @Getter
+    @Setter
+    @Column(name = "weight_exponent", nullable = false)
+    private double weightExponent;
+
+    @Getter
+    @Setter
+    @Column(name = "weight_divider", nullable = false)
+    private double weightDivider;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

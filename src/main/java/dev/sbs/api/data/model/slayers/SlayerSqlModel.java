@@ -31,6 +31,16 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     private String name;
 
     @Getter
+    @Setter
+    @Column(name = "weight_divider", nullable = false)
+    private double weightDivider;
+
+    @Getter
+    @Setter
+    @Column(name = "weight_modifier", nullable = false)
+    private double weightModifier;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

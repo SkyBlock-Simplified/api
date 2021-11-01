@@ -8,4 +8,8 @@ public interface SlayerModel extends Model {
 
     String getName();
 
+    double getWeightDivider();
+
+    double getWeightModifier();
+
 }

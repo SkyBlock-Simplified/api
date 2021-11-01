@@ -17,4 +17,8 @@ public interface SkillModel extends Model {
 
     boolean isCosmetic();
 
+    double getWeightExponent();
+
+    double getWeightDivider();
+
 }
