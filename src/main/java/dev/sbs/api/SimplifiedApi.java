@@ -192,7 +192,7 @@ public class SimplifiedApi {
     }
 
     private static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
-        return Concurrent.newSet(
+        return Concurrent.newUnmodifiableSet(
                 AccessorySqlRepository.class,
                 AccessoryFamilySqlRepository.class,
                 CollectionItemTierSqlRepository.class,
