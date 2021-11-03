@@ -1,5 +1,7 @@
 package dev.sbs.api.data.sql;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import dev.sbs.api.data.yaml.YamlConfig;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
@@ -37,5 +39,14 @@ public abstract class SqlConfig extends YamlConfig {
 
     @Getter @Setter
     protected SqlDriver databaseDriver = SqlDriver.MariaDB;
+
+    public final void setLoggingLevel(Level level) {
+        Logger hibernateLogger = (Logger)org.slf4j.LoggerFactory.getLogger("org.hibernate");
+        Logger hikariLogger = (Logger)org.slf4j.LoggerFactory.getLogger("com.zaxxer.hikari");
+        Logger jbossLogger = (Logger)org.slf4j.LoggerFactory.getLogger("org.jboss.logging");
+        hibernateLogger.setLevel(level);
+        hikariLogger.setLevel(level);
+        jbossLogger.setLevel(level);
+    }
 
 }
