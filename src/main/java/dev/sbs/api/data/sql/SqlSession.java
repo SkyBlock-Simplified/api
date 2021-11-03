@@ -3,6 +3,8 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.function.VoidSessionFunction;
+import dev.sbs.api.util.concurrent.ConcurrentCollection;
+import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import lombok.Getter;
 import org.hibernate.Session;
@@ -26,14 +28,14 @@ public final class SqlSession {
         Properties properties = new Properties() {{
             put("connection.driver_class", config.getDatabaseDriver().getDriverClass());
             put("hibernate.show_sql", config.isDatabaseDebugMode());
-            put("hibernate.format_sql", false); // Log Spam
             put("hibernate.generate_statistics", config.isDatabaseStatistics());
-            put("hibernate.use_sql_comments", true);
-            put("hibernate.order_inserts", true);
             put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
             put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
+            put("hibernate.format_sql", false); // Log Spam
+            put("hibernate.use_sql_comments", true);
+            put("hibernate.order_inserts", true);
             put("hibernate.dialect", config.getDatabaseDriver().getDialectClass());
             put("hikari.cachePrepStmts", true);
             put("hikari.prepStmtCacheSize", 256);
@@ -43,11 +45,13 @@ public final class SqlSession {
 
         // Add all inheritors of SqlModel from their Repositories
         Configuration configuration = new Configuration().setProperties(properties);
-        for (Class<?> rClass : this.repositories) {
-            ParameterizedType superClass = (ParameterizedType) rClass.getGenericSuperclass();
-            Class<?> tClass = (Class<?>) superClass.getActualTypeArguments()[0];
-            configuration.addAnnotatedClass(tClass);
-        }
+        this.repositories.stream()
+                .map(Class::getGenericSuperclass)
+                .map(ParameterizedType.class::cast)
+                .map(ParameterizedType::getActualTypeArguments)
+                .map(index -> index[0])
+                .map(Class.class::cast)
+                .forEach(configuration::addAnnotatedClass);
 
         this.sessionFactory = configuration.buildSessionFactory();
     }
