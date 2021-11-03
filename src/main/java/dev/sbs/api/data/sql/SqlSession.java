@@ -33,6 +33,12 @@ public final class SqlSession {
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
             put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
+            put("hibernate.enhancer.enableDirtyTracking", true);
+            put("hibernate.enhancer.enableLazyInitialization", true);
+            put("hibernate.enhancer.enableAssociationManagement", true);
+            put("hibernate.enableDirtyTracking", true);
+            put("hibernate.enableLazyInitialization", true);
+            put("hibernate.enableAssociationManagement", true);
             put("hibernate.format_sql", false); // Log Spam
             put("hibernate.use_sql_comments", true);
             put("hibernate.order_inserts", true);

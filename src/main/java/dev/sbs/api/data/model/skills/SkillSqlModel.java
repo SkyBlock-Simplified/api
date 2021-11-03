@@ -6,12 +6,15 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
+@Proxy
 @Table(name = "skills")
 public class SkillSqlModel implements SkillModel, SqlModel {
 
@@ -43,7 +46,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 

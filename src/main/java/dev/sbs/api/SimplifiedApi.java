@@ -1,5 +1,6 @@
 package dev.sbs.api;
 
+import ch.qos.logback.classic.Level;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -73,6 +74,8 @@ import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.helper.TimeUtil;
 import feign.gson.DoubleToIntMapTypeAdapter;
+import org.hibernate.engine.internal.TwoPhaseLoad;
+import org.hibernate.persister.entity.SingleTableEntityPersister;
 
 import java.io.File;
 import java.time.Instant;
@@ -101,6 +104,10 @@ public class SimplifiedApi {
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
+
+        config.setLoggingLevel(Level.DEBUG);
+        TwoPhaseLoad tpl; // TODO: LINE 215
+        SingleTableEntityPersister step; // Contains table entity information
 
         // Provide Services
         serviceManager.add(Scheduler.class, Scheduler.getInstance());
