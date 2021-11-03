@@ -7,6 +7,7 @@ import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableCollection
 import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableList;
 import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableSet;
 import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.tuple.Pair;
 
 import java.util.Collection;
 import java.util.Map;
@@ -73,9 +74,9 @@ public final class Concurrent {
 		return new ConcurrentList<>(collection);
 	}
 
-
-	public static <K, V> ConcurrentMap<K, V> newMap() {
-		return new ConcurrentMap<>();
+	@SafeVarargs
+	public static <K, V> ConcurrentMap<K, V> newMap(Map.Entry<K, V>... entries) {
+		return new ConcurrentMap<>(entries);
 	}
 
 	public static <K, V> ConcurrentMap<K, V> newMap(Map<? extends K, ? extends V> map) {

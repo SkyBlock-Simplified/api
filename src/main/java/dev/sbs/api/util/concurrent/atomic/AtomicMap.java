@@ -14,7 +14,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	/**
 	 * Create a new concurrent map.
 	 */
-	protected AtomicMap(M type) {
+	protected AtomicMap(M type, Map<? extends K, ? extends V> items) {
+		if (Objects.nonNull(items)) type.putAll(items);
 		this.ref = new AtomicReference<>(type);
 	}
 
