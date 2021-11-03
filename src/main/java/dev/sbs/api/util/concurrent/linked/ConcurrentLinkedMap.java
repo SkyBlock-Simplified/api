@@ -24,7 +24,7 @@ public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, ConcurrentLinkedM
 	 * Create a new concurrent map.
 	 */
 	public ConcurrentLinkedMap() {
-		super(new MaxSizeLinkedMap<>());
+		super(new MaxSizeLinkedMap<>(), null);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, ConcurrentLinkedM
 	 * @param maxSize The maximum number of entries allowed in the map.
 	 */
 	public ConcurrentLinkedMap(int maxSize) {
-		super(new MaxSizeLinkedMap<>(maxSize));
+		super(new MaxSizeLinkedMap<>(maxSize), null);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, ConcurrentLinkedM
 	 * @param map Map to fill the new map with.
 	 */
 	public ConcurrentLinkedMap(Map<? extends K, ? extends V> map) {
-		super(new MaxSizeLinkedMap<>(map));
+		super(new MaxSizeLinkedMap<>(), map);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, ConcurrentLinkedM
 	 * @param maxSize The maximum number of entries allowed in the map.
 	 */
 	public ConcurrentLinkedMap(Map<? extends K, ? extends V> map, int maxSize) {
-		super(new MaxSizeLinkedMap<>(map, maxSize));
+		super(new MaxSizeLinkedMap<>(maxSize), map);
 	}
 
 	protected static final class MaxSizeLinkedMap<K, V> extends LinkedHashMap<K, V> {

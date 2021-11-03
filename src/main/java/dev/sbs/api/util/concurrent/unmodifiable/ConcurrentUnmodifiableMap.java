@@ -31,14 +31,14 @@ public class ConcurrentUnmodifiableMap<K, V> extends AtomicMap<K, V, HashMap<K, 
      * Create a new unmodifiable concurrent map.
      */
     public ConcurrentUnmodifiableMap() {
-        super(new HashMap<>());
+        super(new HashMap<>(), null);
     }
 
     /**
      * Create a new unmodifiable concurrent map and fill it with the given map.
      */
     public ConcurrentUnmodifiableMap(Map<? extends K, ? extends V> map) {
-        super(new HashMap<>(map));
+        super(new HashMap<>(), map);
     }
 
     @Override
