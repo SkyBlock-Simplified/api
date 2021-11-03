@@ -14,7 +14,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "minion_tier_upgrades")
-public class MinionTierUpgradeSqlModel implements SqlModel {
+public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlModel {
 
     @Getter
     @Id
@@ -31,7 +31,7 @@ public class MinionTierUpgradeSqlModel implements SqlModel {
     @Getter
     @Setter
     @Column(name = "coin_cost", nullable = false)
-    private int coinCost;
+    private double coinCost;
 
     @Getter
     @Setter

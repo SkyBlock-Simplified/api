@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.minion_tier_upgrades;
 
 import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
 
 public interface MinionTierUpgradeModel extends Model {
@@ -9,7 +10,7 @@ public interface MinionTierUpgradeModel extends Model {
 
     double getCoinCost();
 
-    String getItemCost();
+    CollectionItemModel getItemCost();
 
     int getItemQuantity();
 
