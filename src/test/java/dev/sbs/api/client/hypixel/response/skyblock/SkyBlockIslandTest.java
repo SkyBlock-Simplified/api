@@ -3,7 +3,10 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
+import dev.sbs.api.data.model.skills.SkillModel;
+import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -18,9 +21,10 @@ public class SkyBlockIslandTest {
     public void getIsland_ok() {
         try {
             long start = System.currentTimeMillis();
+            System.out.println("Database Starting... ");
             SimplifiedApi.enableDatabase();
             long end = System.currentTimeMillis();
-            System.out.println("Database Startup: " + (end - start) + "ms");
+            System.out.println("Database Started in " + (end - start) + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
 
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
@@ -33,6 +37,9 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
+            double skillAverage = member.getSkillAverage();
+            ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
+            ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
