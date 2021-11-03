@@ -32,10 +32,10 @@ public abstract class SqlRepository<T extends SqlModel> {
     private static final Object schedulerLock = new Object();
 
     private final Object initLock = new Object();
-    private final ConcurrentList<T> items = Concurrent.newList();
     private final Class<T> tClass;
     private final SqlSession sqlSession;
     private Boolean itemsInitialized = false;
+    private ConcurrentList<T> items;
 
     /**
      * Creates a new repository of type {@link T}.
@@ -70,10 +70,7 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public void refreshItems() {
-        this.itemsInitialized = false;
-        ConcurrentList<T> items = this.findAll();
-        this.items.clear();
-        this.items.addAll(items);
+        this.items = this.findAll();
 
         synchronized (this.initLock) {
             this.itemsInitialized = true;
