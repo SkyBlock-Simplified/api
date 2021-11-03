@@ -33,6 +33,9 @@ public abstract class SqlConfig extends YamlConfig {
     protected boolean databaseDebugMode = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_DEBUG"));
 
     @Getter @Setter
+    protected boolean databaseStatistics = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_STATISTICS"));
+
+    @Getter @Setter
     protected SqlDriver databaseDriver = SqlDriver.MariaDB;
 
 }
