@@ -23,7 +23,7 @@ public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "value", nullable = false, length = 127)
-    private int value;
+    private double value;
 
     @Getter
     @UpdateTimestamp
