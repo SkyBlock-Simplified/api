@@ -3,9 +3,7 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.function.VoidSessionFunction;
-import dev.sbs.api.util.concurrent.ConcurrentCollection;
 import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.concurrent.ConcurrentSet;
 import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,26 +17,20 @@ public final class SqlSession {
 
     @Getter private final SessionFactory sessionFactory;
     @Getter private final SqlConfig config;
-    @Getter private final ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
+    @Getter private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
 
-    public SqlSession(SqlConfig config, ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
+    public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
         this.config = config;
         this.repositories = repositories;
 
         Properties properties = new Properties() {{
             put("connection.driver_class", config.getDatabaseDriver().getDriverClass());
-            put("hibernate.show_sql", config.isDatabaseDebugMode());
+            put("hibernate.show_sql", false);
             put("hibernate.generate_statistics", config.isDatabaseStatistics());
             put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
             put("hibernate.connection.username", config.getDatabaseUser());
             put("hibernate.connection.password", config.getDatabasePassword());
             put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-            put("hibernate.enhancer.enableDirtyTracking", true);
-            put("hibernate.enhancer.enableLazyInitialization", true);
-            put("hibernate.enhancer.enableAssociationManagement", true);
-            put("hibernate.enableDirtyTracking", true);
-            put("hibernate.enableLazyInitialization", true);
-            put("hibernate.enableAssociationManagement", true);
             put("hibernate.format_sql", false); // Log Spam
             put("hibernate.use_sql_comments", true);
             put("hibernate.order_inserts", true);

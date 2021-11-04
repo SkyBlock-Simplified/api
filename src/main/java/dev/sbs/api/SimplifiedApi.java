@@ -1,6 +1,5 @@
 package dev.sbs.api;
 
-import ch.qos.logback.classic.Level;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -71,11 +70,10 @@ import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
+import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.helper.TimeUtil;
 import feign.gson.DoubleToIntMapTypeAdapter;
-import org.hibernate.engine.internal.TwoPhaseLoad;
-import org.hibernate.persister.entity.SingleTableEntityPersister;
 
 import java.io.File;
 import java.time.Instant;
@@ -105,9 +103,8 @@ public class SimplifiedApi {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
 
-        config.setLoggingLevel(Level.DEBUG);
-        TwoPhaseLoad tpl; // TODO: LINE 215
-        SingleTableEntityPersister step; // Contains table entity information
+        //config.setDatabaseDebugMode(true);
+        //config.setLoggingLevel(Level.INFO);
 
         // Provide Services
         serviceManager.add(Scheduler.class, Scheduler.getInstance());
@@ -135,11 +132,11 @@ public class SimplifiedApi {
     public static void enableDatabase() {
         if (!databaseRegistered) {
             // Load SqlSession
-            SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());
+            SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses_list());
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses()) {
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses_list()) {
                 long refreshTime = TimeUtil.ONE_MINUTE_MS;
 
                 // Get Custom Refresh Time
@@ -196,6 +193,63 @@ public class SimplifiedApi {
     // TODO: Replace with inherited repository that's implemented by SQL, Web
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
         return getServiceManager().get(tClass);
+    }
+
+    private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses_list() {
+        return Concurrent.newUnmodifiableList( // This must follow the foreign key and model ordering
+                // No Foreign Keys
+                RaritySqlRepository.class,
+                FormatSqlRepository.class,
+                LocationSqlRepository.class,
+                DungeonFairySoulSqlRepository.class,
+                SlayerSqlRepository.class,
+                PetTypeSqlRepository.class,
+                PotionSqlRepository.class,
+                ReforgeTypeSqlRepository.class,
+                AccessoryFamilySqlRepository.class,
+                PetExpScaleSqlRepository.class,
+                PotionGroupSqlRepository.class,
+
+                // Requires Above
+                ItemSqlRepository.class,
+                StatSqlRepository.class,
+                LocationAreaSqlRepository.class,
+                SlayerLevelSqlRepository.class,
+                SkillSqlRepository.class,
+                SkillLevelSqlRepository.class,
+                ReforgeSqlRepository.class,
+                ReforgeStatSqlRepository.class,
+                AccessorySqlRepository.class,
+                PotionMixinSqlRepository.class,
+
+                // Requires Above
+                CollectionSqlRepository.class,
+                PetItemSqlRepository.class,
+                NpcSqlRepository.class,
+                FairySoulSqlRepository.class,
+                PetSqlRepository.class,
+                PotionTierSqlRepository.class,
+
+                // Requires Above
+                MinionSqlRepository.class,
+                CollectionItemSqlRepository.class,
+                PetStatSqlRepository.class,
+                PotionBrewSqlRepository.class,
+                PotionGroupItemSqlRepository.class,
+
+                // Requires Above
+                MinionTierSqlRepository.class,
+                CollectionItemTierSqlRepository.class,
+                MinionItemSqlRepository.class,
+                PotionBrewBuffSqlRepository.class,
+
+                // Requires Above
+                MinionTierUpgradeSqlRepository.class,
+                PetAbilitySqlRepository.class,
+
+                // Requires Above
+                PetAbilityStatSqlRepository.class
+        );
     }
 
     private static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {

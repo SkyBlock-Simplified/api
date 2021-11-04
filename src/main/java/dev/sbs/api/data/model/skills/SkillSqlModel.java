@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Proxy
 @Table(name = "skills")
 public class SkillSqlModel implements SkillModel, SqlModel {
 
@@ -46,7 +45,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 
