@@ -43,6 +43,7 @@ import dev.sbs.api.data.model.pet_abilities.PetAbilitySqlRepository;
 import dev.sbs.api.data.model.pet_ability_stats.PetAbilityStatSqlRepository;
 import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
 import dev.sbs.api.data.model.pet_items.PetItemSqlRepository;
+import dev.sbs.api.data.model.pet_scores.PetScoreSqlRepository;
 import dev.sbs.api.data.model.pet_stats.PetStatSqlRepository;
 import dev.sbs.api.data.model.pet_types.PetTypeSqlRepository;
 import dev.sbs.api.data.model.pets.PetSqlRepository;
@@ -213,6 +214,7 @@ public class SimplifiedApi {
                 DungeonBossSqlRepository.class,
                 DungeonClassSqlRepository.class,
                 DungeonFloorSizeSqlRepository.class,
+                PetScoreSqlRepository.class,
 
                 // Requires Above
                 ItemSqlRepository.class,
