@@ -534,16 +534,6 @@ public class SkyBlockIsland {
 
 // TODO: Dungeon Weight implementation
 /*
-DUNGEON_WEIGHT_VALUES = {
-    'catacomb': 0.0002149604615,
-    'healer':   0.0000045254834,
-    'mage':     0.0000045254834,
-    'berserk':  0.0000045254834,
-    'tank':     0.0000045254834,
-    'archer':   0.0000045254834
-}
-*/
-/*
 async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     dungeon_weight = {}
     if cata_level != 50:

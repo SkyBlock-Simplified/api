@@ -23,7 +23,12 @@ import dev.sbs.api.data.model.accessory_families.AccessoryFamilySqlRepository;
 import dev.sbs.api.data.model.collection_item_tiers.CollectionItemTierSqlRepository;
 import dev.sbs.api.data.model.collection_items.CollectionItemSqlRepository;
 import dev.sbs.api.data.model.collections.CollectionSqlRepository;
+import dev.sbs.api.data.model.dungeon_bosses.DungeonBossSqlRepository;
+import dev.sbs.api.data.model.dungeon_classes.DungeonClassSqlRepository;
 import dev.sbs.api.data.model.dungeon_fairy_souls.DungeonFairySoulSqlRepository;
+import dev.sbs.api.data.model.dungeon_floor_sizes.DungeonFloorSizeSqlRepository;
+import dev.sbs.api.data.model.dungeon_floors.DungeonFloorSqlRepository;
+import dev.sbs.api.data.model.dungeons.DungeonSqlRepository;
 import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
@@ -127,11 +132,11 @@ public class SimplifiedApi {
     public static void enableDatabase() {
         if (!databaseRegistered) {
             // Load SqlSession
-            SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses_list());
+            SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses_list()) {
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses()) {
                 long refreshTime = TimeUtil.ONE_MINUTE_MS;
 
                 // Get Custom Refresh Time
@@ -190,7 +195,7 @@ public class SimplifiedApi {
         return getServiceManager().get(tClass);
     }
 
-    private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses_list() {
+    private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
         return Concurrent.newUnmodifiableList( // This must follow the foreign key and model ordering
                 // No Foreign Keys
                 RaritySqlRepository.class,
@@ -204,6 +209,10 @@ public class SimplifiedApi {
                 AccessoryFamilySqlRepository.class,
                 PetExpScaleSqlRepository.class,
                 PotionGroupSqlRepository.class,
+                DungeonSqlRepository.class,
+                DungeonBossSqlRepository.class,
+                DungeonClassSqlRepository.class,
+                DungeonFloorSizeSqlRepository.class,
 
                 // Requires Above
                 ItemSqlRepository.class,
@@ -216,6 +225,7 @@ public class SimplifiedApi {
                 ReforgeStatSqlRepository.class,
                 AccessorySqlRepository.class,
                 PotionMixinSqlRepository.class,
+                DungeonFloorSqlRepository.class,
 
                 // Requires Above
                 CollectionSqlRepository.class,
