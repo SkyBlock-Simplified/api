@@ -14,6 +14,7 @@ public abstract class SqlConfig extends YamlConfig {
 
     public SqlConfig(File configDir, String fileName, String... header) {
         super(configDir, fileName, header);
+        this.setLoggingLevel(Level.WARN);
     }
 
     @Getter @Setter
