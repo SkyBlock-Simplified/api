@@ -22,7 +22,7 @@ public class PotionGroupSqlModel implements PotionGroupModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
     @Getter

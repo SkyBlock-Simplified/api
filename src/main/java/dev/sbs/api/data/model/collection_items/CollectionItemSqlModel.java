@@ -31,7 +31,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id")
+    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id", unique = true)
     private ItemSqlModel item;
 
     @Getter

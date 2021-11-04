@@ -12,7 +12,15 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "potion_brew_buffs")
+@Table(
+        name = "potion_brew_buffs",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "buff_key",
+                        columnNames = { "potion_brew_key", "buff_key" }
+                )
+        }
+)
 public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
 
     @Getter

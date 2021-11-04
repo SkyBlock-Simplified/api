@@ -15,7 +15,15 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "potion_tiers")
+@Table(
+        name = "potion_tiers",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "potion_tier",
+                        columnNames = { "potion_key", "tier" }
+                )
+        }
+)
 public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter

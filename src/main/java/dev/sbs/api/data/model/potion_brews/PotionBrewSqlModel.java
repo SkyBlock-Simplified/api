@@ -24,7 +24,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
     @Getter

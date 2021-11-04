@@ -15,7 +15,19 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "pet_stats")
+@Table(
+        name = "pet_stats",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "pet_stat",
+                        columnNames = { "pet_key", "stat_key" }
+                ),
+                @UniqueConstraint(
+                        name = "pet_stat_ordinal",
+                        columnNames = { "pet_key", "ordinal" }
+                )
+        }
+)
 public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter

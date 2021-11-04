@@ -14,7 +14,15 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "reforge_stats")
+@Table(
+        name = "reforge_stats",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "reforge_rarity",
+                        columnNames = { "key", "rarity_key" }
+                )
+        }
+)
 public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
     @Getter

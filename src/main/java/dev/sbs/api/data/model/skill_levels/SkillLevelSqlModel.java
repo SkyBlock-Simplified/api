@@ -14,7 +14,15 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "skill_levels")
+@Table(
+        name = "skill_levels",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "skill_level",
+                        columnNames = { "skill_key", "level" }
+                )
+        }
+)
 public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
 
     @Getter

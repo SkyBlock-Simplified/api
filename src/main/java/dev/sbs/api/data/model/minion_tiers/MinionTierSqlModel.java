@@ -31,7 +31,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "tier", nullable = false, referencedColumnName = "item_id")
+    @JoinColumn(name = "tier", nullable = false, referencedColumnName = "item_id", unique = true)
     private ItemSqlModel item;
 
     @Getter

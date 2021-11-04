@@ -14,7 +14,12 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "dungeon_floors")
+@Table(
+        name = "dungeon_floors",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "dungeon_floor", columnNames = { "dungeon_key", "floor" })
+        }
+)
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
     @Getter

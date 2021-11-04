@@ -13,7 +13,15 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "potion_group_items")
+@Table(
+        name = "potion_group_items",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "potion_group_key",
+                        columnNames = { "potion_group_key", "potion_key" }
+                )
+        }
+)
 public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
 
     @Getter

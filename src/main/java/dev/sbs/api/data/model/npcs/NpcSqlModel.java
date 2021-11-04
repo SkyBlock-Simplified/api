@@ -13,7 +13,15 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "npcs")
+@Table(
+        name = "npcs",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "npc_coordinates",
+                        columnNames = { "x", "y", "z", "key" }
+                )
+        }
+)
 public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter

@@ -12,7 +12,19 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "pet_abilities")
+@Table(
+        name = "pet_abilities",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "pet_ability",
+                        columnNames = { "pet_key", "key" }
+                ),
+                @UniqueConstraint(
+                        name = "pet_ability_ordinal",
+                        columnNames = { "pet_key", "ordinal" }
+                )
+        }
+)
 public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Getter

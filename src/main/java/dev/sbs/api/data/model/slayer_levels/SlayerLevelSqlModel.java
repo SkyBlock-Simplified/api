@@ -12,7 +12,15 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "slayer_levels")
+@Table(
+        name = "slayer_levels",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "slayer_level",
+                        columnNames = { "slayer_key", "level" }
+                )
+        }
+)
 public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
 
     @Getter
