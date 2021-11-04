@@ -13,7 +13,15 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "fairy_souls")
+@Table(
+        name = "fairy_souls",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "fairy_soul_coordinates",
+                        columnNames = { "x", "y", "z", "location_key" }
+                )
+        }
+)
 public class FairySoulSqlModel implements FairySoulModel, SqlModel {
 
     @Getter
