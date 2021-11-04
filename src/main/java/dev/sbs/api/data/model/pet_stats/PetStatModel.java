@@ -12,6 +12,8 @@ public interface PetStatModel extends Model {
 
     StatModel getStat();
 
+    int getOrdinal();
+
     List<Integer> getRarities();
 
     double getBaseValue();
