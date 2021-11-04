@@ -22,7 +22,7 @@ public class PetScoreSqlModel implements PetScoreModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "breakpoint", nullable = false, unique = true)
     private int breakpoint;
 
     @Getter
