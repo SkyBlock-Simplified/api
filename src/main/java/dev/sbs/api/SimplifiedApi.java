@@ -24,7 +24,6 @@ import dev.sbs.api.data.model.collection_item_tiers.CollectionItemTierSqlReposit
 import dev.sbs.api.data.model.collection_items.CollectionItemSqlRepository;
 import dev.sbs.api.data.model.collections.CollectionSqlRepository;
 import dev.sbs.api.data.model.dungeon_fairy_souls.DungeonFairySoulSqlRepository;
-import dev.sbs.api.data.model.enchantments.EnchantmentSqlRepository;
 import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
@@ -71,7 +70,6 @@ import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.helper.TimeUtil;
 import feign.gson.DoubleToIntMapTypeAdapter;
 
@@ -102,9 +100,6 @@ public class SimplifiedApi {
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
-
-        //config.setDatabaseDebugMode(true);
-        //config.setLoggingLevel(Level.INFO);
 
         // Provide Services
         serviceManager.add(Scheduler.class, Scheduler.getInstance());
@@ -249,51 +244,6 @@ public class SimplifiedApi {
 
                 // Requires Above
                 PetAbilityStatSqlRepository.class
-        );
-    }
-
-    private static ConcurrentSet<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
-        return Concurrent.newUnmodifiableSet(
-                AccessorySqlRepository.class,
-                AccessoryFamilySqlRepository.class,
-                CollectionItemTierSqlRepository.class,
-                CollectionItemSqlRepository.class,
-                CollectionSqlRepository.class,
-                DungeonFairySoulSqlRepository.class,
-                EnchantmentSqlRepository.class,
-                FairySoulSqlRepository.class,
-                FormatSqlRepository.class,
-                ItemSqlRepository.class,
-                LocationAreaSqlRepository.class,
-                LocationSqlRepository.class,
-                MinionItemSqlRepository.class,
-                MinionTierUpgradeSqlRepository.class,
-                MinionTierSqlRepository.class,
-                MinionSqlRepository.class,
-                NpcSqlRepository.class,
-                PetAbilitySqlRepository.class,
-                PetAbilityStatSqlRepository.class,
-                PetExpScaleSqlRepository.class,
-                PetItemSqlRepository.class,
-                PetStatSqlRepository.class,
-                PetTypeSqlRepository.class,
-                PetSqlRepository.class,
-                PotionBrewBuffSqlRepository.class,
-                PotionBrewSqlRepository.class,
-                PotionGroupItemSqlRepository.class,
-                PotionGroupSqlRepository.class,
-                PotionMixinSqlRepository.class,
-                PotionTierSqlRepository.class,
-                PotionSqlRepository.class,
-                RaritySqlRepository.class,
-                ReforgeStatSqlRepository.class,
-                ReforgeTypeSqlRepository.class,
-                ReforgeSqlRepository.class,
-                SkillLevelSqlRepository.class,
-                SkillSqlRepository.class,
-                SlayerLevelSqlRepository.class,
-                SlayerSqlRepository.class,
-                StatSqlRepository.class
         );
     }
 

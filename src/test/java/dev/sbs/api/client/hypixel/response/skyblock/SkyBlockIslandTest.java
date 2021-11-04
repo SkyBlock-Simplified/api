@@ -3,8 +3,15 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
+import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
+import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
+import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
+import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
+import dev.sbs.api.data.model.minions.MinionModel;
 import dev.sbs.api.data.model.skills.SkillModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
+import dev.sbs.api.data.sql.exception.SqlException;
+import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
@@ -39,11 +46,16 @@ public class SkyBlockIslandTest {
             SkyBlockIsland.Member member = optionalMember.get();
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
-            double skillWeight = skillWeights.stream().map(entry -> entry.getValue().getValue()).mapToDouble(Double::valueOf).sum();
-            double overflowWeight = skillWeights.stream().map(entry -> entry.getValue().getOverflow()).mapToDouble(Double::valueOf).sum();
-            double totalSkillWeight = skillWeight + overflowWeight; // 10,286.99
             ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
+
+            /*try {
+                MinionTierUpgradeSqlModel testMTU = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                        FilterFunction.combine(FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, MinionTierModel::getMinion), MinionModel::getKey),
+                        "WHEAT");
+                String testing = "";
+            } catch (SqlException ignore) { }*/
+
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
             Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();

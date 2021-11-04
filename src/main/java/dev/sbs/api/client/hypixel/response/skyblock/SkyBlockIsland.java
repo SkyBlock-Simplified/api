@@ -462,11 +462,6 @@ public class SkyBlockIsland {
             return this.getDungeonWeight().get(dungeonClass);
         }
 
-        // TODO: Better map definitions
-        public ConcurrentMap<Dungeon.Class.Type, Weight> getDungeonWeight() {
-            return null;
-        }
-
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Weight {
 
@@ -475,7 +470,69 @@ public class SkyBlockIsland {
 
         }
 
-// TODO: Database Storage
+        @SneakyThrows
+        public ConcurrentMap<SkillModel, Weight> getSkillWeight() {
+            return SimplifiedApi.getSqlRepository(SkillSqlRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .filter(skillSqlModel -> !skillSqlModel.isCosmetic())
+                    .map(skillSqlModel -> {
+                        Skill skill = this.getSkill(skillSqlModel);
+                        double rawLevel = skill.getRawLevel();
+                        ConcurrentList<Double> experienceTiers = skill.getExperienceTiers();
+                        double maxSkillExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+
+                        if (rawLevel < skill.getMaxLevel())
+                            rawLevel += (skill.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
+
+                        double base = Math.pow(rawLevel * 10, 0.5 + skillSqlModel.getWeightExponent() + (rawLevel / 100.0)) / 1250;
+                        double weightValue = NumberUtil.round(base, 2);
+                        double weightOverflow = 0;
+
+                        if (skill.getExperience() > maxSkillExperienceRequired) {
+                            double overflow = Math.pow((skill.getExperience() - maxSkillExperienceRequired) / skillSqlModel.getWeightDivider(), 0.968);
+                            weightOverflow = NumberUtil.round(overflow, 2);
+                        }
+
+                        return Pair.of(skillSqlModel, new Weight(weightValue, weightOverflow));
+                    })
+                    .collect(Concurrent.toMap());
+        }
+
+        @SneakyThrows
+        public ConcurrentMap<SlayerModel, Weight> getSlayerWeight() {
+            return SimplifiedApi.getSqlRepository(SlayerSqlRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .map(slayerSqlModel -> {
+                        Slayer slayer = this.getSlayer(slayerSqlModel);
+                        ConcurrentList<Double> experienceTiers = slayer.getExperienceTiers();
+                        double maxSlayerExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+                        double base = Math.min(slayer.getExperience(), maxSlayerExperienceRequired) / slayerSqlModel.getWeightDivider();
+                        double weightValue = NumberUtil.round(base, 2);
+                        double weightOverflow = 0;
+
+                        if (slayer.getExperience() > maxSlayerExperienceRequired) {
+                            double remaining = slayer.getExperience() - maxSlayerExperienceRequired;
+                            double overflow = 0;
+                            double modifier = slayerSqlModel.getWeightModifier();
+
+                            while (remaining > 0) {
+                                double left = Math.min(remaining, maxSlayerExperienceRequired);
+                                overflow += Math.pow(left / (slayerSqlModel.getWeightDivider() * (1.5 + modifier)), 0.942);
+                                remaining -= left;
+                                modifier += modifier;
+                            }
+
+                            weightOverflow = NumberUtil.round(overflow, 2);
+                        }
+
+                        return Pair.of(slayerSqlModel, new Weight(weightValue, weightOverflow));
+                    })
+                    .collect(Concurrent.toMap());
+        }
+
+// TODO: Dungeon Weight implementation
 /*
 DUNGEON_WEIGHT_VALUES = {
     'catacomb': 0.0002149604615,
@@ -486,129 +543,6 @@ DUNGEON_WEIGHT_VALUES = {
     'archer':   0.0000045254834
 }
 */
-
-/*
-async def get_skill_weight(skills_info):
-    skill_weight = {}
-    for key, value in skills_info.items():
-        if key not in BLACKLISTED_SKILLS:
-            skill_level = min(await get_skill_level(value['xp']), SKILLS_TEMPLATE[key]['max_level'])
-            if skill_level < SKILLS_TEMPLATE[key]['max_level']:
-                skill_level = skill_level + (value['xp'] - SKILL_XP_TABLE[skill_level]) / (SKILL_INDIVIDUAL_XP_TABLE[skill_level + 1])
-
-            base = math.pow(skill_level * 10, 0.5 + SKILL_WEIGHT_VALUES[key]['exponent'] + skill_level / 100) / 1250
-
-            if value['xp'] <= SKILL_XP_TABLE[SKILLS_TEMPLATE[key]['max_level']]:
-                skill_weight[value['name']] = {'weight': round(base), 'overflow': 0}
-            else:
-                overflow = math.pow((value['xp'] - SKILL_XP_TABLE[SKILLS_TEMPLATE[key]['max_level']]) / SKILL_WEIGHT_VALUES[key]['divider'], 0.968)
-                skill_weight[value['name']] = {'weight': round(base), 'overflow': round(overflow)}
-    return skill_weight
-
-*/
-        @SneakyThrows
-        public ConcurrentMap<SkillModel, Weight> getSkillWeight() {
-            return SimplifiedApi.getSqlRepository(SkillSqlRepository.class)
-                    .findAllCached()
-                    .stream()
-                    .filter(skillSqlModel -> !skillSqlModel.isCosmetic())
-                    .map(skillSqlModel -> {
-                        double weightValue = 0;
-                        double weightOverflow = 0;
-
-                        try {
-                            Skill skill = this.getSkill(skillSqlModel);
-                            SkillLevelSqlModel maxSkillLevelSqlModel = SimplifiedApi.getSqlRepository(SkillLevelSqlRepository.class).findFirstOrNullCached(Pair.of(SkillLevelSqlModel::getSkill, skillSqlModel), Pair.of(SkillLevelSqlModel::getLevel, skill.getMaxLevel()));
-
-                            double level = skill.getLevel();
-                            double base = Math.pow(level * 10, 0.5 + skillSqlModel.getWeightExponent() + (level / 100)) / 1250;
-                            weightValue = NumberUtil.round(base, 2);
-
-                             if (skill.getExperience() > maxSkillLevelSqlModel.getTotalExpRequired()) {
-                                double overflow = Math.pow((skill.getExperience() - maxSkillLevelSqlModel.getTotalExpRequired()) / skillSqlModel.getWeightDivider(), 0.968);
-                                weightOverflow = Math.round(overflow);
-                            }
-                            String test = "";
-                        } catch (SqlException ignore) {
-
-                        }
-
-                        String x = "";
-                        return new AbstractMap.SimpleEntry<>(skillSqlModel, new Weight(weightValue, weightOverflow));
-                    })
-                    .collect(Concurrent.toMap());
-        }
-
-// TODO: Weight implementation
-
-/*
-async def get_slayer_weight(slayer_info):
-    slayer_weight = {}
-    for key, value in slayer_info.items():
-        divider = SLAYER_WEIGHT_VALUES[key]['divider']
-        modifier = SLAYER_WEIGHT_VALUES[key]['modifier']
-
-        if value['xp'] <= 1000000:
-            slayer_weight[value['name']] = {'weight': (round(value['xp'] / divider) if value['xp'] > 0 else 0), 'overflow': 0}
-
-        if value['xp'] > 1000000:
-            base = 1000000 / divider
-            remaining = value['xp'] - 1000000
-
-            overflow = 0
-            while remaining > 0:
-                left = min(remaining, 1000000)
-                overflow += math.pow(left / (divider * (1.5 + modifier)), 0.942)
-                remaining -= left
-                modifier += modifier
-
-            slayer_weight[value['name']] = {'weight': round(base), 'overflow': round(overflow)}
-    return slayer_weight
-
-*/
-        @SneakyThrows
-        public ConcurrentMap<SlayerModel, Weight> getSlayerWeight() {
-            return SimplifiedApi.getSqlRepository(SlayerSqlRepository.class)
-                    .findAllCached()
-                    .stream()
-                    .map(slayerSqlModel -> {
-                        double weightValue = 0;
-                        double weightOverflow = 0;
-
-                        try {
-                            Slayer slayer = this.getSlayer(slayerSqlModel);
-                            Optional<SlayerLevelSqlModel> optionalSlayerLevelSqlModel = SimplifiedApi.getSqlRepository(SlayerLevelSqlRepository.class)
-                                    .findAllCached()
-                                    .stream()
-                                    .filter(slayerLevelSqlModel -> slayerLevelSqlModel.getSlayer().equals(slayerSqlModel))
-                                    .max(Comparator.comparing(SlayerLevelSqlModel::getLevel));
-
-                            if (optionalSlayerLevelSqlModel.isPresent()) {
-                                SlayerLevelSqlModel maxSlayerLevelSqlModel = optionalSlayerLevelSqlModel.get();
-                                double base = Math.min(slayer.getExperience(), maxSlayerLevelSqlModel.getTotalExpRequired()) / slayerSqlModel.getWeightDivider();
-
-                                if (slayer.getExperience() > maxSlayerLevelSqlModel.getTotalExpRequired()) {
-                                    double remaining = slayer.getExperience() - maxSlayerLevelSqlModel.getTotalExpRequired();
-                                    double overflow = 0;
-                                    double modifier = slayerSqlModel.getWeightModifier();
-
-                                    while (remaining > 0) {
-                                        double left = Math.min(remaining, maxSlayerLevelSqlModel.getTotalExpRequired());
-                                        overflow += Math.pow(left / (slayerSqlModel.getWeightDivider() * (1.5 + modifier)), 0.942);
-                                        remaining -= left;
-                                        modifier += modifier;
-                                    }
-
-                                    weightOverflow = Math.round(overflow);
-                                }
-                            }
-                        } catch (SqlException ignore) { }
-
-                        return new AbstractMap.SimpleEntry<>(slayerSqlModel, new Weight(weightValue, weightOverflow));
-                    })
-                    .collect(Concurrent.toMap());
-        }
-
 /*
 async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     dungeon_weight = {}
@@ -633,6 +567,11 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                 math.pow((value - DUNGEON_XP_TABLE[50]) / (4 * DUNGEON_XP_TABLE[50] / base), 0.968))}
     return dungeon_weight
          */
+
+        // TODO: Better map definitions
+        public ConcurrentMap<Dungeon.Class.Type, Weight> getDungeonWeight() {
+            return null;
+        }
 
     }
 
@@ -1853,12 +1792,20 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public final int getLevel(double experience) {
+            return Math.min(this.getRawLevel(experience), this.getMaxLevel() - this.getLevelSubtractor());
+        }
+
+        public final int getRawLevel() {
+            return this.getRawLevel(this.getExperience());
+        }
+
+        public final int getRawLevel(double experience) {
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
 
-            return Math.min(IntStream.range(0, experienceTiers.size())
+            return IntStream.range(0, experienceTiers.size())
                     .filter(index -> experienceTiers.get(index) >= experience)
                     .findFirst()
-                    .orElseGet(this::getMaxLevel), this.getMaxLevel() - this.getLevelSubtractor());
+                    .orElseGet(this::getMaxLevel);
         }
 
         public abstract int getMaxLevel();
@@ -1868,14 +1815,15 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public final double getNextExperience(double experience) {
-            int currentLevel = this.getLevel();
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
+            int rawLevel = this.getRawLevel(experience);
 
-            return IntStream.range(0, experienceTiers.size())
-                    .filter(index -> experienceTiers.get(index) > experience || index > currentLevel)
-                    .mapToDouble(index -> experienceTiers.get(index))
-                    .findFirst()
-                    .orElse(0); // Max Level
+            if (rawLevel == 0)
+                return experienceTiers.get(0);
+            else if (rawLevel >= this.getMaxLevel())
+                return 0;
+            else
+                return experienceTiers.get(rawLevel) - experienceTiers.get(rawLevel - 1);
         }
 
         public final double getProgressExperience() {
@@ -1883,15 +1831,15 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public final double getProgressExperience(double experience) {
-            int currentLevel = this.getLevel();
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
+            int rawLevel = this.getRawLevel(experience);
 
-            int progressIndex = IntStream.range(0, experienceTiers.size())
-                    .filter(index -> experience < experienceTiers.get(index) || currentLevel < index)
-                    .findFirst()
-                    .orElse(-1); // Max Level
-
-            return progressIndex < 1 ? 0 : (experience - (experienceTiers.get(progressIndex) - experienceTiers.get(progressIndex - 1)));
+            if (rawLevel == 0)
+                return experience;
+            else if (rawLevel >= this.getMaxLevel())
+                return experience - experienceTiers.get(experienceTiers.size() - 1);
+            else
+                return experience - experienceTiers.get(rawLevel - 1);
         }
 
         public final double getMissingExperience() {
@@ -1899,15 +1847,9 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public final double getMissingExperience(double experience) {
-            int currentLevel = this.getLevel();
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
-
-            int missingIndex = IntStream.range(0, experienceTiers.size())
-                    .filter(index -> experienceTiers.get(index) > experience || index > currentLevel)
-                    .findFirst()
-                    .orElse(-1); // Max Level
-
-            return missingIndex < 1 ? 0 : (experienceTiers.get(missingIndex) - experience);
+            int rawLevel = this.getRawLevel(experience);
+            return rawLevel >= this.getMaxLevel() ? 0 : (experienceTiers.get(rawLevel) - experience);
         }
 
         public final double getProgressPercentage() {
