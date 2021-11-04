@@ -1,7 +1,9 @@
-package dev.sbs.api.data.model.formats;
+package dev.sbs.api.data.model.dungeon_floors;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.sql.converter.ColorConverter;
+import dev.sbs.api.data.model.dungeon_bosses.DungeonBossSqlModel;
+import dev.sbs.api.data.model.dungeon_floor_sizes.DungeonFloorSizeSqlModel;
+import dev.sbs.api.data.model.dungeons.DungeonSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -9,12 +11,11 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "formats")
-public class FormatSqlModel implements FormatModel, SqlModel {
+@Table(name = "dungeon_floors")
+public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
     @Getter
     @Id
@@ -24,24 +25,26 @@ public class FormatSqlModel implements FormatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
-    private String key;
+    @ManyToOne
+    @JoinColumn(name = "dungeon_key", nullable = false, referencedColumnName = "key")
+    private DungeonSqlModel dungeon;
 
     @Getter
     @Setter
-    @Column(name = "code", nullable = false, length = 1)
-    private char code;
+    @Column(name = "floor", nullable = false)
+    private int floor;
 
     @Getter
     @Setter
-    @Column(name = "rgb", length = 1)
-    @Convert(converter = ColorConverter.class)
-    private Color rgb;
+    @ManyToOne
+    @JoinColumn(name = "floor_size_key", nullable = false, referencedColumnName = "key")
+    private DungeonFloorSizeSqlModel floorSize;
 
     @Getter
     @Setter
-    @Column(name = "format", nullable = false)
-    private boolean format;
+    @ManyToOne
+    @JoinColumn(name = "floor_boss_key", nullable = false, referencedColumnName = "key")
+    private DungeonBossSqlModel floorBoss;
 
     @Getter
     @UpdateTimestamp

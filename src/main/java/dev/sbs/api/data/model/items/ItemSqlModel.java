@@ -60,7 +60,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "item_id", length = 127)
+    @Column(name = "item_id", length = 127, unique = true)
     private String itemId;
 
     @Getter

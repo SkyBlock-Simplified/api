@@ -1,9 +1,6 @@
-package dev.sbs.api.data.model.pets;
+package dev.sbs.api.data.model.dungeon_floor_sizes;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.pet_types.PetTypeSqlModel;
-import dev.sbs.api.data.model.rarities.RaritySqlModel;
-import dev.sbs.api.data.model.skills.SkillSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,8 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "pets")
-public class PetSqlModel implements PetModel, SqlModel {
+@Table(name = "dungeon_floor_sizes")
+public class DungeonFloorSizeSqlModel implements DungeonFloorSizeModel, SqlModel {
+
 
     @Getter
     @Id
@@ -32,34 +30,6 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Setter
     @Column(name = "name", nullable = false, length = 127)
     private String name;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "lowest_rarity_key", nullable = false, referencedColumnName = "key")
-    private RaritySqlModel lowestRarity;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
-    private SkillSqlModel skill;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "pet_type_key", nullable = false, referencedColumnName = "key")
-    private PetTypeSqlModel petType;
-
-    @Getter
-    @Setter
-    @Column(name = "skin", nullable = false)
-    private String skin;
-
-    @Getter
-    @Setter
-    @Column(name = "max_level", nullable = false)
-    private int maxLevel = 100;
 
     @Getter
     @UpdateTimestamp
