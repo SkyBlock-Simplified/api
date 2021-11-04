@@ -39,6 +39,9 @@ public class SkyBlockIslandTest {
             SkyBlockIsland.Member member = optionalMember.get();
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
+            double skillWeight = skillWeights.stream().map(entry -> entry.getValue().getValue()).mapToDouble(Double::valueOf).sum();
+            double overflowWeight = skillWeights.stream().map(entry -> entry.getValue().getOverflow()).mapToDouble(Double::valueOf).sum();
+            double totalSkillWeight = skillWeight + overflowWeight; // 10,286.99
             ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
