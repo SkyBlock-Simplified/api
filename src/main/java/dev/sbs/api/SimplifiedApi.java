@@ -33,10 +33,12 @@ import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
 import dev.sbs.api.data.model.location_areas.LocationAreaSqlRepository;
+import dev.sbs.api.data.model.location_remotes.LocationRemoteSqlRepository;
 import dev.sbs.api.data.model.locations.LocationSqlRepository;
 import dev.sbs.api.data.model.minion_items.MinionItemSqlRepository;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
 import dev.sbs.api.data.model.minion_tiers.MinionTierSqlRepository;
+import dev.sbs.api.data.model.minion_uniques.MinionUniqueSqlRepository;
 import dev.sbs.api.data.model.minions.MinionSqlRepository;
 import dev.sbs.api.data.model.npcs.NpcSqlRepository;
 import dev.sbs.api.data.model.pet_abilities.PetAbilitySqlRepository;
@@ -60,6 +62,10 @@ import dev.sbs.api.data.model.reforge_types.ReforgeTypeSqlRepository;
 import dev.sbs.api.data.model.reforges.ReforgeSqlRepository;
 import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.skills.SkillSqlRepository;
+import dev.sbs.api.data.model.skyblock_bag_sizes.SkyBlockBagSizeSqlRepository;
+import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlRepository;
+import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemSqlRepository;
+import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackSqlRepository;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.stats.StatSqlRepository;
@@ -215,6 +221,9 @@ public class SimplifiedApi {
                 DungeonClassSqlRepository.class,
                 DungeonFloorSizeSqlRepository.class,
                 PetScoreSqlRepository.class,
+                MinionUniqueSqlRepository.class,
+                LocationRemoteSqlRepository.class,
+                SkyBlockSackSqlRepository.class,
 
                 // Requires Above
                 ItemSqlRepository.class,
@@ -236,6 +245,7 @@ public class SimplifiedApi {
                 FairySoulSqlRepository.class,
                 PetSqlRepository.class,
                 PotionTierSqlRepository.class,
+                SkyBlockSackItemSqlRepository.class,
 
                 // Requires Above
                 MinionSqlRepository.class,
@@ -249,10 +259,12 @@ public class SimplifiedApi {
                 CollectionItemTierSqlRepository.class,
                 MinionItemSqlRepository.class,
                 PotionBrewBuffSqlRepository.class,
+                SkyBlockBagSqlRepository.class,
 
                 // Requires Above
                 MinionTierUpgradeSqlRepository.class,
                 PetAbilitySqlRepository.class,
+                SkyBlockBagSizeSqlRepository.class,
 
                 // Requires Above
                 PetAbilityStatSqlRepository.class
