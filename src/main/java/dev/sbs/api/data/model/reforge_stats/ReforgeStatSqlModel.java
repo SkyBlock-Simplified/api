@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.reforge_stats;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.rarities.RaritySqlModel;
+import dev.sbs.api.data.model.reforges.ReforgeSqlModel;
 import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -33,8 +34,9 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127)
-    private String key;
+    @ManyToOne
+    @JoinColumn(name = "key", nullable = false, referencedColumnName = "key")
+    private ReforgeSqlModel reforge;
 
     @Getter
     @Setter
