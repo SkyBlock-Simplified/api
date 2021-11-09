@@ -3,6 +3,7 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
+import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
@@ -47,14 +48,15 @@ public class SkyBlockIslandTest {
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
             ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
+            ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            /*try {
+            try {
                 MinionTierUpgradeSqlModel testMTU = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
                         FilterFunction.combine(FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, MinionTierModel::getMinion), MinionModel::getKey),
                         "WHEAT");
-                String testing = "";
-            } catch (SqlException ignore) { }*/
+                String testing = ""; // This waits until the 4th last model to load, for testing purposes
+            } catch (SqlException ignore) { }
 
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();

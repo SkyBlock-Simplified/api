@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dev.sbs.api.client.RequestInterface;
-import dev.sbs.api.client.converter.InstantTypeConverter;
-import dev.sbs.api.client.converter.NbtContentTypeConverter;
-import dev.sbs.api.client.converter.SkyBlockRealTimeTypeConverter;
-import dev.sbs.api.client.converter.SkyBlockTimeTypeConverter;
+import dev.sbs.api.client.adapter.*;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
 import dev.sbs.api.client.hypixel.implementation.HypixelResourceData;
@@ -28,6 +25,7 @@ import dev.sbs.api.data.model.dungeon_classes.DungeonClassSqlRepository;
 import dev.sbs.api.data.model.dungeon_fairy_souls.DungeonFairySoulSqlRepository;
 import dev.sbs.api.data.model.dungeon_floor_sizes.DungeonFloorSizeSqlRepository;
 import dev.sbs.api.data.model.dungeon_floors.DungeonFloorSqlRepository;
+import dev.sbs.api.data.model.dungeon_levels.DungeonLevelSqlRepository;
 import dev.sbs.api.data.model.dungeons.DungeonSqlRepository;
 import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.formats.FormatSqlRepository;
@@ -97,10 +95,12 @@ public class SimplifiedApi {
     private static boolean databaseRegistered = false;
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
-            .registerTypeAdapter(Instant.class, new InstantTypeConverter())
-            .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeConverter())
-            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeConverter())
-            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeConverter())
+            .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+            .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
+            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
+            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
+            .registerTypeAdapter(UUIDAdapter.class, new UUIDAdapter())
+            .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
             .setPrettyPrinting().create();
     private static final SimplifiedConfig config;
 
@@ -237,6 +237,7 @@ public class SimplifiedApi {
                 AccessorySqlRepository.class,
                 PotionMixinSqlRepository.class,
                 DungeonFloorSqlRepository.class,
+                DungeonLevelSqlRepository.class,
 
                 // Requires Above
                 CollectionSqlRepository.class,

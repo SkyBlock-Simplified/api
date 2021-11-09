@@ -1,11 +1,11 @@
-package dev.sbs.api.client.converter;
+package dev.sbs.api.client.adapter;
 
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
 
-public final class InstantTypeConverter extends TypeConverter<Instant> {
+public final class InstantTypeAdapter extends TypeAdapter<Instant> {
 
     @Override
     public Instant deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {

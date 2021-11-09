@@ -1,4 +1,4 @@
-package dev.sbs.api.client.converter;
+package dev.sbs.api.client.adapter;
 
 import com.google.gson.*;
 import dev.sbs.api.reflection.Reflection;
@@ -6,7 +6,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
 
 import java.lang.reflect.Type;
 
-public class NbtContentTypeConverter extends TypeConverter<SkyBlockIsland.NbtContent> {
+public class NbtContentTypeAdapter extends TypeAdapter<SkyBlockIsland.NbtContent> {
 
     @Override
     public SkyBlockIsland.NbtContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

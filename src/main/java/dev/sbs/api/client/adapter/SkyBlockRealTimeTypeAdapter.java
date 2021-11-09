@@ -1,11 +1,11 @@
-package dev.sbs.api.client.converter;
+package dev.sbs.api.client.adapter;
 
 import com.google.gson.*;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 
 import java.lang.reflect.Type;
 
-public class SkyBlockRealTimeTypeConverter extends TypeConverter<SkyBlockDate.RealTime> {
+public class SkyBlockRealTimeTypeAdapter extends TypeAdapter<SkyBlockDate.RealTime> {
 
     @Override
     public SkyBlockDate.RealTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
