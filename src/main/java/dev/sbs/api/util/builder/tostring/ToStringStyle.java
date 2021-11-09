@@ -46,7 +46,7 @@ import java.util.WeakHashMap;
 public abstract class ToStringStyle implements Serializable {
 
     /**
-     * The default toString style. Using the Using the <code>Person</code>
+     * The default toString style. Using the <code>Person</code>
      * example from {@link ToStringBuilder}, the output would look like this:
      *
      * <pre>
@@ -56,7 +56,7 @@ public abstract class ToStringStyle implements Serializable {
     public static final ToStringStyle DEFAULT_STYLE = new DefaultToStringStyle();
 
     /**
-     * The multi line toString style. Using the Using the <code>Person</code>
+     * The multi line toString style. Using the <code>Person</code>
      * example from {@link ToStringBuilder}, the output would look like this:
      *
      * <pre>
@@ -70,7 +70,7 @@ public abstract class ToStringStyle implements Serializable {
     public static final ToStringStyle MULTI_LINE_STYLE = new MultiLineToStringStyle();
 
     /**
-     * The no field names toString style. Using the Using the
+     * The no field names toString style. Using the
      * <code>Person</code> example from {@link ToStringBuilder}, the output
      * would look like this:
      *
@@ -93,7 +93,19 @@ public abstract class ToStringStyle implements Serializable {
     public static final ToStringStyle SHORT_PREFIX_STYLE = new ShortPrefixToStringStyle();
 
     /**
-     * The simple toString style. Using the Using the <code>Person</code>
+     * The short prefix toString style. Using the <code>Person</code> example
+     * from {@link ToStringBuilder}, the output would look like this:
+     *
+     * <pre>
+     * Person(name=John Doe, age=33, smoker=false)
+     * </pre>
+     *
+     * @since 2.1
+     */
+    public static final ToStringStyle SQL_PREFIX_STYLE = new SqlPrefixToStringStyle();
+
+    /**
+     * The simple toString style. Using the <code>Person</code>
      * example from {@link ToStringBuilder}, the output would look like this:
      *
      * <pre>
@@ -128,8 +140,7 @@ public abstract class ToStringStyle implements Serializable {
      * Used by the reflection methods to avoid infinite loops.
      * </p>
      *
-     * @param value
-     *                  The object to lookup in the registry.
+     * @param value The object to lookup in the registry.
      * @return boolean <code>true</code> if the registry contains the given
      *             object.
      */
@@ -144,8 +155,7 @@ public abstract class ToStringStyle implements Serializable {
      * infinite loops.
      * </p>
      *
-     * @param value
-     *                  The object to register.
+     * @param value The object to register.
      */
     static void register(Object value) {
         if (value != null) {
@@ -2108,6 +2118,40 @@ public abstract class ToStringStyle implements Serializable {
             super();
             this.setUseShortClassName(true);
             this.setUseIdentityHashCode(false);
+        }
+
+        /**
+         * <p>Ensure <code>Singleton</ode> after serialization.</p>
+         * @return the singleton
+         */
+        private Object readResolve() {
+            return ToStringStyle.SHORT_PREFIX_STYLE;
+        }
+
+    }
+
+    /**
+     * <p><code>ToStringStyle</code> that prints out the short
+     * class name and no identity hashcode.</p>
+     *
+     * <p>This is an inner class rather than using
+     * <code>StandardToStringStyle</code> to ensure its immutability.</p>
+     */
+    private static final class SqlPrefixToStringStyle extends ToStringStyle {
+
+        /**
+         * <p>Constructor.</p>
+         *
+         * <p>Use the static constant rather than instantiating.</p>
+         */
+        SqlPrefixToStringStyle() {
+            super();
+            this.setUseShortClassName(true);
+            this.setUseIdentityHashCode(false);
+            this.setContentStart("(");
+            this.setContentEnd(")");
+            this.setArrayStart("");
+            this.setArrayEnd("");
         }
 
         /**
