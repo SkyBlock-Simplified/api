@@ -31,4 +31,11 @@ public interface FilterFunction<T extends Model, R> extends Function<T, R> {
         return first.andThen(second);
     }
 
+    enum Match {
+
+        ALL,
+        ANY
+
+    }
+
 }
