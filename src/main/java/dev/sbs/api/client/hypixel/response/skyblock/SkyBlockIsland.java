@@ -537,7 +537,7 @@ public class SkyBlockIsland {
                             weightOverflow = NumberUtil.round(overflow, 2);
                         }
 
-                        return Pair.of(dungeon, new Weight(weightValue, weightOverflow));
+                        return Pair.of(dungeonSqlModel, new Weight(weightValue, weightOverflow));
                     })
                     .collect(Concurrent.toMap());
         }
@@ -565,7 +565,7 @@ public class SkyBlockIsland {
                             weightOverflow = NumberUtil.round(overflow, 2);
                         }
 
-                        return Pair.of(dungeonClass, new Weight(weightValue, weightOverflow));
+                        return Pair.of(dungeonClassSqlModel, new Weight(weightValue, weightOverflow));
                     })
                     .collect(Concurrent.toMap());
         }
@@ -809,14 +809,15 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<String, ConcurrentList<Integer>> journalEntries;
         @SerializedName("player_classes")
         @Getter private ConcurrentMap<Dungeon.Class.Type, Dungeon.Class> playerClasses;
-        @Getter private ConcurrentList<Dungeon> types = Concurrent.newList();
+        @SerializedName("dungeon_types")
+        @Getter private ConcurrentMap<String, Dungeon> types;
 
         public Optional<Dungeon> getDungeon(DungeonModel dungeonModel) {
             return this.getDungeon(dungeonModel.getKey());
         }
 
         public Optional<Dungeon> getDungeon(String dungeonName) {
-            return this.types.stream().filter(dungeon -> dungeon.getName().equalsIgnoreCase(dungeonName)).findFirst();
+            return Optional.ofNullable(this.types.get(dungeonName.toLowerCase()));
         }
 
         public Dungeon.Class getPlayerClass(Dungeon.Class.Type type) {
@@ -828,7 +829,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Dungeon extends ExperienceCalculator {
 
-        @Getter private String name;
         @Getter private double experience;
         @SerializedName("highest_tier_completed")
         @Getter private int highestCompletedTier;
@@ -1953,12 +1953,12 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                 //member.forgeItems = gson.fromJson(memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes").getAsJsonObject("forge_1"), new ConcurrentList<>().getClass());
 
                 // Dungeons
-                Map<String, Object> dungeonTypeMap = gson.fromJson(memberObject.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types"), Map.class);
+                /*Map<String, Object> dungeonTypeMap = gson.fromJson(memberObject.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types"), Map.class);
                 dungeonTypeMap.forEach((typeKey, typeValue) -> {
                     Dungeon dungeon = gson.fromJson(gson.toJson(typeValue), Dungeon.class);
                     dungeon.name = typeKey;
                     member.dungeons.types.add(dungeon);
-                });
+                });*/
 
                 // Experimentation
                 ConcurrentMap<String, Experimentation.Table> tableLinkMap = Concurrent.newMap();
