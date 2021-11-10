@@ -11,6 +11,7 @@ import dev.sbs.api.data.model.rarities.RaritySqlModel;
 import dev.sbs.api.data.model.rarities.RaritySqlRepository;
 import dev.sbs.api.data.model.reforges.ReforgeSqlModel;
 import dev.sbs.api.data.model.reforges.ReforgeSqlRepository;
+import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -53,7 +54,7 @@ public class ReforgeRepositoryTest {
                 Pair.of(ReforgeSqlModel::getName, "Spicy")
         );
         ReforgeStatModel spicyStat = reforgeStatRepository.findFirstOrNullCached(
-                Pair.of(ReforgeStatSqlModel::getKey, spicy.getKey()),
+                Pair.of(FilterFunction.combine(ReforgeStatSqlModel::getReforge, ReforgeSqlModel::getKey), spicy.getKey()),
                 Pair.of(ReforgeStatSqlModel::getRarity, legendary)
         );
         MatcherAssert.assertThat(spicyStat, Matchers.notNullValue());
