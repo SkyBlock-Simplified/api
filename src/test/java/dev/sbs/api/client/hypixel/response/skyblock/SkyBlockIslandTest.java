@@ -4,12 +4,14 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.dungeons.DungeonModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
 import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
 import dev.sbs.api.data.model.minions.MinionModel;
 import dev.sbs.api.data.model.skills.SkillModel;
+import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
@@ -18,6 +20,7 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -45,10 +48,12 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
+            //member.getCollection(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNullCached(SkillModel::getKey, "FARMING"));
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
             ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
-            ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonWeight();
+            ConcurrentMap<DungeonModel, SkyBlockIsland.Member.Weight> dungeonWeights = member.getDungeonWeight();
+            ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
             try {
@@ -89,6 +94,8 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
         } catch (HypixelApiException exception) {
             MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));
+        //} catch (SqlException sqlException) {
+            //Assertions.fail();
         }
     }
 

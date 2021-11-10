@@ -13,6 +13,7 @@ import dev.sbs.api.data.model.dungeon_classes.DungeonClassSqlRepository;
 import dev.sbs.api.data.model.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.dungeon_levels.DungeonLevelSqlRepository;
 import dev.sbs.api.data.model.dungeons.DungeonModel;
+import dev.sbs.api.data.model.dungeons.DungeonSqlRepository;
 import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
 import dev.sbs.api.data.model.minions.MinionModel;
@@ -21,10 +22,12 @@ import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleModel;
 import dev.sbs.api.data.model.pets.PetSqlModel;
 import dev.sbs.api.data.model.pets.PetSqlRepository;
 import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
+import dev.sbs.api.data.model.rarities.RarityModel;
 import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skills.SkillModel;
 import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skills.SkillSqlModel;
+import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
@@ -38,6 +41,7 @@ import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.stats.StatSqlRepository;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.Range;
+import dev.sbs.api.util.Vector;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
@@ -54,13 +58,14 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("all")
 public class SkyBlockIsland {
 
-    private static final DecimalFormat smallDecimalFormat = new DecimalFormat("#0.#"); // TODO: Decimal formatting
+    private static final DecimalFormat smallDecimalFormat = new DecimalFormat("#0.#");
 
     @SerializedName("profile_id")
     @Getter private UUID islandId;
@@ -71,7 +76,7 @@ public class SkyBlockIsland {
     private ProfileName profileName;
     @SerializedName("game_mode")
     private String gameMode;
-    private ConcurrentLinkedList<Member> members;
+    private ConcurrentLinkedList<Member> members = Concurrent.newLinkedList();
 
     public Optional<Banking> getBanking() {
         return Optional.ofNullable(this.banking);
@@ -121,10 +126,9 @@ public class SkyBlockIsland {
         return Optional.ofNullable(this.profileName);
     }
 
-    // TODO: This will not work, needs a new OR function
     @SneakyThrows
     public Minion getMinion(String minionName) {
-        return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNullCached(Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+        return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNullCached(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
     }
 
     public Minion getMinion(MinionModel minionModel) {
@@ -138,10 +142,6 @@ public class SkyBlockIsland {
         return minion;
     }
 
-    /*public UUID getIslandId() {
-        return StringUtil.toUUID(this.islandId);
-    }*/
-
     public boolean hasMember(UUID uniqueId) {
         return this.getMember(uniqueId).isPresent();
     }
@@ -149,10 +149,6 @@ public class SkyBlockIsland {
     public boolean isIronMan() {
         return this.getGameMode().isPresent() && this.getGameMode().get().equals("ironman");
     }
-
-    /*public void setCurrentMember(Member currentMember) {
-        this.currentMember = currentMember;
-    }*/
 
     public static class Member {
 
@@ -195,13 +191,11 @@ public class SkyBlockIsland {
         private ConcurrentLinkedMap<String, Quest> quests;
         @SerializedName("crafted_generators")
         private ConcurrentList<String> craftedMinions;
-        @SerializedName("sack_counts")
-        private ConcurrentLinkedMap<String, Integer> sackCounts;
+        @SerializedName("sacks_counts")
+        private ConcurrentLinkedMap<String, Integer> sacksCounts;
         private ConcurrentLinkedMap<String, SlayerBoss> slayer_bosses;
         private ConcurrentList<String> unlocked_coll_tiers;
         private ConcurrentLinkedMap<String, Integer> collection;
-        @SerializedName("griffin.burrows")
-        private ConcurrentList<GriffinBurrow> griffinBurrows;
         @SerializedName("harp_quest")
         private ConcurrentLinkedMap<String, Object> harpQuest;
         @SerializedName("active_effects")
@@ -212,6 +206,8 @@ public class SkyBlockIsland {
         @Getter private ConcurrentSet<String> disabledPotionEffects;
         @SerializedName("temp_stat_buffs")
         @Getter private ConcurrentList<CenturyCake> centuryCakes;
+        @SerializedName("griffin.burrows")
+        private ConcurrentList<GriffinBurrow> griffinBurrows;
         @SerializedName("mining_core")
         @Getter private Mining mining;
         @SerializedName("jacob2")
@@ -219,6 +215,7 @@ public class SkyBlockIsland {
         @SerializedName("forge.forge_processes.forge_1")
         @Getter private ConcurrentList<ForgeItem> forgeItems;
         @Getter private Dungeons dungeons;
+        @Getter private Experimentation experimentation;
 
         // Experience, DO NOT RENAME
         private double experience_skill_farming = -1;
@@ -313,10 +310,9 @@ public class SkyBlockIsland {
             return new MelodyHarp(this.harpQuest);
         }
 
-        // TODO: Will not work
         @SneakyThrows
         public Minion getMinion(String minionName) {
-            return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNullCached(Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+            return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNullCached(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
         }
 
         public Minion getMinion(MinionModel minionModel) {
@@ -369,10 +365,9 @@ public class SkyBlockIsland {
             return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
-        // TODO: Will not work
         @SneakyThrows
         public Skill getSkill(String skillName) {
-            return this.getSkill(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNullCached(Pair.of(SkillModel::getKey, skillName), Pair.of(SkillModel::getName, skillName)));
+            return this.getSkill(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNullCached(FilterFunction.Match.ANY, Pair.of(SkillModel::getKey, skillName), Pair.of(SkillModel::getName, skillName)));
         }
 
         public Skill getSkill(SkillModel skillModel) {
@@ -384,17 +379,16 @@ public class SkyBlockIsland {
             return new Slayer(type, this.slayer_bosses.get(type.getKey().toLowerCase()));
         }
 
-        public Sack getSack(String type) {
-            return null;
-            /*Sack collection = new Sack(type);
-            ConcurrentList<Skyblock.Item> items = type.getItems();
+        public Sack getSack(SkyBlockSackModel type) {
+            Sack collection = new Sack(type); // TODO: Sack items
+            /*ConcurrentList<Skyblock.Item> items = type.getItems();
 
             if (this.sackCounts != null) {
                 for (Skyblock.Item item : items)
                     collection.stored.put(item, this.sackCounts.getOrDefault(item.getItemName(), 0));
-            }
+            }*/
 
-            return collection;*/
+            return collection;
         }
 
         @SneakyThrows
@@ -442,8 +436,12 @@ public class SkyBlockIsland {
             return this.getSlayerWeight().get(slayerModel);
         }
 
+        public Weight getWeight(Dungeon dungeon) {
+            return this.getDungeonWeight().get(dungeon);
+        }
+
         public Weight getWeight(Dungeon.Class.Type dungeonClass) {
-            return this.getDungeonWeight().get(dungeonClass);
+            return this.getDungeonClassWeight().get(dungeonClass);
         }
 
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -517,7 +515,35 @@ public class SkyBlockIsland {
         }
 
         @SneakyThrows
-        public ConcurrentMap<DungeonClassModel, Weight> getDungeonWeight() {
+        public ConcurrentMap<DungeonModel, Weight> getDungeonWeight() {
+            return SimplifiedApi.getSqlRepository(DungeonSqlRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .map(dungeonSqlModel -> {
+                        Dungeon dungeon = this.getDungeons().getDungeon(dungeonSqlModel).orElse(null);
+                        double rawLevel = dungeon.getRawLevel();
+                        ConcurrentList<Double> experienceTiers = dungeon.getExperienceTiers();
+                        double maxDungeonClassExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+
+                        if (rawLevel < dungeon.getMaxLevel())
+                            rawLevel += (dungeon.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
+
+                        double base = Math.pow(rawLevel, 4.5) * dungeonSqlModel.getWeightMultiplier();
+                        double weightValue = NumberUtil.round(base, 2);
+                        double weightOverflow = 0;
+
+                        if (dungeon.getExperience() > maxDungeonClassExperienceRequired) {
+                            double overflow = Math.pow((dungeon.getExperience() - maxDungeonClassExperienceRequired) / (4 * maxDungeonClassExperienceRequired / base), 0.968);
+                            weightOverflow = NumberUtil.round(overflow, 2);
+                        }
+
+                        return Pair.of(dungeon, new Weight(weightValue, weightOverflow));
+                    })
+                    .collect(Concurrent.toMap());
+        }
+
+        @SneakyThrows
+        public ConcurrentMap<DungeonClassModel, Weight> getDungeonClassWeight() {
             return SimplifiedApi.getSqlRepository(DungeonClassSqlRepository.class)
                     .findAllCached()
                     .stream()
@@ -544,7 +570,6 @@ public class SkyBlockIsland {
                     .collect(Concurrent.toMap());
         }
 
-// TODO: Dungeon Weight implementation
 /*
 async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     dungeon_weight = {}
@@ -565,8 +590,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         if value <= DUNGEON_XP_TABLE[50]:
             dungeon_weight[key] = {'weight': round(base), 'overflow': 0}
         else:
-            dungeon_weight[key] = {'weight': round(base), 'overflow': round(
-                math.pow((value - DUNGEON_XP_TABLE[50]) / (4 * DUNGEON_XP_TABLE[50] / base), 0.968))}
+            dungeon_weight[key] = {'weight': round(base), 'overflow': round(math.pow((value - DUNGEON_XP_TABLE[50]) / (4 * DUNGEON_XP_TABLE[50] / base), 0.968))}
     return dungeon_weight
          */
 
@@ -627,26 +651,10 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @Getter private SkyBlockDate.RealTime lastAttempt;
             @SerializedName("last_claimed")
             @Getter private SkyBlockDate.RealTime lastClaimed;
-
-            /*
-            TODO: Is this incomplete?
-            "attempts_0": 8,
-            "bonus_clicks": 3,
-            "claims_0": 8,
-            "best_score_0": 17,
-            "attempts_1": 8,
-            "claims_1": 6,
-            "best_score_1": 18,
-            "attempts_2": 6,
-            "claims_2": 6,
-            "best_score_2": 15,
-            "attempts_3": 16,
-            "claims_3": 11,
-            "best_score_3": 15,
-            "attempts_5": 75,
-            "claims_5": 56,
-            "best_score_5": 15
-             */
+            private ConcurrentMap<Integer, Integer> attempts = Concurrent.newMap();
+            private ConcurrentMap<Integer, Integer> claims = Concurrent.newMap();
+            @SerializedName("best_score")
+            private ConcurrentMap<Integer, Integer> bestScore = Concurrent.newMap();
 
         }
 
@@ -657,14 +665,35 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
         @SerializedName("ts")
         @Getter private SkyBlockDate.RealTime timestamp;
-        @Getter private int x;
-        @Getter private int y;
-        @Getter private int z;
-        @Getter private int type;
-        @Getter private int tier;
-        @Getter private int chain;
+        private int x;
+        private int y;
+        private int z;
+        private int tier; // Rarity (No Griffin is -1)
+        @Getter private Type type; // Start/Empty, Mob, Treasure
+        @Getter private int chain; // Order
 
-        // TODO: Enum for type and tier?
+        // Type == 0 + Chain == 0, Start
+        // Type == 0 + Chain != 0, Empty
+
+        public Vector getCoordinates() {
+            return new Vector(this.x, this.y, this.z);
+        }
+
+        @SneakyThrows
+        public RarityModel getGriffinRarity() {
+            return SimplifiedApi.getSqlRepository(RaritySqlRepository.class).findFirstOrNullCached(RarityModel::getOrdinal, this.tier);
+        }
+
+        public enum Type {
+
+            @SerializedName("0")
+            START,
+            @SerializedName("1")
+            MOB,
+            @SerializedName("2")
+            TREASURE
+
+        }
 
     }
 
@@ -775,12 +804,12 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @SerializedName("dungeons_blah_blah")
         private ConcurrentSet<String> dungeonsBlahBlah;
         @SerializedName("selected_dungeon_class")
-        @Getter private Dungeon.Class selectedClass;
+        @Getter private Dungeon.Class.Type selectedClass;
         @SerializedName("dungeon_journal.journal_entries")
         @Getter private ConcurrentMap<String, ConcurrentList<Integer>> journalEntries;
         @SerializedName("player_classes")
         @Getter private ConcurrentMap<Dungeon.Class.Type, Dungeon.Class> playerClasses;
-        @Getter private ConcurrentSet<Dungeon> types;
+        @Getter private ConcurrentList<Dungeon> types = Concurrent.newList();
 
         public Optional<Dungeon> getDungeon(DungeonModel dungeonModel) {
             return this.getDungeon(dungeonModel.getKey());
@@ -1014,7 +1043,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @Getter private double allyHealing;
 
             @SerializedName("dungeon_class")
-            @Getter private Dungeon.Class dungeonClass;
+            @Getter private Dungeon.Class.Type dungeonClass;
             @Getter private ConcurrentList<UUID> teammates;
             @SerializedName("deaths")
             @Getter private int deaths;
@@ -1368,7 +1397,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         public CompoundTag getNbtData() throws IOException {
-            return new NbtFactory().fromByteArray(this.getData()); // TODO: NBT
+            return new NbtFactory().fromByteArray(this.getData());
         }
 
     }
@@ -1530,7 +1559,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sack {
 
-        @Getter private final String type;
+        @Getter private final SkyBlockSackModel type;
         @Getter private ConcurrentLinkedMap<String, Integer> stored = Concurrent.newLinkedMap(); // TODO: SackModel
 
         public int getStored(String item) {
@@ -1888,6 +1917,10 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
 
     public static class Deserializer implements JsonDeserializer<SkyBlockIsland> {
 
+        private <T extends JsonElement, R> Optional<R> wrapObject(JsonObject jsonObject, String memberName, Function<T, R> function) {
+            return jsonObject.has(memberName) ? Optional.of(function.apply((T) jsonObject.get(memberName))) : Optional.empty();
+        }
+
         // Use a new instance of Gson to avoid infinite recursion to a deserializer.
         @Override
         @SuppressWarnings("unchecked")
@@ -1895,24 +1928,66 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             Gson gson = SimplifiedApi.getGson();
             SkyBlockIsland skyBlockIsland = new SkyBlockIsland();
             JsonObject rootObject = jsonElement.getAsJsonObject();
-            skyBlockIsland.gameMode = rootObject.get("game_mode").getAsString();
-            skyBlockIsland.banking = gson.fromJson(rootObject.getAsJsonObject("banking"), Banking.class);
-            skyBlockIsland.profileName = gson.fromJson(rootObject.getAsJsonObject("cute_name"), ProfileName.class);
-            skyBlockIsland.communityUpgrades = gson.fromJson(rootObject.getAsJsonObject("community_upgrades"), CommunityUpgrades.class);
+            skyBlockIsland.islandId = StringUtil.toUUID(wrapObject(rootObject, "profile_id", JsonElement::getAsString).get());
+            skyBlockIsland.gameMode = wrapObject(rootObject,"game_mode", JsonElement::getAsString).orElse(null);
+            skyBlockIsland.banking = gson.fromJson(wrapObject(rootObject, "banking", JsonElement::getAsJsonObject).orElse(null), Banking.class);
+            skyBlockIsland.profileName = gson.fromJson(wrapObject(rootObject, "cute_name", JsonElement::getAsString).orElse(null), ProfileName.class);
+            skyBlockIsland.communityUpgrades = gson.fromJson(wrapObject(rootObject, "community_upgrades", JsonElement::getAsJsonObject).orElse(null), CommunityUpgrades.class);
             Map<String, LinkedTreeMap<String, Object>> memberMap = gson.fromJson(rootObject.getAsJsonObject("members"), Map.class);
 
             memberMap.forEach((key, value) -> {
+                // Member UUID
                 String memberJson = gson.toJson(value);
                 Member member = gson.fromJson(memberJson, Member.class);
                 member.uniqueId = StringUtil.toUUID(key);
+                JsonObject memberObject = JsonParser.parseString(memberJson).getAsJsonObject();
 
-                Map<String, Object> dungeonTypeMap = gson.fromJson(JsonParser.parseString(memberJson).getAsJsonObject().getAsJsonObject("dungeons").getAsJsonObject("dungeon_types"), Map.class);
+                // Child Nodes
+                JsonObject miningCore = memberObject.getAsJsonObject("mining_core");
+                member.mining.dwarvenMinesBiome = gson.fromJson(miningCore.getAsJsonObject("biomes").getAsJsonObject("dwarven"), Mining.Biome.Dwarven.class);
+                member.mining.precursorCityBiome = gson.fromJson(miningCore.getAsJsonObject("biomes").getAsJsonObject("precursor"), Mining.Biome.Precursor.class);
+                member.mining.goblinHideoutBiome = gson.fromJson(miningCore.getAsJsonObject("biomes").getAsJsonObject("goblin"), Mining.Biome.Goblin.class);
+                member.griffinBurrows = gson.fromJson(memberObject.getAsJsonObject("griffin").getAsJsonArray("burrows"), new ConcurrentList<>().getClass());
+
+                // TODO: Fix forge items
+                //member.forgeItems = gson.fromJson(memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes").getAsJsonObject("forge_1"), new ConcurrentList<>().getClass());
+
+                // Dungeons
+                Map<String, Object> dungeonTypeMap = gson.fromJson(memberObject.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types"), Map.class);
                 dungeonTypeMap.forEach((typeKey, typeValue) -> {
                     Dungeon dungeon = gson.fromJson(gson.toJson(typeValue), Dungeon.class);
                     dungeon.name = typeKey;
                     member.dungeons.types.add(dungeon);
                 });
 
+                // Experimentation
+                ConcurrentMap<String, Experimentation.Table> tableLinkMap = Concurrent.newMap();
+                tableLinkMap.put("pairings", member.experimentation.superpairs);
+                tableLinkMap.put("simon", member.experimentation.chronomatron);
+                tableLinkMap.put("numbers", member.experimentation.ultrasequencer);
+
+                ConcurrentList<Pair<String, String>> replaceList = Concurrent.newList(
+                        Pair.of("attempts", "attempts"),
+                        Pair.of("bestScore", "best_score"),
+                        Pair.of("claims", "claims")
+                );
+
+                tableLinkMap.forEach(tableLink -> {
+                    ConcurrentMap<String, Double> experimentMap = gson.fromJson(memberObject.getAsJsonObject("experimentation").getAsJsonObject(tableLink.getKey()), ConcurrentMap.class);
+
+                    replaceList.forEach(replacePair -> {
+                        ConcurrentMap<Integer, Integer> tableMap = (ConcurrentMap<Integer, Integer>) new Reflection(Experimentation.Table.class).getValue(replacePair.getLeft(), tableLink.getValue());
+
+                        experimentMap.stream()
+                                .filter(entry -> entry.getKey().startsWith(replacePair.getRight()))
+                                .map(entry -> Pair.of(Integer.parseInt(entry.getKey().replace(FormatUtil.format("{0}_", replacePair.getRight()), "")), entry.getValue().intValue()))
+                                .forEach(entry -> {
+                                    tableMap.put(entry.getKey(), entry.getValue());
+                                });
+                    });
+                });
+
+                // Add Member
                 skyBlockIsland.members.add(member);
             });
 
