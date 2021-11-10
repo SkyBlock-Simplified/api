@@ -1,9 +1,32 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.hibernate:hibernate-gradle-plugin:5.1.0.Final"
+    }
+}
+
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0' apply true
     id 'org.flywaydb.flyway' version '8.0.0-beta2'
     id 'maven-publish'
 }
+
+apply plugin: 'org.hibernate.orm'
+
+hibernate {
+    enhance {
+        enableLazyInitialization= true
+        enableDirtyTracking = true
+        enableAssociationManagement = true
+        enableExtendedEnhancement = false
+    }
+}
+
+
 
 repositories {
     mavenCentral()
