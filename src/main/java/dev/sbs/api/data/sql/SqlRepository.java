@@ -70,10 +70,13 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public void refreshItems() {
+        long start = System.currentTimeMillis();
+        System.out.println("Caching " + this.getClass().getSimpleName() + "...");
         this.items = this.findAll();
 
         synchronized (this.initLock) {
             this.itemsInitialized = true;
+            System.out.println("Finished Caching " + this.getClass().getSimpleName() + " in " + (System.currentTimeMillis() - start) + "ms");
             this.initLock.notifyAll();
         }
     }
@@ -174,6 +177,33 @@ public abstract class SqlRepository<T extends SqlModel> {
 
     @SuppressWarnings({"unchecked", "varargs"}) // Written safely
     public <S> T findFirstOrNullCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
+        return this.findFirstOrNullCached(FilterFunction.Match.ALL, predicates);
+    }
+
+    @SuppressWarnings({"unchecked", "varargs"}) // Written safely
+    public <S> T findFirstOrNullCached(FilterFunction.Match match, Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
+        ConcurrentList<T> allMatches = this.findAllCached();
+        ConcurrentList<T> anyMatches = Concurrent.newList();
+
+        if (ListUtil.notEmpty(allMatches)) {
+            for (Pair<FilterFunction<T, S>, S> pair : predicates) {
+                ConcurrentList<T> tempList = allMatches.stream()
+                        .filter(it -> Objects.equals(pair.getKey().apply(it), pair.getValue()))
+                        .collect(Concurrent.toList());
+
+                if (match == FilterFunction.Match.ALL)
+                    allMatches = tempList; // This must only shorten allMatches if matching ALL, otherwise ANY will fail
+                else if (match == FilterFunction.Match.ANY)
+                    anyMatches.addAll(tempList);
+            }
+        }
+
+        ConcurrentList<T> returnMatches = (match == FilterFunction.Match.ALL ? allMatches : anyMatches);
+        return ListUtil.isEmpty(returnMatches) ? null : returnMatches.get(0);
+    }
+
+    @SuppressWarnings({"unchecked", "varargs"}) // Written safely
+    public <S> T matchAnyFirstOrNullCached(Pair<FilterFunction<T, S>, S>... predicates) throws SqlException {
         ConcurrentList<T> itemsCopy = this.findAllCached();
 
         if (ListUtil.notEmpty(itemsCopy)) {
