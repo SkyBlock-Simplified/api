@@ -1,11 +1,18 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
+import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.LinkedTreeMap;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.accessories.AccessorySqlModel;
 import dev.sbs.api.data.model.accessories.AccessorySqlRepository;
 import dev.sbs.api.data.model.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.collection_items.CollectionItemSqlRepository;
+import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.dungeon_classes.DungeonClassSqlRepository;
+import dev.sbs.api.data.model.dungeon_levels.DungeonLevelModel;
+import dev.sbs.api.data.model.dungeon_levels.DungeonLevelSqlRepository;
+import dev.sbs.api.data.model.dungeons.DungeonModel;
 import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
 import dev.sbs.api.data.model.minions.MinionModel;
@@ -15,16 +22,13 @@ import dev.sbs.api.data.model.pets.PetSqlModel;
 import dev.sbs.api.data.model.pets.PetSqlRepository;
 import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
 import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
-import dev.sbs.api.data.model.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.data.model.skills.SkillModel;
 import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skills.SkillSqlModel;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelModel;
-import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.stats.StatModel;
-import dev.sbs.api.data.model.stats.StatSqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
@@ -33,23 +37,24 @@ import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.stats.StatSqlRepository;
 import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.util.Range;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
+import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.*;
 import dev.sbs.api.data.model.rarities.RaritySqlModel;
 import dev.sbs.api.data.model.rarities.RaritySqlRepository;
-import dev.sbs.api.util.mutable.MutableInt;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.*;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("all")
@@ -58,8 +63,7 @@ public class SkyBlockIsland {
     private static final DecimalFormat smallDecimalFormat = new DecimalFormat("#0.#"); // TODO: Decimal formatting
 
     @SerializedName("profile_id")
-    private String islandId;
-    private ConcurrentLinkedMap<String, Member> members;
+    @Getter private UUID islandId;
     @SerializedName("community_upgrades")
     private CommunityUpgrades communityUpgrades;
     private Banking banking;
@@ -67,19 +71,7 @@ public class SkyBlockIsland {
     private ProfileName profileName;
     @SerializedName("game_mode")
     private String gameMode;
-    private boolean membersCached;
-    private Member currentMember; // TODO: Mod uses this, should be able to phase it out later
-
-    private void cacheMembers() {
-        // Store UUID inside Member
-        if (!this.membersCached) {
-            this.membersCached = true;
-
-            this.members.forEach((key, value) -> {
-                value.uniqueId = StringUtil.toUUID(key);
-            });
-        }
-    }
+    private ConcurrentLinkedList<Member> members;
 
     public Optional<Banking> getBanking() {
         return Optional.ofNullable(this.banking);
@@ -101,27 +93,19 @@ public class SkyBlockIsland {
         return Optional.ofNullable(communityUpgrades);
     }
 
-    public Optional<Member> getCurrentMember() {
-        return Optional.ofNullable(this.currentMember);
-    }
-
     public Optional<String> getGameMode() {
         return Optional.ofNullable(this.gameMode);
     }
 
     public Optional<Member> getMember(int index) {
-        this.cacheMembers();
-
-        if (!this.members.isEmpty())
-            return Optional.of(Concurrent.newList(this.members.values()).get(index));
+        if (!this.members.isEmpty() && Range.between(0, this.members.size()).contains(index))
+            return Optional.of(Concurrent.newList(this.members).get(index));
 
         return Optional.empty();
     }
 
     public Optional<Member> getMember(UUID uniqueId) {
-        this.cacheMembers();
-
-        for (Member profile : this.members.values()) {
+        for (Member profile : this.members) {
             if (profile.getUniqueId().equals(uniqueId))
                 return Optional.of(profile);
         }
@@ -130,8 +114,7 @@ public class SkyBlockIsland {
     }
 
     public ConcurrentList<Member> getMembers() {
-        this.cacheMembers();
-        return Concurrent.newList(this.members.values());
+        return Concurrent.newList(this.members);
     }
 
     public Optional<ProfileName> getProfileName() {
@@ -155,9 +138,9 @@ public class SkyBlockIsland {
         return minion;
     }
 
-    public UUID getIslandId() {
+    /*public UUID getIslandId() {
         return StringUtil.toUUID(this.islandId);
-    }
+    }*/
 
     public boolean hasMember(UUID uniqueId) {
         return this.getMember(uniqueId).isPresent();
@@ -167,9 +150,9 @@ public class SkyBlockIsland {
         return this.getGameMode().isPresent() && this.getGameMode().get().equals("ironman");
     }
 
-    public void setCurrentMember(Member currentMember) {
+    /*public void setCurrentMember(Member currentMember) {
         this.currentMember = currentMember;
-    }
+    }*/
 
     public static class Member {
 
@@ -235,6 +218,7 @@ public class SkyBlockIsland {
         @Getter private JacobsFarming jacobsFarming;
         @SerializedName("forge.forge_processes.forge_1")
         @Getter private ConcurrentList<ForgeItem> forgeItems;
+        @Getter private Dungeons dungeons;
 
         // Experience, DO NOT RENAME
         private double experience_skill_farming = -1;
@@ -532,6 +516,34 @@ public class SkyBlockIsland {
                     .collect(Concurrent.toMap());
         }
 
+        @SneakyThrows
+        public ConcurrentMap<DungeonClassModel, Weight> getDungeonWeight() {
+            return SimplifiedApi.getSqlRepository(DungeonClassSqlRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .map(dungeonClassSqlModel -> {
+                        Dungeon.Class dungeonClass = this.getDungeons().getPlayerClass(Dungeon.Class.Type.valueOf(dungeonClassSqlModel.getKey()));
+                        double rawLevel = dungeonClass.getRawLevel();
+                        ConcurrentList<Double> experienceTiers = dungeonClass.getExperienceTiers();
+                        double maxDungeonClassExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+
+                        if (rawLevel < dungeonClass.getMaxLevel())
+                            rawLevel += (dungeonClass.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
+
+                        double base = Math.pow(rawLevel, 4.5) * dungeonClassSqlModel.getWeightMultiplier();
+                        double weightValue = NumberUtil.round(base, 2);
+                        double weightOverflow = 0;
+
+                        if (dungeonClass.getExperience() > maxDungeonClassExperienceRequired) {
+                            double overflow = Math.pow((dungeonClass.getExperience() - maxDungeonClassExperienceRequired) / (4 * maxDungeonClassExperienceRequired / base), 0.968);
+                            weightOverflow = NumberUtil.round(overflow, 2);
+                        }
+
+                        return Pair.of(dungeonClass, new Weight(weightValue, weightOverflow));
+                    })
+                    .collect(Concurrent.toMap());
+        }
+
 // TODO: Dungeon Weight implementation
 /*
 async def get_dungeon_weight(cata_xp, cata_level, class_xp):
@@ -557,11 +569,6 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
                 math.pow((value - DUNGEON_XP_TABLE[50]) / (4 * DUNGEON_XP_TABLE[50] / base), 0.968))}
     return dungeon_weight
          */
-
-        // TODO: Better map definitions
-        public ConcurrentMap<Dungeon.Class.Type, Weight> getDungeonWeight() {
-            return null;
-        }
 
     }
 
@@ -773,10 +780,14 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         @Getter private ConcurrentMap<String, ConcurrentList<Integer>> journalEntries;
         @SerializedName("player_classes")
         @Getter private ConcurrentMap<Dungeon.Class.Type, Dungeon.Class> playerClasses;
-        @Getter private ConcurrentMap<String, Dungeon> dungeonTypes;
+        @Getter private ConcurrentSet<Dungeon> types;
+
+        public Optional<Dungeon> getDungeon(DungeonModel dungeonModel) {
+            return this.getDungeon(dungeonModel.getKey());
+        }
 
         public Optional<Dungeon> getDungeon(String dungeonName) {
-            return Optional.ofNullable(this.getDungeonTypes().get(dungeonName));
+            return this.types.stream().filter(dungeon -> dungeon.getName().equalsIgnoreCase(dungeonName)).findFirst();
         }
 
         public Dungeon.Class getPlayerClass(Dungeon.Class.Type type) {
@@ -788,6 +799,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Dungeon extends ExperienceCalculator {
 
+        @Getter private String name;
         @Getter private double experience;
         @SerializedName("highest_tier_completed")
         @Getter private int highestCompletedTier;
@@ -902,13 +914,18 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         }
 
         @Override
+        @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
-            return null; // TODO
+            return SimplifiedApi.getSqlRepository(DungeonLevelSqlRepository.class)
+                    .findAllCached()
+                    .stream()
+                    .map(DungeonLevelModel::getTotalExpRequired)
+                    .collect(Concurrent.toList());
         }
 
         @Override
         public int getMaxLevel() {
-            return 50;
+            return this.getExperienceTiers().size();
         }
 
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -918,13 +935,18 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             @Getter private double experience;
 
             @Override
+            @SneakyThrows
             public ConcurrentList<Double> getExperienceTiers() {
-                return null; // TODO
+                return SimplifiedApi.getSqlRepository(DungeonLevelSqlRepository.class)
+                        .findAllCached()
+                        .stream()
+                        .map(DungeonLevelModel::getTotalExpRequired)
+                        .collect(Concurrent.toList());
             }
 
             @Override
             public int getMaxLevel() {
-                return 50;
+                return this.getExperienceTiers().size();
             }
 
             public enum Type {
@@ -1861,6 +1883,41 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         private int boss_kills_tier_3;
         private int boss_kills_tier_4;
         private int xp;
+
+    }
+
+    public static class Deserializer implements JsonDeserializer<SkyBlockIsland> {
+
+        // Use a new instance of Gson to avoid infinite recursion to a deserializer.
+        @Override
+        @SuppressWarnings("unchecked")
+        public SkyBlockIsland deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+            Gson gson = SimplifiedApi.getGson();
+            SkyBlockIsland skyBlockIsland = new SkyBlockIsland();
+            JsonObject rootObject = jsonElement.getAsJsonObject();
+            skyBlockIsland.gameMode = rootObject.get("game_mode").getAsString();
+            skyBlockIsland.banking = gson.fromJson(rootObject.getAsJsonObject("banking"), Banking.class);
+            skyBlockIsland.profileName = gson.fromJson(rootObject.getAsJsonObject("cute_name"), ProfileName.class);
+            skyBlockIsland.communityUpgrades = gson.fromJson(rootObject.getAsJsonObject("community_upgrades"), CommunityUpgrades.class);
+            Map<String, LinkedTreeMap<String, Object>> memberMap = gson.fromJson(rootObject.getAsJsonObject("members"), Map.class);
+
+            memberMap.forEach((key, value) -> {
+                String memberJson = gson.toJson(value);
+                Member member = gson.fromJson(memberJson, Member.class);
+                member.uniqueId = StringUtil.toUUID(key);
+
+                Map<String, Object> dungeonTypeMap = gson.fromJson(JsonParser.parseString(memberJson).getAsJsonObject().getAsJsonObject("dungeons").getAsJsonObject("dungeon_types"), Map.class);
+                dungeonTypeMap.forEach((typeKey, typeValue) -> {
+                    Dungeon dungeon = gson.fromJson(gson.toJson(typeValue), Dungeon.class);
+                    dungeon.name = typeKey;
+                    member.dungeons.types.add(dungeon);
+                });
+
+                skyBlockIsland.members.add(member);
+            });
+
+            return skyBlockIsland;
+        }
 
     }
 
