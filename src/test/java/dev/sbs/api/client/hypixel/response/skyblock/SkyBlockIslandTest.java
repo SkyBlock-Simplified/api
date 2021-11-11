@@ -5,6 +5,7 @@ import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.dungeons.DungeonModel;
+import dev.sbs.api.data.model.items.ItemModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
@@ -20,9 +21,13 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hibernate.Session;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,9 +62,12 @@ public class SkyBlockIslandTest {
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
             try {
+                Session session = SimplifiedApi.getSqlSession().openSession();
                 MinionTierUpgradeSqlModel testMTU = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
-                        FilterFunction.combine(FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, MinionTierModel::getMinion), MinionModel::getKey),
-                        "WHEAT");
+                        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_1");
+                MinionTierModel mtm = testMTU.getMinionTier();
+                ItemModel ic = testMTU.getItemCost();
+
                 String testing = ""; // This waits until the 4th last model to load, for testing purposes
             } catch (SqlException ignore) { }
 

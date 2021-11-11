@@ -15,8 +15,7 @@ import java.time.Instant;
 public class LocationRemoteSqlModel implements LocationRemoteModel, SqlModel {
 
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

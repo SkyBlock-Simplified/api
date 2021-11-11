@@ -9,9 +9,11 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
+@Transactional
 @Table(
         name = "pet_abilities",
         uniqueConstraints = {
@@ -28,8 +30,7 @@ import java.time.Instant;
 public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

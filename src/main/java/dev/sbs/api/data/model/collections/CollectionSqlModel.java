@@ -9,15 +9,16 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
+@Transactional
 @Table(name = "collections")
 public class CollectionSqlModel implements CollectionModel, SqlModel {
 
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

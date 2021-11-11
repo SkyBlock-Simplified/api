@@ -11,10 +11,12 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Map;
 
 @Entity
+@Transactional
 @Table(
         name = "reforge_stats",
         uniqueConstraints = {

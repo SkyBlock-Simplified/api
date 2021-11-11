@@ -12,16 +12,17 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Map;
 
 @Entity
+@Transactional
 @Table(name = "accessories")
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

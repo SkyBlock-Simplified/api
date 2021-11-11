@@ -14,10 +14,8 @@ import java.time.Instant;
 @Table(name = "dungeon_classes")
 public class DungeonClassSqlModel implements DungeonClassModel, SqlModel {
 
-
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

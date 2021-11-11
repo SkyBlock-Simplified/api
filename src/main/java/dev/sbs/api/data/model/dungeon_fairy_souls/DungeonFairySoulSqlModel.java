@@ -14,7 +14,6 @@ import java.time.Instant;
 @Table(name = "dungeon_fairy_souls")
 public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel {
 
-
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

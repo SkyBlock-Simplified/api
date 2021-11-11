@@ -10,9 +10,11 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
+@Transactional
 @Table(
         name = "potion_group_items",
         uniqueConstraints = {

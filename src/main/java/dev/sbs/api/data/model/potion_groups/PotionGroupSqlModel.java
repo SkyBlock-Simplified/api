@@ -15,8 +15,7 @@ import java.time.Instant;
 public class PotionGroupSqlModel implements PotionGroupModel, SqlModel {
 
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

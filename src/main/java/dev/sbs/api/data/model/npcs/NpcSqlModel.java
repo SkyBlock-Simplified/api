@@ -10,9 +10,11 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
+@Transactional
 @Table(
         name = "npcs",
         uniqueConstraints = {
@@ -25,8 +27,7 @@ import java.time.Instant;
 public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
