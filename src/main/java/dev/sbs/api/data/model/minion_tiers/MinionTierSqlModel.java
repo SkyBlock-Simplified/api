@@ -17,21 +17,22 @@ import java.time.Instant;
 public class MinionTierSqlModel implements MinionTierModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "minion_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "tier", nullable = false, referencedColumnName = "item_id", unique = true)
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tier", nullable = false, unique = true)
     private ItemSqlModel item;
 
     @Getter

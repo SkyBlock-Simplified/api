@@ -24,8 +24,8 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "minion_tier", nullable = false, referencedColumnName = "tier")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "minion_tier", nullable = false)
     private MinionTierSqlModel minionTier;
 
     @Getter
@@ -35,8 +35,8 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_cost", referencedColumnName = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_cost")
     private CollectionItemSqlModel itemCost;
 
     @Getter

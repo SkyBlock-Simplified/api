@@ -15,13 +15,14 @@ import java.time.Instant;
 public class LocationSqlModel implements LocationModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 

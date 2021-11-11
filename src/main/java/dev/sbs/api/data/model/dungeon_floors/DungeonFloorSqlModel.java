@@ -30,8 +30,8 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "dungeon_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dungeon_key", nullable = false)
     private DungeonSqlModel dungeon;
 
     @Getter
@@ -41,14 +41,14 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "floor_size_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_size_key", nullable = false)
     private DungeonFloorSizeSqlModel floorSize;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "floor_boss_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_boss_key", nullable = false)
     private DungeonBossSqlModel floorBoss;
 
     @Getter

@@ -16,13 +16,14 @@ import java.time.Instant;
 public class SkillSqlModel implements SkillModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
@@ -44,7 +45,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
+    @JoinColumn(name = "item_id")
     private ItemSqlModel item;
 
     @Getter

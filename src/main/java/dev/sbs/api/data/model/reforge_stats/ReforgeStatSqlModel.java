@@ -34,14 +34,14 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "key", nullable = false)
     private ReforgeSqlModel reforge;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "rarity_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rarity_key", nullable = false)
     private RaritySqlModel rarity;
 
     @Getter

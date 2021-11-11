@@ -18,13 +18,14 @@ import java.time.Instant;
 public class PetSqlModel implements PetModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
@@ -35,20 +36,20 @@ public class PetSqlModel implements PetModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "lowest_rarity_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lowest_rarity_key", nullable = false)
     private RaritySqlModel lowestRarity;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_key", nullable = false)
     private SkillSqlModel skill;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "pet_type_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_type_key", nullable = false)
     private PetTypeSqlModel petType;
 
     @Getter

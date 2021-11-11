@@ -25,8 +25,8 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "collection_item_key", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_item_id", nullable = false)
     private CollectionItemSqlModel collectionItem;
 
     @Getter

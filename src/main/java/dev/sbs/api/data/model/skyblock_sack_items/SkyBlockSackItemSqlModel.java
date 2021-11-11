@@ -32,14 +32,14 @@ public class SkyBlockSackItemSqlModel implements SkyBlockSackItemModel, SqlModel
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "sack_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sack_key", nullable = false)
     private SkyBlockSackSqlModel sack;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

@@ -17,13 +17,14 @@ import java.time.Instant;
 public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "level", nullable = false, unique = true)
     private int level;
 

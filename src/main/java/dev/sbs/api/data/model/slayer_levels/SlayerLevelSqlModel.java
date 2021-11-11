@@ -31,8 +31,8 @@ public class SlayerLevelSqlModel implements SlayerLevelModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "slayer_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "slayer_key", nullable = false)
     private SlayerSqlModel slayer;
 
     @Getter

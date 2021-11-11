@@ -25,8 +25,8 @@ import java.time.Instant;
 public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
@@ -47,6 +47,7 @@ public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127)
     private String key;
 
@@ -57,14 +58,14 @@ public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "location_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_key", nullable = false)
     private LocationSqlModel location;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "location_area_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_area_key", nullable = false)
     private LocationAreaSqlModel locationArea;
 
     @Getter

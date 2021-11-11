@@ -22,8 +22,8 @@ import java.util.Map;
 public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
@@ -54,12 +54,13 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "item_id", length = 127, unique = true)
     private String itemId;
 

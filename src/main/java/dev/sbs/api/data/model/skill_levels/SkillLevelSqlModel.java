@@ -33,8 +33,8 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_key", nullable = false)
     private SkillSqlModel skill;
 
     @Getter

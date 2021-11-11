@@ -670,7 +670,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
         private int z;
         private int tier; // Rarity (No Griffin is -1)
         @Getter private Type type; // Start/Empty, Mob, Treasure
-        @Getter private int chain; // Order
+        @Getter private int chain; // (Position - 1) / 4
 
         // Type == 0 + Chain == 0, Start
         // Type == 0 + Chain != 0, Empty
@@ -690,7 +690,7 @@ async def get_dungeon_weight(cata_xp, cata_level, class_xp):
             START,
             @SerializedName("1")
             MOB,
-            @SerializedName("2")
+            @SerializedName(value = "2", alternate = { "3" })
             TREASURE
 
         }

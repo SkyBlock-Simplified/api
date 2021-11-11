@@ -17,21 +17,22 @@ import java.time.Instant;
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "collection_key", nullable = false, referencedColumnName = "skill_key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_key", nullable = false)
     private CollectionSqlModel collection;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id", unique = true)
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false, unique = true)
     private ItemSqlModel item;
 
     @Getter

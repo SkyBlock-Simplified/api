@@ -38,14 +38,14 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "pet_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_key", nullable = false)
     private PetSqlModel pet;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stat_key", nullable = false)
     private StatSqlModel stat;
 
     @Getter

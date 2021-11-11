@@ -26,8 +26,8 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "ability_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ability_key", nullable = false)
     private PetAbilitySqlModel ability;
 
     @Getter
@@ -40,8 +40,8 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "stat_key", referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 
     @Getter

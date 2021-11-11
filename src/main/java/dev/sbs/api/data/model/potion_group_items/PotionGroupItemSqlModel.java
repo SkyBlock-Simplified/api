@@ -32,13 +32,13 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "potion_group_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "potion_group_key", nullable = false)
     private PotionGroupSqlModel potionGroup;
 
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "potion_key", nullable = false, referencedColumnName = "potion_key")
     private PotionTierSqlModel potion;
 

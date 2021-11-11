@@ -47,14 +47,14 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "location_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_key", nullable = false)
     private LocationSqlModel location;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "location_area_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_area_key", nullable = false)
     private LocationAreaSqlModel locationArea;
 
     @Getter

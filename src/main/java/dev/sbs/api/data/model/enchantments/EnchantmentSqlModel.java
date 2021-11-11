@@ -35,8 +35,8 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_type_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_type_key", nullable = false)
     private ReforgeTypeSqlModel itemType;
 
     @Getter

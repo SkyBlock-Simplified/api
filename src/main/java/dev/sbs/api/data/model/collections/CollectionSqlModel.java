@@ -16,15 +16,16 @@ import java.time.Instant;
 public class CollectionSqlModel implements CollectionModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key", unique = true)
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_key", nullable = false, unique = true)
     private SkillSqlModel skill;
 
     @Getter

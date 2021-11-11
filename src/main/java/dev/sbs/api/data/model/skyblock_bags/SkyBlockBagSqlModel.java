@@ -16,13 +16,14 @@ import java.time.Instant;
 public class SkyBlockBagSqlModel implements SkyBlockBagModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
@@ -33,8 +34,8 @@ public class SkyBlockBagSqlModel implements SkyBlockBagModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "collection_item_id", nullable = false, referencedColumnName = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_item_id", nullable = false)
     private CollectionItemSqlModel collectionItem;
 
     @Getter

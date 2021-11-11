@@ -16,13 +16,14 @@ import java.time.Instant;
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
@@ -33,8 +34,8 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "reforge_type_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reforge_type_key", nullable = false)
     private ReforgeTypeSqlModel type;
 
     @Getter

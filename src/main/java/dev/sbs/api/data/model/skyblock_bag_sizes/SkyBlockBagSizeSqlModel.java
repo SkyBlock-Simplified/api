@@ -32,8 +32,8 @@ public class SkyBlockBagSizeSqlModel implements SkyBlockBagSizeModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "bag_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bag_key", nullable = false)
     private SkyBlockBagSqlModel bag;
 
     @Getter

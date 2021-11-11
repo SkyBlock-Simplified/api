@@ -31,8 +31,8 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "potion_brew_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "potion_brew_key", nullable = false)
     private PotionBrewSqlModel potionBrew;
 
     @Getter

@@ -34,8 +34,8 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "potion_key", nullable = false, referencedColumnName = "key")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "potion_key", nullable = false)
     private PotionSqlModel potion;
 
     @Getter
@@ -45,8 +45,8 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "ingredient_item_id", nullable = false, referencedColumnName = "item_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_item_id", nullable = false)
     private ItemSqlModel ingredientItem;
 
     @Getter

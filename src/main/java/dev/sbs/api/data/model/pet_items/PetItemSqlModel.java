@@ -18,15 +18,16 @@ import java.util.Map;
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id", unique = true)
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false, unique = true)
     private ItemSqlModel item;
 
     @Getter
