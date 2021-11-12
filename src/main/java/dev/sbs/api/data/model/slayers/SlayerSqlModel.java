@@ -1,8 +1,10 @@
 package dev.sbs.api.data.model.slayers;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,6 +46,11 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Getter
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "slayer_key", nullable = false)
+    private transient ConcurrentList<SkillLevelSqlModel> levels;
 
     @Override
     @SuppressWarnings("all")

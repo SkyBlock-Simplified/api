@@ -66,14 +66,34 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccessorySqlModel)) return false;
+        AccessorySqlModel that = (AccessorySqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+                .append(this.getFamilyRank(), that.getFamilyRank())
+                .append(this.getItem(), that.getItem())
+                .append(this.getName(), that.getName())
+                .append(this.getRarity(), that.getRarity())
+                .append(this.getFamily(), that.getFamily())
+                .append(this.getEffects(), that.getEffects())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getItem())
+                .append(this.getName())
+                .append(this.getRarity())
+                .append(this.getFamily())
+                .append(this.getFamilyRank())
+                .append(this.getEffects())
+                .append(this.getUpdatedAt())
+                .build();
     }
-
+    
 }

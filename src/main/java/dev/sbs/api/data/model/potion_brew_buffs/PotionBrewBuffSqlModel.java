@@ -56,5 +56,32 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PotionBrewBuffSqlModel)) return false;
+        PotionBrewBuffSqlModel that = (PotionBrewBuffSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getBuffValue(), that.getBuffValue())
+                .append(this.isPercentage(), that.isPercentage())
+                .append(this.getPotionBrew(), that.getPotionBrew())
+                .append(this.getBuffKey(), that.getBuffKey())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getPotionBrew())
+                .append(this.getBuffKey())
+                .append(this.getBuffValue())
+                .append(this.isPercentage())
+                .append(this.getUpdatedAt())
+                .build();
+    }
 
 }

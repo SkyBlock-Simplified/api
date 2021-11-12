@@ -57,14 +57,17 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReforgeStatSqlModel)) return false;
+        ReforgeStatSqlModel that = (ReforgeStatSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getReforge(), that.getReforge()).append(this.getRarity(), that.getRarity()).append(this.getEffects(), that.getEffects()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder().append(this.getId()).append(this.getReforge()).append(this.getRarity()).append(this.getEffects()).append(this.getUpdatedAt()).build();
     }
 
 }
