@@ -9,6 +9,7 @@ import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.Session;
@@ -36,6 +37,8 @@ public abstract class SqlRepository<T extends SqlModel> {
     private final SqlSession sqlSession;
     private Boolean itemsInitialized = false;
     private ConcurrentList<T> items;
+    @Getter private long lastRefreshed;
+    @Getter private long refreshDuration;
 
     /**
      * Creates a new repository of type {@link T}.
@@ -71,12 +74,13 @@ public abstract class SqlRepository<T extends SqlModel> {
 
     public void refreshItems() {
         long start = System.currentTimeMillis();
-        System.out.println("Caching " + this.getClass().getSimpleName() + "...");
         this.items = this.findAll();
+        this.lastRefreshed = System.currentTimeMillis();
+        this.refreshDuration = this.lastRefreshed - start;
 
         synchronized (this.initLock) {
             this.itemsInitialized = true;
-            System.out.println("Finished Caching " + this.getClass().getSimpleName() + " in " + (System.currentTimeMillis() - start) + "ms");
+            System.out.println("Took " + (lastRefreshed - start) + "ms to load " + this.getClass().getSimpleName());
             this.initLock.notifyAll();
         }
     }
@@ -169,7 +173,7 @@ public abstract class SqlRepository<T extends SqlModel> {
     public <S> T findFirstOrNullCached(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
         return this.waitForInitLock(
                 () -> items.stream()
-                        .filter(it -> Objects.equals(function.apply(it), value))
+                        .filter(model -> Objects.equals(function.apply(model), value))
                         .findFirst()
                         .orElse(null)
         );

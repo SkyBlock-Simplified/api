@@ -35,6 +35,7 @@ public final class SqlSession {
             put("hibernate.use_sql_comments", true);
             put("hibernate.order_inserts", true);
             put("hibernate.dialect", config.getDatabaseDriver().getDialectClass());
+            put("hibernate.enable_lazy_load_no_trans", true);
             put("hikari.cachePrepStmts", true);
             put("hikari.prepStmtCacheSize", 256);
             put("hikari.prepStmtCacheSqlLimit", 2048);
