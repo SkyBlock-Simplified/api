@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "pets")
 public class PetSqlModel implements PetModel, SqlModel {
 

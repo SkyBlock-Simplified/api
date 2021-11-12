@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "minion_tier_upgrades")
 public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlModel {
 

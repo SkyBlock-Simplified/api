@@ -15,7 +15,6 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Transactional
 @Table(name = "potion_mixins")
 public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 

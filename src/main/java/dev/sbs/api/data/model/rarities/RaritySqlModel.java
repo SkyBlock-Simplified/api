@@ -52,8 +52,8 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Override
     @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
     @Override

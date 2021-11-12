@@ -16,7 +16,6 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Transactional
 @Table(name = "pet_ability_stats")
 public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 

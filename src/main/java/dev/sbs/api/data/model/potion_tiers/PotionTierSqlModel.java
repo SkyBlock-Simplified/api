@@ -16,7 +16,6 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Transactional
 @Table(
         name = "potion_tiers",
         uniqueConstraints = {

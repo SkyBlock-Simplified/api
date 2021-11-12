@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "collections")
 public class CollectionSqlModel implements CollectionModel, SqlModel {
 

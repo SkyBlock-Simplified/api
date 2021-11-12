@@ -14,7 +14,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "minion_tiers")
 public class MinionTierSqlModel implements MinionTierModel, SqlModel {
 
@@ -25,7 +24,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
@@ -47,14 +46,28 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MinionTierSqlModel)) return false;
+        MinionTierSqlModel that = (MinionTierSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getSpeed(), that.getSpeed())
+                .append(this.getMinion(), that.getMinion())
+                .append(this.getItem(), that.getItem())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getMinion())
+                .append(this.getItem())
+                .append(this.getSpeed())
+                .append(this.getUpdatedAt())
+                .build();
     }
-
 }

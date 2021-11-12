@@ -570,30 +570,6 @@ public class SkyBlockIsland {
                     .collect(Concurrent.toMap());
         }
 
-/*
-async def get_dungeon_weight(cata_xp, cata_level, class_xp):
-    dungeon_weight = {}
-    if cata_level != 50:
-        cata_level = cata_level + ((cata_xp - DUNGEON_XP_TABLE[cata_level]) / DUNGEON_INDIVIDUAL_XP_TABLE[cata_level + 1])
-
-    base = math.pow(cata_level, 4.5) * DUNGEON_WEIGHT_VALUES['catacomb']
-    if cata_xp <= DUNGEON_XP_TABLE[50]:
-        dungeon_weight['catacomb'] = {'weight': round(base), 'overflow': 0}
-    else:
-        dungeon_weight['catacomb'] = {'weight': round(base), 'overflow': round(math.pow((cata_xp - DUNGEON_XP_TABLE[50]) / ((4 * DUNGEON_XP_TABLE[50]) / base), 0.968))}
-
-    for key, value in class_xp.items():
-        class_level = await get_class_level(value)
-        if class_level != 50:
-            class_level += await get_progress(await get_class_level(value), value)
-        base = math.pow(class_level, 4.5) * DUNGEON_WEIGHT_VALUES[key]
-        if value <= DUNGEON_XP_TABLE[50]:
-            dungeon_weight[key] = {'weight': round(base), 'overflow': 0}
-        else:
-            dungeon_weight[key] = {'weight': round(base), 'overflow': round(math.pow((value - DUNGEON_XP_TABLE[50]) / (4 * DUNGEON_XP_TABLE[50] / base), 0.968))}
-    return dungeon_weight
-         */
-
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

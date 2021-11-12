@@ -14,7 +14,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(
         name = "potion_group_items",
         uniqueConstraints = {

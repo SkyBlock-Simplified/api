@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "reforges")
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 

@@ -13,13 +13,11 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 @Entity
-@Transactional
 @Table(name = "items")
 public class ItemSqlModel implements ItemModel, SqlModel {
 
@@ -55,7 +53,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
@@ -172,14 +170,74 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ItemSqlModel)) return false;
+        ItemSqlModel that = (ItemSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getDurability(), that.getDurability())
+                .append(this.getGeneratorTier(), that.getGeneratorTier())
+                .append(this.isGlowing(), that.isGlowing())
+                .append(this.getNpcSellPrice(), that.getNpcSellPrice())
+                .append(this.isUnstackable(), that.isUnstackable())
+                .append(this.isDungeonItem(), that.isDungeonItem())
+                .append(this.getGearScore(), that.getGearScore())
+                .append(this.getAbilityDamageScaling(), that.getAbilityDamageScaling())
+                .append(this.getName(), that.getName())
+                .append(this.getMaterial(), that.getMaterial())
+                .append(this.getSkin(), that.getSkin())
+                .append(this.getFurniture(), that.getFurniture())
+                .append(this.getRarity(), that.getRarity())
+                .append(this.getItemId(), that.getItemId())
+                .append(this.getGenerator(), that.getGenerator())
+                .append(this.getCategory(), that.getCategory())
+                .append(this.getStats(), that.getStats())
+                .append(this.getColor(), that.getColor())
+                .append(this.getTieredStats(), that.getTieredStats())
+                .append(this.getRequirements(), that.getRequirements())
+                .append(this.getCatacombsRequirements(), that.getCatacombsRequirements())
+                .append(this.getEssence(), that.getEssence())
+                .append(this.getDescription(), that.getDescription())
+                .append(this.getEnchantments(), that.getEnchantments())
+                .append(this.getCrystal(), that.getCrystal())
+                .append(this.getPrivateIsland(), that.getPrivateIsland())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(getId())
+                .append(getName())
+                .append(getMaterial())
+                .append(getDurability())
+                .append(getSkin())
+                .append(getFurniture())
+                .append(getRarity())
+                .append(getItemId())
+                .append(getGenerator())
+                .append(getGeneratorTier())
+                .append(isGlowing())
+                .append(getCategory())
+                .append(getStats())
+                .append(getNpcSellPrice())
+                .append(isUnstackable())
+                .append(isDungeonItem())
+                .append(getColor())
+                .append(getTieredStats())
+                .append(getGearScore())
+                .append(getRequirements())
+                .append(getCatacombsRequirements())
+                .append(getEssence())
+                .append(getDescription())
+                .append(getAbilityDamageScaling())
+                .append(getEnchantments())
+                .append(getCrystal())
+                .append(getPrivateIsland())
+                .append(getUpdatedAt())
+                .build();
     }
-
 }

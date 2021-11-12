@@ -17,7 +17,6 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Transactional
 @Table(name = "accessories")
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
 

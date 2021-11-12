@@ -15,7 +15,6 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Transactional
 @Table(name = "pet_items")
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 

@@ -15,7 +15,6 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Transactional
 @Table(
         name = "skill_levels",
         uniqueConstraints = {

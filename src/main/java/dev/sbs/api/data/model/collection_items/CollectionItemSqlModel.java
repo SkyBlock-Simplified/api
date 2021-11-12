@@ -14,7 +14,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "collection_items")
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 

@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "location_areas")
 public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
 

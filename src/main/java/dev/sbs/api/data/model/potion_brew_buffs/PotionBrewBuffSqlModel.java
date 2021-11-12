@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(
         name = "potion_brew_buffs",
         uniqueConstraints = {
@@ -57,15 +56,5 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
 
 }

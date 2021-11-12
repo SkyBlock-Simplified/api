@@ -5,29 +5,15 @@ import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.dungeons.DungeonModel;
-import dev.sbs.api.data.model.items.ItemModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
-import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
-import dev.sbs.api.data.model.minions.MinionModel;
 import dev.sbs.api.data.model.skills.SkillModel;
-import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerModel;
-import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hibernate.Session;
-import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
-import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,15 +47,37 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            try {
-                Session session = SimplifiedApi.getSqlSession().openSession();
-                MinionTierUpgradeSqlModel testMTU = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
-                        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_1");
-                MinionTierModel mtm = testMTU.getMinionTier();
-                ItemModel ic = testMTU.getItemCost();
+            /*try {
+                //MinionTierSqlModel testMT = SimplifiedApi.getSqlRepository(MinionTierSqlRepository.class).findFirstOrNullCached(
+                //        FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId), "WHEAT_GENERATOR_4");
+
+                //MinionTierUpgradeSqlModel testMTU1 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                //        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_1");
+
+                //MinionTierUpgradeSqlModel testMTU2 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                //        FilterFunction.combine(MinionTierUpgradeModel::getItemCost, ItemModel::getItemId), "STRING");
+
+                //ItemModel im = testMT.getItem();
+                //String a = im.getItemId();
+
+                //MinionTierUpgradeSqlModel testMTU3 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                //        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, MinionTierModel::getItem), testMT.getItem());
+
+                System.out.println("look for wheat 4");
+                MinionTierUpgradeSqlModel testMTU4 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_4");
+                System.out.println("look for wheat 5");
+                MinionTierUpgradeSqlModel testMTU5 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_8");
+
+                //MinionTierModel mtm = testMTU.getMinionTier();
+                //ItemModel ic = testMTU2.getItemCost();
+                //ItemModel ic2 = testMT.getItem();
 
                 String testing = ""; // This waits until the 4th last model to load, for testing purposes
-            } catch (SqlException ignore) { }
+            } catch (SqlException sqlException) {
+                sqlException.printStackTrace();
+            }*/
 
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();

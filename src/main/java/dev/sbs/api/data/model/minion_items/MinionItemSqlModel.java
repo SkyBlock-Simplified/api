@@ -16,7 +16,6 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Transactional
 @Table(name = "minion_items")
 public class MinionItemSqlModel implements MinionItemModel, SqlModel {
 
