@@ -5,8 +5,15 @@ import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.dungeons.DungeonModel;
+import dev.sbs.api.data.model.items.ItemModel;
+import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
+import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
+import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
+import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
 import dev.sbs.api.data.model.skills.SkillModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
+import dev.sbs.api.data.sql.exception.SqlException;
+import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
@@ -47,7 +54,7 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            /*try {
+            try {
                 //MinionTierSqlModel testMT = SimplifiedApi.getSqlRepository(MinionTierSqlRepository.class).findFirstOrNullCached(
                 //        FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId), "WHEAT_GENERATOR_4");
 
@@ -71,13 +78,13 @@ public class SkyBlockIslandTest {
                         FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_8");
 
                 //MinionTierModel mtm = testMTU.getMinionTier();
-                //ItemModel ic = testMTU2.getItemCost();
+                ItemModel ic = testMTU4.getItemCost();
                 //ItemModel ic2 = testMT.getItem();
 
                 String testing = ""; // This waits until the 4th last model to load, for testing purposes
             } catch (SqlException sqlException) {
                 sqlException.printStackTrace();
-            }*/
+            }
 
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
