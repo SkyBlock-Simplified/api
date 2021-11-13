@@ -73,6 +73,7 @@ public abstract class SqlRepository<T extends SqlModel> {
     }
 
     public void refreshItems() {
+        //System.out.println("Loading " + this.getClass().getSimpleName());
         long start = System.currentTimeMillis();
         this.items = this.findAll();
         this.lastRefreshed = System.currentTimeMillis();
@@ -80,7 +81,7 @@ public abstract class SqlRepository<T extends SqlModel> {
 
         synchronized (this.initLock) {
             this.itemsInitialized = true;
-            System.out.println("Took " + (lastRefreshed - start) + "ms to load " + this.getClass().getSimpleName());
+            //System.out.println("Took " + (lastRefreshed - start) + "ms to load " + this.getClass().getSimpleName());
             this.initLock.notifyAll();
         }
     }
@@ -107,7 +108,12 @@ public abstract class SqlRepository<T extends SqlModel> {
         CriteriaQuery<T> cq = cb.createQuery(this.tClass);
         Root<T> rootEntry = cq.from(this.tClass);
         CriteriaQuery<T> all = cq.select(rootEntry);
-        return Concurrent.newList(session.createQuery(all).getResultList());
+
+        return Concurrent.newList(session
+                .createQuery(all)
+                .setCacheable(true)
+                .getResultList()
+        );
     }
 
     public ConcurrentList<T> findAllCached() throws SqlException {
@@ -168,6 +174,10 @@ public abstract class SqlRepository<T extends SqlModel> {
         return this.sqlSession.with(session -> {
             return findFirstOrNull(session, predicates);
         });
+    }
+
+    public Object findFirstOrNullTest() throws SqlException {
+        return null;
     }
 
     public <S> T findFirstOrNullCached(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
