@@ -2,16 +2,13 @@ package dev.sbs.api.data.model.skills;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.items.ItemSqlModel;
-import dev.sbs.api.data.model.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity

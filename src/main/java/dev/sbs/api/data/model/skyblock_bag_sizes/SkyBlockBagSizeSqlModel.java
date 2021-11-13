@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.skyblock_bag_sizes;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.collection_items.CollectionItemSqlModel;
 import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -10,7 +9,6 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity

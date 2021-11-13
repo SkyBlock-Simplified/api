@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.minion_tier_upgrades;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.collection_items.CollectionItemSqlModel;
 import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.minion_tiers.MinionTierSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -11,7 +10,6 @@ import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity

@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.skyblock_sacks;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.slayers.SlayerSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
