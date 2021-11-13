@@ -2,13 +2,19 @@ package dev.sbs.api.data.sql;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.yaml.YamlConfig;
+import dev.sbs.api.util.concurrent.Concurrent;
+import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.cache.expiry.Duration;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 public abstract class SqlConfig extends YamlConfig {
 
@@ -44,12 +50,31 @@ public abstract class SqlConfig extends YamlConfig {
     @Setter
     protected boolean databaseCaching = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_CACHING", "true"));
 
+    private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseEntityTTL = Concurrent.newMap();
+
+    @Getter
+    @Setter
+    protected CacheExpiry databaseUpdateTimestampsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_TIMESTAMPS_TTL", "60"))));
+
+    @Getter
+    @Setter
+    protected CacheExpiry databaseQueryResultsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_QUERIES_TTL", "60"))));
+
     @Getter @Setter
     protected SqlDriver databaseDriver = SqlDriver.MariaDB;
 
     public SqlConfig(File configDir, String fileName, String... header) {
         super(configDir, fileName, header);
         this.setLoggingLevel(Level.WARN);
+    }
+
+    Class<? extends SqlModel> addEntityTTL(Class<? extends SqlModel> entity, CacheExpiry cacheExpiry) {
+        this.databaseEntityTTL.put(entity, cacheExpiry);
+        return entity;
+    }
+
+    public ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> getDatabaseEntityTTL() {
+        return Concurrent.newUnmodifiableMap(this.databaseEntityTTL);
     }
 
     public final void setLoggingLevel(Level level) {
@@ -61,6 +86,27 @@ public abstract class SqlConfig extends YamlConfig {
         ehcacheLogger.setLevel(level);
         hikariLogger.setLevel(level);
         jbossLogger.setLevel(level);
+    }
+
+    @AllArgsConstructor
+    public static final class CacheExpiry {
+
+        @Getter
+        @Setter
+        private Duration creation;
+
+        @Getter
+        @Setter
+        private Duration access = null;
+
+        @Getter
+        @Setter
+        private Duration update = Duration.ZERO;
+
+        public CacheExpiry(Duration creation) {
+            this.creation = creation;
+        }
+
     }
 
 }
