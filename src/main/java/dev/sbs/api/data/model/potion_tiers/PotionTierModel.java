@@ -26,7 +26,7 @@ public interface PotionTierModel extends EffectsModel {
 
     ItemModel getIngredientItem();
 
-    ItemModel getBaseItem();
+    String getBaseItem();
 
     int getExperienceYield();
 

@@ -28,9 +28,6 @@ import java.util.Map;
                         columnList = "tier"
                 ),
                 @Index(
-                        columnList = "base_item_id"
-                ),
-                @Index(
                         columnList = "ingredient_item_id"
                 )
         }
@@ -63,9 +60,8 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "base_item_id")
-    private ItemSqlModel baseItem;
+    @Column(name = "base_item_id")
+    private String baseItem;
 
     @Getter
     @Setter
