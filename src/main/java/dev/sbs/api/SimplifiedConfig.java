@@ -14,10 +14,6 @@ import java.util.UUID;
 
 public class SimplifiedConfig extends SqlConfig {
 
-    public SimplifiedConfig(File configDir, String fileName, String... header) {
-        super(configDir, fileName, header);
-    }
-
     @Getter @Setter
     private String githubUser = ResourceUtil.getEnvironmentVariable("GITHUB_USER");
 
@@ -25,6 +21,10 @@ public class SimplifiedConfig extends SqlConfig {
     private String githubToken = ResourceUtil.getEnvironmentVariable("GITHUB_TOKEN");
 
     private String hypixelApiKey = ResourceUtil.getEnvironmentVariable("HYPIXEL_API_KEY");
+
+    public SimplifiedConfig(File configDir, String fileName, String... header) {
+        super(configDir, fileName, header);
+    }
 
     public Optional<UUID> getHypixelApiKey() {
         return StringUtil.isNotEmpty(this.hypixelApiKey) ? Optional.of(StringUtil.toUUID(this.hypixelApiKey)) : Optional.empty();
