@@ -62,6 +62,11 @@ import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skyblock_bag_sizes.SkyBlockBagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlRepository;
+import dev.sbs.api.data.model.skyblock_craftingtable_recipe_slots.SkyBlockCTRecipeSlotSqlRepository;
+import dev.sbs.api.data.model.skyblock_craftingtable_recipes.SkyBlockCTRecipeSqlRepository;
+import dev.sbs.api.data.model.skyblock_craftingtable_slots.SkyBlockCTSlotSqlModel;
+import dev.sbs.api.data.model.skyblock_craftingtable_slots.SkyBlockCTSlotSqlRepository;
+import dev.sbs.api.data.model.skyblock_menus.SkyBlockMenuSqlRepository;
 import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemSqlRepository;
 import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackSqlRepository;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
@@ -224,6 +229,9 @@ public class SimplifiedApi {
                 MinionUniqueSqlRepository.class,
                 LocationRemoteSqlRepository.class,
                 SkyBlockSackSqlRepository.class,
+                SkyBlockMenuSqlRepository.class,
+                SkyBlockCTSlotSqlRepository.class,
+                SkyBlockCTRecipeSqlRepository.class,
 
                 // Requires Above
                 ItemSqlRepository.class,
@@ -238,6 +246,7 @@ public class SimplifiedApi {
                 PotionMixinSqlRepository.class,
                 DungeonFloorSqlRepository.class,
                 DungeonLevelSqlRepository.class,
+                SkyBlockCTRecipeSlotSqlRepository.class,
 
                 // Requires Above
                 CollectionSqlRepository.class,
