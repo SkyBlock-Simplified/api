@@ -27,6 +27,7 @@ import dev.sbs.api.data.model.dungeon_floor_sizes.DungeonFloorSizeSqlRepository;
 import dev.sbs.api.data.model.dungeon_floors.DungeonFloorSqlRepository;
 import dev.sbs.api.data.model.dungeon_levels.DungeonLevelSqlRepository;
 import dev.sbs.api.data.model.dungeons.DungeonSqlRepository;
+import dev.sbs.api.data.model.enchantments.EnchantmentSqlRepository;
 import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
@@ -64,7 +65,6 @@ import dev.sbs.api.data.model.skyblock_bag_sizes.SkyBlockBagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlRepository;
 import dev.sbs.api.data.model.skyblock_craftingtable_recipe_slots.SkyBlockCTRecipeSlotSqlRepository;
 import dev.sbs.api.data.model.skyblock_craftingtable_recipes.SkyBlockCTRecipeSqlRepository;
-import dev.sbs.api.data.model.skyblock_craftingtable_slots.SkyBlockCTSlotSqlModel;
 import dev.sbs.api.data.model.skyblock_craftingtable_slots.SkyBlockCTSlotSqlRepository;
 import dev.sbs.api.data.model.skyblock_menus.SkyBlockMenuSqlRepository;
 import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemSqlRepository;
@@ -247,6 +247,7 @@ public class SimplifiedApi {
                 DungeonFloorSqlRepository.class,
                 DungeonLevelSqlRepository.class,
                 SkyBlockCTRecipeSlotSqlRepository.class,
+                EnchantmentSqlRepository.class,
 
                 // Requires Above
                 CollectionSqlRepository.class,

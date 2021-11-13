@@ -14,17 +14,24 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "enchantments")
+@Table(
+        name = "enchantments",
+        indexes = {
+                @Index(
+                        columnList = "reforge_type_key"
+                )
+        }
+)
 public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127)
     private String key;
 
@@ -36,13 +43,13 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_type_key", nullable = false)
+    @JoinColumn(name = "reforge_type_key", nullable = false)
     private ReforgeTypeSqlModel itemType;
 
     @Getter
     @Setter
-    @Column(name = "item_level", nullable = false)
-    private int itemLevel;
+    @Column(name = "level_required", nullable = false)
+    private int requiredLevel;
 
     @Getter
     @Setter
