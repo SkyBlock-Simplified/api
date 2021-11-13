@@ -39,7 +39,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getDialectClass() {
-            return "org.hibernate.dialect.MariaDB103Dialect";
+            return "org.hibernate.dialect.MariaDBDialect";
         }
 
         @Override
@@ -63,7 +63,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getDialectClass() {
-            return "org.hibernate.dialect.MySQL8Dialect";
+            return "org.hibernate.dialect.MySQLDialect";
         }
 
         @Override
@@ -87,7 +87,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getDialectClass() {
-            return "org.hibernate.dialect.Oracle12cDialect";
+            return "org.hibernate.dialect.OracleDialect";
         }
 
         @Override
@@ -111,7 +111,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getDialectClass() {
-            return "org.hibernate.dialect.PostgreSQL10Dialect";
+            return "org.hibernate.dialect.PostgreSQLDialect";
         }
 
         @Override
@@ -135,7 +135,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getDialectClass() {
-            return "org.hibernate.dialect.SQLServer2012Dialect";
+            return "org.hibernate.dialect.SQLServerDialect";
         }
 
         @Override
