@@ -1,6 +1,7 @@
 package dev.sbs.api.data.sql;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.function.VoidSessionFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
@@ -22,6 +23,7 @@ import javax.cache.expiry.ExpiryPolicy;
 import javax.cache.spi.CachingProvider;
 import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
+import java.util.function.Function;
 
 public final class SqlSession {
 
@@ -103,7 +105,7 @@ public final class SqlSession {
 
             @Override
             public Duration getExpiryForUpdate() {
-                return null;
+                return Duration.ZERO;
             }
 
         });
@@ -123,23 +125,31 @@ public final class SqlSession {
         return this.sessionFactory.openSession();
     }
 
-    public void transaction(VoidSessionFunction function) {
-        Session session = this.openSession();
-        Transaction transaction = session.beginTransaction();
-        function.accept(session);
-        session.flush();
-        transaction.commit();
-        session.close();
+    public void transaction(VoidSessionFunction function) throws SqlException {
+        try {
+            Session session = this.openSession();
+            Transaction transaction = session.beginTransaction();
+            function.accept(session);
+            session.flush();
+            transaction.commit();
+            session.close();
+        } catch (Exception exception) {
+            throw new SqlException(exception);
+        }
     }
 
-    public <S> S transaction(ReturnSessionFunction<S> function) {
-        Session session = this.openSession();
-        Transaction transaction = session.beginTransaction();
-        S result = function.apply(session);
-        session.flush();
-        transaction.commit();
-        session.close();
-        return result;
+    public <S> S transaction(ReturnSessionFunction<S> function) throws SqlException {
+        try {
+            Session session = this.openSession();
+            Transaction transaction = session.beginTransaction();
+            S result = function.apply(session);
+            session.flush();
+            transaction.commit();
+            session.close();
+            return result;
+        } catch (Exception exception) {
+            throw new SqlException(exception);
+        }
     }
 
     public void shutdown() {
@@ -149,17 +159,36 @@ public final class SqlSession {
             this.sessionFactory.close();
     }
 
-    public void with(VoidSessionFunction function) {
-        Session session = this.openSession();
-        function.accept(session);
-        session.close();
+    public void with(VoidSessionFunction function) throws SqlException {
+        try {
+            Session session = this.openSession();
+            function.accept(session);
+            session.close();
+        } catch (Exception exception) {
+            throw new SqlException(exception);
+        }
     }
 
-    public <S> S with(ReturnSessionFunction<S> function) {
-        Session session = this.openSession();
-        S result = function.apply(session);
-        session.close();
-        return result;
+    public <R> R with(Function<Session, R> function) throws SqlException {
+        try {
+            Session session = this.openSession();
+            R result = function.apply(session);
+            session.close();
+            return result;
+        } catch (Exception exception) {
+            throw new SqlException(exception);
+        }
+    }
+
+    public <S> S with(ReturnSessionFunction<S> function) throws SqlException {
+        try {
+            Session session = this.openSession();
+            S result = function.apply(session);
+            session.close();
+            return result;
+        } catch (Exception exception) {
+            throw new SqlException(exception);
+        }
     }
 
 }
