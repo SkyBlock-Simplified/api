@@ -23,8 +23,10 @@ import javax.cache.expiry.ExpiryPolicy;
 import javax.cache.spi.CachingProvider;
 import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+@SuppressWarnings("unchecked")
 public final class SqlSession {
 
     private final StandardServiceRegistry serviceRegistry;
@@ -69,60 +71,101 @@ public final class SqlSession {
         registryBuilder.applySettings(properties);
         this.serviceRegistry = registryBuilder.build();
 
-        // Add SqlModel classes to Registry
+        // Register SqlModel Classes
         MetadataSources sources = new MetadataSources(this.serviceRegistry);
         this.repositories.stream()
                 .map(Class::getGenericSuperclass)
                 .map(ParameterizedType.class::cast)
                 .map(ParameterizedType::getActualTypeArguments)
                 .map(index -> index[0])
-                .map(Class.class::cast)
+                .map(tClass -> (Class<SqlModel>)tClass)
+                .map(tClass -> {
+                    SqlConfig.CacheExpiry cacheExpiry;
+
+                    // Load Custom Cache Expiry
+                    if (tClass.isAnnotationPresent(SqlCacheExpiry.class)) {
+                        SqlCacheExpiry sqlCacheExpiry = tClass.getAnnotation(SqlCacheExpiry.class);
+
+                        cacheExpiry = new SqlConfig.CacheExpiry(
+                                new Duration(TimeUnit.SECONDS, sqlCacheExpiry.creation()),
+                                new Duration(TimeUnit.SECONDS, sqlCacheExpiry.access()),
+                                new Duration(TimeUnit.SECONDS, sqlCacheExpiry.update())
+                        );
+                    } else
+                        cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
+
+                    return config.addEntityTTL(tClass, cacheExpiry);
+                })
                 .map(this::buildCacheConfiguration)
                 .forEach(sources::addAnnotatedClass);
 
-        // Initialize Default Caches
-        this.buildCacheConfiguration("default-update-timestamps-region");
-        this.buildCacheConfiguration("default-query-results-region");
+        // Build Default Caches
+        this.buildCacheConfiguration("default-update-timestamps-region", SqlConfig::getDatabaseUpdateTimestampsTTL);
+        this.buildCacheConfiguration("default-query-results-region", SqlConfig::getDatabaseQueryResultsTTL);
 
         // Build Session Factory
         Metadata metadata = sources.getMetadataBuilder().build();
         this.sessionFactory = metadata.buildSessionFactory();
     }
 
-    private void buildCacheConfiguration(String className) {
+    private void buildCacheConfiguration(String cacheName, Function<SqlConfig, SqlConfig.CacheExpiry> function) {
         MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
         defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
 
             @Override
             public Duration getExpiryForCreation() {
-                return Duration.ONE_MINUTE; // TODO: Custom Cache Expiration
+                return function.apply(getConfig()).getCreation();
             }
 
             @Override
             public Duration getExpiryForAccess() {
-                return null;
+                return function.apply(getConfig()).getAccess();
             }
 
             @Override
             public Duration getExpiryForUpdate() {
-                return Duration.ZERO;
+                return function.apply(getConfig()).getUpdate();
             }
 
         });
 
-        CachingProvider cachingProvider = Caching.getCachingProvider();
-        EhcacheCachingProvider ehcacheProvider = (EhcacheCachingProvider) cachingProvider;
-        CacheManager cacheManager = ehcacheProvider.getCacheManager();
-        cacheManager.createCache(className, defaultConfiguration);
+        this.setCacheConfiguration(cacheName, defaultConfiguration);
     }
 
-    private Class<?> buildCacheConfiguration(Class<?> tClass) {
-        this.buildCacheConfiguration(tClass.getName());
+    private Class<?> buildCacheConfiguration(Class<? extends SqlModel> tClass) {
+        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
+        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
+
+            @Override
+            public Duration getExpiryForCreation() {
+                return getConfig().getDatabaseEntityTTL().get(tClass).getCreation();
+            }
+
+            @Override
+            public Duration getExpiryForAccess() {
+                return getConfig().getDatabaseEntityTTL().get(tClass).getAccess();
+            }
+
+            @Override
+            public Duration getExpiryForUpdate() {
+                return getConfig().getDatabaseEntityTTL().get(tClass).getUpdate();
+            }
+
+        });
+
+        this.setCacheConfiguration(tClass.getName(), defaultConfiguration);
         return tClass;
     }
 
     public Session openSession() {
         return this.sessionFactory.openSession();
+    }
+
+    private void setCacheConfiguration(String cacheName, MutableConfiguration<Long, String> defaultConfiguration) {
+        CachingProvider cachingProvider = Caching.getCachingProvider();
+        EhcacheCachingProvider ehcacheProvider = (EhcacheCachingProvider) cachingProvider;
+        CacheManager cacheManager = ehcacheProvider.getCacheManager();
+        cacheManager.createCache(cacheName, defaultConfiguration);
     }
 
     public void transaction(VoidSessionFunction function) throws SqlException {
