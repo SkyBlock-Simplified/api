@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -23,6 +25,7 @@ import java.util.List;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlModel {
 
     @Getter
@@ -33,7 +36,7 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "collection_item_id", nullable = false)
     private CollectionItemSqlModel collectionItem;
 

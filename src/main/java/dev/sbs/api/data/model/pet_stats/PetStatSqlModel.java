@@ -8,15 +8,15 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Transactional
 @Table(
         name = "pet_stats",
         indexes = {
@@ -36,6 +36,7 @@ import java.util.List;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter
@@ -46,13 +47,13 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "pet_key", nullable = false)
     private PetSqlModel pet;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 

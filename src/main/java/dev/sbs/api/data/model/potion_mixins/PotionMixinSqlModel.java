@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -22,6 +24,7 @@ import java.util.Map;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 
     @Getter
@@ -42,7 +45,7 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "slayer_key", nullable = false)
     private SlayerSqlModel slayerRequirement;
 

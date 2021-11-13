@@ -3,11 +3,13 @@ package dev.sbs.api.data.model.potion_tiers;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.potions.PotionSqlModel;
-import dev.sbs.api.data.sql.converter.DoubleMapConverter;
+import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -33,6 +35,7 @@ import java.util.Map;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
@@ -43,7 +46,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "potion_key", nullable = false)
     private PotionSqlModel potion;
 
@@ -54,13 +57,13 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ingredient_item_id")
     private ItemSqlModel ingredientItem;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "base_item_id")
     private ItemSqlModel baseItem;
 
@@ -77,14 +80,14 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = DoubleMapConverter.class)
-    private Map<String, Double> effects;
+    @Convert(converter = ObjectMapConverter.class)
+    private Map<String, Object> effects;
 
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
-    @Convert(converter = DoubleMapConverter.class)
-    private Map<String, Double> buffEffects;
+    @Convert(converter = ObjectMapConverter.class)
+    private Map<String, Object> buffEffects;
 
     @Getter
     @UpdateTimestamp

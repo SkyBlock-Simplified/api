@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(
         name = "items",
         indexes = {
@@ -33,6 +31,7 @@ import java.util.Map;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter

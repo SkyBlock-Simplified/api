@@ -7,9 +7,19 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
@@ -26,6 +36,7 @@ import java.time.Instant;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkyBlockCTRecipeSlotSqlModel implements SkyBlockCTRecipeSlotModel, SqlModel {
 
     @Getter
@@ -36,13 +47,13 @@ public class SkyBlockCTRecipeSlotSqlModel implements SkyBlockCTRecipeSlotModel, 
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "recipe_key", nullable = false)
     private SkyBlockCTRecipeSqlModel recipe;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "slot_key", nullable = false)
     private SkyBlockCTSlotSqlModel slot;
 

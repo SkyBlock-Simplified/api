@@ -7,9 +7,19 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
@@ -17,6 +27,7 @@ import java.util.Map;
 @Table(
         name = "pet_items"
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Getter
@@ -27,7 +38,7 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 

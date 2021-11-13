@@ -8,6 +8,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -26,6 +28,7 @@ import java.util.List;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
@@ -36,13 +39,13 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ability_key", nullable = false)
     private PetAbilitySqlModel ability;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 

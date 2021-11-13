@@ -9,6 +9,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -27,6 +29,7 @@ import java.util.Map;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
@@ -37,7 +40,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
@@ -48,13 +51,13 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "rarity_key", nullable = false)
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "family_key")
     private AccessoryFamilySqlModel family;
 

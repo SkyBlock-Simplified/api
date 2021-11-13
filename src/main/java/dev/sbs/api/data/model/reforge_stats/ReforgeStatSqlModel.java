@@ -3,11 +3,13 @@ package dev.sbs.api.data.model.reforge_stats;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.rarities.RaritySqlModel;
 import dev.sbs.api.data.model.reforges.ReforgeSqlModel;
-import dev.sbs.api.data.sql.converter.DoubleMapConverter;
+import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -24,6 +26,7 @@ import java.util.Map;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
     @Getter
@@ -34,21 +37,21 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "key", nullable = false)
     private ReforgeSqlModel reforge;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
     @Column(name = "effects")
-    @Convert(converter = DoubleMapConverter.class)
-    private Map<String, Double> effects;
+    @Convert(converter = ObjectMapConverter.class)
+    private Map<String, Object> effects;
 
     @Getter
     @UpdateTimestamp

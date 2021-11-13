@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -22,6 +24,7 @@ import java.util.Map;
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Getter
@@ -42,13 +45,13 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "reforge_type_key", nullable = false)
     private ReforgeTypeSqlModel itemType;
 
     @Getter
     @Setter
-    @Column(name = "level_required", nullable = false)
+    @Column(name = "required_level", nullable = false)
     private int requiredLevel;
 
     @Getter

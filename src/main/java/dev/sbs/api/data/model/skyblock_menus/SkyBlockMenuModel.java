@@ -8,8 +8,8 @@ public interface SkyBlockMenuModel extends Model {
 
     String getName();
 
-    boolean getHasCommand();
+    Boolean getHasCommand();
 
-    boolean getHasSubMenu();
+    Boolean getHasSubMenu();
 
 }
