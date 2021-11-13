@@ -10,8 +10,4 @@ public class RaritySqlRepository extends SqlRepository<RaritySqlModel> {
         super(sqlSession);
     }
 
-    public RaritySqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

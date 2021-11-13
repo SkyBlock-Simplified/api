@@ -10,8 +10,4 @@ public class PetAbilityStatSqlRepository extends SqlRepository<PetAbilityStatSql
         super(sqlSession);
     }
 
-    public PetAbilityStatSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

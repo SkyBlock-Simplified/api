@@ -10,8 +10,4 @@ public class PetTypeSqlRepository extends SqlRepository<PetTypeSqlModel> {
         super(sqlSession);
     }
 
-    public PetTypeSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

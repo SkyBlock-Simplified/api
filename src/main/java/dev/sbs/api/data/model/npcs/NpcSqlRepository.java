@@ -10,8 +10,4 @@ public class NpcSqlRepository extends SqlRepository<NpcSqlModel> {
         super(sqlSession);
     }
 
-    public NpcSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

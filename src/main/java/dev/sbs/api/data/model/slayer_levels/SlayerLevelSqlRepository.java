@@ -10,8 +10,4 @@ public class SlayerLevelSqlRepository extends SqlRepository<SlayerLevelSqlModel>
         super(sqlSession);
     }
 
-    public SlayerLevelSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

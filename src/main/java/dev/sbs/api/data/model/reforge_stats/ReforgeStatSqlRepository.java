@@ -10,8 +10,4 @@ public class ReforgeStatSqlRepository extends SqlRepository<ReforgeStatSqlModel>
         super(sqlSession);
     }
 
-    public ReforgeStatSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

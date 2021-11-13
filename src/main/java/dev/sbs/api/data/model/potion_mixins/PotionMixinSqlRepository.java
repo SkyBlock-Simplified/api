@@ -10,8 +10,4 @@ public class PotionMixinSqlRepository extends SqlRepository<PotionMixinSqlModel>
         super(sqlSession);
     }
 
-    public PotionMixinSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

@@ -10,8 +10,4 @@ public class PetScoreSqlRepository extends SqlRepository<PetScoreSqlModel> {
         super(sqlSession);
     }
 
-    public PetScoreSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

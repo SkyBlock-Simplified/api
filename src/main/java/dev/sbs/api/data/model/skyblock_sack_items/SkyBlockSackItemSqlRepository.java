@@ -10,8 +10,4 @@ public class SkyBlockSackItemSqlRepository extends SqlRepository<SkyBlockSackIte
         super(sqlSession);
     }
 
-    public SkyBlockSackItemSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

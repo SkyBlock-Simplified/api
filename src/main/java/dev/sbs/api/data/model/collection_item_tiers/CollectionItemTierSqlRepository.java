@@ -10,8 +10,4 @@ public class CollectionItemTierSqlRepository extends SqlRepository<CollectionIte
         super(sqlSession);
     }
 
-    public CollectionItemTierSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

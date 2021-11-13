@@ -10,8 +10,4 @@ public class DungeonFloorSqlRepository extends SqlRepository<DungeonFloorSqlMode
         super(sqlSession);
     }
 
-    public DungeonFloorSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

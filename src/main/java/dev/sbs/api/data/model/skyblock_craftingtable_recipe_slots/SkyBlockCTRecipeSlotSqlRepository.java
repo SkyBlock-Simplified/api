@@ -10,8 +10,4 @@ public class SkyBlockCTRecipeSlotSqlRepository extends SqlRepository<SkyBlockCTR
         super(sqlSession);
     }
 
-    public SkyBlockCTRecipeSlotSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

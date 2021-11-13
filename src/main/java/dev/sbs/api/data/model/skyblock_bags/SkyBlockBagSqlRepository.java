@@ -10,8 +10,4 @@ public class SkyBlockBagSqlRepository extends SqlRepository<SkyBlockBagSqlModel>
         super(sqlSession);
     }
 
-    public SkyBlockBagSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

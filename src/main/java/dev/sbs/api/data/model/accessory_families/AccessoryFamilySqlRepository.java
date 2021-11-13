@@ -10,8 +10,4 @@ public class AccessoryFamilySqlRepository extends SqlRepository<AccessoryFamilyS
         super(sqlSession);
     }
 
-    public AccessoryFamilySqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

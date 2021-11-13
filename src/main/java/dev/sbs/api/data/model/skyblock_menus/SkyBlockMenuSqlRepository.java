@@ -10,8 +10,4 @@ public class SkyBlockMenuSqlRepository extends SqlRepository<SkyBlockMenuSqlMode
         super(sqlSession);
     }
 
-    public SkyBlockMenuSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

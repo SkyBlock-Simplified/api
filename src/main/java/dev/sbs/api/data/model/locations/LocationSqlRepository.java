@@ -10,8 +10,4 @@ public class LocationSqlRepository extends SqlRepository<LocationSqlModel> {
         super(sqlSession);
     }
 
-    public LocationSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

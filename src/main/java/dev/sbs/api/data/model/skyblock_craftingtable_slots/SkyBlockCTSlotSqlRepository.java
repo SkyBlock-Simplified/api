@@ -10,8 +10,4 @@ public class SkyBlockCTSlotSqlRepository extends SqlRepository<SkyBlockCTSlotSql
         super(sqlSession);
     }
 
-    public SkyBlockCTSlotSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

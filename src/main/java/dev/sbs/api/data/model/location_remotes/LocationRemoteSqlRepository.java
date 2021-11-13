@@ -10,8 +10,4 @@ public class LocationRemoteSqlRepository extends SqlRepository<LocationRemoteSql
         super(sqlSession);
     }
 
-    public LocationRemoteSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }
