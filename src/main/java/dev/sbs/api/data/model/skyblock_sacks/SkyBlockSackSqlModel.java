@@ -12,18 +12,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "skyblock_sacks")
+@Table(
+        name = "skyblock_sacks"
+)
 public class SkyBlockSackSqlModel implements SkyBlockSackModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Id
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

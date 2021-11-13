@@ -14,12 +14,19 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "minion_tiers")
+@Table(
+        name = "minion_tiers",
+        indexes = {
+                @Index(
+                        columnList = "minion_key"
+                )
+        }
+)
 public class MinionTierSqlModel implements MinionTierModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
@@ -32,7 +39,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Setter
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tier", nullable = false, unique = true)
+    @JoinColumn(name = "tier", nullable = false)
     private ItemSqlModel item;
 
     @Getter
@@ -70,4 +77,5 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
                 .append(this.getUpdatedAt())
                 .build();
     }
+
 }

@@ -16,10 +16,16 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "npcs",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "npc_coordinates",
-                        columnNames = { "x", "y", "z", "key" }
+        indexes = {
+                @Index(
+                        columnList = "x, y, z, key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "location_key"
+                ),
+                @Index(
+                        columnList = "loccation_area_key"
                 )
         }
 )
@@ -27,22 +33,22 @@ public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "x", nullable = false)
+    @Column(name = "x")
     private double x;
 
     @Getter
     @Setter
-    @Column(name = "y", nullable = false)
+    @Column(name = "y")
     private double y;
 
     @Getter
     @Setter
-    @Column(name = "z", nullable = false)
+    @Column(name = "z")
     private double z;
 
     @Getter
@@ -59,13 +65,13 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_key", nullable = false)
+    @JoinColumn(name = "location_key")
     private LocationSqlModel location;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_area_key", nullable = false)
+    @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
     @Getter

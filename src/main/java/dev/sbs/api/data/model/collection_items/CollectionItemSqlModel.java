@@ -14,12 +14,19 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "collection_items")
+@Table(
+        name = "collection_items",
+        indexes = {
+                @Index(
+                        columnList = "collection_key"
+                )
+        }
+)
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
@@ -32,7 +39,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Setter
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

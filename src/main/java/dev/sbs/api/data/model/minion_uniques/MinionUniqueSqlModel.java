@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "minion_uniques")
+@Table(
+        name = "minion_uniques"
+)
 public class MinionUniqueSqlModel implements MinionUniqueModel, SqlModel {
 
     @Getter

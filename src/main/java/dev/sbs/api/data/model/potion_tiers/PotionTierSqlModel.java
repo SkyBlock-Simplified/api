@@ -3,6 +3,7 @@ package dev.sbs.api.data.model.potion_tiers;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.potions.PotionSqlModel;
+import dev.sbs.api.data.sql.converter.DoubleMapConverter;
 import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -18,10 +19,19 @@ import java.util.Map;
 @Entity
 @Table(
         name = "potion_tiers",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "potion_tier",
-                        columnNames = { "potion_key", "tier" }
+        indexes = {
+                @Index(
+                        columnList = "potion_key, tier",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "tier"
+                ),
+                @Index(
+                        columnList = "base_item_id"
+                ),
+                @Index(
+                        columnList = "ingredient_item_id"
                 )
         }
 )
@@ -47,8 +57,14 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredient_item_id", nullable = false)
+    @JoinColumn(name = "ingredient_item_id")
     private ItemSqlModel ingredientItem;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "base_item_id")
+    private ItemSqlModel baseItem;
 
     @Getter
     @Setter
@@ -63,14 +79,14 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = ObjectMapConverter.class)
-    private Map<String, Object> effects;
+    @Convert(converter = DoubleMapConverter.class)
+    private Map<String, Double> effects;
 
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
-    @Convert(converter = ObjectMapConverter.class)
-    private Map<String, Object> buffEffects;
+    @Convert(converter = DoubleMapConverter.class)
+    private Map<String, Double> buffEffects;
 
     @Getter
     @UpdateTimestamp

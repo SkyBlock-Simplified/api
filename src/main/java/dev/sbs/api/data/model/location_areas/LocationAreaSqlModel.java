@@ -13,18 +13,25 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "location_areas")
+@Table(
+        name = "location_areas",
+        indexes = {
+                @Index(
+                        columnList = "location_key"
+                )
+        }
+)
 public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

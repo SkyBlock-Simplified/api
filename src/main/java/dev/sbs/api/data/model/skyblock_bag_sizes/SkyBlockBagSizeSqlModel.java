@@ -16,10 +16,10 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "skyblock_bag_sizes",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "bag_size",
-                        columnNames = { "bag_key", "collection_tier" }
+        indexes = {
+                @Index(
+                        columnList = "bag_key, collection_tier",
+                        unique = true
                 )
         }
 )

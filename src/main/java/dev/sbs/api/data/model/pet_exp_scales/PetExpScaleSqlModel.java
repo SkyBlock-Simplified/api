@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "pet_exp_scales")
+@Table(
+        name = "pet_exp_scales"
+)
 public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
 
     @Getter

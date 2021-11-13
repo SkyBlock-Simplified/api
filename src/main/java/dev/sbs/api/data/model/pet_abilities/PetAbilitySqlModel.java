@@ -15,14 +15,14 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "pet_abilities",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "pet_ability",
-                        columnNames = { "pet_key", "key" }
+        indexes = {
+                @Index(
+                        columnList = "pet_key, key",
+                        unique = true
                 ),
-                @UniqueConstraint(
-                        name = "pet_ability_ordinal",
-                        columnNames = { "pet_key", "ordinal" }
+                @Index(
+                        columnList = "pet_key, ordinal",
+                        unique = true
                 )
         }
 )
@@ -30,7 +30,7 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter

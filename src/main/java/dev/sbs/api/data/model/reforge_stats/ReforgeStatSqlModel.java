@@ -3,6 +3,7 @@ package dev.sbs.api.data.model.reforge_stats;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.rarities.RaritySqlModel;
 import dev.sbs.api.data.model.reforges.ReforgeSqlModel;
+import dev.sbs.api.data.sql.converter.DoubleMapConverter;
 import dev.sbs.api.data.sql.converter.ObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -18,10 +19,10 @@ import java.util.Map;
 @Entity
 @Table(
         name = "reforge_stats",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "reforge_rarity",
-                        columnNames = { "key", "rarity_key" }
+        indexes = {
+                @Index(
+                        columnList = "key, rarity_key",
+                        unique = true
                 )
         }
 )
@@ -42,14 +43,14 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rarity_key", nullable = false)
+    @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
     @Column(name = "effects")
-    @Convert(converter = ObjectMapConverter.class)
-    private Map<String, Object> effects;
+    @Convert(converter = DoubleMapConverter.class)
+    private Map<String, Double> effects;
 
     @Getter
     @UpdateTimestamp

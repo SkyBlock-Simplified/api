@@ -15,18 +15,25 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "potion_mixins")
+@Table(
+        name = "potion_mixins",
+        indexes = {
+                @Index(
+                        columnList = "slayer_key, slayer_level"
+                )
+        }
+)
 public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

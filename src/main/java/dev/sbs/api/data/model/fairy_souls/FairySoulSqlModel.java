@@ -16,10 +16,16 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "fairy_souls",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "fairy_soul_coordinates",
-                        columnNames = { "x", "y", "z", "location_key" }
+        indexes = {
+                @Index(
+                        columnList = "x, y, z, location_key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "location_key"
+                ),
+                @Index(
+                        columnList = "location_area_key"
                 )
         }
 )
@@ -49,13 +55,13 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_key", nullable = false)
+    @JoinColumn(name = "location_key")
     private LocationSqlModel location;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_area_key", nullable = false)
+    @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
     @Getter

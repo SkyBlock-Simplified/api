@@ -16,10 +16,13 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "skyblock_sack_items",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "sack_item",
-                        columnNames = { "sack_key", "item_id" }
+        indexes = {
+                @Index(
+                        columnList = "item_id, sack_key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "item_id"
                 )
         }
 )

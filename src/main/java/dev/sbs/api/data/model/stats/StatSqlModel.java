@@ -14,12 +14,19 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "stats")
+@Table(
+        name = "stats",
+        indexes = {
+                @Index(
+                        columnList = "format_key"
+                )
+        }
+)
 public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
@@ -35,7 +42,7 @@ public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "symbol_code", nullable = false, length = 4)
+    @Column(name = "symbol_code", length = 4)
     @Convert(converter = UnicodeConverter.class)
     private char symbol;
 

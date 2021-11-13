@@ -13,19 +13,21 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "collections")
+@Table(
+        name = "collections"
+)
 public class CollectionSqlModel implements CollectionModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "skill_key", nullable = false, unique = true)
+    @JoinColumn(name = "skill_key", nullable = false)
     private SkillSqlModel skill;
 
     @Getter

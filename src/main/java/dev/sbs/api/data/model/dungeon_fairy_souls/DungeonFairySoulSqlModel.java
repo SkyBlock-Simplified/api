@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "dungeon_fairy_souls")
+@Table(
+        name = "dungeon_fairy_souls"
+)
 public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel {
 
     @Getter

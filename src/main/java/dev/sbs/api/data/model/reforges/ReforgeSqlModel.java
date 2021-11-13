@@ -13,18 +13,20 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "reforges")
+@Table(
+        name = "reforges"
+)
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

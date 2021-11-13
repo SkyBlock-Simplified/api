@@ -15,7 +15,21 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "minion_tier_upgrades")
+@Table(
+        name = "minion_tier_upgrades",
+        indexes = {
+                @Index(
+                        columnList = "minion_tier, item_cost",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "minion_tier"
+                ),
+                @Index(
+                        columnList = "item_cost"
+                )
+        }
+)
 public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlModel {
 
     @Getter
@@ -52,14 +66,30 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MinionTierUpgradeSqlModel)) return false;
+        MinionTierUpgradeSqlModel that = (MinionTierUpgradeSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getCoinCost(), that.getCoinCost())
+                .append(this.getItemQuantity(), that.getItemQuantity())
+                .append(this.getMinionTier(), that.getMinionTier())
+                .append(this.getItemCost(), that.getItemCost())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder().append(this.getId())
+                .append(this.getMinionTier())
+                .append(this.getCoinCost())
+                .append(this.getItemCost())
+                .append(this.getItemQuantity())
+                .append(this.getUpdatedAt())
+                .build();
     }
-
+    
 }

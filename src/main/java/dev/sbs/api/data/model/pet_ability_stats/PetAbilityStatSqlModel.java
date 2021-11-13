@@ -16,7 +16,17 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "pet_ability_stats")
+@Table(
+        name = "pet_ability_stats",
+        indexes = {
+                @Index(
+                        columnList = "ability_key"
+                ),
+                @Index(
+                        columnList = "stat_key"
+                )
+        }
+)
 public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
@@ -33,17 +43,17 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "rarities")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stat_key")
+    private StatSqlModel stat;
+
+    @Getter
+    @Setter
+    @Column(name = "rarities", nullable = false)
     //@Convert(converter = RaritySqlModelListConverter.class)
     //private List<RaritySqlModel> rarities;
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> rarities;
-
-    @Getter
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stat_key")
-    private StatSqlModel stat;
 
     @Getter
     @Setter

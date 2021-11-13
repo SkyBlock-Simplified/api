@@ -19,14 +19,20 @@ import java.util.List;
 @Transactional
 @Table(
         name = "pet_stats",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "pet_stat",
-                        columnNames = { "pet_key", "stat_key" }
+        indexes = {
+                @Index(
+                        columnList = "pet_key, stat_key",
+                        unique = true
                 ),
-                @UniqueConstraint(
-                        name = "pet_stat_ordinal",
-                        columnNames = { "pet_key", "ordinal" }
+                @Index(
+                        columnList = "pet_key, ordinal",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "pet_key"
+                ),
+                @Index(
+                        columnList = "stat_key"
                 )
         }
 )
@@ -47,7 +53,7 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 
     @Getter

@@ -16,7 +16,20 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "minion_items")
+@Table(
+        name = "minion_items",
+        indexes = {
+                @Index(
+                        columnList = "minion_key"
+                ),
+                @Index(
+                        columnList = "collection_item_id"
+                ),
+                @Index(
+                        columnList = "item_id"
+                )
+        }
+)
 public class MinionItemSqlModel implements MinionItemModel, SqlModel {
 
     @Getter
@@ -28,7 +41,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "minion_key")
+    @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
     @Getter
@@ -40,7 +53,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

@@ -16,10 +16,13 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "potion_group_items",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "potion_group_key",
-                        columnNames = { "potion_group_key", "potion_key" }
+        indexes = {
+                @Index(
+                        columnList = "potion_key, potion_group_key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "potion_key, potion_tier"
                 )
         }
 )

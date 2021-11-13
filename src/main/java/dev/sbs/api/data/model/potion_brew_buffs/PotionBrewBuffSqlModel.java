@@ -15,10 +15,10 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "potion_brew_buffs",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "buff_key",
-                        columnNames = { "potion_brew_key", "buff_key" }
+        indexes = {
+                @Index(
+                        columnList = "potion_brew_key, buff_key",
+                        unique = true
                 )
         }
 )

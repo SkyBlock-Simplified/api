@@ -15,7 +15,15 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "collection_item_tiers")
+@Table(
+        name = "collection_item_tiers",
+        indexes = {
+                @Index(
+                        columnList = "collection_item_id, tier",
+                        unique = true
+                )
+        }
+)
 public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlModel {
 
     @Getter

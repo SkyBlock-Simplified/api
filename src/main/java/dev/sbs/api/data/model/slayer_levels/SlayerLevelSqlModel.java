@@ -15,10 +15,13 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "slayer_levels",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "slayer_level",
-                        columnNames = { "slayer_key", "level" }
+        indexes = {
+                @Index(
+                        columnList = "slayer_key, level",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "slayer_key"
                 )
         }
 )

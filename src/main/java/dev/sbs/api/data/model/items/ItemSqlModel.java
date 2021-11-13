@@ -10,6 +10,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -18,12 +20,24 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "items")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Table(
+        name = "items",
+        indexes = {
+                @Index(
+                        columnList = "generator"
+                ),
+                @Index(
+                        columnList = "rarity_key"
+                )
+        }
+)
 public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter

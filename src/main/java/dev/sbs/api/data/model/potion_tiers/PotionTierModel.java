@@ -26,6 +26,8 @@ public interface PotionTierModel extends EffectsModel {
 
     ItemModel getIngredientItem();
 
+    ItemModel getBaseItem();
+
     int getExperienceYield();
 
     double getSellPrice();

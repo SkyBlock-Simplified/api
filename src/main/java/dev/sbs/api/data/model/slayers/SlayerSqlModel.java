@@ -5,6 +5,7 @@ import dev.sbs.api.data.model.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.concurrent.ConcurrentList;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,18 +14,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "slayers")
+@Table(
+        name = "slayers"
+)
 public class SlayerSqlModel implements SlayerModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

@@ -11,18 +11,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "reforge_types")
+@Table(
+        name = "reforge_types"
+)
 public class ReforgeTypeSqlModel implements ReforgeTypeModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

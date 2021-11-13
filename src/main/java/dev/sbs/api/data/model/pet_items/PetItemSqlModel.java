@@ -15,19 +15,21 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "pet_items")
+@Table(
+        name = "pet_items"
+)
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

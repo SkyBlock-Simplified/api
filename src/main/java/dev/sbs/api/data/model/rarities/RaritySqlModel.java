@@ -11,18 +11,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "rarities")
+@Table(
+        name = "rarities"
+)
 public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -32,12 +34,12 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "ordinal")
+    @Column(name = "ordinal", nullable = false)
     private int ordinal;
 
     @Getter
     @Setter
-    @Column(name = "key_valid")
+    @Column(name = "key_valid", nullable = false)
     private boolean keyValid;
 
     @Getter

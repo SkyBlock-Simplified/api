@@ -13,18 +13,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "dungeon_levels")
+@Table(
+        name = "dungeon_levels"
+)
 public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "level", nullable = false, unique = true)
+    @Column(name = "level", nullable = false)
     private int level;
 
     @Getter

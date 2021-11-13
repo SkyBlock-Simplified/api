@@ -9,6 +9,7 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -17,19 +18,29 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "accessories")
+@Table(
+        name = "accessories",
+        indexes = {
+                @Index(
+                        columnList = "family_key"
+                ),
+                @Index(
+                        columnList = "rarity_key"
+                )
+        }
+)
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

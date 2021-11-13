@@ -15,18 +15,31 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "pets")
+@Table(
+        name = "pets",
+        indexes = {
+                @Index(
+                        columnList = "lowest_rarity_key"
+                ),
+                @Index(
+                        columnList = "skill_key"
+                ),
+                @Index(
+                        columnList = "pet_type_key"
+                )
+        }
+)
 public class PetSqlModel implements PetModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -37,19 +50,19 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lowest_rarity_key", nullable = false)
+    @JoinColumn(name = "lowest_rarity_key")
     private RaritySqlModel lowestRarity;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "skill_key", nullable = false)
+    @JoinColumn(name = "skill_key")
     private SkillSqlModel skill;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_type_key", nullable = false)
+    @JoinColumn(name = "pet_type_key")
     private PetTypeSqlModel petType;
 
     @Getter

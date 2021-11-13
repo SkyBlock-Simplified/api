@@ -15,18 +15,25 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "skills")
+@Table(
+        name = "skills",
+        indexes = {
+                @Index(
+                        columnList = "item_id"
+                )
+        }
+)
 public class SkillSqlModel implements SkillModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -70,10 +77,10 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Getter
+    /*@Getter
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "skill_key", nullable = false)
-    private transient ConcurrentList<SkillLevelSqlModel> levels;
+    private transient ConcurrentList<SkillLevelSqlModel> levels;*/
 
     @Override
     @SuppressWarnings("all")

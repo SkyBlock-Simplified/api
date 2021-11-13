@@ -11,7 +11,15 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "dungeons")
+@Table(
+        name = "dungeons",
+        indexes = {
+                @Index(
+                        columnList = "id",
+                        unique = true
+                )
+        }
+)
 public class DungeonSqlModel implements DungeonModel, SqlModel {
 
     @Getter
@@ -22,7 +30,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

@@ -11,18 +11,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "location_remotes")
+@Table(
+        name = "location_remotes"
+)
 public class LocationRemoteSqlModel implements LocationRemoteModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

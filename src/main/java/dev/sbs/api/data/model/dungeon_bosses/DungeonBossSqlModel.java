@@ -11,18 +11,20 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "dungeon_bosses")
+@Table(
+        name = "dungeon_bosses"
+)
 public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter

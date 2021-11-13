@@ -14,18 +14,28 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Entity
-@Table(name = "potion_brews")
+@Table(
+        name = "potion_brews",
+        indexes = {
+                @Index(
+                        columnList = "rarity_key"
+                ),
+                @Index(
+                        columnList = "source_npc_key"
+                )
+        }
+)
 public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -36,7 +46,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rarity_key", nullable = false)
+    @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
     @Getter
@@ -47,7 +57,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_npc_key", nullable = false)
+    @JoinColumn(name = "source_npc_key")
     private NpcSqlModel npc;
 
     @Getter

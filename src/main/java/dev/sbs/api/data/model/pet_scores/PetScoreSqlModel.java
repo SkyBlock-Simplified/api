@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "pet_scores")
+@Table(
+        name = "pet_scores"
+)
 public class PetScoreSqlModel implements PetScoreModel, SqlModel {
 
     @Getter

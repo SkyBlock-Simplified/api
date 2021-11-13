@@ -17,10 +17,10 @@ import java.util.List;
 @Entity
 @Table(
         name = "skill_levels",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "skill_level",
-                        columnNames = { "skill_key", "level" }
+        indexes = {
+                @Index(
+                        columnList = "skill_key, level",
+                        unique = true
                 )
         }
 )

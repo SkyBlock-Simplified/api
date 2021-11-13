@@ -17,8 +17,17 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "dungeon_floors",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "dungeon_floor", columnNames = { "dungeon_key", "floor" })
+        indexes = {
+                @Index(
+                        columnList = "dungeon_key, floor",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "floor_size_key"
+                ),
+                @Index(
+                        columnList = "floor_boss_key"
+                )
         }
 )
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
@@ -43,13 +52,13 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_size_key", nullable = false)
+    @JoinColumn(name = "floor_size_key")
     private DungeonFloorSizeSqlModel floorSize;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_boss_key", nullable = false)
+    @JoinColumn(name = "floor_boss_key")
     private DungeonBossSqlModel floorBoss;
 
     @Getter
