@@ -1,6 +1,12 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 import dev.sbs.api.SimplifiedApi;
@@ -19,26 +25,28 @@ import dev.sbs.api.data.model.items.ItemSqlRepository;
 import dev.sbs.api.data.model.minions.MinionModel;
 import dev.sbs.api.data.model.minions.MinionSqlRepository;
 import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleModel;
+import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
 import dev.sbs.api.data.model.pets.PetSqlModel;
 import dev.sbs.api.data.model.pets.PetSqlRepository;
-import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
 import dev.sbs.api.data.model.rarities.RarityModel;
+import dev.sbs.api.data.model.rarities.RaritySqlModel;
+import dev.sbs.api.data.model.rarities.RaritySqlRepository;
 import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
+import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.skills.SkillModel;
-import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skills.SkillSqlModel;
+import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelModel;
+import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.stats.StatModel;
+import dev.sbs.api.data.model.stats.StatSqlRepository;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
-import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
-import dev.sbs.api.data.model.stats.StatSqlRepository;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.Range;
 import dev.sbs.api.util.Vector;
@@ -48,16 +56,29 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.helper.*;
-import dev.sbs.api.data.model.rarities.RaritySqlModel;
-import dev.sbs.api.data.model.rarities.RaritySqlRepository;
+import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.helper.ListUtil;
+import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.helper.WordUtil;
 import dev.sbs.api.util.tuple.Pair;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -128,7 +149,7 @@ public class SkyBlockIsland {
 
     @SneakyThrows
     public Minion getMinion(String minionName) {
-        return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNullCached(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+        return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
     }
 
     public Minion getMinion(MinionModel minionModel) {
@@ -281,7 +302,7 @@ public class SkyBlockIsland {
         public Collection getCollection(SkillModel type) {
             Collection collection = new Collection(type);
             ConcurrentList<CollectionItemModel> items = SimplifiedApi.getSqlRepository(CollectionItemSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(model -> model.getCollection().getSkill().getKey().equals(type.getKey()))
                     .collect(Concurrent.toList());
@@ -312,7 +333,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public Minion getMinion(String minionName) {
-            return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNullCached(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+            return this.getMinion(SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
         }
 
         public Minion getMinion(MinionModel minionModel) {
@@ -330,6 +351,7 @@ public class SkyBlockIsland {
             return minion;
         }
 
+        @SneakyThrows
         public ConcurrentList<Minion> getMinions() {
             return SimplifiedApi.getSqlRepository(MinionSqlRepository.class).findAll().stream().map(this::getMinion).collect(Concurrent.toList());
         }
@@ -367,7 +389,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public Skill getSkill(String skillName) {
-            return this.getSkill(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNullCached(FilterFunction.Match.ANY, Pair.of(SkillModel::getKey, skillName), Pair.of(SkillModel::getName, skillName)));
+            return this.getSkill(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(SkillModel::getKey, skillName), Pair.of(SkillModel::getName, skillName)));
         }
 
         public Skill getSkill(SkillModel skillModel) {
@@ -394,7 +416,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public double getSkillAverage() {
             ConcurrentList<Skill> skills = SimplifiedApi.getSqlRepository(SkillSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(skillSqlModel -> !skillSqlModel.isCosmetic())
                     .map(skillSqlModel -> this.getSkill(skillSqlModel))
@@ -455,7 +477,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentMap<SkillModel, Weight> getSkillWeight() {
             return SimplifiedApi.getSqlRepository(SkillSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(skillSqlModel -> !skillSqlModel.isCosmetic())
                     .map(skillSqlModel -> {
@@ -484,7 +506,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentMap<SlayerModel, Weight> getSlayerWeight() {
             return SimplifiedApi.getSqlRepository(SlayerSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .map(slayerSqlModel -> {
                         Slayer slayer = this.getSlayer(slayerSqlModel);
@@ -517,7 +539,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentMap<DungeonModel, Weight> getDungeonWeight() {
             return SimplifiedApi.getSqlRepository(DungeonSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .map(dungeonSqlModel -> {
                         Dungeon dungeon = this.getDungeons().getDungeon(dungeonSqlModel).orElse(null);
@@ -545,7 +567,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentMap<DungeonClassModel, Weight> getDungeonClassWeight() {
             return SimplifiedApi.getSqlRepository(DungeonClassSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .map(dungeonClassSqlModel -> {
                         Dungeon.Class dungeonClass = this.getDungeons().getPlayerClass(Dungeon.Class.Type.valueOf(dungeonClassSqlModel.getKey()));
@@ -657,7 +679,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public RarityModel getGriffinRarity() {
-            return SimplifiedApi.getSqlRepository(RaritySqlRepository.class).findFirstOrNullCached(RarityModel::getOrdinal, this.tier);
+            return SimplifiedApi.getSqlRepository(RaritySqlRepository.class).findFirstOrNull(RarityModel::getOrdinal, this.tier);
         }
 
         public enum Type {
@@ -704,7 +726,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public StatModel getStat() {
-            return SimplifiedApi.getSqlRepository(StatSqlRepository.class).findFirstOrNullCached(StatModel::getOrdinal, this.stat);
+            return SimplifiedApi.getSqlRepository(StatSqlRepository.class).findFirstOrNull(StatModel::getOrdinal, this.stat);
         }
 
     }
@@ -922,7 +944,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getSqlRepository(DungeonLevelSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .map(DungeonLevelModel::getTotalExpRequired)
                     .collect(Concurrent.toList());
@@ -943,7 +965,7 @@ public class SkyBlockIsland {
             @SneakyThrows
             public ConcurrentList<Double> getExperienceTiers() {
                 return SimplifiedApi.getSqlRepository(DungeonLevelSqlRepository.class)
-                        .findAllCached()
+                        .findAll()
                         .stream()
                         .map(DungeonLevelModel::getTotalExpRequired)
                         .collect(Concurrent.toList());
@@ -1100,7 +1122,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentSet<CollectionItemModel> getUniqueGolds() {
             return SimplifiedApi.getSqlRepository(CollectionItemSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(collectionItem -> uniqueGolds.contains(collectionItem.getItem().getItemId()))
                     .collect(Concurrent.toSet());
@@ -1406,7 +1428,7 @@ public class SkyBlockIsland {
         public ConcurrentList<Double> getExperienceTiers() {
             int petExpOffset = this.getRarity().getPetExpOffset();
             return SimplifiedApi.getSqlRepository(PetExpScaleSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(petExpScale -> petExpScale.getId() >= petExpOffset && petExpScale.getId() <= (petExpOffset + 100))
                     .map(PetExpScaleModel::getValue)
@@ -1415,7 +1437,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public Optional<ItemSqlModel> getHeldItem() {
-            return Optional.ofNullable(SimplifiedApi.getSqlRepository(ItemSqlRepository.class).findFirstOrNullCached(ItemSqlModel::getItemId, this.heldItem));
+            return Optional.ofNullable(SimplifiedApi.getSqlRepository(ItemSqlRepository.class).findFirstOrNull(ItemSqlModel::getItemId, this.heldItem));
         }
 
         @Override
@@ -1425,7 +1447,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public Optional<PetSqlModel> getPet() {
-            return Optional.of(SimplifiedApi.getSqlRepository(PetSqlRepository.class).findFirstOrNullCached(PetSqlModel::getKey, this.name));
+            return Optional.of(SimplifiedApi.getSqlRepository(PetSqlRepository.class).findFirstOrNull(PetSqlModel::getKey, this.name));
         }
 
         public String getPrettyName() {
@@ -1434,7 +1456,7 @@ public class SkyBlockIsland {
 
         @SneakyThrows
         public RaritySqlModel getRarity() {
-            return SimplifiedApi.getSqlRepository(RaritySqlRepository.class).findFirstOrNullCached(RaritySqlModel::getKey, this.rarity);
+            return SimplifiedApi.getSqlRepository(RaritySqlRepository.class).findFirstOrNull(RaritySqlModel::getKey, this.rarity);
         }
 
         public String getDefaultSkin() {
@@ -1561,7 +1583,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getSqlRepository(SkillLevelSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(slayerLevel -> slayerLevel.getSkill().getKey().equals(this.getType().getKey()))
                     .map(SkillLevelModel::getTotalExpRequired)
@@ -1610,7 +1632,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getSqlRepository(SlayerLevelSqlRepository.class)
-                    .findAllCached()
+                    .findAll()
                     .stream()
                     .filter(slayerLevel -> slayerLevel.getSlayer().getKey().equals(this.getType().getKey()))
                     .map(SlayerLevelModel::getTotalExpRequired)
@@ -1642,7 +1664,7 @@ public class SkyBlockIsland {
         @SneakyThrows
         private PlayerStats(Member member) {
             // Initialize
-            statSqlRepository.findAllCached().forEach(statSqlModel -> stats.put(statSqlModel, new Data(0, 0)));
+            statSqlRepository.findAll().forEach(statSqlModel -> stats.put(statSqlModel, new Data(0, 0)));
 
             // TODO: Load stats from API into stats map
             // Optimal solution would be to go through everywhere stats can be,
@@ -1661,7 +1683,7 @@ public class SkyBlockIsland {
                 ConcurrentList<Potion> activePotions = member.getActivePotions();
 
                 // Handle Skills
-                ConcurrentList<SkillSqlModel> skillModels = skillSqlRepository.findAllCached();
+                ConcurrentList<SkillSqlModel> skillModels = skillSqlRepository.findAll();
                 skillModels.forEach(skillModel -> {
                     Skill skill = member.getSkill(skillModel);
                     int level = skill.getLevel();
@@ -1671,13 +1693,13 @@ public class SkyBlockIsland {
 
                 // Handle Accessories
                 // This should be a list
-                ConcurrentList<AccessorySqlModel> accessoryModels = SimplifiedApi.getSqlRepository(AccessorySqlRepository.class).findAllCached();
+                ConcurrentList<AccessorySqlModel> accessoryModels = SimplifiedApi.getSqlRepository(AccessorySqlRepository.class).findAll();
                 accessoryBag.values().stream().map(CompoundTag.class::cast).forEach(accessory -> {
                     try {
                         CompoundTag tag = accessory.get("tag");
                         CompoundTag extra = tag.get("ExtraAttributes");
                         String id = extra.getString("id").getValue();
-                        AccessorySqlModel accessoryModel = accessorySqlRepository.findFirstOrNullCached(FilterFunction.combine(AccessorySqlModel::getItem, ItemSqlModel::getItemId), id);
+                        AccessorySqlModel accessoryModel = accessorySqlRepository.findFirstOrNull(FilterFunction.combine(AccessorySqlModel::getItem, ItemSqlModel::getItemId), id);
 
 
                         // Pull base stats from AccessoryModel
@@ -1689,7 +1711,7 @@ public class SkyBlockIsland {
                         if ("NEW_YEAR_CAKE_BAG".equals(id)) {
                             // Store number of cakes for Health
                         }
-                    } catch (SqlException ignore) { }
+                    } catch (SqlException sqlException) { }
                 });
 
                 // Handle Armor
