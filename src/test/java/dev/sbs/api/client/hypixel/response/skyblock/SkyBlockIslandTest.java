@@ -46,7 +46,7 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
-            //member.getCollection(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNullCached(SkillModel::getKey, "FARMING"));
+            //member.getCollection(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNull(SkillModel::getKey, "FARMING"));
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
             ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
@@ -55,26 +55,26 @@ public class SkyBlockIslandTest {
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
             try {
-                //MinionTierSqlModel testMT = SimplifiedApi.getSqlRepository(MinionTierSqlRepository.class).findFirstOrNullCached(
+                //MinionTierSqlModel testMT = SimplifiedApi.getSqlRepository(MinionTierSqlRepository.class).findFirstOrNull(
                 //        FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId), "WHEAT_GENERATOR_4");
 
-                //MinionTierUpgradeSqlModel testMTU1 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                //MinionTierUpgradeSqlModel testMTU1 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNull(
                 //        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_1");
 
-                //MinionTierUpgradeSqlModel testMTU2 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                //MinionTierUpgradeSqlModel testMTU2 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNull(
                 //        FilterFunction.combine(MinionTierUpgradeModel::getItemCost, ItemModel::getItemId), "STRING");
 
                 //ItemModel im = testMT.getItem();
                 //String a = im.getItemId();
 
-                //MinionTierUpgradeSqlModel testMTU3 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                //MinionTierUpgradeSqlModel testMTU3 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNull(
                 //        FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, MinionTierModel::getItem), testMT.getItem());
 
                 System.out.println("look for wheat 4");
-                MinionTierUpgradeSqlModel testMTU4 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                MinionTierUpgradeSqlModel testMTU4 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNull(
                         FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_4");
                 System.out.println("look for wheat 5");
-                MinionTierUpgradeSqlModel testMTU5 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
+                MinionTierUpgradeSqlModel testMTU5 = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNull(
                         FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_8");
 
                 //MinionTierModel mtm = testMTU.getMinionTier();
