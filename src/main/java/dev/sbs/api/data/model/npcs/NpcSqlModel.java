@@ -49,17 +49,17 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "x")
-    private double x;
+    private Double x;
 
     @Getter
     @Setter
     @Column(name = "y")
-    private double y;
+    private Double y;
 
     @Getter
     @Setter
     @Column(name = "z")
-    private double z;
+    private Double z;
 
     @Getter
     @Setter

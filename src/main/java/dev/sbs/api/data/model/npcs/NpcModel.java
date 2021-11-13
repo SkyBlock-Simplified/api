@@ -6,11 +6,11 @@ import dev.sbs.api.data.model.locations.LocationModel;
 
 public interface NpcModel extends Model {
 
-    double getX();
+    Double getX();
 
-    double getY();
+    Double getY();
 
-    double getZ();
+    Double getZ();
 
     String getName();
 
