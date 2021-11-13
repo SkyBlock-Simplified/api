@@ -76,7 +76,6 @@ import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackSqlRepository;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.stats.StatSqlRepository;
-import dev.sbs.api.data.sql.SqlRefreshTime;
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.builder.BuilderManager;
@@ -89,7 +88,6 @@ import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.TimeUtil;
 import feign.gson.DoubleToIntMapTypeAdapter;
 
 import java.io.File;
@@ -152,18 +150,8 @@ public class SimplifiedApi {
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses()) {
-                long refreshTime = TimeUtil.ONE_MINUTE_MS;
-
-                // Get Custom Refresh Time
-                if (repository.isAnnotationPresent(SqlRefreshTime.class)) {
-                    SqlRefreshTime annoRefreshTime = repository.getAnnotation(SqlRefreshTime.class);
-                    refreshTime = annoRefreshTime.value();
-                }
-
-                // Provide Repository
-                serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession, refreshTime));
-            }
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses())
+                serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession));
 
             databaseRegistered = true;
         }
@@ -174,7 +162,6 @@ public class SimplifiedApi {
     public static void disableDatabase() {
         if (databaseEnabled) {
             getSqlSession().shutdown();
-            SqlRepository.shutdownRefreshers();
             databaseEnabled = false;
         }
     }
@@ -192,7 +179,7 @@ public class SimplifiedApi {
     }
 
     public static Gson getGson() {
-        return getServiceManager().get(Gson.class);
+        return serviceManager.get(Gson.class);
     }
 
     public static NbtFactory_old getNbtFactory() {
@@ -200,16 +187,14 @@ public class SimplifiedApi {
     }
 
     public static Scheduler getScheduler() {
-        return getServiceManager().get(Scheduler.class);
-    }
-
-    private static ServiceManager getServiceManager() {
-        return serviceManager;
+        return serviceManager.get(Scheduler.class);
     }
 
     // TODO: Replace with inherited repository that's implemented by SQL, Web
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
-        return getServiceManager().get(tClass);
+        Preconditions.checkArgument(databaseRegistered, "Database has not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled.");
+        return serviceManager.get(tClass);
     }
 
     private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
@@ -288,13 +273,13 @@ public class SimplifiedApi {
     }
 
     public static SqlSession getSqlSession() {
-        Preconditions.checkArgument(databaseRegistered, "Database has not been registered");
-        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled");
-        return getServiceManager().get(SqlSession.class);
+        Preconditions.checkArgument(databaseRegistered, "Database has not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled.");
+        return serviceManager.get(SqlSession.class);
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
-        return getServiceManager().get(tClass);
+        return serviceManager.get(tClass);
     }
 
 }
