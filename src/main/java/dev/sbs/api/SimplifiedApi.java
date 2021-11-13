@@ -5,7 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dev.sbs.api.client.RequestInterface;
-import dev.sbs.api.client.adapter.*;
+import dev.sbs.api.client.adapter.InstantTypeAdapter;
+import dev.sbs.api.client.adapter.NbtContentTypeAdapter;
+import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
+import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
+import dev.sbs.api.client.adapter.UUIDAdapter;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
 import dev.sbs.api.client.hypixel.implementation.HypixelResourceData;
@@ -169,6 +173,7 @@ public class SimplifiedApi {
 
     public static void disableDatabase() {
         if (databaseEnabled) {
+            getSqlSession().shutdown();
             SqlRepository.shutdownRefreshers();
             databaseEnabled = false;
         }
