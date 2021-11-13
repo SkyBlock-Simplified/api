@@ -44,10 +44,6 @@ public abstract class SqlConfig extends YamlConfig {
 
     @Getter
     @Setter
-    protected boolean databaseStatistics = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_STATISTICS"));
-
-    @Getter
-    @Setter
     protected boolean databaseCaching = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_CACHING", "true"));
 
     private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseEntityTTL = Concurrent.newMap();
