@@ -2,8 +2,8 @@ package dev.sbs.api.data.sql;
 
 import ch.qos.logback.classic.Level;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.model.stats.StatSqlModel;
-import dev.sbs.api.data.model.stats.StatSqlRepository;
+import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.model.stats.StatModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.jupiter.api.Test;
@@ -36,15 +36,15 @@ public class SqlRepositoryTest {
             transaction.commit();
             session.close();*/
 
-            StatSqlRepository statSqlRepository = SimplifiedApi.getSqlRepository(StatSqlRepository.class);
+            Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
             System.out.println("FINDING MAGIC FIND #1");
-            StatSqlModel mfm1 = statSqlRepository.findFirstOrNull(StatSqlModel::getKey, "MAGIC_FIND");
+            StatModel mfm1 = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
             System.out.println("FINDING MAGIC FIND #2");
-            StatSqlModel mfm2 = statSqlRepository.findFirstOrNull(StatSqlModel::getKey, "MAGIC_FIND");
+            StatModel mfm2 = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
             System.out.println("FINDING PRISTINE #1");
-            StatSqlModel pm1 = statSqlRepository.findFirstOrNull(StatSqlModel::getKey, "PRISTINE");
+            StatModel pm1 = statRepository.findFirstOrNull(StatModel::getKey, "PRISTINE");
             System.out.println("FINDING PRISTINE #2");
-            StatSqlModel pm2 = statSqlRepository.findFirstOrNull(StatSqlModel::getKey, "PRISTINE");
+            StatModel pm2 = statRepository.findFirstOrNull(StatModel::getKey, "PRISTINE");
 
 
         } catch (Exception e) {
