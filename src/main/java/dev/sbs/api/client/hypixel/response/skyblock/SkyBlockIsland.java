@@ -23,6 +23,7 @@ import dev.sbs.api.data.model.pets.PetModel;
 import dev.sbs.api.data.model.rarities.RarityModel;
 import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skills.SkillModel;
+import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemModel;
 import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
@@ -291,7 +292,6 @@ public class SkyBlockIsland {
                     .filter(model -> model.getCollection().getSkill().getKey().equals(type.getKey()))
                     .collect(Concurrent.toList());
 
-            // TODO: CHECK this.collection AND this.unlocked_coll_tiers
             if (this.collection != null) {
                 for (CollectionItemModel item : items) {
                     collection.collected.put(item, this.collection.getOrDefault(item.getItem().getItemId(), 0));
@@ -381,20 +381,20 @@ public class SkyBlockIsland {
             return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().get(JacobsFarming.Perk.FARMING_LEVEL_CAP) : 0));
         }
 
-        public Slayer getSlayer(SlayerModel type) {
-            return new Slayer(type, this.slayer_bosses.get(type.getKey().toLowerCase()));
+        public Slayer getSlayer(SlayerModel slayerModel) {
+            return new Slayer(slayerModel, this.slayer_bosses.get(slayerModel.getKey().toLowerCase()));
         }
 
-        public Sack getSack(SkyBlockSackModel type) {
-            Sack collection = new Sack(type); // TODO: Sack items
-            /*ConcurrentList<Skyblock.Item> items = type.getItems();
+        public Sack getSack(SkyBlockSackModel sackModel) {
+            Sack sack = new Sack(sackModel);
 
-            if (this.sackCounts != null) {
-                for (Skyblock.Item item : items)
-                    collection.stored.put(item, this.sackCounts.getOrDefault(item.getItemName(), 0));
-            }*/
+            SimplifiedApi.getRepositoryOf(SkyBlockSackItemModel.class)
+                    .findAll(SkyBlockSackItemModel::getSack, sackModel)
+                    .stream()
+                    .map(sackItem -> Pair.of(sackItem, this.sacksCounts.getOrDefault(sackItem.getItem().getItemId(), 0)))
+                    .forEach(entry -> sack.stored.put(entry.getKey(), entry.getValue()));
 
-            return collection;
+            return sack;
         }
 
         @SneakyThrows
@@ -1055,10 +1055,14 @@ public class SkyBlockIsland {
     public static class ForgeItem {
 
         @Getter private String type;
-        @Getter private String id;
+        private String id;
         @Getter private SkyBlockDate.RealTime startTime;
         @Getter private int slot;
         @Getter private boolean notified;
+
+        public ItemModel getItem() {
+            return SimplifiedApi.getRepositoryOf(ItemModel.class).findFirstOrNull(ItemModel::getItemId, this.id);
+        }
 
     }
 
@@ -1543,11 +1547,10 @@ public class SkyBlockIsland {
     public static class Sack {
 
         @Getter private final SkyBlockSackModel type;
-        @Getter private ConcurrentLinkedMap<String, Integer> stored = Concurrent.newLinkedMap(); // TODO: SackModel
+        private final ConcurrentMap<SkyBlockSackItemModel, Integer> stored = Concurrent.newMap();
 
-        public int getStored(String item) {
-            return 0;
-            //return this.stored.getOrDefault(item, (this.type.getItems().contains(item) ? 0 : -1));
+        public ConcurrentMap<SkyBlockSackItemModel, Integer> getStored() {
+            return Concurrent.newUnmodifiableMap(this.stored);
         }
 
     }
@@ -1904,7 +1907,6 @@ public class SkyBlockIsland {
             return jsonObject.has(memberName) ? Optional.of(function.apply((T) jsonObject.get(memberName))) : Optional.empty();
         }
 
-        // Use a new instance of Gson to avoid infinite recursion to a deserializer.
         @Override
         @SuppressWarnings("unchecked")
         public SkyBlockIsland deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
@@ -1932,8 +1934,11 @@ public class SkyBlockIsland {
                 member.mining.goblinHideoutBiome = gson.fromJson(miningCore.getAsJsonObject("biomes").getAsJsonObject("goblin"), Mining.Biome.Goblin.class);
                 member.griffinBurrows = gson.fromJson(memberObject.getAsJsonObject("griffin").getAsJsonArray("burrows"), new ConcurrentList<>().getClass());
 
-                // TODO: Fix forge items
-                //member.forgeItems = gson.fromJson(memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes").getAsJsonObject("forge_1"), new ConcurrentList<>().getClass());
+                ConcurrentMap<Integer, ForgeItem> forgeItems = gson.fromJson(memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes").getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass());
+                member.forgeItems = forgeItems
+                        .stream()
+                        .map(Map.Entry::getValue)
+                        .collect(Concurrent.toList());
 
                 // Dungeons
                 /*Map<String, Object> dungeonTypeMap = gson.fromJson(memberObject.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types"), Map.class);

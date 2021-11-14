@@ -12,6 +12,7 @@ import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
 import dev.sbs.api.data.model.rarities.RarityModel;
 import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skills.SkillModel;
+import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
@@ -62,6 +63,11 @@ public class SkyBlockIslandTest {
             SkillModel skill = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
             ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, skill);
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
+
+            // collection_items, collections
+            SkyBlockIsland.Collection sbCollection = member.getCollection(skill);
+            SkyBlockSackModel sbSack = SimplifiedApi.getRepositoryOf(SkyBlockSackModel.class).findFirstOrNull(SkyBlockSackModel::getKey, "MINING");
+            MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
             // minion_tier_upgrades, minion_tiers, items
             MinionTierUpgradeModel wheatGen11 = SimplifiedApi.getRepositoryOf(MinionTierUpgradeModel.class).findFirstOrNull(
