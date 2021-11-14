@@ -8,6 +8,6 @@ public interface PotionGroupItemModel extends Model {
 
     PotionGroupModel getPotionGroup();
 
-    PotionTierModel getPotion();
+    PotionTierModel getPotionTier();
 
 }
