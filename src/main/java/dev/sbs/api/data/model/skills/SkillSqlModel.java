@@ -85,11 +85,6 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    /*@Getter
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "skill_key", nullable = false)
-    private transient ConcurrentList<SkillLevelSqlModel> levels;*/
-
     @Override
     @SuppressWarnings("all")
     public boolean equals(Object obj) {
