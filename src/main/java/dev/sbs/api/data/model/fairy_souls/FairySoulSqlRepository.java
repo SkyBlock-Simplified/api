@@ -10,8 +10,4 @@ public class FairySoulSqlRepository extends SqlRepository<FairySoulSqlModel> {
         super(sqlSession);
     }
 
-    public FairySoulSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

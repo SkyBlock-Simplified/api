@@ -1,27 +1,37 @@
 package dev.sbs.api.data.model.skyblock_bag_sizes;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.collection_items.CollectionItemSqlModel;
 import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
         name = "skyblock_bag_sizes",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "bag_size",
-                        columnNames = { "bag_key", "collection_tier" }
+        indexes = {
+                @Index(
+                        columnList = "bag_key, collection_tier",
+                        unique = true
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkyBlockBagSizeSqlModel implements SkyBlockBagSizeModel, SqlModel {
 
     @Getter
@@ -33,7 +43,7 @@ public class SkyBlockBagSizeSqlModel implements SkyBlockBagSizeModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "bag_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "bag_key", nullable = false)
     private SkyBlockBagSqlModel bag;
 
     @Getter

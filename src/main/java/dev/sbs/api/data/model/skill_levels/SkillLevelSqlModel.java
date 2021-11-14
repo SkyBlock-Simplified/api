@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -16,13 +18,14 @@ import java.util.List;
 @Entity
 @Table(
         name = "skill_levels",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "skill_level",
-                        columnNames = { "skill_key", "level" }
+        indexes = {
+                @Index(
+                        columnList = "skill_key, level",
+                        unique = true
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
 
     @Getter
@@ -34,7 +37,7 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "skill_key", nullable = false)
     private SkillSqlModel skill;
 
     @Getter

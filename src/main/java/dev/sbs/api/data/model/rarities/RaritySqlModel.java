@@ -5,24 +5,34 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "rarities")
+@Table(
+        name = "rarities"
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Id
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -32,12 +42,12 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "ordinal")
+    @Column(name = "ordinal", nullable = false)
     private int ordinal;
 
     @Getter
     @Setter
-    @Column(name = "key_valid")
+    @Column(name = "key_valid", nullable = false)
     private boolean keyValid;
 
     @Getter
@@ -52,8 +62,8 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Override
     @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
     @Override

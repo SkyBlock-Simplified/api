@@ -10,8 +10,4 @@ public class LocationAreaSqlRepository extends SqlRepository<LocationAreaSqlMode
         super(sqlSession);
     }
 
-    public LocationAreaSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

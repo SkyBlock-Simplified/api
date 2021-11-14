@@ -7,24 +7,34 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "stats")
+@Table(
+        name = "stats",
+        indexes = {
+                @Index(
+                        columnList = "format_key"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Id
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -34,14 +44,14 @@ public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "symbol_code", nullable = false, length = 4)
+    @Column(name = "symbol_code", length = 4)
     @Convert(converter = UnicodeConverter.class)
     private char symbol;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "format_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "format_key", nullable = false)
     private FormatSqlModel format;
 
     @Getter

@@ -6,7 +6,7 @@ import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
-public class SqlSessionUtilTest {
+public class SqlSessionTest {
 
     @Test
     public void openSession_ok() {

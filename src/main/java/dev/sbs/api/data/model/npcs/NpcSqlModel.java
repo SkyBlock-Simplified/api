@@ -7,46 +7,63 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
         name = "npcs",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "npc_coordinates",
-                        columnNames = { "x", "y", "z", "key" }
+        indexes = {
+                @Index(
+                        columnList = "x, y, z, key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "location_key"
+                ),
+                @Index(
+                        columnList = "location_area_key"
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class NpcSqlModel implements NpcModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "x", nullable = false)
-    private double x;
+    @Column(name = "x")
+    private Double x;
 
     @Getter
     @Setter
-    @Column(name = "y", nullable = false)
-    private double y;
+    @Column(name = "y")
+    private Double y;
 
     @Getter
     @Setter
-    @Column(name = "z", nullable = false)
-    private double z;
+    @Column(name = "z")
+    private Double z;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "key", nullable = false, length = 127)
     private String key;
 
@@ -58,13 +75,13 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "location_key")
     private LocationSqlModel location;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_area_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
     @Getter

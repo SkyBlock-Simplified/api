@@ -1,28 +1,42 @@
 package dev.sbs.api.data.model.slayers;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "slayers")
+@Table(
+        name = "slayers"
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SlayerSqlModel implements SlayerModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Id
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -44,6 +58,11 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Getter
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "slayer_key", nullable = false)
+    private transient ConcurrentList<SkillLevelSqlModel> levels;
 
     @Override
     @SuppressWarnings("all")

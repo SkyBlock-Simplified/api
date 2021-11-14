@@ -10,8 +10,4 @@ public class SkillLevelSqlRepository extends SqlRepository<SkillLevelSqlModel> {
         super(sqlSession);
     }
 
-    public SkillLevelSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

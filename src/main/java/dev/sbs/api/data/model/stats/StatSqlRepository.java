@@ -10,8 +10,4 @@ public class StatSqlRepository extends SqlRepository<StatSqlModel> {
         super(sqlSession);
     }
 
-    public StatSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

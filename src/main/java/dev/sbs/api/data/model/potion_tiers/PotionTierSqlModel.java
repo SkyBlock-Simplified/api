@@ -8,6 +8,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -17,13 +19,20 @@ import java.util.Map;
 @Entity
 @Table(
         name = "potion_tiers",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "potion_tier",
-                        columnNames = { "potion_key", "tier" }
+        indexes = {
+                @Index(
+                        columnList = "potion_key, tier",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "tier"
+                ),
+                @Index(
+                        columnList = "ingredient_item_id"
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Getter
@@ -35,7 +44,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "potion_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "potion_key", nullable = false)
     private PotionSqlModel potion;
 
     @Getter
@@ -46,8 +55,13 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "ingredient_item_id", nullable = false, referencedColumnName = "item_id")
+    @JoinColumn(name = "ingredient_item_id")
     private ItemSqlModel ingredientItem;
+
+    @Getter
+    @Setter
+    @Column(name = "base_item_id")
+    private String baseItem;
 
     @Getter
     @Setter

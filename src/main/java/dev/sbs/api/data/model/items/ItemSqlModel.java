@@ -10,6 +10,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -18,13 +20,23 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "items")
+@Table(
+        name = "items",
+        indexes = {
+                @Index(
+                        columnList = "generator"
+                ),
+                @Index(
+                        columnList = "rarity_key"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
@@ -55,11 +67,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
+    @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
+    @Id
     @Column(name = "item_id", length = 127, unique = true)
     private String itemId;
 
@@ -170,14 +183,74 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ItemSqlModel)) return false;
+        ItemSqlModel that = (ItemSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getDurability(), that.getDurability())
+                .append(this.getGeneratorTier(), that.getGeneratorTier())
+                .append(this.isGlowing(), that.isGlowing())
+                .append(this.getNpcSellPrice(), that.getNpcSellPrice())
+                .append(this.isUnstackable(), that.isUnstackable())
+                .append(this.isDungeonItem(), that.isDungeonItem())
+                .append(this.getGearScore(), that.getGearScore())
+                .append(this.getAbilityDamageScaling(), that.getAbilityDamageScaling())
+                .append(this.getName(), that.getName())
+                .append(this.getMaterial(), that.getMaterial())
+                .append(this.getSkin(), that.getSkin())
+                .append(this.getFurniture(), that.getFurniture())
+                .append(this.getRarity(), that.getRarity())
+                .append(this.getItemId(), that.getItemId())
+                .append(this.getGenerator(), that.getGenerator())
+                .append(this.getCategory(), that.getCategory())
+                .append(this.getStats(), that.getStats())
+                .append(this.getColor(), that.getColor())
+                .append(this.getTieredStats(), that.getTieredStats())
+                .append(this.getRequirements(), that.getRequirements())
+                .append(this.getCatacombsRequirements(), that.getCatacombsRequirements())
+                .append(this.getEssence(), that.getEssence())
+                .append(this.getDescription(), that.getDescription())
+                .append(this.getEnchantments(), that.getEnchantments())
+                .append(this.getCrystal(), that.getCrystal())
+                .append(this.getPrivateIsland(), that.getPrivateIsland())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(getId())
+                .append(getName())
+                .append(getMaterial())
+                .append(getDurability())
+                .append(getSkin())
+                .append(getFurniture())
+                .append(getRarity())
+                .append(getItemId())
+                .append(getGenerator())
+                .append(getGeneratorTier())
+                .append(isGlowing())
+                .append(getCategory())
+                .append(getStats())
+                .append(getNpcSellPrice())
+                .append(isUnstackable())
+                .append(isDungeonItem())
+                .append(getColor())
+                .append(getTieredStats())
+                .append(getGearScore())
+                .append(getRequirements())
+                .append(getCatacombsRequirements())
+                .append(getEssence())
+                .append(getDescription())
+                .append(getAbilityDamageScaling())
+                .append(getEnchantments())
+                .append(getCrystal())
+                .append(getPrivateIsland())
+                .append(getUpdatedAt())
+                .build();
     }
-
 }

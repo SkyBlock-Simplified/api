@@ -6,21 +6,32 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
         name = "potion_brew_buffs",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "buff_key",
-                        columnNames = { "potion_brew_key", "buff_key" }
+        indexes = {
+                @Index(
+                        columnList = "potion_brew_key, buff_key",
+                        unique = true
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
 
     @Getter
@@ -32,7 +43,7 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "potion_brew_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "potion_brew_key", nullable = false)
     private PotionBrewSqlModel potionBrew;
 
     @Getter
@@ -56,14 +67,31 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PotionBrewBuffSqlModel)) return false;
+        PotionBrewBuffSqlModel that = (PotionBrewBuffSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getBuffValue(), that.getBuffValue())
+                .append(this.isPercentage(), that.isPercentage())
+                .append(this.getPotionBrew(), that.getPotionBrew())
+                .append(this.getBuffKey(), that.getBuffKey())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getPotionBrew())
+                .append(this.getBuffKey())
+                .append(this.getBuffValue())
+                .append(this.isPercentage())
+                .append(this.getUpdatedAt())
+                .build();
     }
 
 }

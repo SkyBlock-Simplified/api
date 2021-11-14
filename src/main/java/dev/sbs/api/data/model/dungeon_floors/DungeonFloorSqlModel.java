@@ -8,18 +8,38 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
         name = "dungeon_floors",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "dungeon_floor", columnNames = { "dungeon_key", "floor" })
+        indexes = {
+                @Index(
+                        columnList = "dungeon_key, floor",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "floor_size_key"
+                ),
+                @Index(
+                        columnList = "floor_boss_key"
+                )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
     @Getter
@@ -31,7 +51,7 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "dungeon_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "dungeon_key", nullable = false)
     private DungeonSqlModel dungeon;
 
     @Getter
@@ -42,13 +62,13 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "floor_size_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "floor_size_key")
     private DungeonFloorSizeSqlModel floorSize;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "floor_boss_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "floor_boss_key")
     private DungeonBossSqlModel floorBoss;
 
     @Getter
@@ -57,14 +77,31 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DungeonFloorSqlModel)) return false;
+        DungeonFloorSqlModel that = (DungeonFloorSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getFloor(), that.getFloor())
+                .append(this.getDungeon(), that.getDungeon())
+                .append(this.getFloorSize(), that.getFloorSize())
+                .append(this.getFloorBoss(), that.getFloorBoss())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getDungeon())
+                .append(this.getFloor())
+                .append(this.getFloorSize())
+                .append(this.getFloorBoss())
+                .append(this.getUpdatedAt())
+                .build();
     }
 
 }

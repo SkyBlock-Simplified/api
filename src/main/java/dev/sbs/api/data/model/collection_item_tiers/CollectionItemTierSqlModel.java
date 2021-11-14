@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -14,7 +16,16 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "collection_item_tiers")
+@Table(
+        name = "collection_item_tiers",
+        indexes = {
+                @Index(
+                        columnList = "collection_item_id, tier",
+                        unique = true
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlModel {
 
     @Getter
@@ -26,7 +37,7 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_item_key", nullable = false)
+    @JoinColumn(name = "collection_item_id", nullable = false)
     private CollectionItemSqlModel collectionItem;
 
     @Getter
@@ -51,15 +62,30 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CollectionItemTierSqlModel)) return false;
+        CollectionItemTierSqlModel that = (CollectionItemTierSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+                .append(this.getTier(), that.getTier())
+                .append(this.getAmountRequired(), that.getAmountRequired())
+                .append(this.getCollectionItem(), that.getCollectionItem())
+                .append(this.getUnlocks(), that.getUnlocks())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder().append(this.getId())
+                .append(this.getCollectionItem())
+                .append(this.getTier())
+                .append(this.getAmountRequired())
+                .append(this.getUnlocks())
+                .append(this.getUpdatedAt())
+                .build();
     }
-
+    
 }
 

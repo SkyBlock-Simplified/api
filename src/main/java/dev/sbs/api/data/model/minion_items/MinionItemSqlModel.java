@@ -2,18 +2,43 @@ package dev.sbs.api.data.model.minion_items;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.collection_items.CollectionItemSqlModel;
+import dev.sbs.api.data.model.items.ItemSqlModel;
 import dev.sbs.api.data.model.minions.MinionSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "minion_items")
+@Table(
+        name = "minion_items",
+        indexes = {
+                @Index(
+                        columnList = "minion_key"
+                ),
+                @Index(
+                        columnList = "collection_item_id"
+                ),
+                @Index(
+                        columnList = "item_id"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionItemSqlModel implements MinionItemModel, SqlModel {
 
     @Getter
@@ -25,14 +50,20 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion_key", referencedColumnName = "key")
+    @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_item_id", referencedColumnName = "item_id")
+    @JoinColumn(name = "collection_item_id")
     private CollectionItemSqlModel collectionItem;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "item_id", nullable = false)
+    private ItemSqlModel item;
 
     @Getter
     @Setter

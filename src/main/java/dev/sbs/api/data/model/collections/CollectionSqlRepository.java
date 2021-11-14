@@ -10,8 +10,4 @@ public class CollectionSqlRepository extends SqlRepository<CollectionSqlModel> {
         super(sqlSession);
     }
 
-    public CollectionSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

@@ -10,8 +10,4 @@ public class MinionSqlRepository extends SqlRepository<MinionSqlModel> {
         super(sqlSession);
     }
 
-    public MinionSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

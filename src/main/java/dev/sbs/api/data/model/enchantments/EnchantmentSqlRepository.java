@@ -10,8 +10,4 @@ public class EnchantmentSqlRepository extends SqlRepository<EnchantmentSqlModel>
         super(sqlSession);
     }
 
-    public EnchantmentSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

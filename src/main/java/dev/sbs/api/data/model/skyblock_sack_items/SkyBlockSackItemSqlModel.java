@@ -7,21 +7,35 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
         name = "skyblock_sack_items",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "sack_item",
-                        columnNames = { "sack_key", "item_id" }
+        indexes = {
+                @Index(
+                        columnList = "item_id, sack_key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "item_id"
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkyBlockSackItemSqlModel implements SkyBlockSackItemModel, SqlModel {
 
     @Getter
@@ -33,13 +47,13 @@ public class SkyBlockSackItemSqlModel implements SkyBlockSackItemModel, SqlModel
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "sack_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "sack_key", nullable = false)
     private SkyBlockSackSqlModel sack;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id")
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

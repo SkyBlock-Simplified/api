@@ -3,15 +3,15 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
+import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.dungeons.DungeonModel;
+import dev.sbs.api.data.model.items.ItemModel;
 import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
 import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
-import dev.sbs.api.data.model.minions.MinionModel;
+import dev.sbs.api.data.model.rarities.RarityModel;
+import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skills.SkillModel;
-import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
@@ -44,11 +44,12 @@ public class SkyBlockIslandTest {
             SkyBlockIsland island = profiles.getIslands().get(0);
             Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
 
+            // Did Hypixel Reply / Does a Member Exist
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
+            // skills, skill_levels, slayers, slayer_levels, dungeons, dungeon_classes, dungeon_levels
             SkyBlockIsland.Member member = optionalMember.get();
-            //member.getCollection(SimplifiedApi.getSqlRepository(SkillSqlRepository.class).findFirstOrNullCached(SkillModel::getKey, "FARMING"));
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
             ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
@@ -56,46 +57,50 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            try {
-                MinionTierUpgradeSqlModel testMTU = SimplifiedApi.getSqlRepository(MinionTierUpgradeSqlRepository.class).findFirstOrNullCached(
-                        FilterFunction.combine(FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, MinionTierModel::getMinion), MinionModel::getKey),
-                        "WHEAT");
-                String testing = ""; // This waits until the 4th last model to load, for testing purposes
-            } catch (SqlException ignore) { }
+            // skills, skill_levels
+            Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
+            SkillModel skill = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
+            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, skill);
+            MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
 
+            // minion_tier_upgrades, minion_tiers, items
+            MinionTierUpgradeModel wheatGen11 = SimplifiedApi.getRepositoryOf(MinionTierUpgradeModel.class).findFirstOrNull(
+                    FilterFunction.combine(MinionTierUpgradeModel::getMinionTier, FilterFunction.combine(MinionTierModel::getItem, ItemModel::getItemId)), "WHEAT_GENERATOR_11");
+
+            MatcherAssert.assertThat(wheatGen11.getMinionTier().getMinion().getKey(), Matchers.equalTo("WHEAT"));
+            MatcherAssert.assertThat(wheatGen11.getItemCost().getItemId(), Matchers.equalTo("ENCHANTED_HAY_BLOCK"));
+
+            // rarities, pets, pet_items, pet_exp_scales
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
-            Optional<SkyBlockIsland.PetInfo> optionalWolfPet = pets.stream().filter(petInfo -> petInfo.getName().equals("WOLF")).findFirst();
+            Optional<SkyBlockIsland.PetInfo> optionalSpiderPet = pets.stream().filter(petInfo -> petInfo.getName().equals("SPIDER")).findFirst();
             Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
 
-            optionalWolfPet.ifPresent(wolfInfo -> {
-                System.out.println("Looking for doOnLoad error x6"); // TODO: Generates massive error after this on 6, 7, or 8
-                wolfInfo.getHeldItem().ifPresent(itemModel -> {
-                    System.out.println("Looking for doOnLoad error x7");
-                    MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0));
-                });
+            optionalSpiderPet.ifPresent(spiderInfo -> optionalDragonPet.ifPresent(dragInfo -> {
+                spiderInfo.getHeldItem().ifPresent(itemModel -> MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0)));
 
-                optionalDragonPet.ifPresent(dragInfo -> {
-                    System.out.println("Looking for doOnLoad error x8");
-                    wolfInfo.getPet().ifPresent(wolfPet -> {
-                        System.out.println("Looking for doOnLoad error x9");
-                        dragInfo.getPet().ifPresent(dragPet -> {
-                            MatcherAssert.assertThat(wolfPet, Matchers.notNullValue());
-                            MatcherAssert.assertThat(dragPet, Matchers.notNullValue());
+                double spiderExp = spiderInfo.getExperience();
+                MatcherAssert.assertThat(spiderExp, Matchers.greaterThan(0.0));
+                int spiderLevel = spiderInfo.getLevel(); // TODO: WRONG
+                //MatcherAssert.assertThat(spiderLevel, Matchers.equalTo(100));
 
-                            int wolf_hs = wolfPet.hashCode();
-                            int drag_hs = dragPet.hashCode();
+                spiderInfo.getPet().ifPresent(wolfPet -> {
+                    RarityModel commonRarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, "COMMON");
+                    MatcherAssert.assertThat(wolfPet.getLowestRarity(), Matchers.equalTo(commonRarity));
 
-                            MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
-                        });
+                    dragInfo.getPet().ifPresent(dragPet -> {
+                        int wolf_hs = wolfPet.hashCode();
+                        int drag_hs = dragPet.hashCode();
+
+                        MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
                     });
                 });
-            });
+            }));
 
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
         } catch (HypixelApiException exception) {
             MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));
-        //} catch (SqlException sqlException) {
-            //Assertions.fail();
+        } catch (SqlException sqlException) {
+            Assertions.fail();
         }
     }
 

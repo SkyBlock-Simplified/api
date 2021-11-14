@@ -1,11 +1,19 @@
 package dev.sbs.api.util.concurrent.unmodifiable;
 
 import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.atomic.AtomicMap;
+import dev.sbs.api.util.concurrent.ConcurrentMap;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -21,7 +29,7 @@ import java.util.stream.StreamSupport;
  * @param <K> type of keys
  * @param <V> type of values
  */
-public class ConcurrentUnmodifiableMap<K, V> extends AtomicMap<K, V, HashMap<K, V>> {
+public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
 
     private transient Set<K> unmodifiableKeySet;
     private transient Set<Map.Entry<K,V>> unmodifiableEntrySet;
@@ -31,14 +39,22 @@ public class ConcurrentUnmodifiableMap<K, V> extends AtomicMap<K, V, HashMap<K, 
      * Create a new unmodifiable concurrent map.
      */
     public ConcurrentUnmodifiableMap() {
-        super(new HashMap<>(), null);
+        super();
     }
 
     /**
      * Create a new unmodifiable concurrent map and fill it with the given map.
      */
     public ConcurrentUnmodifiableMap(Map<? extends K, ? extends V> map) {
-        super(new HashMap<>(), map);
+        super(map);
+    }
+
+    /**
+     * Create a new concurrent map and fill it with the given pairs.
+     */
+    @SafeVarargs
+    public ConcurrentUnmodifiableMap(Map.Entry<K, V>... pairs) {
+        super(Arrays.stream(pairs).collect(Concurrent.toMap()));
     }
 
     @Override

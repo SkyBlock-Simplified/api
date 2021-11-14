@@ -1,30 +1,38 @@
 package dev.sbs.api.data.model.dungeon_levels;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.dungeons.DungeonSqlModel;
-import dev.sbs.api.data.model.slayers.SlayerSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "dungeon_levels")
+@Table(
+        name = "dungeon_levels"
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "level", nullable = false, unique = true)
+    @Id
+    @Column(name = "level", nullable = false)
     private int level;
 
     @Getter

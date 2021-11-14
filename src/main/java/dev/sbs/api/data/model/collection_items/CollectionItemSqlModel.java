@@ -7,31 +7,49 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "collection_items")
+@Table(
+        name = "collection_items",
+        indexes = {
+                @Index(
+                        columnList = "collection_key"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_key", nullable = false, referencedColumnName = "skill_key")
+    @JoinColumn(name = "collection_key", nullable = false)
     private CollectionSqlModel collection;
 
     @Getter
     @Setter
+    @Id
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id", unique = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter
@@ -45,14 +63,29 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CollectionItemSqlModel)) return false;
+        CollectionItemSqlModel that = (CollectionItemSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getMaxTiers(), that.getMaxTiers())
+                .append(this.getCollection(), that.getCollection())
+                .append(this.getItem(), that.getItem())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getCollection())
+                .append(this.getItem())
+                .append(this.getMaxTiers())
+                .append(this.getUpdatedAt())
+                .build();
     }
 
 }

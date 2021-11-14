@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -14,18 +16,26 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "potion_mixins")
+@Table(
+        name = "potion_mixins",
+        indexes = {
+                @Index(
+                        columnList = "slayer_key, slayer_level"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Id
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -36,7 +46,7 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "slayer_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "slayer_key", nullable = false)
     private SlayerSqlModel slayerRequirement;
 
     @Getter

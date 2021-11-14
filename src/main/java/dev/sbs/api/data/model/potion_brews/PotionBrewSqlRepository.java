@@ -10,8 +10,4 @@ public class PotionBrewSqlRepository extends SqlRepository<PotionBrewSqlModel> {
         super(sqlSession);
     }
 
-    public PotionBrewSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

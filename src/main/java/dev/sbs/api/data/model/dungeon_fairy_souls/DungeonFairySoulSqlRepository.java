@@ -10,8 +10,4 @@ public class DungeonFairySoulSqlRepository extends SqlRepository<DungeonFairySou
         super(sqlSession);
     }
 
-    public DungeonFairySoulSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

@@ -10,8 +10,4 @@ public class FormatSqlRepository extends SqlRepository<FormatSqlModel> {
         super(sqlSession);
     }
 
-    public FormatSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

@@ -8,6 +8,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -17,17 +19,24 @@ import java.util.List;
 @Entity
 @Table(
         name = "pet_stats",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "pet_stat",
-                        columnNames = { "pet_key", "stat_key" }
+        indexes = {
+                @Index(
+                        columnList = "pet_key, stat_key",
+                        unique = true
                 ),
-                @UniqueConstraint(
-                        name = "pet_stat_ordinal",
-                        columnNames = { "pet_key", "ordinal" }
+                @Index(
+                        columnList = "pet_key, ordinal",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "pet_key"
+                ),
+                @Index(
+                        columnList = "stat_key"
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetStatSqlModel implements PetStatModel, SqlModel {
 
     @Getter
@@ -39,13 +48,13 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "pet_key", nullable = false)
     private PetSqlModel pet;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 
     @Getter

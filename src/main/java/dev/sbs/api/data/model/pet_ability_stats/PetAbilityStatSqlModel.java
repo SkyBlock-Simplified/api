@@ -8,6 +8,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -15,7 +17,18 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "pet_ability_stats")
+@Table(
+        name = "pet_ability_stats",
+        indexes = {
+                @Index(
+                        columnList = "ability_key"
+                ),
+                @Index(
+                        columnList = "stat_key"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Getter
@@ -27,22 +40,22 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "ability_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "ability_key", nullable = false)
     private PetAbilitySqlModel ability;
 
     @Getter
     @Setter
-    @Column(name = "rarities")
+    @ManyToOne
+    @JoinColumn(name = "stat_key")
+    private StatSqlModel stat;
+
+    @Getter
+    @Setter
+    @Column(name = "rarities", nullable = false)
     //@Convert(converter = RaritySqlModelListConverter.class)
     //private List<RaritySqlModel> rarities;
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> rarities;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "stat_key", referencedColumnName = "key")
-    private StatSqlModel stat;
 
     @Getter
     @Setter

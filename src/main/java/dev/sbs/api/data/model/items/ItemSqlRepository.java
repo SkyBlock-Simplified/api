@@ -10,8 +10,4 @@ public class ItemSqlRepository extends SqlRepository<ItemSqlModel> {
         super(sqlSession);
     }
 
-    public ItemSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

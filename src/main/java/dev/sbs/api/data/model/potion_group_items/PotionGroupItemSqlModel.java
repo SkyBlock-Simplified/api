@@ -7,6 +7,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -15,13 +17,17 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "potion_group_items",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "potion_group_key",
-                        columnNames = { "potion_group_key", "potion_key" }
+        indexes = {
+                @Index(
+                        columnList = "potion_key, potion_group_key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "potion_key, potion_tier"
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
 
     @Getter
@@ -33,7 +39,7 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "potion_group_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "potion_group_key", nullable = false)
     private PotionGroupSqlModel potionGroup;
 
     @Getter

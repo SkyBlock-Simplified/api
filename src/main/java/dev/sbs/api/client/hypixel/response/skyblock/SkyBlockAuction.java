@@ -2,11 +2,10 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.model.rarities.RaritySqlModel;
-import dev.sbs.api.data.model.rarities.RaritySqlRepository;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.data.model.rarities.RarityModel;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -70,8 +69,8 @@ public class SkyBlockAuction {
     }
 
     @SneakyThrows
-    public RaritySqlModel getRarity() {
-        return SimplifiedApi.getSqlRepository(RaritySqlRepository.class).findFirstOrNullCached(RaritySqlModel::getKey, this.rarity);
+    public RarityModel getRarity() {
+        return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarity);
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

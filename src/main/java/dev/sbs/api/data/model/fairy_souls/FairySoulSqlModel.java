@@ -7,21 +7,38 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
         name = "fairy_souls",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "fairy_soul_coordinates",
-                        columnNames = { "x", "y", "z", "location_key" }
+        indexes = {
+                @Index(
+                        columnList = "x, y, z, location_key",
+                        unique = true
+                ),
+                @Index(
+                        columnList = "location_key"
+                ),
+                @Index(
+                        columnList = "location_area_key"
                 )
         }
 )
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FairySoulSqlModel implements FairySoulModel, SqlModel {
 
     @Getter
@@ -48,13 +65,13 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "location_key")
     private LocationSqlModel location;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_area_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
     @Getter
@@ -68,14 +85,35 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FairySoulSqlModel)) return false;
+        FairySoulSqlModel that = (FairySoulSqlModel) o;
+
+        return new EqualsBuilder()
+                .append(this.getId(), that.getId())
+                .append(this.getX(), that.getX())
+                .append(this.getY(), that.getY())
+                .append(this.getZ(), that.getZ())
+                .append(this.isWalkable(), that.isWalkable())
+                .append(this.getLocation(), that.getLocation())
+                .append(this.getLocationArea(), that.getLocationArea())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getX())
+                .append(this.getY())
+                .append(this.getZ())
+                .append(this.getLocation())
+                .append(this.getLocationArea())
+                .append(this.isWalkable())
+                .append(this.getUpdatedAt())
+                .build();
     }
 
 }

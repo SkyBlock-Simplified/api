@@ -5,7 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dev.sbs.api.client.RequestInterface;
-import dev.sbs.api.client.adapter.*;
+import dev.sbs.api.client.adapter.InstantTypeAdapter;
+import dev.sbs.api.client.adapter.NbtContentTypeAdapter;
+import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
+import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
+import dev.sbs.api.client.adapter.UUIDAdapter;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
 import dev.sbs.api.client.hypixel.implementation.HypixelResourceData;
@@ -14,6 +18,8 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
 import dev.sbs.api.client.mojang.MojangApiBuilder;
 import dev.sbs.api.client.mojang.implementation.MojangData;
+import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.accessories.AccessorySqlRepository;
 import dev.sbs.api.data.model.accessory_families.AccessoryFamilySqlRepository;
@@ -27,6 +33,7 @@ import dev.sbs.api.data.model.dungeon_floor_sizes.DungeonFloorSizeSqlRepository;
 import dev.sbs.api.data.model.dungeon_floors.DungeonFloorSqlRepository;
 import dev.sbs.api.data.model.dungeon_levels.DungeonLevelSqlRepository;
 import dev.sbs.api.data.model.dungeons.DungeonSqlRepository;
+import dev.sbs.api.data.model.enchantments.EnchantmentSqlRepository;
 import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.items.ItemSqlRepository;
@@ -62,16 +69,20 @@ import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skyblock_bag_sizes.SkyBlockBagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlRepository;
+import dev.sbs.api.data.model.skyblock_craftingtable_recipe_slots.SkyBlockCTRecipeSlotSqlRepository;
+import dev.sbs.api.data.model.skyblock_craftingtable_recipes.SkyBlockCTRecipeSqlRepository;
+import dev.sbs.api.data.model.skyblock_craftingtable_slots.SkyBlockCTSlotSqlRepository;
+import dev.sbs.api.data.model.skyblock_menus.SkyBlockMenuSqlRepository;
 import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemSqlRepository;
 import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackSqlRepository;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.stats.StatSqlRepository;
-import dev.sbs.api.data.sql.SqlRefreshTime;
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
+import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
 import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
@@ -80,7 +91,6 @@ import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.TimeUtil;
 import feign.gson.DoubleToIntMapTypeAdapter;
 
 import java.io.File;
@@ -143,18 +153,8 @@ public class SimplifiedApi {
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses()) {
-                long refreshTime = TimeUtil.ONE_MINUTE_MS;
-
-                // Get Custom Refresh Time
-                if (repository.isAnnotationPresent(SqlRefreshTime.class)) {
-                    SqlRefreshTime annoRefreshTime = repository.getAnnotation(SqlRefreshTime.class);
-                    refreshTime = annoRefreshTime.value();
-                }
-
-                // Provide Repository
-                serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession, refreshTime));
-            }
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses())
+                serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession));
 
             databaseRegistered = true;
         }
@@ -164,7 +164,7 @@ public class SimplifiedApi {
 
     public static void disableDatabase() {
         if (databaseEnabled) {
-            SqlRepository.shutdownRefreshers();
+            getSqlSession().shutdown();
             databaseEnabled = false;
         }
     }
@@ -182,7 +182,7 @@ public class SimplifiedApi {
     }
 
     public static Gson getGson() {
-        return getServiceManager().get(Gson.class);
+        return serviceManager.get(Gson.class);
     }
 
     public static NbtFactory_old getNbtFactory() {
@@ -190,20 +190,30 @@ public class SimplifiedApi {
     }
 
     public static Scheduler getScheduler() {
-        return getServiceManager().get(Scheduler.class);
+        return serviceManager.get(Scheduler.class);
     }
 
-    private static ServiceManager getServiceManager() {
-        return serviceManager;
-    }
-
-    // TODO: Replace with inherited repository that's implemented by SQL, Web
+    @Deprecated
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
-        return getServiceManager().get(tClass);
+        Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
+        return serviceManager.get(tClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
+        Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
+
+        return serviceManager.getAll(SqlRepository.class)
+                .stream()
+                .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
+                .findFirst()
+                .orElseThrow(() -> new UnknownServiceException(tClass));
     }
 
     private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
-        return Concurrent.newUnmodifiableList( // This must follow the foreign key and model ordering
+        return Concurrent.newUnmodifiableList(
                 // No Foreign Keys
                 RaritySqlRepository.class,
                 FormatSqlRepository.class,
@@ -224,6 +234,9 @@ public class SimplifiedApi {
                 MinionUniqueSqlRepository.class,
                 LocationRemoteSqlRepository.class,
                 SkyBlockSackSqlRepository.class,
+                SkyBlockMenuSqlRepository.class,
+                SkyBlockCTSlotSqlRepository.class,
+                SkyBlockCTRecipeSqlRepository.class,
 
                 // Requires Above
                 ItemSqlRepository.class,
@@ -238,6 +251,8 @@ public class SimplifiedApi {
                 PotionMixinSqlRepository.class,
                 DungeonFloorSqlRepository.class,
                 DungeonLevelSqlRepository.class,
+                SkyBlockCTRecipeSlotSqlRepository.class,
+                EnchantmentSqlRepository.class,
 
                 // Requires Above
                 CollectionSqlRepository.class,
@@ -273,13 +288,13 @@ public class SimplifiedApi {
     }
 
     public static SqlSession getSqlSession() {
-        Preconditions.checkArgument(databaseRegistered, "Database has not been registered");
-        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled");
-        return getServiceManager().get(SqlSession.class);
+        Preconditions.checkArgument(databaseRegistered, "Database has not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled.");
+        return serviceManager.get(SqlSession.class);
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
-        return getServiceManager().get(tClass);
+        return serviceManager.get(tClass);
     }
 
 }

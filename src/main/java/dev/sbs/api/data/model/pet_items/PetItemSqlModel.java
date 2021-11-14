@@ -7,26 +7,39 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "pet_items")
+@Table(
+        name = "pet_items"
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id", unique = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter

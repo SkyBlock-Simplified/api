@@ -9,6 +9,8 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -16,19 +18,30 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "accessories")
+@Table(
+        name = "accessories",
+        indexes = {
+                @Index(
+                        columnList = "family_key"
+                ),
+                @Index(
+                        columnList = "rarity_key"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
+    @Id
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, referencedColumnName = "item_id", unique = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Getter
@@ -39,13 +52,13 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "rarity_key", nullable = false)
     private RaritySqlModel rarity;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "family_key", referencedColumnName = "key")
+    @JoinColumn(name = "family_key")
     private AccessoryFamilySqlModel family;
 
     @Getter
@@ -65,14 +78,34 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccessorySqlModel)) return false;
+        AccessorySqlModel that = (AccessorySqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+                .append(this.getFamilyRank(), that.getFamilyRank())
+                .append(this.getItem(), that.getItem())
+                .append(this.getName(), that.getName())
+                .append(this.getRarity(), that.getRarity())
+                .append(this.getFamily(), that.getFamily())
+                .append(this.getEffects(), that.getEffects())
+                .append(this.getUpdatedAt(), that.getUpdatedAt())
+                .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+                .append(this.getId())
+                .append(this.getItem())
+                .append(this.getName())
+                .append(this.getRarity())
+                .append(this.getFamily())
+                .append(this.getFamilyRank())
+                .append(this.getEffects())
+                .append(this.getUpdatedAt())
+                .build();
     }
-
+    
 }

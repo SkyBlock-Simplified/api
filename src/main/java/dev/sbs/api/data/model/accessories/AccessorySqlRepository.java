@@ -10,8 +10,4 @@ public class AccessorySqlRepository extends SqlRepository<AccessorySqlModel> {
         super(sqlSession);
     }
 
-    public AccessorySqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

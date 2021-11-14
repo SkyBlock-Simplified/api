@@ -10,8 +10,4 @@ public class PotionTierSqlRepository extends SqlRepository<PotionTierSqlModel> {
         super(sqlSession);
     }
 
-    public PotionTierSqlRepository(@NonNull SqlSession sqlSession, long fixedUpdateRateMs) {
-        super(sqlSession, fixedUpdateRateMs);
-    }
-
 }

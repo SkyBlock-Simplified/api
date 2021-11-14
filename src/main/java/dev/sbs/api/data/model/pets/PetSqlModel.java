@@ -8,24 +8,48 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "pets")
+@Table(
+        name = "pets",
+        indexes = {
+                @Index(
+                        columnList = "lowest_rarity_key"
+                ),
+                @Index(
+                        columnList = "skill_key"
+                ),
+                @Index(
+                        columnList = "pet_type_key"
+                )
+        }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetSqlModel implements PetModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Id
+    @Column(name = "key", nullable = false, length = 127)
     private String key;
 
     @Getter
@@ -36,19 +60,19 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "lowest_rarity_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "lowest_rarity_key")
     private RaritySqlModel lowestRarity;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "skill_key")
     private SkillSqlModel skill;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_type_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "pet_type_key")
     private PetTypeSqlModel petType;
 
     @Getter
