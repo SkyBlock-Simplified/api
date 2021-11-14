@@ -18,6 +18,8 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
 import dev.sbs.api.client.mojang.MojangApiBuilder;
 import dev.sbs.api.client.mojang.implementation.MojangData;
+import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.accessories.AccessorySqlRepository;
 import dev.sbs.api.data.model.accessory_families.AccessoryFamilySqlRepository;
@@ -80,6 +82,7 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
+import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
 import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
@@ -190,15 +193,27 @@ public class SimplifiedApi {
         return serviceManager.get(Scheduler.class);
     }
 
-    // TODO: Replace with inherited repository that's implemented by SQL, Web
+    @Deprecated
     public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
-        Preconditions.checkArgument(databaseRegistered, "Database has not been registered.");
-        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled.");
+        Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
         return serviceManager.get(tClass);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
+        Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
+        Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
+
+        return serviceManager.getAll(SqlRepository.class)
+                .stream()
+                .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
+                .findFirst()
+                .orElseThrow(() -> new UnknownServiceException(tClass));
+    }
+
     private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
-        return Concurrent.newUnmodifiableList( // This must follow the foreign key and model ordering
+        return Concurrent.newUnmodifiableList(
                 // No Foreign Keys
                 RaritySqlRepository.class,
                 FormatSqlRepository.class,
