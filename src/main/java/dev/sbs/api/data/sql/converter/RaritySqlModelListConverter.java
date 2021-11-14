@@ -15,7 +15,7 @@ public class RaritySqlModelListConverter implements AttributeConverter<List<Rari
 
         try {
             return null;
-            //return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNullCached(RaritySqlModel::getOrdinal, attr);
+            //return SimplifiedApi.getSqlRepository(RarityRepository.class).findFirstOrNull(RaritySqlModel::getOrdinal, attr);
         } catch (Exception e) {
             return null;
         }
