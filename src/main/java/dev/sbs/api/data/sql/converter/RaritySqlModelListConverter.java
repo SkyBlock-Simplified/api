@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql.converter;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.model.rarities.RaritySqlModel;
+import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 
 import javax.persistence.AttributeConverter;
 import java.util.List;
