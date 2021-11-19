@@ -109,6 +109,8 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));
         } catch (SqlException sqlException) {
             Assertions.fail();
+        } finally {
+            SimplifiedApi.getSqlSession().shutdown();
         }
     }
 
