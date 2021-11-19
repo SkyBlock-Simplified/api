@@ -4,190 +4,128 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.sbs.api.util.CompressionType;
-import lombok.Cleanup;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterOutputStream;
 
 /**
  * <p>Provides data compression, decompression, encoding, decoding,<br>
  * variable types and stream creation.</p>
  */
 @SuppressWarnings("all")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataUtil {
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
-	// Mapping table from 6-bit nibbles to Base64 characters.
-	private final static char[] map1 = new char[64];
-	static {
-		int i = 0;
-		for (char c = 'A'; c <= 'Z'; c++)
-			map1[i++] = c;
-		for (char c = 'a'; c <= 'z'; c++)
-			map1[i++] = c;
-		for (char c = '0'; c <= '9'; c++)
-			map1[i++] = c;
-		map1[i++] = '+';
-		map1[i++] = '/';
-	}
-
-	// Mapping table from Base64 characters to 6-bit nibbles.
-	private final static byte[] map2 = new byte[128];
-	static {
-		Arrays.fill(map2, (byte) -1);
-		for (int i = 0; i < 64; i++)
-			map2[map1[i]] = (byte) i;
-	}
-
-	private DataUtil() { }
-
-	public static String compress(String data) throws IOException {
-		return compress(data.getBytes());
-	}
-
-	public static String compress(String data, int level) throws IOException {
-		return compress(data.getBytes(), level);
-	}
-
-	public static String compress(byte[] data) throws IOException {
-		return compress(data, 1);
-	}
-
-	public static String compress(byte[] data, int level) throws IOException {
-		if (data.length == 0)
-			return "";
-
-		byte[] results;
-		@Cleanup ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		@Cleanup DeflaterOutputStream deflater = new DeflaterOutputStream(buffer, new Deflater(level));
-		deflater.write(data);
-		results = buffer.toByteArray();
-		return new String(encode(results));
+	/**
+	 * Decodes Base64 data.
+	 * No blanks or line breaks are allowed within the Base64 encoded data.
+	 *
+	 * @param input a character array containing the Base64 encoded data.
+	 * @return An array containing the decoded data.
+	 * @throws IllegalArgumentException if the input is not valid Base64 encoded data.
+	 */
+	public static byte[] decode(char[] input) {
+		return decode(new String(input));
 	}
 
 	/**
-	 * Decodes Base64 data. No blanks or line breaks are allowed within the
-	 * Base64 encoded data.
+	 * Decodes Base64 data.
+	 * No blanks or line breaks are allowed within the Base64 encoded data.
 	 *
 	 * @param in a character array containing the Base64 encoded data.
-	 * @return An array containing the decoded data bytes.
+	 * @return An array containing the decoded data.
 	 * @throws IllegalArgumentException if the input is not valid Base64 encoded data.
 	 */
-	public static byte[] decode(char[] in) {
-		int iLen = in.length;
-
-		if (iLen % 4 != 0)
-			throw new RuntimeException("Length of Base64 encoded input string is not a multiple of 4.");
-
-		while (iLen > 0 && in[iLen - 1] == '=')
-			iLen--;
-
-		int oLen = (iLen * 3) / 4;
-		byte[] out = new byte[oLen];
-		int ip = 0;
-		int op = 0;
-
-		while (ip < iLen) {
-			int i0 = in[ip++];
-			int i1 = in[ip++];
-			int i2 = ip < iLen ? in[ip++] : 'A';
-			int i3 = ip < iLen ? in[ip++] : 'A';
-
-			if (i0 > 127 || i1 > 127 || i2 > 127 || i3 > 127)
-				throw new RuntimeException("Illegal character in Base64 encoded data.");
-
-			int b0 = map2[i0];
-			int b1 = map2[i1];
-			int b2 = map2[i2];
-			int b3 = map2[i3];
-
-			if (b0 < 0 || b1 < 0 || b2 < 0 || b3 < 0)
-				throw new RuntimeException("Illegal character in Base64 encoded data.");
-
-			int o0 = (b0 << 2) | (b1 >>> 4);
-			int o1 = ((b1 & 0xf) << 4) | (b2 >>> 2);
-			int o2 = ((b2 & 3) << 6) | b3;
-			out[op++] = (byte) o0;
-
-			if (op < oLen)
-				out[op++] = (byte) o1;
-
-			if (op < oLen)
-				out[op++] = (byte) o2;
-		}
-
-		return out;
+	public static byte[] decode(String input) {
+		return Base64.getDecoder().decode(input);
 	}
 
-	public static byte[] decompress(String data) throws IOException {
-		if (StringUtil.isEmpty(data))
-			return new byte[] {};
-
-		byte[] bytes = decode(data.toCharArray());
-		byte[] results;
-		@Cleanup ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		@Cleanup InflaterOutputStream inflater = new InflaterOutputStream(buffer);
-		inflater.write(bytes);
-		results = buffer.toByteArray();
-
-		return results;
+	/**
+	 * Decodes Base64 data.
+	 * No blanks or line breaks are allowed within the Base64 encoded data.
+	 *
+	 * @param in a character array containing the Base64 encoded data.
+	 * @return An array containing the decoded data.
+	 * @throws IllegalArgumentException if the input is not valid Base64 encoded data.
+	 */
+	public static String decodeToString(String input) {
+		return new String(Base64.getDecoder().decode(input), StandardCharsets.UTF_8);
 	}
 
 	/**
 	 * Encodes a byte array into Base64 format. No blanks or line breaks are
 	 * inserted.
 	 *
-	 * @param in an array containing the data bytes to be encoded.
-	 * @return A character array with the Base64 encoded data.
+	 * @param input an array containing the data bytes to be encoded.
+	 * @return A byte array containing the encoded data.
 	 */
-	public static char[] encode(byte[] in) {
-		int iLen = in.length;
-		int oDataLen = (iLen * 4 + 2) / 3; // output length without padding
-		int oLen = ((iLen + 2) / 3) * 4; // output length including padding
-		char[] out = new char[oLen];
-		int ip = 0;
-		int op = 0;
+	public static byte[] encode(String input) {
+		return encode(input.getBytes(StandardCharsets.UTF_8));
+	}
 
-		while (ip < iLen) {
-			int i0 = in[ip++] & 0xff;
-			int i1 = ip < iLen ? in[ip++] & 0xff : 0;
-			int i2 = ip < iLen ? in[ip++] & 0xff : 0;
-			int o0 = i0 >>> 2;
-			int o1 = ((i0 & 3) << 4) | (i1 >>> 4);
-			int o2 = ((i1 & 0xf) << 2) | (i2 >>> 6);
-			int o3 = i2 & 0x3F;
-			out[op++] = map1[o0];
-			out[op++] = map1[o1];
-			out[op] = op < oDataLen ? map1[o2] : '=';
-			op++;
-			out[op] = op < oDataLen ? map1[o3] : '=';
-			op++;
-		}
+	/**
+	 * Encodes a byte array into Base64 format. No blanks or line breaks are
+	 * inserted.
+	 *
+	 * @param input an array containing the data bytes to be encoded.
+	 * @return A byte array containing the encoded data.
+	 */
+	public static byte[] encode(byte[] input) {
+		return Base64.getEncoder().encode(input);
+	}
 
-		return out;
+	/**
+	 * Encodes a byte array into Base64 format.
+	 * No blanks or line breaks are inserted.
+	 *
+	 * @param input a string containing the data to be encoded.
+	 * @return A string containing the encoded data.
+	 */
+	public static String encodeToString(String input) {
+		return encodeToString(input.getBytes(StandardCharsets.UTF_8));
+	}
+
+	/**
+	 * Encodes a byte array into Base64 format.
+	 * No blanks or line breaks are inserted.
+	 *
+	 * @param input an array containing the data bytes to be encoded.
+	 * @return A string containing the encoded data.
+	 */
+	public static String encodeToString(byte[] input) {
+		return Base64.getEncoder().encodeToString(input);
 	}
 
 	public static CompressionType getCompression(InputStream inputStream) throws IOException {
 		if (!inputStream.markSupported())
 			inputStream = new BufferedInputStream(inputStream);
 
+		CompressionType compressionType = CompressionType.NONE;
 		inputStream.mark(0);
 
 		if (inputStream.read() == 120)
-			return CompressionType.ZLIB;
+			compressionType = CompressionType.ZLIB;
 
 		inputStream.reset();
 		if (inputStream.read() == 31)
-			return CompressionType.GZIP;
+			compressionType = CompressionType.GZIP;
 
-		return CompressionType.NONE;
+		inputStream.reset();
+		return compressionType;
 	}
 
 	public static ByteArrayDataInput newDataInput(byte[] data) {
