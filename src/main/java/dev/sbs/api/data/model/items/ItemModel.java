@@ -12,7 +12,7 @@ public interface ItemModel extends Model {
 
     String getMaterial();
 
-    int getDurability();
+    Integer getDurability();
 
     String getSkin();
 
@@ -24,15 +24,15 @@ public interface ItemModel extends Model {
 
     String getGenerator();
 
-    int getGeneratorTier();
+    Integer getGeneratorTier();
 
     boolean isGlowing();
 
     String getCategory();
 
-    Map<String, Double> getStats();
+    Map<String, Double > getStats();
 
-    double getNpcSellPrice();
+    Double getNpcSellPrice();
 
     boolean isUnstackable();
 
@@ -42,7 +42,7 @@ public interface ItemModel extends Model {
 
     Map<String, List<Integer>> getTieredStats();
 
-    int getGearScore();
+    Integer getGearScore();
 
     Map<String, Object> getRequirements();
 
@@ -52,7 +52,7 @@ public interface ItemModel extends Model {
 
     String getDescription();
 
-    double getAbilityDamageScaling();
+    Double getAbilityDamageScaling();
 
     Map<String, Integer> getEnchantments();
 

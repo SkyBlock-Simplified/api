@@ -37,7 +37,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -55,7 +55,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "speed", nullable = false)
-    private int speed;
+    private Integer speed;
 
     @Getter
     @UpdateTimestamp

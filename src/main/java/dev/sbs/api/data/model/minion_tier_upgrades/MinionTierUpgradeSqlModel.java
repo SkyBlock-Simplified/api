@@ -45,7 +45,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -56,7 +56,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
     @Getter
     @Setter
     @Column(name = "coin_cost", nullable = false)
-    private double coinCost;
+    private Double coinCost;
 
     @Getter
     @Setter
@@ -67,7 +67,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
     @Getter
     @Setter
     @Column(name = "item_quantity", nullable = false)
-    private int itemQuantity;
+    private Integer itemQuantity;
 
     @Getter
     @UpdateTimestamp

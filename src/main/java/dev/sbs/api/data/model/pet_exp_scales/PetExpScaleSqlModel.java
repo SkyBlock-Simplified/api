@@ -28,12 +28,12 @@ public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
     @Column(name = "value", nullable = false, unique = true)
-    private double value;
+    private Double value;
 
     @Getter
     @UpdateTimestamp

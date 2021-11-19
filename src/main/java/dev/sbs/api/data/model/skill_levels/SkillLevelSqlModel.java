@@ -32,7 +32,7 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -43,12 +43,12 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "level", nullable = false)
-    private int level;
+    private Integer level;
 
     @Getter
     @Setter
     @Column(name = "total_exp_required", nullable = false)
-    private double totalExpRequired;
+    private Double totalExpRequired;
 
     @Getter
     @Setter

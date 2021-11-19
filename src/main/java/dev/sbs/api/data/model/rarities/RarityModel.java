@@ -8,10 +8,10 @@ public interface RarityModel extends Model {
 
     String getName();
 
-    int getOrdinal();
+    Integer getOrdinal();
 
     boolean isKeyValid();
 
-    int getPetExpOffset();
+    Integer getPetExpOffset();
 
 }

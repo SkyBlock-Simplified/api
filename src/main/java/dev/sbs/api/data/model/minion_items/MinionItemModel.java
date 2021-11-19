@@ -13,6 +13,6 @@ public interface MinionItemModel extends Model {
 
     ItemModel getItem();
 
-    double getAverageYield();
+    Double getAverageYield();
 
 }

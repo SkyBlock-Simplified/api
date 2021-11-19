@@ -13,7 +13,7 @@ public interface PotionMixinModel extends EffectsModel {
 
     SlayerModel getSlayerRequirement();
 
-    int getSlayerLevelRequirement();
+    Integer getSlayerLevelRequirement();
 
     Map<String, Object> getBuffEffects();
 

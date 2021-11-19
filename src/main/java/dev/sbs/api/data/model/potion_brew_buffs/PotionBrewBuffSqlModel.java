@@ -38,7 +38,7 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -54,7 +54,7 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "buff_value", nullable = false, length = 127)
-    private double buffValue;
+    private Double buffValue;
 
     @Getter
     @Setter

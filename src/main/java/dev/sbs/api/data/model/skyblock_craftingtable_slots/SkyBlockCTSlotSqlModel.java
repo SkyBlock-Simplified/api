@@ -27,7 +27,7 @@ public class SkyBlockCTSlotSqlModel implements SkyBlockCTSlotModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -43,7 +43,7 @@ public class SkyBlockCTSlotSqlModel implements SkyBlockCTSlotModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "slot", nullable = false)
-    private int slot;
+    private Integer slot;
 
     @Getter
     @Setter

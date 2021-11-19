@@ -8,6 +8,6 @@ public interface DungeonModel extends Model {
 
     String getName();
 
-    double getWeightMultiplier();
+    Double getWeightMultiplier();
 
 }

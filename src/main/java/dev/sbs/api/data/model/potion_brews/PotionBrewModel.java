@@ -16,6 +16,6 @@ public interface PotionBrewModel extends Model {
 
     NpcModel getNpc();
 
-    int getCoinCost();
+    Integer getCoinCost();
 
 }

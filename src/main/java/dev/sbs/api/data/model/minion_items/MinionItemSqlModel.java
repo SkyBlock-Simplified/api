@@ -45,7 +45,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -68,7 +68,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "average_yield", nullable = false)
-    private double averageYield;
+    private Double averageYield;
 
     @Getter
     @UpdateTimestamp

@@ -10,6 +10,6 @@ public interface MinionTierModel extends Model {
 
     ItemModel getItem();
 
-    int getSpeed();
+    Integer getSpeed();
 
 }

@@ -4,6 +4,6 @@ import dev.sbs.api.data.model.Model;
 
 public interface PetScoreModel extends Model {
 
-    int getBreakpoint();
+    Integer getBreakpoint();
 
 }

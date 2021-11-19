@@ -8,10 +8,10 @@ public interface MinionTierUpgradeModel extends Model {
 
     MinionTierModel getMinionTier();
 
-    double getCoinCost();
+    Double getCoinCost();
 
     ItemModel getItemCost();
 
-    int getItemQuantity();
+    Integer getItemQuantity();
 
 }

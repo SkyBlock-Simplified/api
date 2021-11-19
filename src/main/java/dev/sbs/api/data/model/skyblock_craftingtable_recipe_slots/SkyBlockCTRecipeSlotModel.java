@@ -10,6 +10,6 @@ public interface SkyBlockCTRecipeSlotModel extends Model {
 
     SkyBlockCTSlotModel getSlot();
 
-    int getOrdinal();
+    Integer getOrdinal();
 
 }

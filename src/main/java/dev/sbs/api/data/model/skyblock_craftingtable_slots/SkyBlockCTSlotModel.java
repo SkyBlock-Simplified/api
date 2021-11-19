@@ -8,7 +8,7 @@ public interface SkyBlockCTSlotModel extends Model {
 
     String getName();
 
-    int getSlot();
+    Integer getSlot();
 
     boolean isQuickCraft();
 

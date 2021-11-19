@@ -13,7 +13,7 @@ public interface EnchantmentModel extends EffectsModel {
 
     ReforgeTypeModel getItemType();
 
-    int getRequiredLevel();
+    Integer getRequiredLevel();
 
     Map<String, Object> getEffects();
 

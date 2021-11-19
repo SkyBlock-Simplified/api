@@ -13,6 +13,6 @@ public interface StatModel extends Model {
 
     FormatModel getFormat();
 
-    int getOrdinal();
+    Integer getOrdinal();
 
 }

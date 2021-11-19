@@ -45,22 +45,22 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
     @Column(name = "x", nullable = false)
-    private double x;
+    private Double x;
 
     @Getter
     @Setter
     @Column(name = "y", nullable = false)
-    private double y;
+    private Double y;
 
     @Getter
     @Setter
     @Column(name = "z", nullable = false)
-    private double z;
+    private Double z;
 
     @Getter
     @Setter

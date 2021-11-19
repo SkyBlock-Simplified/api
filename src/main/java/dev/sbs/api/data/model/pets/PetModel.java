@@ -17,7 +17,7 @@ public interface PetModel extends Model {
 
     PetTypeModel getPetType();
 
-    int getMaxLevel();
+    Integer getMaxLevel();
 
     String getSkin();
 

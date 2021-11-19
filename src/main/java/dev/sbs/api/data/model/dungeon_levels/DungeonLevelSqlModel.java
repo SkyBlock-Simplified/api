@@ -27,18 +27,18 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
     @Id
     @Column(name = "level", nullable = false)
-    private int level;
+    private Integer level;
 
     @Getter
     @Setter
     @Column(name = "total_exp_required", nullable = false)
-    private double totalExpRequired;
+    private Double totalExpRequired;
 
     @Getter
     @UpdateTimestamp

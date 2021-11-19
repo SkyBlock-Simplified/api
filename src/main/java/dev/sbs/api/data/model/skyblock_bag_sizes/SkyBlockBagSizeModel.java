@@ -7,8 +7,8 @@ public interface SkyBlockBagSizeModel extends Model {
 
     SkyBlockBagModel getBag();
 
-    int getCollectionTier();
+    Integer getCollectionTier();
 
-    int getSlotCount();
+    Integer getSlotCount();
 
 }

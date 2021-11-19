@@ -4,6 +4,6 @@ import dev.sbs.api.data.model.Model;
 
 public interface PetExpScaleModel extends Model {
 
-    double getValue();
+    Double getValue();
 
 }

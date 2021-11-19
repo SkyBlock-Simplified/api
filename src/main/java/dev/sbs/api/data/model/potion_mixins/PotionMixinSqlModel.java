@@ -30,7 +30,7 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -52,7 +52,7 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "slayer_level", nullable = false)
-    private int slayerLevelRequirement;
+    private Integer slayerLevelRequirement;
 
     @Getter
     @Setter

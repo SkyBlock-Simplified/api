@@ -36,7 +36,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -57,7 +57,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "max_level", nullable = false)
-    private int maxLevel;
+    private Integer maxLevel;
 
     @Getter
     @Setter
@@ -73,12 +73,12 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "weight_exponent", nullable = false)
-    private double weightExponent;
+    private Double weightExponent;
 
     @Getter
     @Setter
     @Column(name = "weight_divider", nullable = false)
-    private double weightDivider;
+    private Double weightDivider;
 
     @Getter
     @UpdateTimestamp

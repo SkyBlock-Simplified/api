@@ -4,8 +4,8 @@ import dev.sbs.api.data.model.Model;
 
 public interface MinionUniqueModel extends Model {
 
-    int getPlaceable();
+    Integer getPlaceable();
 
-    int getUniqueCrafts();
+    Integer getUniqueCrafts();
 
 }

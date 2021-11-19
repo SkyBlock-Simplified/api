@@ -9,7 +9,7 @@ public interface PotionBrewBuffModel extends Model {
 
     String getBuffKey();
 
-    double getBuffValue();
+    Double getBuffValue();
 
     boolean isPercentage();
 

@@ -32,7 +32,7 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -43,12 +43,12 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     @Getter
     @Setter
     @Column(name = "tier", nullable = false)
-    private int tier;
+    private Integer tier;
 
     @Getter
     @Setter
     @Column(name = "amount_required", nullable = false)
-    private double amountRequired;
+    private Double amountRequired;
 
     @Getter
     @Setter

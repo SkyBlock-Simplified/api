@@ -41,7 +41,7 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -63,7 +63,7 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
-    private int ordinal;
+    private Integer ordinal;
 
     @Getter
     @Setter

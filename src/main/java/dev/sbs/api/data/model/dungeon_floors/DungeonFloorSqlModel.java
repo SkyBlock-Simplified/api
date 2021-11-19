@@ -46,7 +46,7 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -57,7 +57,7 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "floor", nullable = false)
-    private int floor;
+    private Integer floor;
 
     @Getter
     @Setter

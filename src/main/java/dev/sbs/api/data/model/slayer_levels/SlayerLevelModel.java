@@ -7,8 +7,8 @@ public interface SlayerLevelModel extends Model {
 
     SlayerModel getSlayer();
 
-    int getLevel();
+    Integer getLevel();
 
-    double getTotalExpRequired();
+    Double getTotalExpRequired();
 
 }

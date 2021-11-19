@@ -28,17 +28,17 @@ public class MinionUniqueSqlModel implements MinionUniqueModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
     @Column(name = "placeable", nullable = false, unique = true)
-    private int placeable;
+    private Integer placeable;
 
     @Getter
     @Setter
     @Column(name = "unique_crafts", nullable = false)
-    private int uniqueCrafts;
+    private Integer uniqueCrafts;
 
     @Getter
     @UpdateTimestamp

@@ -43,7 +43,7 @@ public class SkyBlockCTRecipeSlotSqlModel implements SkyBlockCTRecipeSlotModel, 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -60,7 +60,7 @@ public class SkyBlockCTRecipeSlotSqlModel implements SkyBlockCTRecipeSlotModel, 
     @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
-    private int ordinal;
+    private Integer ordinal;
 
     @Getter
     @UpdateTimestamp
