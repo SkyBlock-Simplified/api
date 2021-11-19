@@ -21,6 +21,8 @@ import dev.sbs.api.data.model.minions.MinionModel;
 import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleModel;
 import dev.sbs.api.data.model.pets.PetModel;
 import dev.sbs.api.data.model.rarities.RarityModel;
+import dev.sbs.api.data.model.reforge_stats.ReforgeStatModel;
+import dev.sbs.api.data.model.reforges.ReforgeModel;
 import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemModel;
@@ -28,10 +30,9 @@ import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
 import dev.sbs.api.data.model.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.slayers.SlayerModel;
 import dev.sbs.api.data.model.stats.StatModel;
-import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
-import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.Range;
 import dev.sbs.api.util.Vector;
@@ -234,6 +235,7 @@ public class SkyBlockIsland {
         private double experience_skill_taming = -1;
         private double experience_skill_carpentry = -1;
         private double experience_skill_runecrafting = -1;
+        private double experience_skill_social = 0; // NOT IN USE
 
         // Essence
         @SerializedName("essence_undead")
@@ -599,7 +601,11 @@ public class SkyBlockIsland {
             @Getter private SkyBlockDate.RealTime timestamp;
             @Getter private Banking.Transaction.Action action;
             @SerializedName("initiator_name")
-            @Getter private String initiatorName;
+            private String initiatorName;
+
+            public String getInitiatorName() {
+                return this.initiatorName.replace("Â", ""); // API Artifact
+            }
 
             public enum Action {
 
@@ -1383,7 +1389,8 @@ public class SkyBlockIsland {
         }
 
         public CompoundTag getNbtData() throws IOException {
-            return new NbtFactory().fromByteArray(this.getData());
+            byte[] bytes = this.getData();
+            return SimplifiedApi.getNbtFactory().fromBase64(this.getRawData());
         }
 
     }
@@ -1644,15 +1651,19 @@ public class SkyBlockIsland {
 
     public static class PlayerStats {
 
-        private static final Repository<StatModel> statSqlRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
-        private static final Repository<SkillModel> skillSqlRepository = SimplifiedApi.getRepositoryOf(SkillModel.class);
-        private static final Repository<AccessoryModel> accessorySqlRepository = SimplifiedApi.getRepositoryOf(AccessoryModel.class);
+        private static final Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
+        private static final Repository<SkillModel> skillRepository = SimplifiedApi.getRepositoryOf(SkillModel.class);
+        private static final Repository<SkillLevelModel> skillLevelRepository = SimplifiedApi.getRepositoryOf(SkillLevelModel.class);
+        private static final Repository<AccessoryModel> accessoryRepository = SimplifiedApi.getRepositoryOf(AccessoryModel.class);
+        private static final Repository<RarityModel> rarityRepository = SimplifiedApi.getRepositoryOf(RarityModel.class);
+        private static final Repository<ReforgeModel> reforgeRepository = SimplifiedApi.getRepositoryOf(ReforgeModel.class);
+        private static final Repository<ReforgeStatModel> reforgeStatRepository = SimplifiedApi.getRepositoryOf(ReforgeStatModel.class);
         @Getter private final ConcurrentMap<StatModel, Data> stats = Concurrent.newMap();
 
         @SneakyThrows
         private PlayerStats(Member member) {
             // Initialize
-            statSqlRepository.findAll().forEach(statModel -> stats.put(statModel, new Data(0, 0)));
+            statRepository.findAll().forEach(statModel -> this.stats.put(statModel, new Data(0, 0)));
 
             // TODO: Load stats from API into stats map
             // Optimal solution would be to go through everywhere stats can be,
@@ -1663,69 +1674,129 @@ public class SkyBlockIsland {
             // User Changeable Optimizer Stats: Armor Set (Wardrobe), Active Potions, Pet, Weapon
 
             try {
-                // TODO: This NBT library is to be updated and replaced with the old NBT library once working on the mod
-                CompoundTag accessoryBag = member.getStorage(Storage.ACCESSORIES).getNbtData();
-                CompoundTag armorInventory = member.getStorage(Storage.ARMOR).getNbtData();
                 ConcurrentList<CenturyCake> centuryCakes = member.getCenturyCakes();
                 ConcurrentMap<String, Integer> essencePerks = member.getEssencePerks();
                 ConcurrentList<Potion> activePotions = member.getActivePotions();
 
-                // Handle Skills
-                ConcurrentList<SkillModel> skillModels = skillSqlRepository.findAll();
+                // Load Skills
+                ConcurrentList<SkillModel> skillModels = skillRepository.findAll();
+                ConcurrentMap<StatModel, Double> statBonuses = Concurrent.newMap();
                 skillModels.forEach(skillModel -> {
-                    Skill skill = member.getSkill(skillModel);
-                    int level = skill.getLevel();
-                    // Pull skill stat bonus from resource tables
-                    // Store stats
-                });
+                    int skillLevel = member.getSkill(skillModel).getLevel();
 
-                // Handle Accessories
-                // This should be a list
-                ConcurrentList<AccessoryModel> accessoryModels = accessorySqlRepository.findAll();
-                accessoryBag.values().stream().map(CompoundTag.class::cast).forEach(accessory -> {
-                    try {
-                        CompoundTag tag = accessory.get("tag");
-                        CompoundTag extra = tag.get("ExtraAttributes");
-                        String id = extra.getString("id").getValue();
-                        AccessoryModel accessoryModel = accessorySqlRepository.findFirstOrNull(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), id);
-
-
-                        // Pull base stats from AccessoryModel
-                        // Pull rarity and reforge from accessory
-                        // Pull stats from RarityModel and ReforgeModel
-                        // Perform modifiers based on Accessory modifiers
-                        // Store stats
-
-                        if ("NEW_YEAR_CAKE_BAG".equals(id)) {
-                            // Store number of cakes for Health
-                        }
-                    } catch (SqlException sqlException) { }
-                });
-
-                // Handle Armor
-                armorInventory.values().stream().map(CompoundTag.class::cast).forEach(armorItem -> {
-                    // Pull rarity and reforge from armor item
-                    // Pull stats from RarityModel and ReforgeModel
-                    // Pull non-reforge stats from armor item lore
-                    // Store stats
-                });
-
-                // Handle Century Cakes
-                centuryCakes.forEach(centuryCake -> {
-                    if (centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis()) {
-                        StatModel stat = centuryCake.getStat(); // ordinal 11: magic find
-                        String key = centuryCake.getKey(); // cake_magic_find
-                        int amount = centuryCake.getAmount();
-                        // Store amount into stat
+                    if (skillLevel > 0) {
+                        skillLevelRepository.findAll(SkillLevelModel::getSkill, skillModel)
+                                .subList(0, skillLevel)
+                                .stream()
+                                .map(SkillLevelModel::getEffects)
+                                .forEach(effectMap -> {
+                                    effectMap.entrySet()
+                                            .stream()
+                                            .forEach(entry -> {
+                                                StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
+                                                statBonuses.put(statModel, (Double) entry.getValue() + statBonuses.getOrDefault(statModel, 0.0));
+                                            });
+                                });
                     }
                 });
 
+                // Save Skills
+                statBonuses.forEach(statBonus -> {
+                    Data statData = this.stats.get(statBonus.getKey());
+                    statData.addBase(statBonus.getValue());
+                });
+
+                // Load Accessories
+                ConcurrentMap<StatModel, Double> accessoryStatBonuses = Concurrent.newMap();
+                member.getStorage(Storage.ACCESSORIES)
+                        .getNbtData()
+                        .<CompoundTag>getList("i")
+                        .forEach(accessoryTag -> {
+                            String itemId = accessoryTag.getPath("tag.ExtraAttributes.id");
+                            String reforgeKey = accessoryTag.<String>getPathOrDefault("tag.ExtraAttributes.modifier", "").toUpperCase();
+                            int rarityUpgrades = accessoryTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", 0);
+                            AccessoryModel accessoryModel = accessoryRepository.findFirstOrNull(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId);
+                            RarityModel rarityModel = rarityRepository.findFirstOrNull(RarityModel::getOrdinal, accessoryModel.getRarity().getOrdinal() + rarityUpgrades);
+
+                            // Load Effects
+                            accessoryModel.getEffects()
+                                    .entrySet()
+                                    .stream()
+                                    .forEach(entry -> {
+                                        StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
+                                        accessoryStatBonuses.put(statModel, (Double) entry.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                                    });
+
+                            // Load Reforge
+                            if (StringUtil.isNotEmpty(reforgeKey)) {
+                                ReforgeModel reforgeModel = reforgeRepository.findFirstOrNull(ReforgeModel::getKey, reforgeKey);
+                                ReforgeStatModel reforgeStatModel = reforgeStatRepository.findFirstOrNull(ReforgeStatModel::getRarity, rarityModel);
+
+                                reforgeStatModel.getEffects()
+                                        .entrySet()
+                                        .stream()
+                                        .forEach(entry -> {
+                                            StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
+                                            accessoryStatBonuses.put(statModel, (Double) entry.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                                        });
+                            }
+
+                            // TODO: Handle Accessory Bonus Modifiers (Hegemony)
+
+                            // New Year Cake Bag
+                            if ("NEW_YEAR_CAKE_BAG".equals(itemId)) {
+                                try {
+                                    String stop = "";
+                                    Byte[] nbtCakeBag = accessoryTag.getPath("tag.ExtraAttributes.new_year_cake_bag_data");
+                                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                                    StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, "HEALTH");
+                                    accessoryStatBonuses.put(statModel, (double) cakeBagItems.size() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                                } catch (IOException ioException) { }
+                            }
+                });
+
+                // Save Accessories
+                accessoryStatBonuses.forEach(accessoryStatBonus -> {
+                    Data statData = this.stats.get(accessoryStatBonus.getKey());
+                    statData.addBonus(accessoryStatBonus.getValue());
+                });
+
+                // Load Armor
+                member.getStorage(Storage.ARMOR)
+                        .getNbtData()
+                        .<CompoundTag>getList("i")
+                        .forEach(armorItem -> {
+                            if (!armorItem.isEmpty()) {
+                                String here = "";
+                                // Pull rarity and reforge from armor item
+                                // Pull stats from RarityModel and ReforgeModel
+                                // Pull non-reforge stats from armor item lore
+                                // Store stats
+                            }
+                        });
+
+                // Load Century Cakes
+                centuryCakes.forEach(centuryCake -> {
+                    if (centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis()) {
+                        StatModel statModel = centuryCake.getStat();
+                        int amount = centuryCake.getAmount();
+
+                        // Save Century Cake
+                        Data statData = this.stats.get(statModel);
+                        statData.addBonus(amount);
+                    }
+                });
+
+                // Load Essence Perks
                 essencePerks.forEach(entry -> {
                     if (entry.getKey().startsWith("permanent_")) {
-                        String skillKey = entry.getKey().replace("permanent_", "");
+                        String statKey = entry.getKey().replace("permanent_", "").toUpperCase();
+                        StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, statKey);
                         int value = entry.getValue();
-                        // Convert value into total bonus
-                        // Store total bonus into stat
+
+                        // Save Essence Perk
+                        Data statData = this.stats.get(statModel);
+                        statData.addBonus(value); // TODO: Add essence_perks? sql table for catacombs_* and permanent_*
                     }
                 });
 
@@ -1763,7 +1834,9 @@ public class SkyBlockIsland {
                 });
 
                 // Parse item nbt lore for weapon query
-            } catch (IOException ioException) { }
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
 
         public Data getData(StatModel statModel) {
@@ -1774,12 +1847,20 @@ public class SkyBlockIsland {
         public static class Data {
 
             @Setter(AccessLevel.PRIVATE)
-            @Getter private int base;
+            @Getter private double base;
             @Setter(AccessLevel.PRIVATE)
-            @Getter private int bonus;
+            @Getter private double bonus;
 
             private Data() {
                 this(0, 0);
+            }
+
+            public void addBase(double value) {
+                this.base += value;
+            }
+
+            public void addBonus(double value) {
+                this.bonus += value;
             }
 
         }
