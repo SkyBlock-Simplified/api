@@ -4,16 +4,16 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
-import dev.sbs.api.data.model.dungeons.DungeonModel;
-import dev.sbs.api.data.model.items.ItemModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
-import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
-import dev.sbs.api.data.model.rarities.RarityModel;
-import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
-import dev.sbs.api.data.model.skills.SkillModel;
-import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
-import dev.sbs.api.data.model.slayers.SlayerModel;
+import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
+import dev.sbs.api.data.model.skyblock.items.ItemModel;
+import dev.sbs.api.data.model.skyblock.minion_tier_upgrades.MinionTierUpgradeModel;
+import dev.sbs.api.data.model.skyblock.minion_tiers.MinionTierModel;
+import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
+import dev.sbs.api.data.model.skyblock.sacks.SackModel;
+import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
+import dev.sbs.api.data.model.skyblock.skills.SkillModel;
+import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
@@ -68,7 +68,7 @@ public class SkyBlockIslandTest {
 
             // collection_items, collections
             SkyBlockIsland.Collection sbCollection = member.getCollection(skill);
-            SkyBlockSackModel sbSack = SimplifiedApi.getRepositoryOf(SkyBlockSackModel.class).findFirstOrNull(SkyBlockSackModel::getKey, "MINING");
+            SackModel sbSack = SimplifiedApi.getRepositoryOf(SackModel.class).findFirstOrNull(SackModel::getKey, "MINING");
             MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
             // minion_tier_upgrades, minion_tiers, items

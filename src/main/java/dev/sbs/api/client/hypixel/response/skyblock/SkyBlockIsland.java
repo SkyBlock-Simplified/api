@@ -11,25 +11,25 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.model.accessories.AccessoryModel;
-import dev.sbs.api.data.model.collection_items.CollectionItemModel;
-import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
-import dev.sbs.api.data.model.dungeon_levels.DungeonLevelModel;
-import dev.sbs.api.data.model.dungeons.DungeonModel;
-import dev.sbs.api.data.model.items.ItemModel;
-import dev.sbs.api.data.model.minions.MinionModel;
-import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleModel;
-import dev.sbs.api.data.model.pets.PetModel;
-import dev.sbs.api.data.model.rarities.RarityModel;
-import dev.sbs.api.data.model.reforge_stats.ReforgeStatModel;
-import dev.sbs.api.data.model.reforges.ReforgeModel;
-import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
-import dev.sbs.api.data.model.skills.SkillModel;
-import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemModel;
-import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackModel;
-import dev.sbs.api.data.model.slayer_levels.SlayerLevelModel;
-import dev.sbs.api.data.model.slayers.SlayerModel;
-import dev.sbs.api.data.model.stats.StatModel;
+import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
+import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemModel;
+import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelModel;
+import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
+import dev.sbs.api.data.model.skyblock.items.ItemModel;
+import dev.sbs.api.data.model.skyblock.minions.MinionModel;
+import dev.sbs.api.data.model.skyblock.pet_exp_scales.PetExpScaleModel;
+import dev.sbs.api.data.model.skyblock.pets.PetModel;
+import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
+import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
+import dev.sbs.api.data.model.skyblock.reforges.ReforgeModel;
+import dev.sbs.api.data.model.skyblock.sack_items.SackItemModel;
+import dev.sbs.api.data.model.skyblock.sacks.SackModel;
+import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
+import dev.sbs.api.data.model.skyblock.skills.SkillModel;
+import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
+import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
+import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
@@ -387,11 +387,11 @@ public class SkyBlockIsland {
             return new Slayer(slayerModel, this.slayer_bosses.get(slayerModel.getKey().toLowerCase()));
         }
 
-        public Sack getSack(SkyBlockSackModel sackModel) {
+        public Sack getSack(SackModel sackModel) {
             Sack sack = new Sack(sackModel);
 
-            SimplifiedApi.getRepositoryOf(SkyBlockSackItemModel.class)
-                    .findAll(SkyBlockSackItemModel::getSack, sackModel)
+            SimplifiedApi.getRepositoryOf(SackItemModel.class)
+                    .findAll(SackItemModel::getSack, sackModel)
                     .stream()
                     .map(sackItem -> Pair.of(sackItem, this.sacksCounts.getOrDefault(sackItem.getItem().getItemId(), 0)))
                     .forEach(entry -> sack.stored.put(entry.getKey(), entry.getValue()));
@@ -1553,10 +1553,10 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sack {
 
-        @Getter private final SkyBlockSackModel type;
-        private final ConcurrentMap<SkyBlockSackItemModel, Integer> stored = Concurrent.newMap();
+        @Getter private final SackModel type;
+        private final ConcurrentMap<SackItemModel, Integer> stored = Concurrent.newMap();
 
-        public ConcurrentMap<SkyBlockSackItemModel, Integer> getStored() {
+        public ConcurrentMap<SackItemModel, Integer> getStored() {
             return Concurrent.newUnmodifiableMap(this.stored);
         }
 
@@ -1665,19 +1665,7 @@ public class SkyBlockIsland {
             // Initialize
             statRepository.findAll().forEach(statModel -> this.stats.put(statModel, new Data(0, 0)));
 
-            // TODO: Load stats from API into stats map
-            // Optimal solution would be to go through everywhere stats can be,
-            // and parse stats dynamically instead of adding them one at a time
-
-            // Before Stats Calculation
-            // Readable API Stats: Inventory Accessories, Accessory Bag, Cake Bag Health, Essence Bonuses, Century Cake Bonuses, Armor, Pet
-            // User Changeable Optimizer Stats: Armor Set (Wardrobe), Active Potions, Pet, Weapon
-
             try {
-                ConcurrentList<CenturyCake> centuryCakes = member.getCenturyCakes();
-                ConcurrentMap<String, Integer> essencePerks = member.getEssencePerks();
-                ConcurrentList<Potion> activePotions = member.getActivePotions();
-
                 // Load Skills
                 ConcurrentList<SkillModel> skillModels = skillRepository.findAll();
                 ConcurrentMap<StatModel, Double> statBonuses = Concurrent.newMap();
@@ -1774,8 +1762,16 @@ public class SkyBlockIsland {
                             }
                         });
 
+                // TODO: Load stats from API into stats map
+                // Optimal solution would be to go through everywhere stats can be,
+                // and parse stats dynamically instead of adding them one at a time
+
+                // Before Stats Calculation
+                // Readable API Stats: Inventory Accessories, Accessory Bag, Cake Bag Health, Essence Bonuses, Century Cake Bonuses, Armor, Pet
+                // User Changeable Optimizer Stats: Armor Set (Wardrobe), Active Potions, Pet, Weapon
+
                 // Load Century Cakes
-                centuryCakes.forEach(centuryCake -> {
+                member.getCenturyCakes().forEach(centuryCake -> {
                     if (centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis()) {
                         StatModel statModel = centuryCake.getStat();
                         int amount = centuryCake.getAmount();
@@ -1787,7 +1783,7 @@ public class SkyBlockIsland {
                 });
 
                 // Load Essence Perks
-                essencePerks.forEach(entry -> {
+                member.getEssencePerks().forEach(entry -> {
                     if (entry.getKey().startsWith("permanent_")) {
                         String statKey = entry.getKey().replace("permanent_", "").toUpperCase();
                         StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, statKey);
@@ -1799,7 +1795,7 @@ public class SkyBlockIsland {
                     }
                 });
 
-                activePotions.forEach(potion -> {
+                member.getActivePotions().forEach(potion -> {
                     String effect = potion.getEffect();
                     // Get stat bonus from PotionModel
 

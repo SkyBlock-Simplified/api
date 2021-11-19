@@ -21,63 +21,63 @@ import dev.sbs.api.client.mojang.implementation.MojangData;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.accessories.AccessorySqlRepository;
-import dev.sbs.api.data.model.accessory_families.AccessoryFamilySqlRepository;
-import dev.sbs.api.data.model.collection_item_tiers.CollectionItemTierSqlRepository;
-import dev.sbs.api.data.model.collection_items.CollectionItemSqlRepository;
-import dev.sbs.api.data.model.collections.CollectionSqlRepository;
-import dev.sbs.api.data.model.dungeon_bosses.DungeonBossSqlRepository;
-import dev.sbs.api.data.model.dungeon_classes.DungeonClassSqlRepository;
-import dev.sbs.api.data.model.dungeon_fairy_souls.DungeonFairySoulSqlRepository;
-import dev.sbs.api.data.model.dungeon_floor_sizes.DungeonFloorSizeSqlRepository;
-import dev.sbs.api.data.model.dungeon_floors.DungeonFloorSqlRepository;
-import dev.sbs.api.data.model.dungeon_levels.DungeonLevelSqlRepository;
-import dev.sbs.api.data.model.dungeons.DungeonSqlRepository;
-import dev.sbs.api.data.model.enchantments.EnchantmentSqlRepository;
-import dev.sbs.api.data.model.fairy_souls.FairySoulSqlRepository;
-import dev.sbs.api.data.model.formats.FormatSqlRepository;
-import dev.sbs.api.data.model.items.ItemSqlRepository;
-import dev.sbs.api.data.model.location_areas.LocationAreaSqlRepository;
-import dev.sbs.api.data.model.location_remotes.LocationRemoteSqlRepository;
-import dev.sbs.api.data.model.locations.LocationSqlRepository;
-import dev.sbs.api.data.model.minion_items.MinionItemSqlRepository;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
-import dev.sbs.api.data.model.minion_tiers.MinionTierSqlRepository;
-import dev.sbs.api.data.model.minion_uniques.MinionUniqueSqlRepository;
-import dev.sbs.api.data.model.minions.MinionSqlRepository;
-import dev.sbs.api.data.model.npcs.NpcSqlRepository;
-import dev.sbs.api.data.model.pet_abilities.PetAbilitySqlRepository;
-import dev.sbs.api.data.model.pet_ability_stats.PetAbilityStatSqlRepository;
-import dev.sbs.api.data.model.pet_exp_scales.PetExpScaleSqlRepository;
-import dev.sbs.api.data.model.pet_items.PetItemSqlRepository;
-import dev.sbs.api.data.model.pet_scores.PetScoreSqlRepository;
-import dev.sbs.api.data.model.pet_stats.PetStatSqlRepository;
-import dev.sbs.api.data.model.pet_types.PetTypeSqlRepository;
-import dev.sbs.api.data.model.pets.PetSqlRepository;
-import dev.sbs.api.data.model.potion_brew_buffs.PotionBrewBuffSqlRepository;
-import dev.sbs.api.data.model.potion_brews.PotionBrewSqlRepository;
-import dev.sbs.api.data.model.potion_group_items.PotionGroupItemSqlRepository;
-import dev.sbs.api.data.model.potion_groups.PotionGroupSqlRepository;
-import dev.sbs.api.data.model.potion_mixins.PotionMixinSqlRepository;
-import dev.sbs.api.data.model.potion_tiers.PotionTierSqlRepository;
-import dev.sbs.api.data.model.potions.PotionSqlRepository;
-import dev.sbs.api.data.model.rarities.RaritySqlRepository;
-import dev.sbs.api.data.model.reforge_stats.ReforgeStatSqlRepository;
-import dev.sbs.api.data.model.reforge_types.ReforgeTypeSqlRepository;
-import dev.sbs.api.data.model.reforges.ReforgeSqlRepository;
-import dev.sbs.api.data.model.skill_levels.SkillLevelSqlRepository;
-import dev.sbs.api.data.model.skills.SkillSqlRepository;
-import dev.sbs.api.data.model.skyblock_bag_sizes.SkyBlockBagSizeSqlRepository;
-import dev.sbs.api.data.model.skyblock_bags.SkyBlockBagSqlRepository;
-import dev.sbs.api.data.model.skyblock_craftingtable_recipe_slots.SkyBlockCTRecipeSlotSqlRepository;
-import dev.sbs.api.data.model.skyblock_craftingtable_recipes.SkyBlockCTRecipeSqlRepository;
-import dev.sbs.api.data.model.skyblock_craftingtable_slots.SkyBlockCTSlotSqlRepository;
-import dev.sbs.api.data.model.skyblock_menus.SkyBlockMenuSqlRepository;
-import dev.sbs.api.data.model.skyblock_sack_items.SkyBlockSackItemSqlRepository;
-import dev.sbs.api.data.model.skyblock_sacks.SkyBlockSackSqlRepository;
-import dev.sbs.api.data.model.slayer_levels.SlayerLevelSqlRepository;
-import dev.sbs.api.data.model.slayers.SlayerSqlRepository;
-import dev.sbs.api.data.model.stats.StatSqlRepository;
+import dev.sbs.api.data.model.skyblock.accessories.AccessorySqlRepository;
+import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepository;
+import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
+import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
+import dev.sbs.api.data.model.skyblock.collection_item_tiers.CollectionItemTierSqlRepository;
+import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.collections.CollectionSqlRepository;
+import dev.sbs.api.data.model.skyblock.craftingtable_recipe_slots.CraftingTableRecipeSlotSqlRepository;
+import dev.sbs.api.data.model.skyblock.craftingtable_recipes.CraftingTableRecipeSqlRepository;
+import dev.sbs.api.data.model.skyblock.craftingtable_slots.CraftingTableSlotSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeon_bosses.DungeonBossSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeon_fairy_souls.DungeonFairySoulSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeon_floor_sizes.DungeonFloorSizeSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeon_floors.DungeonFloorSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelSqlRepository;
+import dev.sbs.api.data.model.skyblock.dungeons.DungeonSqlRepository;
+import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlRepository;
+import dev.sbs.api.data.model.skyblock.fairy_souls.FairySoulSqlRepository;
+import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
+import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlRepository;
+import dev.sbs.api.data.model.skyblock.location_remotes.LocationRemoteSqlRepository;
+import dev.sbs.api.data.model.skyblock.locations.LocationSqlRepository;
+import dev.sbs.api.data.model.skyblock.menus.MenuSqlRepository;
+import dev.sbs.api.data.model.skyblock.minion_items.MinionItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
+import dev.sbs.api.data.model.skyblock.minion_tiers.MinionTierSqlRepository;
+import dev.sbs.api.data.model.skyblock.minion_uniques.MinionUniqueSqlRepository;
+import dev.sbs.api.data.model.skyblock.minions.MinionSqlRepository;
+import dev.sbs.api.data.model.skyblock.npcs.NpcSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_abilities.PetAbilitySqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_ability_stats.PetAbilityStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_exp_scales.PetExpScaleSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_items.PetItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_scores.PetScoreSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_stats.PetStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_types.PetTypeSqlRepository;
+import dev.sbs.api.data.model.skyblock.pets.PetSqlRepository;
+import dev.sbs.api.data.model.skyblock.potion_brew_buffs.PotionBrewBuffSqlRepository;
+import dev.sbs.api.data.model.skyblock.potion_brews.PotionBrewSqlRepository;
+import dev.sbs.api.data.model.skyblock.potion_group_items.PotionGroupItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.potion_groups.PotionGroupSqlRepository;
+import dev.sbs.api.data.model.skyblock.potion_mixins.PotionMixinSqlRepository;
+import dev.sbs.api.data.model.skyblock.potion_tiers.PotionTierSqlRepository;
+import dev.sbs.api.data.model.skyblock.potions.PotionSqlRepository;
+import dev.sbs.api.data.model.skyblock.rarities.RaritySqlRepository;
+import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlRepository;
+import dev.sbs.api.data.model.skyblock.reforges.ReforgeSqlRepository;
+import dev.sbs.api.data.model.skyblock.sack_items.SackItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.sacks.SackSqlRepository;
+import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelSqlRepository;
+import dev.sbs.api.data.model.skyblock.skills.SkillSqlRepository;
+import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelSqlRepository;
+import dev.sbs.api.data.model.skyblock.slayers.SlayerSqlRepository;
+import dev.sbs.api.data.model.skyblock.stats.StatSqlRepository;
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.builder.BuilderManager;
@@ -197,13 +197,13 @@ public class SimplifiedApi {
         return serviceManager.get(Scheduler.class);
     }
 
-    @Deprecated
-    public static <T extends SqlModel, R extends SqlRepository<T>> R getSqlRepository(Class<R> tClass) {
-        Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
-        Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
-        return serviceManager.get(tClass);
-    }
-
+    /**
+     * Gets the {@link Repository<T>} caching all items of type {@link T}.
+     *
+     * @param tClass The {@link Model} class to find.
+     * @param <T> The type of model.
+     * @return The repository of type {@link T}.
+     */
     @SuppressWarnings("unchecked")
     public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
         Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
@@ -237,10 +237,10 @@ public class SimplifiedApi {
                 PetScoreSqlRepository.class,
                 MinionUniqueSqlRepository.class,
                 LocationRemoteSqlRepository.class,
-                SkyBlockSackSqlRepository.class,
-                SkyBlockMenuSqlRepository.class,
-                SkyBlockCTSlotSqlRepository.class,
-                SkyBlockCTRecipeSqlRepository.class,
+                SackSqlRepository.class,
+                MenuSqlRepository.class,
+                CraftingTableSlotSqlRepository.class,
+                CraftingTableRecipeSqlRepository.class,
 
                 // Requires Above
                 ItemSqlRepository.class,
@@ -255,7 +255,7 @@ public class SimplifiedApi {
                 PotionMixinSqlRepository.class,
                 DungeonFloorSqlRepository.class,
                 DungeonLevelSqlRepository.class,
-                SkyBlockCTRecipeSlotSqlRepository.class,
+                CraftingTableRecipeSlotSqlRepository.class,
                 EnchantmentSqlRepository.class,
 
                 // Requires Above
@@ -265,7 +265,7 @@ public class SimplifiedApi {
                 FairySoulSqlRepository.class,
                 PetSqlRepository.class,
                 PotionTierSqlRepository.class,
-                SkyBlockSackItemSqlRepository.class,
+                SackItemSqlRepository.class,
 
                 // Requires Above
                 MinionSqlRepository.class,
@@ -279,12 +279,12 @@ public class SimplifiedApi {
                 CollectionItemTierSqlRepository.class,
                 MinionItemSqlRepository.class,
                 PotionBrewBuffSqlRepository.class,
-                SkyBlockBagSqlRepository.class,
+                BagSqlRepository.class,
 
                 // Requires Above
                 MinionTierUpgradeSqlRepository.class,
                 PetAbilitySqlRepository.class,
-                SkyBlockBagSizeSqlRepository.class,
+                BagSizeSqlRepository.class,
 
                 // Requires Above
                 PetAbilityStatSqlRepository.class

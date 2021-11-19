@@ -3,7 +3,7 @@ package dev.sbs.api.data.sql;
 import ch.qos.logback.classic.Level;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.model.stats.StatModel;
+import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.jupiter.api.Test;
