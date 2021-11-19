@@ -23,7 +23,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "potion_brew_buffs",
+        name = "skyblock_potion_brew_buffs",
         indexes = {
                 @Index(
                         columnList = "potion_brew_key, buff_key",
