@@ -83,7 +83,7 @@ import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
-import dev.sbs.api.minecraft.nbt_old.NbtFactory_old;
+import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
 import dev.sbs.api.reflection.Reflection;
@@ -103,19 +103,10 @@ public class SimplifiedApi {
     private static final BuilderManager builderManager = new BuilderManager();
     private static boolean databaseEnabled = false;
     private static boolean databaseRegistered = false;
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
-            .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
-            .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
-            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
-            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
-            .registerTypeAdapter(UUIDAdapter.class, new UUIDAdapter())
-            .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
-            .setPrettyPrinting().create();
-    private static final SimplifiedConfig config;
 
     static {
         // Load Config
+        SimplifiedConfig config;
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             config = new SimplifiedConfig(currentDir.getParentFile(), "simplified");
@@ -123,9 +114,22 @@ public class SimplifiedApi {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
 
+        // Load Gson
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
+                .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
+                .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
+                .registerTypeAdapter(UUIDAdapter.class, new UUIDAdapter())
+                .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
+                .setPrettyPrinting().create();
+
         // Provide Services
+        serviceManager.add(SimplifiedConfig.class, config);
         serviceManager.add(Scheduler.class, Scheduler.getInstance());
         serviceManager.add(Gson.class, gson);
+        serviceManager.add(NbtFactory.class, new NbtFactory());
 
         // Create Api Builders
         MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
@@ -174,7 +178,7 @@ public class SimplifiedApi {
     }
 
     public static SimplifiedConfig getConfig() {
-        return config;
+        return serviceManager.get(SimplifiedConfig.class);
     }
 
     public static File getCurrentDirectory() {
@@ -185,8 +189,8 @@ public class SimplifiedApi {
         return serviceManager.get(Gson.class);
     }
 
-    public static NbtFactory_old getNbtFactory() {
-        return NbtFactory_old.getInstance(); // DO NOT USE THIS
+    public static NbtFactory getNbtFactory() {
+        return serviceManager.get(NbtFactory.class);
     }
 
     public static Scheduler getScheduler() {
