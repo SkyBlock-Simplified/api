@@ -1767,7 +1767,6 @@ public class SkyBlockIsland {
                         .<CompoundTag>getList("i")
                         .forEach(armorItem -> {
                             if (!armorItem.isEmpty()) {
-                                String here = "";
                                 // Pull rarity and reforge from armor item
                                 // Pull stats from RarityModel and ReforgeModel
                                 // Pull non-reforge stats from armor item lore
