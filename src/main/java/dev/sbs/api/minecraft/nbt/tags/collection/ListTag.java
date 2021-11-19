@@ -3,10 +3,10 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.NbtStringUtils;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistryException;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -437,12 +437,12 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
 		StringBuilder sb = new StringBuilder("[");
 
 		if (config.isPrettyPrint())
-			sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
+			sb.append('\n').append(SnbtUtil.multiplyIndent(depth + 1, config));
 
 		for (int i = 0; i < this.value.size(); ++i) {
 			if (i != 0) {
 				if (config.isPrettyPrint())
-					sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
+					sb.append(",\n").append(SnbtUtil.multiplyIndent(depth + 1, config));
 				else
 					sb.append(',');
 			}
@@ -451,7 +451,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
 		}
 
 		if (config.isPrettyPrint())
-			sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append(']');
+			sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append(']');
 		else
 			sb.append(']');
 

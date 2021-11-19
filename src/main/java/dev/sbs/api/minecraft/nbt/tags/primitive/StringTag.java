@@ -1,11 +1,11 @@
 package dev.sbs.api.minecraft.nbt.tags.primitive;
 
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.NbtStringUtils;
 import dev.sbs.api.minecraft.nbt.json.JsonSerializable;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
+import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import lombok.NonNull;
@@ -82,7 +82,7 @@ public class StringTag extends Tag<String> implements SnbtSerializable, JsonSeri
 
     @Override
     public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
-        return NbtStringUtils.escapeSnbt(this.getValue());
+        return SnbtUtil.escape(this.getValue());
     }
 
     @Override

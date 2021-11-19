@@ -2,9 +2,9 @@ package dev.sbs.api.minecraft.nbt.tags.array;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.NbtStringUtils;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.Primitives;
@@ -137,7 +137,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
 
         if (config.isPrettyPrint()) {
             if (this.size() < config.getInlineThreshold())
-                sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
+                sb.append('\n').append(SnbtUtil.multiplyIndent(depth + 1, config));
             else
                 sb.append(' ');
         }
@@ -146,7 +146,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
             if (i != 0) {
                 if (config.isPrettyPrint()) {
                     if (this.size() < config.getInlineThreshold())
-                        sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
+                        sb.append(",\n").append(SnbtUtil.multiplyIndent(depth + 1, config));
                     else
                         sb.append(", ");
                 } else
@@ -157,7 +157,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
         }
 
         if (config.isPrettyPrint() && this.size() < config.getInlineThreshold())
-            sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append(']');
+            sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append(']');
         else
             sb.append(']');
 

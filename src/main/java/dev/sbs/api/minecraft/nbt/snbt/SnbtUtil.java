@@ -1,15 +1,13 @@
-package dev.sbs.api.minecraft.nbt;
-
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
+package dev.sbs.api.minecraft.nbt.snbt;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NbtStringUtils {
+public class SnbtUtil {
 
-    public static String escapeSnbt(String str) {
+    public static String escape(String str) {
         StringBuilder sb = new StringBuilder(" ");
         char quote = 0;
 

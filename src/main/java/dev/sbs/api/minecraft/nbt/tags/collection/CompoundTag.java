@@ -2,10 +2,10 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.NbtStringUtils;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistryException;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.util.builder.string.StringBuilder;
@@ -582,17 +582,17 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         boolean first = true;
 
         if (config.isPrettyPrint())
-            sb.append('\n').append(NbtStringUtils.multiplyIndent(depth + 1, config));
+            sb.append('\n').append(SnbtUtil.multiplyIndent(depth + 1, config));
 
         for (Tag<?> tag : this.getValue().values()) {
             if (!first) {
                 if (config.isPrettyPrint())
-                    sb.append(",\n").append(NbtStringUtils.multiplyIndent(depth + 1, config));
+                    sb.append(",\n").append(SnbtUtil.multiplyIndent(depth + 1, config));
                 else
                     sb.append(',');
             }
 
-            sb.append(NbtStringUtils.escapeSnbt(tag.getName()));
+            sb.append(SnbtUtil.escape(tag.getName()));
             sb.append(FormatUtil.format(":{0}", config.isPrettyPrint() ? " " : ""));
             sb.append(tag.toSnbt(depth + 1, registry, config));
 
@@ -601,7 +601,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         }
 
         if (config.isPrettyPrint())
-            sb.append("\n").append(NbtStringUtils.multiplyIndent(depth , config)).append('}');
+            sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append('}');
         else
             sb.append('}');
 
