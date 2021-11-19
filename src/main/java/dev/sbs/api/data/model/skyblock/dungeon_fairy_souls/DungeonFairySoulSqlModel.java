@@ -28,7 +28,7 @@ public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter

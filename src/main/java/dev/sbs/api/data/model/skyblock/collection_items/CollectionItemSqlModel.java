@@ -37,7 +37,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -55,7 +55,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "max_tiers", nullable = false)
-    private int maxTiers;
+    private Integer maxTiers;
 
     @Getter
     @UpdateTimestamp

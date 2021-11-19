@@ -11,14 +11,14 @@ public interface SkillModel extends Model {
 
     String getDescription();
 
-    int getMaxLevel();
+    Integer getMaxLevel();
 
     ItemModel getItem();
 
     boolean isCosmetic();
 
-    double getWeightExponent();
+    Double getWeightExponent();
 
-    double getWeightDivider();
+    Double getWeightDivider();
 
 }

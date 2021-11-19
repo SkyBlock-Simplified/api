@@ -28,12 +28,12 @@ public class PetScoreSqlModel implements PetScoreModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
     @Column(name = "breakpoint", nullable = false, unique = true)
-    private int breakpoint;
+    private Integer breakpoint;
 
     @Getter
     @UpdateTimestamp

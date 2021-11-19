@@ -10,6 +10,6 @@ public interface CraftingTableRecipeSlotModel extends Model {
 
     CraftingTableSlotModel getSlot();
 
-    int getOrdinal();
+    Integer getOrdinal();
 
 }

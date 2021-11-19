@@ -14,9 +14,9 @@ public interface PetAbilityStatModel extends Model {
 
     List<Integer> getRarities();
 
-    double getBaseValue();
+    Double getBaseValue();
 
-    double getLevelBonus();
+    Double getLevelBonus();
 
     boolean isRoundingNeeded();
 

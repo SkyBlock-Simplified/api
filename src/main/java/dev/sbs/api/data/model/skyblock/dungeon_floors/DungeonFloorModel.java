@@ -9,7 +9,7 @@ public interface DungeonFloorModel extends Model {
 
     DungeonModel getDungeon();
 
-    int getFloor();
+    Integer getFloor();
 
     DungeonFloorSizeModel getFloorSize();
 

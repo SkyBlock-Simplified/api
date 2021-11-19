@@ -29,7 +29,7 @@ public class StatSqlModel implements StatModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -57,7 +57,7 @@ public class StatSqlModel implements StatModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "ordinal")
-    private int ordinal;
+    private Integer ordinal;
 
     @Getter
     @UpdateTimestamp

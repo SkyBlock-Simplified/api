@@ -4,8 +4,8 @@ import dev.sbs.api.data.model.Model;
 
 public interface DungeonLevelModel extends Model {
 
-    int getLevel();
+    Integer getLevel();
 
-    double getTotalExpRequired();
+    Double getTotalExpRequired();
 
 }

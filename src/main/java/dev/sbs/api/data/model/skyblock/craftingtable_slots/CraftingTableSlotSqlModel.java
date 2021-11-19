@@ -27,7 +27,7 @@ public class CraftingTableSlotSqlModel implements CraftingTableSlotModel, SqlMod
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -43,7 +43,7 @@ public class CraftingTableSlotSqlModel implements CraftingTableSlotModel, SqlMod
     @Getter
     @Setter
     @Column(name = "slot", nullable = false)
-    private int slot;
+    private Integer slot;
 
     @Getter
     @Setter

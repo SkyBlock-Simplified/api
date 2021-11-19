@@ -11,7 +11,7 @@ public interface PotionTierModel extends EffectsModel {
 
     PotionModel getPotion();
 
-    int getTier();
+    Integer getTier();
 
     default MinecraftChatFormatting getChatFormatting() {
         if (this.getTier() >= 7)
@@ -28,9 +28,9 @@ public interface PotionTierModel extends EffectsModel {
 
     String getBaseItem();
 
-    int getExperienceYield();
+    Integer getExperienceYield();
 
-    double getSellPrice();
+    Double getSellPrice();
 
     Map<String, Object> getBuffEffects();
 

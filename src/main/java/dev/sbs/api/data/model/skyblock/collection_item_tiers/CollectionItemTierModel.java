@@ -9,9 +9,9 @@ public interface CollectionItemTierModel extends Model {
 
     CollectionItemModel getCollectionItem();
 
-    int getTier();
+    Integer getTier();
 
-    double getAmountRequired();
+    Double getAmountRequired();
 
     List<String> getUnlocks();
 

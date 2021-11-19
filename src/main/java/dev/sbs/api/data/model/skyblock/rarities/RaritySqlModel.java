@@ -27,7 +27,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -43,7 +43,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
-    private int ordinal;
+    private Integer ordinal;
 
     @Getter
     @Setter
@@ -53,7 +53,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "pet_exp_offset")
-    private int petExpOffset;
+    private Integer petExpOffset;
 
     @Getter
     @UpdateTimestamp

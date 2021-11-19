@@ -37,7 +37,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -52,7 +52,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "durability")
-    private int durability;
+    private Integer durability;
 
     @Getter
     @Setter
@@ -84,7 +84,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "generator_tier")
-    private int generatorTier;
+    private Integer generatorTier;
 
     @Getter
     @Setter
@@ -100,12 +100,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Setter
     @Column(name = "stats")
     @Convert(converter = DoubleMapConverter.class)
-    private Map<String, Double> stats;
+    private Map<String, Double > stats;
 
     @Getter
     @Setter
     @Column(name = "npc_sell_price")
-    private double npcSellPrice;
+    private Double npcSellPrice;
 
     @Getter
     @Setter
@@ -131,7 +131,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "gear_score")
-    private int gearScore;
+    private Integer gearScore;
 
     @Getter
     @Setter
@@ -159,7 +159,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "ability_damage_scaling")
-    private double abilityDamageScaling;
+    private Double abilityDamageScaling;
 
     @Getter
     @Setter

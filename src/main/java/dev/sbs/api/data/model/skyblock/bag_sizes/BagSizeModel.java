@@ -7,8 +7,8 @@ public interface BagSizeModel extends Model {
 
     BagModel getBag();
 
-    int getCollectionTier();
+    Integer getCollectionTier();
 
-    int getSlotCount();
+    Integer getSlotCount();
 
 }

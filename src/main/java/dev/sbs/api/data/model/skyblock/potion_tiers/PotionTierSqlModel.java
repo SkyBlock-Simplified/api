@@ -39,7 +39,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -50,7 +50,7 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "tier", nullable = false)
-    private int tier;
+    private Integer tier;
 
     @Getter
     @Setter
@@ -66,12 +66,12 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "exp_yield", nullable = false)
-    private int experienceYield;
+    private Integer experienceYield;
 
     @Getter
     @Setter
     @Column(name = "sell_price", nullable = false)
-    private double sellPrice;
+    private Double sellPrice;
 
     @Getter
     @Setter

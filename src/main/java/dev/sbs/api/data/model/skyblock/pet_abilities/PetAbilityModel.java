@@ -11,7 +11,7 @@ public interface PetAbilityModel extends Model {
 
     PetModel getPet();
 
-    int getOrdinal();
+    Integer getOrdinal();
 
     String getDescription();
 

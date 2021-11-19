@@ -8,7 +8,7 @@ public interface CraftingTableSlotModel extends Model {
 
     String getName();
 
-    int getSlot();
+    Integer getSlot();
 
     boolean isQuickCraft();
 

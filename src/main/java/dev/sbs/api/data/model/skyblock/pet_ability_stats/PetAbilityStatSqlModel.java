@@ -35,7 +35,7 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -60,12 +60,12 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "base_value", nullable = false)
-    private double baseValue;
+    private Double baseValue;
 
     @Getter
     @Setter
     @Column(name = "level_bonus", nullable = false)
-    private double levelBonus;
+    private Double levelBonus;
 
     @Getter
     @Setter

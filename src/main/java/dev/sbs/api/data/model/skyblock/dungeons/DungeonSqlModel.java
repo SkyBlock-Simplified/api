@@ -34,7 +34,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -50,7 +50,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "weight_multiplier", nullable = false)
-    private double weightMultiplier;
+    private Double weightMultiplier;
 
     @Getter
     @UpdateTimestamp

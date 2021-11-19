@@ -12,12 +12,12 @@ public interface PetStatModel extends Model {
 
     StatModel getStat();
 
-    int getOrdinal();
+    Integer getOrdinal();
 
     List<Integer> getRarities();
 
-    double getBaseValue();
+    Double getBaseValue();
 
-    double getLevelBonus();
+    Double getLevelBonus();
 
 }

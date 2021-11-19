@@ -43,7 +43,7 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -60,7 +60,7 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
-    private int ordinal;
+    private Integer ordinal;
 
     @Getter
     @Setter
@@ -73,12 +73,12 @@ public class PetStatSqlModel implements PetStatModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "base_value", nullable = false)
-    private double baseValue;
+    private Double baseValue;
 
     @Getter
     @Setter
     @Column(name = "level_bonus", nullable = false)
-    private double levelBonus;
+    private Double levelBonus;
 
     @Getter
     @UpdateTimestamp

@@ -9,9 +9,9 @@ public interface SkillLevelModel extends EffectsModel {
 
     SkillModel getSkill();
 
-    int getLevel();
+    Integer getLevel();
 
-    double getTotalExpRequired();
+    Double getTotalExpRequired();
 
     List<String> getUnlocks();
 

@@ -40,7 +40,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -73,7 +73,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "coin_cost", nullable = false)
-    private int coinCost;
+    private Integer coinCost;
 
     @Getter
     @UpdateTimestamp

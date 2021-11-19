@@ -38,7 +38,7 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -49,12 +49,12 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "collection_tier", nullable = false, length = 127)
-    private int collectionTier;
+    private Integer collectionTier;
 
     @Getter
     @Setter
     @Column(name = "slot_count", nullable = false)
-    private int slotCount;
+    private Integer slotCount;
 
     @Getter
     @UpdateTimestamp

@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -35,7 +36,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -64,7 +65,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "family_rank")
-    private int familyRank;
+    private Integer familyRank;
 
     @Getter
     @Setter

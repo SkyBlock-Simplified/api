@@ -31,7 +31,7 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -47,12 +47,12 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "weight_divider", nullable = false)
-    private double weightDivider;
+    private Double weightDivider;
 
     @Getter
     @Setter
     @Column(name = "weight_modifier", nullable = false)
-    private double weightModifier;
+    private Double weightModifier;
 
     @Getter
     @UpdateTimestamp

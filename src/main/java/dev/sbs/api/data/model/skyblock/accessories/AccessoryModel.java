@@ -17,7 +17,7 @@ public interface AccessoryModel extends EffectsModel {
 
     AccessoryFamilyModel getFamily();
 
-    int getFamilyRank();
+    Integer getFamilyRank();
 
     Map<String, Object> getEffects();
 

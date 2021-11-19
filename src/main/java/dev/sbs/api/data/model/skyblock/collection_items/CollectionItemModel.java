@@ -10,6 +10,6 @@ public interface CollectionItemModel extends Model {
 
     ItemModel getItem();
 
-    int getMaxTiers();
+    Integer getMaxTiers();
 
 }

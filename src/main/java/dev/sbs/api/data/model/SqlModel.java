@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public interface SqlModel extends Model {
 
-    long getId();
+    Long getId();
 
     Instant getUpdatedAt();
 

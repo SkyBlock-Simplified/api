@@ -30,7 +30,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -52,7 +52,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "required_level", nullable = false)
-    private int requiredLevel;
+    private Integer requiredLevel;
 
     @Getter
     @Setter

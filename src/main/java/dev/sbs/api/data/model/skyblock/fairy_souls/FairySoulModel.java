@@ -6,11 +6,11 @@ import dev.sbs.api.data.model.skyblock.locations.LocationModel;
 
 public interface FairySoulModel extends Model {
 
-    double getX();
+    Double getX();
 
-    double getY();
+    Double getY();
 
-    double getZ();
+    Double getZ();
 
     LocationModel getLocation();
 
