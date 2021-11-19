@@ -1,15 +1,13 @@
 package dev.sbs.api.minecraft.nbt.tags.primitive;
 
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.NbtStringUtils;
 import dev.sbs.api.minecraft.nbt.json.JsonSerializable;
+import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.io.DataInput;
@@ -20,11 +18,14 @@ import java.util.Objects;
 /**
  * The string tag (type ID 8) is used for storing a UTF-8 encoded {@code String}, prefixed by a length value stored as a 32-bit {@code int}.
  */
-@NoArgsConstructor
-@AllArgsConstructor
-public class StringTag extends Tag implements SnbtSerializable, JsonSerializable {
+public class StringTag extends Tag<String> implements SnbtSerializable, JsonSerializable {
 
-    private @NonNull String value;
+    /**
+     * Constructs a float tag with a 0 value.
+     */
+    public StringTag() {
+        this(null, "");
+    }
 
     /**
      * Constructs a string tag with a given name and value.
@@ -33,8 +34,22 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
      * @param value the tag's {@code String} value.
      */
     public StringTag(String name, @NonNull String value) {
-        this.setName(name);
-        this.setValue(value);
+        super(name, value, new TagTypeRegistry());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StringTag stringTag = (StringTag) o;
+        return Objects.equals(getValue(), stringTag.getValue());
+    }
+
+    @Override
+    public StringTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
+        this.setValue(json.getAsJsonPrimitive("value").getAsString());
+        return this;
     }
 
     @Override
@@ -43,33 +58,14 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
     }
 
     @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    /**
-     * Sets the {@code String} value of this string tag.
-     *
-     * @param value new {@code String} value to be set.
-     */
-    public void setValue(@NonNull String value) {
-        this.value = value;
-    }
-
-    @Override
-    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
-        output.writeUTF(this.value);
+    public int hashCode() {
+        return getValue().hashCode();
     }
 
     @Override
     public StringTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
-        this.value = input.readUTF();
+        this.setValue(input.readUTF());
         return this;
-    }
-
-    @Override
-    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
-        return NbtStringUtils.escapeSnbt(this.value);
     }
 
     @Override
@@ -80,33 +76,18 @@ public class StringTag extends Tag implements SnbtSerializable, JsonSerializable
         if (this.getName() != null)
             json.addProperty("name", this.getName());
 
-        json.addProperty("value", this.value);
+        json.addProperty("value", this.getValue());
         return json;
     }
 
     @Override
-    public StringTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
-        this.value = json.getAsJsonPrimitive("value").getAsString();
-        return this;
+    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
+        return NbtStringUtils.escapeSnbt(this.getValue());
     }
 
     @Override
-    public String toString() {
-        return this.toSnbt(0, new TagTypeRegistry(), new SnbtConfig());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        StringTag stringTag = (StringTag) o;
-        return Objects.equals(value, stringTag.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return value.hashCode();
+    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
+        output.writeUTF(this.getValue());
     }
 
 }

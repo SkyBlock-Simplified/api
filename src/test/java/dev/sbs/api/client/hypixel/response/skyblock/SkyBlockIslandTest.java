@@ -4,15 +4,16 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.model.dungeon_classes.DungeonClassModel;
-import dev.sbs.api.data.model.dungeons.DungeonModel;
-import dev.sbs.api.data.model.items.ItemModel;
-import dev.sbs.api.data.model.minion_tier_upgrades.MinionTierUpgradeModel;
-import dev.sbs.api.data.model.minion_tiers.MinionTierModel;
-import dev.sbs.api.data.model.rarities.RarityModel;
-import dev.sbs.api.data.model.skill_levels.SkillLevelModel;
-import dev.sbs.api.data.model.skills.SkillModel;
-import dev.sbs.api.data.model.slayers.SlayerModel;
+import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
+import dev.sbs.api.data.model.skyblock.items.ItemModel;
+import dev.sbs.api.data.model.skyblock.minion_tier_upgrades.MinionTierUpgradeModel;
+import dev.sbs.api.data.model.skyblock.minion_tiers.MinionTierModel;
+import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
+import dev.sbs.api.data.model.skyblock.sacks.SackModel;
+import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
+import dev.sbs.api.data.model.skyblock.skills.SkillModel;
+import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
@@ -57,11 +58,18 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
+            member.getPlayerStats(); // TODO: WIP
+
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
             SkillModel skill = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
             ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, skill);
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
+
+            // collection_items, collections
+            SkyBlockIsland.Collection sbCollection = member.getCollection(skill);
+            SackModel sbSack = SimplifiedApi.getRepositoryOf(SackModel.class).findFirstOrNull(SackModel::getKey, "MINING");
+            MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
             // minion_tier_upgrades, minion_tiers, items
             MinionTierUpgradeModel wheatGen11 = SimplifiedApi.getRepositoryOf(MinionTierUpgradeModel.class).findFirstOrNull(
@@ -101,6 +109,8 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));
         } catch (SqlException sqlException) {
             Assertions.fail();
+        } finally {
+            SimplifiedApi.getSqlSession().shutdown();
         }
     }
 

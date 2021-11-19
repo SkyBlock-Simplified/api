@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,11 +13,23 @@ import java.io.IOException;
 /**
  * The double tag (type ID 6) is used for storing a double-precision 64-bit IEEE 754 floating point value; a Java primitive {@code double}.
  */
-@NoArgsConstructor
-@AllArgsConstructor
 public class DoubleTag extends NumericalTag<Double> {
 
-    private double value;
+    /**
+     * Constructs a double tag with a 0 value.
+     */
+    public DoubleTag() {
+        this(0);
+    }
+
+    /**
+     * Constructs a double tag with a given value.
+     *
+     * @param value the tag's {@code Number} value, to be converted to {@code double}.
+     */
+    public DoubleTag(@NonNull Number value) {
+        this(null, value.doubleValue());
+    }
 
     /**
      * Constructs a double tag with a given name and value.
@@ -27,8 +38,7 @@ public class DoubleTag extends NumericalTag<Double> {
      * @param value the tag's {@code double} value.
      */
     public DoubleTag(String name, double value) {
-        this.setName(name);
-        this.setValue(value);
+        super(name, value);
     }
 
     @Override
@@ -37,33 +47,19 @@ public class DoubleTag extends NumericalTag<Double> {
     }
 
     @Override
-    public Double getValue() {
-        return this.value;
-    }
-
-    /**
-     * Sets the {@code double} value of this double tag.
-     *
-     * @param value new {@code double} value to be set.
-     */
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    @Override
     public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
-        output.writeDouble(this.value);
+        output.writeDouble(this.getValue());
     }
 
     @Override
     public DoubleTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
-        this.value = input.readDouble();
+        this.setValue(input.readDouble());
         return this;
     }
 
     @Override
     public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
-        return this.value + "d";
+        return this.getValue() + "d";
     }
 
     @Override
@@ -74,14 +70,14 @@ public class DoubleTag extends NumericalTag<Double> {
         if (this.getName() != null)
             json.addProperty("name", this.getName());
 
-        json.addProperty("value", this.value);
+        json.addProperty("value", this.getValue());
         return json;
     }
 
     @Override
     public DoubleTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
-        this.value = json.getAsJsonPrimitive("value").getAsDouble();
+        this.setValue(json.getAsJsonPrimitive("value").getAsDouble());
         return this;
     }
 
@@ -90,12 +86,12 @@ public class DoubleTag extends NumericalTag<Double> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DoubleTag doubleTag = (DoubleTag) o;
-        return Double.compare(doubleTag.value, value) == 0;
+        return Double.compare(doubleTag.getValue(), this.getValue()) == 0;
     }
 
     @Override
     public int hashCode() {
-        long temp = Double.doubleToLongBits(value);
+        long temp = Double.doubleToLongBits(this.getValue());
         return (int) (temp ^ (temp >>> 32));
     }
 

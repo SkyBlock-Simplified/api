@@ -1,9 +1,6 @@
 package dev.sbs.api.minecraft.nbt.tags.primitive;
 
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.json.JsonSerializable;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 
 /**
@@ -11,17 +8,18 @@ import dev.sbs.api.minecraft.nbt.tags.Tag;
  *
  * @param <T> the {@code Number} type this NBT tag represents.
  */
-public abstract class NumericalTag<T extends Number> extends Tag implements SnbtSerializable, JsonSerializable {
+public abstract class NumericalTag<T extends Number> extends Tag<T> {
 
-    @Override
-    public abstract T getValue();
+    protected NumericalTag(String name, T value) {
+        super(name, value, new TagTypeRegistry());
+    }
 
     /**
      * Returns the value held by this tag as a primitive {@code byte}.
      *
      * @return the value held by this tag as a primitive {@code byte}.
      */
-    public byte byteValue() {
+    public final byte byteValue() {
         return this.getValue().byteValue();
     }
 
@@ -30,7 +28,7 @@ public abstract class NumericalTag<T extends Number> extends Tag implements Snbt
      *
      * @return the value held by this tag as a primitive {@code short}.
      */
-    public short shortValue() {
+    public final short shortValue() {
         return this.getValue().shortValue();
     }
 
@@ -39,7 +37,7 @@ public abstract class NumericalTag<T extends Number> extends Tag implements Snbt
      *
      * @return the value held by this tag as a primitive {@code int}.
      */
-    public int intValue() {
+    public final int intValue() {
         return this.getValue().intValue();
     }
 
@@ -48,7 +46,7 @@ public abstract class NumericalTag<T extends Number> extends Tag implements Snbt
      *
      * @return the value held by this tag as a primitive {@code long}.
      */
-    public long longValue() {
+    public final long longValue() {
         return this.getValue().longValue();
     }
 
@@ -57,7 +55,7 @@ public abstract class NumericalTag<T extends Number> extends Tag implements Snbt
      *
      * @return the value held by this tag as a primitive {@code float}.
      */
-    public float floatValue() {
+    public final float floatValue() {
         return this.getValue().floatValue();
     }
 
@@ -66,13 +64,8 @@ public abstract class NumericalTag<T extends Number> extends Tag implements Snbt
      *
      * @return the value held by this tag as a primitive {@code double}.
      */
-    public double doubleValue() {
+    public final double doubleValue() {
         return this.getValue().doubleValue();
-    }
-
-    @Override
-    public String toString() {
-        return this.toSnbt(0, new TagTypeRegistry(), new SnbtConfig());
     }
 
 }

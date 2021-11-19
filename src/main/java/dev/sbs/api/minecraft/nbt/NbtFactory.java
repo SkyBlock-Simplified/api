@@ -1,21 +1,19 @@
 package dev.sbs.api.minecraft.nbt;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.minecraft.nbt.io.NbtReader;
 import dev.sbs.api.minecraft.nbt.io.NbtWriter;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.CompressionType;
+import dev.sbs.api.util.Primitives;
 import dev.sbs.api.util.helper.DataUtil;
 import lombok.Cleanup;
 import lombok.NonNull;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -26,12 +24,10 @@ import java.util.zip.InflaterInputStream;
  */
 public class NbtFactory {
 
-    private @NonNull Gson gson;
-    private @NonNull TagTypeRegistry typeRegistry;
-    private @NonNull SnbtConfig snbtConfig;
-
     private final @NonNull NbtWriter writer;
     private final @NonNull NbtReader reader;
+    private @NonNull TagTypeRegistry typeRegistry;
+    private @NonNull SnbtConfig snbtConfig;
 
     /**
      * Constructs an instance of this class using a default {@link TagTypeRegistry} (supporting the standard 12 tag types).
@@ -41,49 +37,128 @@ public class NbtFactory {
     }
 
     /**
-     * Constructs an instance of this class using a given {@link TagTypeRegistry}, with a default GSON instance.
+     * Constructs an instance of this class using a given {@link TagTypeRegistry}, with a default SnbtConfig.
      *
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
      */
     public NbtFactory(@NonNull TagTypeRegistry typeRegistry) {
-        this(typeRegistry, SimplifiedApi.getGson());
+        this(typeRegistry, new SnbtConfig());
     }
 
     /**
-     * Constructs an instance of this class using a given {@link TagTypeRegistry}, with a default {@link SnbtConfig} instance.
+     * Constructs an instance of this class using a given {@link TagTypeRegistry} and {@link SnbtConfig}.
      *
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
-     * @param gson the GSON instance to be used.
-     */
-    public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull Gson gson) {
-        this(typeRegistry, gson, new SnbtConfig());
-    }
-
-    /**
-     * Constructs an instance of this class using a given {@link TagTypeRegistry}, {@code Gson} and an {@link SnbtConfig}.
-     *
-     * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
-     * @param gson the GSON instance to be used.
      * @param snbtConfig the SNBT config object to be used.
      */
-    public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull Gson gson, @NonNull SnbtConfig snbtConfig) {
+    public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull SnbtConfig snbtConfig) {
         this.typeRegistry = typeRegistry;
-        this.gson = gson;
         this.snbtConfig = snbtConfig;
-
         this.writer = new NbtWriter(typeRegistry);
         this.reader = new NbtReader(typeRegistry);
     }
 
     /**
-     * Writes the given root {@link CompoundTag} to a provided {@link DataOutput} stream.
+     * Decodes an NBT data structure (root {@link CompoundTag}) from a Base64 encoded string.
      *
-     * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @param output the stream to write to.
+     * @param encoded the encoded Base64 string to decode.
+     * @return the decoded root {@link CompoundTag}.
      * @throws IOException if any I/O error occurs.
      */
-    public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws IOException {
-        this.writer.toStream(compound, output);
+    public CompoundTag fromBase64(@NonNull String encoded) throws IOException {
+        return this.fromByteArray(DataUtil.decode(encoded));
+    }
+
+    /**
+     * Reads an NBT data structure (root {@link CompoundTag}) from a {@code Byte[]} array.
+     *
+     * @param bytes the {@code Byte[]} array to read from.
+     * @return the root {@link CompoundTag} read from the stream.
+     * @throws IOException if any I/O error occurs.
+     */
+    public CompoundTag fromByteArray(Byte[] bytes) throws IOException {
+        return this.fromByteArray(Primitives.unwrap(bytes));
+    }
+
+    /**
+     * Reads an NBT data structure (root {@link CompoundTag}) from a {@code byte[]} array.
+     *
+     * @param bytes the {@code byte[]} array to read from.
+     * @return the root {@link CompoundTag} read from the stream.
+     * @throws IOException if any I/O error occurs.
+     */
+    public CompoundTag fromByteArray(byte[] bytes) throws IOException {
+        @Cleanup ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        return this.fromStream(byteArrayInputStream);
+    }
+
+    /**
+     * Reads an NBT data structure (root {@link CompoundTag}) from a {@link File}.
+     *
+     * @param file the file to read from.
+     * @return the root {@link CompoundTag} read from the stream.
+     * @throws IOException if any I/O error occurs.
+     */
+    public CompoundTag fromFile(@NonNull File file) throws IOException {
+        @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
+        return this.fromStream(fileInputStream);
+    }
+
+    /**
+     * Deserializes an NBT data structure (root {@link CompoundTag}) from a JSON {@link File}.
+     *
+     * @param file the JSON file to read from.
+     * @return the root {@link CompoundTag} deserialized from the JSON file.
+     * @throws IOException if any I/O error occurs.
+     */
+    public CompoundTag fromJson(@NonNull File file) throws IOException {
+        @Cleanup FileReader reader = new FileReader(file);
+        return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(reader, JsonObject.class), 0, this.typeRegistry);
+    }
+
+    /**
+     * Reads an NBT data structure (root {@link CompoundTag}) from a {@link DataInput} stream.
+     *
+     * @param inputStream the stream to read from.
+     * @return the root {@link CompoundTag} read from the stream.
+     * @throws IOException if any I/O error occurs.
+     */
+    public CompoundTag fromStream(@NonNull InputStream inputStream) throws IOException {
+        switch (DataUtil.getCompression(inputStream)) {
+            case GZIP:
+                inputStream = new GZIPInputStream(inputStream);
+                break;
+            case ZLIB:
+                inputStream = new InflaterInputStream(inputStream);
+                break;
+        }
+
+        return this.reader.fromStream(new DataInputStream(new BufferedInputStream(inputStream)));
+    }
+
+    /**
+     * Converts the given root {@link CompoundTag} to a Base64 encoded string.
+     *
+     * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
+     * @return the resulting Base64 encoded string.
+     * @throws IOException if any I/O error occurs.
+     */
+    public String toBase64(@NonNull CompoundTag compound) throws IOException {
+        return DataUtil.encodeToString(this.toByteArray(compound));
+    }
+
+    /**
+     * Converts the given root {@link CompoundTag} to a {@code byte[]} array.
+     *
+     * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
+     * @return the resulting {@code byte[]} array.
+     * @throws IOException if any I/O error occurs.
+     */
+    public byte[] toByteArray(@NonNull CompoundTag compound) throws IOException {
+        @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        @Cleanup DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(byteArrayOutputStream));
+        this.toStream(compound, dataOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 
     /**
@@ -106,21 +181,29 @@ public class NbtFactory {
      * @throws IOException if any I/O error occurs.
      */
     public void toFile(@NonNull CompoundTag compound, @NonNull File file, @NonNull CompressionType compression) throws IOException {
-        @Cleanup BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-        @Cleanup DataOutputStream dos = null;
+        @Cleanup OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
 
         switch (compression) {
-            case NONE:
-                dos = new DataOutputStream(bos);
-                break;
             case GZIP:
-                dos = new DataOutputStream(new GZIPOutputStream(bos));
+                outputStream = new GZIPOutputStream(outputStream);
                 break;
             case ZLIB:
-                dos = new DataOutputStream(new DeflaterOutputStream(bos));
+                outputStream = new DeflaterOutputStream(outputStream);
         }
 
-        this.toStream(compound, dos);
+        this.toStream(compound, new DataOutputStream(outputStream));
+    }
+
+    /**
+     * Serializes the given root {@link CompoundTag} to a JSON {@link File}.
+     *
+     * @param compound the NBT structure to serialize to JSON, contained within a {@link CompoundTag}.
+     * @param file the JSON file to write to.
+     * @throws IOException if any I/O error occurs.
+     */
+    public void toJson(@NonNull CompoundTag compound, @NonNull File file) throws IOException {
+        @Cleanup FileWriter writer = new FileWriter(file);
+        SimplifiedApi.getGson().toJson(compound.toJson(0, this.typeRegistry), writer);
     }
 
     /**
@@ -134,158 +217,14 @@ public class NbtFactory {
     }
 
     /**
-     * Serializes the given root {@link CompoundTag} to a JSON {@link File}.
-     *
-     * @param compound the NBT structure to serialize to JSON, contained within a {@link CompoundTag}.
-     * @param file the JSON file to write to.
-     * @throws IOException if any I/O error occurs.
-     */
-    public void toJson(@NonNull CompoundTag compound, @NonNull File file) throws IOException {
-        @Cleanup FileWriter writer = new FileWriter(file);
-
-        gson.toJson(compound.toJson(0, this.typeRegistry), writer);
-    }
-
-    /**
-     * Converts the given root {@link CompoundTag} to a {@code byte[]} array.
+     * Writes the given root {@link CompoundTag} to a provided {@link DataOutput} stream.
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @return the resulting {@code byte[]} array.
+     * @param output the stream to write to.
      * @throws IOException if any I/O error occurs.
      */
-    public byte[] toByteArray(@NonNull CompoundTag compound) throws IOException {
-        @Cleanup ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        @Cleanup DataOutputStream w = new DataOutputStream(new BufferedOutputStream(baos));
-
-        this.toStream(compound, w);
-
-        return baos.toByteArray();
-    }
-
-    /**
-     * Converts the given root {@link CompoundTag} to a Base64 encoded string.
-     *
-     * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @return the resulting Base64 encoded string.
-     * @throws IOException if any I/O error occurs.
-     */
-    public String toBase64(@NonNull CompoundTag compound) throws IOException {
-        return new String(Base64.getEncoder().encode(this.toByteArray(compound)), StandardCharsets.UTF_8);
-    }
-
-    /**
-     * Reads an NBT data structure (root {@link CompoundTag}) from a {@link DataInput} stream.
-     *
-     * @param input the stream to read from.
-     * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
-     */
-    public CompoundTag fromStream(@NonNull DataInput input) throws IOException {
-        return this.reader.fromStream(input);
-    }
-
-    /**
-     * Reads an NBT data structure (root {@link CompoundTag}) from a {@link File}.
-     *
-     * @param file the file to read from.
-     * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
-     */
-    public CompoundTag fromFile(@NonNull File file) throws IOException {
-        @Cleanup BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-        @Cleanup DataInputStream inputStream = null;
-
-        switch (DataUtil.getCompression(new FileInputStream(file))) {
-            case NONE:
-                inputStream = new DataInputStream(bis);
-                break;
-            case GZIP:
-                inputStream = new DataInputStream(new GZIPInputStream(bis));
-                break;
-            case ZLIB:
-                inputStream = new DataInputStream(new InflaterInputStream(bis));
-                break;
-            default:
-                throw new IllegalStateException("Illegal compression type. This should never happen.");
-        }
-
-        return this.fromStream(inputStream);
-    }
-
-    /**
-     * Deserializes an NBT data structure (root {@link CompoundTag}) from a JSON {@link File}.
-     *
-     * @param file the JSON file to read from.
-     * @return the root {@link CompoundTag} deserialized from the JSON file.
-     * @throws IOException if any I/O error occurs.
-     */
-    public CompoundTag fromJson(@NonNull File file) throws IOException {
-        @Cleanup FileReader reader = new FileReader(file);
-
-        return new CompoundTag().fromJson(gson.fromJson(reader, JsonObject.class), 0, this.typeRegistry);
-    }
-
-    /**
-     * Reads an NBT data structure (root {@link CompoundTag}) from a {@code byte[]} array.
-     *
-     * @param bytes the {@code byte[]} array to read from.
-     * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
-     */
-    public CompoundTag fromByteArray(@NonNull byte[] bytes) throws IOException {
-        @Cleanup DataInputStream bais = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(bytes)));
-
-        return fromStream(bais);
-    }
-
-    /**
-     * Decodes an NBT data structure (root {@link CompoundTag}) from a Base64 encoded string.
-     *
-     * @param encoded the encoded Base64 string to decode.
-     * @return the decoded root {@link CompoundTag}.
-     * @throws IOException if any I/O error occurs.
-     */
-    public CompoundTag fromBase64(@NonNull String encoded) throws IOException {
-        return fromByteArray(Base64.getDecoder().decode(encoded));
-    }
-
-    /**
-     * Returns the {@link TagTypeRegistry} currently in use by this instance.
-     *
-     * @return the {@link TagTypeRegistry} currently in use by this instance.
-     */
-    public TagTypeRegistry getTypeRegistry() {
-        return typeRegistry;
-    }
-
-    /**
-     * Sets the {@link TagTypeRegistry} currently in use by this instance. Used to utilise custom-made tag types.
-     *
-     * @param typeRegistry the new {@link TagTypeRegistry} to be set.
-     */
-    public void setTypeRegistry(@NonNull TagTypeRegistry typeRegistry) {
-        this.typeRegistry = typeRegistry;
-
-        this.writer.setTypeRegistry(typeRegistry);
-        this.reader.setTypeRegistry(typeRegistry);
-    }
-
-    /**
-     * Returns the {@code Gson} currently in use by this instance.
-     *
-     * @return the {@code Gson} currently in use by this instance.
-     */
-    public Gson getGson() {
-        return gson;
-    }
-
-    /**
-     * Sets the {@code Gson} currently in use by this instance.
-     *
-     * @param gson the new {@code Gson} to be set.
-     */
-    public void setGson(@NonNull Gson gson) {
-        this.gson = gson;
+    public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws IOException {
+        this.writer.toStream(compound, output);
     }
 
     /**
@@ -293,8 +232,19 @@ public class NbtFactory {
      *
      * @return the {@link SnbtConfig} currently in use by this instance.
      */
+    @NonNull
     public SnbtConfig getSnbtConfig() {
-        return snbtConfig;
+        return this.snbtConfig;
+    }
+
+    /**
+     * Returns the {@link TagTypeRegistry} currently in use by this instance.
+     *
+     * @return the {@link TagTypeRegistry} currently in use by this instance.
+     */
+    @NonNull
+    public TagTypeRegistry getTypeRegistry() {
+        return this.typeRegistry;
     }
 
     /**
@@ -304,6 +254,17 @@ public class NbtFactory {
      */
     public void setSnbtConfig(@NonNull SnbtConfig snbtConfig) {
         this.snbtConfig = snbtConfig;
+    }
+
+    /**
+     * Sets the {@link TagTypeRegistry} currently in use by this instance. Used to utilise custom-made tag types.
+     *
+     * @param typeRegistry the new {@link TagTypeRegistry} to be set.
+     */
+    public void setTypeRegistry(@NonNull TagTypeRegistry typeRegistry) {
+        this.typeRegistry = typeRegistry;
+        this.writer.setTypeRegistry(typeRegistry);
+        this.reader.setTypeRegistry(typeRegistry);
     }
 
 }

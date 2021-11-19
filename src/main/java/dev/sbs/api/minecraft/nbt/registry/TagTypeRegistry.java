@@ -1,5 +1,7 @@
 package dev.sbs.api.minecraft.nbt.registry;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.reflection.Reflection;
@@ -7,7 +9,6 @@ import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.helper.FormatUtil;
 import lombok.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,60 +16,84 @@ import java.util.Map;
  */
 public class TagTypeRegistry {
 
-    private final Map<Byte, @NonNull Class<? extends Tag>> registry = new HashMap<>();
-    {
-        TagType.registerAll(this);
+    private final BiMap<Byte, @NonNull Class<?>> typeRegistry = HashBiMap.create(); { TagType.registerAllTypes(this); }
+    private final BiMap<Byte, @NonNull Class<? extends Tag<?>>> tagRegistry = HashBiMap.create(); { TagType.registerAllTags(this); }
+
+    /**
+     * Register a java class type with a unique {@code byte} ID. IDs 0-12 (inclusive) are reserved and may not be used.
+     *
+     * @param id the class type's unique ID used in reading and writing.
+     * @param tClass the java type class.
+     * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
+     */
+    public void registerClassType(byte id, @NonNull Class<?> tClass) throws TagTypeRegistryException {
+        if (id == 0)
+            throw new TagTypeRegistryException(FormatUtil.format("Cannot register class type ''{0}'' with ID {1}. That ID is reserved.", tClass.getSimpleName(), id));
+
+        if (this.typeRegistry.containsKey(id))
+            throw new TagTypeRegistryException(FormatUtil.format("Cannot register class type ''{0}'' with ID {1}. That ID is already registered by the class type ''{2}''.", tClass, id, this.typeRegistry.get(id).getSimpleName()));
+
+        if (this.typeRegistry.containsValue(tClass)) {
+            byte existing = 0;
+            for (Map.Entry<Byte, Class<?>> entry : this.typeRegistry.entrySet()) {
+                if (entry.getValue().equals(tClass))
+                    existing = entry.getKey();
+            }
+
+            throw new TagTypeRegistryException(FormatUtil.format("Class type ''{0}'' already registered under ID {1}" + existing, tClass.getSimpleName(), existing));
+        }
+
+        this.typeRegistry.put(id, tClass);
     }
 
     /**
      * Register a custom-made tag type with a unique {@code byte} ID. IDs 0-12 (inclusive) are reserved and may not be used.
      *
      * @param id the tag type's unique ID used in reading and writing.
-     * @param clazz the tag type class.
+     * @param tagClass the tag type class.
      * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
      */
-    public void registerTagType(byte id, @NonNull Class<? extends Tag> clazz) throws TagTypeRegistryException {
+    public void registerTagType(byte id, @NonNull Class<? extends Tag<?>> tagClass) throws TagTypeRegistryException {
         if (id == 0)
-            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is reserved.", clazz, id));
+            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is reserved.", tagClass.getSimpleName(), id));
 
-        if (this.registry.containsKey(id))
-            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is already registered by the tag type ''{2}''.", clazz, id, this.registry.get(id).getSimpleName()));
+        if (this.tagRegistry.containsKey(id))
+            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is already registered by the tag type ''{2}''.", tagClass, id, this.tagRegistry.get(id).getSimpleName()));
 
-        if (registry.containsValue(clazz)) {
+        if (this.tagRegistry.containsValue(tagClass)) {
             byte existing = 0;
-            for (Map.Entry<Byte, Class<? extends Tag>> entry : this.registry.entrySet()) {
-                if (entry.getValue().equals(clazz))
+            for (Map.Entry<Byte, Class<? extends Tag<?>>> entry : this.tagRegistry.entrySet()) {
+                if (entry.getValue().equals(tagClass))
                     existing = entry.getKey();
             }
 
-            throw new TagTypeRegistryException(FormatUtil.format("NBT tag type ''{0}'' already registered under ID {1}" + existing, clazz.getSimpleName(), existing));
+            throw new TagTypeRegistryException(FormatUtil.format("NBT tag type ''{0}'' already registered under ID {1}" + existing, tagClass.getSimpleName(), existing));
         }
 
-        this.registry.put(id, clazz);
+        this.tagRegistry.put(id, tagClass);
     }
 
     /**
-     * Deregister a custom-made tag type with a provided tag type ID.
+     * Unregister a custom-made tag type with a provided tag type ID.
      *
-     * @param id the ID of the tag type to deregister.
-     * @return if the tag type was deregistered successfully.
+     * @param id the ID of the tag type to unregister.
+     * @return if the tag type was unregistered successfully.
      */
-    public boolean deregisterTagType(byte id)  {
+    public boolean unregisterTagType(byte id)  {
         if (id >= 0 && id <= 12)
-            return false;
+            return false; // Do not unregister reserved tag types
 
-        return this.registry.remove(id) != null;
+        return this.typeRegistry.remove(id) != null && this.tagRegistry.remove(id) != null;
     }
 
     /**
-     * Deregister a custom-made tag type with a provided tag type ID and class value.
+     * Returns a java type class value from the registry from a provided {@code byte} ID.
      *
-     * @param id the ID of the tag type to deregister.
-     * @param clazz the class value of the tag type to deregister.
-     * @return if the tag type was deregistered successfully.
+     * @param id the ID of the java type to retrieve.
+     * @return a java type class value from the registry from a provided {@code byte} ID.
      */
-    public boolean deregisterTagType(byte id, Class<? extends Tag> clazz) {
-        return this.registry.remove(id, clazz);
+    public Class<?> getTypeClassFromId(byte id) {
+        return this.typeRegistry.get(id);
     }
 
     /**
@@ -77,23 +102,91 @@ public class TagTypeRegistry {
      * @param id the ID of the tag type to retrieve.
      * @return a tag type class value from the registry from a provided {@code byte} ID.
      */
-    public Class<? extends Tag> getClassFromId(byte id) {
-        return this.registry.get(id);
+    public Class<? extends Tag<?>> getTagClassFromId(byte id) {
+        return this.tagRegistry.get(id);
+    }
+
+    /**
+     * Returns a tag type class value from the registry from a provided type {@code Class}.
+     *
+     * @param tClass the type class of the tag type to retrieve.
+     * @return a tag type class value from the registry from a provided type {@code Class}.
+     */
+    public Class<? extends Tag<?>> getTagClassFromTypeClass(Class<?> tClass) {
+        return this.tagRegistry.get(this.typeRegistry.inverse().get(tClass));
+    }
+
+    /**
+     * Returns a tag type class value from the registry from a provided {@code byte} ID.
+     *
+     * @param tClass the nbt tag type of the tag id to retrieve.
+     * @return a {@code byte} ID from the registry from a provided tag type class value.
+     */
+    public byte getIdFromTypeClass(Class<?> tClass) {
+        return this.typeRegistry.inverse().get(tClass);
+    }
+
+    /**
+     * Returns a tag type class value from the registry from a provided {@code byte} ID.
+     *
+     * @param tagClass the nbt tag type of the tag id to retrieve.
+     * @return a {@code byte} ID from the registry from a provided tag type class value.
+     */
+    public byte getIdFromTagClass(Class<? extends Tag<?>> tagClass) {
+        return this.tagRegistry.inverse().get(tagClass);
     }
 
     /**
      * Returns an empty instance of the given {@link Tag} type, with a {@code null} name and a default (possibly {@code null}) value.
      * Only use this if you really know what you're doing.
      *
-     * @param clazz the tag type to instantiate.
+     * @param tagClass the tag type to instantiate.
      * @return an empty instance of the tag type provided.
      * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
      */
-    public Tag instantiate(@NonNull Class<? extends Tag> clazz) throws TagTypeRegistryException {
+    public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass) throws TagTypeRegistryException {
         try {
-            return (Tag)new Reflection(clazz).newInstance();
+            Object whatIsThis = new Reflection(tagClass).newInstance();
+
+            try {
+                Tag<?> tag = (Tag<?>) whatIsThis;
+                tag.setRegistry(this);
+                return tag;
+            } catch (ClassCastException cce) {
+                return null;
+            }
         } catch (ReflectionException e) {
-            throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", clazz.getSimpleName()), e);
+            throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", tagClass.getSimpleName()), e);
+        }
+    }
+
+    /**
+     * Returns an empty instance of the given {@link Tag} type, with a {@code null} name and a default (possibly {@code null}) value.
+     * Only use this if you really know what you're doing.
+     *
+     * @param tagClass the tag type to instantiate.
+     * @return an empty instance of the tag type provided.
+     * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
+     */
+    public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass, Object value) throws TagTypeRegistryException {
+        return this.instantiate(tagClass, null, value);
+    }
+
+    /**
+     * Returns an empty instance of the given {@link Tag} type, with a {@code null} name and a default (possibly {@code null}) value.
+     * Only use this if you really know what you're doing.
+     *
+     * @param tagClass the tag type to instantiate.
+     * @return an empty instance of the tag type provided.
+     * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
+     */
+    public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass, String name, Object value) throws TagTypeRegistryException {
+        try {
+            Tag<?> tag = (Tag<?>) new Reflection(tagClass).newInstance(name, value);
+            tag.setRegistry(this);
+            return tag;
+        } catch (ReflectionException e) {
+            throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", tagClass.getSimpleName()), e);
         }
     }
 

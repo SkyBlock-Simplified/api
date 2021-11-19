@@ -1,11 +1,15 @@
 package dev.sbs.api.minecraft.nbt.tags.array;
 
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.json.JsonSerializable;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
+import dev.sbs.api.util.helper.ArrayUtil;
+import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
@@ -13,42 +17,13 @@ import java.util.regex.Pattern;
  *
  * @param <T> the type held in the array.
  */
-abstract class ArrayTag<T> extends Tag implements SnbtSerializable, JsonSerializable, Iterable<T> {
+public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
 
     public static final Pattern NUMBER_PATTERN = Pattern.compile("[-0-9]+");
 
-    /**
-     * Returns the number of elements in this array tag.
-     *
-     * @return the number of elements in this array tag.
-     */
-    public abstract int size();
-
-    /**
-     * Returns the element at the specified position in this array tag.
-     *
-     * @param index index of the element to return.
-     * @return the element at the specified position in this array tag.
-     */
-    public abstract T get(int index);
-
-    /**
-     * Replaces the element at the specified position in this array tag with the specified element.
-     *
-     * @param index index of the element to replace.
-     * @param element element to be stored at the specified position.
-     * @return the element previously at the specified position.
-     */
-    public abstract T set(int index, T element);
-
-    /**
-     * Inserts the specified element(s) at the specified position in this array tag.
-     * Shifts the element(s) currently at that position and any subsequent elements to the right.
-     *
-     * @param index index at which the element(s) are to be inserted.
-     * @param elements element(s) to be inserted.
-     */
-    public abstract void insert(int index, T... elements);
+    protected ArrayTag(String name, T[] value) {
+        super(name, value, new TagTypeRegistry());
+    }
 
     /**
      * Appends the specified element(s) to the end of the array tag.
@@ -61,22 +36,80 @@ abstract class ArrayTag<T> extends Tag implements SnbtSerializable, JsonSerializ
     }
 
     /**
+     * Removes all the elements from this array tag. The array tag will be empty after this call returns.
+     */
+    public abstract void clear();
+
+    @Override
+    public final void forEach(Consumer<? super T> action) {
+        Arrays.asList(this.getValue()).forEach(action);
+    }
+
+    /**
+     * Returns the element at the specified position in this array tag.
+     *
+     * @param index index of the element to return.
+     * @return the element at the specified position in this array tag.
+     */
+    public final T get(int index) {
+        return this.getValue()[index];
+    }
+
+    /**
+     * Inserts the specified element(s) at the specified position in this array tag.
+     * Shifts the element(s) currently at that position and any subsequent elements to the right.
+     *
+     * @param index index at which the element(s) are to be inserted.
+     * @param elements element(s) to be inserted.
+     */
+    @SafeVarargs
+    public final void insert(int index, @NonNull T... elements) {
+        this.value = ArrayUtil.insert(index, this.value, elements);
+    }
+
+    @NotNull
+    @Override
+    public final Iterator<T> iterator() {
+        return Arrays.asList(this.getValue()).iterator();
+    }
+
+    /**
      * Removes the element at the specified position in this array tag.
      * Shifts any subsequent elements to the left. Returns the element that was removed from the array tag.
      *
      * @param index the index of the element to be removed.
      * @return the element previously at the specified position.
      */
-    public abstract T remove(int index);
+    public final T remove(int index) {
+        T previous = this.value[index];
+        this.value = ArrayUtil.remove(this.value, index);
+        return previous;
+    }
+
 
     /**
-     * Removes all the elements from this array tag. The array tag will be empty after this call returns.
+     * Replaces the element at the specified position in this array tag with the specified element.
+     *
+     * @param index index of the element to replace.
+     * @param element element to be stored at the specified position.
+     * @return the element previously at the specified position.
      */
-    public abstract void clear();
+    public final T set(int index, @NonNull T element) {
+        return this.value[index] = element;
+    }
+
+    /**
+     * Returns the number of elements in this array tag.
+     *
+     * @return the number of elements in this array tag.
+     */
+    public final int size() {
+        return this.getValue().length;
+    }
 
     @Override
-    public String toString() {
-        return this.toSnbt(0, new TagTypeRegistry(), new SnbtConfig());
+    public final Spliterator<T> spliterator() {
+        return Arrays.asList(this.getValue()).spliterator();
     }
 
 }
