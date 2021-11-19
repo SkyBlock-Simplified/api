@@ -7,11 +7,24 @@ import dev.sbs.api.minecraft.nbt.tags.array.IntArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.array.LongArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
-import dev.sbs.api.minecraft.nbt.tags.primitive.*;
+import dev.sbs.api.minecraft.nbt.tags.primitive.ByteTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.DoubleTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.FloatTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
+import dev.sbs.api.util.helper.FormatUtil;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Defines the 12 standard NBT tag types and their IDs supported by this library, laid out in the Notchian spec.
  */
+@RequiredArgsConstructor
 public enum TagType {
 
     /**
@@ -19,112 +32,126 @@ public enum TagType {
      *
      * @see ByteTag
      */
-    BYTE(1),
+    BYTE(1, Byte.class, ByteTag.class),
 
     /**
      * ID: 2
      *
      * @see ShortTag
      */
-    SHORT(2),
+    SHORT(2, Short.class, ShortTag.class),
 
     /**
      * ID: 3
      *
      * @see IntTag
      */
-    INT(3),
+    INT(3, Integer.class, IntTag.class),
 
     /**
      * ID: 4
      *
      * @see LongTag
      */
-    LONG(4),
+    LONG(4, Long.class, LongTag.class),
 
     /**
      * ID: 5
      *
      * @see FloatTag
      */
-    FLOAT(5),
+    FLOAT(5, Float.class, FloatTag.class),
 
     /**
      * ID: 6
      *
      * @see DoubleTag
      */
-    DOUBLE(6),
+    DOUBLE(6, Double.class, DoubleTag.class),
 
     /**
      * ID: 7
      *
      * @see ByteArrayTag
      */
-    BYTE_ARRAY(7),
+    BYTE_ARRAY(7, Byte[].class, ByteArrayTag.class),
 
     /**
      * ID: 8
      *
      * @see StringTag
      */
-    STRING(8),
+    STRING(8, String.class, StringTag.class),
 
     /**
      * ID: 9
      *
      * @see ListTag
      */
-    LIST(9),
+    LIST(9, List.class, ListTag.class),
 
     /**
      * ID: 10
      *
      * @see CompoundTag
      */
-    COMPOUND(10),
+    COMPOUND(10, Map.class, CompoundTag.class),
 
     /**
      * ID: 11
      *
      * @see IntArrayTag
      */
-    INT_ARRAY(11),
+    INT_ARRAY(11, Integer[].class, IntArrayTag.class),
 
     /**
      * ID: 12
      *
      * @see LongArrayTag
      */
-    LONG_ARRAY(12);
+    LONG_ARRAY(12, Long[].class, LongArrayTag.class);
 
-    private final int id;
-
-    TagType(int id) {
-        this.id = id;
-    }
+    private final Integer id;
+    @Getter
+    private final Class<?> javaClass;
+    @Getter
+    @SuppressWarnings("all")
+    private final Class<? extends Tag> tagClass;
 
     public byte getId() {
-        return (byte) id;
+        return this.id.byteValue();
     }
 
-    static {
+    public static TagType getById(byte id) {
+        for (TagType tagType : values()) {
+            if (tagType.getId() == id)
+                return tagType;
+        }
 
+        throw new IllegalArgumentException(FormatUtil.format("Tag with id ''{0}'' does not exist!", id));
     }
-    public static void registerAll(TagTypeRegistry registry) {
+
+    public static TagType getByType(Class<?> tClass) {
+        for (TagType tagType : values()) {
+            if (tagType.getJavaClass().isAssignableFrom(tClass))
+                return tagType;
+        }
+
+        throw new IllegalArgumentException(FormatUtil.format("Tag with type ''{0}'' does not exist!", tClass.getSimpleName()));
+    }
+
+    public static void registerAllTypes(TagTypeRegistry registry) {
         try {
-            registry.registerTagType(BYTE.getId(), ByteTag.class);
-            registry.registerTagType(SHORT.getId(), ShortTag.class);
-            registry.registerTagType(INT.getId(), IntTag.class);
-            registry.registerTagType(LONG.getId(), LongTag.class);
-            registry.registerTagType(FLOAT.getId(), FloatTag.class);
-            registry.registerTagType(DOUBLE.getId(), DoubleTag.class);
-            registry.registerTagType(BYTE_ARRAY.getId(), ByteArrayTag.class);
-            registry.registerTagType(STRING.getId(), StringTag.class);
-            registry.registerTagType(LIST.getId(), ListTag.class);
-            registry.registerTagType(COMPOUND.getId(), CompoundTag.class);
-            registry.registerTagType(INT_ARRAY.getId(), IntArrayTag.class);
-            registry.registerTagType(LONG_ARRAY.getId(), LongArrayTag.class);
+            for (TagType tagType : values())
+                registry.registerClassType(tagType.getId(), tagType.getJavaClass());
+        } catch (TagTypeRegistryException ignore) { }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void registerAllTags(TagTypeRegistry registry) {
+        try {
+            for (TagType tagType : values())
+                registry.registerTagType(tagType.getId(), (Class<? extends Tag<?>>) tagType.getTagClass());
         } catch (TagTypeRegistryException ignore) { }
     }
 

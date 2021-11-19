@@ -1,4 +1,4 @@
-package dev.sbs.api.minecraft.nbt_old;
+package dev.sbs.api.minecraft.nbt.client;
 
 /*
  * NBT Wrapper for an ItemStack.

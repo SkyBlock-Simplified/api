@@ -1,12 +1,12 @@
-package dev.sbs.api.minecraft.nbt_old;
+package dev.sbs.api.minecraft.nbt.client;
 
 /*
  * NBT Wrapper for an Entity.
- *
-public final class NbtTileEntityCompound extends WrappedCompound<TileEntity> {
+ */
+/*public final class NbtEntityCompound extends WrappedCompound<Entity> {
 
-	NbtTileEntityCompound(TileEntity tileEntity, Object handle) {
-		super(tileEntity, handle, "ForgeData");
+	NbtEntityCompound(Entity entity, Object handle) {
+		super(entity, handle, "ForgeData");
 		//this.load();
 	}
 

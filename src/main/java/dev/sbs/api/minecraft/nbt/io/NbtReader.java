@@ -20,19 +20,17 @@ public class NbtReader {
     /**
      * Reads a root {@link CompoundTag} from a {@link DataInput} stream.
      *
-     * @param input the stream to read from.
+     * @param dataInput the stream to read from.
      * @return the root {@link CompoundTag} read from the stream.
      * @throws IOException if any I/O error occurs.
      */
-    public CompoundTag fromStream(@NonNull DataInput input) throws IOException {
-        if (input.readByte() != TagType.COMPOUND.getId()) {
+    public CompoundTag fromStream(@NonNull DataInput dataInput) throws IOException {
+        if (dataInput.readByte() != TagType.COMPOUND.getId())
             throw new IOException("Root tag in NBT structure must be a compound tag.");
-        }
 
-        CompoundTag result = new CompoundTag();
-
-        result.setName(input.readUTF());
-        result.read(input, 0, this.typeRegistry);
+        CompoundTag result = new CompoundTag(true);
+        result.setName(dataInput.readUTF());
+        result.read(dataInput, 0, this.typeRegistry);
 
         return result;
     }
@@ -42,8 +40,9 @@ public class NbtReader {
      *
      * @return the {@link TagTypeRegistry} currently in use by this reader.
      */
+    @NonNull
     public TagTypeRegistry getTypeRegistry() {
-        return typeRegistry;
+        return this.typeRegistry;
     }
 
     /**

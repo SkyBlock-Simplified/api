@@ -7,6 +7,10 @@ import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
  */
 public interface SnbtSerializable {
 
+    default String toSnbt(TagTypeRegistry registry, SnbtConfig config) {
+        return this.toSnbt(0, registry, config);
+    }
+
     String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config);
 
 }

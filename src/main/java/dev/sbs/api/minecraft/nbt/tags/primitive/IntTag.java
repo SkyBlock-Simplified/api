@@ -4,21 +4,33 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The int tag (type ID 3) is used for storing a 32-bit signed two's complement integer; a Java primitive {@code int}.
  */
-@NoArgsConstructor
-@AllArgsConstructor
 public class IntTag extends NumericalTag<Integer> {
 
-    private int value;
+    /**
+     * Constructs an int tag with a 0 value.
+     */
+    public IntTag() {
+        this(0);
+    }
+
+    /**
+     * Constructs an int tag with a given value.
+     *
+     * @param value the tag's {@code Number} value, to be converted to {@code int}.
+     */
+    public IntTag(@NonNull Number value) {
+        this(null, value.intValue());
+    }
 
     /**
      * Constructs an int tag with a given name and value.
@@ -27,8 +39,7 @@ public class IntTag extends NumericalTag<Integer> {
      * @param value the tag's {@code int} value.
      */
     public IntTag(String name, int value) {
-        this.setName(name);
-        this.setValue(value);
+        super(name, value);
     }
 
     @Override
@@ -37,33 +48,19 @@ public class IntTag extends NumericalTag<Integer> {
     }
 
     @Override
-    public Integer getValue() {
-        return this.value;
-    }
-
-    /**
-     * Sets the {@code int} value of this int tag.
-     *
-     * @param value new {@code int} value to be set.
-     */
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    @Override
     public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
-        output.writeInt(this.value);
+        output.writeInt(this.getValue());
     }
 
     @Override
     public IntTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
-        this.value = input.readInt();
+        this.setValue(input.readInt());
         return this;
     }
 
     @Override
     public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
-        return Integer.toString(this.value);
+        return Integer.toString(this.getValue());
     }
 
     @Override
@@ -74,14 +71,14 @@ public class IntTag extends NumericalTag<Integer> {
         if (this.getName() != null)
             json.addProperty("name", this.getName());
 
-        json.addProperty("value", this.value);
+        json.addProperty("value", this.getValue());
         return json;
     }
 
     @Override
     public IntTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
-        this.value = json.getAsJsonPrimitive("value").getAsInt();
+        this.setValue(json.getAsJsonPrimitive("value").getAsInt());
         return this;
     }
 
@@ -90,12 +87,12 @@ public class IntTag extends NumericalTag<Integer> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IntTag intTag = (IntTag) o;
-        return value == intTag.value;
+        return Objects.equals(this.getValue(), intTag.getValue());
     }
 
     @Override
     public int hashCode() {
-        return value;
+        return this.getValue();
     }
 
 }
