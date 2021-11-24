@@ -14,7 +14,6 @@ import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
-import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
@@ -58,16 +57,16 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            member.getPlayerStats(); // TODO: WIP
+            SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: WIP
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
-            SkillModel skill = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
-            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, skill);
+            SkillModel combatSkill = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
+            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, combatSkill);
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
 
             // collection_items, collections
-            SkyBlockIsland.Collection sbCollection = member.getCollection(skill);
+            SkyBlockIsland.Collection sbCollection = member.getCollection(combatSkill);
             SackModel sbSack = SimplifiedApi.getRepositoryOf(SackModel.class).findFirstOrNull(SackModel::getKey, "MINING");
             MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
@@ -83,15 +82,15 @@ public class SkyBlockIslandTest {
             Optional<SkyBlockIsland.PetInfo> optionalSpiderPet = pets.stream().filter(petInfo -> petInfo.getName().equals("SPIDER")).findFirst();
             Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
 
-            optionalSpiderPet.ifPresent(spiderInfo -> optionalDragonPet.ifPresent(dragInfo -> {
-                spiderInfo.getHeldItem().ifPresent(itemModel -> MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0)));
+            optionalSpiderPet.ifPresent(spiderPetInfo -> optionalDragonPet.ifPresent(dragInfo -> {
+                spiderPetInfo.getHeldItem().ifPresent(itemModel -> MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0)));
 
-                double spiderExp = spiderInfo.getExperience();
+                double spiderExp = spiderPetInfo.getExperience();
                 MatcherAssert.assertThat(spiderExp, Matchers.greaterThan(0.0));
-                int spiderLevel = spiderInfo.getLevel(); // TODO: WRONG
-                //MatcherAssert.assertThat(spiderLevel, Matchers.equalTo(100));
+                int spiderLevel = spiderPetInfo.getLevel();
+                MatcherAssert.assertThat(spiderLevel, Matchers.equalTo(100));
 
-                spiderInfo.getPet().ifPresent(wolfPet -> {
+                spiderPetInfo.getPet().ifPresent(wolfPet -> {
                     RarityModel commonRarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, "COMMON");
                     MatcherAssert.assertThat(wolfPet.getLowestRarity(), Matchers.equalTo(commonRarity));
 
@@ -105,9 +104,11 @@ public class SkyBlockIslandTest {
             }));
 
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
-        } catch (HypixelApiException exception) {
-            MatcherAssert.assertThat(exception.getHttpStatus().getCode(), Matchers.greaterThan(400));
-        } catch (SqlException sqlException) {
+        } catch (HypixelApiException hypixelApiException) {
+            hypixelApiException.printStackTrace();
+            MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
+        } catch (Exception exception) {
+            exception.printStackTrace();
             Assertions.fail();
         } finally {
             SimplifiedApi.getSqlSession().shutdown();
