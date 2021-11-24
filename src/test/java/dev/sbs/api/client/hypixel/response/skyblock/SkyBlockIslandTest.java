@@ -57,7 +57,7 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: WIP
+            SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: Work in Progress
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
