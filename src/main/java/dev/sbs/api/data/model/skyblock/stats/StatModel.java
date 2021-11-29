@@ -15,4 +15,8 @@ public interface StatModel extends Model {
 
     Integer getOrdinal();
 
+    Integer getBaseValue();
+
+    Integer getMaxValue();
+
 }

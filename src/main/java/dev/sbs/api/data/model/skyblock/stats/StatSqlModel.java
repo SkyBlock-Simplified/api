@@ -60,6 +60,16 @@ public class StatSqlModel implements StatModel, SqlModel {
     private Integer ordinal;
 
     @Getter
+    @Setter
+    @Column(name = "base_value")
+    private Integer baseValue;
+
+    @Getter
+    @Setter
+    @Column(name = "max_value")
+    private Integer maxValue;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
