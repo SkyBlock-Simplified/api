@@ -1,13 +1,18 @@
 package dev.sbs.api.util.helper;
 
 import lombok.AccessLevel;
+import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -33,6 +38,7 @@ public final class ResourceUtil {
                 e.printStackTrace();
             }
         }
+
         // Load from OS
         env.putAll(System.getenv());
         return env;
@@ -47,7 +53,25 @@ public final class ResourceUtil {
     }
 
     public static InputStream getResource(String resourcePath) {
-        return ResourceUtil.class.getResourceAsStream(resourcePath);
+        resourcePath = RegexUtil.replaceFirst(resourcePath, "^resources/", "");
+        final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+        return inputStream == null ? ResourceUtil.class.getResourceAsStream(resourcePath) : inputStream;
+    }
+
+    public static List<String> getResourceFiles(String resourcePath) {
+        List<String> fileNames = new ArrayList<>();
+
+        try {
+            resourcePath = RegexUtil.replaceFirst(resourcePath, "^resources/", "");
+            @Cleanup InputStream inputStream = getResource(resourcePath);
+            @Cleanup BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String resource;
+
+            while ((resource = bufferedReader.readLine()) != null)
+                fileNames.add(resource);
+        } catch (IOException ignore) { }
+
+        return fileNames;
     }
 
     public static void saveResource(File outputDir, String resourcePath, boolean replace) {
