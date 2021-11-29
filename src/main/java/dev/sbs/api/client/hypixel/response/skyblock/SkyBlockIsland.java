@@ -56,6 +56,7 @@ import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.helper.WordUtil;
+import dev.sbs.api.util.mutable.MutableBoolean;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -1681,13 +1682,12 @@ public class SkyBlockIsland {
         @SneakyThrows
         private PlayerStats(Member member) {
             // Initialize
-            statRepository.findAll().forEach(statModel -> this.stats.put(statModel, new Data(0, 0)));
+            statRepository.findAll().forEach(statModel -> this.stats.put(statModel, new Data(statModel.getBaseValue(), 0)));
 
             try {
                 // Load Skills
-                ConcurrentList<SkillModel> skillModels = skillRepository.findAll();
                 ConcurrentMap<StatModel, Double> statBonuses = Concurrent.newMap();
-                skillModels.forEach(skillModel -> {
+                skillRepository.findAll().forEach(skillModel -> {
                     int skillLevel = member.getSkill(skillModel).getLevel();
 
                     if (skillLevel > 0) {
@@ -1711,6 +1711,8 @@ public class SkyBlockIsland {
                     Data statData = this.stats.get(statBonus.getKey());
                     statData.addBase(statBonus.getValue());
                 });
+
+                // TODO: Load Slayer Bonus
 
                 // Load Accessories
                 ConcurrentMap<StatModel, Double> accessoryStatBonuses = Concurrent.newMap();
@@ -1827,6 +1829,8 @@ public class SkyBlockIsland {
                     }
                 });
 
+                // TODO: Load Fairy Souls
+
                 // Load Active Pet
                 member.getActivePet().ifPresent(petInfo -> {
                     int petLevel = petInfo.getLevel();
@@ -1874,9 +1878,12 @@ public class SkyBlockIsland {
                 });
 
                 // Load Active Potions
+                // TODO: Store effects from DOWN HERE in a map, multiply brews to effects
                 member.getActivePotions().forEach(potion -> {
                     String effect = potion.getEffect();
                     Optional<PotionModel> optionalPotionModel = SimplifiedApi.getRepositoryOf(PotionModel.class).findFirst(PotionModel::getKey, effect);
+                    ConcurrentMap<StatModel, Double> potionStatEffects = Concurrent.newMap();
+                    ConcurrentMap<String, Double> potionBuffEffects = Concurrent.newMap();
 
                     optionalPotionModel.ifPresent(potionModel -> {
                         ConcurrentList<PotionTierModel> potionTierModels = SimplifiedApi.getRepositoryOf(PotionTierModel.class)
@@ -1889,17 +1896,17 @@ public class SkyBlockIsland {
                         potionTierModels.forEach(potionTierModel -> {
                             potionTierModel.getEffects().forEach((key, value) -> {
                                 Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, key);
+                                optionalStatModel.ifPresent(statModel -> potionStatEffects.put(statModel, potionTierModel.<Double>getEffect(key) + potionStatEffects.getOrDefault(statModel, 0.0)));
+                            });
 
-                                // Save Potion Stats
-                                optionalStatModel.ifPresent(statModel -> {
-                                    Data statData = this.stats.get(statModel);
-                                    statData.addBonus(potionTierModel.getEffect(key));
-                                });
+                            potionTierModel.getBuffEffects().forEach((key, value) -> {
+                                potionBuffEffects.put(key, (Double)value + potionBuffEffects.getOrDefault(key, 0.0));
                             });
                         });
                     });
 
                     // Load Potion Brews
+                    // TODO: Does each individual potion have the brew?
                     potion.getModifiers().forEach(modifier -> {
                         Optional<PotionBrewModel> optionalPotionBrewModel = SimplifiedApi.getRepositoryOf(PotionBrewModel.class).findFirst(PotionBrewModel::getKey, modifier.getKey().toUpperCase());
 
@@ -1907,6 +1914,29 @@ public class SkyBlockIsland {
                             ConcurrentList<PotionBrewBuffModel> potionBrewBuffModels = SimplifiedApi.getRepositoryOf(PotionBrewBuffModel.class).findAll();
 
                             potionBrewBuffModels.forEach(potionBrewBuffModel -> {
+                                final MutableBoolean isBuff = new MutableBoolean(true);
+
+                                potionStatEffects.forEach(entry -> {
+                                    if (potionBrewBuffModel.getBuffKey().equals(entry.getKey().getKey())) { // Stat
+                                        isBuff.setFalse();
+
+                                        if (potionBrewBuffModel.isPercentage())
+                                            entry.setValue(entry.getValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
+                                        else
+                                            entry.setValue(entry.getValue() + potionBrewBuffModel.getBuffValue());
+                                    }
+                                });
+
+                                if (isBuff.get()) {
+                                    potionBuffEffects.forEach(entry -> {
+                                        if (potionBrewBuffModel.getBuffKey().equals(entry.getKey())) { // Buff
+                                            if (potionBrewBuffModel.isPercentage())
+                                                entry.setValue(entry.getValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
+                                            else
+                                                entry.setValue(entry.getValue() + potionBrewBuffModel.getBuffValue());
+                                        }
+                                    });
+                                }
                                 // handle percentages
                                 // handle buff-specific stats
 
@@ -1916,7 +1946,7 @@ public class SkyBlockIsland {
                         });
                     });
 
-                    // Store into stat
+                    // Save Active Potions
                 });
             } catch (IOException ioException) {
                 ioException.printStackTrace();
