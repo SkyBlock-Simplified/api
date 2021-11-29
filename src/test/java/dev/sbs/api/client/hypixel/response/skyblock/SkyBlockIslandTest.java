@@ -18,6 +18,7 @@ import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -59,14 +60,16 @@ public class SkyBlockIslandTest {
 
             SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: Work in Progress
 
+            Pair<SkyBlockDate, String> nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
+
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
-            SkillModel combatSkill = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
-            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, combatSkill);
+            SkillModel combatSkillModel = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
+            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, combatSkillModel);
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
 
             // collection_items, collections
-            SkyBlockIsland.Collection sbCollection = member.getCollection(combatSkill);
+            SkyBlockIsland.Collection sbCollection = member.getCollection(combatSkillModel);
             SackModel sbSack = SimplifiedApi.getRepositoryOf(SackModel.class).findFirstOrNull(SackModel::getKey, "MINING");
             MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
