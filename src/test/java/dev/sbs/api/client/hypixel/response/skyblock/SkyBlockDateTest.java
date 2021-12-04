@@ -1,5 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
+import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ public class SkyBlockDateTest {
     public void getDate_ok() {
         SkyBlockDate sbDate = new SkyBlockDate(System.currentTimeMillis(), true);
         SkyBlockDate sbDate2 = new SkyBlockDate(sbDate.getYear(), sbDate.getMonth(), sbDate.getDay(), sbDate.getHour(), sbDate.getMinute());
+
+        Pair<SkyBlockDate, String> nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
 
         System.out.println("SB Time #1: " + sbDate.getSkyBlockTime());
         System.out.println("Year #1: " + sbDate.getYear());
@@ -29,11 +32,7 @@ public class SkyBlockDateTest {
         System.out.println("Minute #2: " + sbDate2.getMinute());
         System.out.println("Season #2: " + sbDate2.getSeason().getName());
 
-        MatcherAssert.assertThat(sbDate.getYear(), Matchers.equalTo(sbDate2.getYear()));
-        MatcherAssert.assertThat(sbDate.getMonth(), Matchers.equalTo(sbDate2.getMonth()));
-        MatcherAssert.assertThat(sbDate.getDay(), Matchers.equalTo(sbDate2.getDay()));
-        MatcherAssert.assertThat(sbDate.getHour(), Matchers.equalTo(sbDate2.getHour()));
-        MatcherAssert.assertThat(sbDate.getMinute(), Matchers.equalTo(sbDate2.getMinute()));
+        MatcherAssert.assertThat(sbDate, Matchers.equalTo(sbDate2));
     }
 
 }

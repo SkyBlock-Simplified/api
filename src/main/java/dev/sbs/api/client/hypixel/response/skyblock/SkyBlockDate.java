@@ -1,12 +1,13 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,12 +18,11 @@ import java.util.Date;
 /**
  * SkyBlock DateTime converter.
  */
-@EqualsAndHashCode
 public class SkyBlockDate {
 
     @Getter private static final ConcurrentList<String> zooCycle = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
     @Getter private static final ConcurrentList<String> specialMayorCycle = Concurrent.newUnmodifiableList("SCORPIUS", "DERPY", "JERRY");
-    private static final SimpleDateFormat realDateFormat = new SimpleDateFormat("MMMMM dd, yyyy HH:mm m:00 z");
+    private static final SimpleDateFormat realDateFormat = new SimpleDateFormat("MMMMM dd, yyyy HH:mm z");
 
     /**
      * Get RealTime in milliseconds.
@@ -62,7 +62,7 @@ public class SkyBlockDate {
     }
 
     public SkyBlockDate(int year, int month, int day, int hour, int minute) {
-        this((Length.YEAR_MS * (year - 1)) + (Length.MONTH_MS * month) + (Length.DAY_MS * (day - 1)) + (Length.HOUR_MS * hour) + (long) (Length.MINUTE_MS * minute), false);
+        this((Length.YEAR_MS * (year - 1)) + (Length.MONTH_MS * month) + (Length.DAY_MS * (day - 1)) + (Length.HOUR_MS * hour) + (long) (Length.MINUTE_MS * (minute - 1)), false);
     }
 
     public SkyBlockDate(long milliseconds) {
@@ -101,6 +101,30 @@ public class SkyBlockDate {
 
     public SkyBlockDate append(int year, int month, int day, int hour) {
         return new SkyBlockDate(this.getYear() + year, this.getMonth() + month, this.getDay() + day, this.getHour() + hour);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SkyBlockDate)) return false;
+        SkyBlockDate that = (SkyBlockDate) o;
+
+        return new EqualsBuilder()
+            .append(this.getYear(), that.getYear())
+            .append(this.getMonth(), that.getMonth())
+            .append(this.getDay(), that.getDay())
+            .append(this.getHour(), that.getHour())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getYear())
+            .append(this.getMonth())
+            .append(this.getDay())
+            .append(this.getHour())
+            .build();
     }
 
     public static long getRealTime(Season season) {
