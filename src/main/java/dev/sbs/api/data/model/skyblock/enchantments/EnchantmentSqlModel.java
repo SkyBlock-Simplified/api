@@ -1,8 +1,7 @@
 package dev.sbs.api.data.model.skyblock.enchantments;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlModel;
-import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
+import dev.sbs.api.data.model.skyblock.enchantment_families.EnchantmentFamilySqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -11,16 +10,23 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
-import java.util.Map;
 
 @Entity
 @Table(
     name = "skyblock_enchantments",
     indexes = {
         @Index(
-            columnList = "reforge_type_key"
+            columnList = "family_key"
         )
     }
 )
@@ -46,19 +52,18 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "reforge_type_key", nullable = false)
-    private ReforgeTypeSqlModel itemType;
+    @JoinColumn(name = "family_key", nullable = false)
+    private EnchantmentFamilySqlModel family;
+
+    @Getter
+    @Setter
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Getter
     @Setter
     @Column(name = "required_level", nullable = false)
     private Integer requiredLevel;
-
-    @Getter
-    @Setter
-    @Column(name = "effects")
-    @Convert(converter = StringObjectMapConverter.class)
-    private Map<String, Object> effects;
 
     @Getter
     @UpdateTimestamp

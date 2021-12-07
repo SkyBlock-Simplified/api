@@ -1,20 +1,18 @@
 package dev.sbs.api.data.model.skyblock.enchantments;
 
-import dev.sbs.api.data.model.EffectsModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
+import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.skyblock.enchantment_families.EnchantmentFamilyModel;
 
-import java.util.Map;
-
-public interface EnchantmentModel extends EffectsModel {
+public interface EnchantmentModel extends Model {
 
     String getKey();
 
     String getName();
 
-    ReforgeTypeModel getItemType();
+    EnchantmentFamilyModel getFamily();
+
+    String getDescription();
 
     Integer getRequiredLevel();
-
-    Map<String, Object> getEffects();
 
 }
