@@ -42,17 +42,17 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
 
     @Getter
     @Setter
-    @JoinColumn(name = "reported_discord_id", nullable = false)
+    @Column(name = "reported_discord_id", nullable = false)
     private Long reportedDiscordId;
 
     @Getter
     @Setter
-    @JoinColumn(name = "submitter_discord_id", nullable = false)
+    @Column(name = "submitter_discord_id", nullable = false)
     private Long submitterDiscordId;
 
     @Getter
     @Setter
-    @JoinColumn(name = "assignee_discord_id", nullable = false)
+    @Column(name = "assignee_discord_id", nullable = false)
     private Long assigneeDiscordId;
 
     @Getter

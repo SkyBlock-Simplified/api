@@ -54,12 +54,12 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
 
     @Getter
     @Setter
-    @JoinColumn(name = "submitter_discord_id", nullable = false)
+    @Column(name = "submitter_discord_id", nullable = false)
     private Long submitterDiscordId;
 
     @Getter
     @Setter
-    @JoinColumn(name = "assignee_discord_id")
+    @Column(name = "assignee_discord_id")
     private Long assigneeDiscordId;
 
     @Getter
