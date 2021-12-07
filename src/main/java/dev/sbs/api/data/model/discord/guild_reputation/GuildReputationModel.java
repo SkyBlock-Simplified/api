@@ -1,0 +1,24 @@
+package dev.sbs.api.data.model.discord.guild_reputation;
+
+import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.discord.guild_reputation_types.GuildReputationTypeModel;
+
+import java.time.Instant;
+
+public interface GuildReputationModel extends Model {
+
+    GuildReputationTypeModel getReputationType();
+
+    Long getReportedDiscordId();
+
+    Long getSubmitterDiscordId();
+
+    Long getAssigneeDiscordId();
+
+    String getReason();
+
+    boolean isPositive();
+
+    Instant getSubmittedAt();
+
+}
