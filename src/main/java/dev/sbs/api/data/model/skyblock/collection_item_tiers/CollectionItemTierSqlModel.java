@@ -17,13 +17,13 @@ import java.util.List;
 
 @Entity
 @Table(
-        name = "skyblock_collection_item_tiers",
-        indexes = {
-                @Index(
-                        columnList = "collection_item_id, tier",
-                        unique = true
-                )
-        }
+    name = "skyblock_collection_item_tiers",
+    indexes = {
+        @Index(
+            columnList = "collection_item_id, tier",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlModel {
@@ -68,24 +68,24 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
         CollectionItemTierSqlModel that = (CollectionItemTierSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
-                .append(this.getTier(), that.getTier())
-                .append(this.getAmountRequired(), that.getAmountRequired())
-                .append(this.getCollectionItem(), that.getCollectionItem())
-                .append(this.getUnlocks(), that.getUnlocks())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+            .append(this.getTier(), that.getTier())
+            .append(this.getAmountRequired(), that.getAmountRequired())
+            .append(this.getCollectionItem(), that.getCollectionItem())
+            .append(this.getUnlocks(), that.getUnlocks())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.getId())
-                .append(this.getCollectionItem())
-                .append(this.getTier())
-                .append(this.getAmountRequired())
-                .append(this.getUnlocks())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getCollectionItem())
+            .append(this.getTier())
+            .append(this.getAmountRequired())
+            .append(this.getUnlocks())
+            .append(this.getUpdatedAt())
+            .build();
     }
-    
+
 }
 

@@ -18,19 +18,19 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_potion_tiers",
-        indexes = {
-                @Index(
-                        columnList = "potion_key, tier",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "tier"
-                ),
-                @Index(
-                        columnList = "ingredient_item_id"
-                )
-        }
+    name = "skyblock_potion_tiers",
+    indexes = {
+        @Index(
+            columnList = "potion_key, tier",
+            unique = true
+        ),
+        @Index(
+            columnList = "tier"
+        ),
+        @Index(
+            columnList = "ingredient_item_id"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionTierSqlModel implements PotionTierModel, SqlModel {

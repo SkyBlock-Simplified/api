@@ -24,12 +24,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_collection_items",
-        indexes = {
-                @Index(
-                        columnList = "collection_key"
-                )
-        }
+    name = "skyblock_collection_items",
+    indexes = {
+        @Index(
+            columnList = "collection_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
@@ -68,24 +68,17 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
         if (!(o instanceof CollectionItemSqlModel)) return false;
         CollectionItemSqlModel that = (CollectionItemSqlModel) o;
 
-        return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getMaxTiers(), that.getMaxTiers())
-                .append(this.getCollection(), that.getCollection())
-                .append(this.getItem(), that.getItem())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getCollection(), that.getCollection())
+            .append(this.getItem(), that.getItem())
+            .append(this.getMaxTiers(), that.getMaxTiers())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getCollection())
-                .append(this.getItem())
-                .append(this.getMaxTiers())
-                .append(this.getUpdatedAt())
-                .build();
+        return new HashCodeBuilder().append(this.getId()).append(this.getCollection()).append(this.getItem()).append(this.getMaxTiers()).append(this.getUpdatedAt()).build();
     }
 
 }

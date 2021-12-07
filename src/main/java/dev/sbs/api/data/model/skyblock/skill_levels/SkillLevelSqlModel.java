@@ -19,13 +19,13 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_skill_levels",
-        indexes = {
-                @Index(
-                        columnList = "skill_key, level",
-                        unique = true
-                )
-        }
+    name = "skyblock_skill_levels",
+    indexes = {
+        @Index(
+            columnList = "skill_key, level",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {

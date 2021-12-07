@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_menus"
+    name = "skyblock_menus"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MenuSqlModel implements MenuModel, SqlModel {

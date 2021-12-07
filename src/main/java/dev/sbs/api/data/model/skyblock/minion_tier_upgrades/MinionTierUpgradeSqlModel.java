@@ -24,19 +24,19 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_minion_tier_upgrades",
-        indexes = {
-                @Index(
-                        columnList = "minion_tier, item_cost",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "minion_tier"
-                ),
-                @Index(
-                        columnList = "item_cost"
-                )
-        }
+    name = "skyblock_minion_tier_upgrades",
+    indexes = {
+        @Index(
+            columnList = "minion_tier, item_cost",
+            unique = true
+        ),
+        @Index(
+            columnList = "minion_tier"
+        ),
+        @Index(
+            columnList = "item_cost"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlModel {
@@ -81,24 +81,24 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
         MinionTierUpgradeSqlModel that = (MinionTierUpgradeSqlModel) o;
 
         return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getCoinCost(), that.getCoinCost())
-                .append(this.getItemQuantity(), that.getItemQuantity())
-                .append(this.getMinionTier(), that.getMinionTier())
-                .append(this.getItemCost(), that.getItemCost())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+            .append(this.getId(), that.getId())
+            .append(this.getCoinCost(), that.getCoinCost())
+            .append(this.getItemQuantity(), that.getItemQuantity())
+            .append(this.getMinionTier(), that.getMinionTier())
+            .append(this.getItemCost(), that.getItemCost())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.getId())
-                .append(this.getMinionTier())
-                .append(this.getCoinCost())
-                .append(this.getItemCost())
-                .append(this.getItemQuantity())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getMinionTier())
+            .append(this.getCoinCost())
+            .append(this.getItemCost())
+            .append(this.getItemQuantity())
+            .append(this.getUpdatedAt())
+            .build();
     }
-    
+
 }

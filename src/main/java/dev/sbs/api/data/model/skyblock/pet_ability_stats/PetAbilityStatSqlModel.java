@@ -18,15 +18,15 @@ import java.util.List;
 
 @Entity
 @Table(
-        name = "skyblock_pet_ability_stats",
-        indexes = {
-                @Index(
-                        columnList = "ability_key"
-                ),
-                @Index(
-                        columnList = "stat_key"
-                )
-        }
+    name = "skyblock_pet_ability_stats",
+    indexes = {
+        @Index(
+            columnList = "ability_key"
+        ),
+        @Index(
+            columnList = "stat_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {

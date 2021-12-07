@@ -24,19 +24,19 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_fairy_souls",
-        indexes = {
-                @Index(
-                        columnList = "x, y, z, location_key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "location_key"
-                ),
-                @Index(
-                        columnList = "location_area_key"
-                )
-        }
+    name = "skyblock_fairy_souls",
+    indexes = {
+        @Index(
+            columnList = "x, y, z, location_key",
+            unique = true
+        ),
+        @Index(
+            columnList = "location_key"
+        ),
+        @Index(
+            columnList = "location_area_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FairySoulSqlModel implements FairySoulModel, SqlModel {
@@ -91,29 +91,29 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
         FairySoulSqlModel that = (FairySoulSqlModel) o;
 
         return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getX(), that.getX())
-                .append(this.getY(), that.getY())
-                .append(this.getZ(), that.getZ())
-                .append(this.isWalkable(), that.isWalkable())
-                .append(this.getLocation(), that.getLocation())
-                .append(this.getLocationArea(), that.getLocationArea())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+            .append(this.getId(), that.getId())
+            .append(this.getX(), that.getX())
+            .append(this.getY(), that.getY())
+            .append(this.getZ(), that.getZ())
+            .append(this.isWalkable(), that.isWalkable())
+            .append(this.getLocation(), that.getLocation())
+            .append(this.getLocationArea(), that.getLocationArea())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getX())
-                .append(this.getY())
-                .append(this.getZ())
-                .append(this.getLocation())
-                .append(this.getLocationArea())
-                .append(this.isWalkable())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getId())
+            .append(this.getX())
+            .append(this.getY())
+            .append(this.getZ())
+            .append(this.getLocation())
+            .append(this.getLocationArea())
+            .append(this.isWalkable())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

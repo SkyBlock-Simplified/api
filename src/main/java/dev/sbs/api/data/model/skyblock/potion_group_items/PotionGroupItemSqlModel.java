@@ -16,16 +16,16 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_potion_group_items",
-        indexes = {
-                @Index(
-                        columnList = "potion_key, potion_group_key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "potion_key, potion_tier"
-                )
-        }
+    name = "skyblock_potion_group_items",
+    indexes = {
+        @Index(
+            columnList = "potion_key, potion_group_key",
+            unique = true
+        ),
+        @Index(
+            columnList = "potion_key, potion_tier"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
@@ -46,8 +46,8 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "potion_key", nullable = false, referencedColumnName = "potion_key"),
-            @JoinColumn(name = "potion_tier", nullable = false, referencedColumnName = "tier")
+        @JoinColumn(name = "potion_key", nullable = false, referencedColumnName = "potion_key"),
+        @JoinColumn(name = "potion_tier", nullable = false, referencedColumnName = "tier")
     })
     private PotionTierSqlModel potionTier;
 

@@ -22,7 +22,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_reforges"
+    name = "skyblock_reforges"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
@@ -65,7 +65,13 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
         if (!(o instanceof ReforgeSqlModel)) return false;
         ReforgeSqlModel that = (ReforgeSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.isStone(), that.isStone()).append(this.getKey(), that.getKey()).append(this.getName(), that.getName()).append(this.getType(), that.getType()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.isStone(), that.isStone())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getType(), that.getType())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override

@@ -25,19 +25,19 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_dungeon_floors",
-        indexes = {
-                @Index(
-                        columnList = "dungeon_key, floor",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "floor_size_key"
-                ),
-                @Index(
-                        columnList = "floor_boss_key"
-                )
-        }
+    name = "skyblock_dungeon_floors",
+    indexes = {
+        @Index(
+            columnList = "dungeon_key, floor",
+            unique = true
+        ),
+        @Index(
+            columnList = "floor_size_key"
+        ),
+        @Index(
+            columnList = "floor_boss_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
@@ -83,25 +83,25 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
         DungeonFloorSqlModel that = (DungeonFloorSqlModel) o;
 
         return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getFloor(), that.getFloor())
-                .append(this.getDungeon(), that.getDungeon())
-                .append(this.getFloorSize(), that.getFloorSize())
-                .append(this.getFloorBoss(), that.getFloorBoss())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+            .append(this.getId(), that.getId())
+            .append(this.getFloor(), that.getFloor())
+            .append(this.getDungeon(), that.getDungeon())
+            .append(this.getFloorSize(), that.getFloorSize())
+            .append(this.getFloorBoss(), that.getFloorBoss())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getDungeon())
-                .append(this.getFloor())
-                .append(this.getFloorSize())
-                .append(this.getFloorBoss())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getId())
+            .append(this.getDungeon())
+            .append(this.getFloor())
+            .append(this.getFloorSize())
+            .append(this.getFloorBoss())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

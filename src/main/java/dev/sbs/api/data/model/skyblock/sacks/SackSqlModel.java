@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_sacks"
+    name = "skyblock_sacks"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SackSqlModel implements SackModel, SqlModel {

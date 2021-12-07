@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_minion_uniques"
+    name = "skyblock_minion_uniques"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionUniqueSqlModel implements MinionUniqueModel, SqlModel {

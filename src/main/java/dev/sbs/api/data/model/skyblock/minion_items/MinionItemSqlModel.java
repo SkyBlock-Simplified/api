@@ -25,18 +25,18 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_minion_items",
-        indexes = {
-                @Index(
-                        columnList = "minion_key"
-                ),
-                @Index(
-                        columnList = "collection_item_id"
-                ),
-                @Index(
-                        columnList = "item_id"
-                )
-        }
+    name = "skyblock_minion_items",
+    indexes = {
+        @Index(
+            columnList = "minion_key"
+        ),
+        @Index(
+            columnList = "collection_item_id"
+        ),
+        @Index(
+            columnList = "item_id"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionItemSqlModel implements MinionItemModel, SqlModel {

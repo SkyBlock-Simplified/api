@@ -20,13 +20,13 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_dungeons",
-        indexes = {
-                @Index(
-                        columnList = "id",
-                        unique = true
-                )
-        }
+    name = "skyblock_dungeons",
+    indexes = {
+        @Index(
+            columnList = "id",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonSqlModel implements DungeonModel, SqlModel {

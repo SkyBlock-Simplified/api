@@ -23,12 +23,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_location_areas",
-        indexes = {
-                @Index(
-                        columnList = "location_key"
-                )
-        }
+    name = "skyblock_location_areas",
+    indexes = {
+        @Index(
+            columnList = "location_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
@@ -66,7 +66,12 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
         if (!(o instanceof LocationAreaSqlModel)) return false;
         LocationAreaSqlModel that = (LocationAreaSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getKey(), that.getKey()).append(this.getName(), that.getName()).append(this.getLocation(), that.getLocation()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getLocation(), that.getLocation())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override

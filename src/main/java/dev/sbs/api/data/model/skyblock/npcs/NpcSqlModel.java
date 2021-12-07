@@ -24,19 +24,19 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_npcs",
-        indexes = {
-                @Index(
-                        columnList = "x, y, z, key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "location_key"
-                ),
-                @Index(
-                        columnList = "location_area_key"
-                )
-        }
+    name = "skyblock_npcs",
+    indexes = {
+        @Index(
+            columnList = "x, y, z, key",
+            unique = true
+        ),
+        @Index(
+            columnList = "location_key"
+        ),
+        @Index(
+            columnList = "location_area_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class NpcSqlModel implements NpcModel, SqlModel {

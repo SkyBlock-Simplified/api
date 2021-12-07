@@ -24,16 +24,16 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_sack_items",
-        indexes = {
-                @Index(
-                        columnList = "item_id, sack_key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "item_id"
-                )
-        }
+    name = "skyblock_sack_items",
+    indexes = {
+        @Index(
+            columnList = "item_id, sack_key",
+            unique = true
+        ),
+        @Index(
+            columnList = "item_id"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SackItemSqlModel implements SackItemModel, SqlModel {

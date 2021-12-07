@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_accessory_families"
+    name = "skyblock_accessory_families"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {

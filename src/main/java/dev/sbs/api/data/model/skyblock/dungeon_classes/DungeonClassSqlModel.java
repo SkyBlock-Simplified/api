@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_dungeon_classes"
+    name = "skyblock_dungeon_classes"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonClassSqlModel implements DungeonClassModel, SqlModel {

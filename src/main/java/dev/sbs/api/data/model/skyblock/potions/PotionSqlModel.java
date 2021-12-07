@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_potions"
+    name = "skyblock_potions"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionSqlModel implements PotionModel, SqlModel {

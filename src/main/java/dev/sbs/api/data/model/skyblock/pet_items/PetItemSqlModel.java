@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_pet_items"
+    name = "skyblock_pet_items"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetItemSqlModel implements PetItemModel, SqlModel {

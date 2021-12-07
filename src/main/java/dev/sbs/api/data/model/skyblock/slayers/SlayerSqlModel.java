@@ -23,7 +23,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_slayers"
+    name = "skyblock_slayers"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SlayerSqlModel implements SlayerModel, SqlModel {

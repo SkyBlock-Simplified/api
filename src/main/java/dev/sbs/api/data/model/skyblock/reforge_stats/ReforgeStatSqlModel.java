@@ -18,13 +18,13 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_reforge_stats",
-        indexes = {
-                @Index(
-                        columnList = "key, rarity_key",
-                        unique = true
-                )
-        }
+    name = "skyblock_reforge_stats",
+    indexes = {
+        @Index(
+            columnList = "key, rarity_key",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
@@ -64,7 +64,12 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
         if (!(o instanceof ReforgeStatSqlModel)) return false;
         ReforgeStatSqlModel that = (ReforgeStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getReforge(), that.getReforge()).append(this.getRarity(), that.getRarity()).append(this.getEffects(), that.getEffects()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getReforge(), that.getReforge())
+            .append(this.getRarity(), that.getRarity())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override

@@ -23,12 +23,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_bags",
-        indexes = {
-                @Index(
-                        columnList = "collection_item_id"
-                )
-        }
+    name = "skyblock_bags",
+    indexes = {
+        @Index(
+            columnList = "collection_item_id"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BagSqlModel implements BagModel, SqlModel {
@@ -61,14 +61,22 @@ public class BagSqlModel implements BagModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BagSqlModel)) return false;
+        BagSqlModel that = (BagSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getCollectionItem(), that.getCollectionItem())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder().append(this.getId()).append(this.getKey()).append(this.getName()).append(this.getCollectionItem()).append(this.getUpdatedAt()).build();
     }
 
 }

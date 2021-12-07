@@ -24,12 +24,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_minion_tiers",
-        indexes = {
-                @Index(
-                        columnList = "minion_key"
-                )
-        }
+    name = "skyblock_minion_tiers",
+    indexes = {
+        @Index(
+            columnList = "minion_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionTierSqlModel implements MinionTierModel, SqlModel {
@@ -69,23 +69,23 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
         MinionTierSqlModel that = (MinionTierSqlModel) o;
 
         return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getSpeed(), that.getSpeed())
-                .append(this.getMinion(), that.getMinion())
-                .append(this.getItem(), that.getItem())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+            .append(this.getId(), that.getId())
+            .append(this.getSpeed(), that.getSpeed())
+            .append(this.getMinion(), that.getMinion())
+            .append(this.getItem(), that.getItem())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getMinion())
-                .append(this.getItem())
-                .append(this.getSpeed())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getId())
+            .append(this.getMinion())
+            .append(this.getItem())
+            .append(this.getSpeed())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

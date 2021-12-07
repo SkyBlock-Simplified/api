@@ -16,12 +16,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_stats",
-        indexes = {
-                @Index(
-                        columnList = "format_key"
-                )
-        }
+    name = "skyblock_stats",
+    indexes = {
+        @Index(
+            columnList = "format_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class StatSqlModel implements StatModel, SqlModel {

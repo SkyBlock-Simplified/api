@@ -23,17 +23,17 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_pet_abilities",
-        indexes = {
-                @Index(
-                        columnList = "pet_key, key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "pet_key, ordinal",
-                        unique = true
-                )
-        }
+    name = "skyblock_pet_abilities",
+    indexes = {
+        @Index(
+            columnList = "pet_key, key",
+            unique = true
+        ),
+        @Index(
+            columnList = "pet_key, ordinal",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {

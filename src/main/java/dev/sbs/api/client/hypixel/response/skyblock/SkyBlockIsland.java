@@ -64,7 +64,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -84,7 +83,8 @@ public class SkyBlockIsland {
     private static final DecimalFormat smallDecimalFormat = new DecimalFormat("#0.#");
 
     @SerializedName("profile_id")
-    @Getter private UUID islandId;
+    @Getter
+    private UUID islandId;
     @SerializedName("community_upgrades")
     private CommunityUpgrades communityUpgrades;
     private Banking banking;
@@ -168,40 +168,57 @@ public class SkyBlockIsland {
     public static class Member {
 
         // Player Stats
-        @Getter private UUID uniqueId;
+        @Getter
+        private UUID uniqueId;
         @SerializedName("first_join")
-        @Getter private SkyBlockDate.RealTime firstJoin; // Real Time
+        @Getter
+        private SkyBlockDate.RealTime firstJoin; // Real Time
         @SerializedName("first_join_hub")
-        @Getter private SkyBlockDate.SkyBlockTime firstJoinHub; // SkyBlock Time
+        @Getter
+        private SkyBlockDate.SkyBlockTime firstJoinHub; // SkyBlock Time
         @SerializedName("last_death")
-        @Getter private SkyBlockDate.SkyBlockTime lastDeath; // SkyBlock Time
+        @Getter
+        private SkyBlockDate.SkyBlockTime lastDeath; // SkyBlock Time
         @SerializedName("death_count")
-        @Getter private int deathCount;
+        @Getter
+        private int deathCount;
         @SerializedName("last_save")
-        @Getter private SkyBlockDate.RealTime lastSave; // Real Time
+        @Getter
+        private SkyBlockDate.RealTime lastSave; // Real Time
         @SerializedName("coin_purse")
-        @Getter private double purse;
+        @Getter
+        private double purse;
         @SerializedName("fishing_treasure_caught")
-        @Getter private int caughtFishingTreasure;
+        @Getter
+        private int caughtFishingTreasure;
         @SerializedName("fairy_souls_collected")
-        @Getter private int collectedFairySouls;
+        @Getter
+        private int collectedFairySouls;
         @SerializedName("fairy_souls")
-        @Getter private int unclaimedFairySouls;
+        @Getter
+        private int unclaimedFairySouls;
         @SerializedName("fairy_exchanges")
-        @Getter private int fairyExchanges;
+        @Getter
+        private int fairyExchanges;
         @SerializedName("wardrobe_equipped_slot")
-        @Getter private int equippedWardrobeSlot;
+        @Getter
+        private int equippedWardrobeSlot;
 
         // Zones/Islands
-        @Getter private ConcurrentList<String> tutorial;
+        @Getter
+        private ConcurrentList<String> tutorial;
         @SerializedName("visited_zones")
-        @Getter private ConcurrentList<String> visited_zones;
+        @Getter
+        private ConcurrentList<String> visited_zones;
         @SerializedName("achievement_spawned_island_types")
-        @Getter private ConcurrentList<String> spawnedIslandTypes;
+        @Getter
+        private ConcurrentList<String> spawnedIslandTypes;
 
         // Miscellaneous
-        @Getter private ConcurrentList<PetInfo> pets;
-        @Getter private ConcurrentMap<String, Double> stats;
+        @Getter
+        private ConcurrentList<PetInfo> pets;
+        @Getter
+        private ConcurrentMap<String, Double> stats;
         private ConcurrentLinkedMap<String, Objective> objectives;
         private ConcurrentLinkedMap<String, Quest> quests;
         @SerializedName("crafted_generators")
@@ -214,23 +231,32 @@ public class SkyBlockIsland {
         @SerializedName("harp_quest")
         private ConcurrentLinkedMap<String, Object> harpQuest;
         @SerializedName("active_effects")
-        @Getter private ConcurrentList<Potion> activePotions;
+        @Getter
+        private ConcurrentList<Potion> activePotions;
         @SerializedName("paused_effects")
-        @Getter private ConcurrentList<Potion> pausedPotions;
+        @Getter
+        private ConcurrentList<Potion> pausedPotions;
         @SerializedName("disabled_potion_effects")
-        @Getter private ConcurrentSet<String> disabledPotionEffects;
+        @Getter
+        private ConcurrentSet<String> disabledPotionEffects;
         @SerializedName("temp_stat_buffs")
-        @Getter private ConcurrentList<CenturyCake> centuryCakes;
+        @Getter
+        private ConcurrentList<CenturyCake> centuryCakes;
         @SerializedName("griffin.burrows")
         private ConcurrentList<GriffinBurrow> griffinBurrows;
         @SerializedName("mining_core")
-        @Getter private Mining mining;
+        @Getter
+        private Mining mining;
         @SerializedName("jacob2")
-        @Getter private JacobsFarming jacobsFarming;
+        @Getter
+        private JacobsFarming jacobsFarming;
         @SerializedName("forge.forge_processes.forge_1")
-        @Getter private ConcurrentList<ForgeItem> forgeItems = Concurrent.newList();
-        @Getter private Dungeons dungeons;
-        @Getter private Experimentation experimentation;
+        @Getter
+        private ConcurrentList<ForgeItem> forgeItems = Concurrent.newList();
+        @Getter
+        private Dungeons dungeons;
+        @Getter
+        private Experimentation experimentation;
 
         // Experience, DO NOT RENAME
         private double experience_skill_farming = -1;
@@ -261,7 +287,8 @@ public class SkyBlockIsland {
         @SerializedName("essence_spider")
         private int essenceSpider;
         @SerializedName("perks")
-        @Getter private ConcurrentMap<String, Integer> essencePerks;
+        @Getter
+        private ConcurrentMap<String, Integer> essencePerks;
 
         // Inventory Contents
         @SerializedName("inv_armor")
@@ -297,20 +324,14 @@ public class SkyBlockIsland {
             return new Backpacks(this.backpackContents, this.backpackIcons);
         }
 
-        @SneakyThrows
         public Collection getCollection(SkillModel type) {
             Collection collection = new Collection(type);
-            ConcurrentList<CollectionItemModel> items2 = SimplifiedApi.getRepositoryOf(CollectionItemModel.class)
-                    .findAll(FilterFunction.combine(
-                                    FilterFunction.combine(CollectionItemModel::getCollection, CollectionModel::getSkill),
-                                    SkillModel::getKey
-                            ), type.getKey()
-                    );
             ConcurrentList<CollectionItemModel> items = SimplifiedApi.getRepositoryOf(CollectionItemModel.class)
-                    .findAll()
-                    .stream()
-                    .filter(model -> model.getCollection().getSkill().getKey().equals(type.getKey()))
-                    .collect(Concurrent.toList());
+                .findAll(FilterFunction.combine(
+                             FilterFunction.combine(CollectionItemModel::getCollection, CollectionModel::getSkill),
+                             SkillModel::getKey
+                         ), type.getKey()
+                );
 
             if (this.collection != null) {
                 for (CollectionItemModel item : items) {
@@ -335,7 +356,6 @@ public class SkyBlockIsland {
             return new MelodyHarp(this.harpQuest);
         }
 
-        @SneakyThrows
         public Minion getMinion(String minionName) {
             return this.getMinion(SimplifiedApi.getRepositoryOf(MinionModel.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
         }
@@ -345,17 +365,16 @@ public class SkyBlockIsland {
 
             if (this.craftedMinions != null) {
                 minion.unlocked.addAll(
-                        this.craftedMinions.stream()
-                                .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", minionModel.getCollection().getSkill().getKey())))
-                                .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", minionModel.getCollection().getSkill().getKey()), "")))
-                                .collect(Collectors.toList())
+                    this.craftedMinions.stream()
+                        .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", minionModel.getCollection().getSkill().getKey())))
+                        .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", minionModel.getCollection().getSkill().getKey()), "")))
+                        .collect(Collectors.toList())
                 );
             }
 
             return minion;
         }
 
-        @SneakyThrows
         public ConcurrentList<Minion> getMinions() {
             return SimplifiedApi.getRepositoryOf(MinionModel.class).findAll().stream().map(this::getMinion).collect(Concurrent.toList());
         }
@@ -391,13 +410,12 @@ public class SkyBlockIsland {
             return this.quests.stream().filter(entry -> status == null || entry.getValue().getStatus() == status).sorted(Comparator.comparingLong(o -> o.getValue().getCompleted().getRealTime())).collect(Concurrent.toLinkedMap());
         }
 
-        @SneakyThrows
         public Skill getSkill(String skillName) {
             return this.getSkill(SimplifiedApi.getRepositoryOf(SkillModel.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(SkillModel::getKey, skillName), Pair.of(SkillModel::getName, skillName)));
         }
 
         public Skill getSkill(SkillModel skillModel) {
-            double experience = (double)new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
+            double experience = (double) new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
             return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().get(JacobsFarming.Perk.FARMING_LEVEL_CAP) : 0));
         }
 
@@ -409,22 +427,21 @@ public class SkyBlockIsland {
             Sack sack = new Sack(sackModel);
 
             SimplifiedApi.getRepositoryOf(SackItemModel.class)
-                    .findAll(SackItemModel::getSack, sackModel)
-                    .parallelStream()
-                    .map(sackItem -> Pair.of(sackItem, this.sacksCounts.getOrDefault(sackItem.getItem().getItemId(), 0)))
-                    .forEach(entry -> sack.stored.put(entry.getKey(), entry.getValue()));
+                .findAll(SackItemModel::getSack, sackModel)
+                .parallelStream()
+                .map(sackItem -> Pair.of(sackItem, this.sacksCounts.getOrDefault(sackItem.getItem().getItemId(), 0)))
+                .forEach(entry -> sack.stored.put(entry.getKey(), entry.getValue()));
 
             return sack;
         }
 
-        @SneakyThrows
         public double getSkillAverage() {
             ConcurrentList<Skill> skills = SimplifiedApi.getRepositoryOf(SkillModel.class)
-                    .findAll()
-                    .parallelStream()
-                    .filter(skillModel -> !skillModel.isCosmetic())
-                    .map(skillModel -> this.getSkill(skillModel))
-                    .collect(Concurrent.toList());
+                .findAll()
+                .parallelStream()
+                .filter(skillModel -> !skillModel.isCosmetic())
+                .map(skillModel -> this.getSkill(skillModel))
+                .collect(Concurrent.toList());
 
             return skills.stream().mapToDouble(Skill::getLevel).sum() / skills.size();
         }
@@ -473,127 +490,125 @@ public class SkyBlockIsland {
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Weight {
 
-            @Getter private final double value;
-            @Getter private final double overflow;
+            @Getter
+            private final double value;
+            @Getter
+            private final double overflow;
 
         }
 
-        @SneakyThrows
         public ConcurrentMap<SkillModel, Weight> getSkillWeight() {
             return SimplifiedApi.getRepositoryOf(SkillModel.class)
-                    .findAll()
-                    .parallelStream()
-                    .filter(skillModel -> !skillModel.isCosmetic())
-                    .map(skillModel -> {
-                        Skill skill = this.getSkill(skillModel);
-                        double rawLevel = skill.getRawLevel();
-                        ConcurrentList<Double> experienceTiers = skill.getExperienceTiers();
-                        double maxSkillExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+                .findAll()
+                .parallelStream()
+                .filter(skillModel -> !skillModel.isCosmetic())
+                .map(skillModel -> {
+                    Skill skill = this.getSkill(skillModel);
+                    double rawLevel = skill.getRawLevel();
+                    ConcurrentList<Double> experienceTiers = skill.getExperienceTiers();
+                    double maxSkillExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
 
-                        if (rawLevel < skill.getMaxLevel())
-                            rawLevel += (skill.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
+                    if (rawLevel < skill.getMaxLevel())
+                        rawLevel += (skill.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
 
-                        double base = Math.pow(rawLevel * 10, 0.5 + skillModel.getWeightExponent() + (rawLevel / 100.0)) / 1250;
-                        double weightValue = NumberUtil.round(base, 2);
-                        double weightOverflow = 0;
+                    double base = Math.pow(rawLevel * 10, 0.5 + skillModel.getWeightExponent() + (rawLevel / 100.0)) / 1250;
+                    double weightValue = NumberUtil.round(base, 2);
+                    double weightOverflow = 0;
 
-                        if (skill.getExperience() > maxSkillExperienceRequired) {
-                            double overflow = Math.pow((skill.getExperience() - maxSkillExperienceRequired) / skillModel.getWeightDivider(), 0.968);
-                            weightOverflow = NumberUtil.round(overflow, 2);
-                        }
+                    if (skill.getExperience() > maxSkillExperienceRequired) {
+                        double overflow = Math.pow((skill.getExperience() - maxSkillExperienceRequired) / skillModel.getWeightDivider(), 0.968);
+                        weightOverflow = NumberUtil.round(overflow, 2);
+                    }
 
-                        return Pair.of(skillModel, new Weight(weightValue, weightOverflow));
-                    })
-                    .collect(Concurrent.toMap());
+                    return Pair.of(skillModel, new Weight(weightValue, weightOverflow));
+                })
+                .collect(Concurrent.toMap());
         }
 
-        @SneakyThrows
         public ConcurrentMap<SlayerModel, Weight> getSlayerWeight() {
             return SimplifiedApi.getRepositoryOf(SlayerModel.class)
-                    .findAll()
-                    .parallelStream()
-                    .map(slayerModel -> {
-                        Slayer slayer = this.getSlayer(slayerModel);
-                        ConcurrentList<Double> experienceTiers = slayer.getExperienceTiers();
-                        double maxSlayerExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
-                        double base = Math.min(slayer.getExperience(), maxSlayerExperienceRequired) / slayerModel.getWeightDivider();
-                        double weightValue = NumberUtil.round(base, 2);
-                        double weightOverflow = 0;
+                .findAll()
+                .parallelStream()
+                .map(slayerModel -> {
+                    Slayer slayer = this.getSlayer(slayerModel);
+                    ConcurrentList<Double> experienceTiers = slayer.getExperienceTiers();
+                    double maxSlayerExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+                    double base = Math.min(slayer.getExperience(), maxSlayerExperienceRequired) / slayerModel.getWeightDivider();
+                    double weightValue = NumberUtil.round(base, 2);
+                    double weightOverflow = 0;
 
-                        if (slayer.getExperience() > maxSlayerExperienceRequired) {
-                            double remaining = slayer.getExperience() - maxSlayerExperienceRequired;
-                            double overflow = 0;
-                            double modifier = slayerModel.getWeightModifier();
+                    if (slayer.getExperience() > maxSlayerExperienceRequired) {
+                        double remaining = slayer.getExperience() - maxSlayerExperienceRequired;
+                        double overflow = 0;
+                        double modifier = slayerModel.getWeightModifier();
 
-                            while (remaining > 0) {
-                                double left = Math.min(remaining, maxSlayerExperienceRequired);
-                                overflow += Math.pow(left / (slayerModel.getWeightDivider() * (1.5 + modifier)), 0.942);
-                                remaining -= left;
-                                modifier += modifier;
-                            }
-
-                            weightOverflow = NumberUtil.round(overflow, 2);
+                        while (remaining > 0) {
+                            double left = Math.min(remaining, maxSlayerExperienceRequired);
+                            overflow += Math.pow(left / (slayerModel.getWeightDivider() * (1.5 + modifier)), 0.942);
+                            remaining -= left;
+                            modifier += modifier;
                         }
 
-                        return Pair.of(slayerModel, new Weight(weightValue, weightOverflow));
-                    })
-                    .collect(Concurrent.toMap());
+                        weightOverflow = NumberUtil.round(overflow, 2);
+                    }
+
+                    return Pair.of(slayerModel, new Weight(weightValue, weightOverflow));
+                })
+                .collect(Concurrent.toMap());
         }
 
-        @SneakyThrows
         public ConcurrentMap<DungeonModel, Weight> getDungeonWeight() {
             return SimplifiedApi.getRepositoryOf(DungeonModel.class)
-                    .findAll()
-                    .parallelStream()
-                    .map(dungeonModel -> {
-                        Dungeon dungeon = this.getDungeons().getDungeon(dungeonModel).orElse(null);
-                        double rawLevel = dungeon.getRawLevel();
-                        ConcurrentList<Double> experienceTiers = dungeon.getExperienceTiers();
-                        double maxDungeonClassExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+                .findAll()
+                .parallelStream()
+                .map(dungeonModel -> {
+                    Dungeon dungeon = this.getDungeons().getDungeon(dungeonModel).orElse(null);
+                    double rawLevel = dungeon.getRawLevel();
+                    ConcurrentList<Double> experienceTiers = dungeon.getExperienceTiers();
+                    double maxDungeonClassExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
 
-                        if (rawLevel < dungeon.getMaxLevel())
-                            rawLevel += (dungeon.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
+                    if (rawLevel < dungeon.getMaxLevel())
+                        rawLevel += (dungeon.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
 
-                        double base = Math.pow(rawLevel, 4.5) * dungeonModel.getWeightMultiplier();
-                        double weightValue = NumberUtil.round(base, 2);
-                        double weightOverflow = 0;
+                    double base = Math.pow(rawLevel, 4.5) * dungeonModel.getWeightMultiplier();
+                    double weightValue = NumberUtil.round(base, 2);
+                    double weightOverflow = 0;
 
-                        if (dungeon.getExperience() > maxDungeonClassExperienceRequired) {
-                            double overflow = Math.pow((dungeon.getExperience() - maxDungeonClassExperienceRequired) / (4 * maxDungeonClassExperienceRequired / base), 0.968);
-                            weightOverflow = NumberUtil.round(overflow, 2);
-                        }
+                    if (dungeon.getExperience() > maxDungeonClassExperienceRequired) {
+                        double overflow = Math.pow((dungeon.getExperience() - maxDungeonClassExperienceRequired) / (4 * maxDungeonClassExperienceRequired / base), 0.968);
+                        weightOverflow = NumberUtil.round(overflow, 2);
+                    }
 
-                        return Pair.of(dungeonModel, new Weight(weightValue, weightOverflow));
-                    })
-                    .collect(Concurrent.toMap());
+                    return Pair.of(dungeonModel, new Weight(weightValue, weightOverflow));
+                })
+                .collect(Concurrent.toMap());
         }
 
-        @SneakyThrows
         public ConcurrentMap<DungeonClassModel, Weight> getDungeonClassWeight() {
             return SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
-                    .findAll()
-                    .parallelStream()
-                    .map(dungeonClassModel -> {
-                        Dungeon.Class dungeonClass = this.getDungeons().getPlayerClass(Dungeon.Class.Type.valueOf(dungeonClassModel.getKey()));
-                        double rawLevel = dungeonClass.getRawLevel();
-                        ConcurrentList<Double> experienceTiers = dungeonClass.getExperienceTiers();
-                        double maxDungeonClassExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
+                .findAll()
+                .parallelStream()
+                .map(dungeonClassModel -> {
+                    Dungeon.Class dungeonClass = this.getDungeons().getPlayerClass(Dungeon.Class.Type.valueOf(dungeonClassModel.getKey()));
+                    double rawLevel = dungeonClass.getRawLevel();
+                    ConcurrentList<Double> experienceTiers = dungeonClass.getExperienceTiers();
+                    double maxDungeonClassExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
 
-                        if (rawLevel < dungeonClass.getMaxLevel())
-                            rawLevel += (dungeonClass.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
+                    if (rawLevel < dungeonClass.getMaxLevel())
+                        rawLevel += (dungeonClass.getProgressPercentage() / 100); // Add Percentage Progress to Next Level
 
-                        double base = Math.pow(rawLevel, 4.5) * dungeonClassModel.getWeightMultiplier();
-                        double weightValue = NumberUtil.round(base, 2);
-                        double weightOverflow = 0;
+                    double base = Math.pow(rawLevel, 4.5) * dungeonClassModel.getWeightMultiplier();
+                    double weightValue = NumberUtil.round(base, 2);
+                    double weightOverflow = 0;
 
-                        if (dungeonClass.getExperience() > maxDungeonClassExperienceRequired) {
-                            double overflow = Math.pow((dungeonClass.getExperience() - maxDungeonClassExperienceRequired) / (4 * maxDungeonClassExperienceRequired / base), 0.968);
-                            weightOverflow = NumberUtil.round(overflow, 2);
-                        }
+                    if (dungeonClass.getExperience() > maxDungeonClassExperienceRequired) {
+                        double overflow = Math.pow((dungeonClass.getExperience() - maxDungeonClassExperienceRequired) / (4 * maxDungeonClassExperienceRequired / base), 0.968);
+                        weightOverflow = NumberUtil.round(overflow, 2);
+                    }
 
-                        return Pair.of(dungeonClassModel, new Weight(weightValue, weightOverflow));
-                    })
-                    .collect(Concurrent.toMap());
+                    return Pair.of(dungeonClassModel, new Weight(weightValue, weightOverflow));
+                })
+                .collect(Concurrent.toMap());
         }
 
     }
@@ -601,23 +616,30 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Backpacks {
 
-        @Getter private final ConcurrentMap<Integer, NbtContent> contents;
-        @Getter private final ConcurrentMap<Integer, NbtContent> icons;
+        @Getter
+        private final ConcurrentMap<Integer, NbtContent> contents;
+        @Getter
+        private final ConcurrentMap<Integer, NbtContent> icons;
 
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Banking {
 
-        @Getter private double balance;
-        @Getter private ConcurrentList<Banking.Transaction> transactions;
+        @Getter
+        private double balance;
+        @Getter
+        private ConcurrentList<Banking.Transaction> transactions;
 
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Transaction {
 
-            @Getter private double amount;
-            @Getter private SkyBlockDate.RealTime timestamp;
-            @Getter private Banking.Transaction.Action action;
+            @Getter
+            private double amount;
+            @Getter
+            private SkyBlockDate.RealTime timestamp;
+            @Getter
+            private Banking.Transaction.Action action;
             @SerializedName("initiator_name")
             private String initiatorName;
 
@@ -640,9 +662,11 @@ public class SkyBlockIsland {
     public static class Experimentation {
 
         @SerializedName("claims_resets")
-        @Getter private int resetClaims;
+        @Getter
+        private int resetClaims;
         @SerializedName("claims_resets_timestamp")
-        @Getter private SkyBlockDate.RealTime resetClaimsTimestamp;
+        @Getter
+        private SkyBlockDate.RealTime resetClaimsTimestamp;
         @SerializedName("pairings")
         private Table superpairs;
         @SerializedName("simon")
@@ -654,9 +678,11 @@ public class SkyBlockIsland {
         public static class Table {
 
             @SerializedName("last_attempt")
-            @Getter private SkyBlockDate.RealTime lastAttempt;
+            @Getter
+            private SkyBlockDate.RealTime lastAttempt;
             @SerializedName("last_claimed")
-            @Getter private SkyBlockDate.RealTime lastClaimed;
+            @Getter
+            private SkyBlockDate.RealTime lastClaimed;
             private ConcurrentMap<Integer, Integer> attempts = Concurrent.newMap();
             private ConcurrentMap<Integer, Integer> claims = Concurrent.newMap();
             @SerializedName("best_score")
@@ -670,13 +696,16 @@ public class SkyBlockIsland {
     public static class GriffinBurrow {
 
         @SerializedName("ts")
-        @Getter private SkyBlockDate.RealTime timestamp;
+        @Getter
+        private SkyBlockDate.RealTime timestamp;
         private int x;
         private int y;
         private int z;
         private int tier; // Rarity (No Griffin is -1)
-        @Getter private Type type; // Start/Empty, Mob, Treasure
-        @Getter private int chain; // (Position - 1) / 4
+        @Getter
+        private Type type; // Start/Empty, Mob, Treasure
+        @Getter
+        private int chain; // (Position - 1) / 4
 
         // Type == 0 + Chain == 0, Start
         // Type == 0 + Chain != 0, Empty
@@ -685,7 +714,6 @@ public class SkyBlockIsland {
             return new Vector(this.x, this.y, this.z);
         }
 
-        @SneakyThrows
         public RarityModel getGriffinRarity() {
             return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getOrdinal, this.tier);
         }
@@ -706,9 +734,11 @@ public class SkyBlockIsland {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BasicObjective {
 
-        @Getter private BasicObjective.Status status;
+        @Getter
+        private BasicObjective.Status status;
         @SerializedName("completed_at")
-        @Getter private SkyBlockDate.RealTime completed;
+        @Getter
+        private SkyBlockDate.RealTime completed;
 
         public enum Status {
 
@@ -727,12 +757,14 @@ public class SkyBlockIsland {
     public static class CenturyCake {
 
         private int stat; // This is in ordinal order in stat menu
-        @Getter private String key;
-        @Getter private int amount;
+        @Getter
+        private String key;
+        @Getter
+        private int amount;
         @SerializedName("expire_at")
-        @Getter private SkyBlockDate.RealTime expiresAt;
+        @Getter
+        private SkyBlockDate.RealTime expiresAt;
 
-        @SneakyThrows
         public StatModel getStat() {
             return SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getOrdinal, this.stat);
         }
@@ -742,10 +774,13 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Collection {
 
-        @Getter private final SkillModel type;
+        @Getter
+        private final SkillModel type;
         @SerializedName("items")
-        @Getter private ConcurrentLinkedMap<CollectionItemModel, Integer> collected = Concurrent.newLinkedMap();
-        @Getter private ConcurrentLinkedMap<CollectionItemModel, Integer> unlocked = Concurrent.newLinkedMap();
+        @Getter
+        private ConcurrentLinkedMap<CollectionItemModel, Integer> collected = Concurrent.newLinkedMap();
+        @Getter
+        private ConcurrentLinkedMap<CollectionItemModel, Integer> unlocked = Concurrent.newLinkedMap();
 
         public int getCollected(CollectionItemModel collection) {
             return this.collected.get(collection);
@@ -763,7 +798,8 @@ public class SkyBlockIsland {
         @SerializedName("currently_upgrading")
         private CommunityUpgrades.UpgradeState.Upgrade currentlyUpgrading;
         @SerializedName("upgrade_states")
-        @Getter private ConcurrentList<CommunityUpgrades.UpgradeState> upgradeStates;
+        @Getter
+        private ConcurrentList<CommunityUpgrades.UpgradeState> upgradeStates;
 
         public Optional<CommunityUpgrades.UpgradeState.Upgrade> getCurrentlyUpgrading() {
             return Optional.ofNullable(this.currentlyUpgrading);
@@ -772,18 +808,25 @@ public class SkyBlockIsland {
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class UpgradeState {
 
-            @Getter private CommunityUpgrades.UpgradeState.Upgrade upgrade;
-            @Getter private int tier;
+            @Getter
+            private CommunityUpgrades.UpgradeState.Upgrade upgrade;
+            @Getter
+            private int tier;
             @SerializedName("started_ms")
-            @Getter private SkyBlockDate.RealTime started;
+            @Getter
+            private SkyBlockDate.RealTime started;
             @SerializedName("started_by")
-            @Getter private String startedBy;
+            @Getter
+            private String startedBy;
             @SerializedName("claimed_ms")
-            @Getter private SkyBlockDate.RealTime claimed;
+            @Getter
+            private SkyBlockDate.RealTime claimed;
             @SerializedName("claimed_by")
-            @Getter private String claimedBy;
+            @Getter
+            private String claimedBy;
             @SerializedName("fasttracked")
-            @Getter private boolean fastTracked;
+            @Getter
+            private boolean fastTracked;
 
             public enum Upgrade {
 
@@ -810,13 +853,17 @@ public class SkyBlockIsland {
         @SerializedName("dungeons_blah_blah")
         private ConcurrentSet<String> dungeonsBlahBlah;
         @SerializedName("selected_dungeon_class")
-        @Getter private Dungeon.Class.Type selectedClass;
+        @Getter
+        private Dungeon.Class.Type selectedClass;
         @SerializedName("dungeon_journal.journal_entries")
-        @Getter private ConcurrentMap<String, ConcurrentList<Integer>> journalEntries;
+        @Getter
+        private ConcurrentMap<String, ConcurrentList<Integer>> journalEntries;
         @SerializedName("player_classes")
-        @Getter private ConcurrentMap<Dungeon.Class.Type, Dungeon.Class> playerClasses;
+        @Getter
+        private ConcurrentMap<Dungeon.Class.Type, Dungeon.Class> playerClasses;
         @SerializedName("dungeon_types")
-        @Getter private ConcurrentMap<String, Dungeon> types;
+        @Getter
+        private ConcurrentMap<String, Dungeon> types;
 
         public Optional<Dungeon> getDungeon(DungeonModel dungeonModel) {
             return this.getDungeon(dungeonModel.getKey());
@@ -835,49 +882,68 @@ public class SkyBlockIsland {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Dungeon extends ExperienceCalculator {
 
-        @Getter private double experience;
+        @Getter
+        private double experience;
         @SerializedName("highest_tier_completed")
-        @Getter private int highestCompletedTier;
+        @Getter
+        private int highestCompletedTier;
         @SerializedName("best_runs")
-        @Getter private ConcurrentMap<Floor, ConcurrentList<Run>> bestRuns;
+        @Getter
+        private ConcurrentMap<Floor, ConcurrentList<Run>> bestRuns;
 
         @SerializedName("times_played")
-        @Getter private ConcurrentMap<Floor, Integer> timesPlayed;
+        @Getter
+        private ConcurrentMap<Floor, Integer> timesPlayed;
         @SerializedName("tier_completions")
-        @Getter private ConcurrentMap<Floor, Integer> completions;
+        @Getter
+        private ConcurrentMap<Floor, Integer> completions;
         @SerializedName("milestone_completions")
-        @Getter private ConcurrentMap<Floor, Integer> milestoneCompletions;
+        @Getter
+        private ConcurrentMap<Floor, Integer> milestoneCompletions;
 
         @SerializedName("best_score")
-        @Getter private ConcurrentMap<Floor, Integer> bestScore;
+        @Getter
+        private ConcurrentMap<Floor, Integer> bestScore;
         @SerializedName("watcher_kills")
-        @Getter private ConcurrentMap<Floor, Integer> watcherKills;
+        @Getter
+        private ConcurrentMap<Floor, Integer> watcherKills;
         @SerializedName("mobs_killed")
-        @Getter private ConcurrentMap<Floor, Integer> mobsKilled;
+        @Getter
+        private ConcurrentMap<Floor, Integer> mobsKilled;
         @SerializedName("most_mobs_killed")
-        @Getter private ConcurrentMap<Floor, Integer> mostMobsKilled;
+        @Getter
+        private ConcurrentMap<Floor, Integer> mostMobsKilled;
         @SerializedName("most_healing")
-        @Getter private ConcurrentMap<Floor, Double> mostHealing;
+        @Getter
+        private ConcurrentMap<Floor, Double> mostHealing;
 
         // Class Damage
         @SerializedName("most_damage_healer")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageHealer;
+        @Getter
+        private ConcurrentMap<Floor, Double> mostDamageHealer;
         @SerializedName("most_damage_mage")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageMage;
+        @Getter
+        private ConcurrentMap<Floor, Double> mostDamageMage;
         @SerializedName("most_damage_berserk")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageBerserk;
+        @Getter
+        private ConcurrentMap<Floor, Double> mostDamageBerserk;
         @SerializedName("most_damage_archer")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageArcher;
+        @Getter
+        private ConcurrentMap<Floor, Double> mostDamageArcher;
         @SerializedName("most_damage_tank")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageTank;
+        @Getter
+        private ConcurrentMap<Floor, Double> mostDamageTank;
 
         // Fastest Times
         @SerializedName("fastest_time")
-        @Getter private ConcurrentMap<Floor, Integer> fastestTime;
+        @Getter
+        private ConcurrentMap<Floor, Integer> fastestTime;
         @SerializedName("fastest_time_s")
-        @Getter private ConcurrentMap<Floor, Integer> fastestSTierTime;
+        @Getter
+        private ConcurrentMap<Floor, Integer> fastestSTierTime;
         @SerializedName("fastest_time_s_plus")
-        @Getter private ConcurrentMap<Floor, Integer> fastestSPlusTierTime;
+        @Getter
+        private ConcurrentMap<Floor, Integer> fastestSPlusTierTime;
 
         public ConcurrentList<Run> getBestRuns(Floor floor) {
             return this.getBestRuns().get(floor);
@@ -949,13 +1015,12 @@ public class SkyBlockIsland {
         }
 
         @Override
-        @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
-                    .findAll()
-                    .stream()
-                    .map(DungeonLevelModel::getTotalExpRequired)
-                    .collect(Concurrent.toList());
+                .findAll()
+                .stream()
+                .map(DungeonLevelModel::getTotalExpRequired)
+                .collect(Concurrent.toList());
         }
 
         @Override
@@ -966,17 +1031,18 @@ public class SkyBlockIsland {
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Class extends ExperienceCalculator {
 
-            @Getter private final Type type;
-            @Getter private double experience;
+            @Getter
+            private final Type type;
+            @Getter
+            private double experience;
 
             @Override
-            @SneakyThrows
             public ConcurrentList<Double> getExperienceTiers() {
                 return SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
-                        .findAll()
-                        .stream()
-                        .map(DungeonLevelModel::getTotalExpRequired)
-                        .collect(Concurrent.toList());
+                    .findAll()
+                    .stream()
+                    .map(DungeonLevelModel::getTotalExpRequired)
+                    .collect(Concurrent.toList());
             }
 
             @Override
@@ -1026,37 +1092,51 @@ public class SkyBlockIsland {
         public static class Run {
 
             // Time
-            @Getter private SkyBlockDate.RealTime timestamp;
+            @Getter
+            private SkyBlockDate.RealTime timestamp;
             @SerializedName("elapsed_time")
-            @Getter private int elapsedTime;
+            @Getter
+            private int elapsedTime;
 
             // Score
             @SerializedName("score_exploration")
-            @Getter private int explorationScore;
+            @Getter
+            private int explorationScore;
             @SerializedName("score_speed")
-            @Getter private int speedScore;
+            @Getter
+            private int speedScore;
             @SerializedName("score_skill")
-            @Getter private int skillScore;
+            @Getter
+            private int skillScore;
             @SerializedName("score_bonus")
-            @Getter private int bonusScore;
+            @Getter
+            private int bonusScore;
 
             // Damage
             @SerializedName("damage_dealt")
-            @Getter private double damageDealt;
+            @Getter
+            private double damageDealt;
             @SerializedName("damage_mitigated")
-            @Getter private double damageMitigated;
+            @Getter
+            private double damageMitigated;
             @SerializedName("ally_healing")
-            @Getter private double allyHealing;
+            @Getter
+            private double allyHealing;
 
             @SerializedName("dungeon_class")
-            @Getter private Dungeon.Class.Type dungeonClass;
-            @Getter private ConcurrentList<UUID> teammates;
+            @Getter
+            private Dungeon.Class.Type dungeonClass;
+            @Getter
+            private ConcurrentList<UUID> teammates;
             @SerializedName("deaths")
-            @Getter private int deaths;
+            @Getter
+            private int deaths;
             @SerializedName("mobs_killed")
-            @Getter private int mobsKilled;
+            @Getter
+            private int mobsKilled;
             @SerializedName("secrets_found")
-            @Getter private int secretsFound;
+            @Getter
+            private int secretsFound;
 
         }
 
@@ -1065,24 +1145,35 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Essence {
 
-        @Getter private final int undead;
-        @Getter private final int diamond;
-        @Getter private final int dragon;
-        @Getter private final int gold;
-        @Getter private final int ice;
-        @Getter private final int wither;
-        @Getter private final int spider;
+        @Getter
+        private final int undead;
+        @Getter
+        private final int diamond;
+        @Getter
+        private final int dragon;
+        @Getter
+        private final int gold;
+        @Getter
+        private final int ice;
+        @Getter
+        private final int wither;
+        @Getter
+        private final int spider;
 
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ForgeItem {
 
-        @Getter private String type;
+        @Getter
+        private String type;
         private String id;
-        @Getter private SkyBlockDate.RealTime startTime;
-        @Getter private int slot;
-        @Getter private boolean notified;
+        @Getter
+        private SkyBlockDate.RealTime startTime;
+        @Getter
+        private int slot;
+        @Getter
+        private boolean notified;
 
         public ItemModel getItem() {
             return SimplifiedApi.getRepositoryOf(ItemModel.class).findFirstOrNull(ItemModel::getItemId, this.id);
@@ -1094,8 +1185,10 @@ public class SkyBlockIsland {
     public static class JacobsFarming {
 
         @SerializedName("medals_inv")
-        @Getter private ConcurrentMap<Medal, Integer> medalInventory;
-        @Getter private ConcurrentMap<Perk, Integer> perks;
+        @Getter
+        private ConcurrentMap<Medal, Integer> medalInventory;
+        @Getter
+        private ConcurrentMap<Perk, Integer> perks;
         @SerializedName("unique_golds2")
         private ConcurrentSet<String> uniqueGolds;
         private ConcurrentMap<String, Contest> contests = Concurrent.newMap();
@@ -1131,13 +1224,12 @@ public class SkyBlockIsland {
             return this.getPerks().get(perk);
         }
 
-        @SneakyThrows
         public ConcurrentSet<CollectionItemModel> getUniqueGolds() {
             return SimplifiedApi.getRepositoryOf(CollectionItemModel.class)
-                    .findAll()
-                    .stream()
-                    .filter(collectionItem -> uniqueGolds.contains(collectionItem.getItem().getItemId()))
-                    .collect(Concurrent.toSet());
+                .findAll()
+                .stream()
+                .filter(collectionItem -> uniqueGolds.contains(collectionItem.getItem().getItemId()))
+                .collect(Concurrent.toSet());
         }
 
         public boolean hasTalked() {
@@ -1147,16 +1239,21 @@ public class SkyBlockIsland {
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Contest {
 
-            @Getter private int collected;
+            @Getter
+            private int collected;
             @SerializedName("claimed_rewards")
             private boolean claimedRewards;
             @SerializedName("claimed_position")
-            @Getter private int position;
+            @Getter
+            private int position;
             @SerializedName("claimed_participants")
-            @Getter private int participants;
+            @Getter
+            private int participants;
 
-            @Getter private SkyBlockDate skyBlockDate;
-            @Getter private String collectionName;
+            @Getter
+            private SkyBlockDate skyBlockDate;
+            @Getter
+            private String collectionName;
 
             public boolean hasClaimedRewards() {
                 return this.claimedRewards;
@@ -1165,8 +1262,10 @@ public class SkyBlockIsland {
             @NoArgsConstructor(access = AccessLevel.PRIVATE)
             public static class Data {
 
-                @Getter private SkyBlockDate skyBlockDate;
-                @Getter private String collectionName;
+                @Getter
+                private SkyBlockDate skyBlockDate;
+                @Getter
+                private String collectionName;
 
             }
 
@@ -1196,17 +1295,21 @@ public class SkyBlockIsland {
 
     public static class MelodyHarp {
 
-        @Getter private final boolean talismanClaimed;
-        @Getter private final String selectedSong;
-        @Getter private final SkyBlockDate.RealTime selectedSongTimestamp;
-        @Getter private final ConcurrentMap<String, Song> songs = Concurrent.newMap();
+        @Getter
+        private final boolean talismanClaimed;
+        @Getter
+        private final String selectedSong;
+        @Getter
+        private final SkyBlockDate.RealTime selectedSongTimestamp;
+        @Getter
+        private final ConcurrentMap<String, Song> songs = Concurrent.newMap();
 
         @SuppressWarnings("all")
         private MelodyHarp(ConcurrentLinkedMap<String, Object> harpQuest) {
             ConcurrentLinkedMap<String, Object> newHarpQuest = Concurrent.newLinkedMap(harpQuest);
-            this.talismanClaimed = (boolean)newHarpQuest.remove("claimed_talisman");
-            this.selectedSong = (String)newHarpQuest.remove("selected_song");
-            this.selectedSongTimestamp = new SkyBlockDate.RealTime((long)newHarpQuest.remove("selected_song_epoch") * 1000);
+            this.talismanClaimed = (boolean) newHarpQuest.remove("claimed_talisman");
+            this.selectedSong = (String) newHarpQuest.remove("selected_song");
+            this.selectedSongTimestamp = new SkyBlockDate.RealTime((long) newHarpQuest.remove("selected_song_epoch") * 1000);
             ConcurrentLinkedMap<String, ConcurrentMap<String, Integer>> songMap = Concurrent.newLinkedMap();
 
             newHarpQuest.forEach(entry -> {
@@ -1217,7 +1320,7 @@ public class SkyBlockIsland {
                 if (!songMap.containsKey(songName))
                     songMap.put(songName, Concurrent.newMap());
 
-                songMap.get(songName).put(category, (Integer)entry.getValue());
+                songMap.get(songName).put(category, (Integer) entry.getValue());
             });
 
             songMap.forEach(entry -> {
@@ -1229,9 +1332,12 @@ public class SkyBlockIsland {
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Song {
 
-            @Getter private final int bestCompletion;
-            @Getter private final int completions;
-            @Getter private final int perfectCompletions;
+            @Getter
+            private final int bestCompletion;
+            @Getter
+            private final int completions;
+            @Getter
+            private final int perfectCompletions;
 
         }
 
@@ -1243,57 +1349,81 @@ public class SkyBlockIsland {
         private ConcurrentMap<String, Object> nodes;
         private ConcurrentMap<String, Boolean> toggles;
         @SerializedName("last_reset")
-        @Getter private SkyBlockDate.RealTime lastReset;
-        @Getter private int experience;
+        @Getter
+        private SkyBlockDate.RealTime lastReset;
+        @Getter
+        private int experience;
         @SerializedName("received_free_tier")
-        @Getter private boolean receivedFreeTier;
+        @Getter
+        private boolean receivedFreeTier;
         @SerializedName("retroactive_tier2_token")
-        @Getter private boolean retroactiveTier2Token;
+        @Getter
+        private boolean retroactiveTier2Token;
         @SerializedName("tokens")
-        @Getter private int remainingTokens;
+        @Getter
+        private int remainingTokens;
         @SerializedName("tokens_spent")
-        @Getter private int usedTokens;
+        @Getter
+        private int usedTokens;
         @SerializedName("selected_pickaxe_ability")
-        @Getter private String selectedPickaxeAbility;
+        @Getter
+        private String selectedPickaxeAbility;
         @SerializedName("greater_mines_last_access")
-        @Getter private SkyBlockDate.RealTime lastAccessToGreaterMines;
-        @Getter private ConcurrentMap<Crystal.Type, Crystal> crystals;
+        @Getter
+        private SkyBlockDate.RealTime lastAccessToGreaterMines;
+        @Getter
+        private ConcurrentMap<Crystal.Type, Crystal> crystals;
 
         // Powder
         @SerializedName("powder_mithril")
-        @Getter private int mithrilPowder;
+        @Getter
+        private int mithrilPowder;
         @SerializedName("powder_mithril_total")
-        @Getter private int totalMithrilPowder;
+        @Getter
+        private int totalMithrilPowder;
         @SerializedName("powder_spent_mithril")
-        @Getter private int usedMithrilPowder;
+        @Getter
+        private int usedMithrilPowder;
         @SerializedName("powder_gemstone")
-        @Getter private int gemstonePowder;
+        @Getter
+        private int gemstonePowder;
         @SerializedName("powder_gemstone_total")
-        @Getter private int totalGemstonePowder;
+        @Getter
+        private int totalGemstonePowder;
         @SerializedName("powder_spent_gemstone")
-        @Getter private int usedGemstonePowder;
+        @Getter
+        private int usedGemstonePowder;
 
         // Daily Ores
         @SerializedName("daily_ores_mined")
-        @Getter private int dailyOresMined;
+        @Getter
+        private int dailyOresMined;
         @SerializedName("daily_ores_mined_mithril_ore")
-        @Getter private int dailyOresMinedMithrilOre;
+        @Getter
+        private int dailyOresMinedMithrilOre;
         @SerializedName("daily_ores_mined_gemstone")
-        @Getter private int dailyOresMinedGemstone;
+        @Getter
+        private int dailyOresMinedGemstone;
         @SerializedName("daily_ores_mined_day")
-        @Getter private int dailyOresMinedDay;
+        @Getter
+        private int dailyOresMinedDay;
         @SerializedName("daily_ores_mined_day_mithril_ore")
-        @Getter private int dailyOresMinedDayMithrilOre;
+        @Getter
+        private int dailyOresMinedDayMithrilOre;
         @SerializedName("daily_ores_mined_day_gemstone")
-        @Getter private int dailyOresMinedDayGemstone;
+        @Getter
+        private int dailyOresMinedDayGemstone;
 
         // Biomes
         @SerializedName("biomes.dwarven")
-        @Getter private Biome.Dwarven dwarvenMinesBiome;
+        @Getter
+        private Biome.Dwarven dwarvenMinesBiome;
         @SerializedName("biomes.precursor")
-        @Getter private Biome.Precursor precursorCityBiome;
+        @Getter
+        private Biome.Precursor precursorCityBiome;
         @SerializedName("biomes.goblin")
-        @Getter private Biome.Goblin goblinHideoutBiome;
+        @Getter
+        private Biome.Goblin goblinHideoutBiome;
 
         public Crystal getCrystal(Crystal.Type type) {
             return this.crystals.get(type);
@@ -1308,7 +1438,7 @@ public class SkyBlockIsland {
                 this.toggles = Concurrent.newMap();
 
                 this.nodes.stream().filter(entry -> (entry.getValue() instanceof Boolean)).forEach(entry -> {
-                    toggles.put(entry.getKey().replace("toggle_", ""), (boolean)entry.getValue());
+                    toggles.put(entry.getKey().replace("toggle_", ""), (boolean) entry.getValue());
                 });
             }
 
@@ -1322,7 +1452,8 @@ public class SkyBlockIsland {
             public static class Dwarven {
 
                 @SerializedName("statues_placed")
-                @Getter private ConcurrentList<Object> placedStatues;
+                @Getter
+                private ConcurrentList<Object> placedStatues;
 
             }
 
@@ -1330,7 +1461,8 @@ public class SkyBlockIsland {
             public static class Precursor {
 
                 @SerializedName("parts_delivered")
-                @Getter private ConcurrentList<Object> deliveredParts;
+                @Getter
+                private ConcurrentList<Object> deliveredParts;
 
             }
 
@@ -1338,9 +1470,11 @@ public class SkyBlockIsland {
             public static class Goblin {
 
                 @SerializedName("king_quest_active")
-                @Getter private boolean kingQuestActive;
+                @Getter
+                private boolean kingQuestActive;
                 @SerializedName("king_quests_completed")
-                @Getter private int completedKingQuests;
+                @Getter
+                private int completedKingQuests;
 
             }
 
@@ -1351,7 +1485,8 @@ public class SkyBlockIsland {
 
             private State state;
             @SerializedName("total_placed")
-            @Getter private int totalPlaced;
+            @Getter
+            private int totalPlaced;
 
             public State getState() {
                 return this.state != null ? this.state : State.NOT_FOUND;
@@ -1390,8 +1525,10 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Minion {
 
-        @Getter private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
-        @Getter private final MinionModel type;
+        @Getter
+        private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
+        @Getter
+        private final MinionModel type;
 
     }
 
@@ -1400,7 +1537,8 @@ public class SkyBlockIsland {
 
         private int type; // Always 0
         @SerializedName("data")
-        @Getter private String rawData;
+        @Getter
+        private String rawData;
 
         public byte[] getData() {
             return DataUtil.decode(this.getRawData().toCharArray());
@@ -1416,7 +1554,8 @@ public class SkyBlockIsland {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Objective extends BasicObjective {
 
-        @Getter private int progress;
+        @Getter
+        private int progress;
 
     }
 
@@ -1424,15 +1563,20 @@ public class SkyBlockIsland {
     public static class PetInfo extends ExperienceCalculator {
 
         @SerializedName("uuid")
-        @Getter private UUID uniqueId;
+        @Getter
+        private UUID uniqueId;
         @SerializedName("type")
-        @Getter private String name;
+        @Getter
+        private String name;
         @SerializedName("exp")
-        @Getter private double experience;
-        @Getter private boolean active;
+        @Getter
+        private double experience;
+        @Getter
+        private boolean active;
         @SerializedName("tier")
         private String rarityKey;
-        @Getter private int candyUsed;
+        @Getter
+        private int candyUsed;
         private String heldItem;
         private String skin;
 
@@ -1443,10 +1587,10 @@ public class SkyBlockIsland {
 
             // Load Experience Block
             ConcurrentList<Double> petExpScaleValues = petExpScaleModels
-                    .subList(petExpOffset, petExpOffset + this.getMaxLevel())
-                    .stream()
-                    .map(PetExpScaleModel::getValue)
-                    .collect(Concurrent.toList());
+                .subList(petExpOffset, petExpOffset + this.getMaxLevel())
+                .stream()
+                .map(PetExpScaleModel::getValue)
+                .collect(Concurrent.toList());
 
             return petExpScaleValues;
         }
@@ -1492,19 +1636,26 @@ public class SkyBlockIsland {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Potion {
 
-        @Getter private String effect;
-        @Getter private int level;
+        @Getter
+        private String effect;
+        @Getter
+        private int level;
         @SerializedName("ticks_remaining")
-        @Getter private int remainingTicks;
-        @Getter private boolean infinite;
-        @Getter private ConcurrentList<Modifier> modifiers;
+        @Getter
+        private int remainingTicks;
+        @Getter
+        private boolean infinite;
+        @Getter
+        private ConcurrentList<Modifier> modifiers;
 
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Modifier {
 
-            @Getter private String key;
+            @Getter
+            private String key;
             @SerializedName("amp")
-            @Getter private int amplifier;
+            @Getter
+            private int amplifier;
 
         }
 
@@ -1561,18 +1712,22 @@ public class SkyBlockIsland {
     public static class Quest extends BasicObjective {
 
         @SerializedName("activated_at")
-        @Getter private long activated;
+        @Getter
+        private long activated;
         @SerializedName("ativated_at_sb")
-        @Getter private SkyBlockDate.SkyBlockTime activatedAt;
+        @Getter
+        private SkyBlockDate.SkyBlockTime activatedAt;
         @SerializedName("completed_at_sb")
-        @Getter private SkyBlockDate.SkyBlockTime completedAt;
+        @Getter
+        private SkyBlockDate.SkyBlockTime completedAt;
 
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sack {
 
-        @Getter private final SackModel type;
+        @Getter
+        private final SackModel type;
         private final ConcurrentMap<SackItemModel, Integer> stored = Concurrent.newMap();
 
         public ConcurrentMap<SackItemModel, Integer> getStored() {
@@ -1584,7 +1739,8 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Skill extends ExperienceCalculator {
 
-        @Getter private final SkillModel type;
+        @Getter
+        private final SkillModel type;
         private final double experience;
         private final int levelSubtractor;
 
@@ -1594,14 +1750,13 @@ public class SkyBlockIsland {
         }
 
         @Override
-        @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
-                    .findAll()
-                    .stream()
-                    .filter(slayerLevel -> slayerLevel.getSkill().getKey().equals(this.getType().getKey()))
-                    .map(SkillLevelModel::getTotalExpRequired)
-                    .collect(Concurrent.toList());
+                .findAll()
+                .stream()
+                .filter(slayerLevel -> slayerLevel.getSkill().getKey().equals(this.getType().getKey()))
+                .map(SkillLevelModel::getTotalExpRequired)
+                .collect(Concurrent.toList());
         }
 
         @Override
@@ -1622,8 +1777,10 @@ public class SkyBlockIsland {
         private final ConcurrentMap<Integer, Boolean> claimed = Concurrent.newMap();
         private final ConcurrentMap<Integer, Boolean> claimedSpecial = Concurrent.newMap();
         private final ConcurrentMap<Integer, Integer> kills = Concurrent.newMap();
-        @Getter private final SlayerModel type;
-        @Getter private final double experience;
+        @Getter
+        private final SlayerModel type;
+        @Getter
+        private final double experience;
 
         private Slayer(SlayerModel type, SlayerBoss slayerBoss) {
             this.type = type;
@@ -1639,18 +1796,17 @@ public class SkyBlockIsland {
             }
 
             for (int i = 0; i < 5; i++)
-                this.kills.put(i + 1, (int)slayerBossRef.getValue(FormatUtil.format("boss_kills_tier_{0}", i), slayerBoss));
+                this.kills.put(i + 1, (int) slayerBossRef.getValue(FormatUtil.format("boss_kills_tier_{0}", i), slayerBoss));
         }
 
         @Override
-        @SneakyThrows
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getRepositoryOf(SlayerLevelModel.class)
-                    .findAll()
-                    .stream()
-                    .filter(slayerLevel -> slayerLevel.getSlayer().getKey().equals(this.getType().getKey()))
-                    .map(SlayerLevelModel::getTotalExpRequired)
-                    .collect(Concurrent.toList());
+                .findAll()
+                .stream()
+                .filter(slayerLevel -> slayerLevel.getSlayer().getKey().equals(this.getType().getKey()))
+                .map(SlayerLevelModel::getTotalExpRequired)
+                .collect(Concurrent.toList());
         }
 
         public int getKills(int tier) {
@@ -1671,15 +1827,15 @@ public class SkyBlockIsland {
     public static class PlayerStats {
 
         private static final Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
-        private static final Repository<SkillModel> skillRepository = SimplifiedApi.getRepositoryOf(SkillModel.class);
-        private static final Repository<SkillLevelModel> skillLevelRepository = SimplifiedApi.getRepositoryOf(SkillLevelModel.class);
-        private static final Repository<AccessoryModel> accessoryRepository = SimplifiedApi.getRepositoryOf(AccessoryModel.class);
-        private static final Repository<RarityModel> rarityRepository = SimplifiedApi.getRepositoryOf(RarityModel.class);
         private static final Repository<ReforgeModel> reforgeRepository = SimplifiedApi.getRepositoryOf(ReforgeModel.class);
         private static final Repository<ReforgeStatModel> reforgeStatRepository = SimplifiedApi.getRepositoryOf(ReforgeStatModel.class);
-        @Getter private final ConcurrentMap<StatModel, Data> stats = Concurrent.newMap();
 
-        @SneakyThrows
+        @Getter
+        private final ConcurrentMap<StatModel, Data> stats = Concurrent.newMap();
+
+        @Getter
+        private final long damageMultiplier = 0;
+
         private PlayerStats(Member member) {
             // Initialize
             statRepository.findAll().forEach(statModel -> this.stats.put(statModel, new Data(statModel.getBaseValue(), 0)));
@@ -1687,24 +1843,24 @@ public class SkyBlockIsland {
             try {
                 // Load Skills
                 ConcurrentMap<StatModel, Double> statBonuses = Concurrent.newMap();
-                skillRepository.findAll().forEach(skillModel -> {
-                    int skillLevel = member.getSkill(skillModel).getLevel();
+                SimplifiedApi.getRepositoryOf(SkillModel.class)
+                    .findAll()
+                    .forEach(skillModel -> {
+                        int skillLevel = member.getSkill(skillModel).getLevel();
 
-                    if (skillLevel > 0) {
-                        skillLevelRepository.findAll(SkillLevelModel::getSkill, skillModel)
+                        if (skillLevel > 0) {
+                            SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
+                                .findAll(SkillLevelModel::getSkill, skillModel)
                                 .subList(0, skillLevel)
                                 .stream()
                                 .map(SkillLevelModel::getEffects)
-                                .forEach(effectMap -> {
-                                    effectMap.entrySet()
-                                            .stream()
-                                            .forEach(entry -> {
-                                                StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
-                                                statBonuses.put(statModel, (Double) entry.getValue() + statBonuses.getOrDefault(statModel, 0.0));
-                                            });
+                                .flatMap(map -> map.entrySet().stream())
+                                .forEach(entry -> {
+                                    Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, entry.getKey());
+                                    optionalStatModel.ifPresent(statModel -> statBonuses.put(statModel, (Double) entry.getValue() + statBonuses.getOrDefault(statModel, 0.0)));
                                 });
-                    }
-                });
+                        }
+                    });
 
                 // Save Skills
                 statBonuses.forEach(statBonus -> {
@@ -1712,73 +1868,98 @@ public class SkyBlockIsland {
                     statData.addBase(statBonus.getValue());
                 });
 
-                // TODO: Load Slayer Bonus
+                // Load Slayers
+                ConcurrentMap<StatModel, Double> slayerBonuses = Concurrent.newMap();
+                SimplifiedApi.getRepositoryOf(SlayerModel.class)
+                    .findAll()
+                    .forEach(slayerModel -> {
+                        int slayerLevel = member.getSlayer(slayerModel).getLevel();
+
+                        if (slayerLevel > 0) {
+                            SimplifiedApi.getRepositoryOf(SlayerLevelModel.class)
+                                .findAll(SlayerLevelModel::getSlayer, slayerModel)
+                                .subList(0, slayerLevel)
+                                .stream()
+                                .map(SlayerLevelModel::getEffects)
+                                .flatMap(map -> map.entrySet().stream())
+                                .forEach(entry -> {
+                                    Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, entry.getKey());
+                                    optionalStatModel.ifPresent(statModel -> slayerBonuses.put(statModel, (Double) entry.getValue() + slayerBonuses.getOrDefault(statModel, 0.0)));
+                                });
+                        }
+                    });
+
+                // Save Slayers
+                slayerBonuses.forEach(statBonus -> {
+                    Data statData = this.stats.get(statBonus.getKey());
+                    statData.addBase(statBonus.getValue());
+                });
 
                 // Load Accessories
+                Repository<AccessoryModel> accessoryRepository = SimplifiedApi.getRepositoryOf(AccessoryModel.class);
                 ConcurrentMap<StatModel, Double> accessoryStatBonuses = Concurrent.newMap();
-                // Load Accessory Bag Accessories
                 member.getStorage(Storage.ACCESSORIES)
-                        .getNbtData()
-                        .<CompoundTag>getList("i")
-                        .forEach(accessoryItemTag -> {
-                            String itemId = accessoryItemTag.getPath("tag.ExtraAttributes.id");
-                            String reforgeKey = accessoryItemTag.<String>getPathOrDefault("tag.ExtraAttributes.modifier", "").toUpperCase();
-                            int rarityUpgrades = accessoryItemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", 0);
-                            Optional<AccessoryModel> optionalAccessoryModel = accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId);
+                    .getNbtData()
+                    .<CompoundTag>getList("i")
+                    .forEach(accessoryItemTag -> { // Load Accessory Bag Accessories
+                        String itemId = accessoryItemTag.getPath("tag.ExtraAttributes.id");
+                        String reforgeKey = accessoryItemTag.<String>getPathOrDefault("tag.ExtraAttributes.modifier", "").toUpperCase();
+                        int rarityUpgrades = accessoryItemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", 0);
+                        Optional<AccessoryModel> optionalAccessoryModel = accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId);
 
-                            optionalAccessoryModel.ifPresent(accessoryModel -> {
-                                RarityModel rarityModel = rarityRepository.findFirstOrNull(RarityModel::getOrdinal, accessoryModel.getRarity().getOrdinal() + rarityUpgrades);
+                        optionalAccessoryModel.ifPresent(accessoryModel -> {
+                            RarityModel rarityModel = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getOrdinal, accessoryModel.getRarity().getOrdinal() + rarityUpgrades);
 
-                                // Load Stats
-                                accessoryModel.getEffects()
-                                        .entrySet()
-                                        .stream()
-                                        .forEach(entry -> {
-                                            StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
-                                            accessoryStatBonuses.put(statModel, (Double) entry.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
-                                        });
+                            // Load Stats
+                            accessoryModel.getEffects()
+                                .entrySet()
+                                .stream()
+                                .forEach(entry -> {
+                                    StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
+                                    accessoryStatBonuses.put(statModel, (Double) entry.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                                });
 
-                                // Load Reforge
-                                if (StringUtil.isNotEmpty(reforgeKey)) {
-                                    ReforgeModel reforgeModel = reforgeRepository.findFirstOrNull(ReforgeModel::getKey, reforgeKey);
-                                    ReforgeStatModel reforgeStatModel = reforgeStatRepository.findFirstOrNull(ReforgeStatModel::getRarity, rarityModel);
+                            // Load Reforge
+                            if (StringUtil.isNotEmpty(reforgeKey)) {
+                                ReforgeModel reforgeModel = reforgeRepository.findFirstOrNull(ReforgeModel::getKey, reforgeKey);
+                                ReforgeStatModel reforgeStatModel = reforgeStatRepository.findFirstOrNull(ReforgeStatModel::getRarity, rarityModel);
 
-                                    reforgeStatModel.getEffects()
-                                            .entrySet()
-                                            .stream()
-                                            .forEach(entry -> {
-                                                StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
-                                                accessoryStatBonuses.put(statModel, (Double) entry.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
-                                            });
-                                }
-                            });
-
-                            // TODO: Handle Accessory Bonus Modifiers (Hegemony)
-
-                            // New Year Cake Bag
-                            if ("NEW_YEAR_CAKE_BAG".equals(itemId)) {
-                                try {
-                                    String stop = "";
-                                    Byte[] nbtCakeBag = accessoryItemTag.getPath("tag.ExtraAttributes.new_year_cake_bag_data");
-                                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
-                                    StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, "HEALTH");
-                                    accessoryStatBonuses.put(statModel, (double) cakeBagItems.size() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
-                                } catch (IOException ioException) { }
+                                reforgeStatModel.getEffects()
+                                    .entrySet()
+                                    .stream()
+                                    .forEach(entry -> {
+                                        StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, entry.getKey());
+                                        accessoryStatBonuses.put(statModel, (Double) entry.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                                    });
                             }
                         });
 
+                        // TODO: Handle Accessory Bonus Modifiers (Hegemony)
+
+                        // New Year Cake Bag
+                        if ("NEW_YEAR_CAKE_BAG".equals(itemId)) {
+                            try {
+                                String stop = "";
+                                Byte[] nbtCakeBag = accessoryItemTag.getPath("tag.ExtraAttributes.new_year_cake_bag_data");
+                                ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                                StatModel statModel = statRepository.findFirstOrNull(StatModel::getKey, "HEALTH");
+                                accessoryStatBonuses.put(statModel, cakeBagItems.size() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                            } catch (IOException ignore) { }
+                        }
+                    });
+
                 // Load Inventory Accessories
                 member.getStorage(Storage.INVENTORY)
-                        .getNbtData()
-                        .<CompoundTag>getList("i")
-                        .forEach(itemTag -> {
-                            String itemId = itemTag.getPath("tag.ExtraAttributes.id");
-                            Optional<AccessoryModel> optionalAccessoryModel = accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId);
+                    .getNbtData()
+                    .<CompoundTag>getList("i")
+                    .forEach(itemTag -> {
+                        String itemId = itemTag.getPath("tag.ExtraAttributes.id");
+                        Optional<AccessoryModel> optionalAccessoryModel = accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId);
 
-                            optionalAccessoryModel.ifPresent(accessoryModel -> {
-                                // TODO: Inventory Accessory Stats
-                            });
+                        optionalAccessoryModel.ifPresent(accessoryModel -> {
+                            // TODO: Inventory Accessory Stats
                         });
+                    });
 
                 // Save Accessories
                 accessoryStatBonuses.forEach(accessoryStatBonus -> {
@@ -1788,17 +1969,17 @@ public class SkyBlockIsland {
 
                 // Load Armor
                 member.getStorage(Storage.ARMOR)
-                        .getNbtData()
-                        .<CompoundTag>getList("i")
-                        .forEach(armorItem -> {
-                            if (!armorItem.isEmpty()) {
-                                // Pull rarity and reforge from armor item
-                                // Pull stats from RarityModel and ReforgeModel
-                                // Pull non-reforge stats from armor item lore
-                                // Store stats
-                                // TODO: Armor Stats
-                            }
-                        });
+                    .getNbtData()
+                    .<CompoundTag>getList("i")
+                    .forEach(armorItem -> {
+                        if (!armorItem.isEmpty()) {
+                            // Pull rarity and reforge from armor item
+                            // Pull stats from RarityModel and ReforgeModel
+                            // Pull non-reforge stats from armor item lore
+                            // Store stats
+                            // TODO: Armor Stats
+                        }
+                    });
 
                 // Before Stats Calculation
                 // Readable API Stats: Inventory Accessories, Accessory Bag, Cake Bag Health, Essence Bonuses, Century Cake Bonuses, Armor, Pet
@@ -1830,6 +2011,7 @@ public class SkyBlockIsland {
                 });
 
                 // TODO: Load Fairy Souls
+                int collectedFairySouls = member.getFairyExchanges();
 
                 // Load Active Pet
                 member.getActivePet().ifPresent(petInfo -> {
@@ -1838,26 +2020,26 @@ public class SkyBlockIsland {
                     petInfo.getPet().ifPresent(pet -> {
                         // Get Rarity Filtered Pet Stats
                         ConcurrentList<PetStatModel> petStatModels = SimplifiedApi.getRepositoryOf(PetStatModel.class)
-                                .findAll(PetStatModel::getPet, pet)
-                                .parallelStream()
-                                .filter(petStatModel -> petStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
-                                .collect(Concurrent.toList());
+                            .findAll(PetStatModel::getPet, pet)
+                            .parallelStream()
+                            .filter(petStatModel -> petStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
+                            .collect(Concurrent.toList());
 
                         // Get Rarity Filtered Ability Stats
                         ConcurrentMap<PetAbilityModel, ConcurrentList<PetAbilityStatModel>> petAbilityStatMap = Concurrent.newMap();
                         SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
-                                .findAll(PetAbilityModel::getPet, pet)
-                                .parallelStream()
-                                .forEach(petAbilityModel -> {
-                                    petAbilityStatMap.put(petAbilityModel, Concurrent.newList());
-                                    ConcurrentList<PetAbilityStatModel> petAbilityStatModels = petAbilityStatMap.get(petAbilityModel);
+                            .findAll(PetAbilityModel::getPet, pet)
+                            .parallelStream()
+                            .forEach(petAbilityModel -> {
+                                petAbilityStatMap.put(petAbilityModel, Concurrent.newList());
+                                ConcurrentList<PetAbilityStatModel> petAbilityStatModels = petAbilityStatMap.get(petAbilityModel);
 
-                                    SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
-                                            .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
-                                            .parallelStream()
-                                            .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
-                                            .forEach(petAbilityStatModels::add);
-                                });
+                                SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
+                                    .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
+                                    .parallelStream()
+                                    .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
+                                    .forEach(petAbilityStatModels::add);
+                            });
 
                         // Save Active Pet Stats
                         petStatModels.forEach(petStatModel -> {
@@ -1887,10 +2069,10 @@ public class SkyBlockIsland {
 
                     optionalPotionModel.ifPresent(potionModel -> {
                         ConcurrentList<PotionTierModel> potionTierModels = SimplifiedApi.getRepositoryOf(PotionTierModel.class)
-                                .findAll(PotionTierModel::getPotion, potionModel)
-                                .parallelStream()
-                                .filter(potionTierModel -> potionTierModel.getTier() == potion.getLevel())
-                                .collect(Concurrent.toList());
+                            .findAll(PotionTierModel::getPotion, potionModel)
+                            .parallelStream()
+                            .filter(potionTierModel -> potionTierModel.getTier() == potion.getLevel())
+                            .collect(Concurrent.toList());
 
                         // Load Potion Stats
                         potionTierModels.forEach(potionTierModel -> {
@@ -1900,7 +2082,7 @@ public class SkyBlockIsland {
                             });
 
                             potionTierModel.getBuffEffects().forEach((key, value) -> {
-                                potionBuffEffects.put(key, (Double)value + potionBuffEffects.getOrDefault(key, 0.0));
+                                potionBuffEffects.put(key, (Double) value + potionBuffEffects.getOrDefault(key, 0.0));
                             });
                         });
                     });
@@ -1961,9 +2143,11 @@ public class SkyBlockIsland {
         public static class Data {
 
             @Setter(AccessLevel.PRIVATE)
-            @Getter private double base;
+            @Getter
+            private double base;
             @Setter(AccessLevel.PRIVATE)
-            @Getter private double bonus;
+            @Getter
+            private double bonus;
 
             private Data() {
                 this(0, 0);
@@ -2025,9 +2209,9 @@ public class SkyBlockIsland {
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
 
             return IntStream.range(0, experienceTiers.size())
-                    .filter(index -> experienceTiers.get(index) >= experience)
-                    .findFirst()
-                    .orElseGet(this::getMaxLevel);
+                .filter(index -> experienceTiers.get(index) >= experience)
+                .findFirst()
+                .orElseGet(this::getMaxLevel);
         }
 
         public abstract int getMaxLevel();
@@ -2109,7 +2293,7 @@ public class SkyBlockIsland {
             SkyBlockIsland skyBlockIsland = new SkyBlockIsland();
             JsonObject rootObject = jsonElement.getAsJsonObject();
             skyBlockIsland.islandId = StringUtil.toUUID(wrapObject(rootObject, "profile_id", JsonElement::getAsString).get());
-            skyBlockIsland.gameMode = wrapObject(rootObject,"game_mode", JsonElement::getAsString).orElse(null);
+            skyBlockIsland.gameMode = wrapObject(rootObject, "game_mode", JsonElement::getAsString).orElse(null);
             skyBlockIsland.banking = gson.fromJson(wrapObject(rootObject, "banking", JsonElement::getAsJsonObject).orElse(null), Banking.class);
             skyBlockIsland.profileName = gson.fromJson(wrapObject(rootObject, "cute_name", JsonElement::getAsString).orElse(null), ProfileName.class);
             skyBlockIsland.communityUpgrades = gson.fromJson(wrapObject(rootObject, "community_upgrades", JsonElement::getAsJsonObject).orElse(null), CommunityUpgrades.class);
@@ -2134,9 +2318,9 @@ public class SkyBlockIsland {
                 JsonObject forge = memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes");
                 if (forge.has("forge_1")) {
                     member.forgeItems.addAll(((ConcurrentMap<Integer, ForgeItem>) gson.fromJson(forge.getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass()))
-                            .stream()
-                            .map(Map.Entry::getValue)
-                            .collect(Concurrent.toList()));
+                                                 .stream()
+                                                 .map(Map.Entry::getValue)
+                                                 .collect(Concurrent.toList()));
                 }
 
                 // Griffin Burrows
@@ -2150,9 +2334,9 @@ public class SkyBlockIsland {
                     tableLinkMap.put("numbers", member.experimentation.ultrasequencer);
 
                     ConcurrentList<Pair<String, String>> replaceList = Concurrent.newList(
-                            Pair.of("attempts", "attempts"),
-                            Pair.of("bestScore", "best_score"),
-                            Pair.of("claims", "claims")
+                        Pair.of("attempts", "attempts"),
+                        Pair.of("bestScore", "best_score"),
+                        Pair.of("claims", "claims")
                     );
 
                     tableLinkMap.forEach(tableLink -> {
@@ -2162,11 +2346,11 @@ public class SkyBlockIsland {
                             ConcurrentMap<Integer, Integer> tableMap = (ConcurrentMap<Integer, Integer>) new Reflection(Experimentation.Table.class).getValue(replacePair.getLeft(), tableLink.getValue());
 
                             experimentMap.stream()
-                                    .filter(entry -> entry.getKey().startsWith(replacePair.getRight()))
-                                    .map(entry -> Pair.of(Integer.parseInt(entry.getKey().replace(FormatUtil.format("{0}_", replacePair.getRight()), "")), entry.getValue().intValue()))
-                                    .forEach(entry -> {
-                                        tableMap.put(entry.getKey(), entry.getValue());
-                                    });
+                                .filter(entry -> entry.getKey().startsWith(replacePair.getRight()))
+                                .map(entry -> Pair.of(Integer.parseInt(entry.getKey().replace(FormatUtil.format("{0}_", replacePair.getRight()), "")), entry.getValue().intValue()))
+                                .forEach(entry -> {
+                                    tableMap.put(entry.getKey(), entry.getValue());
+                                });
                         });
                     });
                 }

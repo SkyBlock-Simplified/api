@@ -30,7 +30,7 @@ public interface ItemModel extends Model {
 
     String getCategory();
 
-    Map<String, Double > getStats();
+    Map<String, Double> getStats();
 
     Double getNpcSellPrice();
 

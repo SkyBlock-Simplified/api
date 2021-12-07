@@ -18,23 +18,23 @@ import java.util.List;
 
 @Entity
 @Table(
-        name = "skyblock_pet_stats",
-        indexes = {
-                @Index(
-                        columnList = "pet_key, stat_key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "pet_key, ordinal",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "pet_key"
-                ),
-                @Index(
-                        columnList = "stat_key"
-                )
-        }
+    name = "skyblock_pet_stats",
+    indexes = {
+        @Index(
+            columnList = "pet_key, stat_key",
+            unique = true
+        ),
+        @Index(
+            columnList = "pet_key, ordinal",
+            unique = true
+        ),
+        @Index(
+            columnList = "pet_key"
+        ),
+        @Index(
+            columnList = "stat_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetStatSqlModel implements PetStatModel, SqlModel {

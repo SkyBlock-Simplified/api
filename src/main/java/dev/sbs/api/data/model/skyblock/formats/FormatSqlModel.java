@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.skyblock.formats;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.converter.ColorConverter;
+import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +25,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_formats"
+    name = "skyblock_formats"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FormatSqlModel implements FormatModel, SqlModel {
@@ -36,7 +39,8 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     @Setter
     @Id
     @Column(name = "key", nullable = false, length = 127)
-    private String key;
+    @Enumerated(EnumType.STRING)
+    private MinecraftChatFormatting key;
 
     @Getter
     @Setter

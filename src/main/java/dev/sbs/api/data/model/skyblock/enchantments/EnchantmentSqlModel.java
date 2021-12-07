@@ -17,12 +17,12 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_enchantments",
-        indexes = {
-                @Index(
-                        columnList = "reforge_type_key"
-                )
-        }
+    name = "skyblock_enchantments",
+    indexes = {
+        @Index(
+            columnList = "reforge_type_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {

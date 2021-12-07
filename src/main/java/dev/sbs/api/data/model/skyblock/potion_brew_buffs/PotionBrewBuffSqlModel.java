@@ -23,13 +23,13 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_potion_brew_buffs",
-        indexes = {
-                @Index(
-                        columnList = "potion_brew_key, buff_key",
-                        unique = true
-                )
-        }
+    name = "skyblock_potion_brew_buffs",
+    indexes = {
+        @Index(
+            columnList = "potion_brew_key, buff_key",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
@@ -73,25 +73,25 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
         PotionBrewBuffSqlModel that = (PotionBrewBuffSqlModel) o;
 
         return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getBuffValue(), that.getBuffValue())
-                .append(this.isPercentage(), that.isPercentage())
-                .append(this.getPotionBrew(), that.getPotionBrew())
-                .append(this.getBuffKey(), that.getBuffKey())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+            .append(this.getId(), that.getId())
+            .append(this.getBuffValue(), that.getBuffValue())
+            .append(this.isPercentage(), that.isPercentage())
+            .append(this.getPotionBrew(), that.getPotionBrew())
+            .append(this.getBuffKey(), that.getBuffKey())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getPotionBrew())
-                .append(this.getBuffKey())
-                .append(this.getBuffValue())
-                .append(this.isPercentage())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getId())
+            .append(this.getPotionBrew())
+            .append(this.getBuffKey())
+            .append(this.getBuffValue())
+            .append(this.isPercentage())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

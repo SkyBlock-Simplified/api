@@ -24,15 +24,15 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_potion_brews",
-        indexes = {
-                @Index(
-                        columnList = "rarity_key"
-                ),
-                @Index(
-                        columnList = "source_npc_key"
-                )
-        }
+    name = "skyblock_potion_brews",
+    indexes = {
+        @Index(
+            columnList = "rarity_key"
+        ),
+        @Index(
+            columnList = "source_npc_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {

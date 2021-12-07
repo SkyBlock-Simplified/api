@@ -17,12 +17,12 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_potion_mixins",
-        indexes = {
-                @Index(
-                        columnList = "slayer_key, slayer_level"
-                )
-        }
+    name = "skyblock_potion_mixins",
+    indexes = {
+        @Index(
+            columnList = "slayer_key, slayer_level"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {

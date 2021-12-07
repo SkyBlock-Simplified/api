@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_craftingtable_slots"
+    name = "skyblock_craftingtable_slots"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CraftingTableSlotSqlModel implements CraftingTableSlotModel, SqlModel {

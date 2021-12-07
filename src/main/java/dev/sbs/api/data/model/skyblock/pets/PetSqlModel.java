@@ -25,18 +25,18 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_pets",
-        indexes = {
-                @Index(
-                        columnList = "lowest_rarity_key"
-                ),
-                @Index(
-                        columnList = "skill_key"
-                ),
-                @Index(
-                        columnList = "pet_type_key"
-                )
-        }
+    name = "skyblock_pets",
+    indexes = {
+        @Index(
+            columnList = "lowest_rarity_key"
+        ),
+        @Index(
+            columnList = "skill_key"
+        ),
+        @Index(
+            columnList = "pet_type_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetSqlModel implements PetModel, SqlModel {

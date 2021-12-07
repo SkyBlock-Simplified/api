@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_rarities"
+    name = "skyblock_rarities"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RaritySqlModel implements RarityModel, SqlModel {

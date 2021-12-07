@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_location_remotes"
+    name = "skyblock_location_remotes"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class LocationRemoteSqlModel implements LocationRemoteModel, SqlModel {

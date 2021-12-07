@@ -23,12 +23,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_minions",
-        indexes = {
-                @Index(
-                        columnList = "collection_key"
-                )
-        }
+    name = "skyblock_minions",
+    indexes = {
+        @Index(
+            columnList = "collection_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionSqlModel implements MinionModel, SqlModel {

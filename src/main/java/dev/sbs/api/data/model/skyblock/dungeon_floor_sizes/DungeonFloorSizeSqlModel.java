@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_dungeon_floor_sizes"
+    name = "skyblock_dungeon_floor_sizes"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonFloorSizeSqlModel implements DungeonFloorSizeModel, SqlModel {

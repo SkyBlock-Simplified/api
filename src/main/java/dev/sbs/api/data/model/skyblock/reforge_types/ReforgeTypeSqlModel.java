@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_reforge_types"
+    name = "skyblock_reforge_types"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeTypeSqlModel implements ReforgeTypeModel, SqlModel {

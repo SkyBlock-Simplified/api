@@ -23,13 +23,13 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_bag_sizes",
-        indexes = {
-                @Index(
-                        columnList = "bag_key, collection_tier",
-                        unique = true
-                )
-        }
+    name = "skyblock_bag_sizes",
+    indexes = {
+        @Index(
+            columnList = "bag_key, collection_tier",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BagSizeSqlModel implements BagSizeModel, SqlModel {
@@ -62,14 +62,28 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BagSizeSqlModel)) return false;
+        BagSizeSqlModel that = (BagSizeSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getBag(), that.getBag())
+            .append(this.getCollectionTier(), that.getCollectionTier())
+            .append(this.getSlotCount(), that.getSlotCount())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getBag())
+            .append(this.getCollectionTier())
+            .append(this.getSlotCount())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

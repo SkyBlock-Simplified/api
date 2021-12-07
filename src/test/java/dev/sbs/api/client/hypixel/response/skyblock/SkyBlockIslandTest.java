@@ -18,7 +18,6 @@ import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -59,8 +58,6 @@ public class SkyBlockIslandTest {
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
             SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: Work in Progress
-
-            Pair<SkyBlockDate, String> nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);

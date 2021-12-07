@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_pet_scores"
+    name = "skyblock_pet_scores"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetScoreSqlModel implements PetScoreModel, SqlModel {

@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -20,15 +19,15 @@ import java.util.Map;
 
 @Entity
 @Table(
-        name = "skyblock_accessories",
-        indexes = {
-                @Index(
-                        columnList = "family_key"
-                ),
-                @Index(
-                        columnList = "rarity_key"
-                )
-        }
+    name = "skyblock_accessories",
+    indexes = {
+        @Index(
+            columnList = "family_key"
+        ),
+        @Index(
+            columnList = "rarity_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
@@ -84,29 +83,30 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
         if (!(o instanceof AccessorySqlModel)) return false;
         AccessorySqlModel that = (AccessorySqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
-                .append(this.getFamilyRank(), that.getFamilyRank())
-                .append(this.getItem(), that.getItem())
-                .append(this.getName(), that.getName())
-                .append(this.getRarity(), that.getRarity())
-                .append(this.getFamily(), that.getFamily())
-                .append(this.getEffects(), that.getEffects())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getFamilyRank(), that.getFamilyRank())
+            .append(this.getItem(), that.getItem())
+            .append(this.getName(), that.getName())
+            .append(this.getRarity(), that.getRarity())
+            .append(this.getFamily(), that.getFamily())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getItem())
-                .append(this.getName())
-                .append(this.getRarity())
-                .append(this.getFamily())
-                .append(this.getFamilyRank())
-                .append(this.getEffects())
-                .append(this.getUpdatedAt())
-                .build();
+            .append(this.getId())
+            .append(this.getItem())
+            .append(this.getName())
+            .append(this.getRarity())
+            .append(this.getFamily())
+            .append(this.getFamilyRank())
+            .append(this.getEffects())
+            .append(this.getUpdatedAt())
+            .build();
     }
-    
+
 }

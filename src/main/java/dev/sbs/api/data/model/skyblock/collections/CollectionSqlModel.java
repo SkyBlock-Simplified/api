@@ -22,7 +22,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_collections"
+    name = "skyblock_collections"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionSqlModel implements CollectionModel, SqlModel {
@@ -50,20 +50,12 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
         if (!(o instanceof CollectionSqlModel)) return false;
         CollectionSqlModel that = (CollectionSqlModel) o;
 
-        return new EqualsBuilder()
-                .append(this.getId(), that.getId())
-                .append(this.getSkill(), that.getSkill())
-                .append(this.getUpdatedAt(), that.getUpdatedAt())
-                .build();
+        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getSkill(), that.getSkill()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.getId())
-                .append(this.getSkill())
-                .append(this.getUpdatedAt())
-                .build();
+        return new HashCodeBuilder().append(this.getId()).append(this.getSkill()).append(this.getUpdatedAt()).build();
     }
 
 }

@@ -24,17 +24,17 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_craftingtable_recipe_slots",
-        indexes = {
-                @Index(
-                        columnList = "recipe_key, slot_key",
-                        unique = true
-                ),
-                @Index(
-                        columnList = "recipe_key, ordinal",
-                        unique = true
-                )
-        }
+    name = "skyblock_craftingtable_recipe_slots",
+    indexes = {
+        @Index(
+            columnList = "recipe_key, slot_key",
+            unique = true
+        ),
+        @Index(
+            columnList = "recipe_key, ordinal",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotModel, SqlModel {

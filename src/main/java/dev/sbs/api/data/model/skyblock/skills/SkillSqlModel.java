@@ -23,12 +23,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "skyblock_skills",
-        indexes = {
-                @Index(
-                        columnList = "item_id"
-                )
-        }
+    name = "skyblock_skills",
+    indexes = {
+        @Index(
+            columnList = "item_id"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkillSqlModel implements SkillModel, SqlModel {
