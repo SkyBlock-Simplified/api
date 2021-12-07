@@ -1,4 +1,4 @@
-package dev.sbs.api.data.sql.converter;
+package dev.sbs.api.data.sql.converter.map;
 
 import dev.sbs.api.SimplifiedApi;
 
@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Converter
-public class DoubleMapConverter implements AttributeConverter<Map<String, Double>, String> {
+public class StringIntegerMapConverter implements AttributeConverter<Map<String, Integer>, String> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, Double> convertToEntityAttribute(String attr) {
+    public Map<String, Integer> convertToEntityAttribute(String attr) {
         if (attr == null)
             return new HashMap<>();
 
@@ -24,7 +24,7 @@ public class DoubleMapConverter implements AttributeConverter<Map<String, Double
     }
 
     @Override
-    public String convertToDatabaseColumn(Map<String, Double> attr) {
+    public String convertToDatabaseColumn(Map<String, Integer> attr) {
         try {
             return SimplifiedApi.getGson().toJson(attr);
         } catch (Exception e) {

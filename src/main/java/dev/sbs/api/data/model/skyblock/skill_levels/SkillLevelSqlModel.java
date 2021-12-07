@@ -2,8 +2,8 @@ package dev.sbs.api.data.model.skyblock.skill_levels;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillSqlModel;
-import dev.sbs.api.data.sql.converter.ObjectMapConverter;
-import dev.sbs.api.data.sql.converter.StringListConverter;
+import dev.sbs.api.data.sql.converter.list.StringListConverter;
+import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -61,7 +61,7 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter

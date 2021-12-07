@@ -3,7 +3,7 @@ package dev.sbs.api.data.model.skyblock.potion_tiers;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.model.skyblock.potions.PotionSqlModel;
-import dev.sbs.api.data.sql.converter.ObjectMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -76,13 +76,13 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
     @Getter

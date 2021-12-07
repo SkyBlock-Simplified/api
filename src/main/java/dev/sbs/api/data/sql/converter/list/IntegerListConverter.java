@@ -1,4 +1,4 @@
-package dev.sbs.api.data.sql.converter;
+package dev.sbs.api.data.sql.converter.list;
 
 import dev.sbs.api.SimplifiedApi;
 
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Converter
-public class StringListConverter implements AttributeConverter<List<String>, String> {
+public class IntegerListConverter implements AttributeConverter<List<Integer>, String> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> convertToEntityAttribute(String attr) {
+    public List<Integer> convertToEntityAttribute(String attr) {
         if (attr == null)
             return new ArrayList<>();
 
@@ -24,7 +24,7 @@ public class StringListConverter implements AttributeConverter<List<String>, Str
     }
 
     @Override
-    public String convertToDatabaseColumn(List<String> attr) {
+    public String convertToDatabaseColumn(List<Integer> attr) {
         try {
             return SimplifiedApi.getGson().toJson(attr);
         } catch (Exception e) {

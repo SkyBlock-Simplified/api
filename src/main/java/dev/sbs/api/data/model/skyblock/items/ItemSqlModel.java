@@ -2,10 +2,10 @@ package dev.sbs.api.data.model.skyblock.items;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
-import dev.sbs.api.data.sql.converter.DoubleMapConverter;
-import dev.sbs.api.data.sql.converter.IntegerListMapConverter;
-import dev.sbs.api.data.sql.converter.IntegerMapConverter;
-import dev.sbs.api.data.sql.converter.ObjectMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringIntegerListMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringIntegerMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -99,7 +99,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "stats")
-    @Convert(converter = DoubleMapConverter.class)
+    @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> stats;
 
     @Getter
@@ -125,7 +125,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "tiered_stats")
-    @Convert(converter = IntegerListMapConverter.class)
+    @Convert(converter = StringIntegerListMapConverter.class)
     private Map<String, List<Integer>> tieredStats;
 
     @Getter
@@ -136,19 +136,19 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "requirements")
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> requirements;
 
     @Getter
     @Setter
     @Column(name = "catacombs_requirements")
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> catacombsRequirements;
 
     @Getter
     @Setter
     @Column(name = "essence")
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> essence;
 
     @Getter
@@ -164,7 +164,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "enchantments")
-    @Convert(converter = IntegerMapConverter.class)
+    @Convert(converter = StringIntegerMapConverter.class)
     private Map<String, Integer> enchantments;
 
     @Getter

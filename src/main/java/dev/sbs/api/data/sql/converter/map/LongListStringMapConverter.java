@@ -1,18 +1,19 @@
-package dev.sbs.api.data.sql.converter;
+package dev.sbs.api.data.sql.converter.map;
 
 import dev.sbs.api.SimplifiedApi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Converter
-public class ObjectMapConverter implements AttributeConverter<Map<String, Object>, String> {
+public class LongListStringMapConverter implements AttributeConverter<Map<Long, List<String>>, String> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, Object> convertToEntityAttribute(String attr) {
+    public Map<Long, List<String>> convertToEntityAttribute(String attr) {
         if (attr == null)
             return new HashMap<>();
 
@@ -24,7 +25,7 @@ public class ObjectMapConverter implements AttributeConverter<Map<String, Object
     }
 
     @Override
-    public String convertToDatabaseColumn(Map<String, Object> attr) {
+    public String convertToDatabaseColumn(Map<Long, List<String>> attr) {
         try {
             return SimplifiedApi.getGson().toJson(attr);
         } catch (Exception e) {

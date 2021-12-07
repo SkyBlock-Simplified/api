@@ -1,4 +1,4 @@
-package dev.sbs.api.data.sql.converter;
+package dev.sbs.api.data.sql.converter.list;
 
 import dev.sbs.api.SimplifiedApi;
 

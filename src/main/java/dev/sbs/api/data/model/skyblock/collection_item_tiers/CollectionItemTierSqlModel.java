@@ -2,7 +2,7 @@ package dev.sbs.api.data.model.skyblock.collection_item_tiers;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemSqlModel;
-import dev.sbs.api.data.sql.converter.StringListConverter;
+import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;

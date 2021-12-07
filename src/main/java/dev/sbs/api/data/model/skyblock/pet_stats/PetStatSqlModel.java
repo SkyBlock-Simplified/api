@@ -3,7 +3,7 @@ package dev.sbs.api.data.model.skyblock.pet_stats;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.pets.PetSqlModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
-import dev.sbs.api.data.sql.converter.IntegerListConverter;
+import dev.sbs.api.data.sql.converter.list.IntegerListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;

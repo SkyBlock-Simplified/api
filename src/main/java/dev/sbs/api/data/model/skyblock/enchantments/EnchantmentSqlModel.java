@@ -2,7 +2,7 @@ package dev.sbs.api.data.model.skyblock.enchantments;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlModel;
-import dev.sbs.api.data.sql.converter.ObjectMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -57,7 +57,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects")
-    @Convert(converter = ObjectMapConverter.class)
+    @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> effects;
 
     @Getter
