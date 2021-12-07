@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface EffectsModel extends Model {
 
-    Map<String, Object> getEffects();
+    Map<String, ?> getEffects();
 
     default <T> T getEffect(String key) {
         return this.getEffect(key, null);
