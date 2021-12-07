@@ -7,7 +7,7 @@ import java.time.Instant;
 
 public interface GuildReputationModel extends Model {
 
-    GuildReputationTypeModel getReputationType();
+    GuildReputationTypeModel getType();
 
     Long getReportedDiscordId();
 

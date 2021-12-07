@@ -38,7 +38,7 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
         @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
         @JoinColumn(name = "reputation_type_key", nullable = false, referencedColumnName = "key")
     })
-    private GuildReputationTypeSqlModel reputationType;
+    private GuildReputationTypeSqlModel type;
 
     @Getter
     @Setter
@@ -82,7 +82,7 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
 
         return new EqualsBuilder().append(this.isPositive(), that.isPositive())
             .append(this.getId(), that.getId())
-            .append(this.getReputationType(), that.getReputationType())
+            .append(this.getType(), that.getType())
             .append(this.getReportedDiscordId(), that.getReportedDiscordId())
             .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
             .append(this.getAssigneeDiscordId(), that.getAssigneeDiscordId())
@@ -95,7 +95,7 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.getId())
-            .append(this.getReputationType())
+            .append(this.getType())
             .append(this.getReportedDiscordId())
             .append(this.getSubmitterDiscordId())
             .append(this.getAssigneeDiscordId())

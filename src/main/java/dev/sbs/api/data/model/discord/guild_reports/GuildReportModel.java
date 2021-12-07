@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface GuildReportModel extends Model {
 
-    GuildReportTypeModel getReportType();
+    GuildReportTypeModel getType();
 
     Long getReportedDiscordId();
 

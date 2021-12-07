@@ -40,7 +40,7 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
         @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
         @JoinColumn(name = "report_type_key", nullable = false, referencedColumnName = "key")
     })
-    private GuildReportTypeModel reportType;
+    private GuildReportTypeModel type;
 
     @Getter
     @Setter
@@ -99,7 +99,7 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
         GuildReportSqlModel that = (GuildReportSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
-            .append(this.getReportType(), that.getReportType())
+            .append(this.getType(), that.getType())
             .append(this.getReportedDiscordId(), that.getReportedDiscordId())
             .append(this.getReportedMojangUniqueId(), that.getReportedMojangUniqueId())
             .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
@@ -116,7 +116,7 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.getId())
-            .append(this.getReportType())
+            .append(this.getType())
             .append(this.getReportedDiscordId())
             .append(this.getReportedMojangUniqueId())
             .append(this.getSubmitterDiscordId())
