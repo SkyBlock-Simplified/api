@@ -35,8 +35,10 @@ public enum MinecraftChatFormatting {
     RESET('r');
 
     public static final char SECTION_SYMBOL = '\u00a7';
-    @Getter private final char code;
-    @Getter private final boolean isFormat;
+    @Getter
+    private final char code;
+    @Getter
+    private final boolean isFormat;
     private final String toString;
     private final Color color;
 
@@ -55,7 +57,7 @@ public enum MinecraftChatFormatting {
     MinecraftChatFormatting(char code, boolean isFormat, int rgb) {
         this.code = code;
         this.isFormat = isFormat;
-        this.toString = new String(new char[] { SECTION_SYMBOL, code });
+        this.toString = new String(new char[]{ SECTION_SYMBOL, code });
         this.color = (this.isColor() ? new Color(rgb) : null);
     }
 

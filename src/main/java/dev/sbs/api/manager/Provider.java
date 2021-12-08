@@ -6,7 +6,8 @@ import lombok.Getter;
 
 public abstract class Provider {
 
-    @Getter private final Class<?> service;
+    @Getter
+    private final Class<?> service;
 
     protected Provider(Class<?> service) {
         this.service = service;

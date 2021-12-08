@@ -35,7 +35,7 @@ public class LongTag extends NumericalTag<Long> {
     /**
      * Constructs a long tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code long} value.
      */
     public LongTag(String name, long value) {

@@ -35,7 +35,7 @@ public class ByteTag extends NumericalTag<Byte> {
     /**
      * Constructs a byte tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code Number} value, to be converted to {@code byte}.
      */
     public ByteTag(String name, @NonNull Number value) {
@@ -45,7 +45,7 @@ public class ByteTag extends NumericalTag<Byte> {
     /**
      * Constructs a byte tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code byte} value.
      */
     public ByteTag(String name, byte value) {

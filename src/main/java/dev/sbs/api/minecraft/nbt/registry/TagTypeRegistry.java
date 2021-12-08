@@ -16,13 +16,22 @@ import java.util.Map;
  */
 public class TagTypeRegistry {
 
-    private final BiMap<Byte, @NonNull Class<?>> typeRegistry = HashBiMap.create(); { TagType.registerAllTypes(this); }
-    private final BiMap<Byte, @NonNull Class<? extends Tag<?>>> tagRegistry = HashBiMap.create(); { TagType.registerAllTags(this); }
+    private final BiMap<Byte, @NonNull Class<?>> typeRegistry = HashBiMap.create();
+
+    {
+        TagType.registerAllTypes(this);
+    }
+
+    private final BiMap<Byte, @NonNull Class<? extends Tag<?>>> tagRegistry = HashBiMap.create();
+
+    {
+        TagType.registerAllTags(this);
+    }
 
     /**
      * Register a java class type with a unique {@code byte} ID. IDs 0-12 (inclusive) are reserved and may not be used.
      *
-     * @param id the class type's unique ID used in reading and writing.
+     * @param id     the class type's unique ID used in reading and writing.
      * @param tClass the java type class.
      * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
      */
@@ -49,7 +58,7 @@ public class TagTypeRegistry {
     /**
      * Register a custom-made tag type with a unique {@code byte} ID. IDs 0-12 (inclusive) are reserved and may not be used.
      *
-     * @param id the tag type's unique ID used in reading and writing.
+     * @param id       the tag type's unique ID used in reading and writing.
      * @param tagClass the tag type class.
      * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
      */
@@ -79,7 +88,7 @@ public class TagTypeRegistry {
      * @param id the ID of the tag type to unregister.
      * @return if the tag type was unregistered successfully.
      */
-    public boolean unregisterTagType(byte id)  {
+    public boolean unregisterTagType(byte id) {
         if (id >= 0 && id <= 12)
             return false; // Do not unregister reserved tag types
 

@@ -34,7 +34,7 @@ public class DoubleTag extends NumericalTag<Double> {
     /**
      * Constructs a double tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code double} value.
      */
     public DoubleTag(String name, double value) {

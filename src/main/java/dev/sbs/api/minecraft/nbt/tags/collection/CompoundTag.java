@@ -76,7 +76,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     /**
      * Constructs a compound tag with a given name and {@code Map<>} value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code Map<>} value.
      */
     public CompoundTag(String name, @NonNull Map<String, Tag<?>> value) {
@@ -86,7 +86,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     /**
      * Constructs a compound tag with a given name and {@code Map<>} value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code Map<>} value.
      */
     public CompoundTag(String name, @NonNull Map<String, Tag<?>> value, boolean root) {
@@ -128,7 +128,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     /**
      * Returns true if this compound contains an entry with a given name (key) and if that entry is of a given tag type, false otherwise.
      *
-     * @param key the name (key) to check for.
+     * @param key    the name (key) to check for.
      * @param typeId the tag type ID to test for.
      * @return true if this compound contains an entry with a given name (key) and if that entry is of a given tag type, false otherwise.
      */
@@ -286,7 +286,8 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
 
     /**
      * Retrieve a map from a given path.
-     * @param path The path of compounds to look up.
+     *
+     * @param path      The path of compounds to look up.
      * @param createNew Whether or not to create new compounds on the way.
      * @return The map at this location.
      */
@@ -322,7 +323,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     /**
      * Retrieve the map by the given name.
      *
-     * @param key The name of the map.
+     * @param key       The name of the map.
      * @param createNew Whether or not to create a new map if its missing.
      * @return An existing map, a new map or null.
      */
@@ -354,7 +355,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     /**
      * Retrieve the value by the given key.
      *
-     * @param key The name of the value.
+     * @param key          The name of the value.
      * @param defaultValue The default value if key doesn't exist.
      * @return An existing or default value.
      */
@@ -417,7 +418,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     /**
      * Adds a given tag to this compound. Be careful, the tag's name is set to the {@code name} parameter automatically.
      *
-     * @param key the tag's name (key).
+     * @param key   the tag's name (key).
      * @param value the tag to be added to the compound.
      * @return the previous value mapped with the tag's name as type E if provided, or null if there wasn't any.
      */
@@ -442,7 +443,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * Every element of the path (except the end) are assumed to be compounds, and will
      * be created if they are missing.
      *
-     * @param path The path to the entry.
+     * @param path  The path to the entry.
      * @param value The new value of this entry.
      * @return This compound, for chaining.
      */
@@ -605,7 +606,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         }
 
         if (config.isPrettyPrint())
-            sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append('}');
+            sb.append("\n").append(SnbtUtil.multiplyIndent(depth, config)).append('}');
         else
             sb.append('}');
 

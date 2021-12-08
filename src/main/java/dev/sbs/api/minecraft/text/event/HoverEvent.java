@@ -18,8 +18,10 @@ public final class HoverEvent {
 
     }
 
-    @Getter final Action action;
-    @Getter private final String value;
+    @Getter
+    final Action action;
+    @Getter
+    private final String value;
 
     public HoverEvent(Action action, String value) {
         this.action = action;

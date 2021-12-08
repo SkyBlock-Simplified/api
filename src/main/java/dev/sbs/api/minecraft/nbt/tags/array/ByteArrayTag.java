@@ -33,7 +33,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     /**
      * Constructs a byte array tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code byte[]} value.
      */
     public ByteArrayTag(String name, byte[] value) {
@@ -43,7 +43,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     /**
      * Constructs a byte array tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code byte[]} value.
      */
     public ByteArrayTag(String name, Byte[] value) {
@@ -62,7 +62,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     /**
      * Constructs a byte array tag with a given name, using a List object to determine its {@code byte[]} value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code byte[]} array.
      */
     public ByteArrayTag(String name, @NonNull List<Byte> value) {
@@ -155,7 +155,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
         }
 
         if (config.isPrettyPrint() && this.size() < config.getInlineThreshold())
-            sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append(']');
+            sb.append("\n").append(SnbtUtil.multiplyIndent(depth, config)).append(']');
         else
             sb.append(']');
 

@@ -49,7 +49,7 @@ public class NbtFactory {
      * Constructs an instance of this class using a given {@link TagTypeRegistry} and {@link SnbtConfig}.
      *
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
-     * @param snbtConfig the SNBT config object to be used.
+     * @param snbtConfig   the SNBT config object to be used.
      */
     public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull SnbtConfig snbtConfig) {
         this.typeRegistry = typeRegistry;
@@ -165,7 +165,7 @@ public class NbtFactory {
      * Writes the given root {@link CompoundTag} to a {@link File} with no compression.
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @param file the file to write to.
+     * @param file     the file to write to.
      * @throws IOException if any I/O error occurs.
      */
     public void toFile(@NonNull CompoundTag compound, @NonNull File file) throws IOException {
@@ -175,8 +175,8 @@ public class NbtFactory {
     /**
      * Writes the given root {@link CompoundTag} to a {@link File} using a certain {@link CompressionType}.
      *
-     * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @param file the file to write to.
+     * @param compound    the NBT structure to write, contained within a {@link CompoundTag}.
+     * @param file        the file to write to.
      * @param compression the compression to be applied.
      * @throws IOException if any I/O error occurs.
      */
@@ -198,7 +198,7 @@ public class NbtFactory {
      * Serializes the given root {@link CompoundTag} to a JSON {@link File}.
      *
      * @param compound the NBT structure to serialize to JSON, contained within a {@link CompoundTag}.
-     * @param file the JSON file to write to.
+     * @param file     the JSON file to write to.
      * @throws IOException if any I/O error occurs.
      */
     public void toJson(@NonNull CompoundTag compound, @NonNull File file) throws IOException {
@@ -220,7 +220,7 @@ public class NbtFactory {
      * Writes the given root {@link CompoundTag} to a provided {@link DataOutput} stream.
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @param output the stream to write to.
+     * @param output   the stream to write to.
      * @throws IOException if any I/O error occurs.
      */
     public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws IOException {

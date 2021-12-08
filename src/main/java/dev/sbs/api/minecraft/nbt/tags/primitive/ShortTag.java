@@ -35,7 +35,7 @@ public class ShortTag extends NumericalTag<Short> {
     /**
      * Constructs a short tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code Number} value, to be converted to {@code short}.
      */
     public ShortTag(String name, @NonNull Number value) {
@@ -45,7 +45,7 @@ public class ShortTag extends NumericalTag<Short> {
     /**
      * Constructs a short tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code short} value.
      */
     public ShortTag(String name, short value) {

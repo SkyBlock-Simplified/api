@@ -33,7 +33,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
     /**
      * Constructs an int array tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code int[]} value.
      */
     public IntArrayTag(String name, int[] value) {
@@ -43,7 +43,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
     /**
      * Constructs an int array tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code int[]} value.
      */
     public IntArrayTag(String name, Integer[] value) {
@@ -62,7 +62,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
     /**
      * Constructs an int array tag with a given name, using a List object to determine its {@code int[]} value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code int[]} array.
      */
     public IntArrayTag(String name, @NonNull List<Integer> value) {
@@ -157,7 +157,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
         }
 
         if (config.isPrettyPrint() && this.size() < config.getInlineThreshold())
-            sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append(']');
+            sb.append("\n").append(SnbtUtil.multiplyIndent(depth, config)).append(']');
         else
             sb.append(']');
 

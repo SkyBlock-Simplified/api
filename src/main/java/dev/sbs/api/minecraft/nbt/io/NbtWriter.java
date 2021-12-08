@@ -21,7 +21,7 @@ public class NbtWriter {
      * Writes the given root {@link CompoundTag} to a {@link DataOutput} stream.
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
-     * @param output the stream to write to.
+     * @param output   the stream to write to.
      * @throws IOException if any I/O error occurs.
      */
     public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws IOException {
@@ -41,6 +41,7 @@ public class NbtWriter {
      *
      * @return the {@link TagTypeRegistry} currently in use by this writer.
      */
+    @NonNull
     public TagTypeRegistry getTypeRegistry() {
         return typeRegistry;
     }

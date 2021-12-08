@@ -12,10 +12,12 @@ import java.nio.charset.StandardCharsets;
 @Builder
 public class MinecraftPingOptions {
 
-    @Getter private String hostname;
+    @Getter
+    private String hostname;
 
     @Builder.Default
-    @Getter private Charset charset = StandardCharsets.UTF_8;
+    @Getter
+    private Charset charset = StandardCharsets.UTF_8;
 
     @Getter
     @Builder.Default

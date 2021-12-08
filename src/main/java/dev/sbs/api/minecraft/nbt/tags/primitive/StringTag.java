@@ -30,7 +30,7 @@ public class StringTag extends Tag<String> implements SnbtSerializable, JsonSeri
     /**
      * Constructs a string tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code String} value.
      */
     public StringTag(String name, @NonNull String value) {

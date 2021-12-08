@@ -7,7 +7,7 @@ import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 
 public final class MinecraftTextBuilder implements Builder<MinecraftTextObject> {
-    
+
     private MinecraftTextObject root;
     private MinecraftTextObject current; // The current text object. This will change when we append text.
     private final ConcurrentList<MinecraftTextObject> extra = Concurrent.newList(); // The storage of extra text objects.

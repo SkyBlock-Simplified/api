@@ -14,7 +14,7 @@ public interface JsonSerializable {
     /**
      * Deserializes this tag from a give {@code JsonObject}.
      *
-     * @param json the {@code JsonObject} to be deserialized.
+     * @param json     the {@code JsonObject} to be deserialized.
      * @param registry the {@link TagTypeRegistry} to be used in deserialization.
      * @return this (literally {@code return this;} after deserialization).
      * @throws IOException if any I/O error occurs.
@@ -26,8 +26,8 @@ public interface JsonSerializable {
     /**
      * Deserializes this tag from a give {@code JsonObject}.
      *
-     * @param json the {@code JsonObject} to be deserialized.
-     * @param depth the current depth of the NBT data structure.
+     * @param json     the {@code JsonObject} to be deserialized.
+     * @param depth    the current depth of the NBT data structure.
      * @param registry the {@link TagTypeRegistry} to be used in deserialization.
      * @return this (literally {@code return this;} after deserialization).
      * @throws IOException if any I/O error occurs.
@@ -48,7 +48,7 @@ public interface JsonSerializable {
     /**
      * Serializes this tag into a GSON {@code JsonObject}.
      *
-     * @param depth the current depth of the NBT data structure.
+     * @param depth    the current depth of the NBT data structure.
      * @param registry the {@link TagTypeRegistry} to be used in serialization.
      * @return the serialized {@code JsonObject}.
      * @throws IOException if any I/O error occurs.

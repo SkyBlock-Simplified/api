@@ -33,7 +33,7 @@ public class LongArrayTag extends ArrayTag<Long> {
     /**
      * Constructs a long array tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code long[]} value.
      */
     public LongArrayTag(String name, long[] value) {
@@ -43,7 +43,7 @@ public class LongArrayTag extends ArrayTag<Long> {
     /**
      * Constructs a long array tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code long[]} value.
      */
     public LongArrayTag(String name, Long[] value) {
@@ -62,7 +62,7 @@ public class LongArrayTag extends ArrayTag<Long> {
     /**
      * Constructs a long array tag with a given name, using a List object to determine its {@code long[]} value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code long[]} array.
      */
     public LongArrayTag(String name, @NonNull List<Long> value) {
@@ -161,7 +161,7 @@ public class LongArrayTag extends ArrayTag<Long> {
         }
 
         if (config.isPrettyPrint() && this.size() < config.getInlineThreshold())
-            sb.append("\n").append(SnbtUtil.multiplyIndent(depth , config)).append(']');
+            sb.append("\n").append(SnbtUtil.multiplyIndent(depth, config)).append(']');
         else
             sb.append(']');
 

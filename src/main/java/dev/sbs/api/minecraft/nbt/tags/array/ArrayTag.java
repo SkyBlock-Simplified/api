@@ -59,7 +59,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * Inserts the specified element(s) at the specified position in this array tag.
      * Shifts the element(s) currently at that position and any subsequent elements to the right.
      *
-     * @param index index at which the element(s) are to be inserted.
+     * @param index    index at which the element(s) are to be inserted.
      * @param elements element(s) to be inserted.
      */
     @SafeVarargs
@@ -90,7 +90,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
     /**
      * Replaces the element at the specified position in this array tag with the specified element.
      *
-     * @param index index of the element to replace.
+     * @param index   index of the element to replace.
      * @param element element to be stored at the specified position.
      * @return the element previously at the specified position.
      */

@@ -52,8 +52,8 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
     /**
      * Reads this tag from a {@link DataInput} stream.
      *
-     * @param input the stream to read from.
-     * @param depth the current depth of the NBT data structure.
+     * @param input    the stream to read from.
+     * @param depth    the current depth of the NBT data structure.
      * @param registry the {@link TagTypeRegistry} to be used in reading.
      * @return this (literally {@code return this;} after reading).
      * @throws IOException if any I/O error occurs.
@@ -81,8 +81,8 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
     /**
      * Writes this tag to a {@link DataOutput} stream.
      *
-     * @param output the stream to write to.
-     * @param depth the current depth of the NBT data structure.
+     * @param output   the stream to write to.
+     * @param depth    the current depth of the NBT data structure.
      * @param registry the {@link TagTypeRegistry} to be used in writing.
      * @throws IOException if any I/O error occurs.
      */

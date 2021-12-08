@@ -5,11 +5,12 @@ import lombok.Getter;
 
 public final class ServiceProvider extends Provider {
 
-	@Getter private final Object provider;
+    @Getter
+    private final Object provider;
 
-	ServiceProvider(Class<?> service, Object provider) {
-		super(service);
-		this.provider = provider;
-	}
+    ServiceProvider(Class<?> service, Object provider) {
+        super(service);
+        this.provider = provider;
+    }
 
 }

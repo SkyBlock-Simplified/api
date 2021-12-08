@@ -21,8 +21,10 @@ public final class ClickEvent {
 
     }
 
-    @Getter private final Action action;
-    @Getter private final String value;
+    @Getter
+    private final Action action;
+    @Getter
+    private final String value;
 
     public ClickEvent(Action action, String value) {
         this.action = action;

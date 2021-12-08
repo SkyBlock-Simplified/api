@@ -35,7 +35,7 @@ public class FloatTag extends NumericalTag<Float> {
     /**
      * Constructs a float tag with a given name and value.
      *
-     * @param name the tag's name.
+     * @param name  the tag's name.
      * @param value the tag's {@code float} value.
      */
     public FloatTag(String name, float value) {

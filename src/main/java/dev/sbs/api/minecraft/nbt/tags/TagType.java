@@ -144,7 +144,8 @@ public enum TagType {
         try {
             for (TagType tagType : values())
                 registry.registerClassType(tagType.getId(), tagType.getJavaClass());
-        } catch (TagTypeRegistryException ignore) { }
+        } catch (TagTypeRegistryException ignore) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -152,7 +153,8 @@ public enum TagType {
         try {
             for (TagType tagType : values())
                 registry.registerTagType(tagType.getId(), (Class<? extends Tag<?>>) tagType.getTagClass());
-        } catch (TagTypeRegistryException ignore) { }
+        } catch (TagTypeRegistryException ignore) {
+        }
     }
 
 }

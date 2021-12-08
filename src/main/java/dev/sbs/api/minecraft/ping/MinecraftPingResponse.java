@@ -15,7 +15,8 @@ public class MinecraftPingResponse {
     private Players players;
     private Version version;
     private String favicon;
-    @Setter private long ping;
+    @Setter
+    private long ping;
 
     @Getter
     @ToString

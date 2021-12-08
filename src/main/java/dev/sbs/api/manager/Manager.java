@@ -35,7 +35,7 @@ public abstract class Manager<P extends Provider> {
      * Gets the builder provider for the given service class.
      *
      * @param service class type to get
-     * @param <T> type of service
+     * @param <T>     type of service
      * @return service provider for the given class
      * @throws UnknownServiceException When the given service class does not have a registered instance
      * @see #isRegistered(Class)
