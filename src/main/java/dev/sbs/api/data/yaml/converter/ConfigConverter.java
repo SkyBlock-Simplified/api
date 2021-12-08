@@ -10,41 +10,41 @@ import java.util.Map;
 
 public class ConfigConverter extends YamlConverter {
 
-	public ConfigConverter(InternalConverter converter) {
-		super(converter);
-	}
+    public ConfigConverter(InternalConverter converter) {
+        super(converter);
+    }
 
-	@Override
-	public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
-		YamlMap obj = (YamlMap)newInstance(type);
-		this.getCustomConverters().forEach(obj::addCustomConverter);
-		obj.loadFromMap((section instanceof Map) ? (Map<?, ?>)section : ((ConfigSection)section).getRawMap(), type);
-		return obj;
-	}
+    @Override
+    public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
+        YamlMap obj = (YamlMap) newInstance(type);
+        this.getCustomConverters().forEach(obj::addCustomConverter);
+        obj.loadFromMap((section instanceof Map) ? (Map<?, ?>) section : ((ConfigSection) section).getRawMap(), type);
+        return obj;
+    }
 
-	@Override
-	public Object toConfig(Class<?> type, Object obj, ParameterizedType genericType) throws Exception {
-		if (obj instanceof Map)
-			return obj;
-		else {
-			YamlMap map = (YamlMap)obj;
-			this.getCustomConverters().forEach(map::addCustomConverter);
-			return map.saveToMap(obj.getClass());
-		}
-	}
+    @Override
+    public Object toConfig(Class<?> type, Object obj, ParameterizedType genericType) throws Exception {
+        if (obj instanceof Map)
+            return obj;
+        else {
+            YamlMap map = (YamlMap) obj;
+            this.getCustomConverters().forEach(map::addCustomConverter);
+            return map.saveToMap(obj.getClass());
+        }
+    }
 
-	private static Object newInstance(Class<?> type) {
-		Class<?> enclosingClass = type.getEnclosingClass();
+    private static Object newInstance(Class<?> type) {
+        Class<?> enclosingClass = type.getEnclosingClass();
 
-		if (enclosingClass != null)
-			return new Reflection(type).newInstance(newInstance(enclosingClass));
+        if (enclosingClass != null)
+            return new Reflection(type).newInstance(newInstance(enclosingClass));
 
-		return new Reflection(type).newInstance();
-	}
+        return new Reflection(type).newInstance();
+    }
 
-	@Override
-	public boolean supports(Class<?> type) {
-		return YamlMap.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean supports(Class<?> type) {
+        return YamlMap.class.isAssignableFrom(type);
+    }
 
 }

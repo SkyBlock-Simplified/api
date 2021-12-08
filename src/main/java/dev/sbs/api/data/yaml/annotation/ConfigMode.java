@@ -9,14 +9,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigMode {
 
-	Type value() default Type.DEFAULT;
+    Type value() default Type.DEFAULT;
 
-	enum Type {
+    enum Type {
 
-		DEFAULT,
-		FIELD_IS_KEY,
-		PATH_BY_UNDERSCORE
+        DEFAULT,
+        FIELD_IS_KEY,
+        PATH_BY_UNDERSCORE
 
-	}
+    }
 
 }

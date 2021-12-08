@@ -19,7 +19,7 @@ import java.util.UUID;
  * Factory sql classes to be inherited from when creating a wrapper.
  */
 public abstract class SQLFactory {
-    
+
     private final String driver;
     private final boolean driverAvailable;
     private final String url;
@@ -408,7 +408,8 @@ public abstract class SQLFactory {
         Scheduler.getInstance().runAsync(() -> {
             try {
                 this.query(sql, callback, args);
-            } catch (SQLException ignore) { }
+            } catch (SQLException ignore) {
+            }
         });
     }
 

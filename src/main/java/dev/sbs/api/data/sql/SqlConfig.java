@@ -56,7 +56,8 @@ public abstract class SqlConfig extends YamlConfig {
     @Setter
     protected CacheExpiry databaseQueryResultsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_QUERIES_TTL", "60"))));
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected SqlDriver databaseDriver = SqlDriver.MariaDB;
 
     public SqlConfig(File configDir, String fileName, String... header) {
@@ -74,10 +75,10 @@ public abstract class SqlConfig extends YamlConfig {
     }
 
     public final void setLoggingLevel(Level level) {
-        Logger hibernateLogger = (Logger)org.slf4j.LoggerFactory.getLogger("org.hibernate");
-        Logger ehcacheLogger = (Logger)org.slf4j.LoggerFactory.getLogger("org.ehcache");
-        Logger hikariLogger = (Logger)org.slf4j.LoggerFactory.getLogger("com.zaxxer.hikari");
-        Logger jbossLogger = (Logger)org.slf4j.LoggerFactory.getLogger("org.jboss.logging");
+        Logger hibernateLogger = (Logger) org.slf4j.LoggerFactory.getLogger("org.hibernate");
+        Logger ehcacheLogger = (Logger) org.slf4j.LoggerFactory.getLogger("org.ehcache");
+        Logger hikariLogger = (Logger) org.slf4j.LoggerFactory.getLogger("com.zaxxer.hikari");
+        Logger jbossLogger = (Logger) org.slf4j.LoggerFactory.getLogger("org.jboss.logging");
         hibernateLogger.setLevel(level);
         ehcacheLogger.setLevel(level);
         hikariLogger.setLevel(level);

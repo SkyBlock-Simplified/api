@@ -20,11 +20,11 @@ public interface FilterFunction<T extends Model, R> extends Function<T, R> {
     /**
      * Alows you to traverse down through method references.
      *
-     * @param first The first function in the chain
+     * @param first  The first function in the chain
      * @param second The last function in the chain
-     * @param <T1> The first SqlModel to traverse
-     * @param <T2> The second SqlModel to traverse
-     * @param <T3> The return type
+     * @param <T1>   The first SqlModel to traverse
+     * @param <T2>   The second SqlModel to traverse
+     * @param <T3>   The return type
      * @return The method reference between {@link T1} and {@link T3}
      */
     static <T1 extends Model, T2 extends Model, T3> FilterFunction<T1, T3> combine(FilterFunction<T1, T2> first, FilterFunction<T2, T3> second) {

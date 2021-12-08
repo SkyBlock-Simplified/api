@@ -5,20 +5,20 @@ package dev.sbs.api.data.sql.integrated.pooling;
  */
 public enum WaitTime {
 
-	IMMEDIATELY(0),
-	HALF_A_SECOND(500),
-	ONE_SECOND(1000),
-	THREE_SECONDS(3000),
-	FIVE_SECONDS(5000);
+    IMMEDIATELY(0),
+    HALF_A_SECOND(500),
+    ONE_SECOND(1000),
+    THREE_SECONDS(3000),
+    FIVE_SECONDS(5000);
 
-	private final int waitTime;
+    private final int waitTime;
 
-	WaitTime(int milliseconds) {
-		this.waitTime = milliseconds;
-	}
+    WaitTime(int milliseconds) {
+        this.waitTime = milliseconds;
+    }
 
-	public int getWaitTime() {
-		return waitTime;
-	}
+    public int getWaitTime() {
+        return waitTime;
+    }
 
 }

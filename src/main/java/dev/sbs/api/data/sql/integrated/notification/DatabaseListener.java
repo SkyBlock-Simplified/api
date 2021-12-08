@@ -4,6 +4,6 @@ import java.sql.SQLException;
 
 public interface DatabaseListener {
 
-	void onDatabaseNotification(final DatabaseNotification databaseNotification) throws SQLException;
+    void onDatabaseNotification(final DatabaseNotification databaseNotification) throws SQLException;
 
 }

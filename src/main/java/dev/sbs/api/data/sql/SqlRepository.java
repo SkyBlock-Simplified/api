@@ -43,9 +43,9 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
             CriteriaQuery<T> all = cq.select(rootEntry);
 
             return Concurrent.newList(session
-                    .createQuery(all)
-                    .setCacheable(true)
-                    .getResultList()
+                                          .createQuery(all)
+                                          .setCacheable(true)
+                                          .getResultList()
             );
         } catch (Exception exception) {
             throw new SqlException(exception);

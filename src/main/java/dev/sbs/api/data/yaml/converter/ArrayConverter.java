@@ -6,60 +6,60 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ArrayConverter extends YamlConverter {
 
-	public ArrayConverter(InternalConverter converter) {
-		super(converter);
-	}
+    public ArrayConverter(InternalConverter converter) {
+        super(converter);
+    }
 
-	// TODO: What is this even for?
+    // TODO: What is this even for?
 	/*@SuppressWarnings("SuspiciousToArrayCall")
 	private static <T> T[] getArray(Class<T> type, java.util.List<Object> list) {
 		T[] array = (T[])java.lang.reflect.Array.newInstance(type, list.size());
 		return list.toArray(array);
 	}*/
 
-	@Override
-	public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
-		Class<?> singleType = type.getComponentType();
-		java.util.List<Object> values;
+    @Override
+    public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
+        Class<?> singleType = type.getComponentType();
+        java.util.List<Object> values;
 
-		if (section instanceof java.util.List)
-			values = (java.util.List) section;
-		else
-			Collections.addAll(values = new ArrayList(), (Object[]) section);
+        if (section instanceof java.util.List)
+            values = (java.util.List) section;
+        else
+            Collections.addAll(values = new ArrayList(), (Object[]) section);
 
-		Object ret = java.lang.reflect.Array.newInstance(singleType, values.size());
-		YamlConverter converter = this.getConverter(singleType);
+        Object ret = java.lang.reflect.Array.newInstance(singleType, values.size());
+        YamlConverter converter = this.getConverter(singleType);
 
-		if (converter == null)
-			return values.toArray((Object[]) ret);
+        if (converter == null)
+            return values.toArray((Object[]) ret);
 
-		for (int i = 0; i < values.size(); i++)
-			java.lang.reflect.Array.set(ret, i, converter.fromConfig(singleType, values.get(i), genericType));
+        for (int i = 0; i < values.size(); i++)
+            java.lang.reflect.Array.set(ret, i, converter.fromConfig(singleType, values.get(i), genericType));
 
-		return ret;
-	}
+        return ret;
+    }
 
-	@Override
-	public Object toConfig(Class<?> type, Object obj, ParameterizedType genericType) throws Exception {
-		Class<?> singleType = type.getComponentType();
-		YamlConverter converter = this.getConverter(singleType);
+    @Override
+    public Object toConfig(Class<?> type, Object obj, ParameterizedType genericType) throws Exception {
+        Class<?> singleType = type.getComponentType();
+        YamlConverter converter = this.getConverter(singleType);
 
-		if (converter == null)
-			return obj;
+        if (converter == null)
+            return obj;
 
-		Object[] ret = new Object[java.lang.reflect.Array.getLength(obj)];
-		for (int i = 0; i < ret.length; i++)
-			ret[i] = converter.toConfig(singleType, java.lang.reflect.Array.get(obj, i), genericType);
+        Object[] ret = new Object[java.lang.reflect.Array.getLength(obj)];
+        for (int i = 0; i < ret.length; i++)
+            ret[i] = converter.toConfig(singleType, java.lang.reflect.Array.get(obj, i), genericType);
 
-		return ret;
-	}
+        return ret;
+    }
 
-	@Override
-	public boolean supports(Class<?> type) {
-		return type.isArray();
-	}
+    @Override
+    public boolean supports(Class<?> type) {
+        return type.isArray();
+    }
 
 }

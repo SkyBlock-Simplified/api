@@ -30,9 +30,12 @@ import java.util.function.Function;
 public final class SqlSession {
 
     private final StandardServiceRegistry serviceRegistry;
-    @Getter private final SessionFactory sessionFactory;
-    @Getter private final SqlConfig config;
-    @Getter private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
+    @Getter
+    private final SessionFactory sessionFactory;
+    @Getter
+    private final SqlConfig config;
+    @Getter
+    private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
 
     public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
         this.config = config;
@@ -76,30 +79,30 @@ public final class SqlSession {
         // Register SqlModel Classes
         MetadataSources sources = new MetadataSources(this.serviceRegistry);
         this.repositories.stream()
-                .map(Class::getGenericSuperclass)
-                .map(ParameterizedType.class::cast)
-                .map(ParameterizedType::getActualTypeArguments)
-                .map(index -> index[0])
-                .map(tClass -> (Class<SqlModel>)tClass)
-                .map(tClass -> {
-                    SqlConfig.CacheExpiry cacheExpiry;
+            .map(Class::getGenericSuperclass)
+            .map(ParameterizedType.class::cast)
+            .map(ParameterizedType::getActualTypeArguments)
+            .map(index -> index[0])
+            .map(tClass -> (Class<SqlModel>) tClass)
+            .map(tClass -> {
+                SqlConfig.CacheExpiry cacheExpiry;
 
-                    // Load Custom Cache Expiry
-                    if (tClass.isAnnotationPresent(SqlCacheExpiry.class)) {
-                        SqlCacheExpiry sqlCacheExpiry = tClass.getAnnotation(SqlCacheExpiry.class);
+                // Load Custom Cache Expiry
+                if (tClass.isAnnotationPresent(SqlCacheExpiry.class)) {
+                    SqlCacheExpiry sqlCacheExpiry = tClass.getAnnotation(SqlCacheExpiry.class);
 
-                        cacheExpiry = new SqlConfig.CacheExpiry(
-                                new Duration(TimeUnit.SECONDS, sqlCacheExpiry.creation()),
-                                new Duration(TimeUnit.SECONDS, sqlCacheExpiry.access()),
-                                new Duration(TimeUnit.SECONDS, sqlCacheExpiry.update())
-                        );
-                    } else
-                        cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
+                    cacheExpiry = new SqlConfig.CacheExpiry(
+                        new Duration(TimeUnit.SECONDS, sqlCacheExpiry.creation()),
+                        new Duration(TimeUnit.SECONDS, sqlCacheExpiry.access()),
+                        new Duration(TimeUnit.SECONDS, sqlCacheExpiry.update())
+                    );
+                } else
+                    cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
 
-                    return config.addEntityTTL(tClass, cacheExpiry);
-                })
-                .map(this::buildCacheConfiguration)
-                .forEach(sources::addAnnotatedClass);
+                return config.addEntityTTL(tClass, cacheExpiry);
+            })
+            .map(this::buildCacheConfiguration)
+            .forEach(sources::addAnnotatedClass);
 
         // Build Default Caches
         this.buildCacheConfiguration("default-update-timestamps-region", SqlConfig::getDatabaseUpdateTimestampsTTL);
