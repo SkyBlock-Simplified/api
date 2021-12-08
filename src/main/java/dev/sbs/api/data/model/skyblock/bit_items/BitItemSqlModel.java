@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.skyblock.bit_items;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.bit_types.BitTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -22,7 +24,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_bit_items",
+    name = "skyblock_bit_items",
     indexes = {
         @Index(
             columnList = "bit_type_key"
@@ -40,6 +42,7 @@ public class BitItemSqlModel implements BitItemModel, SqlModel {
     @Getter
     @Setter
     @Id
+    @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
@@ -58,5 +61,24 @@ public class BitItemSqlModel implements BitItemModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BitItemSqlModel)) return false;
+        BitItemSqlModel that = (BitItemSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getItem(), that.getItem())
+            .append(this.getType(), that.getType())
+            .append(this.getBitCost(), that.getBitCost())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId()).append(this.getItem()).append(this.getType()).append(this.getBitCost()).append(this.getUpdatedAt()).build();
+    }
+
 }

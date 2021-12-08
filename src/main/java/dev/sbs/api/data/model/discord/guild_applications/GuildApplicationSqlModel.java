@@ -14,7 +14,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_guild_application_types",
+    name = "discord_guild_applications",
     indexes = {
         @Index(
             columnList = "guild_id, key",
@@ -49,10 +49,15 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
 
     @Getter
     @Setter
+    @Column(name = "guild_id", nullable = false)
+    private Long guildId;
+
+    @Getter
+    @Setter
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
-        @JoinColumn(name = "application_type_key", nullable = false, referencedColumnName = "key")
+        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id", insertable = false, updatable = false),
+        @JoinColumn(name = "application_type_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     })
     private GuildApplicationTypeSqlModel type;
 
@@ -60,8 +65,8 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
     @Setter
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
-        @JoinColumn(name = "embed_key", nullable = false, referencedColumnName = "key")
+        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id", insertable = false, updatable = false),
+        @JoinColumn(name = "embed_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     })
     private GuildEmbedSqlModel embed;
 
@@ -72,15 +77,17 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
 
     @Getter
     @Setter
-    @Column(name = "notes", nullable = false)
+    @Column(name = "notes")
     private String notes;
 
     @Getter
-    @Column(name = "live_at", nullable = false)
+    @Setter
+    @Column(name = "live_at")
     private Instant liveAt;
 
     @Getter
-    @Column(name = "close_at", nullable = false)
+    @Setter
+    @Column(name = "close_at")
     private Instant closeAt;
 
     @Getter

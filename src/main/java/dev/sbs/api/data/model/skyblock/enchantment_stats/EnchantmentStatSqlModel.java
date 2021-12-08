@@ -22,7 +22,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_enchantment_stats",
+    name = "skyblock_enchantment_stats",
     indexes = {
         @Index(
             columnList = "enchantment_key, stat_key, buff_key",

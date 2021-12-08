@@ -17,7 +17,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_enchantment_families"
+    name = "skyblock_enchantment_families"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EnchantmentFamilySqlModel implements EnchantmentFamilyModel, SqlModel {

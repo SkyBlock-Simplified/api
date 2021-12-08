@@ -26,8 +26,7 @@ import java.time.Instant;
     name = "skyblock_dungeons",
     indexes = {
         @Index(
-            columnList = "id",
-            unique = true
+            columnList = "emoji_key"
         )
     }
 )
@@ -36,7 +35,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
     @Getter
@@ -67,14 +66,23 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DungeonSqlModel)) return false;
+        DungeonSqlModel that = (DungeonSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getEmoji(), that.getEmoji())
+            .append(this.getWeightMultiplier(), that.getWeightMultiplier())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder().append(this.getId()).append(this.getKey()).append(this.getName()).append(this.getEmoji()).append(this.getWeightMultiplier()).append(this.getUpdatedAt()).build();
     }
 
 }

@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.skyblock.bit_item_craftables;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.bit_items.BitItemSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -22,7 +24,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_bit_item_craftables",
+    name = "skyblock_bit_item_craftables",
     indexes = {
         @Index(
             columnList = "bit_item_id"
@@ -46,6 +48,7 @@ public class BitItemCraftableSqlModel implements BitItemCraftableModel, SqlModel
     @Getter
     @Setter
     @Id
+    @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel craftableItem;
 
@@ -63,5 +66,25 @@ public class BitItemCraftableSqlModel implements BitItemCraftableModel, SqlModel
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BitItemCraftableSqlModel)) return false;
+        BitItemCraftableSqlModel that = (BitItemCraftableSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getBitItem(), that.getBitItem())
+            .append(this.getCraftableItem(), that.getCraftableItem())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getExpression(), that.getExpression())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId()).append(this.getBitItem()).append(this.getCraftableItem()).append(this.getDescription()).append(this.getExpression()).append(this.getUpdatedAt()).build();
+    }
+
 }

@@ -61,7 +61,7 @@ public class GuildReportTypeSqlModel implements GuildReportTypeModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Getter

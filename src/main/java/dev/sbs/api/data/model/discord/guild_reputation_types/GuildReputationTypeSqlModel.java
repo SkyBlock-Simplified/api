@@ -21,7 +21,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_guild_report_types",
+    name = "discord_guild_reputation_types",
     indexes = {
         @Index(
             columnList = "guild_id, key",
@@ -56,7 +56,7 @@ public class GuildReputationTypeSqlModel implements GuildReputationTypeModel, Sq
 
     @Getter
     @Setter
-    @Column(name = "name")
+    @Column(name = "description")
     private String description;
 
     @Getter

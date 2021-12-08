@@ -2,6 +2,8 @@ package dev.sbs.api.data.model.skyblock.bit_enchanted_books;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -14,12 +16,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_bit_enchanted_books"
+    name = "skyblock_bit_enchanted_books"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BitEnchantedBookSqlModel implements BitEnchantedBookModel, SqlModel {
@@ -32,6 +35,7 @@ public class BitEnchantedBookSqlModel implements BitEnchantedBookModel, SqlModel
     @Getter
     @Setter
     @Id
+    @ManyToOne
     @JoinColumn(name = "enchantment_key", nullable = false)
     private EnchantmentSqlModel enchantment;
 
@@ -44,5 +48,23 @@ public class BitEnchantedBookSqlModel implements BitEnchantedBookModel, SqlModel
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BitEnchantedBookSqlModel)) return false;
+        BitEnchantedBookSqlModel that = (BitEnchantedBookSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getEnchantment(), that.getEnchantment())
+            .append(this.getBitCost(), that.getBitCost())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId()).append(this.getEnchantment()).append(this.getBitCost()).append(this.getUpdatedAt()).build();
+    }
+
 }

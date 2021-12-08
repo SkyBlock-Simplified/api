@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.discord.optimizer_support_items;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -50,5 +52,19 @@ public class OptimizerSupportItemSqlModel implements OptimizerSupportItemModel, 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OptimizerSupportItemSqlModel)) return false;
+        OptimizerSupportItemSqlModel that = (OptimizerSupportItemSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getItem(), that.getItem()).append(this.getEffects(), that.getEffects()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId()).append(this.getItem()).append(this.getEffects()).append(this.getUpdatedAt()).build();
+    }
+
 }
