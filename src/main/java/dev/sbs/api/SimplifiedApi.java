@@ -21,10 +21,41 @@ import dev.sbs.api.client.mojang.implementation.MojangData;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.application_requirements.ApplicationRequirementSqlRepository;
+import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlRepository;
+import dev.sbs.api.data.model.discord.command_configs.CommandConfigSqlRepository;
+import dev.sbs.api.data.model.discord.embed_types.EmbedTypeSqlRepository;
+import dev.sbs.api.data.model.discord.guild_application_entries.GuildApplicationEntrySqlRepository;
+import dev.sbs.api.data.model.discord.guild_application_requirements.GuildApplicationRequirementSqlRepository;
+import dev.sbs.api.data.model.discord.guild_application_types.GuildApplicationTypeSqlRepository;
+import dev.sbs.api.data.model.discord.guild_applications.GuildApplicationSqlRepository;
+import dev.sbs.api.data.model.discord.guild_command_configs.GuildCommandConfigSqlRepository;
+import dev.sbs.api.data.model.discord.guild_embeds.GuildEmbedSqlRepository;
+import dev.sbs.api.data.model.discord.guild_report_types.GuildReportTypeSqlRepository;
+import dev.sbs.api.data.model.discord.guild_reports.GuildReportSqlRepository;
+import dev.sbs.api.data.model.discord.guild_reputation.GuildReputationSqlRepository;
+import dev.sbs.api.data.model.discord.guild_reputation_types.GuildReputationTypeSqlRepository;
+import dev.sbs.api.data.model.discord.guild_skyblock_events.GuildSkyBlockEventSqlRepository;
+import dev.sbs.api.data.model.discord.guilds.GuildSqlRepository;
+import dev.sbs.api.data.model.discord.optimizer_support_items.OptimizerSupportItemSqlRepository;
+import dev.sbs.api.data.model.discord.sbs_beta_testers.SbsBetaTesterSqlRepository;
+import dev.sbs.api.data.model.discord.sbs_developers.SbsDeveloperSqlRepository;
+import dev.sbs.api.data.model.discord.sbs_legacy_donors.SbsLegacyDonorSqlRepository;
+import dev.sbs.api.data.model.discord.setting_evals.SettingEvalSqlRepository;
+import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlRepository;
+import dev.sbs.api.data.model.discord.settings.SettingSqlRepository;
+import dev.sbs.api.data.model.discord.skyblock_event_timers.SkyBlockEventTimerSqlRepository;
+import dev.sbs.api.data.model.discord.skyblock_events.SkyBlockEventSqlRepository;
+import dev.sbs.api.data.model.discord.users.UserSqlRepository;
 import dev.sbs.api.data.model.skyblock.accessories.AccessorySqlRepository;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepository;
+import dev.sbs.api.data.model.skyblock.armor_set_bonus.ArmorSetBonusSqlRepository;
 import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
+import dev.sbs.api.data.model.skyblock.bit_enchanted_books.BitEnchantedBookSqlRepository;
+import dev.sbs.api.data.model.skyblock.bit_item_craftables.BitItemCraftableSqlRepository;
+import dev.sbs.api.data.model.skyblock.bit_items.BitItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.bit_types.BitTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.collection_item_tiers.CollectionItemTierSqlRepository;
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.collections.CollectionSqlRepository;
@@ -38,9 +69,15 @@ import dev.sbs.api.data.model.skyblock.dungeon_floor_sizes.DungeonFloorSizeSqlRe
 import dev.sbs.api.data.model.skyblock.dungeon_floors.DungeonFloorSqlRepository;
 import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelSqlRepository;
 import dev.sbs.api.data.model.skyblock.dungeons.DungeonSqlRepository;
+import dev.sbs.api.data.model.skyblock.enchantment_families.EnchantmentFamilySqlRepository;
+import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.enchantment_types.EnchantmentTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlRepository;
+import dev.sbs.api.data.model.skyblock.essence_perks.EssencePerkSqlRepository;
+import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeSqlRepository;
 import dev.sbs.api.data.model.skyblock.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
+import dev.sbs.api.data.model.skyblock.item_stat_bonus.ItemStatBonusSqlRepository;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_remotes.LocationRemoteSqlRepository;
@@ -67,12 +104,14 @@ import dev.sbs.api.data.model.skyblock.potion_groups.PotionGroupSqlRepository;
 import dev.sbs.api.data.model.skyblock.potion_mixins.PotionMixinSqlRepository;
 import dev.sbs.api.data.model.skyblock.potion_tiers.PotionTierSqlRepository;
 import dev.sbs.api.data.model.skyblock.potions.PotionSqlRepository;
+import dev.sbs.api.data.model.skyblock.profiles.ProfileSqlRepository;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlRepository;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.reforges.ReforgeSqlRepository;
 import dev.sbs.api.data.model.skyblock.sack_items.SackItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.sacks.SackSqlRepository;
+import dev.sbs.api.data.model.skyblock.seasons.SeasonSqlRepository;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.skyblock.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelSqlRepository;
@@ -210,84 +249,123 @@ public class SimplifiedApi {
         Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
 
         return serviceManager.getAll(SqlRepository.class)
-                .stream()
-                .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
-                .findFirst()
-                .orElseThrow(() -> new UnknownServiceException(tClass));
+            .stream()
+            .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
+            .findFirst()
+            .orElseThrow(() -> new UnknownServiceException(tClass));
     }
 
     private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
         return Concurrent.newUnmodifiableList(
-                // No Foreign Keys
-                RaritySqlRepository.class,
-                FormatSqlRepository.class,
-                LocationSqlRepository.class,
-                DungeonFairySoulSqlRepository.class,
-                SlayerSqlRepository.class,
-                PetTypeSqlRepository.class,
-                PotionSqlRepository.class,
-                ReforgeTypeSqlRepository.class,
-                AccessoryFamilySqlRepository.class,
-                PetExpScaleSqlRepository.class,
-                PotionGroupSqlRepository.class,
-                DungeonSqlRepository.class,
-                DungeonBossSqlRepository.class,
-                DungeonClassSqlRepository.class,
-                DungeonFloorSizeSqlRepository.class,
-                PetScoreSqlRepository.class,
-                MinionUniqueSqlRepository.class,
-                LocationRemoteSqlRepository.class,
-                SackSqlRepository.class,
-                MenuSqlRepository.class,
-                CraftingTableSlotSqlRepository.class,
-                CraftingTableRecipeSqlRepository.class,
+            // No Foreign Keys
+            AccessoryFamilySqlRepository.class,
+            ApplicationRequirementSqlRepository.class,
+            BitTypeSqlRepository.class,
+            CraftingTableRecipeSqlRepository.class,
+            CraftingTableSlotSqlRepository.class,
+            CommandConfigSqlRepository.class,
+            DungeonBossSqlRepository.class,
+            DungeonFairySoulSqlRepository.class,
+            DungeonFloorSizeSqlRepository.class,
+            DungeonLevelSqlRepository.class,
+            EmbedTypeSqlRepository.class,
+            EnchantmentFamilySqlRepository.class,
+            GuildSqlRepository.class,
+            FairyExchangeSqlRepository.class,
+            FormatSqlRepository.class,
+            LocationSqlRepository.class,
+            LocationRemoteSqlRepository.class,
+            MenuSqlRepository.class,
+            MinionUniqueSqlRepository.class,
+            PetExpScaleSqlRepository.class,
+            PetScoreSqlRepository.class,
+            PetTypeSqlRepository.class,
+            PotionSqlRepository.class,
+            PotionGroupSqlRepository.class,
+            ProfileSqlRepository.class,
+            RaritySqlRepository.class,
+            ReforgeTypeSqlRepository.class,
+            SackSqlRepository.class,
+            SbsBetaTesterSqlRepository.class,
+            SbsDeveloperSqlRepository.class,
+            SbsLegacyDonorSqlRepository.class,
+            SeasonSqlRepository.class,
+            SettingEvalSqlRepository.class,
+            SettingTypeSqlRepository.class,
+            UserSqlRepository.class,
 
-                // Requires Above
-                ItemSqlRepository.class,
-                StatSqlRepository.class,
-                LocationAreaSqlRepository.class,
-                SlayerLevelSqlRepository.class,
-                SkillSqlRepository.class,
-                SkillLevelSqlRepository.class,
-                ReforgeSqlRepository.class,
-                ReforgeStatSqlRepository.class,
-                AccessorySqlRepository.class,
-                PotionMixinSqlRepository.class,
-                DungeonFloorSqlRepository.class,
-                DungeonLevelSqlRepository.class,
-                CraftingTableRecipeSlotSqlRepository.class,
-                EnchantmentSqlRepository.class,
+            // Requires Above
+            BotEmojiSqlRepository.class,
+            CraftingTableRecipeSlotSqlRepository.class,
+            EnchantmentSqlRepository.class,
+            GuildApplicationTypeSqlRepository.class,
+            GuildCommandConfigSqlRepository.class,
+            GuildEmbedSqlRepository.class,
+            GuildReportTypeSqlRepository.class,
+            GuildReputationTypeSqlRepository.class,
+            ItemSqlRepository.class,
+            LocationAreaSqlRepository.class,
+            ReforgeSqlRepository.class,
+            ReforgeStatSqlRepository.class,
+            SettingSqlRepository.class,
+            SkyBlockEventSqlRepository.class,
+            StatSqlRepository.class,
 
-                // Requires Above
-                CollectionSqlRepository.class,
-                PetItemSqlRepository.class,
-                NpcSqlRepository.class,
-                FairySoulSqlRepository.class,
-                PetSqlRepository.class,
-                PotionTierSqlRepository.class,
-                SackItemSqlRepository.class,
+            // Requires Above
+            AccessorySqlRepository.class,
+            ArmorSetBonusSqlRepository.class,
+            BitEnchantedBookSqlRepository.class,
+            BitItemSqlRepository.class,
+            DungeonSqlRepository.class,
+            DungeonClassSqlRepository.class,
+            EnchantmentStatSqlRepository.class,
+            EnchantmentTypeSqlRepository.class,
+            EssencePerkSqlRepository.class,
+            FairySoulSqlRepository.class,
+            GuildApplicationSqlRepository.class,
+            GuildReportSqlRepository.class,
+            GuildReputationSqlRepository.class,
+            GuildSkyBlockEventSqlRepository.class,
+            ItemStatBonusSqlRepository.class,
+            NpcSqlRepository.class,
+            OptimizerSupportItemSqlRepository.class,
+            PetSqlRepository.class,
+            PetItemSqlRepository.class,
+            PotionTierSqlRepository.class,
+            SackItemSqlRepository.class,
+            SkillSqlRepository.class,
+            SkyBlockEventTimerSqlRepository.class,
+            SlayerSqlRepository.class,
 
-                // Requires Above
-                MinionSqlRepository.class,
-                CollectionItemSqlRepository.class,
-                PetStatSqlRepository.class,
-                PotionBrewSqlRepository.class,
-                PotionGroupItemSqlRepository.class,
+            // Requires Above
+            BitItemCraftableSqlRepository.class,
+            CollectionSqlRepository.class,
+            DungeonFloorSqlRepository.class,
+            GuildApplicationEntrySqlRepository.class,
+            GuildApplicationRequirementSqlRepository.class,
+            PetAbilitySqlRepository.class,
+            PetStatSqlRepository.class,
+            PotionBrewSqlRepository.class,
+            PotionGroupItemSqlRepository.class,
+            PotionMixinSqlRepository.class,
+            SkillLevelSqlRepository.class,
+            SlayerLevelSqlRepository.class,
 
-                // Requires Above
-                MinionTierSqlRepository.class,
-                CollectionItemTierSqlRepository.class,
-                MinionItemSqlRepository.class,
-                PotionBrewBuffSqlRepository.class,
-                BagSqlRepository.class,
+            // Requires Above
+            CollectionItemSqlRepository.class,
+            MinionSqlRepository.class,
+            PetAbilityStatSqlRepository.class,
+            PotionBrewBuffSqlRepository.class,
 
-                // Requires Above
-                MinionTierUpgradeSqlRepository.class,
-                PetAbilitySqlRepository.class,
-                BagSizeSqlRepository.class,
+            // Requires Above
+            BagSqlRepository.class,
+            CollectionItemTierSqlRepository.class,
+            MinionItemSqlRepository.class,
+            MinionTierSqlRepository.class,
 
-                // Requires Above
-                PetAbilityStatSqlRepository.class
+            // Requires Above
+            BagSizeSqlRepository.class,
+            MinionTierUpgradeSqlRepository.class
         );
     }
 
