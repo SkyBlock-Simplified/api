@@ -15,9 +15,11 @@ import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.sql.function.FilterFunction;
+import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +43,7 @@ public class SkyBlockIslandTest {
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
             SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
-            SkyBlockIsland island = profiles.getIslands().get(0);
+            SkyBlockIsland island = profiles.getIslands().get(1); // TODO: Bingo Profile = 0
             Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
 
             // Did Hypixel Reply / Does a Member Exist
@@ -58,6 +60,10 @@ public class SkyBlockIslandTest {
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
             SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: Work in Progress
+            ConcurrentMap<String, Double> playerStatMap = playerStats.getStats()
+                .stream()
+                .map(entry -> Pair.of(entry.getKey().getKey(), entry.getValue().getBase() + entry.getValue().getBonus()))
+                .collect(Concurrent.toMap());
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
