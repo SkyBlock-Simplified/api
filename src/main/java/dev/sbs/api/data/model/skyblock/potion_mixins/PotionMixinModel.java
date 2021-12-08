@@ -1,11 +1,9 @@
 package dev.sbs.api.data.model.skyblock.potion_mixins;
 
-import dev.sbs.api.data.model.EffectsModel;
+import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 
-import java.util.Map;
-
-public interface PotionMixinModel extends EffectsModel {
+public interface PotionMixinModel extends BuffEffectsModel<Double> {
 
     String getKey();
 
@@ -14,7 +12,5 @@ public interface PotionMixinModel extends EffectsModel {
     SlayerModel getSlayerRequirement();
 
     Integer getSlayerLevelRequirement();
-
-    Map<String, Object> getBuffEffects();
 
 }

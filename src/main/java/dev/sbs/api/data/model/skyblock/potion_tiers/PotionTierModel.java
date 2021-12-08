@@ -1,13 +1,11 @@
 package dev.sbs.api.data.model.skyblock.potion_tiers;
 
-import dev.sbs.api.data.model.EffectsModel;
+import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.potions.PotionModel;
 import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 
-import java.util.Map;
-
-public interface PotionTierModel extends EffectsModel {
+public interface PotionTierModel extends BuffEffectsModel<Double> {
 
     PotionModel getPotion();
 
@@ -31,7 +29,5 @@ public interface PotionTierModel extends EffectsModel {
     Integer getExperienceYield();
 
     Double getSellPrice();
-
-    Map<String, Object> getBuffEffects();
 
 }

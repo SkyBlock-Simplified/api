@@ -2,7 +2,7 @@ package dev.sbs.api.data.model.discord.optimizer_support_items;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
-import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -43,8 +43,8 @@ public class OptimizerSupportItemSqlModel implements OptimizerSupportItemModel, 
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = StringObjectMapConverter.class)
-    private Map<String, Object> effects;
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> effects;
 
     @Getter
     @UpdateTimestamp

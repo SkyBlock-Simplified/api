@@ -3,7 +3,7 @@ package dev.sbs.api.data.model.skyblock.skill_levels;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillSqlModel;
 import dev.sbs.api.data.sql.converter.list.StringListConverter;
-import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -61,14 +61,14 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = StringObjectMapConverter.class)
-    private Map<String, Object> effects;
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> effects;
 
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
-    @Convert(converter = StringObjectMapConverter.class)
-    private Map<String, Object> buffEffects;
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> buffEffects;
 
     @Getter
     @UpdateTimestamp

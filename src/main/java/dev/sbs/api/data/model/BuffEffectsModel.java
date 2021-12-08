@@ -2,17 +2,17 @@ package dev.sbs.api.data.model;
 
 import java.util.Map;
 
-public interface EffectsModel<V> extends Model {
+public interface BuffEffectsModel<V> extends EffectsModel<V> {
 
-    Map<String, V> getEffects();
+    Map<String, V> getBuffEffects();
 
-    default <T> T getEffect(String key) {
-        return this.getEffect(key, null);
+    default <T> T getBuffEffects(String key) {
+        return this.getBuffEffects(key, null);
     }
 
     @SuppressWarnings("unchecked cast")
-    default <T> T getEffect(String key, Object defaultValue) {
-        Object value = this.getEffects().get(key);
+    default <T> T getBuffEffects(String key, Object defaultValue) {
+        Object value = this.getBuffEffects().get(key);
 
         if (value != null) {
             try {

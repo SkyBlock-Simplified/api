@@ -4,7 +4,7 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
-import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -69,8 +69,8 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "effects", nullable = false)
-    @Convert(converter = StringObjectMapConverter.class)
-    private Map<String, Object> effects;
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> effects;
 
     @Getter
     @UpdateTimestamp
