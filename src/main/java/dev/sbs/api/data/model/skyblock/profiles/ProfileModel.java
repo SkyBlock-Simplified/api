@@ -5,8 +5,12 @@ import dev.sbs.api.data.model.Model;
 
 public interface ProfileModel extends Model {
 
-    SkyBlockIsland.ProfileName getKey();
+    String getKey();
 
     String getName();
+
+    default SkyBlockIsland.ProfileName getProfileName() {
+        return SkyBlockIsland.ProfileName.valueOf(this.getKey());
+    }
 
 }

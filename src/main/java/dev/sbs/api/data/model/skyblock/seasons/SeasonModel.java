@@ -5,10 +5,14 @@ import dev.sbs.api.data.model.Model;
 
 public interface SeasonModel extends Model {
 
-    SkyBlockDate.Season getKey();
+    String getKey();
 
     String getName();
 
     Integer getOrdinal();
+
+    default SkyBlockDate.Season getSeason() {
+        return SkyBlockDate.Season.valueOf(this.getKey());
+    }
 
 }

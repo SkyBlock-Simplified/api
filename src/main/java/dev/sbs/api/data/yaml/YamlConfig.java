@@ -25,12 +25,6 @@ public class YamlConfig extends ConfigMapper implements Runnable {
 
     protected static final transient ConcurrentSet<Class<? extends YamlConverter>> GLOBAL_CUSTOM_CONVERTERS = Concurrent.newSet();
 
-    static {
-        // TODO: Migrate to Mod version
-        //addGlobalCustomConverter(ItemStackConverter.class);
-        //addGlobalCustomConverter(BlockPosConverter.class);
-    }
-
     private transient boolean suppressFailedConversions = false;
     private transient int taskId = -1;
     private transient WatchService watchService;

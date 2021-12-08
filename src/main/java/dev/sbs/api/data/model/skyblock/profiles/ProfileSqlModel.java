@@ -1,6 +1,5 @@
 package dev.sbs.api.data.model.skyblock.profiles;
 
-import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
 import dev.sbs.api.data.model.SqlModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,8 +31,7 @@ public class ProfileSqlModel implements ProfileModel, SqlModel {
     @Setter
     @Id
     @Column(name = "key", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private SkyBlockIsland.ProfileName key;
+    private String key;
 
     @Getter
     @Setter

@@ -42,10 +42,11 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
             Root<T> rootEntry = cq.from(this.getTClass());
             CriteriaQuery<T> all = cq.select(rootEntry);
 
-            return Concurrent.newList(session
-                                          .createQuery(all)
-                                          .setCacheable(true)
-                                          .getResultList()
+            return Concurrent.newList(
+                session
+                    .createQuery(all)
+                    .setCacheable(true)
+                    .getResultList()
             );
         } catch (Exception exception) {
             throw new SqlException(exception);

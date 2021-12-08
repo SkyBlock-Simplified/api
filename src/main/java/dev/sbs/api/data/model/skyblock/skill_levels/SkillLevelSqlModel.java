@@ -65,6 +65,12 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     private Map<String, Object> effects;
 
     @Getter
+    @Setter
+    @Column(name = "buff_effects", nullable = false)
+    @Convert(converter = StringObjectMapConverter.class)
+    private Map<String, Object> buffEffects;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

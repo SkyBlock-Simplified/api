@@ -13,13 +13,6 @@ public class ArrayConverter extends YamlConverter {
         super(converter);
     }
 
-    // TODO: What is this even for?
-	/*@SuppressWarnings("SuspiciousToArrayCall")
-	private static <T> T[] getArray(Class<T> type, java.util.List<Object> list) {
-		T[] array = (T[])java.lang.reflect.Array.newInstance(type, list.size());
-		return list.toArray(array);
-	}*/
-
     @Override
     public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
         Class<?> singleType = type.getComponentType();

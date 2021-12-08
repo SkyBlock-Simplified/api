@@ -220,7 +220,6 @@ public class DatabaseNotification {
                 }
             }, this.getTable(), this.previousId, "INSERT", "UPDATE", "DELETE");
         } catch (SQLException sqlException) {
-            // TODO: LOG
             //NiftyCore.getNiftyLogger().log(Level.SEVERE, FormatUtil.format("Unable to query activity table ''{0}''!", SQLNotifications.ACTIVITY_TABLE), ex);
             this.stop();
         }
@@ -232,7 +231,6 @@ public class DatabaseNotification {
         try {
             this.listener.onDatabaseNotification(this);
         } catch (SQLException ex) {
-            // TODO: Log
             //NiftyCore.getNiftyLogger().log(Level.SEVERE, "Database notification was mishandled!", ex);
         }
     }
@@ -279,7 +277,6 @@ public class DatabaseNotification {
                 }
             }, this.getSchema(), this.getName(TriggerEvent.INSERT), this.getName(TriggerEvent.UPDATE), this.getName(TriggerEvent.DELETE));
         } catch (Exception ex) {
-            // TODO: Log
             //NiftyCore.getNiftyLogger().log(Level.SEVERE, "Unable to check if trigger exists!", ex);
         }
 
