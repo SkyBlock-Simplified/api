@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -44,6 +45,7 @@ public class BitItemSqlModel implements BitItemModel, SqlModel {
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "bit_type_key", nullable = false)
     private BitTypeSqlModel type;
 

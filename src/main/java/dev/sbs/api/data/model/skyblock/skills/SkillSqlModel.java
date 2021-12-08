@@ -71,6 +71,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "emoji_key")
     private BotEmojiSqlModel emoji;
 

@@ -49,6 +49,7 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "event_key", nullable = false)
     private SkyBlockEventSqlModel event;
 
@@ -59,7 +60,7 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
 
     @Getter
     @Setter
-    @JoinColumn(name = "mention_roles", nullable = false)
+    @Column(name = "mention_roles", nullable = false)
     @Convert(converter = LongListConverter.class)
     private List<Long> mentionRoles;
 

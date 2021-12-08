@@ -43,19 +43,24 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "key", nullable = false)
+    private String key;
+
+    @Getter
+    @Setter
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Getter
+    @Setter
     @Column(name = "type_key", nullable = false)
-    private EmbedTypeSqlModel embedType;
+    private EmbedTypeSqlModel type;
 
     @Getter
     @Setter
     @Column(name = "color", nullable = false)
     @Convert(converter = ColorConverter.class)
     private Color color;
-
-    @Getter
-    @Setter
-    @Column(name = "title", nullable = false)
-    private String title;
 
     @Getter
     @Setter
@@ -142,13 +147,12 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
         if (!(o instanceof GuildEmbedSqlModel)) return false;
         GuildEmbedSqlModel that = (GuildEmbedSqlModel) o;
 
-        return new EqualsBuilder().append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
-            .append(this.getEditorDiscordId(), that.getEditorDiscordId())
-            .append(this.getId(), that.getId())
+        return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
-            .append(this.getEmbedType(), that.getEmbedType())
-            .append(this.getColor(), that.getColor())
+            .append(this.getKey(), that.getKey())
             .append(this.getTitle(), that.getTitle())
+            .append(this.getType(), that.getType())
+            .append(this.getColor(), that.getColor())
             .append(this.getUrl(), that.getUrl())
             .append(this.getDescription(), that.getDescription())
             .append(this.getAuthorName(), that.getAuthorName())
@@ -161,6 +165,8 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
             .append(this.getFooterText(), that.getFooterText())
             .append(this.getFooterIconUrl(), that.getFooterIconUrl())
             .append(this.getNotes(), that.getNotes())
+            .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
+            .append(this.getEditorDiscordId(), that.getEditorDiscordId())
             .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
@@ -170,9 +176,10 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder().append(this.getId())
             .append(this.getGuild())
-            .append(this.getEmbedType())
-            .append(this.getColor())
+            .append(this.getKey())
             .append(this.getTitle())
+            .append(this.getType())
+            .append(this.getColor())
             .append(this.getUrl())
             .append(this.getDescription())
             .append(this.getAuthorName())

@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.discord.guild_reports;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.guild_report_types.GuildReportTypeModel;
+import dev.sbs.api.data.model.discord.guild_report_types.GuildReportTypeSqlModel;
 import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -40,16 +40,16 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
         @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
         @JoinColumn(name = "report_type_key", nullable = false, referencedColumnName = "key")
     })
-    private GuildReportTypeModel type;
+    private GuildReportTypeSqlModel type;
 
     @Getter
     @Setter
-    @JoinColumn(name = "reported_discord_id")
+    @Column(name = "reported_discord_id")
     private Long reportedDiscordId;
 
     @Getter
     @Setter
-    @JoinColumn(name = "reported_mojang_uuid")
+    @Column(name = "reported_mojang_uuid")
     private String reportedMojangUniqueId;
 
     @Getter

@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -39,7 +38,7 @@ public class GuildApplicationTypeSqlModel implements GuildApplicationTypeModel, 
 
     @Getter
     @Setter
-    @JoinColumn(name = "guild_id", nullable = false)
+    @Column(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
     @Getter

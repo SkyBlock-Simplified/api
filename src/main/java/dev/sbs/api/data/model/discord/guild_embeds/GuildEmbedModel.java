@@ -11,11 +11,13 @@ public interface GuildEmbedModel extends Model {
 
     GuildModel getGuild();
 
-    EmbedTypeModel getEmbedType();
-
-    Color getColor();
+    String getKey();
 
     String getTitle();
+
+    EmbedTypeModel getType();
+
+    Color getColor();
 
     String getUrl();
 

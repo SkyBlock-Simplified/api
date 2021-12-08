@@ -11,15 +11,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
@@ -62,21 +54,25 @@ public class ArmorSetBonusSqlModel implements ArmorSetBonusModel, SqlModel {
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "helmet_item_id", nullable = false)
     private ItemSqlModel helmetItem;
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "chestplate_item_id", nullable = false)
     private ItemSqlModel chestplateItem;
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "leggings_item_id", nullable = false)
     private ItemSqlModel leggingsItem;
 
     @Getter
     @Setter
+    @ManyToOne
     @JoinColumn(name = "boots_item_id", nullable = false)
     private ItemSqlModel bootsItem;
 
