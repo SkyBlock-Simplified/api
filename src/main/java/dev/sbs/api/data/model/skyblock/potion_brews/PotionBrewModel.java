@@ -18,4 +18,6 @@ public interface PotionBrewModel extends Model {
 
     Integer getCoinCost();
 
+    Integer getAmplified();
+
 }

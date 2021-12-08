@@ -27,6 +27,10 @@ import java.time.Instant;
     name = "skyblock_potion_brews",
     indexes = {
         @Index(
+            columnList = "key, amplified",
+            unique = true
+        ),
+        @Index(
             columnList = "rarity_key"
         ),
         @Index(
@@ -74,6 +78,11 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     @Setter
     @Column(name = "coin_cost", nullable = false)
     private Integer coinCost;
+
+    @Getter
+    @Setter
+    @Column(name = "amplified", nullable = false)
+    private Integer amplified;
 
     @Getter
     @UpdateTimestamp
