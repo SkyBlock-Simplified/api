@@ -46,7 +46,7 @@ public class ResourceCollectionsResponse {
         @Getter
         private int tier;
         @Getter
-        private int amountRequired;
+        private double amountRequired;
         @Getter
         private ConcurrentList<String> unlocks;
 
