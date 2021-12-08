@@ -418,7 +418,7 @@ public class SkyBlockIsland {
 
         public Skill getSkill(SkillModel skillModel) {
             double experience = (double) new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
-            return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().get(JacobsFarming.Perk.FARMING_LEVEL_CAP) : 0));
+            return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().getOrDefault(JacobsFarming.Perk.FARMING_LEVEL_CAP, 0) : 0));
         }
 
         public Slayer getSlayer(SlayerModel slayerModel) {
@@ -471,7 +471,6 @@ public class SkyBlockIsland {
                     return armorContents;
             }
         }
-
 
         public Weight getWeight(SkillModel skillModel) {
             return this.getSkillWeight().get(skillModel);
@@ -611,6 +610,10 @@ public class SkyBlockIsland {
                     return Pair.of(dungeonClassModel, new Weight(weightValue, weightOverflow));
                 })
                 .collect(Concurrent.toMap());
+        }
+
+        public boolean hasStorage(Storage type) {
+            return this.getStorage(type) != null;
         }
 
     }
@@ -1922,48 +1925,52 @@ public class SkyBlockIsland {
                 ConcurrentMap<StatModel, Double> accessoryStatBonuses = Concurrent.newMap();
 
                 // Load From Inventory
-                member.getStorage(Storage.INVENTORY)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .forEach(itemTag -> {
-                        String itemId = itemTag.getPath("tag.ExtraAttributes.id");
-                        accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
-                            .ifPresent(accessoryModel -> {
-                                accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
-                                accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
+                if (member.hasStorage(Storage.INVENTORY)) {
+                    member.getStorage(Storage.INVENTORY)
+                        .getNbtData()
+                        .<CompoundTag>getList("i")
+                        .forEach(itemTag -> {
+                            String itemId = itemTag.getPath("tag.ExtraAttributes.id");
+                            accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
+                                .ifPresent(accessoryModel -> {
+                                    accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
+                                    accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
 
-                                if (accessoryModel.getFamily() != null) {
-                                    // New Accessory Family
-                                    if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
-                                        familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
+                                    if (accessoryModel.getFamily() != null) {
+                                        // New Accessory Family
+                                        if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
+                                            familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
 
-                                    // Store Accessory
-                                    familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
-                                }
-                            });
-                    });
+                                        // Store Accessory
+                                        familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
+                                    }
+                                });
+                        });
+                }
 
                 // Load From Accessory Bag
-                member.getStorage(Storage.ACCESSORIES)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .forEach(itemTag -> {
-                        String itemId = itemTag.getPath("tag.ExtraAttributes.id");
-                        accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
-                            .ifPresent(accessoryModel -> {
-                                accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
-                                accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
+                if (member.hasStorage(Storage.ACCESSORIES)) {
+                    member.getStorage(Storage.ACCESSORIES)
+                        .getNbtData()
+                        .<CompoundTag>getList("i")
+                        .forEach(itemTag -> {
+                            String itemId = itemTag.getPath("tag.ExtraAttributes.id");
+                            accessoryRepository.findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
+                                .ifPresent(accessoryModel -> {
+                                    accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
+                                    accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
 
-                                if (accessoryModel.getFamily() != null) {
-                                    // New Accessory Family
-                                    if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
-                                        familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
+                                    if (accessoryModel.getFamily() != null) {
+                                        // New Accessory Family
+                                        if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
+                                            familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
 
-                                    // Store Accessory
-                                    familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
-                                }
-                            });
-                    });
+                                        // Store Accessory
+                                        familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
+                                    }
+                                });
+                        });
+                }
 
                 // Non-Stackable Families
                 familyAccessoryTagModels.forEach((accessoryFamilyModel, accessories) -> {
@@ -2054,18 +2061,20 @@ public class SkyBlockIsland {
                 });
 
                 // --- Load Armor ---
-                member.getStorage(Storage.ARMOR)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .stream()
-                    .filter(CompoundTag::notEmpty)
-                    .forEach(armorItem -> {
-                        // Pull rarity and reforge from armor item
-                        // Pull stats from RarityModel and ReforgeModel
-                        // Pull non-reforge stats from armor item lore
-                        // Store stats
-                        // TODO: Armor Stats / Gems
-                    });
+                if (member.hasStorage(Storage.ARMOR)) {
+                    member.getStorage(Storage.ARMOR)
+                        .getNbtData()
+                        .<CompoundTag>getList("i")
+                        .stream()
+                        .filter(CompoundTag::notEmpty)
+                        .forEach(armorItem -> {
+                            // Pull rarity and reforge from armor item
+                            // Pull stats from RarityModel and ReforgeModel
+                            // Pull non-reforge stats from armor item lore
+                            // Store stats
+                            // TODO: Armor Stats / Gems
+                        });
+                }
 
                 // --- Load Century Cakes ---
                 member.getCenturyCakes()
