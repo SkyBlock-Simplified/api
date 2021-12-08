@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.pets;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
 import dev.sbs.api.data.model.skyblock.pet_types.PetTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillSqlModel;
@@ -35,6 +36,9 @@ import java.time.Instant;
         ),
         @Index(
             columnList = "pet_type_key"
+        ),
+        @Index(
+            columnList = "emoji_key"
         )
     }
 )
@@ -79,6 +83,11 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Setter
     @Column(name = "skin", nullable = false)
     private String skin;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "emoji_key")
+    private BotEmojiSqlModel emoji;
 
     @Getter
     @Setter

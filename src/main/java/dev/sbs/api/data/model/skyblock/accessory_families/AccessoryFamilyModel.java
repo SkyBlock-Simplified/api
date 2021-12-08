@@ -10,6 +10,6 @@ public interface AccessoryFamilyModel extends Model {
 
     boolean isReforgesStackable();
 
-    boolean isItemsStackable();
+    boolean isStatsStackable();
 
 }

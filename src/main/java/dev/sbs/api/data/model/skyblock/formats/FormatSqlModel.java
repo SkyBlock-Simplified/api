@@ -60,14 +60,23 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FormatSqlModel)) return false;
+        FormatSqlModel that = (FormatSqlModel) o;
+
+        return new EqualsBuilder().append(this.getCode(), that.getCode())
+            .append(this.isFormat(), that.isFormat())
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getRgb(), that.getRgb())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder().append(this.getId()).append(this.getKey()).append(this.getCode()).append(this.getRgb()).append(this.isFormat()).append(this.getUpdatedAt()).build();
     }
 
 }

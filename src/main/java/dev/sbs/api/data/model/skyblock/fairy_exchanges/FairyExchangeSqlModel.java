@@ -2,6 +2,8 @@ package dev.sbs.api.data.model.skyblock.fairy_exchanges;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -46,5 +48,19 @@ public class FairyExchangeSqlModel implements FairyExchangeModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FairyExchangeSqlModel)) return false;
+        FairyExchangeSqlModel that = (FairyExchangeSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getExchange(), that.getExchange()).append(this.getEffects(), that.getEffects()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId()).append(this.getExchange()).append(this.getEffects()).append(this.getUpdatedAt()).build();
+    }
+
 }

@@ -47,8 +47,8 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "items_stackable")
-    private boolean itemsStackable;
+    @Column(name = "stats_stackable")
+    private boolean statsStackable;
 
     @Getter
     @UpdateTimestamp

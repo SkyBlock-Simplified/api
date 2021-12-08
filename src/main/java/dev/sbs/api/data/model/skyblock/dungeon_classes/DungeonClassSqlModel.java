@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.dungeon_classes;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,12 +15,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_dungeon_classes"
+    name = "skyblock_dungeon_classes",
+    indexes = {
+        @Index(
+            columnList = "emoji_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonClassSqlModel implements DungeonClassModel, SqlModel {
@@ -39,6 +47,11 @@ public class DungeonClassSqlModel implements DungeonClassModel, SqlModel {
     @Setter
     @Column(name = "name", nullable = false, length = 127)
     private String name;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "emoji_key")
+    private BotEmojiSqlModel emoji;
 
     @Getter
     @Setter

@@ -41,6 +41,11 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
     private Double totalExpRequired;
 
     @Getter
+    @Setter
+    @Column(name = "stat_multiplier", nullable = false)
+    private Integer statMultiplier;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;

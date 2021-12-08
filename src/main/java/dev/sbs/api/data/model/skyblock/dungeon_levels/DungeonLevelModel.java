@@ -8,4 +8,6 @@ public interface DungeonLevelModel extends Model {
 
     Double getTotalExpRequired();
 
+    Integer getStatMultiplier();
+
 }

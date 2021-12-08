@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.slayers;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -16,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,7 +25,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_slayers"
+    name = "skyblock_slayers",
+    indexes = {
+        @Index(
+            columnList = "emoji_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SlayerSqlModel implements SlayerModel, SqlModel {
@@ -43,6 +50,11 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     @Setter
     @Column(name = "name", nullable = false, length = 127)
     private String name;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "emoji_key")
+    private BotEmojiSqlModel emoji;
 
     @Getter
     @Setter

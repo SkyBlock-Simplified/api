@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.skills;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -27,6 +28,9 @@ import java.time.Instant;
     indexes = {
         @Index(
             columnList = "item_id"
+        ),
+        @Index(
+            columnList = "emoji_key"
         )
     }
 )
@@ -64,6 +68,11 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private ItemSqlModel item;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "emoji_key")
+    private BotEmojiSqlModel emoji;
 
     @Getter
     @Setter
