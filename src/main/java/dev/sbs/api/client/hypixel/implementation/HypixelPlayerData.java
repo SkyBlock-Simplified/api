@@ -1,6 +1,11 @@
 package dev.sbs.api.client.hypixel.implementation;
 
-import dev.sbs.api.client.hypixel.response.hypixel.*;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelCountsResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelFriendsResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelGuildResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelPlayerResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelPunishmentStatsResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelStatusResponse;
 import feign.Param;
 import feign.RequestLine;
 

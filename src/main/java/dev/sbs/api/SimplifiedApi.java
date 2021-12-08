@@ -116,14 +116,14 @@ public class SimplifiedApi {
 
         // Load Gson
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
-                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
-                .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
-                .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
-                .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
-                .registerTypeAdapter(UUIDAdapter.class, new UUIDAdapter())
-                .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
-                .setPrettyPrinting().create();
+            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+            .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
+            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
+            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
+            .registerTypeAdapter(UUIDAdapter.class, new UUIDAdapter())
+            .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
+            .setPrettyPrinting().create();
 
         // Provide Services
         serviceManager.add(SimplifiedConfig.class, config);
