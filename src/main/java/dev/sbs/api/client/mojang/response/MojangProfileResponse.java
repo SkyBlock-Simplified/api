@@ -10,12 +10,16 @@ import java.util.UUID;
 public class MojangProfileResponse {
 
     private UUID uuid;
-    @Getter private String username;
+    @Getter
+    private String username;
     @SerializedName("username_history")
-    @Getter private ConcurrentList<UsernameChange> usernameHistory;
-    @Getter private Textures textures;
+    @Getter
+    private ConcurrentList<UsernameChange> usernameHistory;
+    @Getter
+    private Textures textures;
     @SerializedName("created_at")
-    @Getter private Instant createdAt;
+    @Getter
+    private Instant createdAt;
 
     public UUID getUniqueId() {
         return this.uuid;
@@ -23,31 +27,41 @@ public class MojangProfileResponse {
 
     public static class Raw {
 
-        @Getter private String value;
-        @Getter private String signature;
+        @Getter
+        private String value;
+        @Getter
+        private String signature;
 
     }
 
     public static class Skin {
 
-        @Getter private String url;
-        @Getter private String data;
+        @Getter
+        private String url;
+        @Getter
+        private String data;
 
     }
 
     public static class Textures {
 
-        @Getter private boolean custom;
-        @Getter private boolean slim;
-        @Getter private Skin skin;
-        @Getter private Raw raw;
+        @Getter
+        private boolean custom;
+        @Getter
+        private boolean slim;
+        @Getter
+        private Skin skin;
+        @Getter
+        private Raw raw;
 
     }
 
     public static class UsernameChange {
 
-        @Getter private String username;
-        @Getter private Instant changedAt;
+        @Getter
+        private String username;
+        @Getter
+        private Instant changedAt;
 
     }
 

@@ -20,14 +20,17 @@ import java.util.Date;
  */
 public class SkyBlockDate {
 
-    @Getter private static final ConcurrentList<String> zooCycle = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
-    @Getter private static final ConcurrentList<String> specialMayorCycle = Concurrent.newUnmodifiableList("SCORPIUS", "DERPY", "JERRY");
+    @Getter
+    private static final ConcurrentList<String> zooCycle = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
+    @Getter
+    private static final ConcurrentList<String> specialMayorCycle = Concurrent.newUnmodifiableList("SCORPIUS", "DERPY", "JERRY");
     private static final SimpleDateFormat realDateFormat = new SimpleDateFormat("MMMMM dd, yyyy HH:mm z");
 
     /**
      * Get RealTime in milliseconds.
      */
-    @Getter private final long realTime;
+    @Getter
+    private final long realTime;
 
     public SkyBlockDate(Season season, int day) {
         this(season, day, 0);
@@ -286,7 +289,8 @@ public class SkyBlockDate {
         WINTER("Winter"),
         LATE_WINTER("Late Winter");
 
-        @Getter private final String name;
+        @Getter
+        private final String name;
 
     }
 

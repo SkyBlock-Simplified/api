@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockProfilesResponse {
 
-    @Getter private boolean success;
+    @Getter
+    private boolean success;
     @SerializedName("profiles")
-    @Getter private ConcurrentList<SkyBlockIsland> islands;
+    @Getter
+    private ConcurrentList<SkyBlockIsland> islands;
 
 }

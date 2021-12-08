@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockAuctionsEndedResponse {
 
-    @Getter private boolean success;
-    @Getter private SkyBlockDate.RealTime lastUpdated;
+    @Getter
+    private boolean success;
+    @Getter
+    private SkyBlockDate.RealTime lastUpdated;
 
     public static class EndedAuction {
 
@@ -22,11 +24,15 @@ public class SkyBlockAuctionsEndedResponse {
         private String sellerIslandId;
         @SerializedName("buyer")
         private String buyerId;
-        @Getter private SkyBlockDate.RealTime timestamp;
-        @Getter private long price;
-        @Getter private boolean bin;
+        @Getter
+        private SkyBlockDate.RealTime timestamp;
+        @Getter
+        private long price;
+        @Getter
+        private boolean bin;
         @SerializedName("item_bytes")
-        @Getter SkyBlockIsland.NbtContent itemNbt;
+        @Getter
+        SkyBlockIsland.NbtContent itemNbt;
 
     }
 

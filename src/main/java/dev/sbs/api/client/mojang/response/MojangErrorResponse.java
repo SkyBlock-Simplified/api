@@ -6,6 +6,7 @@ public class MojangErrorResponse {
 
     private int code;
     private String error;
-    @Getter private String reason;
+    @Getter
+    private String reason;
 
 }

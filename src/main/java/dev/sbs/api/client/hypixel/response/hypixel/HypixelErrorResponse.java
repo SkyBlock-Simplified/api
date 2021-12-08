@@ -5,10 +5,14 @@ import lombok.Getter;
 
 public class HypixelErrorResponse {
 
-    @Getter private boolean success;
+    @Getter
+    private boolean success;
     @SerializedName("cause")
-    @Getter private String reason;
-    @Getter private boolean throttle;
-    @Getter private boolean global;
+    @Getter
+    private String reason;
+    @Getter
+    private boolean throttle;
+    @Getter
+    private boolean global;
 
 }

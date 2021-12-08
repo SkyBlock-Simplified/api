@@ -31,8 +31,10 @@ public class HypixelPunishmentStatsResponse {
 
     public static class Staff {
 
-        @Getter private final int rollingDaily;
-        @Getter private final int total;
+        @Getter
+        private final int rollingDaily;
+        @Getter
+        private final int total;
 
         private Staff(int rollingDaily, int total) {
             this.rollingDaily = rollingDaily;
@@ -43,9 +45,12 @@ public class HypixelPunishmentStatsResponse {
 
     public static class Watchdog {
 
-        @Getter private final int rollingDaily;
-        @Getter private final int total;
-        @Getter private final int lastMinute;
+        @Getter
+        private final int rollingDaily;
+        @Getter
+        private final int total;
+        @Getter
+        private final int lastMinute;
 
         private Watchdog(int rollingDaily, int total, int lastMinute) {
             this.rollingDaily = rollingDaily;

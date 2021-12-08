@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockProfileResponse {
 
-    @Getter private boolean success;
+    @Getter
+    private boolean success;
     @SerializedName("profile")
-    @Getter private SkyBlockIsland island;
+    @Getter
+    private SkyBlockIsland island;
 
 }

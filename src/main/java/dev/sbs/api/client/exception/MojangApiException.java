@@ -1,16 +1,17 @@
 package dev.sbs.api.client.exception;
 
-import feign.FeignException;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.mojang.response.MojangErrorResponse;
 import dev.sbs.api.util.helper.StringUtil;
+import feign.FeignException;
 import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
 public class MojangApiException extends ApiException {
 
-    @Getter private final MojangErrorResponse errorResponse;
+    @Getter
+    private final MojangErrorResponse errorResponse;
 
     public MojangApiException(FeignException exception) {
         super(exception);

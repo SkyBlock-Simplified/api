@@ -10,7 +10,8 @@ import java.net.URL;
 
 public class MojangStatusResponse {
 
-    @Getter private ConcurrentMap<Service, State> allStates;
+    @Getter
+    private ConcurrentMap<Service, State> allStates;
 
     public State getState(Service service) {
         return this.allStates.get(service);
@@ -35,7 +36,8 @@ public class MojangStatusResponse {
         @SerializedName("mojang.net")
         MOJANG(MojangServices.SERVICE_MOJANG);
 
-        @Getter private final URL url;
+        @Getter
+        private final URL url;
 
         Service(URL url) {
             this.url = url;
@@ -45,7 +47,8 @@ public class MojangStatusResponse {
 
     public static class State {
 
-        @Getter private boolean success;
+        @Getter
+        private boolean success;
         private int code;
 
         public HttpStatus getHttpStatus() {

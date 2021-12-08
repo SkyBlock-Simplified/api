@@ -1,13 +1,13 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
 import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
-import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
@@ -25,6 +25,7 @@ public class HypixelPlayerResponse {
     public boolean isSuccess() {
         return success;
     }
+
     public Player getPlayer() {
         return player;
     }
@@ -32,41 +33,67 @@ public class HypixelPlayerResponse {
     public static class Player {
 
         @SerializedName("_id")
-        @Getter private String hypixelId;
+        @Getter
+        private String hypixelId;
         private String uuid;
         @SerializedName("displayname")
-        @Getter private String displayName;
+        @Getter
+        private String displayName;
         @SerializedName("channel")
-        @Getter private String chatChannel;
-        @Getter private Instant firstLogin;
-        @Getter private Instant lastLogin;
-        @Getter private Instant lastLogout;
-        @Getter private long networkExp;
-        @Getter private long karma;
-        @Getter private int achievementPoints;
-        @Getter private long totalDailyRewards;
-        @Getter private long totalRewards;
-        @Getter private String mcVersionRp;
-        @Getter private String mostRecentGameType;
+        @Getter
+        private String chatChannel;
+        @Getter
+        private Instant firstLogin;
+        @Getter
+        private Instant lastLogin;
+        @Getter
+        private Instant lastLogout;
+        @Getter
+        private long networkExp;
+        @Getter
+        private long karma;
+        @Getter
+        private int achievementPoints;
+        @Getter
+        private long totalDailyRewards;
+        @Getter
+        private long totalRewards;
+        @Getter
+        private String mcVersionRp;
+        @Getter
+        private String mostRecentGameType;
         @SerializedName("playername")
         private String playerName;
-        @Getter private ConcurrentList<String> knownAliases;
-        @Getter private SocialMedia socialMedia;
-        @Getter private ConcurrentList<String> achievementsOneTime;
-        @Getter private String currentClickEffect;
-        @Getter private String currentGadget;
+        @Getter
+        private ConcurrentList<String> knownAliases;
+        @Getter
+        private SocialMedia socialMedia;
+        @Getter
+        private ConcurrentList<String> achievementsOneTime;
+        @Getter
+        private String currentClickEffect;
+        @Getter
+        private String currentGadget;
         @SerializedName("claimed_potato_talisman")
-        @Getter private Instant claimedPotatoTalisman;
+        @Getter
+        private Instant claimedPotatoTalisman;
         @SerializedName("skyblock_free_cookie")
-        @Getter private Instant skyblockFreeCookie;
+        @Getter
+        private Instant skyblockFreeCookie;
         @SerializedName("claimed_century_cake")
-        @Getter private Instant claimedCenturyCake;
+        @Getter
+        private Instant claimedCenturyCake;
         @SerializedName("scorpius_bribe_120")
-        @Getter private Instant scorpiusBribe120;
-        @Getter private ConcurrentMap<String, Long> voting;
-        @Getter private ConcurrentMap<String, Integer> petConsumables;
-        @Getter private ConcurrentMap<String, Integer> achievements;
-        @Getter private ConcurrentMap<String, Instant> achievementRewardsNew;
+        @Getter
+        private Instant scorpiusBribe120;
+        @Getter
+        private ConcurrentMap<String, Long> voting;
+        @Getter
+        private ConcurrentMap<String, Integer> petConsumables;
+        @Getter
+        private ConcurrentMap<String, Integer> achievements;
+        @Getter
+        private ConcurrentMap<String, Instant> achievementRewardsNew;
 
         // Rank
         private String packageRank;
@@ -156,9 +183,12 @@ public class HypixelPlayerResponse {
         PIG(MinecraftChatFormatting.LIGHT_PURPLE, "PIG", 3),
         NONE(MinecraftChatFormatting.GRAY);
 
-        @Getter private final MinecraftChatFormatting format;
-        @Getter private final String name;
-        @Getter private final int plusCount;
+        @Getter
+        private final MinecraftChatFormatting format;
+        @Getter
+        private final String name;
+        @Getter
+        private final int plusCount;
 
         Rank(MinecraftChatFormatting format) {
             this(format, null);
@@ -189,10 +219,14 @@ public class HypixelPlayerResponse {
 
     public static class RankInfo {
 
-        @Getter private final Rank rank;
-        @Getter private final MinecraftChatFormatting rankFormat;
-        @Getter private final MinecraftChatFormatting plusFormat;
-        @Getter private final String pluses;
+        @Getter
+        private final Rank rank;
+        @Getter
+        private final MinecraftChatFormatting rankFormat;
+        @Getter
+        private final MinecraftChatFormatting plusFormat;
+        @Getter
+        private final String pluses;
 
         RankInfo(Rank rank, MinecraftChatFormatting rankFormat, MinecraftChatFormatting plusFormat) {
             this.rank = rank;
@@ -216,7 +250,8 @@ public class HypixelPlayerResponse {
     public static class SocialMedia {
 
         private boolean prompt;
-        @Getter private ConcurrentMap<Service, String> links;
+        @Getter
+        private ConcurrentMap<Service, String> links;
 
         public enum Service {
 
@@ -234,12 +269,13 @@ public class HypixelPlayerResponse {
     public static class Stats {
 
         @SerializedName("SkyBlock")
-        @Getter private SkyBlock skyBlock;
+        @Getter
+        private SkyBlock skyBlock;
 
         public static class SkyBlock {
 
             private ConcurrentMap<String, Profile> profiles;
-            
+
             public Optional<ConcurrentSet<Profile>> getProfiles() {
                 return this.profiles == null ? Optional.empty() : Optional.of(Concurrent.newSet(this.profiles.values()));
             }

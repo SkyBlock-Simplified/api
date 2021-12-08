@@ -30,23 +30,32 @@ public class SkyBlockAuction {
     @Getter
     private SkyBlockDate.RealTime startedAt;
     @SerializedName("end")
-    @Getter private SkyBlockDate.RealTime endsAt;
+    @Getter
+    private SkyBlockDate.RealTime endsAt;
     @SerializedName("item_lore")
     private String lore;
-    @Getter private String extra;
+    @Getter
+    private String extra;
     @SerializedName("tier")
     private String rarity;
     @SerializedName("starting_big")
-    @Getter private long startingBid;
+    @Getter
+    private long startingBid;
     @SerializedName("item_bytes")
-    @Getter SkyBlockIsland.NbtContent itemNbt;
-    @Getter private boolean claimed;
+    @Getter
+    SkyBlockIsland.NbtContent itemNbt;
+    @Getter
+    private boolean claimed;
     @SerializedName("claimed_bidders")
-    @Getter private ConcurrentList<Bid> claimedBidders = Concurrent.newList(); // TODO: Need sample data
+    @Getter
+    private ConcurrentList<Bid> claimedBidders = Concurrent.newList(); // TODO: Need sample data
     @SerializedName("highest_bid_amount")
-    @Getter private long highestBid;
-    @Getter private ConcurrentList<Bid> bids = Concurrent.newList();
-    @Getter private boolean bin;
+    @Getter
+    private long highestBid;
+    @Getter
+    private ConcurrentList<Bid> bids = Concurrent.newList();
+    @Getter
+    private boolean bin;
 
     public UUID getAuctionId() {
         return StringUtil.toUUID(this.auctionId);
@@ -83,8 +92,10 @@ public class SkyBlockAuction {
         @SerializedName("profile_id")
         private String islandId;
 
-        @Getter private long amount;
-        @Getter private SkyBlockDate.RealTime timestamp;
+        @Getter
+        private long amount;
+        @Getter
+        private SkyBlockDate.RealTime timestamp;
 
         public UUID getAuctionId() {
             return StringUtil.toUUID(this.auctionId);

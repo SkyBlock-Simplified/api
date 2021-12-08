@@ -7,9 +7,11 @@ import java.util.UUID;
 
 public class HypixelStatusResponse {
 
-    @Getter private boolean success;
+    @Getter
+    private boolean success;
     private String uuid;
-    @Getter private Session session;
+    @Getter
+    private Session session;
 
     public UUID getUniqueId() {
         return StringUtil.toUUID(this.uuid);
@@ -17,9 +19,12 @@ public class HypixelStatusResponse {
 
     public static class Session {
 
-        @Getter private boolean online;
-        @Getter private String gameType;
-        @Getter private String mode;
+        @Getter
+        private boolean online;
+        @Getter
+        private String gameType;
+        @Getter
+        private String mode;
 
     }
 
