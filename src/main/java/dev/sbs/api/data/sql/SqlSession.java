@@ -29,9 +29,9 @@ import java.util.function.Function;
 @SuppressWarnings("unchecked")
 public final class SqlSession {
 
-    private final StandardServiceRegistry serviceRegistry;
+    private StandardServiceRegistry serviceRegistry;
     @Getter
-    private final SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
     @Getter
     private final SqlConfig config;
     @Getter
@@ -40,7 +40,59 @@ public final class SqlSession {
     public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
         this.config = config;
         this.repositories = repositories;
+        this.initialize();
+    }
 
+    private void buildCacheConfiguration(String cacheName, Function<SqlConfig, SqlConfig.CacheExpiry> function) {
+        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
+        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
+
+            @Override
+            public Duration getExpiryForCreation() {
+                return function.apply(getConfig()).getCreation();
+            }
+
+            @Override
+            public Duration getExpiryForAccess() {
+                return function.apply(getConfig()).getAccess();
+            }
+
+            @Override
+            public Duration getExpiryForUpdate() {
+                return function.apply(getConfig()).getUpdate();
+            }
+
+        });
+
+        this.setCacheConfiguration(cacheName, defaultConfiguration);
+    }
+
+    private Class<?> buildCacheConfiguration(Class<? extends SqlModel> tClass) {
+        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
+        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
+
+            @Override
+            public Duration getExpiryForCreation() {
+                return getConfig().getDatabaseEntityTTL().get(tClass).getCreation();
+            }
+
+            @Override
+            public Duration getExpiryForAccess() {
+                return getConfig().getDatabaseEntityTTL().get(tClass).getAccess();
+            }
+
+            @Override
+            public Duration getExpiryForUpdate() {
+                return getConfig().getDatabaseEntityTTL().get(tClass).getUpdate();
+            }
+
+        });
+
+        this.setCacheConfiguration(tClass.getName(), defaultConfiguration);
+        return tClass;
+    }
+
+    public void initialize() {
         // Build Service Registry
         StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
         Properties properties = new Properties() {{
@@ -111,55 +163,6 @@ public final class SqlSession {
         // Build Session Factory
         Metadata metadata = sources.getMetadataBuilder().build();
         this.sessionFactory = metadata.buildSessionFactory();
-    }
-
-    private void buildCacheConfiguration(String cacheName, Function<SqlConfig, SqlConfig.CacheExpiry> function) {
-        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
-        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
-
-            @Override
-            public Duration getExpiryForCreation() {
-                return function.apply(getConfig()).getCreation();
-            }
-
-            @Override
-            public Duration getExpiryForAccess() {
-                return function.apply(getConfig()).getAccess();
-            }
-
-            @Override
-            public Duration getExpiryForUpdate() {
-                return function.apply(getConfig()).getUpdate();
-            }
-
-        });
-
-        this.setCacheConfiguration(cacheName, defaultConfiguration);
-    }
-
-    private Class<?> buildCacheConfiguration(Class<? extends SqlModel> tClass) {
-        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
-        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
-
-            @Override
-            public Duration getExpiryForCreation() {
-                return getConfig().getDatabaseEntityTTL().get(tClass).getCreation();
-            }
-
-            @Override
-            public Duration getExpiryForAccess() {
-                return getConfig().getDatabaseEntityTTL().get(tClass).getAccess();
-            }
-
-            @Override
-            public Duration getExpiryForUpdate() {
-                return getConfig().getDatabaseEntityTTL().get(tClass).getUpdate();
-            }
-
-        });
-
-        this.setCacheConfiguration(tClass.getName(), defaultConfiguration);
-        return tClass;
     }
 
     public Session openSession() {

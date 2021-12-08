@@ -77,9 +77,9 @@ public class ServiceManager extends Manager<ServiceProvider> {
     public final <T> ConcurrentSet<T> getAll(Class<T> service) throws UnknownServiceException {
         ConcurrentSet<T> providers = Concurrent.newSet();
 
-        for (ServiceProvider provider : super.providers) {
-            if (service.isAssignableFrom(provider.getService()))
-                providers.add((T) provider.getProvider());
+        for (ServiceProvider serviceProvider : super.providers) {
+            if (service.isAssignableFrom(serviceProvider.getService()))
+                providers.add((T) serviceProvider.getProvider());
         }
 
         if (providers.isEmpty())
@@ -114,9 +114,9 @@ public class ServiceManager extends Manager<ServiceProvider> {
     public final <T> ConcurrentSet<Class<?>> getServices(Class<T> service) throws UnknownServiceException {
         ConcurrentSet<Class<?>> providers = Concurrent.newSet();
 
-        for (ServiceProvider provider : super.providers) {
-            if (service.isAssignableFrom(provider.getService()))
-                providers.add(provider.getService());
+        for (ServiceProvider serviceProvider : super.providers) {
+            if (service.isAssignableFrom(serviceProvider.getService()))
+                providers.add(serviceProvider.getService());
         }
 
         if (providers.isEmpty())

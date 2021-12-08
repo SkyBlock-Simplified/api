@@ -200,7 +200,8 @@ public class SimplifiedApi {
                 serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession));
 
             databaseRegistered = true;
-        }
+        } else
+            getSqlSession().initialize(); // Reinitialize Database
 
         databaseEnabled = true;
     }
