@@ -36,11 +36,12 @@ public final class SqlSession {
     private final SqlConfig config;
     @Getter
     private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
+    @Getter
+    private boolean active;
 
     public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
         this.config = config;
         this.repositories = repositories;
-        this.initialize();
     }
 
     private void buildCacheConfiguration(String cacheName, Function<SqlConfig, SqlConfig.CacheExpiry> function) {
@@ -163,6 +164,7 @@ public final class SqlSession {
         // Build Session Factory
         Metadata metadata = sources.getMetadataBuilder().build();
         this.sessionFactory = metadata.buildSessionFactory();
+        this.active = true;
     }
 
     public Session openSession() {
@@ -204,6 +206,7 @@ public final class SqlSession {
     }
 
     public void shutdown() {
+        this.active = false;
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
 
         if (this.sessionFactory != null)

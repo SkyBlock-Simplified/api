@@ -1,6 +1,5 @@
 package dev.sbs.api;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -119,6 +118,7 @@ import dev.sbs.api.data.model.skyblock.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlRepository;
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
+import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
@@ -140,8 +140,6 @@ public class SimplifiedApi {
 
     private static final ServiceManager serviceManager = new ServiceManager();
     private static final BuilderManager builderManager = new BuilderManager();
-    private static boolean databaseEnabled = false;
-    private static boolean databaseRegistered = false;
 
     static {
         // Load Config
@@ -190,26 +188,24 @@ public class SimplifiedApi {
     }
 
     public static void enableDatabase() {
-        if (!databaseRegistered) {
-            // Load SqlSession
+        if (!serviceManager.isRegistered(SqlSession.class)) {
+            // Create SqlSession
             SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Provide SqlRepositories
             for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses())
                 serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession));
+        }
 
-            databaseRegistered = true;
-        } else
-            getSqlSession().initialize(); // Reinitialize Database
-
-        databaseEnabled = true;
+        // Initialize Database
+        getSqlSession().initialize();
     }
 
     public static void disableDatabase() {
-        if (databaseEnabled) {
-            getSqlSession().shutdown();
-            databaseEnabled = false;
+        if (serviceManager.isRegistered(SqlSession.class)) {
+            if (getSqlSession().isActive())
+                getSqlSession().shutdown();
         }
     }
 
@@ -246,14 +242,17 @@ public class SimplifiedApi {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
-        Preconditions.checkArgument(databaseRegistered, "Repositories have not been registered.");
-        Preconditions.checkArgument(databaseEnabled, "Repositories have not been enabled.");
-
-        return serviceManager.getAll(SqlRepository.class)
-            .stream()
-            .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
-            .findFirst()
-            .orElseThrow(() -> new UnknownServiceException(tClass));
+        if (serviceManager.isRegistered(SqlSession.class)) {
+            if (getSqlSession().isActive()) {
+                return serviceManager.getAll(SqlRepository.class)
+                    .stream()
+                    .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
+                    .findFirst()
+                    .orElseThrow(() -> new UnknownServiceException(tClass));
+            } else
+                throw new SqlException("Database connection is not active!");
+        } else
+            throw new SqlException("Database has not been initialized!");
     }
 
     private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
@@ -371,9 +370,13 @@ public class SimplifiedApi {
     }
 
     public static SqlSession getSqlSession() {
-        Preconditions.checkArgument(databaseRegistered, "Database has not been registered.");
-        Preconditions.checkArgument(databaseEnabled, "Database has not been enabled.");
-        return serviceManager.get(SqlSession.class);
+        if (serviceManager.isRegistered(SqlSession.class)) {
+            if (getSqlSession().isActive())
+                return serviceManager.get(SqlSession.class);
+            else
+                throw new SqlException("Database connection is not active!");
+        } else
+            throw new SqlException("Database has not been initialized!");
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
