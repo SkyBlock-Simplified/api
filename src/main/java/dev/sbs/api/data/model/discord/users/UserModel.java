@@ -4,6 +4,7 @@ import dev.sbs.api.data.model.Model;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public interface UserModel extends Model {
 
@@ -11,13 +12,13 @@ public interface UserModel extends Model {
 
     List<String> getMojangUniqueIds();
 
-    String getNotes();
+    Map<Long, String> getNotes();
 
-    List<Long> getGuildCommandsBlacklisted();
+    Map<Long, List<String>> getGuildCommandsBlacklisted();
 
-    List<Long> getGuildReputationBlacklisted();
+    Map<Long, List<String>> getGuildReputationBlacklisted();
 
-    List<Long> getGuildTicketsBlacklisted();
+    Map<Long, List<String>> getGuildTicketsBlacklisted();
 
     boolean isDeveloperProtected();
 

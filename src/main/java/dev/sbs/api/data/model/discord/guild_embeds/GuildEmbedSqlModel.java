@@ -120,12 +120,12 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "submitter_discord_id")
-    private long submitterDiscordId;
+    private Long submitterDiscordId;
 
     @Getter
     @Setter
     @Column(name = "editor_discord_id")
-    private long editorDiscordId;
+    private Long editorDiscordId;
 
     @Getter
     @Column(name = "submitted_at", nullable = false)

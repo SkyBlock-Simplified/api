@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface GuildModel extends Model {
 
-    long getGuildId();
+    Long getGuildId();
 
     String getName();
 
