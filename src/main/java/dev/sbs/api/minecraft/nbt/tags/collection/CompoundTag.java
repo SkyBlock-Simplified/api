@@ -398,6 +398,10 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return this.getValue().keySet();
     }
 
+    public boolean notEmpty() {
+        return !this.isEmpty();
+    }
+
     /**
      * Adds a given tag to this compound. The tag must have a name, or NPE is thrown.
      *
