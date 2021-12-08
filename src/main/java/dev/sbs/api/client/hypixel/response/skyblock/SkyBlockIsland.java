@@ -163,10 +163,6 @@ public class SkyBlockIsland {
         return this.getMember(uniqueId).isPresent();
     }
 
-    public boolean isIronMan() {
-        return this.getGameMode().isPresent() && this.getGameMode().get().equals("ironman");
-    }
-
     public static class Member {
 
         // Player Stats
