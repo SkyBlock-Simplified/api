@@ -48,13 +48,15 @@ import dev.sbs.api.data.model.discord.skyblock_events.SkyBlockEventSqlRepository
 import dev.sbs.api.data.model.discord.users.UserSqlRepository;
 import dev.sbs.api.data.model.skyblock.accessories.AccessorySqlRepository;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepository;
-import dev.sbs.api.data.model.skyblock.armor_set_bonus.ArmorSetBonusSqlRepository;
 import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
 import dev.sbs.api.data.model.skyblock.bit_enchanted_books.BitEnchantedBookSqlRepository;
 import dev.sbs.api.data.model.skyblock.bit_item_craftables.BitItemCraftableSqlRepository;
 import dev.sbs.api.data.model.skyblock.bit_items.BitItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.bit_types.BitTypeSqlRepository;
+import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetSqlRepository;
+import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.bonus_reforge_stats.BonusReforgeStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.collection_item_tiers.CollectionItemTierSqlRepository;
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.collections.CollectionSqlRepository;
@@ -76,7 +78,6 @@ import dev.sbs.api.data.model.skyblock.essence_perks.EssencePerkSqlRepository;
 import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeSqlRepository;
 import dev.sbs.api.data.model.skyblock.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
-import dev.sbs.api.data.model.skyblock.item_stat_bonus.ItemStatBonusSqlRepository;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_remotes.LocationRemoteSqlRepository;
@@ -313,7 +314,9 @@ public class SimplifiedApi {
 
             // Requires Above
             AccessorySqlRepository.class,
-            ArmorSetBonusSqlRepository.class,
+            BonusArmorSetSqlRepository.class,
+            BonusItemStatSqlRepository.class,
+            BonusReforgeStatSqlRepository.class,
             BitEnchantedBookSqlRepository.class,
             BitItemSqlRepository.class,
             DungeonSqlRepository.class,
@@ -326,7 +329,6 @@ public class SimplifiedApi {
             GuildReportSqlRepository.class,
             GuildReputationSqlRepository.class,
             GuildSkyBlockEventSqlRepository.class,
-            ItemStatBonusSqlRepository.class,
             NpcSqlRepository.class,
             OptimizerSupportItemSqlRepository.class,
             PetSqlRepository.class,
