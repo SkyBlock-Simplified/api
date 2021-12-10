@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.skyblock.item_stat_bonus;
+package dev.sbs.api.data.model.skyblock.bonus_item_stats;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
@@ -25,10 +25,10 @@ import java.util.Map;
 
 @Entity
 @Table(
-    name = "skyblock_item_stat_bonus"
+    name = "skyblock_bonus_item_stats"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ItemStatBonusSqlModel implements ItemStatBonusModel, SqlModel {
+public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,8 +62,8 @@ public class ItemStatBonusSqlModel implements ItemStatBonusModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemStatBonusSqlModel)) return false;
-        ItemStatBonusSqlModel that = (ItemStatBonusSqlModel) o;
+        if (!(o instanceof BonusItemStatSqlModel)) return false;
+        BonusItemStatSqlModel that = (BonusItemStatSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())

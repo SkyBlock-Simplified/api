@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.skyblock.armor_set_bonus;
+package dev.sbs.api.data.model.skyblock.bonus_armor_sets;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Entity
 @Table(
-    name = "skyblock_armor_set_bonus",
+    name = "skyblock_bonus_armor_sets",
     indexes = {
         @Index(
             columnList = "helmet_item_id"
@@ -34,7 +34,7 @@ import java.util.Map;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ArmorSetBonusSqlModel implements ArmorSetBonusModel, SqlModel {
+public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -96,8 +96,8 @@ public class ArmorSetBonusSqlModel implements ArmorSetBonusModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ArmorSetBonusSqlModel)) return false;
-        ArmorSetBonusSqlModel that = (ArmorSetBonusSqlModel) o;
+        if (!(o instanceof BonusArmorSetSqlModel)) return false;
+        BonusArmorSetSqlModel that = (BonusArmorSetSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())

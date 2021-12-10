@@ -1,9 +1,9 @@
-package dev.sbs.api.data.model.skyblock.armor_set_bonus;
+package dev.sbs.api.data.model.skyblock.bonus_armor_sets;
 
 import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 
-public interface ArmorSetBonusModel extends BuffEffectsModel<Double> {
+public interface BonusArmorSetModel extends BuffEffectsModel<Double> {
 
     String getKey();
 

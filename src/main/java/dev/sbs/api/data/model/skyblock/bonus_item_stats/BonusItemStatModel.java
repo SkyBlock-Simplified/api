@@ -1,9 +1,9 @@
-package dev.sbs.api.data.model.skyblock.item_stat_bonus;
+package dev.sbs.api.data.model.skyblock.bonus_item_stats;
 
 import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 
-public interface ItemStatBonusModel extends BuffEffectsModel<Double> {
+public interface BonusItemStatModel extends BuffEffectsModel<Double> {
 
     ItemModel getItem();
 
