@@ -11,6 +11,8 @@ public interface ReforgeModel extends Model {
 
     ReforgeTypeModel getType();
 
+    boolean isBlacksmith();
+
     boolean isStone();
 
 }

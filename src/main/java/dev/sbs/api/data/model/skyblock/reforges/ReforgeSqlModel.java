@@ -51,6 +51,11 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "blacksmith", nullable = false)
+    private boolean blacksmith;
+
+    @Getter
+    @Setter
     @Column(name = "stone", nullable = false)
     private boolean stone;
 
