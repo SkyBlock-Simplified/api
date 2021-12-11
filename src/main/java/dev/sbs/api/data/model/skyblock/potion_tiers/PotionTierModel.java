@@ -5,7 +5,7 @@ import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.potions.PotionModel;
 import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 
-public interface PotionTierModel extends BuffEffectsModel<Double> {
+public interface PotionTierModel extends BuffEffectsModel<Double, Double> {
 
     PotionModel getPotion();
 

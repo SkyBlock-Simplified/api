@@ -3,6 +3,7 @@ package dev.sbs.api.data.model.skyblock.pet_items;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
+import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -61,8 +62,8 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
-    @Convert(converter = StringDoubleMapConverter.class)
-    private Map<String, Double> buffEffects;
+    @Convert(converter = StringObjectMapConverter.class)
+    private Map<String, Object> buffEffects;
 
     @Getter
     @UpdateTimestamp

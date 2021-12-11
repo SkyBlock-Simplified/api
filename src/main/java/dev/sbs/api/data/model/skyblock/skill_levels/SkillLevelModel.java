@@ -5,7 +5,7 @@ import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 
 import java.util.List;
 
-public interface SkillLevelModel extends BuffEffectsModel<Double> {
+public interface SkillLevelModel extends BuffEffectsModel<Double, Double> {
 
     SkillModel getSkill();
 

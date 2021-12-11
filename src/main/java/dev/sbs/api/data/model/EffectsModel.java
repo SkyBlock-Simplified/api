@@ -6,25 +6,12 @@ public interface EffectsModel<V> extends Model {
 
     Map<String, V> getEffects();
 
-    default <T> T getEffect(String key) {
+    default V getEffect(String key) {
         return this.getEffect(key, null);
     }
 
-    @SuppressWarnings("unchecked cast")
-    default <T> T getEffect(String key, Object defaultValue) {
-        Object value = this.getEffects().get(key);
-
-        if (value != null) {
-            try {
-                return (T) value;
-            } catch (Exception ignore) { }
-        }
-
-        try {
-            return (T) defaultValue;
-        } catch (Exception defaultException) {
-            throw new IllegalArgumentException("Default value does not match type T");
-        }
+    default V getEffect(String key, V defaultValue) {
+        return this.getEffects().getOrDefault(key, defaultValue);
     }
 
 }

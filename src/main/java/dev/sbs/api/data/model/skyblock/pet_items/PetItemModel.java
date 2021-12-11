@@ -3,7 +3,7 @@ package dev.sbs.api.data.model.skyblock.pet_items;
 import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 
-public interface PetItemModel extends BuffEffectsModel<Double> {
+public interface PetItemModel extends BuffEffectsModel<Object, Double> {
 
     ItemModel getItem();
 

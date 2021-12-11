@@ -2,29 +2,16 @@ package dev.sbs.api.data.model;
 
 import java.util.Map;
 
-public interface BuffEffectsModel<V> extends EffectsModel<V> {
+public interface BuffEffectsModel<BV, EV> extends EffectsModel<EV> {
 
-    Map<String, V> getBuffEffects();
+    Map<String, BV> getBuffEffects();
 
-    default <T> T getBuffEffects(String key) {
-        return this.getBuffEffects(key, null);
+    default BV getBuffEffect(String key) {
+        return this.getBuffEffect(key, null);
     }
 
-    @SuppressWarnings("unchecked cast")
-    default <T> T getBuffEffects(String key, Object defaultValue) {
-        Object value = this.getBuffEffects().get(key);
-
-        if (value != null) {
-            try {
-                return (T) value;
-            } catch (Exception ignore) { }
-        }
-
-        try {
-            return (T) defaultValue;
-        } catch (Exception defaultException) {
-            throw new IllegalArgumentException("Default value does not match type T");
-        }
+    default BV getBuffEffect(String key, BV defaultValue) {
+        return this.getBuffEffects().getOrDefault(key, defaultValue);
     }
 
 }
