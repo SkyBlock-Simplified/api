@@ -3,13 +3,14 @@ package dev.sbs.api.util.concurrent.atomic;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-public abstract class AtomicCollection<E, T extends AbstractCollection<E>> extends AbstractCollection<E> implements Collection<E> {
+public abstract class AtomicCollection<E, T extends AbstractCollection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
 
 	protected final AtomicReference<T> ref;
 

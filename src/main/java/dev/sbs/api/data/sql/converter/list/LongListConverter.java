@@ -1,23 +1,25 @@
 package dev.sbs.api.data.sql.converter.list;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.util.concurrent.Concurrent;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Converter
 public class LongListConverter implements AttributeConverter<List<Long>, String> {
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Long> convertToEntityAttribute(String attr) {
         if (attr == null)
             return new ArrayList<>();
 
         try {
-            return SimplifiedApi.getGson().fromJson(attr, ArrayList.class);
+            Long[] longArray = SimplifiedApi.getGson().fromJson(attr, Long[].class);
+            return Arrays.stream(longArray).collect(Concurrent.toList());
         } catch (Exception e) {
             return new ArrayList<>();
         }
