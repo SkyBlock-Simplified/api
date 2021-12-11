@@ -13,6 +13,8 @@ public interface StatModel extends Model {
 
     FormatModel getFormat();
 
+    boolean isMultipliable();
+
     Integer getOrdinal();
 
     Integer getBaseValue();

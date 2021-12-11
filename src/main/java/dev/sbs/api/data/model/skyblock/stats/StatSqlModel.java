@@ -56,6 +56,11 @@ public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "multipliable")
+    private boolean multipliable;
+
+    @Getter
+    @Setter
     @Column(name = "ordinal")
     private Integer ordinal;
 
