@@ -5,6 +5,7 @@ import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
@@ -18,19 +19,20 @@ import java.io.IOException;
 @AllArgsConstructor
 public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
 
+    /**
+     * Returns the name (key) of this tag.
+     */
+    @Getter
     protected String name;
+    /**
+     * Returns the value held by this tag.
+     */
+    @Getter
+    @NonNull
     protected T value;
     @Setter
     protected TagTypeRegistry registry;
-
-    /**
-     * Returns the name (key) of this tag.
-     *
-     * @return the name (key) of this tag.
-     */
-    public final String getName() {
-        return name;
-    }
+    private boolean updatable;
 
     /**
      * Returns a unique ID for this NBT tag type. 0 to 12 (inclusive) are reserved.
@@ -38,16 +40,6 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
      * @return a unique ID for this NBT tag type.
      */
     public abstract byte getTypeId();
-
-    /**
-     * Returns the value held by this tag.
-     *
-     * @return the value held by this tag.
-     */
-    @NonNull
-    public final T getValue() {
-        return this.value;
-    }
 
     /**
      * Reads this tag from a {@link DataInput} stream.
@@ -66,7 +58,12 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
      * @param name the new name to be set.
      */
     public final void setName(String name) {
-        this.name = name;
+        if (this.updatable)
+            this.name = name;
+    }
+
+    protected final void setNonUpdatable() {
+        this.updatable = false;
     }
 
     /**
@@ -75,7 +72,8 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
      * @param value new {@link T} value to be set.
      */
     public final void setValue(@NonNull T value) {
-        this.value = value;
+        if (this.updatable)
+            this.value = value;
     }
 
     /**

@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class IntArrayTag extends ArrayTag<Integer> {
 
+    public static final IntArrayTag EMPTY = new IntArrayTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs an empty int array.
      */

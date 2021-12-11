@@ -11,7 +11,7 @@ import dev.sbs.api.minecraft.nbt.tags.Tag;
 public abstract class NumericalTag<T extends Number> extends Tag<T> {
 
     protected NumericalTag(String name, T value) {
-        super(name, value, new TagTypeRegistry());
+        super(name, value, new TagTypeRegistry(), true);
     }
 
     /**

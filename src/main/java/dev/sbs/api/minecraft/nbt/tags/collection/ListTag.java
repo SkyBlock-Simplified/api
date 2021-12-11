@@ -60,7 +60,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      * @param value the tag's {@code List<>} value.
      */
     public ListTag(String name, @NonNull List<E> value) {
-        super(name, value, new TagTypeRegistry());
+        super(name, value, new TagTypeRegistry(), true);
     }
 
     private E createTag2(Object element) {

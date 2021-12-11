@@ -22,7 +22,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
     public static final Pattern NUMBER_PATTERN = Pattern.compile("[-0-9]+");
 
     protected ArrayTag(String name, T[] value) {
-        super(name, value, new TagTypeRegistry());
+        super(name, value, new TagTypeRegistry(), true);
     }
 
     /**

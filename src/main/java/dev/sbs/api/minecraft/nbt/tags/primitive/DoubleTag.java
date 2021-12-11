@@ -15,6 +15,8 @@ import java.io.IOException;
  */
 public class DoubleTag extends NumericalTag<Double> {
 
+    public static final DoubleTag EMPTY = new DoubleTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs a double tag with a 0 value.
      */

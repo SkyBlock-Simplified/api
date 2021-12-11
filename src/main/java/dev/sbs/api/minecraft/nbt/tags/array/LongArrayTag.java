@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class LongArrayTag extends ArrayTag<Long> {
 
+    public static final LongArrayTag EMPTY = new LongArrayTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs an empty long array.
      */

@@ -16,6 +16,8 @@ import java.io.IOException;
  */
 public class FloatTag extends NumericalTag<Float> {
 
+    public static final FloatTag EMPTY = new FloatTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs a float tag with a 0 value.
      */

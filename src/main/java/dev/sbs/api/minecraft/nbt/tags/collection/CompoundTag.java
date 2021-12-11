@@ -90,7 +90,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param value the tag's {@code Map<>} value.
      */
     public CompoundTag(String name, @NonNull Map<String, Tag<?>> value, boolean root) {
-        super(name, value, new TagTypeRegistry());
+        super(name, value, new TagTypeRegistry(), true);
         this.root = root;
     }
 
@@ -259,7 +259,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param path The path to the entry.
      * @return The value, or NULL if not found.
      */
-    public <T> T getPath(String path) {
+    public <T extends Tag<?>> T getPath(String path) {
         return this.getPathOrDefault(path, null);
     }
 
@@ -272,13 +272,13 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param path The path to the entry.
      * @return The value, or NULL if not found.
      */
-    public <T> T getPathOrDefault(String path, T defaultValue) {
+    public <T extends Tag<?>> T getPathOrDefault(String path, T defaultValue) {
         T value = defaultValue;
 
         if (this.containsPath(path)) {
             List<String> entries = StringUtil.toList(StringUtil.split(path, "\\."));
             CompoundTag compoundTag = this.getMap(entries.subList(0, entries.size() - 1), false);
-            value = compoundTag.getValue(entries.get(entries.size() - 1));
+            value = compoundTag.getTag(entries.get(entries.size() - 1));
         }
 
         return value;

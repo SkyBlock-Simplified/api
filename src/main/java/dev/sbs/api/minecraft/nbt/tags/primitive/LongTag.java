@@ -16,6 +16,8 @@ import java.util.Objects;
  */
 public class LongTag extends NumericalTag<Long> {
 
+    public static final LongTag EMPTY = new LongTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs a long tag with a 0 value.
      */

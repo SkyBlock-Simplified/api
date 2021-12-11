@@ -16,6 +16,8 @@ import java.util.Objects;
  */
 public class IntTag extends NumericalTag<Integer> {
 
+    public static final IntTag EMPTY = new IntTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs an int tag with a 0 value.
      */

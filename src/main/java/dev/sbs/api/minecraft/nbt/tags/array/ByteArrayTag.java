@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class ByteArrayTag extends ArrayTag<Byte> {
 
+    public static final ByteArrayTag EMPTY = new ByteArrayTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs an empty byte array.
      */

@@ -16,6 +16,8 @@ import java.util.Objects;
  */
 public class ByteTag extends NumericalTag<Byte> {
 
+    public static final ByteTag EMPTY = new ByteTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs a byte tag with a 0 value.
      */

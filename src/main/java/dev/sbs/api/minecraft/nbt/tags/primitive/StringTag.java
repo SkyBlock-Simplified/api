@@ -20,6 +20,8 @@ import java.util.Objects;
  */
 public class StringTag extends Tag<String> implements SnbtSerializable, JsonSerializable {
 
+    public static final StringTag EMPTY = new StringTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs a float tag with a 0 value.
      */
@@ -34,7 +36,7 @@ public class StringTag extends Tag<String> implements SnbtSerializable, JsonSeri
      * @param value the tag's {@code String} value.
      */
     public StringTag(String name, @NonNull String value) {
-        super(name, value, new TagTypeRegistry());
+        super(name, value, new TagTypeRegistry(), true);
     }
 
     @Override

@@ -16,6 +16,8 @@ import java.util.Objects;
  */
 public class ShortTag extends NumericalTag<Short> {
 
+    public static final ShortTag EMPTY = new ShortTag() {{ this.setNonUpdatable(); }};
+
     /**
      * Constructs a short tag with a 0 value.
      */
