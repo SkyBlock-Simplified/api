@@ -94,77 +94,80 @@ public final class SqlSession {
     }
 
     public void initialize() {
-        // Build Service Registry
-        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
-        Properties properties = new Properties() {{
-            // Connection
-            put("hibernate.dialect", config.getDatabaseDriver().getDialectClass());
-            put("hibernate.connection.driver_class", config.getDatabaseDriver().getDriverClass());
-            put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
-            put("hibernate.connection.username", config.getDatabaseUser());
-            put("hibernate.connection.password", config.getDatabasePassword());
-            put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
+        if (!this.isActive()) {
+            // Build Service Registry
+            StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+            Properties properties = new Properties() {{
+                // Connection
+                put("hibernate.dialect", config.getDatabaseDriver().getDialectClass());
+                put("hibernate.connection.driver_class", config.getDatabaseDriver().getDriverClass());
+                put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
+                put("hibernate.connection.username", config.getDatabaseUser());
+                put("hibernate.connection.password", config.getDatabasePassword());
+                put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
 
-            // SQL
-            put("hibernate.generate_statistics", config.isDatabaseDebugMode());
-            put("hibernate.show_sql", false);
-            put("hibernate.format_sql", false); // Log Spam
-            put("hibernate.use_sql_comments", true);
-            put("hibernate.order_inserts", true);
-            put("hibernate.order_updates", true);
+                // SQL
+                put("hibernate.generate_statistics", config.isDatabaseDebugMode());
+                put("hibernate.show_sql", false);
+                put("hibernate.format_sql", false); // Log Spam
+                put("hibernate.use_sql_comments", true);
+                put("hibernate.order_inserts", true);
+                put("hibernate.order_updates", true);
 
-            // Caching
-            put("hibernate.cache.use_second_level_cache", config.isDatabaseCaching());
-            put("hibernate.cache.use_query_cache", config.isDatabaseCaching());
-            put("hibernate.cache.region.factory_class", "org.hibernate.cache.jcache.JCacheRegionFactory");
-            put("hibernate.cache.provider_class", "org.ehcache.jsr107.EhcacheCachingProvider");
-            put("hibernate.cache.use_structured_entries", config.isDatabaseDebugMode());
+                // Caching
+                put("hibernate.cache.use_second_level_cache", config.isDatabaseCaching());
+                put("hibernate.cache.use_query_cache", config.isDatabaseCaching());
+                put("hibernate.cache.region.factory_class", "org.hibernate.cache.jcache.JCacheRegionFactory");
+                put("hibernate.cache.provider_class", "org.ehcache.jsr107.EhcacheCachingProvider");
+                put("hibernate.cache.use_structured_entries", config.isDatabaseDebugMode());
 
-            // Prepared Statements
-            put("hikari.cachePrepStmts", true);
-            put("hikari.prepStmtCacheSize", 256);
-            put("hikari.prepStmtCacheSqlLimit", 2048);
-            put("hikari.useServerPrepStmts", true);
-        }};
-        registryBuilder.applySettings(properties);
-        this.serviceRegistry = registryBuilder.build();
+                // Prepared Statements
+                put("hikari.cachePrepStmts", true);
+                put("hikari.prepStmtCacheSize", 256);
+                put("hikari.prepStmtCacheSqlLimit", 2048);
+                put("hikari.useServerPrepStmts", true);
+            }};
+            registryBuilder.applySettings(properties);
+            this.serviceRegistry = registryBuilder.build();
 
-        // Register SqlModel Classes
-        MetadataSources sources = new MetadataSources(this.serviceRegistry);
-        this.repositories.stream()
-            .map(Class::getGenericSuperclass)
-            .map(ParameterizedType.class::cast)
-            .map(ParameterizedType::getActualTypeArguments)
-            .map(index -> index[0])
-            .map(tClass -> (Class<SqlModel>) tClass)
-            .map(tClass -> {
-                SqlConfig.CacheExpiry cacheExpiry;
+            // Register SqlModel Classes
+            MetadataSources sources = new MetadataSources(this.serviceRegistry);
+            this.repositories.stream()
+                .map(Class::getGenericSuperclass)
+                .map(ParameterizedType.class::cast)
+                .map(ParameterizedType::getActualTypeArguments)
+                .map(index -> index[0])
+                .map(tClass -> (Class<SqlModel>) tClass)
+                .map(tClass -> {
+                    SqlConfig.CacheExpiry cacheExpiry;
 
-                // Load Custom Cache Expiry
-                if (tClass.isAnnotationPresent(SqlCacheExpiry.class)) {
-                    SqlCacheExpiry sqlCacheExpiry = tClass.getAnnotation(SqlCacheExpiry.class);
+                    // Load Custom Cache Expiry
+                    if (tClass.isAnnotationPresent(SqlCacheExpiry.class)) {
+                        SqlCacheExpiry sqlCacheExpiry = tClass.getAnnotation(SqlCacheExpiry.class);
 
-                    cacheExpiry = new SqlConfig.CacheExpiry(
-                        new Duration(TimeUnit.SECONDS, sqlCacheExpiry.creation()),
-                        new Duration(TimeUnit.SECONDS, sqlCacheExpiry.access()),
-                        new Duration(TimeUnit.SECONDS, sqlCacheExpiry.update())
-                    );
-                } else
-                    cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
+                        cacheExpiry = new SqlConfig.CacheExpiry(
+                            new Duration(TimeUnit.SECONDS, sqlCacheExpiry.creation()),
+                            new Duration(TimeUnit.SECONDS, sqlCacheExpiry.access()),
+                            new Duration(TimeUnit.SECONDS, sqlCacheExpiry.update())
+                        );
+                    } else
+                        cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
 
-                return config.addEntityTTL(tClass, cacheExpiry);
-            })
-            .map(this::buildCacheConfiguration)
-            .forEach(sources::addAnnotatedClass);
+                    return config.addEntityTTL(tClass, cacheExpiry);
+                })
+                .map(this::buildCacheConfiguration)
+                .forEach(sources::addAnnotatedClass);
 
-        // Build Default Caches
-        this.buildCacheConfiguration("default-update-timestamps-region", SqlConfig::getDatabaseUpdateTimestampsTTL);
-        this.buildCacheConfiguration("default-query-results-region", SqlConfig::getDatabaseQueryResultsTTL);
+            // Build Default Caches
+            this.buildCacheConfiguration("default-update-timestamps-region", SqlConfig::getDatabaseUpdateTimestampsTTL);
+            this.buildCacheConfiguration("default-query-results-region", SqlConfig::getDatabaseQueryResultsTTL);
 
-        // Build Session Factory
-        Metadata metadata = sources.getMetadataBuilder().build();
-        this.sessionFactory = metadata.buildSessionFactory();
-        this.active = true;
+            // Build Session Factory
+            Metadata metadata = sources.getMetadataBuilder().build();
+            this.sessionFactory = metadata.buildSessionFactory();
+            this.active = true;
+        } else
+            throw new SqlException("Database is already initialized!");
     }
 
     public Session openSession() {

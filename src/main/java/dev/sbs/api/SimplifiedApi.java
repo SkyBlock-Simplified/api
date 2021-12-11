@@ -194,20 +194,24 @@ public class SimplifiedApi {
             SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());
             serviceManager.add(SqlSession.class, sqlSession);
 
+            // Initialize Database
+            sqlSession.initialize();
+
             // Provide SqlRepositories
             for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses())
                 serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession));
-        }
-
-        // Initialize Database
-        getSqlSession().initialize();
+        } else
+            serviceManager.get(SqlSession.class).initialize(); // Reinitialize Database
     }
 
     public static void disableDatabase() {
         if (serviceManager.isRegistered(SqlSession.class)) {
-            if (getSqlSession().isActive())
-                getSqlSession().shutdown();
-        }
+            SqlSession sqlSession = serviceManager.get(SqlSession.class);
+
+            if (sqlSession.isActive())
+                sqlSession.shutdown();
+        } else
+            throw new SqlException("Database is not active!");
     }
 
     public static BuilderManager getBuilderManager() {
