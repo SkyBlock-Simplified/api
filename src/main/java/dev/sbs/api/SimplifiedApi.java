@@ -373,8 +373,10 @@ public class SimplifiedApi {
 
     public static SqlSession getSqlSession() {
         if (serviceManager.isRegistered(SqlSession.class)) {
-            if (getSqlSession().isActive())
-                return serviceManager.get(SqlSession.class);
+            SqlSession sqlSession = serviceManager.get(SqlSession.class);
+
+            if (sqlSession.isActive())
+                return sqlSession;
             else
                 throw new SqlException("Database connection is not active!");
         } else
