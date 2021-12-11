@@ -56,6 +56,7 @@ import dev.sbs.api.data.model.skyblock.bit_items.BitItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.bit_types.BitTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_reforge_stats.BonusReforgeStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.collection_item_tiers.CollectionItemTierSqlRepository;
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemSqlRepository;
@@ -320,6 +321,7 @@ public class SimplifiedApi {
             AccessorySqlRepository.class,
             BonusArmorSetSqlRepository.class,
             BonusItemStatSqlRepository.class,
+            BonusPetAbilityStatSqlRepository.class,
             BonusReforgeStatSqlRepository.class,
             BitEnchantedBookSqlRepository.class,
             BitItemSqlRepository.class,
