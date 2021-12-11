@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.gemstone_stats;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -29,6 +30,12 @@ import java.time.Instant;
         @Index(
             columnList = "gemstone_key, type_key, rarity_key",
             unique = true
+        ),
+        @Index(
+            columnList = "type_key"
+        ),
+        @Index(
+            columnList = "rarity_key"
         )
     }
 )
@@ -51,7 +58,7 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "type_key", nullable = false)
-    private GemstoneSqlModel type;
+    private GemstoneTypeSqlModel type;
 
     @Getter
     @Setter
