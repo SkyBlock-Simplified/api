@@ -79,6 +79,9 @@ import dev.sbs.api.data.model.skyblock.essence_perks.EssencePerkSqlRepository;
 import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeSqlRepository;
 import dev.sbs.api.data.model.skyblock.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
+import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeSqlRepository;
+import dev.sbs.api.data.model.skyblock.gemstones.GemstoneSqlRepository;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_remotes.LocationRemoteSqlRepository;
@@ -276,9 +279,10 @@ public class SimplifiedApi {
             DungeonLevelSqlRepository.class,
             EmbedTypeSqlRepository.class,
             EnchantmentFamilySqlRepository.class,
-            GuildSqlRepository.class,
             FairyExchangeSqlRepository.class,
             FormatSqlRepository.class,
+            GemstoneTypeSqlRepository.class,
+            GuildSqlRepository.class,
             LocationSqlRepository.class,
             LocationRemoteSqlRepository.class,
             MenuSqlRepository.class,
@@ -331,6 +335,7 @@ public class SimplifiedApi {
             EnchantmentTypeSqlRepository.class,
             EssencePerkSqlRepository.class,
             FairySoulSqlRepository.class,
+            GemstoneSqlRepository.class,
             GuildApplicationSqlRepository.class,
             GuildReportSqlRepository.class,
             GuildReputationSqlRepository.class,
@@ -349,6 +354,7 @@ public class SimplifiedApi {
             BitItemCraftableSqlRepository.class,
             CollectionSqlRepository.class,
             DungeonFloorSqlRepository.class,
+            GemstoneStatSqlRepository.class,
             GuildApplicationEntrySqlRepository.class,
             GuildApplicationRequirementSqlRepository.class,
             PetAbilitySqlRepository.class,
