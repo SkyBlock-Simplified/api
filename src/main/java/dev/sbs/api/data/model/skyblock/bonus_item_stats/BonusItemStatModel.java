@@ -7,4 +7,10 @@ public interface BonusItemStatModel extends BuffEffectsModel<Object, Double> {
 
     ItemModel getItem();
 
+    boolean isForStats();
+
+    boolean isForReforges();
+
+    boolean isForGems();
+
 }
