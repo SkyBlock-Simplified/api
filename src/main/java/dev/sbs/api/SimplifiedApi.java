@@ -47,6 +47,7 @@ import dev.sbs.api.data.model.discord.skyblock_event_timers.SkyBlockEventTimerSq
 import dev.sbs.api.data.model.discord.skyblock_events.SkyBlockEventSqlRepository;
 import dev.sbs.api.data.model.discord.users.UserSqlRepository;
 import dev.sbs.api.data.model.skyblock.accessories.AccessorySqlRepository;
+import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentSqlRepository;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepository;
 import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
@@ -82,10 +83,13 @@ import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneSqlRepository;
+import dev.sbs.api.data.model.skyblock.hotm_perk_stats.HotmPerkStatSqlRepository;
+import dev.sbs.api.data.model.skyblock.hotm_perks.HotmPerkSqlRepository;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_remotes.LocationRemoteSqlRepository;
 import dev.sbs.api.data.model.skyblock.locations.LocationSqlRepository;
+import dev.sbs.api.data.model.skyblock.melodys_songs.MelodySongSqlRepository;
 import dev.sbs.api.data.model.skyblock.menus.MenuSqlRepository;
 import dev.sbs.api.data.model.skyblock.minion_items.MinionItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.minion_tier_upgrades.MinionTierUpgradeSqlRepository;
@@ -283,8 +287,10 @@ public class SimplifiedApi {
             FormatSqlRepository.class,
             GemstoneTypeSqlRepository.class,
             GuildSqlRepository.class,
+            HotmPerkSqlRepository.class,
             LocationSqlRepository.class,
             LocationRemoteSqlRepository.class,
+            MelodySongSqlRepository.class,
             MenuSqlRepository.class,
             MinionUniqueSqlRepository.class,
             PetExpScaleSqlRepository.class,
@@ -323,6 +329,7 @@ public class SimplifiedApi {
 
             // Requires Above
             AccessorySqlRepository.class,
+            AccessoryEnrichmentSqlRepository.class,
             BonusArmorSetSqlRepository.class,
             BonusItemStatSqlRepository.class,
             BonusPetAbilityStatSqlRepository.class,
@@ -340,6 +347,7 @@ public class SimplifiedApi {
             GuildReportSqlRepository.class,
             GuildReputationSqlRepository.class,
             GuildSkyBlockEventSqlRepository.class,
+            HotmPerkStatSqlRepository.class,
             NpcSqlRepository.class,
             OptimizerSupportItemSqlRepository.class,
             PetSqlRepository.class,
