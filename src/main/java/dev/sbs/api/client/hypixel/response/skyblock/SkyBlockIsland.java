@@ -13,6 +13,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
+import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilyModel;
 import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatModel;
 import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatModel;
@@ -1884,13 +1885,20 @@ public class SkyBlockIsland {
             statModels.forEach(statModel -> this.stats.put(statModel, new Data(statModel.getBaseValue(), 0)));
             ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
-            // TODO
-            //  Booster Cookie:     +15 Magic Find
+            // TODO: Implement
             //  Account Upgrades:   +5 Magic Find
-            //  Beacon:             +5 Magic Find
             //  Melody's Harp:      +28 Intelligence
+            //  Mining Core
+
+            // TODO: Optimizer Request: No API Data
+            //  Booster Cookie:     +15 Magic Find
+            //  Beacon:             +5 Magic Find
+
+            // TODO: Optimizer Request: Missing API Data
             //  Defused Traps:      +6 Intelligence
             //  Bestiary:           +84 Health
+
+            // TODO: Hypixel Bugs
             //  Catacombs:          2x Health
 
             // --- Populate Default Expression Variables ---
@@ -1913,9 +1921,7 @@ public class SkyBlockIsland {
                                 .stream()
                                 .map(SkillLevelModel::getBuffEffects)
                                 .flatMap(map -> map.entrySet().stream())
-                                .forEach(entry -> {
-                                    this.damageMultiplier += (double) entry.getValue();
-                                });
+                                .forEach(entry -> this.damageMultiplier += (double) entry.getValue());
                         }
                     });
 
@@ -2069,7 +2075,7 @@ public class SkyBlockIsland {
                 // Non-Stackable Families
                 familyAccessoryTagModels.forEach((accessoryFamilyModel, accessories) -> {
                     // Sort By Highest
-                    accessories.sort((a1, a2) -> Comparator.comparing(AccessoryModel::getFamilyRank).compare(a1, a2));
+                    accessories.sort((a1, a2) -> Comparator.comparing(AccessoryModel::getFamilyRank).compare(a2, a1));
 
                     if (!accessoryFamilyModel.isStatsStackable()) {
                         accessories.remove(0); // Keep First Accessory
@@ -2147,6 +2153,19 @@ public class SkyBlockIsland {
                                         });
                                 });
 
+                            // Handle Enrichment
+                            if (itemTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
+                                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
+                                    .findFirst(
+                                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+                                        itemTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
+                                    ).ifPresent(accessoryEnrichmentModel -> {
+                                        // Save Enrichment Stat
+                                        StatModel statModel = accessoryEnrichmentModel.getStat();
+                                        accessoryStatBonuses.put(statModel, accessoryEnrichmentModel.getValue() + accessoryStatBonuses.getOrDefault(statModel, 0.0));
+                                    });
+                            }
+
                             // New Year Cake Bag
                             if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
                                 try {
@@ -2163,7 +2182,6 @@ public class SkyBlockIsland {
                 // Save Accessories
                 accessoryStatBonuses.forEach(accessoryStatBonus -> {
                     Data statData = this.stats.get(accessoryStatBonus.getKey());
-                    System.out.println("Adding accessory " + accessoryStatBonus.getValue() + " to " + accessoryStatBonus.getKey().getKey());
                     statData.addBonus(accessoryStatBonus.getValue());
                 });
 
@@ -2515,17 +2533,26 @@ public class SkyBlockIsland {
                 bonusBuffEffectModel.getBuffEffects().forEach((buffKey, buffValue) -> {
                     String filterKey = (String) buffKey;
 
-                    if (filterKey.startsWith("TIME")) {
-                        filterKey = filterKey.replace("TIME_", "");
+                    if (filterKey.equals("TIME")) {
                         SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
                         int hour = currentDate.getHour();
+                        List<String> timeConstraints = (List<String>) buffValue;
+                        MutableBoolean insideConstraint = new MutableBoolean(false);
 
-                        if (filterKey.equals("START")) {
-                            if (hour <= (double) buffValue)
-                                value.set(0.0);
-                        } else if (filterKey.equals("END")) {
-                            if (hour >= (double) buffValue)
-                                value.set(0.0);
+                        timeConstraints.forEach(timeConstraint -> {
+                            String[] constraintParts = timeConstraint.split("-");
+                            int start = NumberUtil.toInt(constraintParts[0]);
+                            int end = NumberUtil.toInt(constraintParts[1]);
+
+                            if (hour >= start && hour <= end) {
+                                System.out.println("Using " + compoundTag.getPath("tag.ExtraAttributes.id").getValue() + ", stat " + statModel.getKey() + ", hour: " + hour);
+                                insideConstraint.setTrue(); // At Least 1 Constraint is True
+                            }
+                        });
+
+                        if (insideConstraint.isFalse()) {
+                            System.out.println("Not using " + compoundTag.getPath("tag.ExtraAttributes.id").getValue() + ", stat " + statModel.getKey() + ", hour: " + hour);
+                            value.set(0.0);
                         }
                     } else {
                         boolean multiply = false;
