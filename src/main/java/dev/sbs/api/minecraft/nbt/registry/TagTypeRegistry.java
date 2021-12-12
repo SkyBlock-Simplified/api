@@ -153,7 +153,7 @@ public class TagTypeRegistry {
      * @return an empty instance of the tag type provided.
      * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
      */
-    public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass) throws TagTypeRegistryException {
+    public Tag<?> instantiate(@NonNull Class<? extends Tag> tagClass) throws TagTypeRegistryException {
         try {
             Object whatIsThis = new Reflection(tagClass).newInstance();
 
