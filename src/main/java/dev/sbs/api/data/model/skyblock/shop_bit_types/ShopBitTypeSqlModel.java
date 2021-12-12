@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.skyblock.bit_types;
+package dev.sbs.api.data.model.skyblock.shop_bit_types;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -19,10 +19,10 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_bit_types"
+    name = "skyblock_shop_bit_types"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class BitTypeSqlModel implements BitTypeModel, SqlModel {
+public class ShopBitTypeSqlModel implements ShopBitTypeModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +48,8 @@ public class BitTypeSqlModel implements BitTypeModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BitTypeSqlModel)) return false;
-        BitTypeSqlModel that = (BitTypeSqlModel) o;
+        if (!(o instanceof ShopBitTypeSqlModel)) return false;
+        ShopBitTypeSqlModel that = (ShopBitTypeSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getKey(), that.getKey()).append(this.getName(), that.getName()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
     }

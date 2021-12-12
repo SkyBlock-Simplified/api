@@ -1,8 +1,8 @@
-package dev.sbs.api.data.model.skyblock.bit_item_craftables;
+package dev.sbs.api.data.model.skyblock.shop_bit_item_craftables;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.bit_items.BitItemSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
+import dev.sbs.api.data.model.skyblock.shop_bit_items.ShopBitItemSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_bit_item_craftables",
+    name = "skyblock_shop_bit_item_craftables",
     indexes = {
         @Index(
             columnList = "bit_item_id"
@@ -32,7 +32,7 @@ import java.time.Instant;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class BitItemCraftableSqlModel implements BitItemCraftableModel, SqlModel {
+public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class BitItemCraftableSqlModel implements BitItemCraftableModel, SqlModel
     @Setter
     @ManyToOne
     @JoinColumn(name = "bit_item_id", nullable = false)
-    private BitItemSqlModel bitItem;
+    private ShopBitItemSqlModel bitItem;
 
     @Getter
     @Setter
@@ -70,8 +70,8 @@ public class BitItemCraftableSqlModel implements BitItemCraftableModel, SqlModel
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BitItemCraftableSqlModel)) return false;
-        BitItemCraftableSqlModel that = (BitItemCraftableSqlModel) o;
+        if (!(o instanceof ShopBitItemCraftableSqlModel)) return false;
+        ShopBitItemCraftableSqlModel that = (ShopBitItemCraftableSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getBitItem(), that.getBitItem())

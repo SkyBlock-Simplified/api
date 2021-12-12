@@ -1,9 +1,9 @@
-package dev.sbs.api.data.model.skyblock.bit_enchanted_books;
+package dev.sbs.api.data.model.skyblock.shop_bit_enchanted_books;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 
-public interface BitEnchantedBookModel extends Model {
+public interface ShopBitEnchantedBookModel extends Model {
 
     EnchantmentModel getEnchantment();
 

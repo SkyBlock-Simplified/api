@@ -51,10 +51,6 @@ import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichment
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepository;
 import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
-import dev.sbs.api.data.model.skyblock.bit_enchanted_books.BitEnchantedBookSqlRepository;
-import dev.sbs.api.data.model.skyblock.bit_item_craftables.BitItemCraftableSqlRepository;
-import dev.sbs.api.data.model.skyblock.bit_items.BitItemSqlRepository;
-import dev.sbs.api.data.model.skyblock.bit_types.BitTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatSqlRepository;
@@ -120,6 +116,11 @@ import dev.sbs.api.data.model.skyblock.reforges.ReforgeSqlRepository;
 import dev.sbs.api.data.model.skyblock.sack_items.SackItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.sacks.SackSqlRepository;
 import dev.sbs.api.data.model.skyblock.seasons.SeasonSqlRepository;
+import dev.sbs.api.data.model.skyblock.shop_bit_enchanted_books.ShopBitEnchantedBookSqlRepository;
+import dev.sbs.api.data.model.skyblock.shop_bit_item_craftables.ShopBitItemCraftableSqlRepository;
+import dev.sbs.api.data.model.skyblock.shop_bit_items.ShopBitItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.shop_bit_types.ShopBitTypeSqlRepository;
+import dev.sbs.api.data.model.skyblock.shop_profile_upgrades.ShopProfileUpgradeSqlRepository;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelSqlRepository;
 import dev.sbs.api.data.model.skyblock.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelSqlRepository;
@@ -273,7 +274,6 @@ public class SimplifiedApi {
             // No Foreign Keys
             AccessoryFamilySqlRepository.class,
             ApplicationRequirementSqlRepository.class,
-            BitTypeSqlRepository.class,
             CraftingTableRecipeSqlRepository.class,
             CraftingTableSlotSqlRepository.class,
             CommandConfigSqlRepository.class,
@@ -308,6 +308,8 @@ public class SimplifiedApi {
             SeasonSqlRepository.class,
             SettingEvalSqlRepository.class,
             SettingTypeSqlRepository.class,
+            ShopBitTypeSqlRepository.class,
+            ShopProfileUpgradeSqlRepository.class,
             UserSqlRepository.class,
 
             // Requires Above
@@ -334,8 +336,6 @@ public class SimplifiedApi {
             BonusItemStatSqlRepository.class,
             BonusPetAbilityStatSqlRepository.class,
             BonusReforgeStatSqlRepository.class,
-            BitEnchantedBookSqlRepository.class,
-            BitItemSqlRepository.class,
             DungeonSqlRepository.class,
             DungeonClassSqlRepository.class,
             EnchantmentStatSqlRepository.class,
@@ -354,12 +354,13 @@ public class SimplifiedApi {
             PetItemSqlRepository.class,
             PotionTierSqlRepository.class,
             SackItemSqlRepository.class,
+            ShopBitEnchantedBookSqlRepository.class,
+            ShopBitItemSqlRepository.class,
             SkillSqlRepository.class,
             SkyBlockEventTimerSqlRepository.class,
             SlayerSqlRepository.class,
 
             // Requires Above
-            BitItemCraftableSqlRepository.class,
             CollectionSqlRepository.class,
             DungeonFloorSqlRepository.class,
             GemstoneStatSqlRepository.class,
@@ -370,6 +371,7 @@ public class SimplifiedApi {
             PotionBrewSqlRepository.class,
             PotionGroupItemSqlRepository.class,
             PotionMixinSqlRepository.class,
+            ShopBitItemCraftableSqlRepository.class,
             SkillLevelSqlRepository.class,
             SlayerLevelSqlRepository.class,
 

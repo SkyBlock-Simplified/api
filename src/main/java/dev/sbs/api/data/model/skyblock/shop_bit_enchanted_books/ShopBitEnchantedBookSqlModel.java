@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.skyblock.bit_enchanted_books;
+package dev.sbs.api.data.model.skyblock.shop_bit_enchanted_books;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlModel;
@@ -22,10 +22,10 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_bit_enchanted_books"
+    name = "skyblock_shop_bit_enchanted_books"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class BitEnchantedBookSqlModel implements BitEnchantedBookModel, SqlModel {
+public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,8 +52,8 @@ public class BitEnchantedBookSqlModel implements BitEnchantedBookModel, SqlModel
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BitEnchantedBookSqlModel)) return false;
-        BitEnchantedBookSqlModel that = (BitEnchantedBookSqlModel) o;
+        if (!(o instanceof ShopBitEnchantedBookSqlModel)) return false;
+        ShopBitEnchantedBookSqlModel that = (ShopBitEnchantedBookSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())

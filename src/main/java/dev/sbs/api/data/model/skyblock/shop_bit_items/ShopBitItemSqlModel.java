@@ -1,8 +1,8 @@
-package dev.sbs.api.data.model.skyblock.bit_items;
+package dev.sbs.api.data.model.skyblock.shop_bit_items;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.bit_types.BitTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
+import dev.sbs.api.data.model.skyblock.shop_bit_types.ShopBitTypeSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_bit_items",
+    name = "skyblock_shop_bit_items",
     indexes = {
         @Index(
             columnList = "bit_type_key"
@@ -32,7 +32,7 @@ import java.time.Instant;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class BitItemSqlModel implements BitItemModel, SqlModel {
+public class ShopBitItemSqlModel implements ShopBitItemModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class BitItemSqlModel implements BitItemModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "bit_type_key", nullable = false)
-    private BitTypeSqlModel type;
+    private ShopBitTypeSqlModel type;
 
     @Getter
     @Setter
@@ -65,8 +65,8 @@ public class BitItemSqlModel implements BitItemModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BitItemSqlModel)) return false;
-        BitItemSqlModel that = (BitItemSqlModel) o;
+        if (!(o instanceof ShopBitItemSqlModel)) return false;
+        ShopBitItemSqlModel that = (ShopBitItemSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
