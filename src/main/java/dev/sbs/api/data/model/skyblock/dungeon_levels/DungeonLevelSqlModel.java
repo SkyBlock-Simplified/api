@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.dungeon_levels;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -10,12 +11,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.Map;
 
 @Entity
 @Table(
@@ -44,6 +47,18 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
     @Setter
     @Column(name = "stat_multiplier", nullable = false)
     private Integer statMultiplier;
+
+    @Getter
+    @Setter
+    @Column(name = "effects", nullable = false)
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> effects;
+
+    @Getter
+    @Setter
+    @Column(name = "buff_effects", nullable = false)
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> buffEffects;
 
     @Getter
     @UpdateTimestamp

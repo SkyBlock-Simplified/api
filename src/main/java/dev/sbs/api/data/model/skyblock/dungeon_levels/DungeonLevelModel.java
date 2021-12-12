@@ -1,8 +1,8 @@
 package dev.sbs.api.data.model.skyblock.dungeon_levels;
 
-import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.BuffEffectsModel;
 
-public interface DungeonLevelModel extends Model {
+public interface DungeonLevelModel extends BuffEffectsModel<Double, Double> {
 
     Integer getLevel();
 
