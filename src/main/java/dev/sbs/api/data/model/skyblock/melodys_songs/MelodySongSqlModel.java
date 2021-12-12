@@ -19,10 +19,10 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_melody_songs"
+    name = "skyblock_melodys_songs"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class MelodySongPerkSqlModel implements MelodySongModel, SqlModel {
+public class MelodySongSqlModel implements MelodySongModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,8 +53,8 @@ public class MelodySongPerkSqlModel implements MelodySongModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MelodySongPerkSqlModel)) return false;
-        MelodySongPerkSqlModel that = (MelodySongPerkSqlModel) o;
+        if (!(o instanceof MelodySongSqlModel)) return false;
+        MelodySongSqlModel that = (MelodySongSqlModel) o;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())

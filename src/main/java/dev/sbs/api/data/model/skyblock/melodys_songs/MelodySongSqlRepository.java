@@ -4,7 +4,7 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import lombok.NonNull;
 
-public class MelodySongSqlRepository extends SqlRepository<MelodySongPerkSqlModel> {
+public class MelodySongSqlRepository extends SqlRepository<MelodySongSqlModel> {
 
     public MelodySongSqlRepository(@NonNull SqlSession sqlSession) {
         super(sqlSession);
