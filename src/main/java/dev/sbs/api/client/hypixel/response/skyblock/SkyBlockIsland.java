@@ -28,7 +28,10 @@ import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
 import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
+import dev.sbs.api.data.model.skyblock.hotm_perk_stats.HotmPerkStatModel;
+import dev.sbs.api.data.model.skyblock.hotm_perks.HotmPerkModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
+import dev.sbs.api.data.model.skyblock.melodys_songs.MelodySongModel;
 import dev.sbs.api.data.model.skyblock.minions.MinionModel;
 import dev.sbs.api.data.model.skyblock.pet_abilities.PetAbilityModel;
 import dev.sbs.api.data.model.skyblock.pet_ability_stats.PetAbilityStatModel;
@@ -244,8 +247,8 @@ public class SkyBlockIsland {
         private ConcurrentLinkedMap<String, SlayerBoss> slayer_bosses;
         private ConcurrentList<String> unlocked_coll_tiers;
         private ConcurrentLinkedMap<String, Integer> collection;
-        @SerializedName("harp_quest")
-        private ConcurrentLinkedMap<String, Object> harpQuest;
+        @Getter
+        private MelodyHarp melodyHarp;
         @SerializedName("active_effects")
         @Getter
         private ConcurrentList<Potion> activePotions;
@@ -369,7 +372,7 @@ public class SkyBlockIsland {
         }
 
         public MelodyHarp getMelodyHarp() {
-            return new MelodyHarp(this.harpQuest);
+            return this.melodyHarp;
         }
 
         public Minion getMinion(String minionName) {
@@ -1335,41 +1338,17 @@ public class SkyBlockIsland {
 
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MelodyHarp {
 
         @Getter
-        private final boolean talismanClaimed;
+        private boolean talismanClaimed;
         @Getter
-        private final String selectedSong;
+        private String selectedSong;
         @Getter
-        private final SkyBlockDate.RealTime selectedSongTimestamp;
+        private SkyBlockDate.RealTime selectedSongTimestamp;
         @Getter
-        private final ConcurrentMap<String, Song> songs = Concurrent.newMap();
-
-        @SuppressWarnings("all")
-        private MelodyHarp(ConcurrentLinkedMap<String, Object> harpQuest) {
-            ConcurrentLinkedMap<String, Object> newHarpQuest = Concurrent.newLinkedMap(harpQuest);
-            this.talismanClaimed = (boolean) newHarpQuest.remove("claimed_talisman");
-            this.selectedSong = (String) newHarpQuest.remove("selected_song");
-            this.selectedSongTimestamp = new SkyBlockDate.RealTime((long) newHarpQuest.remove("selected_song_epoch") * 1000);
-            ConcurrentLinkedMap<String, ConcurrentMap<String, Integer>> songMap = Concurrent.newLinkedMap();
-
-            newHarpQuest.forEach(entry -> {
-                String key = entry.getKey().replace("song_", "");
-                String songName = key.replaceAll("_((best|perfect)_)?completions?", "");
-                String category = key.replace(songName, "");
-
-                if (!songMap.containsKey(songName))
-                    songMap.put(songName, Concurrent.newMap());
-
-                songMap.get(songName).put(category, (Integer) entry.getValue());
-            });
-
-            songMap.forEach(entry -> {
-                Song song = new Song(entry.getValue().get("best_completion"), entry.getValue().get("best_completion"), entry.getValue().get("best_completion"));
-                songs.put(entry.getKey(), song);
-            });
-        }
+        private ConcurrentMap<String, Song> songs = Concurrent.newMap();
 
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Song {
@@ -1471,7 +1450,7 @@ public class SkyBlockIsland {
             return this.crystals.get(type);
         }
 
-        public ConcurrentMap<String, Integer> getNodes() {
+        public ConcurrentMap<String, Double> getNodes() {
             return this.nodes.stream().filter(entry -> !(entry.getValue() instanceof Boolean)).collect(Concurrent.toMap());
         }
 
@@ -2010,6 +1989,22 @@ public class SkyBlockIsland {
                     statData.addBase(statBonus.getValue());
                 });
 
+                // --- Load Mining Core ---
+                StatModel miningSpeedModel = statRepository.findFirstOrNull(StatModel::getKey, "MINING_SPEED");
+                StatModel miningFortuneModel = statRepository.findFirstOrNull(StatModel::getKey, "MINING_FORTUNE");
+                member.getMining().getNodes().forEach((key, level) -> {
+                    // Load Hotm Perk
+                    SimplifiedApi.getRepositoryOf(HotmPerkModel.class).findFirst(HotmPerkModel::getKey, key.toUpperCase())
+                        .ifPresent(hotmPerkModel -> {
+                            // Save Perk Stats
+                            SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
+                                .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
+                                .forEach(hotmPerkStatModel -> {
+                                    this.stats.get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus());
+                                });
+                        });
+                });
+
                 // --- Load Accessories ---
                 ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagStatModels = Concurrent.newMap();
                 ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagReforgeModels = Concurrent.newMap();
@@ -2209,10 +2204,7 @@ public class SkyBlockIsland {
                                         .ifPresent(rarityModel -> {
                                             // Save Reforge Stats
                                             ConcurrentMap<StatModel, Double> reforgeBonuses = this.handleReforgeBonus(reforgeKey, rarityModel, itemTag);
-                                            reforgeBonuses.forEach((statModel, value) -> {
-                                                System.out.println("Adding armor " + value + " to " + statModel.getKey());
-                                                this.stats.get(statModel).addBonus(value);
-                                            });
+                                            reforgeBonuses.forEach((statModel, value) -> this.stats.get(statModel).addBonus(value));
 
                                             // Save Gemstone Stat
                                             ConcurrentMap<StatModel, Double> gemstoneStat = this.handleGemstoneBonus(itemTag, rarityModel);
@@ -2261,6 +2253,21 @@ public class SkyBlockIsland {
                         statRepository.findFirst(StatModel::getKey, entry.getKey()).ifPresent(statModel -> this.stats.get(statModel).addBase(entry.getValue()));
                     });
 
+                // --- Load Melody's Harp ---
+                member.getMelodyHarp().getSongs().forEach((songName, songData) -> {
+                    // Load Song
+                    SimplifiedApi.getRepositoryOf(MelodySongModel.class)
+                        .findFirst(MelodySongModel::getKey, songName.toUpperCase())
+                        .ifPresent(melodySongModel -> {
+                            // Load Intelligence Stat
+                            statRepository.findFirst(StatModel::getKey, "INTELLIGENCE")
+                                .ifPresent(statModel -> {
+                                    // Save Song Stat
+                                    this.stats.get(statModel).addBonus(melodySongModel.getReward());
+                                });
+                        });
+                });
+
                 // --- Load Jacobs Perks ---
                 statRepository.findFirst(StatModel::getKey, "FARMING_FORTUNE")
                     .ifPresent(farmingFortuneStatModel -> {
@@ -2305,7 +2312,6 @@ public class SkyBlockIsland {
                         // Save Active Pet Stats
                         petStatModels.forEach(petStatModel -> {
                             Data statData = this.stats.get(petStatModel.getStat());
-                            System.out.println("Adding pet stat " + (petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel())) + " to " + petStatModel.getStat().getKey());
                             statData.addBonus(petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel()));
                         });
 
@@ -2343,6 +2349,9 @@ public class SkyBlockIsland {
                     Optional<StatModel> optionalMagicFindStatModel = statRepository.findFirst(StatModel::getKey, "MAGIC_FIND");
                     optionalMagicFindStatModel.ifPresent(magicFindStatModel -> this.stats.get(magicFindStatModel).addBase(petScoreModels.size()));
                 }
+
+                System.out.println("Mining Speed Before: " + this.stats.get(miningSpeedModel).getTotal());
+                System.out.println("Mining Fortune Before: " + this.stats.get(miningFortuneModel).getTotal());
 
                 // --- Load Active Potions ---
                 member.getActivePotions().forEach(potion -> {
@@ -2413,19 +2422,19 @@ public class SkyBlockIsland {
                         // Save Active Potions
                         potionStatEffects.forEach((statModel, value) -> {
                             Data statData = this.stats.get(statModel);
-                            System.out.println("Adding potion " + value + " to " + statModel.getKey());
                             statData.addBonus(value);
                         });
                     }
                 });
+
+                System.out.println("Mining Speed After: " + this.stats.get(miningSpeedModel).getTotal());
+                System.out.println("Mining Fortune After: " + this.stats.get(miningFortuneModel).getTotal());
 
                 // --- Load Bonus Item Stats ---
                 bonusItemStatModels.forEach((bonusItemStatModel, compoundTag) -> {
                     this.stats.forEach((statModel, statData) -> {
                         double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, expressionVariables, bonusItemStatModel);
                         double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, expressionVariables, bonusItemStatModel);
-                        System.out.println("Multiplying " + statModel.getKey() + " item base stat " + statData.getBase() + " is now " + adjustedBase);
-                        System.out.println("Multiplying " + statModel.getKey() + " item bonus stat " + statData.getBonus() + " is now " + adjustedBonus);
                         statData.base = adjustedBase;
                         statData.bonus = adjustedBonus;
                     });
@@ -2437,8 +2446,6 @@ public class SkyBlockIsland {
                         expressionVariables.put(pair.getKey(), pair.getValue());
                         double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), null, expressionVariables, bonusPetAbilityStatModel);
                         double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), null, expressionVariables, bonusPetAbilityStatModel);
-                        System.out.println("Multiplying " + statModel.getKey() + " pet base stat " + statData.getBase() + " is now " + adjustedBase);
-                        System.out.println("Multiplying " + statModel.getKey() + " pet bonus stat " + statData.getBonus() + " is now " + adjustedBonus);
                         statData.base = adjustedBase;
                         statData.bonus = adjustedBonus;
                     });
@@ -2544,16 +2551,12 @@ public class SkyBlockIsland {
                             int start = NumberUtil.toInt(constraintParts[0]);
                             int end = NumberUtil.toInt(constraintParts[1]);
 
-                            if (hour >= start && hour <= end) {
-                                System.out.println("Using " + compoundTag.getPath("tag.ExtraAttributes.id").getValue() + ", stat " + statModel.getKey() + ", hour: " + hour);
+                            if (hour >= start && hour <= end)
                                 insideConstraint.setTrue(); // At Least 1 Constraint is True
-                            }
                         });
 
-                        if (insideConstraint.isFalse()) {
-                            System.out.println("Not using " + compoundTag.getPath("tag.ExtraAttributes.id").getValue() + ", stat " + statModel.getKey() + ", hour: " + hour);
+                        if (insideConstraint.isFalse())
                             value.set(0.0);
-                        }
                     } else {
                         boolean multiply = false;
 
@@ -2768,7 +2771,6 @@ public class SkyBlockIsland {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public SkyBlockIsland deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
             Gson gson = SimplifiedApi.getGson();
             SkyBlockIsland skyBlockIsland = new SkyBlockIsland();
@@ -2786,6 +2788,31 @@ public class SkyBlockIsland {
                 Member member = gson.fromJson(memberJson, Member.class);
                 member.uniqueId = StringUtil.toUUID(key);
                 JsonObject memberObject = JsonParser.parseString(memberJson).getAsJsonObject();
+
+                // Melody's Harp
+                if (memberObject.has("harp_quest")) {
+                    Map<String, Object> harpQuest = gson.fromJson(memberObject.getAsJsonObject("harp_quest"), Map.class);
+                    MelodyHarp melodyHarp = new MelodyHarp();
+
+                    melodyHarp.talismanClaimed = (boolean) harpQuest.remove("claimed_talisman");
+                    melodyHarp.selectedSong = (String) harpQuest.remove("selected_song");
+                    melodyHarp.selectedSongTimestamp = new SkyBlockDate.RealTime((long) harpQuest.remove("selected_song_epoch") * 1000);
+
+                    ConcurrentLinkedMap<String, ConcurrentMap<String, Integer>> songMap = Concurrent.newLinkedMap();
+                    harpQuest.forEach((harpKey, harpValue) -> {
+                        String songKey = harpKey.replace("song_", "");
+                        String songName = songKey.replaceAll("_((best|perfect)_)?completions?", "");
+                        String category = songKey.replace(songName, "");
+
+                        if (!songMap.containsKey(songName))
+                            songMap.put(songName, Concurrent.newMap());
+
+                        songMap.get(songName).put(category, (Integer) harpValue);
+                    });
+
+                    songMap.stream().forEach(entry -> melodyHarp.songs.put(entry.getKey(), new MelodyHarp.Song(entry.getValue().get("best_completion"), entry.getValue().get("best_completion"), entry.getValue().get("best_completion"))));
+                    member.melodyHarp = melodyHarp;
+                }
 
                 // Mining
                 if (memberObject.has("mining_core")) {
