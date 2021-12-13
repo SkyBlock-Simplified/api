@@ -240,9 +240,13 @@ public class NumberUtil {
     }
 
     public static <N extends Number> N to(Object value, Class<N> clazz) {
+        return to(value, 0, clazz);
+    }
+
+    public static <N extends Number> N to(Object value, Number defaultValue, Class<N> clazz) {
         Reflection number = new Reflection(clazz);
-        String numValue = String.valueOf(value);
-        return clazz.cast(number.newInstance(isCreatable(numValue) ? numValue : String.valueOf(0)));
+        String strValue = String.valueOf(value);
+        return clazz.cast(number.newInstance(isCreatable(strValue) ? new BigDecimal(strValue).toPlainString() : String.valueOf(defaultValue)));
     }
 
     /**
