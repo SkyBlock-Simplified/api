@@ -6,11 +6,13 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.yaml.YamlConfig;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.ehcache.core.Ehcache;
 
 import javax.cache.expiry.Duration;
 import java.io.File;
@@ -46,7 +48,7 @@ public abstract class SqlConfig extends YamlConfig {
     @Setter
     protected boolean databaseCaching = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_CACHING", "true"));
 
-    private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseEntityTTL = Concurrent.newMap();
+    private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseModels = Concurrent.newMap();
 
     @Getter
     @Setter
@@ -60,29 +62,41 @@ public abstract class SqlConfig extends YamlConfig {
     @Setter
     protected SqlDriver databaseDriver = SqlDriver.MariaDB;
 
+    @Getter
+    protected Level loggingLevel;
+
     public SqlConfig(File configDir, String fileName, String... header) {
         super(configDir, fileName, header);
-        this.setLoggingLevel(Level.WARN);
+        this.setLoggingLevel(this.isDatabaseDebugMode() ? Level.DEBUG : Level.WARN);
     }
 
-    Class<? extends SqlModel> addEntityTTL(Class<? extends SqlModel> entity, CacheExpiry cacheExpiry) {
-        this.databaseEntityTTL.put(entity, cacheExpiry);
-        return entity;
+    Class<? extends SqlModel> addDatabaseModel(Class<? extends SqlModel> model, CacheExpiry cacheExpiry) {
+        this.databaseModels.put(model, cacheExpiry);
+        this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel());
+        return model;
     }
 
-    public ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> getDatabaseEntityTTL() {
-        return Concurrent.newUnmodifiableMap(this.databaseEntityTTL);
+    public final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> getDatabaseModels() {
+        return Concurrent.newUnmodifiableMap(this.databaseModels);
+    }
+
+    private Logger getLogger(String loggerName) {
+        return (Logger) org.slf4j.LoggerFactory.getLogger(loggerName);
     }
 
     public final void setLoggingLevel(Level level) {
-        Logger hibernateLogger = (Logger) org.slf4j.LoggerFactory.getLogger("org.hibernate");
-        Logger ehcacheLogger = (Logger) org.slf4j.LoggerFactory.getLogger("org.ehcache");
-        Logger hikariLogger = (Logger) org.slf4j.LoggerFactory.getLogger("com.zaxxer.hikari");
-        Logger jbossLogger = (Logger) org.slf4j.LoggerFactory.getLogger("org.jboss.logging");
-        hibernateLogger.setLevel(level);
-        ehcacheLogger.setLevel(level);
-        hikariLogger.setLevel(level);
-        jbossLogger.setLevel(level);
+        this.loggingLevel = level;
+
+        // Set Logging Level
+        this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, "default-update-timestamps-region")).setLevel(this.getLoggingLevel());
+        this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, "default-query-results-region")).setLevel(this.getLoggingLevel());
+        this.getLogger("org.hibernate").setLevel(this.getLoggingLevel());
+        this.getLogger("org.ehcache").setLevel(this.getLoggingLevel());
+        this.getLogger("com.zaxxer.hikari").setLevel(this.getLoggingLevel());
+        this.getLogger("org.jboss.logging").setLevel(this.getLoggingLevel());
+
+        // SQL Model Loggers
+        this.databaseModels.forEach((model, cacheExpiry) -> this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel()));
     }
 
     @AllArgsConstructor

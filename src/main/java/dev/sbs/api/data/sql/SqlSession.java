@@ -74,17 +74,17 @@ public final class SqlSession {
 
             @Override
             public Duration getExpiryForCreation() {
-                return getConfig().getDatabaseEntityTTL().get(tClass).getCreation();
+                return getConfig().getDatabaseModels().get(tClass).getCreation();
             }
 
             @Override
             public Duration getExpiryForAccess() {
-                return getConfig().getDatabaseEntityTTL().get(tClass).getAccess();
+                return getConfig().getDatabaseModels().get(tClass).getAccess();
             }
 
             @Override
             public Duration getExpiryForUpdate() {
-                return getConfig().getDatabaseEntityTTL().get(tClass).getUpdate();
+                return getConfig().getDatabaseModels().get(tClass).getUpdate();
             }
 
         });
@@ -114,18 +114,18 @@ public final class SqlSession {
                 put("hibernate.order_inserts", true);
                 put("hibernate.order_updates", true);
 
+                // Prepared Statements
+                put("hikari.cachePrepStmts", true);
+                put("hikari.prepStmtCacheSize", 256);
+                put("hikari.prepStmtCacheSqlLimit", 2048);
+                put("hikari.useServerPrepStmts", true);
+
                 // Caching
                 put("hibernate.cache.use_second_level_cache", config.isDatabaseCaching());
                 put("hibernate.cache.use_query_cache", config.isDatabaseCaching());
                 put("hibernate.cache.region.factory_class", "org.hibernate.cache.jcache.JCacheRegionFactory");
                 put("hibernate.cache.provider_class", "org.ehcache.jsr107.EhcacheCachingProvider");
                 put("hibernate.cache.use_structured_entries", config.isDatabaseDebugMode());
-
-                // Prepared Statements
-                put("hikari.cachePrepStmts", true);
-                put("hikari.prepStmtCacheSize", 256);
-                put("hikari.prepStmtCacheSqlLimit", 2048);
-                put("hikari.useServerPrepStmts", true);
             }};
             registryBuilder.applySettings(properties);
             this.serviceRegistry = registryBuilder.build();
@@ -153,7 +153,7 @@ public final class SqlSession {
                     } else
                         cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
 
-                    return config.addEntityTTL(tClass, cacheExpiry);
+                    return config.addDatabaseModel(tClass, cacheExpiry);
                 })
                 .map(this::buildCacheConfiguration)
                 .forEach(sources::addAnnotatedClass);
