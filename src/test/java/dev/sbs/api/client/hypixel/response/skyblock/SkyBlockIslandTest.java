@@ -18,6 +18,8 @@ import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
@@ -59,11 +61,11 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats(); // TODO: Work in Progress
-            ConcurrentMap<String, Double> playerStatMap = playerStats.getStats()
+            SkyBlockIsland.PlayerStats playerStats = member.getPlayerStats();
+            ConcurrentLinkedMap<String, String> playerStatMap = playerStats.getStats()
                 .stream()
-                .map(entry -> Pair.of(entry.getKey().getKey(), entry.getValue().getBase() + entry.getValue().getBonus()))
-                .collect(Concurrent.toMap());
+                .map(entry -> Pair.of(entry.getKey().getKey(), FormatUtil.format("{0} : {1} : {2}", entry.getValue().getBase(), entry.getValue().getBonus(), entry.getValue().getBase() + entry.getValue().getBonus())))
+                .collect(Concurrent.toLinkedMap());
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);

@@ -1864,11 +1864,6 @@ public class SkyBlockIsland {
             statModels.forEach(statModel -> this.stats.put(statModel, new Data(statModel.getBaseValue(), 0)));
             ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
-            // TODO: Implement
-            //  Account Upgrades:   +5 Magic Find
-            //  Melody's Harp:      +28 Intelligence
-            //  Mining Core
-
             // TODO: Optimizer Request: No API Data
             //  Booster Cookie:     +15 Magic Find
             //  Beacon:             +5 Magic Find
@@ -1876,6 +1871,7 @@ public class SkyBlockIsland {
             // TODO: Optimizer Request: Missing API Data
             //  Defused Traps:      +6 Intelligence
             //  Bestiary:           +84 Health
+            //  Account Upgrades:   +5 Magic Find
 
             // TODO: Hypixel Bugs
             //  Catacombs:          2x Health
@@ -2350,9 +2346,6 @@ public class SkyBlockIsland {
                     optionalMagicFindStatModel.ifPresent(magicFindStatModel -> this.stats.get(magicFindStatModel).addBase(petScoreModels.size()));
                 }
 
-                System.out.println("Mining Speed Before: " + this.stats.get(miningSpeedModel).getTotal());
-                System.out.println("Mining Fortune Before: " + this.stats.get(miningFortuneModel).getTotal());
-
                 // --- Load Active Potions ---
                 member.getActivePotions().forEach(potion -> {
                     String effect = potion.getEffect();
@@ -2383,39 +2376,43 @@ public class SkyBlockIsland {
 
                         // Load Potion Brews
                         potion.getModifiers().forEach(modifier -> {
+                            ConcurrentList<PotionBrewModel> test = SimplifiedApi.getRepositoryOf(PotionBrewModel.class).findAll();
                             Optional<PotionBrewModel> optionalPotionBrewModel = SimplifiedApi.getRepositoryOf(PotionBrewModel.class).findFirst(
                                 Pair.of(PotionBrewModel::getKey, modifier.getKey().toUpperCase()),
                                 Pair.of(PotionBrewModel::getAmplified, modifier.getAmplifier())
                             );
 
                             optionalPotionBrewModel.ifPresent(potionBrewModel -> {
-                                ConcurrentList<PotionBrewBuffModel> potionBrewBuffModels = SimplifiedApi.getRepositoryOf(PotionBrewBuffModel.class).findAll();
+                                // Handle Brews
+                                SimplifiedApi.getRepositoryOf(PotionBrewBuffModel.class)
+                                    .findAll(PotionBrewBuffModel::getPotionBrew, potionBrewModel)
+                                    .forEach(potionBrewBuffModel -> {
+                                        final MutableBoolean isBuff = new MutableBoolean(true);
 
-                                potionBrewBuffModels.forEach(potionBrewBuffModel -> {
-                                    final MutableBoolean isBuff = new MutableBoolean(true);
+                                        // Stats
+                                        statRepository.findFirst(StatModel::getKey, potionBrewBuffModel.getBuffKey())
+                                            .ifPresent(statModel -> {
+                                                if (statModel.getKey().equals(potionBrewBuffModel.getBuffKey())) {
+                                                    isBuff.setFalse();
+                                                    double existingValue = potionStatEffects.getOrDefault(statModel, 0.0);
 
-                                    potionStatEffects.forEach(entry -> {
-                                        if (potionBrewBuffModel.getBuffKey().equals(entry.getKey().getKey())) { // Stat
-                                            isBuff.setFalse();
+                                                    if (potionBrewBuffModel.isPercentage())
+                                                        potionStatEffects.put(statModel, existingValue * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
+                                                    else
+                                                        potionStatEffects.put(statModel, existingValue + potionBrewBuffModel.getBuffValue());
+                                                }
+                                            });
+
+                                        // Buffs
+                                        if (isBuff.get()) {
+                                            double existingValue = potionBuffEffects.getOrDefault(potionBrewBuffModel.getBuffKey(), 0.0);
 
                                             if (potionBrewBuffModel.isPercentage())
-                                                entry.setValue(entry.getValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
+                                                potionBuffEffects.put(potionBrewBuffModel.getBuffKey(), (potionBrewBuffModel.getBuffValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0)) + existingValue);
                                             else
-                                                entry.setValue(entry.getValue() + potionBrewBuffModel.getBuffValue());
+                                                potionBuffEffects.put(potionBrewBuffModel.getBuffKey(), (potionBrewBuffModel.getBuffValue() + potionBrewBuffModel.getBuffValue() + existingValue));
                                         }
                                     });
-
-                                    if (isBuff.get()) {
-                                        potionBuffEffects.forEach(entry -> {
-                                            if (potionBrewBuffModel.getBuffKey().equals(entry.getKey())) { // Buff
-                                                if (potionBrewBuffModel.isPercentage())
-                                                    entry.setValue(entry.getValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
-                                                else
-                                                    entry.setValue(entry.getValue() + potionBrewBuffModel.getBuffValue());
-                                            }
-                                        });
-                                    }
-                                });
                             });
                         });
 
@@ -2426,9 +2423,6 @@ public class SkyBlockIsland {
                         });
                     }
                 });
-
-                System.out.println("Mining Speed After: " + this.stats.get(miningSpeedModel).getTotal());
-                System.out.println("Mining Fortune After: " + this.stats.get(miningFortuneModel).getTotal());
 
                 // --- Load Bonus Item Stats ---
                 bonusItemStatModels.forEach((bonusItemStatModel, compoundTag) -> {
@@ -2796,21 +2790,26 @@ public class SkyBlockIsland {
 
                     melodyHarp.talismanClaimed = (boolean) harpQuest.remove("claimed_talisman");
                     melodyHarp.selectedSong = (String) harpQuest.remove("selected_song");
-                    melodyHarp.selectedSongTimestamp = new SkyBlockDate.RealTime((long) harpQuest.remove("selected_song_epoch") * 1000);
+                    long epoch = NumberUtil.createNumber(String.valueOf(harpQuest.remove("selected_song_epoch"))).longValue();
+
+                    if (epoch > 0)
+                        melodyHarp.selectedSongTimestamp = new SkyBlockDate.RealTime(epoch * 1000);
 
                     ConcurrentLinkedMap<String, ConcurrentMap<String, Integer>> songMap = Concurrent.newLinkedMap();
                     harpQuest.forEach((harpKey, harpValue) -> {
-                        String songKey = harpKey.replace("song_", "");
-                        String songName = songKey.replaceAll("_((best|perfect)_)?completions?", "");
-                        String category = songKey.replace(songName, "");
+                        if (harpValue instanceof Number) {
+                            String songKey = harpKey.replace("song_", "");
+                            String songName = songKey.replaceAll("_((best|perfect)_)?completions?", "");
+                            String category = songKey.replace(FormatUtil.format("{0}_", songName), "");
 
-                        if (!songMap.containsKey(songName))
-                            songMap.put(songName, Concurrent.newMap());
+                            if (!songMap.containsKey(songName))
+                                songMap.put(songName, Concurrent.newMap());
 
-                        songMap.get(songName).put(category, (Integer) harpValue);
+                            songMap.get(songName).put(category, NumberUtil.createNumber(harpValue.toString()).intValue());
+                        }
                     });
 
-                    songMap.stream().forEach(entry -> melodyHarp.songs.put(entry.getKey(), new MelodyHarp.Song(entry.getValue().get("best_completion"), entry.getValue().get("best_completion"), entry.getValue().get("best_completion"))));
+                    songMap.stream().forEach(entry -> melodyHarp.songs.put(entry.getKey(), new MelodyHarp.Song(entry.getValue().get("best_completion"), entry.getValue().get("completions"), entry.getValue().get("perfect_completions"))));
                     member.melodyHarp = melodyHarp;
                 }
 
