@@ -16,8 +16,8 @@
 DROP TABLE IF EXISTS `discord_application_requirements`;
 CREATE TABLE IF NOT EXISTS `discord_application_requirements` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` varchar(256) DEFAULT NULL,
   `ordinal` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -66,8 +66,8 @@ DROP TABLE IF EXISTS `discord_bot_emojis`;
 CREATE TABLE IF NOT EXISTS `discord_bot_emojis` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `emoji_id` bigint(20) unsigned NOT NULL,
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -86,7 +86,7 @@ DELETE FROM `discord_bot_emojis`;
 DROP TABLE IF EXISTS `discord_command_configs`;
 CREATE TABLE IF NOT EXISTS `discord_command_configs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(127) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `bot_owner` bit(1) NOT NULL DEFAULT b'0',
   `user_list` longtext NOT NULL DEFAULT '[]',
   `role_list` longtext NOT NULL DEFAULT '[]',
@@ -109,8 +109,8 @@ DELETE FROM `discord_command_configs`;
 DROP TABLE IF EXISTS `discord_embed_types`;
 CREATE TABLE IF NOT EXISTS `discord_embed_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` longtext NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
@@ -134,7 +134,7 @@ DROP TABLE IF EXISTS `discord_guilds`;
 CREATE TABLE IF NOT EXISTS `discord_guilds` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `reports_visible` bit(1) NOT NULL DEFAULT b'0',
   `bot_enabled` bit(1) NOT NULL DEFAULT b'1',
   `emoji_management` bit(1) NOT NULL DEFAULT b'0',
@@ -169,10 +169,10 @@ DROP TABLE IF EXISTS `discord_guild_applications`;
 CREATE TABLE IF NOT EXISTS `discord_guild_applications` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `application_type_key` varchar(127) NOT NULL,
-  `embed_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `application_type_key` VARCHAR(256) NOT NULL,
+  `embed_key` VARCHAR(256) DEFAULT NULL,
   `enabled` bit(1) NOT NULL DEFAULT b'0',
   `notes` longtext DEFAULT NULL,
   `live_at` timestamp NULL DEFAULT NULL,
@@ -196,7 +196,7 @@ DROP TABLE IF EXISTS `discord_guild_application_entries`;
 CREATE TABLE IF NOT EXISTS `discord_guild_application_entries` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `application_key` varchar(127) NOT NULL,
+  `application_key` VARCHAR(256) NOT NULL,
   `submitter_discord_id` bigint(20) unsigned NOT NULL,
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -215,10 +215,10 @@ DROP TABLE IF EXISTS `discord_guild_application_requirements`;
 CREATE TABLE IF NOT EXISTS `discord_guild_application_requirements` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `application_key` varchar(127) NOT NULL,
-  `requirement_key` varchar(127) NOT NULL,
-  `setting_eval_key` varchar(127) NOT NULL,
-  `setting_type_key` varchar(127) NOT NULL,
+  `application_key` VARCHAR(256) NOT NULL,
+  `requirement_key` VARCHAR(256) NOT NULL,
+  `setting_eval_key` VARCHAR(256) NOT NULL,
+  `setting_type_key` VARCHAR(256) NOT NULL,
   `value` longtext NOT NULL,
   `description` varchar(256) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -243,8 +243,8 @@ DROP TABLE IF EXISTS `discord_guild_application_types`;
 CREATE TABLE IF NOT EXISTS `discord_guild_application_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` varchar(256) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
@@ -262,7 +262,7 @@ DROP TABLE IF EXISTS `discord_guild_command_configs`;
 CREATE TABLE IF NOT EXISTS `discord_guild_command_configs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `enabled` bit(1) NOT NULL DEFAULT b'1',
   `user_list` longtext NOT NULL DEFAULT '[]',
   `role_list` longtext NOT NULL DEFAULT '[]',
@@ -285,9 +285,9 @@ DROP TABLE IF EXISTS `discord_guild_embeds`;
 CREATE TABLE IF NOT EXISTS `discord_guild_embeds` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
   `title` varchar(256) NOT NULL,
-  `type_key` varchar(127) NOT NULL DEFAULT 'RICH',
+  `type_key` VARCHAR(256) NOT NULL DEFAULT 'RICH',
   `color` int(11) NOT NULL DEFAULT 0,
   `url` longtext DEFAULT NULL,
   `description` longtext DEFAULT '',
@@ -323,7 +323,7 @@ DROP TABLE IF EXISTS `discord_guild_reports`;
 CREATE TABLE IF NOT EXISTS `discord_guild_reports` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `report_type_key` varchar(127) NOT NULL,
+  `report_type_key` VARCHAR(256) NOT NULL,
   `reported_discord_id` bigint(20) unsigned DEFAULT NULL,
   `reported_mojang_uuid` varchar(64) DEFAULT NULL,
   `submitter_discord_id` bigint(20) unsigned NOT NULL,
@@ -350,9 +350,9 @@ DROP TABLE IF EXISTS `discord_guild_report_types`;
 CREATE TABLE IF NOT EXISTS `discord_guild_report_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `description` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `description` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `guild_report_type` (`guild_id`,`key`) USING BTREE,
@@ -377,7 +377,7 @@ DROP TABLE IF EXISTS `discord_guild_reputation`;
 CREATE TABLE IF NOT EXISTS `discord_guild_reputation` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `reputation_type_key` varchar(127) NOT NULL,
+  `reputation_type_key` VARCHAR(256) NOT NULL,
   `reported_discord_id` bigint(20) unsigned NOT NULL,
   `submitter_discord_id` bigint(20) unsigned NOT NULL,
   `assignee_discord_id` bigint(20) unsigned DEFAULT NULL,
@@ -400,8 +400,8 @@ DROP TABLE IF EXISTS `discord_guild_reputation_types`;
 CREATE TABLE IF NOT EXISTS `discord_guild_reputation_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` longtext DEFAULT NULL,
   `enabled` bit(1) NOT NULL DEFAULT b'1',
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -421,7 +421,7 @@ DROP TABLE IF EXISTS `discord_guild_skyblock_events`;
 CREATE TABLE IF NOT EXISTS `discord_guild_skyblock_events` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `event_key` varchar(127) NOT NULL,
+  `event_key` VARCHAR(256) NOT NULL,
   `enabled` bit(1) NOT NULL DEFAULT b'1',
   `mention_roles` longtext NOT NULL DEFAULT '[]',
   `webhook_url` longtext DEFAULT NULL,
@@ -446,9 +446,9 @@ DROP TABLE IF EXISTS `discord_guild_tickets`;
 CREATE TABLE IF NOT EXISTS `discord_guild_tickets` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `guild_id` bigint(20) unsigned NOT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `embed_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `embed_key` VARCHAR(256) DEFAULT NULL,
   `enabled` bit(1) NOT NULL DEFAULT b'0',
   `notes` longtext DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -467,7 +467,7 @@ DELETE FROM `discord_guild_tickets`;
 DROP TABLE IF EXISTS `discord_optimizer_support_items`;
 CREATE TABLE IF NOT EXISTS `discord_optimizer_support_items` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `item_id` varchar(127) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `effects` longtext NOT NULL DEFAULT '{}',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`item_id`),
@@ -739,10 +739,10 @@ INSERT INTO `discord_sbs_legacy_donors` (`id`, `discord_id`, `amount`, `updated_
 DROP TABLE IF EXISTS `discord_settings`;
 CREATE TABLE IF NOT EXISTS `discord_settings` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `type_key` varchar(127) DEFAULT NULL,
-  `eval_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `type_key` VARCHAR(256) DEFAULT NULL,
+  `eval_key` VARCHAR(256) DEFAULT NULL,
   `value` longtext NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
@@ -762,8 +762,8 @@ DELETE FROM `discord_settings`;
 DROP TABLE IF EXISTS `discord_setting_evals`;
 CREATE TABLE IF NOT EXISTS `discord_setting_evals` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` varchar(256) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -783,8 +783,8 @@ INSERT INTO `discord_setting_evals` (`id`, `key`, `name`, `description`, `update
 DROP TABLE IF EXISTS `discord_setting_types`;
 CREATE TABLE IF NOT EXISTS `discord_setting_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
   UNIQUE KEY `id` (`id`)
@@ -808,14 +808,14 @@ INSERT INTO `discord_setting_types` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `discord_skyblock_events`;
 CREATE TABLE IF NOT EXISTS `discord_skyblock_events` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `emoji_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `emoji_key` VARCHAR(256) DEFAULT NULL,
   `description` longtext DEFAULT NULL,
   `enabled` bit(1) NOT NULL DEFAULT b'1',
   `status` longtext DEFAULT NULL,
-  `interval_expression` varchar(127) DEFAULT NULL,
-  `thirdparty_json_url` varchar(127) DEFAULT NULL,
+  `interval_expression` VARCHAR(256) DEFAULT NULL,
+  `thirdparty_json_url` VARCHAR(256) DEFAULT NULL,
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
@@ -833,10 +833,10 @@ DELETE FROM `discord_skyblock_events`;
 DROP TABLE IF EXISTS `discord_skyblock_event_timers`;
 CREATE TABLE IF NOT EXISTS `discord_skyblock_event_timers` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `event_key` varchar(127) NOT NULL,
-  `start_season_key` varchar(127) NOT NULL,
+  `event_key` VARCHAR(256) NOT NULL,
+  `start_season_key` VARCHAR(256) NOT NULL,
   `start_season_day` tinyint(31) unsigned NOT NULL,
-  `end_season_key` varchar(127) NOT NULL,
+  `end_season_key` VARCHAR(256) NOT NULL,
   `end_season_day` tinyint(31) unsigned NOT NULL,
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -917,10 +917,10 @@ INSERT INTO `flyway_schema_history` (`installed_rank`, `version`, `description`,
 DROP TABLE IF EXISTS `skyblock_accessories`;
 CREATE TABLE IF NOT EXISTS `skyblock_accessories` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `item_id` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `rarity_key` varchar(127) NOT NULL,
-  `family_key` varchar(127) DEFAULT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `rarity_key` VARCHAR(256) NOT NULL,
+  `family_key` VARCHAR(256) DEFAULT NULL,
   `family_rank` int(11) NOT NULL DEFAULT -1,
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -1125,7 +1125,7 @@ INSERT INTO `skyblock_accessories` (`id`, `item_id`, `name`, `rarity_key`, `fami
 DROP TABLE IF EXISTS `skyblock_accessory_enrichments`;
 CREATE TABLE IF NOT EXISTS `skyblock_accessory_enrichments` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `stat_key` varchar(127) NOT NULL,
+  `stat_key` VARCHAR(256) NOT NULL,
   `value` double(2,1) DEFAULT 1.0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`stat_key`) USING BTREE,
@@ -1154,8 +1154,8 @@ INSERT INTO `skyblock_accessory_enrichments` (`id`, `stat_key`, `value`, `update
 DROP TABLE IF EXISTS `skyblock_accessory_families`;
 CREATE TABLE IF NOT EXISTS `skyblock_accessory_families` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `reforges_stackable` bit(1) DEFAULT b'0',
   `stats_stackable` bit(1) DEFAULT b'0',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -1207,9 +1207,9 @@ INSERT INTO `skyblock_accessory_families` (`id`, `key`, `name`, `reforges_stacka
 DROP TABLE IF EXISTS `skyblock_bags`;
 CREATE TABLE IF NOT EXISTS `skyblock_bags` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `collection_item_id` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `collection_item_id` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`),
@@ -1232,7 +1232,7 @@ INSERT INTO `skyblock_bags` (`id`, `key`, `name`, `collection_item_id`, `updated
 DROP TABLE IF EXISTS `skyblock_bag_sizes`;
 CREATE TABLE IF NOT EXISTS `skyblock_bag_sizes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `bag_key` varchar(127) NOT NULL,
+  `bag_key` VARCHAR(256) NOT NULL,
   `collection_tier` tinyint(4) NOT NULL,
   `slot_count` smallint(6) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -1276,12 +1276,12 @@ INSERT INTO `skyblock_bag_sizes` (`id`, `bag_key`, `collection_tier`, `slot_coun
 DROP TABLE IF EXISTS `skyblock_bonus_armor_sets`;
 CREATE TABLE IF NOT EXISTS `skyblock_bonus_armor_sets` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `helmet_item_id` varchar(127) DEFAULT NULL,
-  `chestplate_item_id` varchar(127) DEFAULT NULL,
-  `leggings_item_id` varchar(127) DEFAULT NULL,
-  `boots_item_id` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `helmet_item_id` VARCHAR(256) DEFAULT NULL,
+  `chestplate_item_id` VARCHAR(256) DEFAULT NULL,
+  `leggings_item_id` VARCHAR(256) DEFAULT NULL,
+  `boots_item_id` VARCHAR(256) DEFAULT NULL,
   `effects` longtext NOT NULL DEFAULT '{}',
   `buff_effects` longtext NOT NULL DEFAULT '{}',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -1310,7 +1310,7 @@ INSERT INTO `skyblock_bonus_armor_sets` (`id`, `key`, `name`, `helmet_item_id`, 
 DROP TABLE IF EXISTS `skyblock_bonus_item_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_bonus_item_stats` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `item_id` varchar(127) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `stats` bit(1) NOT NULL DEFAULT b'1',
   `reforges` bit(1) NOT NULL DEFAULT b'1',
   `gems` bit(1) NOT NULL DEFAULT b'1',
@@ -1342,7 +1342,7 @@ INSERT INTO `skyblock_bonus_item_stats` (`id`, `item_id`, `stats`, `reforges`, `
 DROP TABLE IF EXISTS `skyblock_bonus_pet_ability_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_bonus_pet_ability_stats` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `ability_key` varchar(127) NOT NULL,
+  `ability_key` VARCHAR(256) NOT NULL,
   `effects` longtext NOT NULL DEFAULT '{}',
   `buff_effects` longtext NOT NULL DEFAULT '{}',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -1364,7 +1364,7 @@ INSERT INTO `skyblock_bonus_pet_ability_stats` (`id`, `ability_key`, `effects`, 
 DROP TABLE IF EXISTS `skyblock_bonus_reforge_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_bonus_reforge_stats` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `reforge_key` varchar(127) NOT NULL,
+  `reforge_key` VARCHAR(256) NOT NULL,
   `effects` longtext NOT NULL DEFAULT '{}',
   `buff_effects` longtext NOT NULL DEFAULT '{}',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -1390,7 +1390,7 @@ INSERT INTO `skyblock_bonus_reforge_stats` (`id`, `reforge_key`, `effects`, `buf
 DROP TABLE IF EXISTS `skyblock_collections`;
 CREATE TABLE IF NOT EXISTS `skyblock_collections` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `skill_key` varchar(127) NOT NULL,
+  `skill_key` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`skill_key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE,
@@ -1412,8 +1412,8 @@ INSERT INTO `skyblock_collections` (`id`, `skill_key`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_collection_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_collection_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `collection_key` varchar(127) NOT NULL,
-  `item_id` varchar(127) NOT NULL,
+  `collection_key` VARCHAR(256) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `max_tiers` int(11) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`item_id`) USING BTREE,
@@ -1495,7 +1495,7 @@ INSERT INTO `skyblock_collection_items` (`id`, `collection_key`, `item_id`, `max
 DROP TABLE IF EXISTS `skyblock_collection_item_tiers`;
 CREATE TABLE IF NOT EXISTS `skyblock_collection_item_tiers` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `collection_item_id` varchar(127) NOT NULL,
+  `collection_item_id` VARCHAR(256) NOT NULL,
   `tier` int(11) NOT NULL,
   `amount_required` int(11) NOT NULL,
   `unlocks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
@@ -2085,8 +2085,8 @@ INSERT INTO `skyblock_collection_item_tiers` (`id`, `collection_item_id`, `tier`
 DROP TABLE IF EXISTS `skyblock_craftingtable_recipes`;
 CREATE TABLE IF NOT EXISTS `skyblock_craftingtable_recipes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`)
@@ -2119,8 +2119,8 @@ INSERT INTO `skyblock_craftingtable_recipes` (`id`, `key`, `name`, `updated_at`)
 DROP TABLE IF EXISTS `skyblock_craftingtable_recipe_slots`;
 CREATE TABLE IF NOT EXISTS `skyblock_craftingtable_recipe_slots` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `recipe_key` varchar(127) NOT NULL,
-  `slot_key` varchar(127) NOT NULL,
+  `recipe_key` VARCHAR(256) NOT NULL,
+  `slot_key` VARCHAR(256) NOT NULL,
   `ordinal` tinyint(1) NOT NULL DEFAULT -1,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -2211,8 +2211,8 @@ INSERT INTO `skyblock_craftingtable_recipe_slots` (`id`, `recipe_key`, `slot_key
 DROP TABLE IF EXISTS `skyblock_craftingtable_slots`;
 CREATE TABLE IF NOT EXISTS `skyblock_craftingtable_slots` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `slot` tinyint(1) NOT NULL,
   `quick_craft` bit(1) NOT NULL DEFAULT b'0',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -2243,9 +2243,9 @@ INSERT INTO `skyblock_craftingtable_slots` (`id`, `key`, `name`, `slot`, `quick_
 DROP TABLE IF EXISTS `skyblock_dungeons`;
 CREATE TABLE IF NOT EXISTS `skyblock_dungeons` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `emoji_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `emoji_key` VARCHAR(256) DEFAULT NULL,
   `weight_multiplier` double(15,13) NOT NULL DEFAULT 0.0000000000000,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -2265,8 +2265,8 @@ INSERT INTO `skyblock_dungeons` (`id`, `key`, `name`, `emoji_key`, `weight_multi
 DROP TABLE IF EXISTS `skyblock_dungeon_bosses`;
 CREATE TABLE IF NOT EXISTS `skyblock_dungeon_bosses` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -2291,9 +2291,9 @@ INSERT INTO `skyblock_dungeon_bosses` (`id`, `key`, `name`, `description`, `upda
 DROP TABLE IF EXISTS `skyblock_dungeon_classes`;
 CREATE TABLE IF NOT EXISTS `skyblock_dungeon_classes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `emoji_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `emoji_key` VARCHAR(256) DEFAULT NULL,
   `weight_multiplier` double(15,13) NOT NULL DEFAULT 0.0000000000000,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -2317,7 +2317,7 @@ INSERT INTO `skyblock_dungeon_classes` (`id`, `key`, `name`, `emoji_key`, `weigh
 DROP TABLE IF EXISTS `skyblock_dungeon_fairy_souls`;
 CREATE TABLE IF NOT EXISTS `skyblock_dungeon_fairy_souls` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `room` varchar(127) NOT NULL,
+  `room` VARCHAR(256) NOT NULL,
   `description` longtext NOT NULL,
   `where` longtext NOT NULL,
   `walkable` bit(1) NOT NULL DEFAULT b'1',
@@ -2345,10 +2345,10 @@ INSERT INTO `skyblock_dungeon_fairy_souls` (`id`, `room`, `description`, `where`
 DROP TABLE IF EXISTS `skyblock_dungeon_floors`;
 CREATE TABLE IF NOT EXISTS `skyblock_dungeon_floors` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `dungeon_key` varchar(127) NOT NULL,
+  `dungeon_key` VARCHAR(256) NOT NULL,
   `floor` tinyint(1) NOT NULL,
-  `floor_size_key` varchar(127) DEFAULT NULL,
-  `floor_boss_key` varchar(127) DEFAULT NULL,
+  `floor_size_key` VARCHAR(256) DEFAULT NULL,
+  `floor_boss_key` VARCHAR(256) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `dungeon_floor` (`dungeon_key`,`floor`),
@@ -2377,8 +2377,8 @@ INSERT INTO `skyblock_dungeon_floors` (`id`, `dungeon_key`, `floor`, `floor_size
 DROP TABLE IF EXISTS `skyblock_dungeon_floor_sizes`;
 CREATE TABLE IF NOT EXISTS `skyblock_dungeon_floor_sizes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE
@@ -2470,9 +2470,9 @@ INSERT INTO `skyblock_dungeon_levels` (`id`, `level`, `total_exp_required`, `sta
 DROP TABLE IF EXISTS `skyblock_enchantments`;
 CREATE TABLE IF NOT EXISTS `skyblock_enchantments` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `family_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `family_key` VARCHAR(256) DEFAULT NULL,
   `description` longtext NOT NULL,
   `required_level` tinyint(1) NOT NULL DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -2593,8 +2593,8 @@ INSERT INTO `skyblock_enchantments` (`id`, `key`, `name`, `family_key`, `descrip
 DROP TABLE IF EXISTS `skyblock_enchantment_families`;
 CREATE TABLE IF NOT EXISTS `skyblock_enchantment_families` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
   UNIQUE KEY `id` (`id`)
@@ -2621,8 +2621,8 @@ INSERT INTO `skyblock_enchantment_families` (`id`, `key`, `name`, `updated_at`) 
 DROP TABLE IF EXISTS `skyblock_enchantment_groups`;
 CREATE TABLE IF NOT EXISTS `skyblock_enchantment_groups` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` longtext DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -2642,8 +2642,8 @@ INSERT INTO `skyblock_enchantment_groups` (`id`, `key`, `name`, `description`, `
 DROP TABLE IF EXISTS `skyblock_enchantment_group_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_enchantment_group_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `group_key` varchar(127) NOT NULL,
-  `enchantment_key` varchar(127) NOT NULL,
+  `group_key` VARCHAR(256) NOT NULL,
+  `enchantment_key` VARCHAR(256) NOT NULL,
   `level` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
@@ -2894,9 +2894,9 @@ INSERT INTO `skyblock_enchantment_group_items` (`id`, `group_key`, `enchantment_
 DROP TABLE IF EXISTS `skyblock_enchantment_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_enchantment_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `enchantment_key` varchar(127) NOT NULL,
-  `stat_key` varchar(127) DEFAULT NULL,
-  `buff_key` varchar(127) DEFAULT NULL,
+  `enchantment_key` VARCHAR(256) NOT NULL,
+  `stat_key` VARCHAR(256) DEFAULT NULL,
+  `buff_key` VARCHAR(256) DEFAULT NULL,
   `base_value` double(6,2) NOT NULL DEFAULT 0.00,
   `level_bonus` double(6,2) NOT NULL,
   `percentage` bit(1) NOT NULL DEFAULT b'0',
@@ -3021,8 +3021,8 @@ INSERT INTO `skyblock_enchantment_stats` (`id`, `enchantment_key`, `stat_key`, `
 DROP TABLE IF EXISTS `skyblock_enchantment_types`;
 CREATE TABLE IF NOT EXISTS `skyblock_enchantment_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `enchantment_key` varchar(127) NOT NULL,
-  `reforge_type_key` varchar(127) NOT NULL,
+  `enchantment_key` VARCHAR(256) NOT NULL,
+  `reforge_type_key` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `enchantment_type` (`enchantment_key`,`reforge_type_key`) USING BTREE,
@@ -3158,8 +3158,8 @@ INSERT INTO `skyblock_enchantment_types` (`id`, `enchantment_key`, `reforge_type
 DROP TABLE IF EXISTS `skyblock_essence_perks`;
 CREATE TABLE IF NOT EXISTS `skyblock_essence_perks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `stat_key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `stat_key` VARCHAR(256) NOT NULL,
   `level_bonus` tinyint(1) NOT NULL,
   `permanent` bit(1) NOT NULL DEFAULT b'0',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -3256,8 +3256,8 @@ CREATE TABLE IF NOT EXISTS `skyblock_fairy_souls` (
   `x` double NOT NULL,
   `y` double NOT NULL,
   `z` double NOT NULL,
-  `location_key` varchar(127) DEFAULT NULL,
-  `location_area_key` varchar(127) DEFAULT NULL,
+  `location_key` VARCHAR(256) DEFAULT NULL,
+  `location_area_key` VARCHAR(256) DEFAULT NULL,
   `walkable` bit(1) NOT NULL DEFAULT b'1',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -3494,7 +3494,7 @@ INSERT INTO `skyblock_fairy_souls` (`id`, `x`, `y`, `z`, `location_key`, `locati
 DROP TABLE IF EXISTS `skyblock_formats`;
 CREATE TABLE IF NOT EXISTS `skyblock_formats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
   `code` char(1) NOT NULL,
   `rgb` int(11) DEFAULT NULL,
   `format` bit(1) NOT NULL DEFAULT b'0',
@@ -3536,9 +3536,9 @@ INSERT INTO `skyblock_formats` (`id`, `key`, `code`, `rgb`, `format`, `updated_a
 DROP TABLE IF EXISTS `skyblock_gemstones`;
 CREATE TABLE IF NOT EXISTS `skyblock_gemstones` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `stat_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `stat_key` VARCHAR(256) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE,
@@ -3563,9 +3563,9 @@ INSERT INTO `skyblock_gemstones` (`id`, `key`, `name`, `stat_key`, `updated_at`)
 DROP TABLE IF EXISTS `skyblock_gemstone_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_gemstone_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `gemstone_key` varchar(127) NOT NULL,
-  `type_key` varchar(127) NOT NULL,
-  `rarity_key` varchar(127) NOT NULL,
+  `gemstone_key` VARCHAR(256) NOT NULL,
+  `type_key` VARCHAR(256) NOT NULL,
+  `rarity_key` VARCHAR(256) NOT NULL,
   `value` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
@@ -3832,8 +3832,8 @@ INSERT INTO `skyblock_gemstone_stats` (`id`, `gemstone_key`, `type_key`, `rarity
 DROP TABLE IF EXISTS `skyblock_gemstone_types`;
 CREATE TABLE IF NOT EXISTS `skyblock_gemstone_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE
@@ -3854,8 +3854,8 @@ INSERT INTO `skyblock_gemstone_types` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_hotm_perks`;
 CREATE TABLE IF NOT EXISTS `skyblock_hotm_perks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `level_bonus` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -3877,8 +3877,8 @@ INSERT INTO `skyblock_hotm_perks` (`id`, `key`, `name`, `level_bonus`, `updated_
 DROP TABLE IF EXISTS `skyblock_hotm_perk_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_hotm_perk_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `perk_key` varchar(127) NOT NULL,
-  `stat_key` varchar(127) NOT NULL,
+  `perk_key` VARCHAR(256) NOT NULL,
+  `stat_key` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `hotm_stat` (`perk_key`,`stat_key`) USING BTREE,
@@ -3902,14 +3902,14 @@ INSERT INTO `skyblock_hotm_perk_stats` (`id`, `perk_key`, `stat_key`, `updated_a
 DROP TABLE IF EXISTS `skyblock_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(127) NOT NULL,
-  `material` varchar(127) DEFAULT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `material` VARCHAR(256) DEFAULT NULL,
   `durability` int(11) DEFAULT NULL,
   `skin` varchar(1023) DEFAULT NULL,
-  `furniture` varchar(127) DEFAULT NULL,
-  `rarity_key` varchar(127) DEFAULT NULL,
-  `item_id` varchar(127) NOT NULL,
-  `generator` varchar(127) DEFAULT NULL,
+  `furniture` VARCHAR(256) DEFAULT NULL,
+  `rarity_key` VARCHAR(256) DEFAULT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
+  `generator` VARCHAR(256) DEFAULT NULL,
   `generator_tier` int(11) DEFAULT NULL,
   `glowing` tinyint(1) DEFAULT NULL,
   `category` varchar(31) DEFAULT NULL,
@@ -3926,8 +3926,8 @@ CREATE TABLE IF NOT EXISTS `skyblock_items` (
   `description` varchar(1023) DEFAULT NULL,
   `ability_damage_scaling` double DEFAULT NULL,
   `enchantments` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `crystal` varchar(127) DEFAULT NULL,
-  `private_island` varchar(127) DEFAULT NULL,
+  `crystal` VARCHAR(256) DEFAULT NULL,
+  `private_island` VARCHAR(256) DEFAULT NULL,
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`item_id`) USING BTREE,
@@ -7302,8 +7302,8 @@ INSERT INTO `skyblock_items` (`id`, `name`, `material`, `durability`, `skin`, `f
 DROP TABLE IF EXISTS `skyblock_locations`;
 CREATE TABLE IF NOT EXISTS `skyblock_locations` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE
@@ -7337,9 +7337,9 @@ INSERT INTO `skyblock_locations` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_location_areas`;
 CREATE TABLE IF NOT EXISTS `skyblock_location_areas` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `location_key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `location_key` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE,
@@ -7439,9 +7439,9 @@ INSERT INTO `skyblock_location_areas` (`id`, `key`, `name`, `location_key`, `upd
 DROP TABLE IF EXISTS `skyblock_location_remotes`;
 CREATE TABLE IF NOT EXISTS `skyblock_location_remotes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `mode` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `mode` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `mode` (`mode`),
@@ -7473,8 +7473,8 @@ INSERT INTO `skyblock_location_remotes` (`id`, `key`, `name`, `mode`, `updated_a
 DROP TABLE IF EXISTS `skyblock_melodys_songs`;
 CREATE TABLE IF NOT EXISTS `skyblock_melodys_songs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `reward` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -7504,8 +7504,8 @@ INSERT INTO `skyblock_melodys_songs` (`id`, `key`, `name`, `reward`, `updated_at
 DROP TABLE IF EXISTS `skyblock_menus`;
 CREATE TABLE IF NOT EXISTS `skyblock_menus` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `has_command` bit(1) NOT NULL DEFAULT b'0',
   `has_sub_menu` bit(1) NOT NULL DEFAULT b'0',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -7550,9 +7550,9 @@ INSERT INTO `skyblock_menus` (`id`, `key`, `name`, `has_command`, `has_sub_menu`
 DROP TABLE IF EXISTS `skyblock_minions`;
 CREATE TABLE IF NOT EXISTS `skyblock_minions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `collection_key` varchar(127) DEFAULT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `collection_key` VARCHAR(256) DEFAULT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`),
@@ -7625,9 +7625,9 @@ INSERT INTO `skyblock_minions` (`id`, `key`, `collection_key`, `name`, `updated_
 DROP TABLE IF EXISTS `skyblock_minion_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_minion_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `minion_key` varchar(127) NOT NULL,
-  `collection_item_id` varchar(127) DEFAULT NULL,
-  `item_id` varchar(127) NOT NULL,
+  `minion_key` VARCHAR(256) NOT NULL,
+  `collection_item_id` VARCHAR(256) DEFAULT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `average_yield` decimal(10,0) NOT NULL DEFAULT 1,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -7719,8 +7719,8 @@ INSERT INTO `skyblock_minion_items` (`id`, `minion_key`, `collection_item_id`, `
 DROP TABLE IF EXISTS `skyblock_minion_tiers`;
 CREATE TABLE IF NOT EXISTS `skyblock_minion_tiers` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `minion_key` varchar(127) NOT NULL,
-  `tier` varchar(127) NOT NULL,
+  `minion_key` VARCHAR(256) NOT NULL,
+  `tier` VARCHAR(256) NOT NULL,
   `speed` tinyint(4) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`tier`) USING BTREE,
@@ -8373,9 +8373,9 @@ INSERT INTO `skyblock_minion_tiers` (`id`, `minion_key`, `tier`, `speed`, `updat
 DROP TABLE IF EXISTS `skyblock_minion_tier_upgrades`;
 CREATE TABLE IF NOT EXISTS `skyblock_minion_tier_upgrades` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `minion_tier` varchar(127) NOT NULL,
+  `minion_tier` VARCHAR(256) NOT NULL,
   `coin_cost` double(10,0) NOT NULL DEFAULT 0,
-  `item_cost` varchar(127) DEFAULT NULL,
+  `item_cost` VARCHAR(256) DEFAULT NULL,
   `item_quantity` smallint(6) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -9103,10 +9103,10 @@ CREATE TABLE IF NOT EXISTS `skyblock_npcs` (
   `x` double DEFAULT NULL,
   `y` double DEFAULT NULL,
   `z` double DEFAULT NULL,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `location_key` varchar(127) DEFAULT NULL,
-  `location_area_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `location_key` VARCHAR(256) DEFAULT NULL,
+  `location_area_key` VARCHAR(256) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE,
@@ -9314,12 +9314,12 @@ INSERT INTO `skyblock_npcs` (`id`, `x`, `y`, `z`, `key`, `name`, `location_key`,
 DROP TABLE IF EXISTS `skyblock_pets`;
 CREATE TABLE IF NOT EXISTS `skyblock_pets` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `lowest_rarity_key` varchar(127) DEFAULT NULL,
-  `skill_key` varchar(127) DEFAULT NULL,
-  `pet_type_key` varchar(127) DEFAULT NULL,
-  `emoji_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `lowest_rarity_key` VARCHAR(256) DEFAULT NULL,
+  `skill_key` VARCHAR(256) DEFAULT NULL,
+  `pet_type_key` VARCHAR(256) DEFAULT NULL,
+  `emoji_key` VARCHAR(256) DEFAULT NULL,
   `max_level` smallint(6) NOT NULL DEFAULT 100,
   `skin` longtext NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -9399,9 +9399,9 @@ INSERT INTO `skyblock_pets` (`id`, `key`, `name`, `lowest_rarity_key`, `skill_ke
 DROP TABLE IF EXISTS `skyblock_pet_abilities`;
 CREATE TABLE IF NOT EXISTS `skyblock_pet_abilities` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `pet_key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `pet_key` VARCHAR(256) NOT NULL,
   `ordinal` tinyint(1) NOT NULL DEFAULT 0,
   `description` longtext NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -9602,8 +9602,8 @@ INSERT INTO `skyblock_pet_abilities` (`id`, `key`, `name`, `pet_key`, `ordinal`,
 DROP TABLE IF EXISTS `skyblock_pet_ability_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_pet_ability_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `ability_key` varchar(127) NOT NULL,
-  `stat_key` varchar(127) DEFAULT NULL,
+  `ability_key` VARCHAR(256) NOT NULL,
+  `stat_key` VARCHAR(256) DEFAULT NULL,
   `rarities` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]',
   `base_value` double(5,2) NOT NULL DEFAULT 0.00,
   `level_bonus` double(18,15) NOT NULL DEFAULT 0.000000000000000,
@@ -10172,7 +10172,7 @@ INSERT INTO `skyblock_pet_exp_scales` (`id`, `value`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_pet_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_pet_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `item_id` varchar(127) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `percentage` bit(1) NOT NULL DEFAULT b'0',
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}',
@@ -10262,8 +10262,8 @@ INSERT INTO `skyblock_pet_scores` (`id`, `breakpoint`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_pet_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_pet_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `pet_key` varchar(127) NOT NULL,
-  `stat_key` varchar(127) DEFAULT NULL,
+  `pet_key` VARCHAR(256) NOT NULL,
+  `stat_key` VARCHAR(256) DEFAULT NULL,
   `ordinal` tinyint(1) NOT NULL DEFAULT 0,
   `rarities` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]',
   `base_value` double(5,2) NOT NULL DEFAULT 0.00,
@@ -10411,8 +10411,8 @@ INSERT INTO `skyblock_pet_stats` (`id`, `pet_key`, `stat_key`, `ordinal`, `rarit
 DROP TABLE IF EXISTS `skyblock_pet_types`;
 CREATE TABLE IF NOT EXISTS `skyblock_pet_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`)
@@ -10431,8 +10431,8 @@ INSERT INTO `skyblock_pet_types` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_potions`;
 CREATE TABLE IF NOT EXISTS `skyblock_potions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `buff` bit(1) NOT NULL DEFAULT b'1',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -10498,11 +10498,11 @@ INSERT INTO `skyblock_potions` (`id`, `key`, `name`, `description`, `buff`, `upd
 DROP TABLE IF EXISTS `skyblock_potion_brews`;
 CREATE TABLE IF NOT EXISTS `skyblock_potion_brews` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `rarity_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `rarity_key` VARCHAR(256) DEFAULT NULL,
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `source_npc_key` varchar(127) DEFAULT NULL,
+  `source_npc_key` VARCHAR(256) DEFAULT NULL,
   `coin_cost` double(10,0) NOT NULL DEFAULT 0,
   `amplified` tinyint(1) NOT NULL DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -10535,8 +10535,8 @@ INSERT INTO `skyblock_potion_brews` (`id`, `key`, `name`, `rarity_key`, `descrip
 DROP TABLE IF EXISTS `skyblock_potion_brew_buffs`;
 CREATE TABLE IF NOT EXISTS `skyblock_potion_brew_buffs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `potion_brew_key` varchar(127) NOT NULL,
-  `buff_key` varchar(127) NOT NULL,
+  `potion_brew_key` VARCHAR(256) NOT NULL,
+  `buff_key` VARCHAR(256) NOT NULL,
   `buff_value` double(10,0) NOT NULL,
   `percentage` bit(1) NOT NULL DEFAULT b'0',
   `amplified` tinyint(1) NOT NULL DEFAULT 0,
@@ -10571,8 +10571,8 @@ INSERT INTO `skyblock_potion_brew_buffs` (`id`, `potion_brew_key`, `buff_key`, `
 DROP TABLE IF EXISTS `skyblock_potion_groups`;
 CREATE TABLE IF NOT EXISTS `skyblock_potion_groups` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`)
@@ -10596,8 +10596,8 @@ INSERT INTO `skyblock_potion_groups` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_potion_group_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_potion_group_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `potion_group_key` varchar(127) NOT NULL,
-  `potion_key` varchar(127) NOT NULL,
+  `potion_group_key` VARCHAR(256) NOT NULL,
+  `potion_key` VARCHAR(256) NOT NULL,
   `potion_tier` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -10688,9 +10688,9 @@ INSERT INTO `skyblock_potion_group_items` (`id`, `potion_group_key`, `potion_key
 DROP TABLE IF EXISTS `skyblock_potion_mixins`;
 CREATE TABLE IF NOT EXISTS `skyblock_potion_mixins` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `slayer_key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `slayer_key` VARCHAR(256) NOT NULL,
   `slayer_level` tinyint(1) NOT NULL,
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}',
   `buff_effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}',
@@ -10717,10 +10717,10 @@ INSERT INTO `skyblock_potion_mixins` (`id`, `key`, `name`, `slayer_key`, `slayer
 DROP TABLE IF EXISTS `skyblock_potion_tiers`;
 CREATE TABLE IF NOT EXISTS `skyblock_potion_tiers` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `potion_key` varchar(127) NOT NULL,
+  `potion_key` VARCHAR(256) NOT NULL,
   `tier` tinyint(1) NOT NULL,
-  `ingredient_item_id` varchar(127) DEFAULT NULL,
-  `base_item_id` varchar(127) DEFAULT 'AWKWARD_POTION',
+  `ingredient_item_id` VARCHAR(256) DEFAULT NULL,
+  `base_item_id` VARCHAR(256) DEFAULT 'AWKWARD_POTION',
   `exp_yield` int(11) NOT NULL DEFAULT 0,
   `sell_price` double(10,0) NOT NULL DEFAULT 0,
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}',
@@ -10954,8 +10954,8 @@ INSERT INTO `skyblock_potion_tiers` (`id`, `potion_key`, `tier`, `ingredient_ite
 DROP TABLE IF EXISTS `skyblock_profiles`;
 CREATE TABLE IF NOT EXISTS `skyblock_profiles` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
   UNIQUE KEY `id` (`id`)
@@ -10991,8 +10991,8 @@ INSERT INTO `skyblock_profiles` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_rarities`;
 CREATE TABLE IF NOT EXISTS `skyblock_rarities` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `ordinal` tinyint(1) NOT NULL DEFAULT -1,
   `key_valid` bit(1) NOT NULL DEFAULT b'0',
   `pet_exp_offset` tinyint(1) DEFAULT 0,
@@ -11020,9 +11020,9 @@ INSERT INTO `skyblock_rarities` (`id`, `key`, `name`, `ordinal`, `key_valid`, `p
 DROP TABLE IF EXISTS `skyblock_reforges`;
 CREATE TABLE IF NOT EXISTS `skyblock_reforges` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `reforge_type_key` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `reforge_type_key` VARCHAR(256) NOT NULL,
   `blacksmith` bit(1) NOT NULL DEFAULT b'0',
   `stone` bit(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -11128,8 +11128,8 @@ INSERT INTO `skyblock_reforges` (`id`, `key`, `name`, `reforge_type_key`, `black
 DROP TABLE IF EXISTS `skyblock_reforge_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_reforge_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `rarity_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `rarity_key` VARCHAR(256) DEFAULT NULL,
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -11658,8 +11658,8 @@ INSERT INTO `skyblock_reforge_stats` (`id`, `key`, `rarity_key`, `effects`, `upd
 DROP TABLE IF EXISTS `skyblock_reforge_types`;
 CREATE TABLE IF NOT EXISTS `skyblock_reforge_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`)
@@ -11684,8 +11684,8 @@ INSERT INTO `skyblock_reforge_types` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_sacks`;
 CREATE TABLE IF NOT EXISTS `skyblock_sacks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
   UNIQUE KEY `id` (`id`)
@@ -11719,8 +11719,8 @@ INSERT INTO `skyblock_sacks` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_sack_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_sack_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `sack_key` varchar(127) NOT NULL,
-  `item_id` varchar(127) NOT NULL,
+  `sack_key` VARCHAR(256) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `sack_item` (`sack_key`,`item_id`),
@@ -11888,8 +11888,8 @@ INSERT INTO `skyblock_sack_items` (`id`, `sack_key`, `item_id`, `updated_at`) VA
 DROP TABLE IF EXISTS `skyblock_seasons`;
 CREATE TABLE IF NOT EXISTS `skyblock_seasons` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `ordinal` tinyint(1) NOT NULL DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
@@ -11919,7 +11919,7 @@ INSERT INTO `skyblock_seasons` (`id`, `key`, `name`, `ordinal`, `updated_at`) VA
 DROP TABLE IF EXISTS `skyblock_shop_bit_enchanted_books`;
 CREATE TABLE IF NOT EXISTS `skyblock_shop_bit_enchanted_books` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `enchantment_key` varchar(127) NOT NULL,
+  `enchantment_key` VARCHAR(256) NOT NULL,
   `bit_cost` smallint(6) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`enchantment_key`),
@@ -11940,8 +11940,8 @@ INSERT INTO `skyblock_shop_bit_enchanted_books` (`id`, `enchantment_key`, `bit_c
 DROP TABLE IF EXISTS `skyblock_shop_bit_items`;
 CREATE TABLE IF NOT EXISTS `skyblock_shop_bit_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `item_id` varchar(127) NOT NULL,
-  `bit_type_key` varchar(127) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
+  `bit_type_key` VARCHAR(256) NOT NULL,
   `bit_cost` smallint(6) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`item_id`),
@@ -11989,8 +11989,8 @@ INSERT INTO `skyblock_shop_bit_items` (`id`, `item_id`, `bit_type_key`, `bit_cos
 DROP TABLE IF EXISTS `skyblock_shop_bit_item_craftables`;
 CREATE TABLE IF NOT EXISTS `skyblock_shop_bit_item_craftables` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `bit_item_id` varchar(127) NOT NULL,
-  `item_id` varchar(127) NOT NULL,
+  `bit_item_id` VARCHAR(256) NOT NULL,
+  `item_id` VARCHAR(256) NOT NULL,
   `description` longtext DEFAULT NULL,
   `expression` longtext NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -12017,8 +12017,8 @@ INSERT INTO `skyblock_shop_bit_item_craftables` (`id`, `bit_item_id`, `item_id`,
 DROP TABLE IF EXISTS `skyblock_shop_bit_types`;
 CREATE TABLE IF NOT EXISTS `skyblock_shop_bit_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`),
   UNIQUE KEY `id` (`id`)
@@ -12037,8 +12037,8 @@ INSERT INTO `skyblock_shop_bit_types` (`id`, `key`, `name`, `updated_at`) VALUES
 DROP TABLE IF EXISTS `skyblock_shop_profile_upgrades`;
 CREATE TABLE IF NOT EXISTS `skyblock_shop_profile_upgrades` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `max_level` tinyint(1) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`key`) USING BTREE,
@@ -12060,12 +12060,12 @@ INSERT INTO `skyblock_shop_profile_upgrades` (`id`, `key`, `name`, `max_level`, 
 DROP TABLE IF EXISTS `skyblock_skills`;
 CREATE TABLE IF NOT EXISTS `skyblock_skills` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `description` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `description` VARCHAR(256) NOT NULL,
   `max_level` int(11) NOT NULL,
-  `item_id` varchar(127) DEFAULT NULL,
-  `emoji_key` varchar(127) DEFAULT NULL,
+  `item_id` VARCHAR(256) DEFAULT NULL,
+  `emoji_key` VARCHAR(256) DEFAULT NULL,
   `cosmetic` bit(1) NOT NULL DEFAULT b'1',
   `weight_exponent` double(15,13) NOT NULL DEFAULT 0.0000000000000,
   `weight_divider` double(10,0) NOT NULL DEFAULT 0,
@@ -12099,7 +12099,7 @@ INSERT INTO `skyblock_skills` (`id`, `key`, `name`, `description`, `max_level`, 
 DROP TABLE IF EXISTS `skyblock_skill_levels`;
 CREATE TABLE IF NOT EXISTS `skyblock_skill_levels` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `skill_key` varchar(127) NOT NULL,
+  `skill_key` VARCHAR(256) NOT NULL,
   `level` int(11) NOT NULL,
   `total_exp_required` double NOT NULL,
   `unlocks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]',
@@ -12664,9 +12664,9 @@ INSERT INTO `skyblock_skill_levels` (`id`, `skill_key`, `level`, `total_exp_requ
 DROP TABLE IF EXISTS `skyblock_slayers`;
 CREATE TABLE IF NOT EXISTS `skyblock_slayers` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
-  `emoji_key` varchar(127) DEFAULT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `emoji_key` VARCHAR(256) DEFAULT NULL,
   `weight_divider` double(6,0) NOT NULL DEFAULT 0,
   `weight_modifier` double(6,4) NOT NULL DEFAULT 0.0000,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -12690,7 +12690,7 @@ INSERT INTO `skyblock_slayers` (`id`, `key`, `name`, `emoji_key`, `weight_divide
 DROP TABLE IF EXISTS `skyblock_slayer_levels`;
 CREATE TABLE IF NOT EXISTS `skyblock_slayer_levels` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `slayer_key` varchar(127) NOT NULL,
+  `slayer_key` VARCHAR(256) NOT NULL,
   `level` tinyint(1) NOT NULL DEFAULT 0,
   `total_exp_required` double NOT NULL,
   `effects` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}',
@@ -12748,10 +12748,10 @@ INSERT INTO `skyblock_slayer_levels` (`id`, `slayer_key`, `level`, `total_exp_re
 DROP TABLE IF EXISTS `skyblock_stats`;
 CREATE TABLE IF NOT EXISTS `skyblock_stats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(127) NOT NULL,
-  `name` varchar(127) NOT NULL,
+  `key` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   `symbol_code` varchar(4) NOT NULL,
-  `format_key` varchar(127) DEFAULT NULL,
+  `format_key` VARCHAR(256) DEFAULT NULL,
   `ordinal` tinyint(4) NOT NULL,
   `multipliable` bit(1) NOT NULL DEFAULT b'0',
   `base_value` smallint(1) NOT NULL DEFAULT 0,
