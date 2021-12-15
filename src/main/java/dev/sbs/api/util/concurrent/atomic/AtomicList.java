@@ -3,7 +3,12 @@ package dev.sbs.api.util.concurrent.atomic;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ListIterator;
 
 public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCollection<E, T> implements List<E> {
 
@@ -149,6 +154,10 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 			if (this.ref.compareAndSet(current, modified))
 				return result;
 		}
+	}
+
+	public void reverse() {
+		Collections.reverse(this);
 	}
 
 	@Override

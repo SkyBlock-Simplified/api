@@ -4,7 +4,11 @@ import dev.sbs.api.util.concurrent.ConcurrentList;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -137,6 +141,11 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 
 	@Override
 	public final boolean retainAll(@NotNull Collection<?> collection) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public final void reverse() {
 		throw new UnsupportedOperationException();
 	}
 
