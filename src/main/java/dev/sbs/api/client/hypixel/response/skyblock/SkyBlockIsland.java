@@ -371,10 +371,6 @@ public class SkyBlockIsland {
             return new Essence(this.essenceUndead, this.essenceDiamond, this.essenceDragon, this.essenceGold, this.essenceIce, this.essenceWither, this.essenceSpider);
         }
 
-        public MelodyHarp getMelodyHarp() {
-            return this.melodyHarp;
-        }
-
         public Minion getMinion(String minionName) {
             return this.getMinion(SimplifiedApi.getRepositoryOf(MinionModel.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
         }
