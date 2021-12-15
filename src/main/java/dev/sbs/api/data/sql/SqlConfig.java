@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.yaml.YamlConfig;
 import dev.sbs.api.util.concurrent.Concurrent;
@@ -72,7 +72,7 @@ public abstract class SqlConfig extends YamlConfig {
 
     Class<? extends SqlModel> addDatabaseModel(Class<? extends SqlModel> model, CacheExpiry cacheExpiry) {
         this.databaseModels.put(model, cacheExpiry);
-        this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel());
         return model;
     }
 
@@ -80,23 +80,19 @@ public abstract class SqlConfig extends YamlConfig {
         return Concurrent.newUnmodifiableMap(this.databaseModels);
     }
 
-    private Logger getLogger(String loggerName) {
-        return (Logger) org.slf4j.LoggerFactory.getLogger(loggerName);
-    }
-
     public final void setLoggingLevel(Level level) {
         this.loggingLevel = level;
 
         // Set Logging Level
-        this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, "default-update-timestamps-region")).setLevel(this.getLoggingLevel());
-        this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, "default-query-results-region")).setLevel(this.getLoggingLevel());
-        this.getLogger("org.hibernate").setLevel(this.getLoggingLevel());
-        this.getLogger("org.ehcache").setLevel(this.getLoggingLevel());
-        this.getLogger("com.zaxxer.hikari").setLevel(this.getLoggingLevel());
-        this.getLogger("org.jboss.logging").setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, "default-update-timestamps-region")).setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, "default-query-results-region")).setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog("org.hibernate").setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog("org.ehcache").setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog("com.zaxxer.hikari").setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog("org.jboss.logging").setLevel(this.getLoggingLevel());
 
         // SQL Model Loggers
-        this.databaseModels.forEach((model, cacheExpiry) -> this.getLogger(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel()));
+        this.databaseModels.forEach((model, cacheExpiry) -> SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel()));
     }
 
     @AllArgsConstructor

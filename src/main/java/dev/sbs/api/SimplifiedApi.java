@@ -142,6 +142,7 @@ import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import feign.gson.DoubleToIntMapTypeAdapter;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.time.Instant;
@@ -241,11 +242,11 @@ public class SimplifiedApi {
     }
 
     public static Logger getLog(Class<?> tClass) {
-        return (Logger) org.slf4j.LoggerFactory.getLogger(tClass);
+        return (Logger) LoggerFactory.getLogger(tClass);
     }
 
     public static Logger getLog(String name) {
-        return (Logger) org.slf4j.LoggerFactory.getLogger(name);
+        return (Logger) LoggerFactory.getLogger(name);
     }
 
     public static NbtFactory getNbtFactory() {
