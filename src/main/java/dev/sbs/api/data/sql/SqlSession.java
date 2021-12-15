@@ -4,6 +4,8 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.function.VoidSessionFunction;
+import dev.sbs.api.manager.service.ServiceManager;
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
 import org.ehcache.jsr107.EhcacheCachingProvider;
@@ -30,14 +32,28 @@ import java.util.function.Function;
 public final class SqlSession {
 
     private StandardServiceRegistry serviceRegistry;
+    private final ServiceManager serviceManager = new ServiceManager();
+
     @Getter
     private SessionFactory sessionFactory;
+
     @Getter
     private final SqlConfig config;
+
     @Getter
     private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
+
     @Getter
     private boolean active;
+
+    @Getter
+    private boolean cached = false;
+
+    @Getter
+    private long initializationTime;
+
+    @Getter
+    private long startupTime;
 
     public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
         this.config = config;
@@ -93,8 +109,24 @@ public final class SqlSession {
         return tClass;
     }
 
+    public void cacheRepositories() {
+        if (!this.isCached()) {
+            this.cached = true;
+            long startTime = System.currentTimeMillis();
+
+            // Provide SqlRepositories
+            for (Class<? extends SqlRepository<? extends SqlModel>> repository : this.getRepositories())
+                serviceManager.addRaw(repository, new Reflection(repository).newInstance(this));
+
+            this.startupTime = System.currentTimeMillis() - startTime;
+        } else
+            throw new SqlException("Database has already cached repositories!");
+    }
+
     public void initialize() {
         if (!this.isActive()) {
+            long startTime = System.currentTimeMillis();
+
             // Build Service Registry
             StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
             Properties properties = new Properties() {{
@@ -166,6 +198,7 @@ public final class SqlSession {
             Metadata metadata = sources.getMetadataBuilder().build();
             this.sessionFactory = metadata.buildSessionFactory();
             this.active = true;
+            this.initializationTime = System.currentTimeMillis() - startTime;
         } else
             throw new SqlException("Database is already initialized!");
     }
