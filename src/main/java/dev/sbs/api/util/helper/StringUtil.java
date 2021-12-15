@@ -143,6 +143,11 @@ public class StringUtil {
      */
     private static final Pattern STRIP_ACCENTS_PATTERN = Pattern.compile("\\p{InCombiningDiacriticalMarks}+"); //$NON-NLS-1$
 
+    // UUID Pattern Matching
+    private static final Pattern UUID_REGEX = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}");
+    private static final Pattern TRIMMED_UUID_REGEX = Pattern.compile("[a-f0-9]{12}4[a-f0-9]{3}[89aAbB][a-f0-9]{15}");
+    private static final Pattern ADD_UUID_HYPHENS_REGEX = Pattern.compile("([a-f0-9]{8})([a-f0-9]{4})(4[a-f0-9]{3})([89aAbB][a-f0-9]{3})([a-f0-9]{12})");
+
     private StringUtil() { }
 
     /**
@@ -468,7 +473,7 @@ public class StringUtil {
      * <p>Capitalizes a String changing the first character to title case as
      * per {@link Character#toTitleCase(int)}. No other characters are changed.</p>
      *
-     * <p>For a word based algorithm, see {@link StringUtil#capitalize(String)}.
+     * <p>For a word based algorithm, see {@link WordUtil#capitalize(String)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
@@ -4825,24 +4830,42 @@ public class StringUtil {
         return new StringBuilder(noOfItems * 16);
     }
 
-    /**
-     * Fixes the string representation of a UUID to contain dashes.
-     *
-     * @param uniqueId Unique id without dashes.
-     * @return Unique id with dashes.
-     */
-    public static String fixUUID(String uniqueId) {
-        return RegexUtil.UUID_REGEX.matcher((isNotEmpty(uniqueId) ? uniqueId : "").replace("-", "")).replaceAll("$1-$2-$3-$4-$5");
+    public static boolean isUUID(String input) {
+        return isNotEmpty(input) && (input.matches(UUID_REGEX.pattern()) || input.matches(TRIMMED_UUID_REGEX.pattern()));
     }
 
     /**
      * Converts a string representation (with or without dashes) of a UUID to the {@link UUID} class.
      *
-     * @param uniqueId Unique id to convert.
-     * @return Converted unique id.
+     * @param input unique id to convert.
+     * @return converted unique id.
      */
-    public static UUID toUUID(String uniqueId) {
-        return UUID.fromString(fixUUID(uniqueId));
+    public static UUID toUUID(String input) {
+        if (!isUUID(input))
+            throw new IllegalArgumentException("Not a valid UUID!");
+
+        if (input.contains("-"))
+            return UUID.fromString(input); // Already has hyphens
+
+        return UUID.fromString(RegexUtil.replaceAll(input, ADD_UUID_HYPHENS_REGEX, "$1-$2-$3-$4-$5"));
+    }
+
+    /**
+     * Strips a unique id of it's hyphens.
+     *
+     * @return a hyphen-stripped unique id
+     */
+    public static String trimUUID(UUID uniqueId) {
+        return trimUUID(uniqueId != null ? uniqueId.toString() : "");
+    }
+
+    /**
+     * Strips a unique id of it's hyphens.
+     *
+     * @return a hyphen-stripped unique id
+     */
+    public static String trimUUID(String uniqueId) {
+        return isNotEmpty(uniqueId) ? uniqueId.replace("-", "") : "";
     }
 
     /**

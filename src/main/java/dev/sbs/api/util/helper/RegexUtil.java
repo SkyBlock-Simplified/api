@@ -18,27 +18,23 @@ public class RegexUtil {
 
     private static final transient LinkedHashMap<String, String> ORDERED_MESSAGES = new MaxSizeLinkedMap<>(100);
     private static final transient LastCharCompare CODE_COMPARE = new LastCharCompare();
+
+    // Minecraft Chat Formatting
+    public static final transient String SECTOR_SYMBOL = "\u00a7";
     private static final transient String ALL_PATTERN = "[0-9A-FK-ORa-fk-or]";
     private static final transient Pattern REPLACE_PATTERN = Pattern.compile("&&(?=" + ALL_PATTERN + ")");
-
-    public static final transient String SECTOR_SYMBOL = "\u00a7";
     public static final transient Pattern VANILLA_PATTERN = Pattern.compile(SECTOR_SYMBOL + "+(" + ALL_PATTERN + ")");
 
-    public static final Pattern UUID_REGEX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
+    // SkyBlock
     public static final Pattern SERVER_REGEX = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{2}) (m(?:ini|ega)?[0-9]{1,3}[A-Za-z])");
     public static final Pattern API_KEY_REGEX = Pattern.compile("§aYour new API key is §r§b" + HypixelApiBuilder.apiKeyRegex.pattern() + "§r");
     public static final Pattern TELEPORT_REGEX = Pattern.compile("§aWarped from the §r(.*?)§r§a to the §r(.*?)§r§a!§r");
     public static final Pattern MANA_REGEX = Pattern.compile("§aUsed §r§6(.*?)§r§a! §r§b\\(([\\d]+) Mana\\)§r");
+
+    // Other
+    public static final transient Pattern URL_PATTERN = Pattern.compile("((?:https?://)?[\\w._-]{2,})\\.([a-z]{2,6}(?:/\\S+)?)");
     public static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
     public static final Pattern LETTERS_NUMBERS = Pattern.compile("[^a-z A-Z:0-9/']");
-
-    //public static final transient Pattern LOG_PATTERN = Pattern.compile("\\{(\\{[\\d]+(?:,[^,}]+)*})}");
-    //public static final transient Pattern LOG_PATTERN2 = Pattern.compile("(?!.*\\{[^}]*$)\\{\\K(?:\\{[^}]*\\}|[^{}]*)+");
-    //public static final transient Pattern LOG_PATTERN3 = Pattern.compile("(?:(?<!')?\\{(?!'))((?:[^{}]*\\{[^{}]*}[^{}]*)*)(?:(?<!')}(?!')?)");
-
-    // Test Website: https://regex101.com/r/RFixIy/1
-    public static final transient Pattern LOG_PATTERN4 = Pattern.compile("(?<!')?\\{(?!')((?:[^{}]*\\{[^{}]*}[^{}]*)*)(?<!')}(?!')?");
-    public static final transient Pattern URL_PATTERN = Pattern.compile("((?:https?://)?[\\w._-]{2,})\\.([a-z]{2,6}(?:/\\S+)?)");
 
     static {
         CODE_COMPARE.addIgnoreCharacter('r');
