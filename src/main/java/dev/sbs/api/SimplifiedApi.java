@@ -136,7 +136,6 @@ import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
-import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
@@ -208,9 +207,8 @@ public class SimplifiedApi {
             // Initialize Database
             sqlSession.initialize();
 
-            // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : getAllSqlRepositoryClasses())
-                serviceManager.addRaw(repository, new Reflection(repository).newInstance(sqlSession));
+            // Cache Repositories
+            sqlSession.cacheRepositories();
         } else
             serviceManager.get(SqlSession.class).initialize(); // Reinitialize Database
     }
