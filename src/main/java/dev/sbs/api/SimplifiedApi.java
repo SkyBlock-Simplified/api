@@ -1,7 +1,6 @@
 package dev.sbs.api;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -176,7 +175,6 @@ public class SimplifiedApi {
 
         // Provide Services
         serviceManager.add(SimplifiedConfig.class, config);
-        serviceManager.add(LoggerContext.class, new LoggerContext());
         serviceManager.add(Gson.class, gson);
         serviceManager.add(NbtFactory.class, new NbtFactory());
         serviceManager.add(Scheduler.class, new Scheduler());
@@ -243,23 +241,15 @@ public class SimplifiedApi {
     }
 
     public static Logger getLog(Class<?> tClass) {
-        return getRootLogContext().getLogger(tClass);
+        return (Logger) org.slf4j.LoggerFactory.getLogger(tClass);
     }
 
     public static Logger getLog(String name) {
-        return getRootLogContext().getLogger(name);
+        return (Logger) org.slf4j.LoggerFactory.getLogger(name);
     }
 
     public static NbtFactory getNbtFactory() {
         return serviceManager.get(NbtFactory.class);
-    }
-
-    public static Logger getRootLog() {
-        return getRootLogContext().getLogger(Logger.ROOT_LOGGER_NAME);
-    }
-
-    private static LoggerContext getRootLogContext() {
-        return serviceManager.get(LoggerContext.class);
     }
 
     public static Scheduler getScheduler() {
