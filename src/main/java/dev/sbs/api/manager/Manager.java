@@ -21,7 +21,7 @@ public abstract class Manager<P extends Provider> {
      * @return if class has a registered instance
      */
     public final boolean isRegistered(Class<?> service) {
-        Preconditions.checkNotNull(service, "Service cannot be NULL");
+        Preconditions.checkNotNull(service, "Service cannot be NULL!");
 
         for (P provider : this.providers) {
             if (provider.getService().isAssignableFrom(service))

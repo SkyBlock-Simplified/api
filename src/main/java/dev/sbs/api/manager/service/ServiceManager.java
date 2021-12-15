@@ -25,7 +25,7 @@ public class ServiceManager extends Manager<ServiceProvider> {
      * @throws RegisteredServiceException When the given class already has a registered service.
      */
     public final <T> void add(Class<T> service, T instance) throws RegisteredServiceException {
-        Preconditions.checkArgument(instance != null, "Instance cannot be NULL");
+        Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
 
         if (this.isRegistered(service))
             throw new RegisteredServiceException(service);
@@ -41,7 +41,7 @@ public class ServiceManager extends Manager<ServiceProvider> {
      * @throws RegisteredServiceException When the given class already has a registered service.
      */
     public final void addRaw(Class<?> service, Object instance) throws RegisteredServiceException {
-        Preconditions.checkNotNull(instance, "Instance cannot be NULL");
+        Preconditions.checkNotNull(instance, "Instance cannot be NULL!");
 
         if (this.isRegistered(service))
             throw new RegisteredServiceException(service);

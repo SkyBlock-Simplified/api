@@ -29,7 +29,7 @@ public class BuilderManager extends Manager<BuilderProvider> {
      * @throws RegisteredBuilderException When the given service class already has a registered builder.
      */
     public final <T, B extends CoreBuilder> void add(Class<T> service, Class<B> builder) throws RegisteredBuilderException {
-        Preconditions.checkNotNull(builder, "Builder cannot be NULL");
+        Preconditions.checkNotNull(builder, "Builder cannot be NULL!");
 
         if (this.isRegistered(service))
             throw new RegisteredBuilderException(service);
