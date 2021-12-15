@@ -14,11 +14,10 @@ import java.util.regex.Pattern;
  * Format strings using {@link MessageFormat}.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class FormatUtil {
+public final class FormatUtil { // https://regex101.com/r/RFixIy/1
 
     private static final transient LinkedHashMap<String, MessageFormat> MESSAGE_CACHE = new MaxSizeLinkedMap<>(100);
 
-    // --- FormatUtil --- (https://regex101.com/r/RFixIy/1)
     //public static final transient Pattern LOG_PATTERN = Pattern.compile("\\{(\\{[\\d]+(?:,[^,}]+)*})}");
     //public static final transient Pattern LOG_PATTERN2 = Pattern.compile("(?!.*\\{[^}]*$)\\{\\K(?:\\{[^}]*\\}|[^{}]*)+");
     //public static final transient Pattern LOG_PATTERN3 = Pattern.compile("(?:(?<!')?\\{(?!'))((?:[^{}]*\\{[^{}]*}[^{}]*)*)(?:(?<!')}(?!')?)");
