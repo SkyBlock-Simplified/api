@@ -73,6 +73,12 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 		return this.ref.get().indexOf(item);
 	}
 
+	public List<E> inverse() {
+		T list = this.newList(this.ref.get());
+		Collections.reverse(list);
+		return list;
+	}
+
 	@Override
 	public final int lastIndexOf(Object item) {
 		return this.ref.get().lastIndexOf(item);

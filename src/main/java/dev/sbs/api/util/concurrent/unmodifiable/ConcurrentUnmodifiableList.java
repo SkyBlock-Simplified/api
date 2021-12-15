@@ -1,5 +1,6 @@
 package dev.sbs.api.util.concurrent.unmodifiable;
 
+import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,11 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 	@Override
 	public final void clear() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public final ConcurrentUnmodifiableList<E> inverse() {
+		return Concurrent.newUnmodifiableList(super.inverse());
 	}
 
 	@NotNull
