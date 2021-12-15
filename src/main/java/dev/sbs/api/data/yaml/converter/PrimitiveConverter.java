@@ -1,6 +1,7 @@
 package dev.sbs.api.data.yaml.converter;
 
 import dev.sbs.api.data.yaml.InternalConverter;
+import dev.sbs.api.util.helper.NumberUtil;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -20,21 +21,41 @@ public class PrimitiveConverter extends YamlConverter {
 
     @Override
     public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
-        switch (type.getSimpleName().toLowerCase()) {
-            case "short":
-                return (section instanceof Short) ? section : new Integer((int) section).shortValue();
-            case "byte":
-                return (section instanceof Byte) ? section : new Integer((int) section).byteValue();
-            case "float":
-                if (section instanceof Integer) return new Double((int) section).intValue();
-                return (section instanceof Float) ? section : new Double((double) section).floatValue();
-            case "character":
-                return (section instanceof Character) ? section : ((String) section).charAt(0);
-            case "string":
-                return (section instanceof String) ? section : (section == null ? "" : section.toString());
-            default:
-                return section;
+        if (section == null)
+            return null;
+
+        if (type.isAssignableFrom(section.getClass()))
+            return section;
+
+        if (section instanceof Number) {
+            Number number = NumberUtil.createNumber(section.toString());
+
+            switch (type.getSimpleName().toLowerCase()) {
+                case "byte":
+                    return number.byteValue();
+                case "short":
+                    return number.shortValue();
+                case "integer":
+                    return number.intValue();
+                case "long":
+                    return number.longValue();
+                case "double":
+                    return number.doubleValue();
+                case "float":
+                    return number.floatValue();
+            }
+        } else {
+            switch (type.getSimpleName().toLowerCase()) {
+                case "boolean":
+                    return section;
+                case "character":
+                    return ((String) section).charAt(0);
+                case "string":
+                    return section.toString();
+            }
         }
+
+        return section;
     }
 
     @Override
