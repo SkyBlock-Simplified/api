@@ -179,7 +179,7 @@ public class SimplifiedApi {
         serviceManager.add(LoggerContext.class, new LoggerContext());
         serviceManager.add(Gson.class, gson);
         serviceManager.add(NbtFactory.class, new NbtFactory());
-        serviceManager.add(Scheduler.class, Scheduler.getInstance());
+        serviceManager.add(Scheduler.class, new Scheduler());
 
         // Create Api Builders
         MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
@@ -426,17 +426,6 @@ public class SimplifiedApi {
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
         return serviceManager.get(tClass);
-    }
-
-    /**
-     * Causes the currently executing thread to sleep (temporarily cease execution) for the specified number of milliseconds, subject to the precision and accuracy of system timers and schedulers. The thread does not lose ownership of any monitors.
-     *
-     * @param millis the length of time to sleep in milliseconds
-     */
-    public static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignore) { }
     }
 
 }
