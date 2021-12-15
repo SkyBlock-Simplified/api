@@ -7,6 +7,7 @@ import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.Session;
@@ -20,6 +21,9 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     private final SqlSession sqlSession;
 
+    @Getter
+    private final long startupTime;
+
     /**
      * Creates a new repository of type {@link T}.
      *
@@ -27,7 +31,9 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
      */
     public SqlRepository(@NonNull SqlSession sqlSession) {
         this.sqlSession = sqlSession;
+        long startTime = System.currentTimeMillis();
         this.findAll();
+        this.startupTime = System.currentTimeMillis() - startTime;
     }
 
     @Override
