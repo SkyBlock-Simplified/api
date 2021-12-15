@@ -186,7 +186,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
                                 this.reload();
                                 break;
                             } catch (Exception ex) {
-                                SimplifiedApi.sleep(1000);
+                                Scheduler.sleep(1000);
                             }
                         }
 
@@ -219,7 +219,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
             try {
                 this.watchService = FileSystems.getDefault().newWatchService();
                 this.watchKey = this.configFile.toPath().getParent().register(this.watchService, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE);
-                this.taskId = Scheduler.getInstance().runAsync(this, 0, 5).getId();
+                this.taskId = SimplifiedApi.getScheduler().scheduleAsync(this, 0, 250).getId();
             } catch (Exception ex) {
                 throw new RuntimeException("Unable to start watch service!", ex);
             }
@@ -228,7 +228,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
 
     public void stopWatcher() {
         if (this.taskId != -1) {
-            Scheduler.getInstance().cancel(this.taskId);
+            SimplifiedApi.getScheduler().cancel(this.taskId);
             this.taskId = -1;
             this.watchKey.cancel();
 

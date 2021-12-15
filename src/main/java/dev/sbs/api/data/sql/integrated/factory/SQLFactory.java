@@ -1,8 +1,8 @@
 package dev.sbs.api.data.sql.integrated.factory;
 
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.integrated.function.ResultSetConsumer;
 import dev.sbs.api.data.sql.integrated.function.ResultSetFunction;
-import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Cleanup;
@@ -206,7 +206,7 @@ public abstract class SQLFactory {
      * @param sql       Table fields and constraints.
      */
     public final void createTableAsync(final String tableName, final String sql) {
-        Scheduler.getInstance().runAsync(() -> {
+        SimplifiedApi.getScheduler().scheduleAsync(() -> {
             try {
                 createTable(tableName, sql);
             } catch (SQLException ignore) {
@@ -405,7 +405,7 @@ public abstract class SQLFactory {
      * @param args     Arguments to pass to the query.
      */
     public final void queryAsync(final String sql, final ResultSetConsumer callback, final Object... args) {
-        Scheduler.getInstance().runAsync(() -> {
+        SimplifiedApi.getScheduler().scheduleAsync(() -> {
             try {
                 this.query(sql, callback, args);
             } catch (SQLException ignore) {
@@ -459,7 +459,7 @@ public abstract class SQLFactory {
      * @param args Arguments to pass to the query.
      */
     public final void updateAsync(final String sql, final Object... args) {
-        Scheduler.getInstance().runAsync(() -> {
+        SimplifiedApi.getScheduler().scheduleAsync(() -> {
             try (Connection connection = this.getConnection()) {
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     assignArgs(statement, args);

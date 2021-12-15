@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql.integrated.notification;
 
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.integrated.pooling.SQLPooling;
-import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.helper.FormatUtil;
@@ -17,7 +17,7 @@ import java.util.Properties;
 public abstract class SQLNotifications extends SQLPooling {
 
     static final String ACTIVITY_TABLE = "sbs_notifications";
-    private static final int DEFAULT_DELAY = 10;
+    private static final int DEFAULT_DELAY = 500;
     private final transient ConcurrentSet<DatabaseNotification> listeners = Concurrent.newSet();
     private int taskId = -1;
 
@@ -83,7 +83,7 @@ public abstract class SQLNotifications extends SQLPooling {
      *
      * @param table     Table name to listen to.
      * @param notifier  Listener to send notifications to.
-     * @param delay     How long in ticks to wait before checking.
+     * @param delay     How long in milliseconds to wait before checking.
      * @param overwrite True to overwrite the triggers in the database, otherwise false.
      */
     public final void addListener(String table, DatabaseListener notifier, long delay, boolean overwrite) throws SQLException {
@@ -92,7 +92,7 @@ public abstract class SQLNotifications extends SQLPooling {
         this.listeners.add(new DatabaseNotification(this, table, notifier, overwrite));
 
         if (this.taskId == -1)
-            this.taskId = Scheduler.getInstance().runAsync(new ActivityScanner(), 0, delay * 50).getId();
+            this.taskId = SimplifiedApi.getScheduler().scheduleAsync(new ActivityScanner(), 0, delay).getId();
     }
 
     private void createLogTable() throws SQLException {
@@ -143,7 +143,7 @@ public abstract class SQLNotifications extends SQLPooling {
 
         if (this.listeners.isEmpty()) {
             if (this.taskId != -1) {
-                Scheduler.getInstance().cancel(this.taskId);
+                SimplifiedApi.getScheduler().cancel(this.taskId);
                 this.taskId = -1;
             }
         }

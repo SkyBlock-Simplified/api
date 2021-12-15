@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql.integrated.pooling;
 
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.integrated.factory.SQLFactory;
-import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentDeque;
 
@@ -64,7 +64,7 @@ public abstract class SQLPooling extends SQLFactory {
     }
 
     private void initializeTimer() {
-        Scheduler.getInstance().runAsync(new ConnectionCleaner(), 0, 200 * 50); // TODO: Period update
+        SimplifiedApi.getScheduler().scheduleAsync(new ConnectionCleaner(), 0, 300_000);
     }
 
     /**
