@@ -1,5 +1,6 @@
 package dev.sbs.api.data.yaml;
 
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.yaml.annotation.Comment;
 import dev.sbs.api.data.yaml.annotation.Comments;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
@@ -185,7 +186,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
                                 this.reload();
                                 break;
                             } catch (Exception ex) {
-                                Scheduler.sleep(1000);
+                                SimplifiedApi.sleep(1000);
                             }
                         }
 
