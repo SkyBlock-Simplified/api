@@ -1,5 +1,7 @@
 package dev.sbs.api;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -174,9 +176,10 @@ public class SimplifiedApi {
 
         // Provide Services
         serviceManager.add(SimplifiedConfig.class, config);
-        serviceManager.add(Scheduler.class, Scheduler.getInstance());
+        serviceManager.add(LoggerContext.class, new LoggerContext());
         serviceManager.add(Gson.class, gson);
         serviceManager.add(NbtFactory.class, new NbtFactory());
+        serviceManager.add(Scheduler.class, Scheduler.getInstance());
 
         // Create Api Builders
         MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
@@ -239,8 +242,24 @@ public class SimplifiedApi {
         return serviceManager.get(Gson.class);
     }
 
+    public static Logger getLog(Class<?> tClass) {
+        return getRootLogContext().getLogger(tClass);
+    }
+
+    public static Logger getLog(String name) {
+        return getRootLogContext().getLogger(name);
+    }
+
     public static NbtFactory getNbtFactory() {
         return serviceManager.get(NbtFactory.class);
+    }
+
+    public static Logger getRootLog() {
+        return getRootLogContext().getLogger(Logger.ROOT_LOGGER_NAME);
+    }
+
+    private static LoggerContext getRootLogContext() {
+        return serviceManager.get(LoggerContext.class);
     }
 
     public static Scheduler getScheduler() {
@@ -407,6 +426,17 @@ public class SimplifiedApi {
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
         return serviceManager.get(tClass);
+    }
+
+    /**
+     * Causes the currently executing thread to sleep (temporarily cease execution) for the specified number of milliseconds, subject to the precision and accuracy of system timers and schedulers. The thread does not lose ownership of any monitors.
+     *
+     * @param millis the length of time to sleep in milliseconds
+     */
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignore) { }
     }
 
 }
