@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 
 /**
  * <p>Provides extra functionality for Java Number classes.</p>
@@ -55,6 +56,25 @@ public class NumberUtil {
     public static final Float FLOAT_ONE = 1.0f;
     /** Reusable Float constant for minus one. */
     public static final Float FLOAT_MINUS_ONE = -1.0f;
+
+    private static final Pattern FLOATING_POINT_PATTERN = fpPattern();
+    private static Pattern fpPattern() {
+        /*
+         * We use # instead of * for possessive quantifiers. This lets us strip them out when building
+         * the regex for RE2 (which doesn't support them) but leave them in when building it for
+         * java.util.regex (where we want them in order to avoid catastrophic backtracking).
+         */
+        String decimal = "(?:\\d+#(?:\\.\\d*#)?|\\.\\d+#)";
+        String completeDec = decimal + "(?:[eE][+-]?\\d+#)?[fFdD]?";
+        String hex = "(?:[0-9a-fA-F]+#(?:\\.[0-9a-fA-F]*#)?|\\.[0-9a-fA-F]+#)";
+        String completeHex = "0[xX]" + hex + "[pP][+-]?\\d+#[fFdD]?";
+        String fpPattern = "[+-]?(?:NaN|Infinity|" + completeDec + "|" + completeHex + ")";
+        fpPattern = fpPattern.replace(
+            "#",
+            "+"
+        );
+        return Pattern.compile(fpPattern);
+    }
 
     private final static TreeMap<Integer, String> ROMAN_MAP = new TreeMap<>();
     private final static NavigableMap<Long, String> FORMAT_SUFFIX = new TreeMap<>();
@@ -759,6 +779,62 @@ public class NumberUtil {
                 scale,
                 roundingMode
         );
+    }
+
+    public static Double tryParseDouble(String input) {
+        if (FLOATING_POINT_PATTERN.matcher(input).matches()) {
+            try {
+                return Double.parseDouble(input);
+            } catch (NumberFormatException ignore) { }
+        }
+
+        return null;
+    }
+
+    public static Float tryParseFloat(String input) {
+        if (FLOATING_POINT_PATTERN.matcher(input).matches()) {
+            try {
+                return Float.parseFloat(input);
+            } catch (NumberFormatException ignore) { }
+        }
+
+        return null;
+    }
+
+    public static Integer tryParseInt(String input) {
+        return tryParseInt(input, 10);
+    }
+
+    public static Integer tryParseInt(String input, int radix) {
+        try {
+            return Integer.parseInt(input, radix);
+        } catch (NumberFormatException ignore) { }
+
+        return null;
+    }
+
+    public static Long tryParseLong(String input) {
+        return tryParseLong(input, 10);
+    }
+
+    public static Long tryParseLong(String input, int radix) {
+        try {
+            return Long.parseLong(input, radix);
+        } catch (NumberFormatException ignore) { }
+
+        return null;
+    }
+
+    public static Short tryParseShort(String input) {
+        return tryParseShort(input, 10);
+    }
+
+    public static Short tryParseShort(String input, int radix) {
+        try {
+            return Short.parseShort(input, radix);
+        } catch (NumberFormatException ignore) { }
+
+        return null;
     }
 
     //-----------------------------------------------------------------------
