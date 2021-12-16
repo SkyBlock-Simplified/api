@@ -18,45 +18,46 @@ import javax.cache.expiry.Duration;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("all")
 public abstract class SqlConfig extends YamlConfig {
 
     @Getter
     @Setter
-    protected String databaseHost = ResourceUtil.getEnvironmentVariable("DATABASE_HOST");
+    protected String databaseHost = ResourceUtil.getEnv("DATABASE_HOST").orElse("");
 
     @Getter
     @Setter
-    protected Integer databasePort = NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_PORT"));
+    protected Integer databasePort = ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt).orElse(0);
 
     @Getter
     @Setter
-    protected String databaseSchema = ResourceUtil.getEnvironmentVariable("DATABASE_SCHEMA");
+    protected String databaseSchema = ResourceUtil.getEnv("DATABASE_SCHEMA").orElse("");
 
     @Getter
     @Setter
-    protected String databaseUser = ResourceUtil.getEnvironmentVariable("DATABASE_USER");
+    protected String databaseUser = ResourceUtil.getEnv("DATABASE_USER").orElse("");
 
     @Getter
     @Setter
-    protected String databasePassword = ResourceUtil.getEnvironmentVariable("DATABASE_PASSWORD");
+    protected String databasePassword = ResourceUtil.getEnv("DATABASE_PASSWORD").orElse("");
 
     @Getter
     @Setter
-    protected boolean databaseDebugMode = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_DEBUG"));
+    protected boolean databaseDebugMode = ResourceUtil.getEnv("DATABASE_DEBUG").map(Boolean::parseBoolean).orElse(false);
 
     @Getter
     @Setter
-    protected boolean databaseCaching = Boolean.parseBoolean(ResourceUtil.getEnvironmentVariable("DATABASE_CACHING", "true"));
+    protected boolean databaseCaching = ResourceUtil.getEnv("DATABASE_CACHING").map(Boolean::parseBoolean).orElse(true);
 
     private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseModels = Concurrent.newMap();
 
     @Getter
     @Setter
-    protected CacheExpiry databaseUpdateTimestampsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_TIMESTAMPS_TTL", "60"))));
+    protected CacheExpiry databaseUpdateTimestampsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_TIMESTAMPS_TTL").map(NumberUtil::tryParseInt).orElse(60)));
 
     @Getter
     @Setter
-    protected CacheExpiry databaseQueryResultsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, NumberUtil.toInt(ResourceUtil.getEnvironmentVariable("DATABASE_QUERIES_TTL", "60"))));
+    protected CacheExpiry databaseQueryResultsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_QUERIES_TTL").map(NumberUtil::tryParseInt).orElse(60)));
 
     @Getter
     @Setter

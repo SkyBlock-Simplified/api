@@ -15,12 +15,12 @@ import java.util.UUID;
 public class SimplifiedConfig extends SqlConfig {
 
     @Getter @Setter
-    private String githubUser = ResourceUtil.getEnvironmentVariable("GITHUB_USER");
+    private String githubUser = ResourceUtil.getEnv("GITHUB_USER").orElse("");
 
     @Getter @Setter
-    private String githubToken = ResourceUtil.getEnvironmentVariable("GITHUB_TOKEN");
+    private String githubToken = ResourceUtil.getEnv("GITHUB_TOKEN").orElse("");
 
-    private String hypixelApiKey = ResourceUtil.getEnvironmentVariable("HYPIXEL_API_KEY");
+    private String hypixelApiKey = ResourceUtil.getEnv("HYPIXEL_API_KEY").orElse("");
 
     public SimplifiedConfig(File configDir, String fileName, String... header) {
         super(configDir, fileName, header);
