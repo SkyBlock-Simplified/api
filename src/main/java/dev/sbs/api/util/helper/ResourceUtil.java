@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,17 +22,22 @@ public final class ResourceUtil {
 
     public static Map<String, String> getEnvironmentVariables() {
         Map<String, String> env = new HashMap<>();
-        // Load from src/main/resources/.env
-        InputStream file = ResourceUtil.class.getResourceAsStream("../.env");
+
+        // Load src/main/resources/.env
+        InputStream file = getResource("../.env");
+
         if (file != null) {
             Scanner scanner = new Scanner(file);
+
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
+
                 if (line.contains("=")) {
                     String[] pair = line.split("=");
                     env.put(pair[0], pair.length == 2 ? pair[1] : "");
                 }
             }
+
             try {
                 file.close();
             } catch (IOException e) {
@@ -39,17 +45,24 @@ public final class ResourceUtil {
             }
         }
 
-        // Load from OS
+        // Override From OS
         env.putAll(System.getenv());
         return env;
     }
 
-    public static String getEnvironmentVariable(String variableName) {
-        return getEnvironmentVariables().get(variableName);
-    }
-
-    public static String getEnvironmentVariable(String variableName, String defaultValue) {
-        return getEnvironmentVariables().getOrDefault(variableName, defaultValue);
+    /**
+     * Get environment variable.
+     *
+     * @param variableName the name of the environment variable
+     * @return the value of the environment variable
+     */
+    public static Optional<String> getEnv(String variableName) {
+        return getEnvironmentVariables()
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getKey().equalsIgnoreCase(variableName))
+            .map(Map.Entry::getValue)
+            .findFirst();
     }
 
     public static InputStream getResource(String resourcePath) {
@@ -78,6 +91,7 @@ public final class ResourceUtil {
         saveResource(outputDir, resourcePath, "", replace);
     }
 
+    @SuppressWarnings("all")
     public static void saveResource(File outputDir, String resourcePath, String child, boolean replace) {
         File directory = outputDir;
 
