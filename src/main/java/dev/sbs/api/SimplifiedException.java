@@ -17,11 +17,7 @@ public abstract class SimplifiedException extends RuntimeException {
     @Getter
     private final ConcurrentMap<String, Object> fields;
 
-    protected SimplifiedException() {
-        throw new UnsupportedOperationException("Do not instantiate in this manner!");
-    }
-
-    private SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentMap<String, Object> fields) {
+    protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentMap<String, Object> fields) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.fields = Concurrent.newUnmodifiableMap(fields);
     }
