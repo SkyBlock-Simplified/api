@@ -1,6 +1,7 @@
 package dev.sbs.api.reflection;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.accessor.ConstructorAccessor;
 import dev.sbs.api.reflection.accessor.FieldAccessor;
 import dev.sbs.api.reflection.accessor.MethodAccessor;
@@ -47,13 +48,16 @@ public class Reflection {
      * @param clazz The class to reflect.
      */
     public Reflection(Class<?> clazz) {
-        Preconditions.checkNotNull(clazz, "Class cannot be NULL.");
+        Preconditions.checkNotNull(clazz, "Class cannot be NULL!");
         clazz = Primitives.wrap(clazz);
 
         try {
             this.className = clazz.getSimpleName();
         } catch (Exception ex) {
-            throw new ReflectionException(FormatUtil.format("Unable to get simple name for ''{0}''.", clazz), ex);
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setMessage("Unable to get simple name for ''{0}''!", clazz.getName())
+                .setCause(ex)
+                .build();
         }
 
         if (clazz.getPackage() != null) {
@@ -124,7 +128,9 @@ public class Reflection {
 
             return CLASS_CACHE.get(this.getClazzPath());
         } catch (Exception ex) {
-            throw new ReflectionException(ex);
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setCause(ex)
+                .build();
         }
     }
 
@@ -149,7 +155,9 @@ public class Reflection {
                 return source.getLocation();
         }
 
-        throw new ReflectionException(FormatUtil.format("Unable to locate the file location of ''{0}''.", clazz.getName()));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("Unable to locate the file location of ''{0}''!", clazz.getName())
+            .build();
     }
 
     /**
@@ -191,7 +199,9 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getConstructor(paramTypes);
 
-        throw new ReflectionException(FormatUtil.format("The constructor matching ''{0}'' was not found.", Arrays.asList(types)));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("The constructor matching ''{0}'' was not found!", Arrays.asList(types))
+            .build();
     }
 
     /**
@@ -228,7 +238,9 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getField(type);
 
-        throw new ReflectionException(FormatUtil.format("The field with type {0} was not found.", type));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("The field with type ''{0}'' was not found!", type)
+            .build();
     }
 
     /**
@@ -277,7 +289,9 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getField(name);
 
-        throw new ReflectionException(FormatUtil.format("The field {0} was not found.", name));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("The field ''{0}'' was not found!", name)
+            .build();
     }
 
     /**
@@ -338,7 +352,9 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getMethod(type, paramTypes);
 
-        throw new ReflectionException(FormatUtil.format("The method with return type ''{0}'' was not found with parameters ''{1}''.", type, Arrays.asList(types)));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("The method with return type ''{0}'' was not found with parameters ''{1}''!", type, Arrays.asList(types))
+            .build();
     }
 
     /**
@@ -407,7 +423,9 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getMethod(name, paramTypes);
 
-        throw new ReflectionException(FormatUtil.format("The method ''{0}'' was not found with parameters ''{1}''.", name, Collections.singletonList(types)));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("The method ''{0}'' was not found with parameters ''{1}''.", name, Collections.singletonList(types))
+            .build();
     }
 
     /**
@@ -475,7 +493,9 @@ public class Reflection {
             }
         }
 
-        throw new ReflectionException(FormatUtil.format("Unable to locate generic class in ''{0}'' at index {1}", tClass.getSimpleName(), index));
+        throw SimplifiedException.builder(ReflectionException.class)
+            .setMessage("Unable to locate generic class in ''{0}'' at index {1}!", tClass.getSimpleName(), index)
+            .build();
     }
 
     /**
@@ -677,10 +697,12 @@ public class Reflection {
         try {
             Class<?>[] types = toPrimitiveTypeArray(args);
             return this.getConstructor(types).newInstance(args);
-        } catch (ReflectionException rex) {
-            throw rex;
+        } catch (ReflectionException reflectionException) {
+            throw reflectionException;
         } catch (Exception ex) {
-            throw new ReflectionException(ex);
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setCause(ex)
+                .build();
         }
     }
 

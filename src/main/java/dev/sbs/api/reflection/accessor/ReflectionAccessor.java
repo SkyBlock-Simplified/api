@@ -1,10 +1,10 @@
 package dev.sbs.api.reflection.accessor;
 
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +38,10 @@ abstract class ReflectionAccessor<T extends AccessibleObject> {
         try {
             return this.getHandle().getAnnotation(annotationClass);
         } catch (Exception exception) {
-            throw new ReflectionException(FormatUtil.format("Unable to locate annotation ''{0}''.", annotationClass), exception);
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setMessage("Unable to locate annotation ''{0}''.", annotationClass)
+                .setCause(exception)
+                .build();
         }
     }
 

@@ -1,12 +1,12 @@
 package dev.sbs.api.reflection.accessor;
 
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.builder.string.StringBuilder;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -39,14 +39,19 @@ public final class ConstructorAccessor extends ReflectionAccessor<Constructor<?>
         try {
             return this.getConstructor().newInstance(args);
         } catch (Exception exception) {
-            String arguments = StringUtil.join(
-                Concurrent.newList(args)
-                    .stream()
-                    .map(Objects::toString)
-                    .collect(Concurrent.toList()),
-                ','
-            );
-            throw new ReflectionException(FormatUtil.format("Unable to create new instance of ''{0}'' with arguments [{1}].", this.getClazz(), arguments), exception);
+            StringBuilder arguments = new StringBuilder();
+            Arrays.stream(args)
+                .map(Objects::nonNull)
+                .map(Objects::toString)
+                .forEach(arg -> {
+                    arguments.appendSeparator(',');
+                    arguments.append(arg);
+                });
+
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setMessage("Unable to create new instance of ''{0}'' with arguments [{1}].", this.getClazz(), arguments)
+                .setCause(exception)
+                .build();
         }
     }
 

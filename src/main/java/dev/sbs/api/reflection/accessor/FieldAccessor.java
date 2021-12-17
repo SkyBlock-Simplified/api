@@ -1,8 +1,8 @@
 package dev.sbs.api.reflection.accessor;
 
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.helper.FormatUtil;
 
 import java.lang.reflect.Field;
 
@@ -52,7 +52,10 @@ public final class FieldAccessor extends ReflectionAccessor<Field> {
         try {
             return (T) this.getField().get(obj);
         } catch (Exception exception) {
-            throw new ReflectionException(FormatUtil.format("Unable to get field ''{0}'' from ''{1}''.", this.getField(), obj), exception);
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setMessage("Unable to get field ''{0}'' from ''{1}''.", this.getField(), obj)
+                .setCause(exception)
+                .build();
         }
     }
 
@@ -83,7 +86,10 @@ public final class FieldAccessor extends ReflectionAccessor<Field> {
         try {
             this.getField().set(obj, value);
         } catch (Exception exception) {
-            throw new ReflectionException(FormatUtil.format("Unable to set field ''{0}'' to ''{1}'' in ''{2}''.", this.getField(), value, obj), exception);
+            throw SimplifiedException.builder(ReflectionException.class)
+                .setMessage("Unable to set field ''{0}'' to ''{1}'' in ''{2}''.", this.getField(), value, obj)
+                .setCause(exception)
+                .build();
         }
     }
 
