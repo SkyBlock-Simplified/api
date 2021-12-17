@@ -50,7 +50,7 @@ public abstract class Manager<P extends Provider> {
         }
 
         throw SimplifiedException.builder(UnknownServiceException.class)
-            .setMessage("Service ''{0}'' has not been registered", service.getName())
+            .setMessage(UnknownServiceException.getMessage(service))
             .build();
     }
 

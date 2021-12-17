@@ -34,7 +34,7 @@ public class BuilderManager extends Manager<BuilderProvider> {
 
         if (this.isRegistered(service))
             throw SimplifiedException.builder(RegisteredBuilderException.class)
-                .setMessage("Builder ''{0}'' is already registered", service.getName())
+                .setMessage(RegisteredBuilderException.getMessage(service))
                 .build();
 
         try {
@@ -48,7 +48,7 @@ public class BuilderManager extends Manager<BuilderProvider> {
         }
 
         throw SimplifiedException.builder(InvalidBuilderException.class)
-            .setMessage("Builder ''{0}'' does not build instances of ''{1}''", builder.getName(), service.getName())
+            .setMessage(InvalidBuilderException.getMessage(builder, service))
             .build();
     }
 
@@ -68,7 +68,7 @@ public class BuilderManager extends Manager<BuilderProvider> {
             return ((ClassBuilder<T>) provider.newInstance()).build(service);
 
         throw SimplifiedException.builder(InvalidBuilderException.class)
-            .setMessage("Builder ''{0}'' does not build instances of ''{1}''", service.getName(), provider.getBuilder().getName())
+            .setMessage(InvalidBuilderException.getMessage(service, provider))
             .build();
     }
 
@@ -88,7 +88,7 @@ public class BuilderManager extends Manager<BuilderProvider> {
             return provider.newInstance();
 
         throw SimplifiedException.builder(InvalidBuilderException.class)
-            .setMessage("Builder ''{0}'' does not build instances of ''{1}''", service.getName(), provider.getBuilder().getName())
+            .setMessage(InvalidBuilderException.getMessage(service, provider))
             .build();
     }
 
@@ -111,7 +111,7 @@ public class BuilderManager extends Manager<BuilderProvider> {
         }
 
         throw SimplifiedException.builder(UnknownBuilderException.class)
-            .setMessage("Builder ''{0}'' has not been registered", service.getName())
+            .setMessage(UnknownBuilderException.getMessage(service))
             .build();
     }
 
