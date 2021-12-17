@@ -4,6 +4,8 @@ import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.helper.ArrayUtil;
+import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +43,8 @@ public abstract class SimplifiedException extends RuntimeException {
         protected boolean writableStackTrace = true;
         protected Throwable cause;
 
-        public NativeBuilder<T> setMessage(String message) {
-            this.message = message;
+        public NativeBuilder<T> setMessage(String message, Object... objects) {
+            this.message = ArrayUtil.isEmpty(objects) ? message : FormatUtil.format(message, objects);
             return this;
         }
 
@@ -89,8 +91,8 @@ public abstract class SimplifiedException extends RuntimeException {
         }
 
         @Override
-        public SimplifiedBuilder<T> setMessage(String message) {
-            super.setMessage(message);
+        public SimplifiedBuilder<T> setMessage(String message, Object... objects) {
+            super.setMessage(message, objects);
             return this;
         }
 
