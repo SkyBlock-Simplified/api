@@ -1,6 +1,7 @@
 package dev.sbs.api.manager;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
@@ -48,7 +49,9 @@ public abstract class Manager<P extends Provider> {
             }
         }
 
-        throw new UnknownServiceException(service);
+        throw SimplifiedException.builder(UnknownServiceException.class)
+            .setMessage("Service ''{0}'' has not been registered", service.getName())
+            .build();
     }
 
 }

@@ -1,8 +1,8 @@
 package dev.sbs.api.manager.service;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.manager.Manager;
-import dev.sbs.api.manager.service.exception.InvalidServiceException;
 import dev.sbs.api.manager.service.exception.RegisteredServiceException;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.util.concurrent.Concurrent;
@@ -28,7 +28,9 @@ public class ServiceManager extends Manager<ServiceProvider> {
         Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
 
         if (this.isRegistered(service))
-            throw new RegisteredServiceException(service);
+            throw SimplifiedException.builder(RegisteredServiceException.class)
+                .setMessage("Service ''{0}'' is already registered", service.getName())
+                .build();
 
         super.providers.add(new ServiceProvider(service, instance));
     }
@@ -44,10 +46,14 @@ public class ServiceManager extends Manager<ServiceProvider> {
         Preconditions.checkNotNull(instance, "Instance cannot be NULL!");
 
         if (this.isRegistered(service))
-            throw new RegisteredServiceException(service);
+            throw SimplifiedException.builder(RegisteredServiceException.class)
+                .setMessage("Service ''{0}'' is already registered", service.getName())
+                .build();
 
         if (!service.isAssignableFrom(instance.getClass()))
-            throw new InvalidServiceException(service, instance);
+            throw SimplifiedException.builder(RegisteredServiceException.class)
+                .setMessage("Service ''{0}'' does not match instance ''{1}''", service.getName(), instance)
+                .build();
 
         super.providers.add(new ServiceProvider(service, instance));
     }
@@ -83,7 +89,9 @@ public class ServiceManager extends Manager<ServiceProvider> {
         }
 
         if (providers.isEmpty())
-            throw new UnknownServiceException(service);
+            throw SimplifiedException.builder(UnknownServiceException.class)
+                .setMessage("Service ''{0}'' has not been registered", service.getName())
+                .build();
 
         return providers;
     }
@@ -120,7 +128,9 @@ public class ServiceManager extends Manager<ServiceProvider> {
         }
 
         if (providers.isEmpty())
-            throw new UnknownServiceException(service);
+            throw SimplifiedException.builder(UnknownServiceException.class)
+                .setMessage("Service ''{0}'' has not been registered", service.getName())
+                .build();
 
         return providers;
     }

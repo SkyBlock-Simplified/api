@@ -1,11 +1,7 @@
 package dev.sbs.api.manager.builder.exception;
 
-import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.SimplifiedException;
 
-public final class RegisteredBuilderException extends UnsupportedOperationException {
-
-    public RegisteredBuilderException(Class<?> service) {
-        super(FormatUtil.format("Builder ''{0}'' is already registered", service.getName()));
-    }
+public final class RegisteredBuilderException extends SimplifiedException {
 
 }

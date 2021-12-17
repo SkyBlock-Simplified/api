@@ -1,11 +1,7 @@
 package dev.sbs.api.manager.builder.exception;
 
-import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.SimplifiedException;
 
-public final class InvalidBuilderException extends IllegalArgumentException {
-
-    public InvalidBuilderException(Class<?> service, Class<?> builder) {
-        super(FormatUtil.format("Builder ''{0}'' does not build instances of ''{1}''", builder.getName(), service.getName()));
-    }
+public final class InvalidBuilderException extends SimplifiedException {
 
 }

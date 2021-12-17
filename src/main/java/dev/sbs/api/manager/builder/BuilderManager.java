@@ -1,6 +1,7 @@
 package dev.sbs.api.manager.builder;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.builder.exception.InvalidBuilderException;
 import dev.sbs.api.manager.builder.exception.RegisteredBuilderException;
@@ -32,7 +33,9 @@ public class BuilderManager extends Manager<BuilderProvider> {
         Preconditions.checkNotNull(builder, "Builder cannot be NULL!");
 
         if (this.isRegistered(service))
-            throw new RegisteredBuilderException(service);
+            throw SimplifiedException.builder(RegisteredBuilderException.class)
+                .setMessage("Builder ''{0}'' is already registered", service.getName())
+                .build();
 
         try {
             Class<?> tClass = Reflection.getSuperClass(builder);
@@ -44,7 +47,9 @@ public class BuilderManager extends Manager<BuilderProvider> {
         } catch (ReflectionException ignore) {
         }
 
-        throw new InvalidBuilderException(service, builder);
+        throw SimplifiedException.builder(InvalidBuilderException.class)
+            .setMessage("Builder ''{0}'' does not build instances of ''{1}''", builder.getName(), service.getName())
+            .build();
     }
 
     /**
@@ -62,7 +67,9 @@ public class BuilderManager extends Manager<BuilderProvider> {
         if (ClassBuilder.class.isAssignableFrom(provider.getBuilder()))
             return ((ClassBuilder<T>) provider.newInstance()).build(service);
 
-        throw new InvalidBuilderException(service, provider.getBuilder());
+        throw SimplifiedException.builder(InvalidBuilderException.class)
+            .setMessage("Builder ''{0}'' does not build instances of ''{1}''", service.getName(), provider.getBuilder().getName())
+            .build();
     }
 
     /**
@@ -80,7 +87,9 @@ public class BuilderManager extends Manager<BuilderProvider> {
         if (Builder.class.isAssignableFrom(provider.getBuilder()))
             return provider.newInstance();
 
-        throw new InvalidBuilderException(service, provider.getBuilder());
+        throw SimplifiedException.builder(InvalidBuilderException.class)
+            .setMessage("Builder ''{0}'' does not build instances of ''{1}''", service.getName(), provider.getBuilder().getName())
+            .build();
     }
 
     /**
@@ -101,7 +110,9 @@ public class BuilderManager extends Manager<BuilderProvider> {
             }
         }
 
-        throw new UnknownBuilderException(service);
+        throw SimplifiedException.builder(UnknownBuilderException.class)
+            .setMessage("Builder ''{0}'' has not been registered", service.getName())
+            .build();
     }
 
 }
