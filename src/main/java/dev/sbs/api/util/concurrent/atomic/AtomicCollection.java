@@ -1,5 +1,6 @@
 package dev.sbs.api.util.concurrent.atomic;
 
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +75,10 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 			collection.addAll(current);
 			return (T) collection;
 		} catch (Exception ex) {
-			throw new ReflectionException("Unable to create new list instance of " + current.getClass().getSimpleName() + "!"); // Cannot use FormatUtil
+			throw SimplifiedException.builder(ReflectionException.class)
+				.setMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
+				.setCause(ex)
+				.build();
 		}
 	}
 
