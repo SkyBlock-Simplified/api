@@ -270,7 +270,10 @@ public class SimplifiedApi {
                     .stream()
                     .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
                     .findFirst()
-                    .orElseThrow(() -> new UnknownServiceException(tClass));
+                    .orElseThrow(() -> SimplifiedException.builder(UnknownServiceException.class)
+                        .setMessage(UnknownServiceException.getMessage(tClass))
+                        .build()
+                    );
             } else
                 throw new SqlException("Database connection is not active!");
         } else
