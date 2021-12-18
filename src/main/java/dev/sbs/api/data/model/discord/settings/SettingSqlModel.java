@@ -72,5 +72,5 @@ public class SettingSqlModel implements SettingModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

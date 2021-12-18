@@ -5,8 +5,10 @@ import lombok.Getter;
 
 public class FunctionToken extends Token {
 
-    @Getter private final Function function;
-    @Getter int argumentCount;
+    @Getter
+    private final Function function;
+    @Getter
+    int argumentCount;
 
     public FunctionToken(final Function function) {
         super(TOKEN_FUNCTION);

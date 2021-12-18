@@ -8,12 +8,15 @@ import lombok.Getter;
  */
 public abstract class Function {
 
+    @Getter
+    protected final int minArguments;
+    @Getter
+    protected final int maxArguments;
     /**
      * Get the name of the Function
      */
-    @Getter private final String name;
-    @Getter protected final int minArguments;
-    @Getter protected final int maxArguments;
+    @Getter
+    private final String name;
 
     /**
      * Create a new Function with a given name that takes a single argument
@@ -52,28 +55,6 @@ public abstract class Function {
         this.minArguments = minArguments;
         this.maxArguments = maxArguments;
     }
-
-    /**
-     * Get the number of arguments of a function with fixed arguments length.
-     * This function may be called only on functions with a fixed number of arguments and will throw an @UnsupportedOperationException otherwise.
-     * When using functions with variable arguments length use @getMaxNumArguments and @getMinNumArguments instead.
-     *
-     * @return the number of arguments
-     */
-    public int getNumArguments() {
-        if (this.minArguments != this.maxArguments)
-            throw new UnsupportedOperationException("Calling getNumArgument() is not supported for var arg functions, please use getMaxNumArguments() or getMinNumArguments()");
-
-        return this.minArguments;
-    }
-
-    /**
-     * Method that does the actual calculation of the function value given the arguments
-     *
-     * @param args the set of arguments used for calculating the function
-     * @return the result of the function evaluation
-     */
-    public abstract double apply(double... args);
 
     /**
      * Get the set of characters which are allowed for use in Function names.
@@ -117,5 +98,27 @@ public abstract class Function {
         }
         return true;
     }
+
+    /**
+     * Get the number of arguments of a function with fixed arguments length.
+     * This function may be called only on functions with a fixed number of arguments and will throw an @UnsupportedOperationException otherwise.
+     * When using functions with variable arguments length use @getMaxNumArguments and @getMinNumArguments instead.
+     *
+     * @return the number of arguments
+     */
+    public int getNumArguments() {
+        if (this.minArguments != this.maxArguments)
+            throw new UnsupportedOperationException("Calling getNumArgument() is not supported for var arg functions, please use getMaxNumArguments() or getMinNumArguments()");
+
+        return this.minArguments;
+    }
+
+    /**
+     * Method that does the actual calculation of the function value given the arguments
+     *
+     * @param args the set of arguments used for calculating the function
+     * @return the result of the function evaluation
+     */
+    public abstract double apply(double... args);
 
 }

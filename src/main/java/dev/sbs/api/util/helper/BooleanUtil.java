@@ -1090,7 +1090,7 @@ public final class BooleanUtil {
     public static int compare(final boolean x, final boolean y) {
         if (x == y)
             return 0;
-        
+
         return x ? 1 : -1;
     }
 

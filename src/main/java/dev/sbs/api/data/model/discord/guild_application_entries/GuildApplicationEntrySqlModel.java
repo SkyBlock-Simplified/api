@@ -52,5 +52,5 @@ public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

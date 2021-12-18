@@ -9,8 +9,8 @@ import java.util.Objects;
 @SuppressWarnings("unchecked")
 public class ConfigSection {
 
-    private final String fullPath;
     protected final Map<Object, Object> map = new LinkedHashMap<>();
+    private final String fullPath;
 
     public ConfigSection() {
         this.fullPath = "";

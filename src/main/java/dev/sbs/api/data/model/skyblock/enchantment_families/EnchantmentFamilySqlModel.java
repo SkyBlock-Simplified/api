@@ -42,5 +42,5 @@ public class EnchantmentFamilySqlModel implements EnchantmentFamilyModel, SqlMod
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

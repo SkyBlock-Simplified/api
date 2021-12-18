@@ -21,36 +21,28 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("all")
 public abstract class SqlConfig extends YamlConfig {
 
+    private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseModels = Concurrent.newMap();
     @Getter
     @Setter
     protected String databaseHost = ResourceUtil.getEnv("DATABASE_HOST").orElse("");
-
     @Getter
     @Setter
     protected Integer databasePort = ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt).orElse(0);
-
     @Getter
     @Setter
     protected String databaseSchema = ResourceUtil.getEnv("DATABASE_SCHEMA").orElse("");
-
     @Getter
     @Setter
     protected String databaseUser = ResourceUtil.getEnv("DATABASE_USER").orElse("");
-
     @Getter
     @Setter
     protected String databasePassword = ResourceUtil.getEnv("DATABASE_PASSWORD").orElse("");
-
     @Getter
     @Setter
     protected boolean databaseDebugMode = ResourceUtil.getEnv("DATABASE_DEBUG").map(Boolean::parseBoolean).orElse(false);
-
     @Getter
     @Setter
     protected boolean databaseCaching = ResourceUtil.getEnv("DATABASE_CACHING").map(Boolean::parseBoolean).orElse(true);
-
-    private final ConcurrentMap<Class<? extends SqlModel>, CacheExpiry> databaseModels = Concurrent.newMap();
-
     @Getter
     @Setter
     protected CacheExpiry databaseUpdateTimestampsTTL = new CacheExpiry(new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_TIMESTAMPS_TTL").map(NumberUtil::tryParseInt).orElse(60)));

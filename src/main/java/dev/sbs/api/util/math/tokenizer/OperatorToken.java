@@ -11,7 +11,8 @@ public class OperatorToken extends Token {
     /**
      * Get the operator for that token
      */
-    @Getter private final Operator operator;
+    @Getter
+    private final Operator operator;
 
     /**
      * Create a new instance

@@ -17,10 +17,6 @@ public abstract class YamlMap {
 
     final transient InternalConverter converter = new InternalConverter();
 
-    public final void addCustomConverter(Class<? extends YamlConverter> converter) {
-        this.converter.addCustomConverter(converter);
-    }
-
     static ConfigSection convertFromMap(Map<?, ?> config) {
         ConfigSection section = new ConfigSection();
         section.map.putAll(config);
@@ -30,6 +26,10 @@ public abstract class YamlMap {
     static boolean doSkip(Field field) {
         return Modifier.isTransient(field.getModifiers()) || Modifier.isFinal(field.getModifiers()) ||
             Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(PreserveStatic.class) && !field.getAnnotation(PreserveStatic.class).value();
+    }
+
+    public final void addCustomConverter(Class<? extends YamlConverter> converter) {
+        this.converter.addCustomConverter(converter);
     }
 
     public final Set<Class<? extends YamlConverter>> getCustomConverters() {
@@ -97,7 +97,8 @@ public abstract class YamlMap {
 
             try {
                 returnMap.put(path, field.get(this));
-            } catch (IllegalAccessException ignore) { }
+            } catch (IllegalAccessException ignore) {
+            }
         }
 
         YamlConverter converter = this.converter.getConverter(Map.class);

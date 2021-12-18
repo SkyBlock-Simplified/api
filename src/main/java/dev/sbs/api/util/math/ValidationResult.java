@@ -7,6 +7,10 @@ import java.util.List;
  */
 public class ValidationResult {
 
+    /**
+     * A static class representing a successful validation result
+     */
+    public static final ValidationResult SUCCESS = new ValidationResult(true, null);
     private final boolean valid;
     private final List<String> errors;
 
@@ -38,10 +42,5 @@ public class ValidationResult {
     public List<String> getErrors() {
         return errors;
     }
-
-    /**
-     * A static class representing a successful validation result
-     */
-    public static final ValidationResult SUCCESS = new ValidationResult(true, null);
 
 }

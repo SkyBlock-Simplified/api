@@ -911,7 +911,7 @@ public class StringUtil {
         }
         return CharSequenceUtil.indexOf(seq, searchSeq, 0) >= 0;
     }
-    
+
     /**
      * <p>Checks if CharSequence contains a search character, handling {@code null}.
      * This method uses {@link String#indexOf(int)} if possible.</p>
@@ -4729,7 +4729,7 @@ public class StringUtil {
         return str.toLowerCase(locale);
     }
 
-    private static int[] matches(final CharSequence first, final CharSequence second) {
+    /*private static int[] matches(final CharSequence first, final CharSequence second) {
         CharSequence max, min;
         if (first.length() > second.length()) {
             max = first;
@@ -4783,7 +4783,7 @@ public class StringUtil {
             }
         }
         return new int[] { matches, transpositions / 2, prefix, max.length() };
-    }
+    }*/
 
     /**
      * <p>Gets {@code len} characters from the middle of a String.</p>
@@ -5966,7 +5966,7 @@ public class StringUtil {
             buf.append(text.charAt(i));
         final String result = buf.toString();
 
-        return (!repeat ? result : replaceEach(result, searchList, replacementList, repeat, timeToLive - 1));
+        return !repeat ? result : replaceEach(result, searchList, replacementList, true, timeToLive - 1);
     }
 
     /**
@@ -6937,22 +6937,22 @@ public class StringUtil {
         final List<String> list = new ArrayList<>();
         int i = 0, start = 0;
         boolean match = false;
-        boolean lastMatch = false;
+        //boolean lastMatch = false;
         while (i < len) {
             if (str.charAt(i) == separatorChar) {
                 if (match || preserveAllTokens) {
                     list.add(str.substring(start, i));
                     match = false;
-                    lastMatch = true;
+                    //lastMatch = true;
                 }
                 start = ++i;
                 continue;
             }
-            lastMatch = false;
+            //lastMatch = false;
             match = true;
             i++;
         }
-        if (match || preserveAllTokens && lastMatch) {
+        if (match || preserveAllTokens) { // && lastMatch
             list.add(str.substring(start, i));
         }
         return list.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
@@ -7848,11 +7848,11 @@ public class StringUtil {
         final int start = str.indexOf(open);
         if (start != INDEX_NOT_FOUND) {
             final int end = str.indexOf(close, start + open.length());
-            
+
             if (end != INDEX_NOT_FOUND)
                 return str.substring(start + open.length(), end);
         }
-        
+
         return null;
     }
 

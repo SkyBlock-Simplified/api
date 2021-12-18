@@ -1,6 +1,7 @@
 package dev.sbs.api.util.helper;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * <p>
@@ -375,7 +376,7 @@ public class SystemUtil {
      * </p>
      */
     public static final String JAVA_SPECIFICATION_VERSION = getSystemProperty("java.specification.version");
-    private static final JavaVersion JAVA_SPECIFICATION_VERSION_AS_ENUM = JavaVersion.get(JAVA_SPECIFICATION_VERSION);
+    private static final Optional<JavaVersion> JAVA_SPECIFICATION_VERSION_AS_ENUM = JavaVersion.get(JAVA_SPECIFICATION_VERSION);
 
     /**
      * <p>
@@ -1134,7 +1135,6 @@ public class SystemUtil {
         return JAVA_AWT_HEADLESS != null && JAVA_AWT_HEADLESS.equals(Boolean.TRUE.toString());
     }
 
-
     /**
      * <p>
      * Is the Java version at least the requested version.
@@ -1151,7 +1151,7 @@ public class SystemUtil {
      * @return {@code true} if the actual version is equal or greater than the required version
      */
     public static boolean isJavaVersionAtLeast(JavaVersion requiredVersion) {
-        return JAVA_SPECIFICATION_VERSION_AS_ENUM.atLeast(requiredVersion);
+        return JAVA_SPECIFICATION_VERSION_AS_ENUM.isPresent() && JAVA_SPECIFICATION_VERSION_AS_ENUM.get().atLeast(requiredVersion);
     }
 
     /**
@@ -1170,7 +1170,7 @@ public class SystemUtil {
     static boolean isJavaVersionMatch(String version, String versionPrefix) {
         if (version == null)
             return false;
-        
+
         return version.startsWith(versionPrefix);
     }
 
@@ -1190,7 +1190,7 @@ public class SystemUtil {
     static boolean isOSMatch(String osName, String osVersion, String osNamePrefix, String osVersionPrefix) {
         if (osName == null || osVersion == null)
             return false;
-        
+
         return osName.startsWith(osNamePrefix) && osVersion.startsWith(osVersionPrefix);
     }
 
@@ -1208,7 +1208,7 @@ public class SystemUtil {
     static boolean isOSNameMatch(String osName, String osNamePrefix) {
         if (osName == null)
             return false;
-        
+
         return osName.startsWith(osNamePrefix);
     }
 

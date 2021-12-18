@@ -31,18 +31,14 @@ import java.util.function.Function;
 @SuppressWarnings("unchecked")
 public final class SqlSession {
 
-    private StandardServiceRegistry serviceRegistry;
     private final ServiceManager serviceManager = new ServiceManager();
-
-    @Getter
-    private SessionFactory sessionFactory;
-
     @Getter
     private final SqlConfig config;
-
     @Getter
     private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
-
+    private StandardServiceRegistry serviceRegistry;
+    @Getter
+    private SessionFactory sessionFactory;
     @Getter
     private boolean active;
 

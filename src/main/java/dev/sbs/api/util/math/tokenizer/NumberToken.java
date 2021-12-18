@@ -10,7 +10,8 @@ public final class NumberToken extends Token {
     /**
      * Get the value of the number
      */
-    @Getter private final double value;
+    @Getter
+    private final double value;
 
     /**
      * Create a new instance

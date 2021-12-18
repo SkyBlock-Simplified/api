@@ -279,7 +279,7 @@ public class WordUtil {
                     Math.min((int) Math.min(Integer.MAX_VALUE, offset + wrapLength + 1L), inputLineLength)));
             if (matcher.find()) {
                 if (matcher.start() == 0) {
-                    matcherSize = matcher.end() - matcher.start();
+                    matcherSize = matcher.end();
                     if (matcherSize != 0) {
                         offset += matcher.end();
                         continue;
@@ -375,7 +375,7 @@ public class WordUtil {
      * @see #capitalizeFully(String)
      */
     public static String capitalize(final String str) {
-        return capitalize(str, null);
+        return capitalize(str, (Character) null);
     }
 
     /**
@@ -458,7 +458,7 @@ public class WordUtil {
      * @return capitalized String, {@code null} if null String input
      */
     public static String capitalizeFully(final String str) {
-        return capitalizeFully(str, null);
+        return capitalizeFully(str, (Character) null);
     }
 
     /**
@@ -513,7 +513,7 @@ public class WordUtil {
      * @see #capitalize(String)
      */
     public static String uncapitalize(final String str) {
-        return uncapitalize(str, null);
+        return uncapitalize(str, (Character) null);
     }
 
     /**
@@ -647,7 +647,7 @@ public class WordUtil {
      * @see #initials(String,char[])
      */
     public static String initials(final String str) {
-        return initials(str, null);
+        return initials(str, (Character) null);
     }
 
     /**
@@ -824,6 +824,7 @@ public class WordUtil {
      * WordUtils.abbreviate("Now is the time for all good men", 10, 5, null));     = IllegalArgumentException
      * </pre>
      */
+    @SuppressWarnings("all")
     public static String abbreviate(final String str, int lower, int upper, final String appendToEnd) {
         Preconditions.checkArgument(upper >= -1, "Upper value cannot be less than -1.");
         Preconditions.checkArgument(upper >= lower || upper == -11, "Upper value is less than lower value.");
@@ -882,8 +883,8 @@ public class WordUtil {
 
         for (int index = 0; index < delimiters.length; index++)
             delimiterHashSet.add(Character.codePointAt(delimiters, index));
-        
+
         return delimiterHashSet;
     }
-    
+
 }

@@ -14,6 +14,15 @@ public class ConfigConverter extends YamlConverter {
         super(converter);
     }
 
+    private static Object newInstance(Class<?> type) {
+        Class<?> enclosingClass = type.getEnclosingClass();
+
+        if (enclosingClass != null)
+            return new Reflection(type).newInstance(newInstance(enclosingClass));
+
+        return new Reflection(type).newInstance();
+    }
+
     @Override
     public Object fromConfig(Class<?> type, Object section, ParameterizedType genericType) throws Exception {
         YamlMap obj = (YamlMap) newInstance(type);
@@ -31,15 +40,6 @@ public class ConfigConverter extends YamlConverter {
             this.getCustomConverters().forEach(map::addCustomConverter);
             return map.saveToMap(obj.getClass());
         }
-    }
-
-    private static Object newInstance(Class<?> type) {
-        Class<?> enclosingClass = type.getEnclosingClass();
-
-        if (enclosingClass != null)
-            return new Reflection(type).newInstance(newInstance(enclosingClass));
-
-        return new Reflection(type).newInstance();
     }
 
     @Override

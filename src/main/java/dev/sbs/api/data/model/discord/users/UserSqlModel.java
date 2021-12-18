@@ -105,5 +105,5 @@ public class UserSqlModel implements UserModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

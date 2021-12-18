@@ -60,5 +60,5 @@ public class GuildApplicationTypeSqlModel implements GuildApplicationTypeModel, 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

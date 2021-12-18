@@ -49,5 +49,5 @@ public class SbsBetaTesterSqlModel implements SbsBetaTesterModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

@@ -47,5 +47,5 @@ public class SeasonSqlModel implements SeasonModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

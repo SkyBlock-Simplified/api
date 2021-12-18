@@ -4,27 +4,6 @@ import dev.sbs.api.util.helper.FormatUtil;
 
 public abstract class SqlDriver {
 
-    public final String getConnectionUrl(String databaseHost, String databaseSchema) {
-        return this.getConnectionUrl(databaseHost, this.getDefaultPort(), databaseSchema);
-    }
-
-    public abstract String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema);
-
-    public abstract int getDefaultPort();
-
-    public abstract String getDialectClass();
-
-    public abstract String getDriverClass();
-
-    public final boolean isDriverAvailable() {
-        try {
-            Class.forName(this.getDriverClass());
-            return true;
-        } catch (ClassNotFoundException cnfException) {
-            return false;
-        }
-    }
-
     public static final SqlDriver MariaDB = new SqlDriver() {
 
         @Override
@@ -48,7 +27,6 @@ public abstract class SqlDriver {
         }
 
     };
-
     public static final SqlDriver MySQL = new SqlDriver() {
 
         @Override
@@ -72,7 +50,6 @@ public abstract class SqlDriver {
         }
 
     };
-
     public static final SqlDriver OracleSQL = new SqlDriver() {
 
         @Override
@@ -96,7 +73,6 @@ public abstract class SqlDriver {
         }
 
     };
-
     public static final SqlDriver PostgreSQL = new SqlDriver() {
 
         @Override
@@ -120,7 +96,6 @@ public abstract class SqlDriver {
         }
 
     };
-
     public static final SqlDriver SQLServer = new SqlDriver() {
 
         @Override
@@ -144,5 +119,26 @@ public abstract class SqlDriver {
         }
 
     };
+
+    public final String getConnectionUrl(String databaseHost, String databaseSchema) {
+        return this.getConnectionUrl(databaseHost, this.getDefaultPort(), databaseSchema);
+    }
+
+    public abstract String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema);
+
+    public abstract int getDefaultPort();
+
+    public abstract String getDialectClass();
+
+    public abstract String getDriverClass();
+
+    public final boolean isDriverAvailable() {
+        try {
+            Class.forName(this.getDriverClass());
+            return true;
+        } catch (ClassNotFoundException cnfException) {
+            return false;
+        }
+    }
 
 }

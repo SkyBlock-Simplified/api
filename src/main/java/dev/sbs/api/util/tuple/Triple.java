@@ -20,28 +20,6 @@ import java.util.Objects;
  */
 public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
 
-    private static final class TripleAdapter<L, M, R> extends Triple<L, M, R> {
-
-        @Override
-        public L getLeft() {
-            return null;
-        }
-
-        @Override
-        public M getMiddle() {
-            return null;
-        }
-
-        @Override
-        public R getRight() {
-            return null;
-        }
-
-    }
-
-    /** Serialization version */
-    private static final long serialVersionUID = 1L;
-
     /**
      * An empty array.
      * <p>
@@ -49,6 +27,10 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
      * </p>
      */
     public static final Triple<?, ?, ?>[] EMPTY_ARRAY = new TripleAdapter[0];
+    /**
+     * Serialization version
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Returns the empty array singleton that can be assigned without compiler warning.
@@ -69,10 +51,10 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
      * <p>This factory allows the triple to be created using inference to
      * obtain the generic types.</p>
      *
-     * @param <L> the left element type
-     * @param <M> the middle element type
-     * @param <R> the right element type
-     * @param left  the left element, may be null
+     * @param <L>    the left element type
+     * @param <M>    the middle element type
+     * @param <R>    the right element type
+     * @param left   the left element, may be null
      * @param middle the middle element, may be null
      * @param right  the right element, may be null
      * @return a triple formed from the three parameters, not null
@@ -81,13 +63,12 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
         return new ImmutableTriple<>(left, middle, right);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * <p>Compares the triple based on the left element, followed by the middle element,
      * finally the right element.
      * The types must be {@code Comparable}.</p>
      *
-     * @param other  the other triple, not null
+     * @param other the other triple, not null
      * @return negative if this is less, zero if equal, positive if greater
      */
     @Override
@@ -97,10 +78,12 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
             .append(getRight(), other.getRight()).toComparison();
     }
 
+    //-----------------------------------------------------------------------
+
     /**
      * <p>Compares this triple to another based on the three elements.</p>
      *
-     * @param obj  the object to compare to, null returns false
+     * @param obj the object to compare to, null returns false
      * @return true if the elements of the triple are equal
      */
     @Override
@@ -118,13 +101,14 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
         return false;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * <p>Gets the left element from this triple.</p>
      *
      * @return the left element, may be null
      */
     public abstract L getLeft();
+
+    //-----------------------------------------------------------------------
 
     /**
      * <p>Gets the middle element from this triple.</p>
@@ -168,11 +152,30 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>> {
      * element, {@code %2$s} for the middle and {@code %3$s} for the right element.
      * The default format used by {@code toString()} is {@code (%1$s,%2$s,%3$s)}.</p>
      *
-     * @param format  the format string, optionally containing {@code %1$s}, {@code %2$s} and {@code %3$s}, not null
+     * @param format the format string, optionally containing {@code %1$s}, {@code %2$s} and {@code %3$s}, not null
      * @return the formatted string, not null
      */
     public String toString(final String format) {
         return String.format(format, getLeft(), getMiddle(), getRight());
+    }
+
+    private static final class TripleAdapter<L, M, R> extends Triple<L, M, R> {
+
+        @Override
+        public L getLeft() {
+            return null;
+        }
+
+        @Override
+        public M getMiddle() {
+            return null;
+        }
+
+        @Override
+        public R getRight() {
+            return null;
+        }
+
     }
 
 }

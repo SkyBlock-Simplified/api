@@ -47,5 +47,5 @@ public class EmbedTypeSqlModel implements EmbedTypeModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

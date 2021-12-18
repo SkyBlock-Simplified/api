@@ -116,13 +116,28 @@ public final class RecoverableConnection implements Connection {
     }
 
     @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        this.connection.setAutoCommit(autoCommit);
+    }
+
+    @Override
     public String getCatalog() throws SQLException {
         return this.connection.getCatalog();
     }
 
     @Override
+    public void setCatalog(String catalog) throws SQLException {
+        this.connection.setCatalog(catalog);
+    }
+
+    @Override
     public Properties getClientInfo() throws SQLException {
         return this.connection.getClientInfo();
+    }
+
+    @Override
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        this.connection.setClientInfo(properties);
     }
 
     @Override
@@ -133,6 +148,11 @@ public final class RecoverableConnection implements Connection {
     @Override
     public int getHoldability() throws SQLException {
         return this.connection.getHoldability();
+    }
+
+    @Override
+    public void setHoldability(int holdability) throws SQLException {
+        this.connection.setHoldability(holdability);
     }
 
     @Override
@@ -151,13 +171,28 @@ public final class RecoverableConnection implements Connection {
     }
 
     @Override
+    public void setSchema(String schema) throws SQLException {
+        this.connection.setSchema(schema);
+    }
+
+    @Override
     public int getTransactionIsolation() throws SQLException {
         return this.connection.getTransactionIsolation();
     }
 
     @Override
+    public void setTransactionIsolation(int level) throws SQLException {
+        this.connection.setTransactionIsolation(level);
+    }
+
+    @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
         return this.connection.getTypeMap();
+    }
+
+    @Override
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
+        this.connection.setTypeMap(map);
     }
 
     @Override
@@ -180,6 +215,11 @@ public final class RecoverableConnection implements Connection {
     @Override
     public boolean isReadOnly() throws SQLException {
         return this.connection.isReadOnly();
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+        this.connection.setReadOnly(readOnly);
     }
 
     @Override
@@ -258,38 +298,13 @@ public final class RecoverableConnection implements Connection {
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
-        this.connection.setAutoCommit(autoCommit);
-    }
-
-    @Override
-    public void setCatalog(String catalog) throws SQLException {
-        this.connection.setCatalog(catalog);
-    }
-
-    @Override
-    public void setClientInfo(Properties properties) throws SQLClientInfoException {
-        this.connection.setClientInfo(properties);
-    }
-
-    @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
         this.connection.setClientInfo(name, value);
     }
 
     @Override
-    public void setHoldability(int holdability) throws SQLException {
-        this.connection.setHoldability(holdability);
-    }
-
-    @Override
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
         this.connection.setNetworkTimeout(executor, milliseconds);
-    }
-
-    @Override
-    public void setReadOnly(boolean readOnly) throws SQLException {
-        this.connection.setReadOnly(readOnly);
     }
 
     @Override
@@ -300,21 +315,6 @@ public final class RecoverableConnection implements Connection {
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
         return this.connection.setSavepoint(name);
-    }
-
-    @Override
-    public void setSchema(String schema) throws SQLException {
-        this.connection.setSchema(schema);
-    }
-
-    @Override
-    public void setTransactionIsolation(int level) throws SQLException {
-        this.connection.setTransactionIsolation(level);
-    }
-
-    @Override
-    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-        this.connection.setTypeMap(map);
     }
 
     @Override

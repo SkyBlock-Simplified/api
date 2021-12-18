@@ -1,8 +1,8 @@
 package dev.sbs.api.util.builder;
 
 import dev.sbs.api.util.builder.tostring.ReflectionToStringBuilder;
-import dev.sbs.api.util.tuple.Pair;
 import dev.sbs.api.util.helper.ArrayUtil;
+import dev.sbs.api.util.tuple.Pair;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -417,12 +417,12 @@ public class EqualsBuilder implements Builder<Boolean> {
     public EqualsBuilder append(Object lhs, Object rhs) {
         if (!isEquals) return this;
         if (lhs == rhs) return this;
-        
+
         if (lhs == null || rhs == null) {
             this.setEquals(false);
             return this;
         }
-        
+
         Class<?> lhsClass = lhs.getClass();
         if (!lhsClass.isArray()) {
             // The simple case, not an array, just test the element

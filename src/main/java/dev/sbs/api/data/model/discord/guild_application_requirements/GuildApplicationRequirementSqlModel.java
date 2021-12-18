@@ -82,5 +82,5 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }

@@ -47,6 +47,22 @@ public class Tokenizer {
         this.implicitMultiplication = true;
     }
 
+    private static boolean isNumeric(char ch, boolean lastCharE) {
+        return Character.isDigit(ch) || ch == '.' || ch == 'e' || ch == 'E' ||
+            (lastCharE && (ch == '-' || ch == '+'));
+    }
+
+    public static boolean isAlphabetic(int codePoint) {
+        return Character.isLetter(codePoint);
+    }
+
+    public static boolean isVariableOrFunctionCharacter(int codePoint) {
+        return isAlphabetic(codePoint) ||
+            Character.isDigit(codePoint) ||
+            codePoint == '_' ||
+            codePoint == '.';
+    }
+
     public boolean hasNext() {
         return this.expression.length > pos;
     }
@@ -61,9 +77,9 @@ public class Tokenizer {
                 if (lastToken.getType() == Token.TOKEN_NUMBER) {
                     throw new IllegalArgumentException("Unable to parse char '" + ch + "' (Code:" + (int) ch + ") at [" + pos + "]");
                 } else if (implicitMultiplication && (lastToken.getType() != Token.TOKEN_OPERATOR
-                        && lastToken.getType() != Token.TOKEN_PARENTHESES_OPEN
-                        && lastToken.getType() != Token.TOKEN_FUNCTION
-                        && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
+                    && lastToken.getType() != Token.TOKEN_PARENTHESES_OPEN
+                    && lastToken.getType() != Token.TOKEN_FUNCTION
+                    && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
                     // insert an implicit multiplication token
                     lastToken = new OperatorToken(Operators.getBuiltinOperator('*', 2));
                     return lastToken;
@@ -74,10 +90,10 @@ public class Tokenizer {
             return parseArgumentSeparatorToken();
         } else if (isOpenParentheses(ch)) {
             if (lastToken != null && implicitMultiplication &&
-                    (lastToken.getType() != Token.TOKEN_OPERATOR
-                            && lastToken.getType() != Token.TOKEN_PARENTHESES_OPEN
-                            && lastToken.getType() != Token.TOKEN_FUNCTION
-                            && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
+                (lastToken.getType() != Token.TOKEN_OPERATOR
+                    && lastToken.getType() != Token.TOKEN_PARENTHESES_OPEN
+                    && lastToken.getType() != Token.TOKEN_FUNCTION
+                    && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
                 // insert an implicit multiplication token
                 lastToken = new OperatorToken(Operators.getBuiltinOperator('*', 2));
                 return lastToken;
@@ -90,10 +106,10 @@ public class Tokenizer {
         } else if (isAlphabetic(ch) || ch == '_') {
             // parse the name which can be a setVariable or a function
             if (lastToken != null && implicitMultiplication &&
-                    (lastToken.getType() != Token.TOKEN_OPERATOR
-                            && lastToken.getType() != Token.TOKEN_PARENTHESES_OPEN
-                            && lastToken.getType() != Token.TOKEN_FUNCTION
-                            && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
+                (lastToken.getType() != Token.TOKEN_OPERATOR
+                    && lastToken.getType() != Token.TOKEN_PARENTHESES_OPEN
+                    && lastToken.getType() != Token.TOKEN_FUNCTION
+                    && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
                 // insert an implicit multiplication token
                 lastToken = new OperatorToken(Operators.getBuiltinOperator('*', 2));
                 return lastToken;
@@ -143,7 +159,7 @@ public class Tokenizer {
         }
         testPos = offset + len - 1;
         while (!isEndOfExpression(testPos) &&
-                isVariableOrFunctionCharacter(expression[testPos])) {
+            isVariableOrFunctionCharacter(expression[testPos])) {
             String name = new String(expression, offset, len);
             if (variableNames != null && variableNames.contains(name)) {
                 lastValidLen = len;
@@ -238,8 +254,8 @@ public class Tokenizer {
             return lastToken;
         }
         while (!isEndOfExpression(offset + len) &&
-                isNumeric(expression[offset + len], expression[offset + len - 1] == 'e' ||
-                        expression[offset + len - 1] == 'E')) {
+            isNumeric(expression[offset + len], expression[offset + len - 1] == 'e' ||
+                expression[offset + len - 1] == 'E')) {
             len++;
             this.pos++;
         }
@@ -251,22 +267,6 @@ public class Tokenizer {
         }
         lastToken = new NumberToken(expression, offset, len);
         return lastToken;
-    }
-
-    private static boolean isNumeric(char ch, boolean lastCharE) {
-        return Character.isDigit(ch) || ch == '.' || ch == 'e' || ch == 'E' ||
-                (lastCharE && (ch == '-' || ch == '+'));
-    }
-
-    public static boolean isAlphabetic(int codePoint) {
-        return Character.isLetter(codePoint);
-    }
-
-    public static boolean isVariableOrFunctionCharacter(int codePoint) {
-        return isAlphabetic(codePoint) ||
-                Character.isDigit(codePoint) ||
-                codePoint == '_' ||
-                codePoint == '.';
     }
 
     private boolean isEndOfExpression(int offset) {

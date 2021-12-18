@@ -46,21 +46,21 @@ public abstract class Repository<T extends Model> {
         if (ListUtil.notEmpty(itemsCopy)) {
             if (match == FilterFunction.Match.ANY) {
                 return itemsCopy
-                        .stream()
-                        .filter(it -> {
-                            boolean matches = false;
+                    .stream()
+                    .filter(it -> {
+                        boolean matches = false;
 
-                            for (Pair<FilterFunction<T, S>, S> pair : predicates)
-                                matches |= Objects.equals(pair.getKey().apply(it), pair.getValue());
+                        for (Pair<FilterFunction<T, S>, S> pair : predicates)
+                            matches |= Objects.equals(pair.getKey().apply(it), pair.getValue());
 
-                            return matches;
-                        })
-                        .collect(Concurrent.toList());
+                        return matches;
+                    })
+                    .collect(Concurrent.toList());
             } else if (match == FilterFunction.Match.ALL) {
                 for (Pair<FilterFunction<T, S>, S> pair : predicates) {
                     itemsCopy = itemsCopy.stream()
-                            .filter(it -> Objects.equals(pair.getKey().apply(it), pair.getValue()))
-                            .collect(Concurrent.toList());
+                        .filter(it -> Objects.equals(pair.getKey().apply(it), pair.getValue()))
+                        .collect(Concurrent.toList());
                 }
 
                 return itemsCopy;
@@ -76,9 +76,9 @@ public abstract class Repository<T extends Model> {
 
     public final <S> Optional<T> findFirst(@NonNull FilterFunction<T, S> function, S value) throws SqlException {
         return this.findAll()
-                .stream()
-                .filter(model -> Objects.equals(function.apply(model), value))
-                .findFirst();
+            .stream()
+            .filter(model -> Objects.equals(function.apply(model), value))
+            .findFirst();
     }
 
     public final <S> T findFirstOrNull(@NonNull Pair<@NonNull FilterFunction<T, S>, S>... predicates) throws SqlException {

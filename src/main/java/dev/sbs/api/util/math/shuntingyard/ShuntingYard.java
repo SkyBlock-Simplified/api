@@ -7,7 +7,11 @@ import dev.sbs.api.util.math.tokenizer.OperatorToken;
 import dev.sbs.api.util.math.tokenizer.Token;
 import dev.sbs.api.util.math.tokenizer.Tokenizer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Shunting yard implementation to convert infix to reverse polish notation
@@ -61,7 +65,7 @@ public class ShuntingYard {
                         if (o1.getOperator().getNumOperands() == 1 && o2.getOperator().getNumOperands() == 2)
                             break;
                         else if ((o1.getOperator().isLeftAssociative() && o1.getOperator().getPrecedence() <= o2.getOperator().getPrecedence())
-                                || (o1.getOperator().getPrecedence() < o2.getOperator().getPrecedence())) {
+                            || (o1.getOperator().getPrecedence() < o2.getOperator().getPrecedence())) {
                             output.add(stack.pop());
                         } else
                             break;

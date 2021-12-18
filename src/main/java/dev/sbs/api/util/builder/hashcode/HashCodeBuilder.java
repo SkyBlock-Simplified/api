@@ -1,15 +1,19 @@
 package dev.sbs.api.util.builder.hashcode;
 
 import com.google.common.base.Preconditions;
-import dev.sbs.api.util.helper.ArrayUtil;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.IDKey;
+import dev.sbs.api.util.helper.ArrayUtil;
 import lombok.NonNull;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -83,7 +87,7 @@ import java.util.*;
  * used by the {@code reflectionHashCode} methods.</p>
  */
 public class HashCodeBuilder implements Builder<Integer> {
-    
+
     /**
      * The default initial value to use in reflection hash code building.
      */

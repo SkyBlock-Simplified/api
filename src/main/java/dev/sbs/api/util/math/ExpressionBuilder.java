@@ -1,12 +1,17 @@
 package dev.sbs.api.util.math;
 
+import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.math.function.Function;
 import dev.sbs.api.util.math.function.Functions;
 import dev.sbs.api.util.math.operator.Operator;
 import dev.sbs.api.util.math.shuntingyard.ShuntingYard;
-import dev.sbs.api.util.helper.FormatUtil;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Factory class for {@link Expression} instances. This class is the main API entrypoint. Users should create new
@@ -180,7 +185,8 @@ public class ExpressionBuilder {
         }
 
         return new Expression(ShuntingYard.convertToRPN(this.expression, this.userFunctions, this.userOperators,
-                this.variableNames, this.implicitMultiplication), this.userFunctions.keySet());
+                                                        this.variableNames, this.implicitMultiplication
+        ), this.userFunctions.keySet());
     }
 
 }

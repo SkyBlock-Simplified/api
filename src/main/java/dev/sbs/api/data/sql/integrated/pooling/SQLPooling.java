@@ -148,12 +148,33 @@ public abstract class SQLPooling extends SQLFactory {
     }
 
     /**
+     * Sets the minimum number of concurrent connections.
+     *
+     * @param count Minimum number of connections to have available.
+     */
+    public final void setMinimumConnections(int count) {
+        count = count < 0 ? DEFAULT_MIN_CONNECTIONS : count;
+        count = Math.min(count, this.getMaximumConnections());
+        this.minimumConnections = count;
+    }
+
+    /**
      * Gets the maximum number of concurrent connections.
      *
      * @return Maximum number of connections to be stored in the pool.
      */
     public final int getMaximumConnections() {
         return this.maximumConnections;
+    }
+
+    /**
+     * Sets the maximum number of concurrent connections.
+     *
+     * @param count Maximum number of connections to have available.
+     */
+    public final void setMaximumConnections(int count) {
+        count = count <= this.getMinimumConnections() ? this.getMinimumConnections() + 1 : count;
+        this.maximumConnections = count;
     }
 
     /**
@@ -164,6 +185,16 @@ public abstract class SQLPooling extends SQLFactory {
      */
     protected final String getValidationQuery() {
         return this.validationQuery;
+    }
+
+    /**
+     * Sets the query to be used to test for valid connections
+     * before returning them from the pool.
+     *
+     * @param query Query to run the test with.
+     */
+    protected final void setValidationQuery(String query) {
+        this.validationQuery = query;
     }
 
     /**
@@ -182,27 +213,6 @@ public abstract class SQLPooling extends SQLFactory {
     }
 
     /**
-     * Sets the minimum number of concurrent connections.
-     *
-     * @param count Minimum number of connections to have available.
-     */
-    public final void setMinimumConnections(int count) {
-        count = count < 0 ? DEFAULT_MIN_CONNECTIONS : count;
-        count = Math.min(count, this.getMaximumConnections());
-        this.minimumConnections = count;
-    }
-
-    /**
-     * Sets the maximum number of concurrent connections.
-     *
-     * @param count Maximum number of connections to have available.
-     */
-    public final void setMaximumConnections(int count) {
-        count = count <= this.getMinimumConnections() ? this.getMinimumConnections() + 1 : count;
-        this.maximumConnections = count;
-    }
-
-    /**
      * Sets whether or not to test the connection when it
      * is requested from the pool.
      *
@@ -210,16 +220,6 @@ public abstract class SQLPooling extends SQLFactory {
      */
     protected final void setTestOnBorrow(boolean value) {
         this.testOnBorrow = value;
-    }
-
-    /**
-     * Sets the query to be used to test for valid connections
-     * before returning them from the pool.
-     *
-     * @param query Query to run the test with.
-     */
-    protected final void setValidationQuery(String query) {
-        this.validationQuery = query;
     }
 
     private class ConnectionCleaner implements Runnable {

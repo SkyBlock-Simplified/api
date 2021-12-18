@@ -24,10 +24,10 @@ public class DatabaseNotification {
     private final ConcurrentList<String> primaryColumnNames = Concurrent.newList();
     private final transient DatabaseListener listener;
     private final transient SQLFactory sql;
+    private final String table;
     private volatile boolean stopped = false;
     private TriggerEvent event;
     private int previousId = 0;
-    private final String table;
 
     DatabaseNotification(SQLFactory sql, String table, DatabaseListener listener, boolean overwrite) throws SQLException {
         if (listener == null)

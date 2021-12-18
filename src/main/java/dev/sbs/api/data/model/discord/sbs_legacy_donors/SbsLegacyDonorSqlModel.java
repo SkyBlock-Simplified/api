@@ -42,5 +42,5 @@ public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-    
+
 }
