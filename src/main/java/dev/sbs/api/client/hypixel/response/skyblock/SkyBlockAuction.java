@@ -17,6 +17,9 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockAuction {
 
+    @SerializedName("item_bytes")
+    @Getter
+    SkyBlockIsland.NbtContent itemNbt;
     @SerializedName("uuid")
     private String auctionId;
     @SerializedName("auctioneer")
@@ -25,7 +28,6 @@ public class SkyBlockAuction {
     private String islandId;
     @SerializedName("coop")
     private ConcurrentList<String> coopMembers = Concurrent.newList();
-
     @SerializedName("start")
     @Getter
     private SkyBlockDate.RealTime startedAt;
@@ -41,9 +43,6 @@ public class SkyBlockAuction {
     @SerializedName("starting_big")
     @Getter
     private long startingBid;
-    @SerializedName("item_bytes")
-    @Getter
-    SkyBlockIsland.NbtContent itemNbt;
     @Getter
     private boolean claimed;
     @SerializedName("claimed_bidders")

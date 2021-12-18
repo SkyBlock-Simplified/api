@@ -1,5 +1,7 @@
 package dev.sbs.api.util.helper;
 
+import java.util.Optional;
+
 /**
  * <p>An enum representing all the versions of the Java specification.
  * This is intended to mirror available values from the
@@ -61,7 +63,7 @@ public enum JavaVersion {
      * version is unknown
      */
     // helper for static importing
-    static JavaVersion getJavaVersion(final String nom) {
+    static Optional<JavaVersion> getJavaVersion(final String nom) {
         return get(nom);
     }
 
@@ -74,27 +76,27 @@ public enum JavaVersion {
      * @return the corresponding enumeration constant or <b>null</b> if the
      * version is unknown
      */
-    static JavaVersion get(final String nom) {
+    static Optional<JavaVersion> get(final String nom) {
         if ("0.9".equals(nom))
-            return JAVA_0_9;
+            return Optional.of(JAVA_0_9);
         else if ("1.1".equals(nom))
-            return JAVA_1_1;
+            return Optional.of(JAVA_1_1);
         else if ("1.2".equals(nom))
-            return JAVA_1_2;
+            return Optional.of(JAVA_1_2);
         else if ("1.3".equals(nom))
-            return JAVA_1_3;
+            return Optional.of(JAVA_1_3);
         else if ("1.4".equals(nom))
-            return JAVA_1_4;
+            return Optional.of(JAVA_1_4);
         else if ("1.5".equals(nom))
-            return JAVA_1_5;
+            return Optional.of(JAVA_1_5);
         else if ("1.6".equals(nom))
-            return JAVA_1_6;
+            return Optional.of(JAVA_1_6);
         else if ("1.7".equals(nom))
-            return JAVA_1_7;
+            return Optional.of(JAVA_1_7);
         else if ("1.8".equals(nom))
-            return JAVA_1_8;
+            return Optional.of(JAVA_1_8);
         else
-            return null;
+            return Optional.empty();
     }
 
     //-----------------------------------------------------------------------

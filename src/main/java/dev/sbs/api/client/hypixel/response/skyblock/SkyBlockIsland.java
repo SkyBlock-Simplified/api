@@ -184,6 +184,67 @@ public class SkyBlockIsland {
         return this.getMember(uniqueId).isPresent();
     }
 
+    public enum ProfileName {
+
+        @SerializedName("Apple")
+        APPLE,
+        @SerializedName("Banana")
+        BANANA,
+        @SerializedName("Blueberry")
+        BLUEBERRY,
+        @SerializedName("Coconut")
+        COCONUT,
+        @SerializedName("Cucumber")
+        CUCUMBER,
+        @SerializedName("Grapes")
+        GRAPES,
+        @SerializedName("Kiwi")
+        KIWI,
+        @SerializedName("Lemon")
+        LEMON,
+        @SerializedName("Lime")
+        LIME,
+        @SerializedName("Mango")
+        MANGO,
+        @SerializedName("Orange")
+        ORANGE,
+        @SerializedName("Papaya")
+        PAPAYA,
+        @SerializedName("Peach")
+        PEACH,
+        @SerializedName("Pear")
+        PEAR,
+        @SerializedName("Pineapple")
+        PINEAPPLE,
+        @SerializedName("Pomegranate")
+        POMEGRANATE,
+        @SerializedName("Raspberry")
+        RASPBERRY,
+        @SerializedName("Strawberry")
+        STRAWBERRY,
+        @SerializedName("Tomato")
+        TOMATO,
+        @SerializedName("Watermelon")
+        WATERMELON,
+        @SerializedName("Zucchini")
+        ZUCCHINI
+
+    }
+
+    public enum Storage {
+
+        ARMOR,
+        INVENTORY,
+        ENDER_CHEST,
+        FISHING,
+        QUIVER,
+        POTIONS,
+        ACCESSORIES,
+        CANDY,
+        PERSONAL_VAULT
+
+    }
+
     public static class Member {
 
         // Player Stats
@@ -507,16 +568,6 @@ public class SkyBlockIsland {
             return this.getDungeonClassWeight().get(dungeonClass);
         }
 
-        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-        public static class Weight {
-
-            @Getter
-            private final double value;
-            @Getter
-            private final double overflow;
-
-        }
-
         public ConcurrentMap<SkillModel, Weight> getSkillWeight() {
             return SimplifiedApi.getRepositoryOf(SkillModel.class)
                 .findAll()
@@ -633,6 +684,16 @@ public class SkyBlockIsland {
 
         public boolean hasStorage(Storage type) {
             return this.getStorage(type) != null;
+        }
+
+        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Weight {
+
+            @Getter
+            private final double value;
+            @Getter
+            private final double overflow;
+
         }
 
     }
@@ -1069,6 +1130,27 @@ public class SkyBlockIsland {
             return this.getExperienceTiers().size();
         }
 
+        public enum Floor {
+
+            @SerializedName("0")
+            ENTRANCE,
+            @SerializedName("1")
+            ONE,
+            @SerializedName("2")
+            TWO,
+            @SerializedName("3")
+            THREE,
+            @SerializedName("4")
+            FOUR,
+            @SerializedName("5")
+            FIVE,
+            @SerializedName("6")
+            SIX,
+            @SerializedName("7")
+            SEVEN
+
+        }
+
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Class extends ExperienceCalculator {
 
@@ -1105,27 +1187,6 @@ public class SkyBlockIsland {
                 TANK
 
             }
-
-        }
-
-        public enum Floor {
-
-            @SerializedName("0")
-            ENTRANCE,
-            @SerializedName("1")
-            ONE,
-            @SerializedName("2")
-            TWO,
-            @SerializedName("3")
-            THREE,
-            @SerializedName("4")
-            FOUR,
-            @SerializedName("5")
-            FIVE,
-            @SerializedName("6")
-            SIX,
-            @SerializedName("7")
-            SEVEN
 
         }
 
@@ -1277,6 +1338,26 @@ public class SkyBlockIsland {
             return this.talked;
         }
 
+        public enum Medal {
+
+            @SerializedName("bronze")
+            BRONZE,
+            @SerializedName("silver")
+            SILVER,
+            @SerializedName("gold")
+            GOLD
+
+        }
+
+        public enum Perk {
+
+            @SerializedName("double_drops")
+            DOUBLE_DROPS,
+            @SerializedName("farming_level_cap")
+            FARMING_LEVEL_CAP
+
+        }
+
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Contest {
 
@@ -1309,26 +1390,6 @@ public class SkyBlockIsland {
                 private String collectionName;
 
             }
-
-        }
-
-        public enum Medal {
-
-            @SerializedName("bronze")
-            BRONZE,
-            @SerializedName("silver")
-            SILVER,
-            @SerializedName("gold")
-            GOLD
-
-        }
-
-        public enum Perk {
-
-            @SerializedName("double_drops")
-            DOUBLE_DROPS,
-            @SerializedName("farming_level_cap")
-            FARMING_LEVEL_CAP
 
         }
 
@@ -1543,9 +1604,9 @@ public class SkyBlockIsland {
     public static class Minion {
 
         @Getter
-        private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
-        @Getter
         private final MinionModel type;
+        @Getter
+        private ConcurrentSet<Integer> unlocked = Concurrent.newSet();
 
     }
 
@@ -1674,53 +1735,6 @@ public class SkyBlockIsland {
             private int amplifier;
 
         }
-
-    }
-
-    public enum ProfileName {
-
-        @SerializedName("Apple")
-        APPLE,
-        @SerializedName("Banana")
-        BANANA,
-        @SerializedName("Blueberry")
-        BLUEBERRY,
-        @SerializedName("Coconut")
-        COCONUT,
-        @SerializedName("Cucumber")
-        CUCUMBER,
-        @SerializedName("Grapes")
-        GRAPES,
-        @SerializedName("Kiwi")
-        KIWI,
-        @SerializedName("Lemon")
-        LEMON,
-        @SerializedName("Lime")
-        LIME,
-        @SerializedName("Mango")
-        MANGO,
-        @SerializedName("Orange")
-        ORANGE,
-        @SerializedName("Papaya")
-        PAPAYA,
-        @SerializedName("Peach")
-        PEACH,
-        @SerializedName("Pear")
-        PEAR,
-        @SerializedName("Pineapple")
-        PINEAPPLE,
-        @SerializedName("Pomegranate")
-        POMEGRANATE,
-        @SerializedName("Raspberry")
-        RASPBERRY,
-        @SerializedName("Strawberry")
-        STRAWBERRY,
-        @SerializedName("Tomato")
-        TOMATO,
-        @SerializedName("Watermelon")
-        WATERMELON,
-        @SerializedName("Zucchini")
-        ZUCCHINI
 
     }
 
@@ -1876,7 +1890,9 @@ public class SkyBlockIsland {
             member.getActivePet().ifPresent(petInfo -> expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
             expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
             SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
-            SimplifiedApi.getRepositoryOf(DungeonModel.class).findAll().forEach(dungeonModel -> expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).get().getLevel()));
+            SimplifiedApi.getRepositoryOf(DungeonModel.class)
+                .findAll()
+                .forEach(dungeonModel -> expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).get().getLevel()));
 
             try {
                 // --- Load Damage Multiplier ---
@@ -2161,7 +2177,8 @@ public class SkyBlockIsland {
                                     ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
                                     Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, "HEALTH");
                                     optionalStatModel.ifPresent(statModel -> accessoryStatBonuses.put(statModel, cakeBagItems.size() + accessoryStatBonuses.getOrDefault(statModel, 0.0)));
-                                } catch (IOException ignore) { }
+                                } catch (IOException ignore) {
+                                }
                             }
                         });
                 });
@@ -2639,20 +2656,6 @@ public class SkyBlockIsland {
 
     }
 
-    public enum Storage {
-
-        ARMOR,
-        INVENTORY,
-        ENDER_CHEST,
-        FISHING,
-        QUIVER,
-        POTIONS,
-        ACCESSORIES,
-        CANDY,
-        PERSONAL_VAULT
-
-    }
-
     abstract static class ExperienceCalculator {
 
         public int getStartingLevel() {
@@ -2825,7 +2828,7 @@ public class SkyBlockIsland {
                     JsonObject forge = memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes");
 
                     if (forge.has("forge_1")) {
-                        member.forgeItems.addAll(((ConcurrentMap<Integer, ForgeItem>)gson.fromJson(forge.getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass()))
+                        member.forgeItems.addAll(((ConcurrentMap<Integer, ForgeItem>) gson.fromJson(forge.getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass()))
                                                      .stream()
                                                      .map(Map.Entry::getValue)
                                                      .collect(Concurrent.toList()));
