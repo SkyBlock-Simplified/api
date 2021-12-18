@@ -3,23 +3,27 @@ package dev.sbs.api;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.ArrayUtil;
 import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.tuple.Triple;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.Map;
 
+@SuppressWarnings("all")
 public abstract class SimplifiedException extends RuntimeException {
 
     @Getter
-    private final ConcurrentMap<String, Object> fields;
+    private final ConcurrentList<Triple<String, String, Boolean>> fields;
 
-    protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentMap<String, Object> fields) {
+    protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields) {
         super(message, cause, enableSuppression, writableStackTrace);
-        this.fields = Concurrent.newUnmodifiableMap(fields);
+        this.fields = fields;
     }
 
     public static <T extends SimplifiedException> ExceptionBuilder<T> of(Class<T> eClass) {
@@ -69,25 +73,33 @@ public abstract class SimplifiedException extends RuntimeException {
 
     public static class ExceptionBuilder<T extends SimplifiedException> extends NativeExceptionBuilder<T> {
 
-        private final ConcurrentMap<String, Object> fields = Concurrent.newMap();
+        private final ConcurrentList<Triple<String, String, Boolean>> fields = Concurrent.newList();
 
         private ExceptionBuilder(Class<T> eClass) {
             super(eClass);
         }
 
-        public ExceptionBuilder<T> addField(Map.Entry<String, Object> entry) {
-            return this.addField(entry.getKey(), entry.getValue());
+        public ExceptionBuilder<T> addField(String name, String value) {
+            return this.addField(name, value, true);
         }
 
-        public ExceptionBuilder<T> addField(String name, Object value) {
-            if (!this.fields.containsKey(name))
-                this.fields.put(name, value);
+        public ExceptionBuilder<T> addField(String name, String value, boolean inline) {
+            this.fields.add(Triple.of(name, value, inline));
+            return this;
+        }
 
+        public ExceptionBuilder<T> addFields(@NonNull Map.Entry<String, String>... entries) {
+            Arrays.stream(entries).forEach(entry -> this.addField(entry.getKey(), entry.getValue()));
+            return this;
+        }
+
+        public ExceptionBuilder<T> addFields(@NonNull Triple<String, String, Boolean>... fields) {
+            Arrays.stream(fields).forEach(field -> this.addField(field.getLeft(), field.getMiddle(), field.getRight()));
             return this;
         }
 
         @Override
-        public ExceptionBuilder<T> withMessage(String message, Object... objects) {
+        public ExceptionBuilder<T> withMessage(@NonNull String message, Object... objects) {
             super.withMessage(message, objects);
             return this;
         }
@@ -107,15 +119,6 @@ public abstract class SimplifiedException extends RuntimeException {
         @Override
         public ExceptionBuilder<T> withCause(Throwable cause) {
             super.withCause(cause);
-            return this;
-        }
-
-        public ExceptionBuilder<T> setField(Map.Entry<String, Object> entry) {
-            return this.setField(entry.getKey(), entry.getValue());
-        }
-
-        public ExceptionBuilder<T> setField(String name, Object value) {
-            this.fields.put(name, value);
             return this;
         }
 
