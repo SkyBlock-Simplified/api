@@ -49,8 +49,8 @@ public abstract class Manager<P extends Provider> {
             }
         }
 
-        throw SimplifiedException.builder(UnknownServiceException.class)
-            .setMessage(UnknownServiceException.getMessage(service))
+        throw SimplifiedException.of(UnknownServiceException.class)
+            .withMessage(UnknownServiceException.getMessage(service))
             .build();
     }
 

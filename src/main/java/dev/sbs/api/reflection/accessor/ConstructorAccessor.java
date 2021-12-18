@@ -48,9 +48,9 @@ public final class ConstructorAccessor extends ReflectionAccessor<Constructor<?>
                     arguments.append(arg);
                 });
 
-            throw SimplifiedException.builder(ReflectionException.class)
-                .setMessage("Unable to create new instance of ''{0}'' with arguments [{1}].", this.getClazz(), arguments)
-                .setCause(exception)
+            throw SimplifiedException.of(ReflectionException.class)
+                .withMessage("Unable to create new instance of ''{0}'' with arguments [{1}].", this.getClazz(), arguments)
+                .withCause(exception)
                 .build();
         }
     }

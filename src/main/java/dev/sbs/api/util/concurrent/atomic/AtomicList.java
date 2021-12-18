@@ -102,9 +102,9 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 			list.addAll(current);
 			return (T) list;
 		} catch (Exception ex) {
-			throw SimplifiedException.builder(ReflectionException.class)
-				.setMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
-				.setCause(ex)
+			throw SimplifiedException.of(ReflectionException.class)
+				.withMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
+				.withCause(ex)
 				.build();
 		}
 	}

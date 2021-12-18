@@ -270,8 +270,8 @@ public class SimplifiedApi {
                     .stream()
                     .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
                     .findFirst()
-                    .orElseThrow(() -> SimplifiedException.builder(UnknownServiceException.class)
-                        .setMessage(UnknownServiceException.getMessage(tClass))
+                    .orElseThrow(() -> SimplifiedException.of(UnknownServiceException.class)
+                        .withMessage(UnknownServiceException.getMessage(tClass))
                         .build()
                     );
             } else

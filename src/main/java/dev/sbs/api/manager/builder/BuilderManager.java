@@ -33,8 +33,8 @@ public class BuilderManager extends Manager<BuilderProvider> {
         Preconditions.checkNotNull(builder, "Builder cannot be NULL!");
 
         if (this.isRegistered(service))
-            throw SimplifiedException.builder(RegisteredBuilderException.class)
-                .setMessage(RegisteredBuilderException.getMessage(service))
+            throw SimplifiedException.of(RegisteredBuilderException.class)
+                .withMessage(RegisteredBuilderException.getMessage(service))
                 .build();
 
         try {
@@ -47,8 +47,8 @@ public class BuilderManager extends Manager<BuilderProvider> {
         } catch (ReflectionException ignore) {
         }
 
-        throw SimplifiedException.builder(InvalidBuilderException.class)
-            .setMessage(InvalidBuilderException.getMessage(builder, service))
+        throw SimplifiedException.of(InvalidBuilderException.class)
+            .withMessage(InvalidBuilderException.getMessage(builder, service))
             .build();
     }
 
@@ -67,8 +67,8 @@ public class BuilderManager extends Manager<BuilderProvider> {
         if (ClassBuilder.class.isAssignableFrom(provider.getBuilder()))
             return ((ClassBuilder<T>) provider.newInstance()).build(service);
 
-        throw SimplifiedException.builder(InvalidBuilderException.class)
-            .setMessage(InvalidBuilderException.getMessage(service, provider))
+        throw SimplifiedException.of(InvalidBuilderException.class)
+            .withMessage(InvalidBuilderException.getMessage(service, provider))
             .build();
     }
 
@@ -87,8 +87,8 @@ public class BuilderManager extends Manager<BuilderProvider> {
         if (Builder.class.isAssignableFrom(provider.getBuilder()))
             return provider.newInstance();
 
-        throw SimplifiedException.builder(InvalidBuilderException.class)
-            .setMessage(InvalidBuilderException.getMessage(service, provider))
+        throw SimplifiedException.of(InvalidBuilderException.class)
+            .withMessage(InvalidBuilderException.getMessage(service, provider))
             .build();
     }
 
@@ -110,8 +110,8 @@ public class BuilderManager extends Manager<BuilderProvider> {
             }
         }
 
-        throw SimplifiedException.builder(UnknownBuilderException.class)
-            .setMessage(UnknownBuilderException.getMessage(service))
+        throw SimplifiedException.of(UnknownBuilderException.class)
+            .withMessage(UnknownBuilderException.getMessage(service))
             .build();
     }
 

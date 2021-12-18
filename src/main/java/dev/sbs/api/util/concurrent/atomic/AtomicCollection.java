@@ -75,9 +75,9 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 			collection.addAll(current);
 			return (T) collection;
 		} catch (Exception ex) {
-			throw SimplifiedException.builder(ReflectionException.class)
-				.setMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
-				.setCause(ex)
+			throw SimplifiedException.of(ReflectionException.class)
+				.withMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
+				.withCause(ex)
 				.build();
 		}
 	}

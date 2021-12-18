@@ -54,9 +54,9 @@ public class Reflection {
         try {
             this.className = clazz.getSimpleName();
         } catch (Exception ex) {
-            throw SimplifiedException.builder(ReflectionException.class)
-                .setMessage("Unable to get simple name for ''{0}''!", clazz.getName())
-                .setCause(ex)
+            throw SimplifiedException.of(ReflectionException.class)
+                .withMessage("Unable to get simple name for ''{0}''!", clazz.getName())
+                .withCause(ex)
                 .build();
         }
 
@@ -128,8 +128,8 @@ public class Reflection {
 
             return CLASS_CACHE.get(this.getClazzPath());
         } catch (Exception ex) {
-            throw SimplifiedException.builder(ReflectionException.class)
-                .setCause(ex)
+            throw SimplifiedException.of(ReflectionException.class)
+                .withCause(ex)
                 .build();
         }
     }
@@ -155,8 +155,8 @@ public class Reflection {
                 return source.getLocation();
         }
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("Unable to locate the file location of ''{0}''!", clazz.getName())
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("Unable to locate the file location of ''{0}''!", clazz.getName())
             .build();
     }
 
@@ -197,8 +197,8 @@ public class Reflection {
             }
         }
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("The constructor matching ''{0}'' was not found!", Arrays.asList(types))
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("The constructor matching ''{0}'' was not found!", Arrays.asList(types))
             .build();
     }
 
@@ -236,8 +236,8 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getField(type);
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("The field with type ''{0}'' was not found!", type)
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("The field with type ''{0}'' was not found!", type)
             .build();
     }
 
@@ -287,8 +287,8 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getField(name);
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("The field ''{0}'' was not found!", name)
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("The field ''{0}'' was not found!", name)
             .build();
     }
 
@@ -350,8 +350,8 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getMethod(type, paramTypes);
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("The method with return type ''{0}'' was not found with parameters ''{1}''!", type, Arrays.asList(types))
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("The method with return type ''{0}'' was not found with parameters ''{1}''!", type, Arrays.asList(types))
             .build();
     }
 
@@ -421,8 +421,8 @@ public class Reflection {
         if (this.getClazz().getSuperclass() != null)
             return this.getSuperReflection().getMethod(name, paramTypes);
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("The method ''{0}'' was not found with parameters ''{1}''.", name, Collections.singletonList(types))
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("The method ''{0}'' was not found with parameters ''{1}''.", name, Collections.singletonList(types))
             .build();
     }
 
@@ -491,8 +491,8 @@ public class Reflection {
             }
         }
 
-        throw SimplifiedException.builder(ReflectionException.class)
-            .setMessage("Unable to locate generic class in ''{0}'' at index {1}!", tClass.getSimpleName(), index)
+        throw SimplifiedException.of(ReflectionException.class)
+            .withMessage("Unable to locate generic class in ''{0}'' at index {1}!", tClass.getSimpleName(), index)
             .build();
     }
 
@@ -699,8 +699,8 @@ public class Reflection {
         } catch (ReflectionException reflectionException) {
             throw reflectionException;
         } catch (Exception ex) {
-            throw SimplifiedException.builder(ReflectionException.class)
-                .setCause(ex)
+            throw SimplifiedException.of(ReflectionException.class)
+                .withCause(ex)
                 .build();
         }
     }

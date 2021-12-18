@@ -29,8 +29,8 @@ public class ServiceManager extends Manager<ServiceProvider> {
         Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
 
         if (this.isRegistered(service))
-            throw SimplifiedException.builder(RegisteredServiceException.class)
-                .setMessage(RegisteredServiceException.getMessage(service))
+            throw SimplifiedException.of(RegisteredServiceException.class)
+                .withMessage(RegisteredServiceException.getMessage(service))
                 .build();
 
         super.providers.add(new ServiceProvider(service, instance));
@@ -47,13 +47,13 @@ public class ServiceManager extends Manager<ServiceProvider> {
         Preconditions.checkNotNull(instance, "Instance cannot be NULL!");
 
         if (this.isRegistered(service))
-            throw SimplifiedException.builder(RegisteredServiceException.class)
-                .setMessage(RegisteredServiceException.getMessage(service))
+            throw SimplifiedException.of(RegisteredServiceException.class)
+                .withMessage(RegisteredServiceException.getMessage(service))
                 .build();
 
         if (!service.isAssignableFrom(instance.getClass()))
-            throw SimplifiedException.builder(InvalidServiceException.class)
-                .setMessage(InvalidServiceException.getMessage(service, instance))
+            throw SimplifiedException.of(InvalidServiceException.class)
+                .withMessage(InvalidServiceException.getMessage(service, instance))
                 .build();
 
         super.providers.add(new ServiceProvider(service, instance));
@@ -90,8 +90,8 @@ public class ServiceManager extends Manager<ServiceProvider> {
         }
 
         if (providers.isEmpty())
-            throw SimplifiedException.builder(UnknownServiceException.class)
-                .setMessage(UnknownServiceException.getMessage(service))
+            throw SimplifiedException.of(UnknownServiceException.class)
+                .withMessage(UnknownServiceException.getMessage(service))
                 .build();
 
         return providers;
@@ -129,8 +129,8 @@ public class ServiceManager extends Manager<ServiceProvider> {
         }
 
         if (providers.isEmpty())
-            throw SimplifiedException.builder(UnknownServiceException.class)
-                .setMessage(UnknownServiceException.getMessage(service))
+            throw SimplifiedException.of(UnknownServiceException.class)
+                .withMessage(UnknownServiceException.getMessage(service))
                 .build();
 
         return providers;
