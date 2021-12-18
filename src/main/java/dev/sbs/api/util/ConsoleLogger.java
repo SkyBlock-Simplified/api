@@ -6,8 +6,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import dev.sbs.api.util.helper.FormatUtil;
-import lombok.Getter;
-import lombok.Setter;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
@@ -15,13 +13,9 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>, Serializable {
-    
+
     private final Logger log;
 
-    @Getter
-    @Setter
-    private Level visualLevel;
-    
     protected ConsoleLogger(Class<?> tClass) {
         this.log = (Logger) LoggerFactory.getLogger(tClass);
     }
@@ -59,7 +53,7 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
         return this.log.getEffectiveLevel();
     }
 
-    public final Level getConsoleLevel() {
+    public final Level getLevel() {
         return this.log.getLevel();
     }
 
@@ -128,7 +122,7 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
         this.log.setAdditive(additive);
     }
 
-    public void setConsoleLevel(Level newLevel) {
+    public void setLevel(Level newLevel) {
         this.log.setLevel(newLevel);
     }
 
