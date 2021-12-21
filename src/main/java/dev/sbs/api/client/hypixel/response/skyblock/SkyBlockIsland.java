@@ -89,6 +89,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -1859,20 +1860,22 @@ public class SkyBlockIsland {
         private static final Pattern nbtVariablePattern = Pattern.compile(".*?(nbt_([a-zA-Z0-9_\\-\\.]+)).*?");
         private static final Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
 
-        @Getter
-        private final Member member;
-        @Getter
-        private final ConcurrentLinkedMap<StatModel, Data> stats = Concurrent.newLinkedMap();
-        @Getter
-        private long damageMultiplier = 0;
+        @Getter private long damageMultiplier = 0;
+        @Getter private final ConcurrentLinkedMap<Type, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newLinkedMap();
+        @Getter private final ConcurrentMap<BonusPetAbilityStatModel, Pair<String, Double>> bonusPetAbilityStatModels = Concurrent.newMap();
+        @Getter private final ConcurrentMap<BonusItemStatModel, CompoundTag> bonusItemStatModels = Concurrent.newMap();
+        @Getter private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
+        @Getter private boolean bonusCalculated;
 
         private PlayerStats(Member member) {
             // Initialize
-            this.member = member;
             ConcurrentList<StatModel> statModels = statRepository.findAll();
             statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
-            statModels.forEach(statModel -> this.stats.put(statModel, new Data(statModel.getBaseValue(), 0)));
-            ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
+            Arrays.stream(Type.values())
+                .forEach(type -> {
+                    this.stats.put(type, Concurrent.newLinkedMap());
+                    statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data(statModel.getBaseValue(), 0)));
+                });
 
             // TODO: Optimizer Request: No API Data
             //  Booster Cookie:     +15 Magic Find
@@ -1935,7 +1938,7 @@ public class SkyBlockIsland {
 
                 // Save Skills
                 skillBonuses.forEach(statBonus -> {
-                    Data statData = this.stats.get(statBonus.getKey());
+                    Data statData = this.stats.get(Type.SKILLS).get(statBonus.getKey());
                     statData.addBase(statBonus.getValue());
                 });
 
@@ -1962,7 +1965,7 @@ public class SkyBlockIsland {
 
                 // Save Slayers
                 slayerBonuses.forEach(statBonus -> {
-                    Data statData = this.stats.get(statBonus.getKey());
+                    Data statData = this.stats.get(Type.SLAYERS).get(statBonus.getKey());
                     statData.addBase(statBonus.getValue());
                 });
 
@@ -1993,7 +1996,7 @@ public class SkyBlockIsland {
 
                 // Save Dungeons
                 dungeonBonuses.forEach(statBonus -> {
-                    Data statData = this.stats.get(statBonus.getKey());
+                    Data statData = this.stats.get(Type.DUNGEONS).get(statBonus.getKey());
                     statData.addBase(statBonus.getValue());
                 });
 
@@ -2008,7 +2011,7 @@ public class SkyBlockIsland {
                             SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
                                 .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
                                 .forEach(hotmPerkStatModel -> {
-                                    this.stats.get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus());
+                                    this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus());
                                 });
                         });
                 });
@@ -2185,12 +2188,11 @@ public class SkyBlockIsland {
 
                 // Save Accessories
                 accessoryStatBonuses.forEach(accessoryStatBonus -> {
-                    Data statData = this.stats.get(accessoryStatBonus.getKey());
+                    Data statData = this.stats.get(Type.ACCESSORIES).get(accessoryStatBonus.getKey());
                     statData.addBonus(accessoryStatBonus.getValue());
                 });
 
                 // --- Load Armor ---
-                ConcurrentMap<BonusItemStatModel, CompoundTag> bonusItemStatModels = Concurrent.newMap();
                 if (member.hasStorage(Storage.ARMOR)) {
                     member.getStorage(Storage.ARMOR)
                         .getNbtData()
@@ -2211,13 +2213,19 @@ public class SkyBlockIsland {
                                     SimplifiedApi.getRepositoryOf(RarityModel.class)
                                         .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + rarityUpgrades)
                                         .ifPresent(rarityModel -> {
+                                            // Save Item Stats
+                                            itemModel.getStats().forEach((key, value) -> {
+                                                Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, key);
+                                                optionalStatModel.ifPresent(statModel -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
+                                            });
+
                                             // Save Reforge Stats
                                             ConcurrentMap<StatModel, Double> reforgeBonuses = this.handleReforgeBonus(reforgeKey, rarityModel, itemTag);
-                                            reforgeBonuses.forEach((statModel, value) -> this.stats.get(statModel).addBonus(value));
+                                            reforgeBonuses.forEach((statModel, value) -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
 
                                             // Save Gemstone Stat
                                             ConcurrentMap<StatModel, Double> gemstoneStat = this.handleGemstoneBonus(itemTag, rarityModel);
-                                            gemstoneStat.forEach((statModel, value) -> this.stats.get(statModel).addBonus(value));
+                                            gemstoneStat.forEach((statModel, value) -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
                                         });
 
                                     // Store Bonus Item Stats
@@ -2233,7 +2241,7 @@ public class SkyBlockIsland {
                     .filter(centuryCake -> centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis())
                     .forEach(centuryCake -> {
                         // Save Century Cake
-                        Data statData = this.stats.get(centuryCake.getStat());
+                        Data statData = this.stats.get(Type.CENTURY_CAKES).get(centuryCake.getStat());
                         statData.addBonus(centuryCake.getAmount());
                     });
 
@@ -2245,7 +2253,7 @@ public class SkyBlockIsland {
                             // Only Permanent Perks
                             if (essencePerkModel.isPermanent()) {
                                 // Save Essence Perk
-                                Data statData = this.stats.get(essencePerkModel.getStat());
+                                Data statData = this.stats.get(Type.ESSENCE).get(essencePerkModel.getStat());
                                 statData.addBonus(entry.getValue() * essencePerkModel.getLevelBonus());
                             }
                         });
@@ -2259,7 +2267,7 @@ public class SkyBlockIsland {
                     .flatMap(fairyExchangeModel -> fairyExchangeModel.getEffects().entrySet().stream())
                     .forEach(entry -> {
                         // Save Fairy Souls
-                        statRepository.findFirst(StatModel::getKey, entry.getKey()).ifPresent(statModel -> this.stats.get(statModel).addBase(entry.getValue()));
+                        statRepository.findFirst(StatModel::getKey, entry.getKey()).ifPresent(statModel -> this.stats.get(Type.FAIRY_SOULS).get(statModel).addBase(entry.getValue()));
                     });
 
                 // --- Load Melody's Harp ---
@@ -2272,7 +2280,7 @@ public class SkyBlockIsland {
                             statRepository.findFirst(StatModel::getKey, "INTELLIGENCE")
                                 .ifPresent(statModel -> {
                                     // Save Song Stat
-                                    this.stats.get(statModel).addBonus(melodySongModel.getReward());
+                                    this.stats.get(Type.MELODYS_HARP).get(statModel).addBonus(melodySongModel.getReward());
                                 });
                         });
                 });
@@ -2283,11 +2291,10 @@ public class SkyBlockIsland {
                         double farmingDrops = member.getJacobsFarming().getPerk(JacobsFarming.Perk.DOUBLE_DROPS);
 
                         // Save Jacobs Perks
-                        this.stats.get(farmingFortuneStatModel).addBase(farmingDrops * 2.0);
+                        this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel).addBase(farmingDrops * 2.0);
                     });
 
                 // --- Load Active Pet ---
-                ConcurrentMap<BonusPetAbilityStatModel, Pair<String, Double>> bonusPetAbilityStatModels = Concurrent.newMap();
                 member.getActivePet().ifPresent(petInfo -> {
                     int petLevel = petInfo.getLevel();
 
@@ -2320,7 +2327,7 @@ public class SkyBlockIsland {
 
                         // Save Active Pet Stats
                         petStatModels.forEach(petStatModel -> {
-                            Data statData = this.stats.get(petStatModel.getStat());
+                            Data statData = this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat());
                             statData.addBonus(petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel()));
                         });
 
@@ -2333,7 +2340,7 @@ public class SkyBlockIsland {
 
                                 // Save Ability Stat
                                 if (petAbilityStatModel.getStat() != null) {
-                                    Data statData = this.stats.get(petAbilityStatModel.getStat());
+                                    Data statData = this.stats.get(Type.ACTIVE_PET).get(petAbilityStatModel.getStat());
                                     statData.addBonus(abilityValue);
                                 }
 
@@ -2356,7 +2363,7 @@ public class SkyBlockIsland {
                 // Save Pet Score
                 if (ListUtil.notEmpty(petScoreModels)) {
                     Optional<StatModel> optionalMagicFindStatModel = statRepository.findFirst(StatModel::getKey, "MAGIC_FIND");
-                    optionalMagicFindStatModel.ifPresent(magicFindStatModel -> this.stats.get(magicFindStatModel).addBase(petScoreModels.size()));
+                    optionalMagicFindStatModel.ifPresent(magicFindStatModel -> this.stats.get(Type.PET_SCORE).get(magicFindStatModel).addBase(petScoreModels.size()));
                 }
 
                 // --- Load Active Potions ---
@@ -2431,35 +2438,57 @@ public class SkyBlockIsland {
 
                         // Save Active Potions
                         potionStatEffects.forEach((statModel, value) -> {
-                            Data statData = this.stats.get(statModel);
+                            Data statData = this.stats.get(Type.ACTIVE_POTIONS).get(statModel);
                             statData.addBonus(value);
                         });
                     }
                 });
 
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+
+        private PlayerStats(PlayerStats playerStats) {
+            playerStats.getStats().forEach((type, statEntries) -> {
+                this.stats.put(type, Concurrent.newLinkedMap());
+                statEntries.forEach((statModel, data) -> this.stats.get(type).put(statModel, new Data(data)));
+            });
+
+            this.expressionVariables.putAll(playerStats.getExpressionVariables());
+
+            if (!this.isBonusCalculated()) {
+                this.bonusCalculated = true;
+
                 // --- Load Bonus Item Stats ---
-                bonusItemStatModels.forEach((bonusItemStatModel, compoundTag) -> {
-                    this.stats.forEach((statModel, statData) -> {
-                        double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, expressionVariables, bonusItemStatModel);
-                        double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, expressionVariables, bonusItemStatModel);
-                        statData.base = adjustedBase;
-                        statData.bonus = adjustedBonus;
+                this.getBonusItemStatModels().forEach((bonusItemStatModel, compoundTag) -> {
+                    this.stats.forEach((type, statEntries) -> {
+                        statEntries.forEach((statModel, statData) -> {
+                            double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                            double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                            statData.base = adjustedBase;
+                            statData.bonus = adjustedBonus;
+                        });
                     });
                 });
 
                 // --- Load Bonus Pet Item Stats ---
-                bonusPetAbilityStatModels.forEach((bonusPetAbilityStatModel, pair) -> {
-                    this.stats.forEach((statModel, statData) -> {
-                        expressionVariables.put(pair.getKey(), pair.getValue());
-                        double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), null, expressionVariables, bonusPetAbilityStatModel);
-                        double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), null, expressionVariables, bonusPetAbilityStatModel);
-                        statData.base = adjustedBase;
-                        statData.bonus = adjustedBonus;
+                this.getBonusPetAbilityStatModels().forEach((bonusPetAbilityStatModel, pair) -> {
+                    this.stats.forEach((type, statEntries) -> {
+                        statEntries.forEach((statModel, statData) -> {
+                            expressionVariables.put(pair.getKey(), pair.getValue());
+                            double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                            double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                            statData.base = adjustedBase;
+                            statData.bonus = adjustedBonus;
+                        });
                     });
                 });
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
             }
+        }
+
+        public PlayerStats calculateBonusStats() {
+            return new PlayerStats(this);
         }
 
         private ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
@@ -2620,12 +2649,32 @@ public class SkyBlockIsland {
             return value.get();
         }
 
-        public Data getData(String statName) {
-            return this.getData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
+        public ConcurrentLinkedMap<StatModel, Data> getStats(Type type) {
+            return this.stats.get(type);
         }
 
-        public Data getData(StatModel statModel) {
-            return this.getStats().get(statModel);
+        public Data getAllData(String statName) {
+            return this.getAllData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
+        }
+
+        public Data getAllData(StatModel statModel) {
+            Data statData = new Data();
+
+            for (Map.Entry<Type, ConcurrentLinkedMap<StatModel, Data>> newStat : this.getStats()) {
+                Data statModelData = this.getData(newStat.getKey(), statModel);
+                statData.addBase(statModelData.getBase());
+                statData.addBonus(statModelData.getBonus());
+            }
+
+            return statData;
+        }
+
+        public Data getData(Type type, String statName) {
+            return this.getData(type, SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
+        }
+
+        public Data getData(Type type, StatModel statModel) {
+            return this.getStats().get(type).get(statModel);
         }
 
         @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -2640,6 +2689,10 @@ public class SkyBlockIsland {
                 this(0, 0);
             }
 
+            private Data(Data data) {
+                this(data.getBase(), data.getBonus());
+            }
+
             private void addBase(double value) {
                 this.base += value;
             }
@@ -2651,6 +2704,25 @@ public class SkyBlockIsland {
             public final double getTotal() {
                 return this.getBase() + this.getBonus();
             }
+
+        }
+
+        public enum Type {
+
+            ACCESSORIES,
+            ACTIVE_PET,
+            ACTIVE_POTIONS,
+            ARMOR,
+            CENTURY_CAKES,
+            DUNGEONS,
+            ESSENCE,
+            FAIRY_SOULS,
+            JACOBS_FARMING,
+            MELODYS_HARP,
+            MINING_CORE,
+            PET_SCORE,
+            SKILLS,
+            SLAYERS
 
         }
 
