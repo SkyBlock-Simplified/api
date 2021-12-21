@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
-public class HypixelApiException extends ApiException {
+public final class HypixelApiException extends ApiException {
 
     @Getter
     private final HypixelErrorResponse errorResponse;

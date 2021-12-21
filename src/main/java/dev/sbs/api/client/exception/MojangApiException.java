@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
-public class MojangApiException extends ApiException {
+public final class MojangApiException extends ApiException {
 
     @Getter
     private final MojangErrorResponse errorResponse;
