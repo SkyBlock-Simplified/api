@@ -9,7 +9,7 @@ import dev.sbs.api.client.adapter.InstantTypeAdapter;
 import dev.sbs.api.client.adapter.NbtContentTypeAdapter;
 import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
 import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
-import dev.sbs.api.client.adapter.UUIDAdapter;
+import dev.sbs.api.client.adapter.UUIDTypeAdapter;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
 import dev.sbs.api.client.hypixel.implementation.HypixelResourceData;
@@ -169,7 +169,7 @@ public class SimplifiedApi {
             .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
-            .registerTypeAdapter(UUIDAdapter.class, new UUIDAdapter())
+            .registerTypeAdapter(UUIDTypeAdapter.class, new UUIDTypeAdapter())
             .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
             .setPrettyPrinting().create();
 
@@ -265,7 +265,9 @@ public class SimplifiedApi {
     @SuppressWarnings("unchecked")
     public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
         if (serviceManager.isRegistered(SqlSession.class)) {
-            if (getSqlSession().isActive()) {
+            SqlSession sqlSession = serviceManager.get(SqlSession.class);
+
+            if (sqlSession.isActive()) {
                 return serviceManager.getAll(SqlRepository.class)
                     .stream()
                     .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
