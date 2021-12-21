@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public final class MethodAccessor extends ReflectionAccessor<Method> {
 
-    public MethodAccessor(Reflection reflection, Method method) {
+    public MethodAccessor(Reflection<?> reflection, Method method) {
         super(reflection, method);
     }
 

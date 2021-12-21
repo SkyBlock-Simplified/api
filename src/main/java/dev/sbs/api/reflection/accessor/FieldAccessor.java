@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
  */
 public final class FieldAccessor extends ReflectionAccessor<Field> {
 
-    public FieldAccessor(Reflection reflection, Field field) {
+    public FieldAccessor(Reflection<?> reflection, Field field) {
         super(reflection, field);
     }
 

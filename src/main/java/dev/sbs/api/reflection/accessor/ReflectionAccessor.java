@@ -18,7 +18,7 @@ abstract class ReflectionAccessor<T extends AccessibleObject> {
      * Gets the reflection object associated with this accessor.
      */
     @Getter
-    private final Reflection reflection;
+    private final Reflection<?> reflection;
 
     /**
      * Gets the instance of type {@link T}.

@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public final class ConstructorAccessor extends ReflectionAccessor<Constructor<?>> {
 
-    public ConstructorAccessor(Reflection reflection, Constructor<?> constructor) {
+    public ConstructorAccessor(Reflection<?> reflection, Constructor<?> constructor) {
         super(reflection, constructor);
     }
 
