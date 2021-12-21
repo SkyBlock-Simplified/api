@@ -112,7 +112,7 @@ public final class SqlSession {
 
             // Provide SqlRepositories
             for (Class<? extends SqlRepository<? extends SqlModel>> repository : this.getRepositories())
-                serviceManager.addRaw(repository, new Reflection(repository).newInstance(this));
+                serviceManager.addRaw(repository, Reflection.of(repository).newInstance(this));
 
             this.startupTime = System.currentTimeMillis() - startTime;
         } else

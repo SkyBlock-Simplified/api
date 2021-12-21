@@ -66,7 +66,7 @@ public abstract class SimplifiedException extends RuntimeException {
         @Override
         @SuppressWarnings("unchecked")
         public T build() {
-            return (T) new Reflection(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace);
+            return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace);
         }
 
     }
@@ -123,9 +123,8 @@ public abstract class SimplifiedException extends RuntimeException {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public T build() {
-            return (T) new Reflection(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace, this.fields);
+            return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace, this.fields);
         }
 
     }

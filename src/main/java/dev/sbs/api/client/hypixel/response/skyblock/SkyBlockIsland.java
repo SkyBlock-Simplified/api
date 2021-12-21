@@ -497,7 +497,7 @@ public class SkyBlockIsland {
         }
 
         public Skill getSkill(SkillModel skillModel) {
-            double experience = (double) new Reflection(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
+            double experience = (double) Reflection.of(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
             return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().getOrDefault(JacobsFarming.Perk.FARMING_LEVEL_CAP, 0) : 0));
         }
 
@@ -1803,7 +1803,7 @@ public class SkyBlockIsland {
 
     public static class Slayer extends ExperienceCalculator {
 
-        private final static Reflection slayerBossRef = new Reflection(SlayerBoss.class);
+        private final static Reflection<SlayerBoss> slayerBossRef = Reflection.of(SlayerBoss.class);
         private final ConcurrentMap<Integer, Boolean> claimed = Concurrent.newMap();
         private final ConcurrentMap<Integer, Boolean> claimedSpecial = Concurrent.newMap();
         private final ConcurrentMap<Integer, Integer> kills = Concurrent.newMap();
@@ -2856,7 +2856,7 @@ public class SkyBlockIsland {
                         ConcurrentMap<String, Double> experimentMap = gson.fromJson(memberObject.getAsJsonObject("experimentation").getAsJsonObject(tableLink.getKey()), ConcurrentMap.class);
 
                         replaceList.forEach(replacePair -> {
-                            ConcurrentMap<Integer, Integer> tableMap = (ConcurrentMap<Integer, Integer>) new Reflection(Experimentation.Table.class).getValue(replacePair.getLeft(), tableLink.getValue());
+                            ConcurrentMap<Integer, Integer> tableMap = (ConcurrentMap<Integer, Integer>) Reflection.of(Experimentation.Table.class).getValue(replacePair.getLeft(), tableLink.getValue());
 
                             experimentMap.stream()
                                 .filter(entry -> entry.getKey().startsWith(replacePair.getRight()))

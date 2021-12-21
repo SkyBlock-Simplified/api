@@ -155,12 +155,11 @@ public class TagTypeRegistry {
      */
     public Tag<?> instantiate(@NonNull Class<? extends Tag> tagClass) throws TagTypeRegistryException {
         try {
-            Object whatIsThis = new Reflection(tagClass).newInstance();
+            Tag<?> whatIsThis = Reflection.of(tagClass).newInstance();
 
             try {
-                Tag<?> tag = (Tag<?>) whatIsThis;
-                tag.setRegistry(this);
-                return tag;
+                whatIsThis.setRegistry(this);
+                return whatIsThis;
             } catch (ClassCastException cce) {
                 return null;
             }
@@ -191,7 +190,7 @@ public class TagTypeRegistry {
      */
     public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass, String name, Object value) throws TagTypeRegistryException {
         try {
-            Tag<?> tag = (Tag<?>) new Reflection(tagClass).newInstance(name, value);
+            Tag<?> tag = Reflection.of(tagClass).newInstance(name, value);
             tag.setRegistry(this);
             return tag;
         } catch (ReflectionException e) {

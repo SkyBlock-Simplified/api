@@ -17,7 +17,7 @@ public final class BuilderProvider extends Provider {
 
     @SuppressWarnings("unchecked")
     public <T> T newInstance() {
-        return (T) new Reflection(this.getBuilder()).newInstance();
+        return (T) Reflection.of(this.getBuilder()).newInstance();
     }
 
 }

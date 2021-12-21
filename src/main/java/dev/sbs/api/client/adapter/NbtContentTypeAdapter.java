@@ -1,8 +1,12 @@
 package dev.sbs.api.client.adapter;
 
-import com.google.gson.*;
-import dev.sbs.api.reflection.Reflection;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockIsland;
+import dev.sbs.api.reflection.Reflection;
 
 import java.lang.reflect.Type;
 
@@ -10,10 +14,10 @@ public class NbtContentTypeAdapter extends TypeAdapter<SkyBlockIsland.NbtContent
 
     @Override
     public SkyBlockIsland.NbtContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        Reflection reflection = new Reflection(SkyBlockIsland.NbtContent.class);
-        SkyBlockIsland.NbtContent nbtContent = (SkyBlockIsland.NbtContent) new Reflection(SkyBlockIsland.NbtContent.class).newInstance();
+        Reflection<SkyBlockIsland.NbtContent> nbtContentReflection = Reflection.of(SkyBlockIsland.NbtContent.class);
+        SkyBlockIsland.NbtContent nbtContent = nbtContentReflection.newInstance();
         String data = json.isJsonPrimitive() ? json.getAsString() : json.getAsJsonObject().get("data").getAsString(); // Auctions are bad
-        reflection.setValue(String.class, nbtContent, data);
+        nbtContentReflection.setValue(String.class, nbtContent, data);
         return nbtContent;
     }
 

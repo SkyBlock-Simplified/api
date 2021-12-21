@@ -64,9 +64,9 @@ public class NumberUtil {
          * the regex for RE2 (which doesn't support them) but leave them in when building it for
          * java.util.regex (where we want them in order to avoid catastrophic backtracking).
          */
-        String decimal = "(?:\\d+#(?:\\.\\d*#)?|\\.\\d+#)";
+        String decimal = "\\d+#(?:\\.\\d*#)?|\\.\\d+#";
         String completeDec = decimal + "(?:[eE][+-]?\\d+#)?[fFdD]?";
-        String hex = "(?:[0-9a-fA-F]+#(?:\\.[0-9a-fA-F]*#)?|\\.[0-9a-fA-F]+#)";
+        String hex = "[0-9a-fA-F]+#(?:\\.[0-9a-fA-F]*#)?|\\.[0-9a-fA-F]+#";
         String completeHex = "0[xX]" + hex + "[pP][+-]?\\d+#[fFdD]?";
         String fpPattern = "[+-]?(?:NaN|Infinity|" + completeDec + "|" + completeHex + ")";
         fpPattern = fpPattern.replace(
@@ -264,7 +264,7 @@ public class NumberUtil {
     }
 
     public static <N extends Number> N to(Object value, Number defaultValue, Class<N> clazz) {
-        Reflection number = new Reflection(clazz);
+        Reflection<N> number = Reflection.of(clazz);
         String strValue = String.valueOf(value);
         return clazz.cast(number.newInstance(isCreatable(strValue) ? new BigDecimal(strValue).toPlainString() : String.valueOf(defaultValue)));
     }
