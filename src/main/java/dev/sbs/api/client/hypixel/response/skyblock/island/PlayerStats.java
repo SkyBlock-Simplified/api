@@ -77,21 +77,20 @@ public class PlayerStats {
     private static final Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
 
     @Getter private long damageMultiplier = 0;
-
-    @Getter private final ConcurrentLinkedMap<Type, ConcurrentLinkedMap<StatModel, Data>> rawStats = Concurrent.newLinkedMap();
-
     @Getter private final ConcurrentLinkedMap<Type, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newLinkedMap();
-
-
-    @Getter private final ConcurrentMap<BonusPetAbilityStatModel, Pair<String, Double>> bonusPetAbilityStatModels = Concurrent.newMap();
-    @Getter private final ConcurrentMap<BonusItemStatModel, CompoundTag> bonusItemStatModels = Concurrent.newMap();
     @Getter private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
     @Getter private boolean bonusCalculated;
+
+    // Bonus Modifiers
+    @Getter private final ConcurrentMap<BonusPetAbilityStatModel, Pair<String, Double>> bonusPetAbilityStatModels = Concurrent.newMap();
+    @Getter private final ConcurrentMap<BonusItemStatModel, CompoundTag> bonusAccessoryItemStatModels = Concurrent.newMap();
+    @Getter private final ConcurrentMap<BonusItemStatModel, CompoundTag> bonusArmorItemStatModels = Concurrent.newMap();
+    @Getter private final ConcurrentMap<BonusReforgeStatModel, CompoundTag> bonusReforgeStatModels = Concurrent.newMap();
 
     public enum Type {
 
         ACCESSORY_CAKE_BAG,
-        ACCESSORY_GEMS,
+        ACCESSORY_GEMSTONES,
         ACCESSORY_REFORGES,
         ACCESSORY_STATS,
         ACCESSORY_ENRICHMENTS,
@@ -121,11 +120,7 @@ public class PlayerStats {
         Arrays.stream(Type.values())
             .forEach(type -> {
                 this.stats.put(type, Concurrent.newLinkedMap());
-                this.rawStats.put(type, Concurrent.newLinkedMap());
-                statModels.forEach(statModel -> {
-                    this.rawStats.get(type).put(statModel, new Data(statModel.getBaseValue(), 0));
-                    this.stats.get(type).put(statModel, new Data(statModel.getBaseValue(), 0));
-                });
+                statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data(statModel.getBaseValue(), 0)));
             });
 
         // TODO: Optimizer Request: No API Data
@@ -185,11 +180,59 @@ public class PlayerStats {
         if (!this.isBonusCalculated()) {
             this.bonusCalculated = true;
 
-            // --- Load Bonus Reforge Stats ---
+            // --- Load Bonus Accessory Reforge Stats ---
+            this.getBonusReforgeStatModels().forEach((bonusReforgeStatModel, compoundTag) -> {
+                ConcurrentLinkedMap<StatModel, Data> accessoryReforgeData = this.stats.get(Type.ACCESSORY_REFORGES);
 
+                accessoryReforgeData.forEach((statModel, statData) -> {
+                    this.handleReforgeBonus(reforgeKey, rarityModel, compoundTag);
 
-            // --- Load Bonus Item Stats ---
-            this.getBonusItemStatModels().forEach((bonusItemStatModel, compoundTag) -> this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                    double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                    statData.base = adjustedBase;
+                    statData.bonus = adjustedBonus;
+                });
+            });
+
+            // --- Load Bonus Accessory Item Stats ---
+            this.getBonusAccessoryItemStatModels().forEach((bonusItemStatModel, compoundTag) -> {
+                ConcurrentLinkedMap<StatModel, Data> accessoryGemstoneData = this.stats.get(Type.ACCESSORY_GEMSTONES);
+                ConcurrentLinkedMap<StatModel, Data> accessoryReforgeData = this.stats.get(Type.ACCESSORY_REFORGES);
+                ConcurrentLinkedMap<StatModel, Data> accessoryStatData = this.stats.get(Type.ACCESSORY_STATS);
+
+                // Handle Bonus Gemstone Stats
+                if (bonusItemStatModel.isForGems()) {
+                    accessoryGemstoneData.forEach((statModel, statData) -> {
+                        double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                        double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                        statData.base = adjustedBase;
+                        statData.bonus = adjustedBonus;
+                    });
+                }
+
+                // Handle Bonus Reforge Stats
+                if (bonusItemStatModel.isForReforges()) {
+                    accessoryReforgeData.forEach((statModel, statData) -> {
+                        double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                        double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                        statData.base = adjustedBase;
+                        statData.bonus = adjustedBonus;
+                    });
+                }
+
+                // Handle Bonus Stats
+                if (bonusItemStatModel.isForStats()) {
+                    accessoryStatData.forEach((statModel, statData) -> {
+                        double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                        double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                        statData.base = adjustedBase;
+                        statData.bonus = adjustedBonus;
+                    });
+                }
+            });
+
+            // --- Load Bonus Armor Item Stats ---
+            this.getBonusArmorItemStatModels().forEach((bonusItemStatModel, compoundTag) -> this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                 double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
                 double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
                 statData.base = adjustedBase;
@@ -207,92 +250,12 @@ public class PlayerStats {
         }
     }
 
-    private void loadArmor(SkyBlockIsland.Member member) {
-        try {
-            // --- Load Armor ---
-            if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
-                member.getStorage(SkyBlockIsland.Storage.ARMOR)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .stream()
-                    .filter(CompoundTag::notEmpty)
-                    .forEach(itemTag -> {
-                        String itemId = itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue();
-
-                        // Load Item
-                        SimplifiedApi.getRepositoryOf(ItemModel.class)
-                            .findFirst(ItemModel::getItemId, itemId)
-                            .ifPresent(itemModel -> {
-                                // Load Rarity
-                                String reforgeKey = itemTag.getPathOrDefault("tag.ExtraAttributes.modifier", StringTag.EMPTY).getValue().toUpperCase();
-                                int rarityUpgrades = itemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue();
-
-                                SimplifiedApi.getRepositoryOf(RarityModel.class)
-                                    .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + rarityUpgrades)
-                                    .ifPresent(rarityModel -> {
-                                        // Save Stats
-                                        itemModel.getStats().forEach((key, value) -> {
-                                            Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, key);
-                                            optionalStatModel.ifPresent(statModel -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
-                                        });
-
-                                        // Save Enchantments
-                                        if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
-                                            CompoundTag enchantments = itemTag.getPath("tag.ExtraAttributes.enchantments");
-
-                                            enchantments.entrySet()
-                                                .stream()
-                                                .map(entry -> Pair.of(entry.getKey(), ((IntTag)entry.getValue()).getValue()))
-                                                .forEach(pair -> {
-                                                    // Load Enchantment & Stat
-                                                    SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
-                                                        .findFirst(EnchantmentModel::getKey, pair.getKey().toUpperCase())
-                                                        .flatMap(enchantmentModel -> SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
-                                                            .findFirst(EnchantmentStatModel::getEnchantment, enchantmentModel)
-                                                        )
-                                                        .ifPresent(enchantmentStatModel -> {
-                                                            // Save Enchant Stat
-                                                            double enchantBonus = enchantmentStatModel.getBaseValue();
-
-                                                            if (!enchantmentStatModel.isPercentage())
-                                                                enchantBonus += enchantmentStatModel.getLevelBonus() * pair.getValue();
-                                                            else {
-                                                                // TODO: STORE PERCENTAGE FOR LATER
-                                                            }
-
-                                                            //(enchantmentStatModel.getLevelBonus() * pair.getValue());
-                                                            this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
-                                                        });
-                                                });
-                                        }
-
-                                        // Save Reforge Stats
-                                        ConcurrentMap<StatModel, Double> reforgeBonuses = this.handleReforgeBonus(reforgeKey, rarityModel, itemTag);
-                                        reforgeBonuses.forEach((statModel, value) -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
-
-                                        // Save Gemstone Stat
-                                        ConcurrentMap<StatModel, Double> gemstoneStat = this.handleGemstoneBonus(itemTag, rarityModel);
-                                        gemstoneStat.forEach((statModel, value) -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
-                                    });
-
-                                // Store Bonus Item Stats
-                                Optional<BonusItemStatModel> optionalBonusItemStatModel = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class).findFirst(BonusItemStatModel::getItem, itemModel);
-                                optionalBonusItemStatModel.ifPresent(bonusItemStatModel -> bonusItemStatModels.put(bonusItemStatModel, itemTag));
-                            });
-                    });
-            }
-        } catch (IOException ioException) {
-            ioException.printStackTrace(); // TODO
-        }
-    }
-
     private void loadAccessories(SkyBlockIsland.Member member) {
         try {
             // --- Load Accessories ---
             ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagStatModels = Concurrent.newMap();
             ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagReforgeModels = Concurrent.newMap();
             ConcurrentMap<AccessoryFamilyModel, ConcurrentList<AccessoryModel>> familyAccessoryTagModels = Concurrent.newMap();
-            //ConcurrentMap<StatModel, Double> accessoryStatBonuses = Concurrent.newMap();
 
             // Load From Inventory
             if (member.hasStorage(SkyBlockIsland.Storage.INVENTORY)) {
@@ -374,57 +337,27 @@ public class PlayerStats {
                 SimplifiedApi.getRepositoryOf(RarityModel.class)
                     .findFirst(RarityModel::getOrdinal, accessoryModel.getRarity().getOrdinal() + rarityUpgrades)
                     .ifPresent(rarityModel -> {
-                        // Load Bonus Stats
-                        Optional<BonusItemStatModel> optionalBonusItemStatModel = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class).findFirst(BonusItemStatModel::getItem, accessoryModel.getItem());
+                        // Store Bonus Item Stat Model
+                        SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
+                            .findFirst(BonusItemStatModel::getItem, accessoryModel.getItem())
+                            .ifPresent(bonusItemStatModel -> this.bonusAccessoryItemStatModels.put(bonusItemStatModel, itemTag));
 
                         // Load Gemstone Stats
                         ConcurrentMap<StatModel, Double> gemstoneStat = this.handleGemstoneBonus(itemTag, rarityModel);
 
                         // Save Gemstone Stats
-                        gemstoneStat.forEach((statModel, value) -> {
-                            MutableDouble gemstoneValue = new MutableDouble(value);
-
-                            // Handle Bonus
-                            optionalBonusItemStatModel.ifPresent(bonusItemStatModel -> {
-                                if (bonusItemStatModel.isForGems())
-                                    gemstoneValue.set(this.handleBonusEffects(statModel, gemstoneValue.get(), itemTag, bonusItemStatModel));
-                            });
-
-                            // Store Stat
-                            this.stats.get(Type.ACCESSORY_GEMS).get(statModel).addBonus(gemstoneValue.get());
-                        });
+                        gemstoneStat.forEach((statModel, value) -> this.stats.get(Type.ACCESSORY_GEMSTONES).get(statModel).addBonus(value));
 
                         // Handle Reforge
                         ConcurrentMap<StatModel, Double> reforgeBonuses = this.handleReforgeBonus(reforgeKey, rarityModel, itemTag);
 
                         // Save Reforge
-                        reforgeBonuses.forEach((statModel, value) -> {
-                            MutableDouble reforgeValue = new MutableDouble(value);
-
-                            // Handle Bonus
-                            /*optionalBonusItemStatModel.ifPresent(bonusItemStatModel -> {
-                                if (bonusItemStatModel.isForReforges())
-                                    reforgeValue.set(this.handleBonusEffects(statModel, reforgeValue.get(), itemTag, bonusItemStatModel));
-                            });*/
-
-                            // Store Stat
-                            this.stats.get(Type.ACCESSORY_REFORGES).get(statModel).addBonus(reforgeValue.get());
-                        });
+                        reforgeBonuses.forEach((statModel, value) -> this.stats.get(Type.ACCESSORY_REFORGES).get(statModel).addBonus(value));
 
                         // Load Stats
-                        accessoryModel.getEffects().forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
-                            .ifPresent(statModel -> {
-                                MutableDouble statValue = new MutableDouble(value);
-
-                                // Handle Bonus
-                                /*optionalBonusItemStatModel.ifPresent(bonusItemStatModel -> {
-                                    if (bonusItemStatModel.isForStats())
-                                        statValue.set(this.handleBonusEffects(statModel, statValue.get(), itemTag, bonusItemStatModel));
-                                });*/
-
-                                // Store Stat
-                                this.stats.get(Type.ACCESSORY_STATS).get(statModel).addBonus(statValue.get());
-                            }));
+                        accessoryModel.getEffects()
+                            .forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
+                            .ifPresent(statModel -> this.stats.get(Type.ACCESSORY_STATS).get(statModel).addBonus(value)));
 
                         // Handle Enrichment
                         if (itemTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
@@ -451,6 +384,85 @@ public class PlayerStats {
                         }
                     });
             });
+        } catch (IOException ioException) {
+            ioException.printStackTrace(); // TODO
+        }
+    }
+
+    private void loadArmor(SkyBlockIsland.Member member) {
+        try {
+            // --- Load Armor ---
+            if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
+                member.getStorage(SkyBlockIsland.Storage.ARMOR)
+                    .getNbtData()
+                    .<CompoundTag>getList("i")
+                    .stream()
+                    .filter(CompoundTag::notEmpty)
+                    .forEach(itemTag -> {
+                        String itemId = itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue();
+
+                        // Load Item
+                        SimplifiedApi.getRepositoryOf(ItemModel.class)
+                            .findFirst(ItemModel::getItemId, itemId)
+                            .ifPresent(itemModel -> {
+                                // Load Rarity
+                                String reforgeKey = itemTag.getPathOrDefault("tag.ExtraAttributes.modifier", StringTag.EMPTY).getValue().toUpperCase();
+                                int rarityUpgrades = itemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue();
+
+                                SimplifiedApi.getRepositoryOf(RarityModel.class)
+                                    .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + rarityUpgrades)
+                                    .ifPresent(rarityModel -> {
+                                        // Save Stats
+                                        itemModel.getStats().forEach((key, value) -> {
+                                            Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, key);
+                                            optionalStatModel.ifPresent(statModel -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
+                                        });
+
+                                        // Save Enchantments
+                                        if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
+                                            CompoundTag enchantments = itemTag.getPath("tag.ExtraAttributes.enchantments");
+
+                                            enchantments.entrySet()
+                                                .stream()
+                                                .map(entry -> Pair.of(entry.getKey(), ((IntTag)entry.getValue()).getValue()))
+                                                .forEach(pair -> {
+                                                    // Load Enchantment & Stat
+                                                    SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
+                                                        .findFirst(EnchantmentModel::getKey, pair.getKey().toUpperCase())
+                                                        .flatMap(enchantmentModel -> SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
+                                                            .findFirst(EnchantmentStatModel::getEnchantment, enchantmentModel)
+                                                        )
+                                                        .ifPresent(enchantmentStatModel -> {
+                                                            // Save Enchant Stat
+                                                            double enchantBonus = enchantmentStatModel.getBaseValue();
+
+                                                            if (!enchantmentStatModel.isPercentage())
+                                                                enchantBonus += enchantmentStatModel.getLevelBonus() * pair.getValue();
+                                                            else {
+                                                                // TODO: STORE PERCENTAGE FOR LATER
+                                                            }
+
+                                                            //(enchantmentStatModel.getLevelBonus() * pair.getValue());
+                                                            this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                                                        });
+                                                });
+                                        }
+
+                                        // Save Reforge Stats
+                                        ConcurrentMap<StatModel, Double> reforgeBonuses = this.handleReforgeBonus(reforgeKey, rarityModel, itemTag);
+                                        reforgeBonuses.forEach((statModel, value) -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
+
+                                        // Save Gemstone Stat
+                                        ConcurrentMap<StatModel, Double> gemstoneStat = this.handleGemstoneBonus(itemTag, rarityModel);
+                                        gemstoneStat.forEach((statModel, value) -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
+                                    });
+
+                                // Store Bonus Item Stats
+                                Optional<BonusItemStatModel> optionalBonusItemStatModel = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class).findFirst(BonusItemStatModel::getItem, itemModel);
+                                optionalBonusItemStatModel.ifPresent(bonusItemStatModel -> bonusArmorItemStatModels.put(bonusItemStatModel, itemTag));
+                            });
+                    });
+            }
         } catch (IOException ioException) {
             ioException.printStackTrace(); // TODO
         }
@@ -839,14 +851,17 @@ public class PlayerStats {
                         // Load Bonus Stats
                         Optional<BonusReforgeStatModel> optionalBonusReforgeStatModel = SimplifiedApi.getRepositoryOf(BonusReforgeStatModel.class).findFirst(BonusReforgeStatModel::getReforge, reforgeModel);
 
+                        // TODO: NEW
+                        optionalBonusReforgeStatModel.ifPresent(bonusReforgeStatModel -> this.bonusReforgeStatModels.put(bonusReforgeStatModel, compoundTag));
+
                         // Load Reforge Stat Effects
                         reforgeStatModel.getEffects()
                             .forEach((key, value1) -> statRepository.findFirst(StatModel::getKey, key)
                                 .ifPresent(statModel -> {
                                     MutableDouble value = new MutableDouble(value1);
 
-                                    // Handle Bonus Stats
-                                    optionalBonusReforgeStatModel.ifPresent(bonusReforgeStatModel -> value.set(this.handleBonusEffects(statModel, value1, compoundTag, bonusReforgeStatModel)));
+                                    // Handle Bonus Stats TODO: DISABLED
+                                    //optionalBonusReforgeStatModel.ifPresent(bonusReforgeStatModel -> value.set(this.handleBonusEffects(statModel, value1, compoundTag, bonusReforgeStatModel)));
 
                                     // Save Stats
                                     reforgeBonuses.put(statModel, value.get() + reforgeBonuses.getOrDefault(statModel, 0.0));
