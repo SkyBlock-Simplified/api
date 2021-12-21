@@ -23,6 +23,8 @@ import dev.sbs.api.data.model.skyblock.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
+import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatModel;
+import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.essence_perks.EssencePerkModel;
 import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
@@ -2213,11 +2215,35 @@ public class SkyBlockIsland {
                                     SimplifiedApi.getRepositoryOf(RarityModel.class)
                                         .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + rarityUpgrades)
                                         .ifPresent(rarityModel -> {
-                                            // Save Item Stats
+                                            // Save Stats
                                             itemModel.getStats().forEach((key, value) -> {
                                                 Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, key);
                                                 optionalStatModel.ifPresent(statModel -> this.stats.get(Type.ARMOR).get(statModel).addBonus(value));
                                             });
+
+                                            // Save Enchantments
+                                            if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
+                                                CompoundTag enchantments = itemTag.getPath("tag.ExtraAttributes.enchantments");
+
+                                                enchantments.entrySet()
+                                                    .stream()
+                                                    .map(entry -> Pair.of(entry.getKey(), ((IntTag)entry.getValue()).getValue()))
+                                                    .forEach(pair -> {
+                                                        // Load Enchantment
+                                                        SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
+                                                            .findFirst(EnchantmentModel::getKey, pair.getKey().toUpperCase())
+                                                            .ifPresent(enchantmentModel -> {
+                                                                // Load Enchantment Stat
+                                                                SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
+                                                                    .findFirst(EnchantmentStatModel::getEnchantment, enchantmentModel)
+                                                                    .ifPresent(enchantmentStatModel -> {
+                                                                        // Save Enchant Stat
+                                                                        double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * pair.getValue());
+                                                                        this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                                                                    });
+                                                            });
+                                                    });
+                                            }
 
                                             // Save Reforge Stats
                                             ConcurrentMap<StatModel, Double> reforgeBonuses = this.handleReforgeBonus(reforgeKey, rarityModel, itemTag);
@@ -2715,6 +2741,7 @@ public class SkyBlockIsland {
             ARMOR,
             CENTURY_CAKES,
             DUNGEONS,
+            ENCHANTS,
             ESSENCE,
             FAIRY_SOULS,
             JACOBS_FARMING,
