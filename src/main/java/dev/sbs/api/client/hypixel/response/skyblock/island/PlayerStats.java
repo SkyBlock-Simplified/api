@@ -120,10 +120,8 @@ public class PlayerStats {
         this.loadSkills(member);
         this.loadSlayers(member);
         this.loadDungeons(member);
-
         this.loadAccessories(member);
         this.loadArmor(member);
-
         this.loadActivePet(member);
         this.loadActivePotions(member);
         this.loadPetScore(member);
@@ -141,17 +139,13 @@ public class PlayerStats {
 
     private PlayerStats(PlayerStats playerStats) {
         // Load Previous Data
-        playerStats.stats.forEach((type, statEntries) -> {
-            this.stats.put(type, Concurrent.newLinkedMap());
-            statEntries.forEach((statModel, data) -> this.stats.get(type).put(statModel, new Data(data)));
-        });
-
-        this.bonusCalculated = false;
         this.damageMultiplier = playerStats.getDamageMultiplier();
         this.expressionVariables.putAll(playerStats.getExpressionVariables());
+        this.stats.putAll(playerStats.getStats());
         this.accessories.putAll(playerStats.getAccessories());
         this.armor.putAll(playerStats.getArmor());
         this.bonusPetAbilityStatModels.addAll(playerStats.getBonusPetAbilityStatModels());
+        this.bonusCalculated = playerStats.isBonusCalculated();
 
         // Calculate Bonus Modifiers
         if (!this.isBonusCalculated()) {
@@ -160,10 +154,7 @@ public class PlayerStats {
                 // Handle Bonus Reforge Stats
                 accessoryData.getBonusReforgeStatModel()
                     .ifPresent(bonusReforgeStatModel -> accessoryData.getStats(AccessoryData.Type.REFORGES)
-                        .forEach((statModel, statData) -> {
-                            statData.base = this.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
-                            statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
-                        }));
+                        .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel)));
 
                 // Handle Bonus Item Stats
                 accessoryData.getBonusItemStatModel()
@@ -171,28 +162,19 @@ public class PlayerStats {
                         // Handle Bonus Gemstone Stats
                         if (bonusItemStatModel.isForGems()) {
                             accessoryData.getStats(AccessoryData.Type.GEMSTONES)
-                                .forEach((statModel, statData) -> {
-                                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                                });
+                                .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
 
                         // Handle Bonus Reforge Stats
                         if (bonusItemStatModel.isForReforges()) {
                             accessoryData.getStats(AccessoryData.Type.REFORGES)
-                                .forEach((statModel, statData) -> {
-                                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                                });
+                                .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
 
                         // Handle Bonus Stats
-                        if (bonusItemStatModel.isForReforges()) {
+                        if (bonusItemStatModel.isForStats()) {
                             accessoryData.getStats(AccessoryData.Type.STATS)
-                                .forEach((statModel, statData) -> {
-                                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                                });
+                                .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
                     });
             }));
@@ -251,6 +233,14 @@ public class PlayerStats {
 
             // --- Load Bonus Pet Item Stats ---
             this.getBonusPetAbilityStatModels().forEach(bonusPetAbilityStatModel -> {
+                // Override Pet Variables
+                this.expressionVariables.put("PET_ABILITY_VALUE", this.getExpressionVariables().getOrDefault(FormatUtil.format("PET_ABILITY_{0}_VALUE", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
+                statRepository.findAll().forEach(statModel -> {
+                    String newVariableName = FormatUtil.format("PET_ABILITY_{0}", statModel.getKey());
+                    String currentVariableName = FormatUtil.format("PET_ABILITY_{0}_{1}", bonusPetAbilityStatModel.getPetAbility().getKey(), statModel.getKey());
+                    this.expressionVariables.put(newVariableName, this.getExpressionVariables().getOrDefault(currentVariableName, 0.0));
+                });
+
                 // Handle Stats
                 this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                     statData.base = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
@@ -258,45 +248,134 @@ public class PlayerStats {
                 }));
 
                 // Handle Armor
-                this.armor.forEach((itemModel2, itemData2) -> itemData2.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
-                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                this.armor.forEach((itemModel, itemData) -> itemData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
                 })));
 
                 // Handle Accessories
                 this.accessories.forEach((accessoryModel, accessoryData) -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
-                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
                 })));
             });
         }
     }
 
-    private ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
-        ConcurrentMap<StatModel, Double> reforgeBonuses = Concurrent.newMap();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
+        MutableDouble value = new MutableDouble(currentTotal);
+        ConcurrentList<StatModel> statModels = statRepository.findAll();
 
-        // Load Reforge Stat Effects
-        optionalReforgeStatModel.ifPresent(reforgeStatModel -> reforgeStatModel.getEffects()
-            .forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
-                .ifPresent(statModel -> reforgeBonuses.put(statModel, value + reforgeBonuses.getOrDefault(statModel, 0.0)))));
+        // Handle Bonus Stats
+        for (BuffEffectsModel bonusBuffEffectModel : bonusEffectsModels) {
+            value.add((double) bonusBuffEffectModel.getEffect(statModel.getKey(), 0.0));
 
-        return reforgeBonuses;
+            bonusBuffEffectModel.getBuffEffects().forEach((buffKey, buffValue) -> {
+                String filterKey = (String) buffKey;
+
+                if (filterKey.equals("TIME")) {
+                    SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
+                    int hour = currentDate.getHour();
+                    List<String> timeConstraints = (List<String>) buffValue;
+                    MutableBoolean insideConstraint = new MutableBoolean(false);
+
+                    timeConstraints.forEach(timeConstraint -> {
+                        String[] constraintParts = timeConstraint.split("-");
+                        int start = NumberUtil.toInt(constraintParts[0]);
+                        int end = NumberUtil.toInt(constraintParts[1]);
+
+                        if (hour >= start && hour <= end)
+                            insideConstraint.setTrue(); // At Least 1 Constraint is True
+                    });
+
+                    if (insideConstraint.isFalse())
+                        value.set(0.0);
+                } else {
+                    boolean multiply = false;
+
+                    if (filterKey.startsWith("MULTIPLY_")) {
+                        filterKey = filterKey.replace("MULTIPLY_", "");
+                        multiply = true;
+                    } else if (filterKey.startsWith("ADD_"))
+                        filterKey = filterKey.replace("ADD_", "");
+
+                    if (filterKey.startsWith("STAT_")) {
+                        filterKey = filterKey.replace("STAT_", "");
+
+                        // Handle Buff Stat
+                        if (statModel.getKey().equals(filterKey) || "ALL".equals(filterKey)) {
+                            String valueString = String.valueOf(buffValue);
+
+                            if (NumberUtil.isCreatable(valueString))
+                                value.set(value.get() * (double) buffValue);
+                            else {
+                                if (!multiply || statModel.isMultipliable()) {
+                                    if (compoundTag != null) {
+                                        Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
+
+                                        if (nbtMatcher.matches()) {
+                                            String nbtTag = nbtMatcher.group(2);
+                                            String nbtValue = String.valueOf(compoundTag.getPath(nbtTag).getValue());
+                                            valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
+                                        }
+                                    }
+
+                                    Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
+                                        .variable("CURRENT_VALUE")
+                                        .variable("PET_LEVEL")
+                                        .variable("SKILL_AVERAGE")
+                                        .variable("PET_ABILITY_VALUE")
+                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("{0}", statModelX.getKey())).collect(Concurrent.toSet()))
+                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("SKILL_LEVEL_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
+                                        .variables(SimplifiedApi.getRepositoryOf(DungeonModel.class).findAll().stream().map(dungeonModelX -> FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModelX.getKey())).collect(Concurrent.toSet()))
+                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("PET_ABILITY_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
+                                        .build();
+
+                                    expression.setVariables(variables);
+                                    expression.setVariable("CURRENT_VALUE", currentTotal);
+                                    double newValue = expression.evaluate();
+                                    value.set(newValue);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        return value.get();
     }
 
     public ConcurrentLinkedMap<StatModel, Data> getAllStats() {
-        return this.getStatsOf(Type.values());
-    }
-
-    public ConcurrentLinkedMap<StatModel, Data> getStatsOf(Type... types) {
+        // Initialize
+        ConcurrentList<StatModel> statModels = statRepository.findAll();
+        statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
         ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
-        statRepository.findAll().forEach(statModel -> totalStats.put(statModel, new Data()));
+        statModels.forEach(statModel -> totalStats.put(statModel, new Data()));
 
         // Collect Stat Data
-        Arrays.stream(types).forEach(type -> this.stats.get(type).forEach(((statModel, data) -> {
-            Data statData = totalStats.get(statModel);
-            statData.addBase(data.getBase());
-            statData.addBonus(data.getBonus());
+        Arrays.stream(PlayerStats.Type.values()).forEach(type -> this.stats.get(type).forEach(((statModel, statData) -> {
+            Data totalData = totalStats.get(statModel);
+            totalData.addBase(statData.getBase());
+            totalData.addBonus(statData.getBonus());
         })));
+
+        // Collect Accessory Data
+        this.getAccessories().forEach((accessoryModel, accessoryData) -> accessoryData.getAllStats()
+            .forEach((statModel, statData) -> {
+                Data totalData = totalStats.get(statModel);
+                totalData.addBase(statData.getBase());
+                totalData.addBonus(statData.getBonus());
+            }));
+
+        // Collect Armor Data
+        this.getArmor().forEach((itemModel, itemData) -> itemData.getAllStats()
+            .forEach((statModel, statData) -> {
+                Data totalData = totalStats.get(statModel);
+                totalData.addBase(statData.getBase());
+                totalData.addBonus(statData.getBonus());
+            }));
 
         return totalStats;
     }
@@ -323,6 +402,20 @@ public class PlayerStats {
 
     public Data getData(StatModel statModel, Type... types) {
         return this.getStatsOf(types).get(statModel);
+    }
+
+    public ConcurrentLinkedMap<StatModel, Data> getStatsOf(Type... types) {
+        ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
+        statRepository.findAll().forEach(statModel -> totalStats.put(statModel, new Data()));
+
+        // Collect Stat Data
+        Arrays.stream(types).forEach(type -> this.stats.get(type).forEach(((statModel, data) -> {
+            Data statData = totalStats.get(statModel);
+            statData.addBase(data.getBase());
+            statData.addBonus(data.getBonus());
+        })));
+
+        return totalStats;
     }
 
     private void loadAccessories(SkyBlockIsland.Member member) {
@@ -543,12 +636,12 @@ public class PlayerStats {
                 statData.addBonus(petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel()));
             });
 
-            // Save Active Pet Ability Stats
+            // Handle Ability Stats
             petAbilityStatMap.forEach((petAbilityModel, petAbilityStatModels) -> {
                 // Load Bonus Pet Ability Stats
                 SimplifiedApi.getRepositoryOf(BonusPetAbilityStatModel.class)
                     .findFirst(BonusPetAbilityStatModel::getPetAbility, petAbilityModel)
-                    .ifPresent(bonusPetAbilityStatModels::add);
+                    .ifPresent(this.bonusPetAbilityStatModels::add);
 
                 petAbilityStatModels.forEach(petAbilityStatModel -> {
                     double abilityValue = petAbilityStatModel.getBaseValue() + (petAbilityStatModel.getLevelBonus() * petInfo.getLevel());
@@ -561,7 +654,7 @@ public class PlayerStats {
 
                     // Store Bonus Pet Ability
                     String statKey = (petAbilityStatModel.getStat() == null ? "VALUE" : petAbilityStatModel.getStat().getKey());
-                    this.expressionVariables.put(FormatUtil.format("PET_ABILITY_{0}", statKey), abilityValue);
+                    this.expressionVariables.put(FormatUtil.format("PET_ABILITY_{0}_{1}", petAbilityModel.getKey(), statKey), abilityValue);
                 });
             });
         }));
@@ -570,11 +663,11 @@ public class PlayerStats {
     @SuppressWarnings("unchecked")
     private void loadActivePotions(SkyBlockIsland.Member member) {
         // --- Load Active Potions ---
-        member.getActivePotions().forEach(potion -> {
-            String effect = potion.getEffect();
-
-            if (!member.getDisabledPotions().contains(effect)) {
-                Optional<PotionModel> optionalPotionModel = SimplifiedApi.getRepositoryOf(PotionModel.class).findFirst(PotionModel::getKey, effect.toUpperCase());
+        member.getActivePotions()
+            .stream()
+            .filter(potion -> !member.getDisabledPotions().contains(potion.getEffect()))
+            .forEach(potion -> {
+                Optional<PotionModel> optionalPotionModel = SimplifiedApi.getRepositoryOf(PotionModel.class).findFirst(PotionModel::getKey, potion.getEffect().toUpperCase());
                 ConcurrentMap<StatModel, Double> potionStatEffects = Concurrent.newMap();
                 ConcurrentMap<String, Double> potionBuffEffects = Concurrent.newMap();
 
@@ -588,63 +681,53 @@ public class PlayerStats {
 
                     // Load Stats
                     potionTierModels.forEach(potionTierModel -> {
-                        potionTierModel.getEffects().forEach((key, value) -> {
-                            Optional<StatModel> optionalStatModel = statRepository.findFirst(StatModel::getKey, key);
-                            optionalStatModel.ifPresent(statModel -> potionStatEffects.put(statModel, potionTierModel.getEffect(key) + potionStatEffects.getOrDefault(statModel, 0.0)));
-                        });
+                        potionTierModel.getEffects().forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
+                            .ifPresent(statModel -> potionStatEffects.put(statModel, potionTierModel.getEffect(key) + potionStatEffects.getOrDefault(statModel, 0.0))));
 
                         potionTierModel.getBuffEffects().forEach((key, value) -> potionBuffEffects.put(key, value + potionBuffEffects.getOrDefault(key, 0.0)));
                     });
                 });
 
-                // Load Potion Brews
-                potion.getModifiers().forEach(modifier -> {
-                    Optional<PotionBrewModel> optionalPotionBrewModel = SimplifiedApi.getRepositoryOf(PotionBrewModel.class).findFirst(
-                        Pair.of(PotionBrewModel::getKey, modifier.getKey().toUpperCase()),
-                        Pair.of(PotionBrewModel::getAmplified, modifier.getAmplifier())
-                    );
+                // Handle Potion Brews
+                potion.getModifiers().forEach(modifier -> SimplifiedApi.getRepositoryOf(PotionBrewModel.class).findFirst(
+                    Pair.of(PotionBrewModel::getKey, modifier.getKey().toUpperCase()),
+                    Pair.of(PotionBrewModel::getAmplified, modifier.getAmplifier())
+                ).ifPresent(potionBrewModel -> SimplifiedApi.getRepositoryOf(PotionBrewBuffModel.class)
+                    .findAll(PotionBrewBuffModel::getPotionBrew, potionBrewModel)
+                    .forEach(potionBrewBuffModel -> {
+                        final MutableBoolean isBuff = new MutableBoolean(true);
 
-                    optionalPotionBrewModel.ifPresent(potionBrewModel -> {
-                        // Handle Brews
-                        SimplifiedApi.getRepositoryOf(PotionBrewBuffModel.class)
-                            .findAll(PotionBrewBuffModel::getPotionBrew, potionBrewModel)
-                            .forEach(potionBrewBuffModel -> {
-                                final MutableBoolean isBuff = new MutableBoolean(true);
-
-                                // Stats
-                                statRepository.findFirst(StatModel::getKey, potionBrewBuffModel.getBuffKey())
-                                    .ifPresent(statModel -> {
-                                        if (statModel.getKey().equals(potionBrewBuffModel.getBuffKey())) {
-                                            isBuff.setFalse();
-                                            double existingValue = potionStatEffects.getOrDefault(statModel, 0.0);
-
-                                            if (potionBrewBuffModel.isPercentage())
-                                                potionStatEffects.put(statModel, existingValue * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
-                                            else
-                                                potionStatEffects.put(statModel, existingValue + potionBrewBuffModel.getBuffValue());
-                                        }
-                                    });
-
-                                // Buffs
-                                if (isBuff.get()) {
-                                    double existingValue = potionBuffEffects.getOrDefault(potionBrewBuffModel.getBuffKey(), 0.0);
+                        // Stats
+                        statRepository.findFirst(StatModel::getKey, potionBrewBuffModel.getBuffKey())
+                            .ifPresent(statModel -> {
+                                if (statModel.getKey().equals(potionBrewBuffModel.getBuffKey())) {
+                                    isBuff.setFalse();
+                                    double existingValue = potionStatEffects.getOrDefault(statModel, 0.0);
 
                                     if (potionBrewBuffModel.isPercentage())
-                                        potionBuffEffects.put(potionBrewBuffModel.getBuffKey(), (potionBrewBuffModel.getBuffValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0)) + existingValue);
+                                        potionStatEffects.put(statModel, existingValue * (1 + potionBrewBuffModel.getBuffValue() / 100.0));
                                     else
-                                        potionBuffEffects.put(potionBrewBuffModel.getBuffKey(), (potionBrewBuffModel.getBuffValue() + potionBrewBuffModel.getBuffValue() + existingValue));
+                                        potionStatEffects.put(statModel, existingValue + potionBrewBuffModel.getBuffValue());
                                 }
                             });
-                    });
-                });
+
+                        // Buffs
+                        if (isBuff.get()) {
+                            double existingValue = potionBuffEffects.getOrDefault(potionBrewBuffModel.getBuffKey(), 0.0);
+
+                            if (potionBrewBuffModel.isPercentage())
+                                potionBuffEffects.put(potionBrewBuffModel.getBuffKey(), (potionBrewBuffModel.getBuffValue() * (1 + potionBrewBuffModel.getBuffValue() / 100.0)) + existingValue);
+                            else
+                                potionBuffEffects.put(potionBrewBuffModel.getBuffKey(), (potionBrewBuffModel.getBuffValue() + potionBrewBuffModel.getBuffValue() + existingValue));
+                        }
+                    })));
 
                 // Save Active Potions
                 potionStatEffects.forEach((statModel, value) -> {
                     Data statData = this.stats.get(Type.ACTIVE_POTIONS).get(statModel);
                     statData.addBonus(value);
                 });
-            }
-        });
+            });
     }
 
     private void loadDamageMultiplier(SkyBlockIsland.Member member) {
@@ -663,46 +746,6 @@ public class PlayerStats {
                         .flatMap(map -> map.entrySet().stream())
                         .forEach(entry -> this.damageMultiplier += (double) entry.getValue());
                 }
-            });
-    }
-
-    private void loadPetScore(SkyBlockIsland.Member member) {
-        // --- Load Pet Score ---
-        int petScore = member.getPetScore();
-        ConcurrentList<PetScoreModel> petScoreModels = SimplifiedApi.getRepositoryOf(PetScoreModel.class)
-            .findAll()
-            .stream()
-            .filter(petScoreModel -> petScore >= petScoreModel.getBreakpoint())
-            .collect(Concurrent.toList());
-
-        // Save Pet Score
-        if (ListUtil.notEmpty(petScoreModels))
-            statRepository.findFirst(StatModel::getKey, "MAGIC_FIND").ifPresent(magicFindStatModel -> this.stats.get(Type.PET_SCORE).get(magicFindStatModel).addBase(petScoreModels.size()));
-    }
-
-    private void loadMiningCore(SkyBlockIsland.Member member) {
-        // --- Load Mining Core ---
-        member.getMining().getNodes().forEach((key, level) -> {
-            // Load Hotm Perk
-            SimplifiedApi.getRepositoryOf(HotmPerkModel.class).findFirst(HotmPerkModel::getKey, key.toUpperCase())
-                .ifPresent(hotmPerkModel -> {
-                    // Save Perk Stats
-                    SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
-                        .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
-                        .forEach(hotmPerkStatModel -> this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus()));
-                });
-        });
-    }
-
-    private void loadCenturyCakes(SkyBlockIsland.Member member) {
-        // --- Load Century Cakes ---
-        member.getCenturyCakes()
-            .stream()
-            .filter(centuryCake -> centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis())
-            .forEach(centuryCake -> {
-                // Save Century Cake
-                Data statData = this.stats.get(Type.CENTURY_CAKES).get(centuryCake.getStat());
-                statData.addBonus(centuryCake.getAmount());
             });
     }
 
@@ -795,14 +838,53 @@ public class PlayerStats {
         });
     }
 
+    private void loadPetScore(SkyBlockIsland.Member member) {
+        // --- Load Pet Score ---
+        int petScore = member.getPetScore();
+        ConcurrentList<PetScoreModel> petScoreModels = SimplifiedApi.getRepositoryOf(PetScoreModel.class)
+            .findAll()
+            .stream()
+            .filter(petScoreModel -> petScore >= petScoreModel.getBreakpoint())
+            .collect(Concurrent.toList());
+
+        // Save Pet Score
+        if (ListUtil.notEmpty(petScoreModels))
+            statRepository.findFirst(StatModel::getKey, "MAGIC_FIND").ifPresent(magicFindStatModel -> this.stats.get(Type.PET_SCORE).get(magicFindStatModel).addBase(petScoreModels.size()));
+    }
+
+    private void loadMiningCore(SkyBlockIsland.Member member) {
+        // --- Load Mining Core ---
+        member.getMining().getNodes().forEach((key, level) -> {
+            // Load Hotm Perk
+            SimplifiedApi.getRepositoryOf(HotmPerkModel.class).findFirst(HotmPerkModel::getKey, key.toUpperCase())
+                .ifPresent(hotmPerkModel -> {
+                    // Save Perk Stats
+                    SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
+                        .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
+                        .forEach(hotmPerkStatModel -> this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus()));
+                });
+        });
+    }
+
+    private void loadCenturyCakes(SkyBlockIsland.Member member) {
+        // --- Load Century Cakes ---
+        member.getCenturyCakes()
+            .stream()
+            .filter(centuryCake -> centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis())
+            .forEach(centuryCake -> {
+                // Save Century Cake
+                Data statData = this.stats.get(Type.CENTURY_CAKES).get(centuryCake.getStat());
+                statData.addBonus(centuryCake.getAmount());
+            });
+    }
+
     private void loadJacobsPerks(SkyBlockIsland.Member member) {
         // --- Load Jacobs Perks ---
         if (member.getJacobsFarming() != null) {
             statRepository.findFirst(StatModel::getKey, "FARMING_FORTUNE")
                 .ifPresent(farmingFortuneStatModel -> {
-                    double farmingDrops = member.getJacobsFarming().getPerk(SkyBlockIsland.JacobsFarming.Perk.DOUBLE_DROPS);
-
                     // Save Jacobs Perks
+                    double farmingDrops = member.getJacobsFarming().getPerk(SkyBlockIsland.JacobsFarming.Perk.DOUBLE_DROPS);
                     this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel).addBase(farmingDrops * 2.0);
                 });
         }
@@ -817,10 +899,7 @@ public class PlayerStats {
                 .ifPresent(melodySongModel -> {
                     // Load Intelligence Stat
                     statRepository.findFirst(StatModel::getKey, "INTELLIGENCE")
-                        .ifPresent(statModel -> {
-                            // Save Song Stat
-                            this.stats.get(Type.MELODYS_HARP).get(statModel).addBonus(melodySongModel.getReward());
-                        });
+                        .ifPresent(statModel -> this.stats.get(Type.MELODYS_HARP).get(statModel).addBonus(melodySongModel.getReward()));
                 });
         });
     }
@@ -852,6 +931,17 @@ public class PlayerStats {
             }));
     }
 
+    private ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
+        ConcurrentMap<StatModel, Double> reforgeBonuses = Concurrent.newMap();
+
+        // Load Reforge Stat Effects
+        optionalReforgeStatModel.ifPresent(reforgeStatModel -> reforgeStatModel.getEffects()
+            .forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
+                .ifPresent(statModel -> reforgeBonuses.put(statModel, value + reforgeBonuses.getOrDefault(statModel, 0.0)))));
+
+        return reforgeBonuses;
+    }
+
     @SuppressWarnings("unchecked")
     private ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
         ConcurrentMap<StatModel, Double> gemstoneAdjusted = Concurrent.newMap();
@@ -864,113 +954,18 @@ public class PlayerStats {
                 // Load Gemstone
                 SimplifiedApi.getRepositoryOf(GemstoneModel.class)
                     .findFirst(GemstoneModel::getKey, key)
-                    .ifPresent(gemstoneModel -> {
-                        // Load Gemstone Type
-                        // Load Gemstone Stat
-                        SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
-                            .findFirst(GemstoneTypeModel::getKey, ((StringTag) tag).getValue().toUpperCase())
-                            .flatMap(gemstoneTypeModel -> SimplifiedApi.getRepositoryOf(GemstoneStatModel.class).findFirst(
-                                Pair.of(GemstoneStatModel::getGemstone, gemstoneModel),
-                                Pair.of(GemstoneStatModel::getType, gemstoneTypeModel),
-                                Pair.of(GemstoneStatModel::getRarity, rarityModel)
-                            ))
-                            .ifPresent(gemstoneStatModel -> gemstoneAdjusted.put(gemstoneModel.getStat(), gemstoneStatModel.getValue()));
-                    });
+                    .ifPresent(gemstoneModel -> SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
+                        .findFirst(GemstoneTypeModel::getKey, ((StringTag) tag).getValue().toUpperCase())
+                        .flatMap(gemstoneTypeModel -> SimplifiedApi.getRepositoryOf(GemstoneStatModel.class).findFirst(
+                            Pair.of(GemstoneStatModel::getGemstone, gemstoneModel),
+                            Pair.of(GemstoneStatModel::getType, gemstoneTypeModel),
+                            Pair.of(GemstoneStatModel::getRarity, rarityModel)
+                        ))
+                        .ifPresent(gemstoneStatModel -> gemstoneAdjusted.put(gemstoneModel.getStat(), gemstoneStatModel.getValue())));
             });
         }
 
         return gemstoneAdjusted;
-    }
-
-    /*@SuppressWarnings("rawtypes")
-    private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, BuffEffectsModel... bonusEffectsModels) {
-        return this.handleBonusEffects(statModel, currentTotal, compoundTag, Concurrent.newMap(), bonusEffectsModels);
-    }*/
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
-        MutableDouble value = new MutableDouble(currentTotal);
-        ConcurrentList<StatModel> statModels = statRepository.findAll();
-
-        // Handle Bonus Reforge Stats
-        for (BuffEffectsModel bonusBuffEffectModel : bonusEffectsModels) {
-            // Handle Stat
-            value.add((double) bonusBuffEffectModel.getEffect(statModel.getKey(), 0.0));
-
-            bonusBuffEffectModel.getBuffEffects().forEach((buffKey, buffValue) -> {
-                String filterKey = (String) buffKey;
-
-                if (filterKey.equals("TIME")) {
-                    SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
-                    int hour = currentDate.getHour();
-                    List<String> timeConstraints = (List<String>) buffValue;
-                    MutableBoolean insideConstraint = new MutableBoolean(false);
-
-                    timeConstraints.forEach(timeConstraint -> {
-                        String[] constraintParts = timeConstraint.split("-");
-                        int start = NumberUtil.toInt(constraintParts[0]);
-                        int end = NumberUtil.toInt(constraintParts[1]);
-
-                        if (hour >= start && hour <= end)
-                            insideConstraint.setTrue(); // At Least 1 Constraint is True
-                    });
-
-                    if (insideConstraint.isFalse())
-                        value.set(0.0);
-                } else {
-                    boolean multiply = false;
-
-                    if (filterKey.startsWith("MULTIPLY_")) {
-                        filterKey = filterKey.replace("MULTIPLY_", "");
-                        multiply = true;
-                    } else if (filterKey.startsWith("ADD_"))
-                        filterKey = filterKey.replace("ADD_", "");
-
-                    if (filterKey.startsWith("STAT_")) {
-                        filterKey = filterKey.replace("STAT_", "");
-
-                        // Handle Buff Stat
-                        if (statModel.getKey().equals(filterKey) || "ALL".equals(filterKey)) {
-                            String valueString = String.valueOf(buffValue);
-
-                            if (NumberUtil.isCreatable(valueString))
-                                value.set(value.get() * (double) buffValue);
-                            else {
-                                if (!multiply || statModel.isMultipliable()) {
-                                    if (compoundTag != null) {
-                                        Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
-
-                                        if (nbtMatcher.matches()) {
-                                            String nbtTag = nbtMatcher.group(2);
-                                            String nbtValue = String.valueOf(compoundTag.getPath(nbtTag).getValue());
-                                            valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
-                                        }
-                                    }
-
-                                    Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
-                                        .variable("CURRENT_VALUE")
-                                        .variable("PET_LEVEL")
-                                        .variable("SKILL_AVERAGE")
-                                        .variable("PET_ABILITY_VALUE")
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("SKILL_LEVEL_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(SimplifiedApi.getRepositoryOf(DungeonModel.class).findAll().stream().map(dungeonModelX -> FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("PET_ABILITY_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .build();
-
-                                    expression.setVariables(variables);
-                                    expression.setVariable("CURRENT_VALUE", currentTotal);
-                                    double newValue = expression.evaluate();
-                                    value.set(newValue);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        return value.get();
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -1075,8 +1070,34 @@ public class PlayerStats {
                 });
         }
 
+        public final Data getAllData(String statName) {
+            return this.getAllData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
+        }
+
+        public final Data getAllData(StatModel statModel) {
+            Data statData = new Data();
+
+            for (Map.Entry<T, ConcurrentLinkedMap<StatModel, Data>> newStat : this.stats) {
+                Data statModelData = this.getData(statModel, newStat.getKey());
+                statData.addBase(statModelData.getBase());
+                statData.addBonus(statModelData.getBonus());
+            }
+
+            return statData;
+        }
+
+        @SafeVarargs
+        public final Data getData(String statName, T... types) {
+            return this.getData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()), types);
+        }
+
+        @SafeVarargs
+        public final Data getData(StatModel statModel, T... types) {
+            return this.getStatsOf(types).get(statModel);
+        }
+
         public final ConcurrentLinkedMap<StatModel, Data> getAllStats() {
-            return this.getStatsCopyOf(this.getAllTypes());
+            return this.getStatsOf(this.getAllTypes());
         }
 
         public final ConcurrentLinkedMap<StatModel, Data> getStats(T type) {
@@ -1084,7 +1105,7 @@ public class PlayerStats {
         }
 
         @SafeVarargs
-        public final ConcurrentLinkedMap<StatModel, Data> getStatsCopyOf(T... types) {
+        public final ConcurrentLinkedMap<StatModel, Data> getStatsOf(T... types) {
             ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
             statRepository.findAll().forEach(statModel -> totalStats.put(statModel, new Data()));
 
