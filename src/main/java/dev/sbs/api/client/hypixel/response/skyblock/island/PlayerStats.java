@@ -174,7 +174,7 @@ public class PlayerStats {
             statEntries.forEach((statModel, data) -> this.stats.get(type).put(statModel, new Data(data)));
         });
 
-        this.damageMultiplier = playerStats.damageMultiplier;
+        this.damageMultiplier = playerStats.getDamageMultiplier();
         this.expressionVariables.putAll(playerStats.getExpressionVariables());
 
         if (!this.isBonusCalculated()) {
@@ -185,10 +185,8 @@ public class PlayerStats {
                 ConcurrentLinkedMap<StatModel, Data> accessoryReforgeData = this.stats.get(Type.ACCESSORY_REFORGES);
 
                 accessoryReforgeData.forEach((statModel, statData) -> {
-                    this.handleReforgeBonus(reforgeKey, rarityModel, compoundTag);
-
-                    double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
-                    double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusItemStatModel);
+                    double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), compoundTag, this.getExpressionVariables(), bonusReforgeStatModel);
+                    double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), compoundTag, this.getExpressionVariables(), bonusReforgeStatModel);
                     statData.base = adjustedBase;
                     statData.bonus = adjustedBonus;
                 });
