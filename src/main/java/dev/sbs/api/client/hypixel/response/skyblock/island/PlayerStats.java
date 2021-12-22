@@ -92,11 +92,11 @@ public class PlayerStats {
         // Initialize
         ConcurrentList<StatModel> statModels = statRepository.findAll();
         statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
-        Arrays.stream(Type.values())
-            .forEach(type -> {
-                this.stats.put(type, Concurrent.newLinkedMap());
-                statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data(statModel.getBaseValue(), 0)));
-            });
+        Arrays.stream(Type.values()).forEach(type -> {
+            this.stats.put(type, Concurrent.newLinkedMap());
+            statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data()));
+        });
+        statModels.forEach(statModel -> this.stats.get(Type.BASE_STATS).get(statModel).addBase(statModel.getBaseValue()));
 
         // TODO: Optimizer Request: No API Data
         //  Booster Cookie:     +15 Magic Find
@@ -235,13 +235,17 @@ public class PlayerStats {
             })));
 
             // --- Load Bonus Pet Item Stats ---
-            this.getBonusPetAbilityStatModels().forEach((bonusPetAbilityStatModel, pair) -> this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+            this.getBonusPetAbilityStatModels().forEach((bonusPetAbilityStatModel, pair) -> {
                 expressionVariables.put(pair.getKey(), pair.getValue());
-                double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
-                double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
-                statData.base = adjustedBase;
-                statData.bonus = adjustedBonus;
-            })));
+                System.out.println("Evaluating pet ability stat bonus: " + bonusPetAbilityStatModel.getPetAbility().getKey());
+
+                this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    double adjustedBase = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    double adjustedBonus = this.handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.base = adjustedBase;
+                    statData.bonus = adjustedBonus;
+                }));
+            });
         }
     }
 
@@ -251,7 +255,15 @@ public class PlayerStats {
 
     public ConcurrentLinkedMap<StatModel, Data> getStatsOf(Type... types) {
         ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
-        Arrays.stream(types).forEach(type -> this.stats.get(type).forEach(((statModel, data) -> totalStats.put(statModel, new Data(data)))));
+        statRepository.findAll().forEach(statModel -> totalStats.put(statModel, new Data()));
+
+        // Collect Stat Data
+        Arrays.stream(types).forEach(type -> this.stats.get(type).forEach(((statModel, data) -> {
+            Data statData = totalStats.get(statModel);
+            statData.addBase(data.getBase());
+            statData.addBonus(data.getBonus());
+        })));
+
         return totalStats;
     }
 
@@ -1027,6 +1039,7 @@ public class PlayerStats {
 
         ACTIVE_PET,
         ACTIVE_POTIONS,
+        BASE_STATS,
         CENTURY_CAKES,
         DUNGEONS,
         ESSENCE,

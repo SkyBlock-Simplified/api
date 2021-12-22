@@ -33,11 +33,10 @@ public class SkyBlockIslandTest {
     @Test
     public void getIsland_ok() {
         try {
-            long start = System.currentTimeMillis();
             System.out.println("Database Starting... ");
             SimplifiedApi.enableDatabase();
-            long end = System.currentTimeMillis();
-            System.out.println("Database Started in " + (end - start) + "ms");
+            System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
 
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
@@ -59,7 +58,8 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
-            PlayerStats playerStats = member.getPlayerStats();
+            PlayerStats playerStats = member.getPlayerStats().calculateBonusStats();
+            playerStats.getAllStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
