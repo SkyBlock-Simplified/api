@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.skyblock.enchantment_stats;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -78,5 +80,35 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EnchantmentStatSqlModel)) return false;
+        EnchantmentStatSqlModel that = (EnchantmentStatSqlModel) o;
+
+        return new EqualsBuilder().append(this.isPercentage(), that.isPercentage())
+            .append(this.getId(), that.getId())
+            .append(this.getEnchantment(), that.getEnchantment())
+            .append(this.getStat(), that.getStat())
+            .append(this.getBuffKey(), that.getBuffKey())
+            .append(this.getBaseValue(), that.getBaseValue())
+            .append(this.getLevelBonus(), that.getLevelBonus())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId())
+            .append(this.getEnchantment())
+            .append(this.getStat())
+            .append(this.getBuffKey())
+            .append(this.getBaseValue())
+            .append(this.getLevelBonus())
+            .append(this.isPercentage())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.skyblock.enchantment_types;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlModel;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -58,5 +60,23 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EnchantmentTypeSqlModel)) return false;
+        EnchantmentTypeSqlModel that = (EnchantmentTypeSqlModel) o;
+
+        return new EqualsBuilder().append(this.getId(), that.getId())
+            .append(this.getEnchantment(), that.getEnchantment())
+            .append(this.getReforgeType(), that.getReforgeType())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.getId()).append(this.getEnchantment()).append(this.getReforgeType()).append(this.getUpdatedAt()).build();
+    }
 
 }
