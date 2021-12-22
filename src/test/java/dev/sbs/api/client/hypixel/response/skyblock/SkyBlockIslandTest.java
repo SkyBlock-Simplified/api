@@ -31,6 +31,39 @@ import java.util.UUID;
 public class SkyBlockIslandTest {
 
     @Test
+    public void getPlayerStats_ok() {
+        try {
+            System.out.println("Database Starting... ");
+            SimplifiedApi.enableDatabase();
+            System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
+            HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
+
+            UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
+            //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
+            SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
+            SkyBlockIsland island = profiles.getIslands().get(1); // TODO: Bingo Profile = 0
+            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
+
+            // Did Hypixel Reply / Does a Member Exist
+            MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
+            MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
+
+            SkyBlockIsland.Member member = optionalMember.get();
+            PlayerStats playerStats = member.getPlayerStats().calculateBonusStats();
+            playerStats.getAllStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
+        } catch (HypixelApiException hypixelApiException) {
+            hypixelApiException.printStackTrace();
+            MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            Assertions.fail();
+        } finally {
+            SimplifiedApi.getSqlSession().shutdown();
+        }
+    }
+
+    @Test
     public void getIsland_ok() {
         try {
             System.out.println("Database Starting... ");
@@ -57,9 +90,6 @@ public class SkyBlockIslandTest {
             ConcurrentMap<DungeonModel, SkyBlockIsland.Member.Weight> dungeonWeights = member.getDungeonWeight();
             ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
-
-            PlayerStats playerStats = member.getPlayerStats().calculateBonusStats();
-            playerStats.getAllStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
