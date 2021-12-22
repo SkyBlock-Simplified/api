@@ -144,7 +144,7 @@ public class PlayerStats {
     }
 
     private PlayerStats(PlayerStats playerStats) {
-        playerStats.getStats().forEach((type, statEntries) -> {
+        playerStats.stats.forEach((type, statEntries) -> {
             this.stats.put(type, Concurrent.newLinkedMap());
             statEntries.forEach((statModel, data) -> this.stats.get(type).put(statModel, new Data(data)));
         });
@@ -243,6 +243,40 @@ public class PlayerStats {
                 statData.bonus = adjustedBonus;
             })));
         }
+    }
+
+    public ConcurrentLinkedMap<StatModel, Data> getAllStats() {
+        return this.getStatsOf(Type.values());
+    }
+
+    public ConcurrentLinkedMap<StatModel, Data> getStatsOf(Type... types) {
+        ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
+        Arrays.stream(types).forEach(type -> this.stats.get(type).forEach(((statModel, data) -> totalStats.put(statModel, new Data(data)))));
+        return totalStats;
+    }
+
+    public Data getAllData(String statName) {
+        return this.getAllData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
+    }
+
+    public Data getAllData(StatModel statModel) {
+        Data statData = new Data();
+
+        for (Map.Entry<Type, ConcurrentLinkedMap<StatModel, Data>> newStat : this.stats) {
+            Data statModelData = this.getData(statModel, newStat.getKey());
+            statData.addBase(statModelData.getBase());
+            statData.addBonus(statModelData.getBonus());
+        }
+
+        return statData;
+    }
+
+    public Data getData(String statName, Type... types) {
+        return this.getData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()), types);
+    }
+
+    public Data getData(StatModel statModel, Type... types) {
+        return this.getStatsOf(types).get(statModel);
     }
 
     private void loadAccessories(SkyBlockIsland.Member member) {
@@ -857,10 +891,10 @@ public class PlayerStats {
         return reforgeBonuses;
     }
 
-    @SuppressWarnings("rawtypes")
+    /*@SuppressWarnings("rawtypes")
     private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, BuffEffectsModel... bonusEffectsModels) {
         return this.handleBonusEffects(statModel, currentTotal, compoundTag, Concurrent.newMap(), bonusEffectsModels);
-    }
+    }*/
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
@@ -946,34 +980,6 @@ public class PlayerStats {
         }
 
         return value.get();
-    }
-
-    public ConcurrentLinkedMap<StatModel, Data> getStats(Type type) {
-        return this.stats.get(type);
-    }
-
-    public Data getAllData(String statName) {
-        return this.getAllData(SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
-    }
-
-    public Data getAllData(StatModel statModel) {
-        Data statData = new Data();
-
-        for (Map.Entry<Type, ConcurrentLinkedMap<StatModel, Data>> newStat : this.getStats()) {
-            Data statModelData = this.getData(newStat.getKey(), statModel);
-            statData.addBase(statModelData.getBase());
-            statData.addBonus(statModelData.getBonus());
-        }
-
-        return statData;
-    }
-
-    public Data getData(Type type, String statName) {
-        return this.getData(type, SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, statName.toUpperCase()));
-    }
-
-    public Data getData(Type type, StatModel statModel) {
-        return this.getStats().get(type).get(statModel);
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
