@@ -73,7 +73,7 @@ import java.util.regex.Pattern;
 
 public class PlayerStats {
 
-    private static final Pattern nbtVariablePattern = Pattern.compile(".*?(nbt_([a-zA-Z0-9_\\-\\.]+)).*?");
+    private static final Pattern nbtVariablePattern = Pattern.compile(".*?(nbt_([a-zA-Z0-9_\\-.]+)).*?");
     private static final Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
 
     @Getter private long damageMultiplier = 0;
@@ -87,34 +87,6 @@ public class PlayerStats {
     @Getter private final ConcurrentMap<BonusItemStatModel, CompoundTag> bonusAccessoryItemStatModels = Concurrent.newMap();
     @Getter private final ConcurrentMap<BonusItemStatModel, CompoundTag> bonusArmorItemStatModels = Concurrent.newMap();
     @Getter private final ConcurrentMap<BonusReforgeStatModel, CompoundTag> bonusReforgeStatModels = Concurrent.newMap();
-
-    public enum Type {
-
-        ACCESSORY_CAKE_BAG,
-        ACCESSORY_GEMSTONES,
-        ACCESSORY_REFORGES,
-        ACCESSORY_STATS,
-        ACCESSORY_ENRICHMENTS,
-
-        ARMOR_ENCHANTS,
-        ARMOR_GEMSTONES,
-        ARMOR_REFORGES,
-        ARMOR_STATS,
-
-        ACTIVE_PET,
-        ACTIVE_POTIONS,
-        CENTURY_CAKES,
-        DUNGEONS,
-        ESSENCE,
-        FAIRY_SOULS,
-        JACOBS_FARMING,
-        MELODYS_HARP,
-        MINING_CORE,
-        PET_SCORE,
-        SKILLS,
-        SLAYERS
-
-    }
 
     PlayerStats(SkyBlockIsland.Member member) {
         // Initialize
@@ -153,8 +125,8 @@ public class PlayerStats {
         this.loadSlayers(member);
         this.loadDungeons(member);
 
-        this.loadAccessories(member); // TODO: Store bonus modifiers
-        this.loadArmor(member); // TODO: Separate into sub types, store bonus modifiers
+        this.loadAccessories(member);
+        this.loadArmor(member);
 
         this.loadActivePet(member);
         this.loadActivePotions(member);
@@ -239,25 +211,20 @@ public class PlayerStats {
                 }
             });
 
-
             // --- Load Armor Multiplier Enchantments ---
-            this.armorEnchantments.forEach((itemTag, enchantments) -> {
-                enchantments.forEach(pair -> {
-                    SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
-                        .findFirst(EnchantmentStatModel::getEnchantment, pair.getKey())
-                        .ifPresent(enchantmentStatModel -> {
-                            double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * pair.getValue()) / 100.0);
+            this.armorEnchantments.forEach((itemTag, enchantments) -> enchantments.forEach(pair -> SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
+                .findFirst(EnchantmentStatModel::getEnchantment, pair.getKey())
+                .ifPresent(enchantmentStatModel -> {
+                    double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * pair.getValue()) / 100.0);
 
-                            this.stats.forEach((type, statEntries) -> {
-                                Data statModel = statEntries.get(enchantmentStatModel.getStat());
+                    this.stats.forEach((type, statEntries) -> {
+                        Data statModel = statEntries.get(enchantmentStatModel.getStat());
 
-                                // Apply Multiplier
-                                statModel.base = statModel.base * enchantMultiplier;
-                                statModel.bonus = statModel.bonus * enchantMultiplier;
-                            });
-                        });
-                });
-            });
+                        // Apply Multiplier
+                        statModel.base = statModel.base * enchantMultiplier;
+                        statModel.bonus = statModel.bonus * enchantMultiplier;
+                    });
+                })));
 
             // --- Load Bonus Armor Item Stats ---
             this.getBonusArmorItemStatModels().forEach((bonusItemStatModel, compoundTag) -> this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
@@ -545,6 +512,7 @@ public class PlayerStats {
         }));
     }
 
+    @SuppressWarnings("unchecked")
     private void loadActivePotions(SkyBlockIsland.Member member) {
         // --- Load Active Potions ---
         member.getActivePotions().forEach(potion -> {
@@ -827,11 +795,10 @@ public class PlayerStats {
             }));
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     private ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
         ConcurrentMap<StatModel, Double> gemstoneAdjusted = Concurrent.newMap();
         CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
-        String id = compoundTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue();
 
         if (gemTag != null && gemTag.notEmpty()) {
             gemTag.forEach((key, tag) -> {
@@ -858,7 +825,7 @@ public class PlayerStats {
         return gemstoneAdjusted;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     private ConcurrentMap<StatModel, Double> handleReforgeBonus(String reforgeKey, RarityModel rarityModel, CompoundTag compoundTag) {
         ConcurrentMap<StatModel, Double> reforgeBonuses = Concurrent.newMap();
 
@@ -890,12 +857,12 @@ public class PlayerStats {
         return reforgeBonuses;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("rawtypes")
     private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, BuffEffectsModel... bonusEffectsModels) {
         return this.handleBonusEffects(statModel, currentTotal, compoundTag, Concurrent.newMap(), bonusEffectsModels);
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
         MutableDouble value = new MutableDouble(currentTotal);
         ConcurrentList<StatModel> statModels = statRepository.findAll();
@@ -1036,6 +1003,34 @@ public class PlayerStats {
         public final double getTotal() {
             return this.getBase() + this.getBonus();
         }
+
+    }
+
+    public enum Type {
+
+        ACCESSORY_CAKE_BAG,
+        ACCESSORY_GEMSTONES,
+        ACCESSORY_REFORGES,
+        ACCESSORY_STATS,
+        ACCESSORY_ENRICHMENTS,
+
+        ARMOR_ENCHANTS,
+        ARMOR_GEMSTONES,
+        ARMOR_REFORGES,
+        ARMOR_STATS,
+
+        ACTIVE_PET,
+        ACTIVE_POTIONS,
+        CENTURY_CAKES,
+        DUNGEONS,
+        ESSENCE,
+        FAIRY_SOULS,
+        JACOBS_FARMING,
+        MELODYS_HARP,
+        MINING_CORE,
+        PET_SCORE,
+        SKILLS,
+        SLAYERS
 
     }
 
