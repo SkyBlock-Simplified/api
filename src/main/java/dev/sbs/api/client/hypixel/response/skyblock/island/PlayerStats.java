@@ -74,6 +74,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("unused")
 public class PlayerStats {
 
     private static final Pattern nbtVariablePattern = Pattern.compile(".*?(nbt_([a-zA-Z0-9_\\-.]+)).*?");
@@ -578,9 +579,6 @@ public class PlayerStats {
                                 // Save Stats
                                 itemModel.getStats().forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
                                     .ifPresent(statModel -> this.armor.get(itemModel).getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
-                                this.armor.get(itemModel).getStats(ItemData.Type.STATS).forEach((statModel, statData) -> {
-                                    System.out.println(itemModel.getItemId() + " adding stat " + statData.getTotal() + " to " + statModel.getKey());
-                                });
 
                                 // Handle Enchantment Stats
                                 if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
@@ -597,16 +595,10 @@ public class PlayerStats {
                                 // Save Reforge Stats
                                 this.handleReforgeBonus(this.armor.get(itemModel).getReforgeStat())
                                     .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
-                                this.armor.get(itemModel).getStats(ItemData.Type.REFORGES).forEach((statModel, statData) -> {
-                                    System.out.println(itemModel.getItemId() + " adding reforge " + statData.getTotal() + " to " + statModel.getKey());
-                                });
 
                                 // Save Gemstone Stats
                                 this.handleGemstoneBonus(itemTag, rarityModel)
                                     .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
-                                this.armor.get(itemModel).getStats(ItemData.Type.STATS).forEach((statModel, statData) -> {
-                                    System.out.println(itemModel.getItemId() + " adding gemstone " + statData.getTotal() + " to " + statModel.getKey());
-                                });
                             })));
             }
         } catch (IOException ioException) {
@@ -967,7 +959,7 @@ public class PlayerStats {
                 // Handle Typed Slots
                 if (!optionalGemstoneModel.isPresent()) {
                     if (gemKey.endsWith("_GEM")) {
-                        optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemTypeKey);
+                        optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemTypeKey.get());
                         gemTypeKey.set(gemTag.getValue(upperKey.replace("_GEM", "")));
                     }
                 }
@@ -980,7 +972,7 @@ public class PlayerStats {
                             Pair.of(GemstoneStatModel::getType, gemstoneTypeModel),
                             Pair.of(GemstoneStatModel::getRarity, rarityModel)
                         ))
-                        .ifPresent(gemstoneStatModel -> gemstoneAdjusted.put(gemstoneModel.getStat(), gemstoneStatModel.getValue())));
+                        .ifPresent(gemstoneStatModel -> gemstoneAdjusted.put(gemstoneModel.getStat(), gemstoneStatModel.getValue() + gemstoneAdjusted.getOrDefault(gemstoneModel.getStat(), 0.0))));
             });
         }
 
@@ -1159,14 +1151,11 @@ public class PlayerStats {
 
             // Handle Hot Potatos
             if (compoundTag.containsPath("tag.ExtraAttributes.hot_potato_count")) {
-                Integer hotPotatoCount = compoundTag.getValue("tag.ExtraAttributes.hot_potato_count", 0);
+                Integer hotPotatoCount = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
 
                 SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
                     .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), "ARMOR")
                     .forEach(hotPotatoStatModel -> this.stats.get(Type.HOT_POTATOS).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
-                this.getStats(Type.HOT_POTATOS).forEach((statModel, statData) -> {
-                    System.out.println("Adding " + statData.getTotal() + " to " + statModel.getKey());
-                });
             }
         }
 
@@ -1183,7 +1172,6 @@ public class PlayerStats {
                     if (!enchantmentStatModel.isPercentage() && enchantmentStatModel.getStat() != null) {
                         double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * value);
                         this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
-                        System.out.println(enchantmentModel.getKey() + " adding " + this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).getTotal() + " to " + enchantmentStatModel.getStat().getKey());
                     }
                 });
         }
