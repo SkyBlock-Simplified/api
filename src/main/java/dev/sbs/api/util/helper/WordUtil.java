@@ -375,7 +375,7 @@ public class WordUtil {
      * @see #capitalizeFully(String)
      */
     public static String capitalize(final String str) {
-        return capitalize(str, (Character) null);
+        return capitalize(str, null);
     }
 
     /**
@@ -458,7 +458,7 @@ public class WordUtil {
      * @return capitalized String, {@code null} if null String input
      */
     public static String capitalizeFully(final String str) {
-        return capitalizeFully(str, (Character) null);
+        return capitalizeFully(str,null);
     }
 
     /**
@@ -513,7 +513,7 @@ public class WordUtil {
      * @see #capitalize(String)
      */
     public static String uncapitalize(final String str) {
-        return uncapitalize(str, (Character) null);
+        return uncapitalize(str, null);
     }
 
     /**
@@ -647,7 +647,7 @@ public class WordUtil {
      * @see #initials(String,char[])
      */
     public static String initials(final String str) {
-        return initials(str, (Character) null);
+        return initials(str, null);
     }
 
     /**
