@@ -132,7 +132,6 @@ import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
-import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
@@ -262,24 +261,8 @@ public class SimplifiedApi {
      * @param <T> The type of model.
      * @return The repository of type {@link T}.
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
-        if (serviceManager.isRegistered(SqlSession.class)) {
-            SqlSession sqlSession = serviceManager.get(SqlSession.class);
-
-            if (sqlSession.isActive()) {
-                return serviceManager.getAll(SqlRepository.class)
-                    .stream()
-                    .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
-                    .findFirst()
-                    .orElseThrow(() -> SimplifiedException.of(UnknownServiceException.class)
-                        .withMessage(UnknownServiceException.getMessage(tClass))
-                        .build()
-                    );
-            } else
-                throw new SqlException("Database connection is not active!");
-        } else
-            throw new SqlException("Database has not been initialized!");
+        return getSqlSession().getRepositoryOf(tClass);
     }
 
     private static ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> getAllSqlRepositoryClasses() {
@@ -407,14 +390,9 @@ public class SimplifiedApi {
     }
 
     public static SqlSession getSqlSession() {
-        if (serviceManager.isRegistered(SqlSession.class)) {
-            SqlSession sqlSession = serviceManager.get(SqlSession.class);
-
-            if (sqlSession.isActive())
-                return sqlSession;
-            else
-                throw new SqlException("Database connection is not active!");
-        } else
+        if (serviceManager.isRegistered(SqlSession.class))
+            return serviceManager.get(SqlSession.class);
+        else
             throw new SqlException("Database has not been initialized!");
     }
 

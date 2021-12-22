@@ -1,10 +1,14 @@
 package dev.sbs.api.data.sql;
 
+import dev.sbs.api.SimplifiedException;
+import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.data.sql.function.VoidSessionFunction;
 import dev.sbs.api.manager.service.ServiceManager;
+import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
@@ -112,11 +116,33 @@ public final class SqlSession {
 
             // Provide SqlRepositories
             for (Class<? extends SqlRepository<? extends SqlModel>> repository : this.getRepositories())
-                serviceManager.addRaw(repository, Reflection.of(repository).newInstance(this));
+                this.serviceManager.addRaw(repository, Reflection.of(repository).newInstance(this));
 
             this.startupTime = System.currentTimeMillis() - startTime;
         } else
             throw new SqlException("Database has already cached repositories!");
+    }
+
+    /**
+     * Gets the {@link Repository <T>} caching all items of type {@link T}.
+     *
+     * @param tClass The {@link Model} class to find.
+     * @param <T> The type of model.
+     * @return The repository of type {@link T}.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
+        if (this.isActive()) {
+            return this.serviceManager.getAll(SqlRepository.class)
+                .stream()
+                .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
+                .findFirst()
+                .orElseThrow(() -> SimplifiedException.of(UnknownServiceException.class)
+                    .withMessage(UnknownServiceException.getMessage(tClass))
+                    .build()
+                );
+        } else
+            throw new SqlException("Database connection is not active!");
     }
 
     public void initialize() {
