@@ -80,6 +80,7 @@ import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneSqlRepository;
+import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.hotm_perk_stats.HotmPerkStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.hotm_perks.HotmPerkSqlRepository;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
@@ -344,6 +345,7 @@ public class SimplifiedApi {
             GuildReputationSqlRepository.class,
             GuildSkyBlockEventSqlRepository.class,
             HotmPerkStatSqlRepository.class,
+            HotPotatoStatSqlRepository.class,
             NpcSqlRepository.class,
             OptimizerSupportItemSqlRepository.class,
             PetSqlRepository.class,
