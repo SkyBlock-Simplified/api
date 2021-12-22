@@ -19,6 +19,7 @@ import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
 import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
+import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.hotm_perk_stats.HotmPerkStatModel;
 import dev.sbs.api.data.model.skyblock.hotm_perks.HotmPerkModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
@@ -33,6 +34,7 @@ import dev.sbs.api.data.model.skyblock.potion_tiers.PotionTierModel;
 import dev.sbs.api.data.model.skyblock.potions.PotionModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
+import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.reforges.ReforgeModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
@@ -57,6 +59,7 @@ import dev.sbs.api.util.math.Expression;
 import dev.sbs.api.util.math.ExpressionBuilder;
 import dev.sbs.api.util.mutable.MutableBoolean;
 import dev.sbs.api.util.mutable.MutableDouble;
+import dev.sbs.api.util.mutable.MutableObject;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -94,6 +97,16 @@ public class PlayerStats {
         });
         statModels.forEach(statModel -> this.stats.get(Type.BASE_STATS).get(statModel).addBase(statModel.getBaseValue()));
 
+        // --- Populate Default Expression Variables ---
+        member.getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
+        this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
+        SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
+        SimplifiedApi.getRepositoryOf(DungeonModel.class)
+            .findAll()
+            .forEach(dungeonModel -> member.getDungeons()
+                .getDungeon(dungeonModel)
+                .ifPresent(dungeon -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) dungeon.getLevel())));
+
         // TODO: Optimizer Request: No API Data
         //  Booster Cookie:     +15 Magic Find
         //  Beacon:             +5 Magic Find
@@ -105,16 +118,6 @@ public class PlayerStats {
 
         // TODO: Hypixel Bugs
         //  Catacombs:          2x Health
-
-        // --- Populate Default Expression Variables ---
-        member.getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
-        this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
-        SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
-        SimplifiedApi.getRepositoryOf(DungeonModel.class)
-            .findAll()
-            .forEach(dungeonModel -> member.getDungeons()
-                .getDungeon(dungeonModel)
-                .ifPresent(dungeon -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) dungeon.getLevel())));
 
         this.loadDamageMultiplier(member);
         this.loadSkills(member);
@@ -188,26 +191,24 @@ public class PlayerStats {
                             statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
                             statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
                         }));
-
-                // Handle Enchantments
-                itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel).forEach(enchantmentStatModel -> {
-                    double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * value);
-                    itemData.getStats(ItemData.Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
-                }));
             });
 
             // --- Load Armor Multiplier Enchantments ---
-            this.getArmor().forEach((itemModel, itemData) -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel).forEach(enchantmentStatModel -> {
-                double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * value) / 100.0);
+            this.getArmor().forEach((itemModel, itemData) -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel)
+                .stream()
+                .filter(enchantmentStatModel -> enchantmentStatModel.getStat() != null)
+                .filter(EnchantmentStatModel::isPercentage)
+                .forEach(enchantmentStatModel -> {
+                    double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * value) / 100.0);
 
-                this.stats.forEach((type, statEntries) -> {
-                    Data statModel = statEntries.get(enchantmentStatModel.getStat());
+                    this.stats.forEach((type, statEntries) -> {
+                        Data statModel = statEntries.get(enchantmentStatModel.getStat());
 
-                    // Apply Multiplier
-                    statModel.base = statModel.base * enchantMultiplier;
-                    statModel.bonus = statModel.bonus * enchantMultiplier;
-                });
-            })));
+                        // Apply Multiplier
+                        statModel.base = statModel.base * enchantMultiplier;
+                        statModel.bonus = statModel.bonus * enchantMultiplier;
+                    });
+                })));
 
             // --- Load Bonus Armor Item Stats ---
             this.getArmor().forEach((itemModel, itemData) -> itemData.getBonusItemStatModel()
@@ -577,6 +578,9 @@ public class PlayerStats {
                                 // Save Stats
                                 itemModel.getStats().forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
                                     .ifPresent(statModel -> this.armor.get(itemModel).getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
+                                this.armor.get(itemModel).getStats(ItemData.Type.STATS).forEach((statModel, statData) -> {
+                                    System.out.println(itemModel.getItemId() + " adding stat " + statData.getTotal() + " to " + statModel.getKey());
+                                });
 
                                 // Handle Enchantment Stats
                                 if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
@@ -593,10 +597,16 @@ public class PlayerStats {
                                 // Save Reforge Stats
                                 this.handleReforgeBonus(this.armor.get(itemModel).getReforgeStat())
                                     .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
+                                this.armor.get(itemModel).getStats(ItemData.Type.REFORGES).forEach((statModel, statData) -> {
+                                    System.out.println(itemModel.getItemId() + " adding reforge " + statData.getTotal() + " to " + statModel.getKey());
+                                });
 
                                 // Save Gemstone Stats
                                 this.handleGemstoneBonus(itemTag, rarityModel)
                                     .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
+                                this.armor.get(itemModel).getStats(ItemData.Type.STATS).forEach((statModel, statData) -> {
+                                    System.out.println(itemModel.getItemId() + " adding gemstone " + statData.getTotal() + " to " + statModel.getKey());
+                                });
                             })));
             }
         } catch (IOException ioException) {
@@ -949,13 +959,22 @@ public class PlayerStats {
 
         if (gemTag != null && gemTag.notEmpty()) {
             gemTag.forEach((key, tag) -> {
-                key = RegexUtil.replaceAll(key, "_[\\d]", "");
+                String upperKey = key.toUpperCase();
+                String gemKey = RegexUtil.replaceAll(upperKey, "_[\\d]", "");
+                MutableObject<String> gemTypeKey = new MutableObject<>(((StringTag) tag).getValue().toUpperCase());
+                Optional<GemstoneModel> optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemKey);
+
+                // Handle Typed Slots
+                if (!optionalGemstoneModel.isPresent()) {
+                    if (gemKey.endsWith("_GEM")) {
+                        optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemTypeKey);
+                        gemTypeKey.set(gemTag.getValue(upperKey.replace("_GEM", "")));
+                    }
+                }
 
                 // Load Gemstone
-                SimplifiedApi.getRepositoryOf(GemstoneModel.class)
-                    .findFirst(GemstoneModel::getKey, key)
-                    .ifPresent(gemstoneModel -> SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
-                        .findFirst(GemstoneTypeModel::getKey, ((StringTag) tag).getValue().toUpperCase())
+                optionalGemstoneModel.ifPresent(gemstoneModel -> SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
+                        .findFirst(GemstoneTypeModel::getKey, gemTypeKey.get())
                         .flatMap(gemstoneTypeModel -> SimplifiedApi.getRepositoryOf(GemstoneStatModel.class).findFirst(
                             Pair.of(GemstoneStatModel::getGemstone, gemstoneModel),
                             Pair.of(GemstoneStatModel::getType, gemstoneTypeModel),
@@ -1137,12 +1156,36 @@ public class PlayerStats {
 
         private ItemData(CompoundTag compoundTag, RarityModel rarityModel) {
             super(compoundTag, rarityModel);
+
+            // Handle Hot Potatos
+            if (compoundTag.containsPath("tag.ExtraAttributes.hot_potato_count")) {
+                Integer hotPotatoCount = compoundTag.getValue("tag.ExtraAttributes.hot_potato_count", 0);
+
+                SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
+                    .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), "ARMOR")
+                    .forEach(hotPotatoStatModel -> this.stats.get(Type.HOT_POTATOS).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
+                this.getStats(Type.HOT_POTATOS).forEach((statModel, statData) -> {
+                    System.out.println("Adding " + statData.getTotal() + " to " + statModel.getKey());
+                });
+            }
         }
 
         public void addEnchantment(EnchantmentModel enchantmentModel, Integer value) {
             this.enchantments.put(enchantmentModel, value);
-            this.enchantmentStats.put(enchantmentModel, SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
-                .findAll(EnchantmentStatModel::getEnchantment, enchantmentModel));
+            this.enchantmentStats.put(enchantmentModel, Concurrent.newList());
+
+            // Handle Static Enchants
+            SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
+                .findAll(EnchantmentStatModel::getEnchantment, enchantmentModel)
+                .forEach(enchantmentStatModel -> {
+                    this.enchantmentStats.get(enchantmentModel).add(enchantmentStatModel);
+
+                    if (!enchantmentStatModel.isPercentage() && enchantmentStatModel.getStat() != null) {
+                        double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * value);
+                        this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                        System.out.println(enchantmentModel.getKey() + " adding " + this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).getTotal() + " to " + enchantmentStatModel.getStat().getKey());
+                    }
+                });
         }
 
         @Override
@@ -1154,6 +1197,7 @@ public class PlayerStats {
 
             ENCHANTS,
             GEMSTONES,
+            HOT_POTATOS,
             REFORGES,
             STATS
 
