@@ -284,7 +284,7 @@ public class SkyBlockIsland {
         private ConcurrentList<String> disabledPotions;
         @SerializedName("temp_stat_buffs")
         @Getter
-        private ConcurrentList<CenturyCake> centuryCakes;
+        private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
         @SerializedName("griffin.burrows")
         private ConcurrentList<GriffinBurrow> griffinBurrows;
         @SerializedName("mining_core")
