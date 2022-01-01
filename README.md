@@ -1,5 +1,5 @@
-# sbs-api
-SkyBlock Simplified API
+# SkyBlock Simplified API
+Bundled set of custom libraries including (but not limited to) HTTP, Database, YAML, NBT, Json, Reflection and Concurrent Collections/Maps.
 
 ## Local Dev
 
