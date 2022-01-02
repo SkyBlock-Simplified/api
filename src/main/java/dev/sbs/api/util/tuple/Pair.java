@@ -4,6 +4,7 @@ import dev.sbs.api.util.builder.CompareToBuilder;
 import dev.sbs.api.util.helper.FormatUtil;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>A pair consisting of two elements.</p>
@@ -39,6 +40,17 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
         return new ImmutablePair<>(left, right);
     }
 
+    /**
+     * <p>Obtains an immutable pair of null objects.</p>
+     *
+     * @param <L>   the left element type
+     * @param <R>   the right element type
+     * @return a pair formed from null parameters
+     */
+    public static <L, R> Pair<L, R> empty() {
+        return new ImmutablePair<>(null, null);
+    }
+
     //-----------------------------------------------------------------------
 
     /**
@@ -68,7 +80,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @return the left element as the key, may be null
      */
     public final L getKey() {
-        return getLeft();
+        return this.getLeft();
     }
 
     /**
@@ -80,7 +92,16 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @return the right element as the value, may be null
      */
     public R getValue() {
-        return getRight();
+        return this.getRight();
+    }
+
+    /**
+     * <p>Gets if the left and right values are null.</p>
+     *
+     * @return true if both values are null
+     */
+    public boolean isEmpty() {
+        return Objects.isNull(this.getLeft()) && Objects.isNull(this.getRight());
     }
 
     //-----------------------------------------------------------------------
