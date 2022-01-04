@@ -98,9 +98,9 @@ public abstract class SimplifiedException extends RuntimeException {
 
     }
 
-    private static class WrappedException extends SimplifiedException {
+    public static class WrappedException extends SimplifiedException {
 
-        protected WrappedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields) {
+        private WrappedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields) {
             super(message, cause, enableSuppression, writableStackTrace, fields);
         }
 
