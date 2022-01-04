@@ -42,7 +42,7 @@ public class SkyBlockIslandTest {
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
             SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
-            SkyBlockIsland island = profiles.getIslands().get(1); // TODO: Bingo Profile = 0
+            SkyBlockIsland island = profiles.getIslands().get(1); // Bingo Profile = 0
             Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
 
             // Did Hypixel Reply / Does a Member Exist
@@ -75,7 +75,7 @@ public class SkyBlockIslandTest {
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
             SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
-            SkyBlockIsland island = profiles.getIslands().get(1); // TODO: Bingo Profile = 0
+            SkyBlockIsland island = profiles.getIslands().get(1); // Bingo Profile = 0
             Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
 
             // Did Hypixel Reply / Does a Member Exist
