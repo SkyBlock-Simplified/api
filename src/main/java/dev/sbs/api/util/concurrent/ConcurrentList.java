@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -44,7 +43,7 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 	}
 
 	@Override
-	public List<E> inverse() {
+	public ConcurrentList<E> inverse() {
 		return Concurrent.newList(super.inverse());
 	}
 
