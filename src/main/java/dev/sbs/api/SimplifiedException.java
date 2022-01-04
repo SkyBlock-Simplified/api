@@ -30,54 +30,19 @@ public abstract class SimplifiedException extends RuntimeException {
         return new ExceptionBuilder<>(eClass);
     }
 
-    public static <T extends Throwable> NativeExceptionBuilder<T> ofNative(Class<T> eClass) {
-        return new NativeExceptionBuilder<>(eClass);
+    public static ExceptionBuilder<WrappedException> wrapNative(Throwable throwable) {
+        return of(WrappedException.class).withCause(throwable).withMessage(throwable.getMessage());
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class NativeExceptionBuilder<T extends Throwable> implements Builder<T> {
+    public static class ExceptionBuilder<T extends SimplifiedException> implements Builder<T> {
 
         protected final Class<T> eClass;
         protected String message;
         protected boolean enableSuppression = false;
         protected boolean writableStackTrace = true;
         protected Throwable cause;
-
-        public NativeExceptionBuilder<T> withMessage(String message, Object... objects) {
-            this.message = ArrayUtil.isEmpty(objects) ? message : FormatUtil.format(message, objects);
-            return this;
-        }
-
-        public NativeExceptionBuilder<T> withSuppression(boolean value) {
-            this.enableSuppression = value;
-            return this;
-        }
-
-        public NativeExceptionBuilder<T> withStackTrace(boolean value) {
-            this.writableStackTrace = value;
-            return this;
-        }
-
-        public NativeExceptionBuilder<T> withCause(Throwable cause) {
-            this.cause = cause;
-            return this;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public T build() {
-            return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace);
-        }
-
-    }
-
-    public static class ExceptionBuilder<T extends SimplifiedException> extends NativeExceptionBuilder<T> {
-
         private final ConcurrentList<Triple<String, String, Boolean>> fields = Concurrent.newList();
-
-        private ExceptionBuilder(Class<T> eClass) {
-            super(eClass);
-        }
 
         public ExceptionBuilder<T> addField(String name, String value) {
             return this.addField(name, value, true);
@@ -98,33 +63,45 @@ public abstract class SimplifiedException extends RuntimeException {
             return this;
         }
 
-        @Override
-        public ExceptionBuilder<T> withMessage(@NonNull String message, Object... objects) {
-            super.withMessage(message, objects);
-            return this;
-        }
-
-        @Override
-        public ExceptionBuilder<T> withSuppression(boolean value) {
-            super.withSuppression(value);
-            return this;
-        }
-
-        @Override
-        public ExceptionBuilder<T> withStackTrace(boolean value) {
-            super.withStackTrace(value);
-            return this;
-        }
-
-        @Override
         public ExceptionBuilder<T> withCause(Throwable cause) {
-            super.withCause(cause);
+            this.cause = cause;
+            return this;
+        }
+
+        public ExceptionBuilder<T> withMessage(String message, Object... objects) {
+            this.message = ArrayUtil.isEmpty(objects) ? message : FormatUtil.format(message, objects);
+            return this;
+        }
+
+        public ExceptionBuilder<T> withSuppression() {
+            return this.withSuppression(true);
+        }
+
+        public ExceptionBuilder<T> withSuppression(boolean value) {
+            this.enableSuppression = value;
+            return this;
+        }
+
+        public ExceptionBuilder<T> withStackTrace() {
+            return this.withStackTrace(true);
+        }
+
+        public ExceptionBuilder<T> withStackTrace(boolean value) {
+            this.writableStackTrace = value;
             return this;
         }
 
         @Override
         public T build() {
             return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace, this.fields);
+        }
+
+    }
+
+    private static class WrappedException extends SimplifiedException {
+
+        protected WrappedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields) {
+            super(message, cause, enableSuppression, writableStackTrace, fields);
         }
 
     }
