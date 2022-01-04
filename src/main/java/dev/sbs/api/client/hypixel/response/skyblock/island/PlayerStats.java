@@ -1,6 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.BuffEffectsModel;
@@ -108,17 +109,16 @@ public class PlayerStats {
                 .getDungeon(dungeonModel)
                 .ifPresent(dungeon -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) dungeon.getLevel())));
 
-        // TODO: Optimizer Request: No API Data
-        //  Booster Cookie:     +15 Magic Find
-        //  Beacon:             +5 Magic Find
-
-        // TODO: Optimizer Request: Missing API Data
-        //  Defused Traps:      +6 Intelligence
-        //  Bestiary:           +84 Health
-        //  Account Upgrades:   +5 Magic Find
-
-        // TODO: Hypixel Bugs
-        //  Catacombs:          2x Health
+        // TODO
+        //  Optimizer Request: No API Data
+        //     Booster Cookie:     +15 Magic Find
+        //     Beacon:             +5 Magic Find
+        //  Optimizer Request: Missing API Data
+        //     Defused Traps:      +6 Intelligence
+        //     Bestiary:           +84 Health
+        //     Account Upgrades:   +5 Magic Find
+        //  Hypixel Bugs
+        //     Catacombs:          2x Health
 
         this.loadDamageMultiplier(member);
         this.loadSkills(member);
@@ -551,7 +551,9 @@ public class PlayerStats {
                     });
             });
         } catch (IOException ioException) {
-            ioException.printStackTrace(); // TODO
+            throw SimplifiedException.wrapNative(ioException)
+                .withMessage("Unable to read accessory nbt data!")
+                .build();
         }
     }
 
@@ -602,7 +604,9 @@ public class PlayerStats {
                             })));
             }
         } catch (IOException ioException) {
-            ioException.printStackTrace(); // TODO
+            throw SimplifiedException.wrapNative(ioException)
+                .withMessage("Unable to read armor nbt data!")
+                .build();
         }
     }
 
