@@ -147,7 +147,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.Map;
 
-public class SimplifiedApi {
+public final class SimplifiedApi {
 
     private static final ServiceManager serviceManager = new ServiceManager();
     private static final BuilderManager builderManager = new BuilderManager();
