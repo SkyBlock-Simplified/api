@@ -34,6 +34,7 @@ import java.time.Instant;
 public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
 
     @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
@@ -46,8 +47,7 @@ public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
 
     @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 127, unique = true)
     private String key;
 
     @Getter
@@ -57,7 +57,7 @@ public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "emoji_id", nullable = false)
+    @Column(name = "emoji_id", nullable = false, unique = true)
     private Long emojiId;
 
     @Getter
