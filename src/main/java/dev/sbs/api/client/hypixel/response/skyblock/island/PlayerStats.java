@@ -991,11 +991,11 @@ public class PlayerStats {
         @Getter
         private double bonus;
 
-        private Data() {
+        public Data() {
             this(0, 0);
         }
 
-        private Data(Data data) {
+        public Data(Data data) {
             this(data.getBase(), data.getBonus());
         }
 
@@ -1031,7 +1031,7 @@ public class PlayerStats {
 
     }
 
-    private static abstract class ObjectData<T> {
+    public static abstract class ObjectData<T> {
 
         @Getter
         protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
@@ -1055,7 +1055,7 @@ public class PlayerStats {
         private Optional<BonusReforgeStatModel> bonusReforgeStatModel = Optional.empty();
 
         @SuppressWarnings("unchecked")
-        private ObjectData(CompoundTag compoundTag, RarityModel rarityModel) {
+        protected ObjectData(CompoundTag compoundTag, RarityModel rarityModel) {
             this.compoundTag = compoundTag;
             this.rarityModel = rarityModel;
 
@@ -1150,7 +1150,7 @@ public class PlayerStats {
         @Getter
         private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
 
-        private ItemData(CompoundTag compoundTag, RarityModel rarityModel) {
+        public ItemData(CompoundTag compoundTag, RarityModel rarityModel) {
             super(compoundTag, rarityModel);
 
             // Handle Hot Potatos
