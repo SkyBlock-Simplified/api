@@ -1072,7 +1072,7 @@ public class PlayerStats {
 
     }
 
-    public static abstract class ObjectData<T> {
+    public static abstract class ObjectData<T extends ObjectType> {
 
         @Getter protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
         @Getter private final CompoundTag compoundTag;
@@ -1214,7 +1214,7 @@ public class PlayerStats {
         }
 
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-        public enum Type {
+        public enum Type implements ObjectType {
 
             ENCHANTS(true),
             GEMSTONES(true),
