@@ -249,49 +249,48 @@ public class SkyBlockIsland {
 
         // Zones/Islands
         @Getter
-        private ConcurrentList<String> tutorial;
+        private ConcurrentList<String> tutorial = Concurrent.newList();
         @SerializedName("visited_zones")
         @Getter
-        private ConcurrentList<String> visited_zones;
+        private ConcurrentList<String> visited_zones = Concurrent.newList();
         @SerializedName("achievement_spawned_island_types")
         @Getter
-        private ConcurrentList<String> spawnedIslandTypes;
+        private ConcurrentList<String> spawnedIslandTypes = Concurrent.newList();
 
         // Miscellaneous
         @Getter
-        private ConcurrentList<PetInfo> pets;
+        private ConcurrentList<PetInfo> pets = Concurrent.newList();
         @Getter
-        private ConcurrentMap<String, Double> stats;
-        private ConcurrentLinkedMap<String, Objective> objectives;
-        private ConcurrentLinkedMap<String, Quest> quests;
+        private ConcurrentMap<String, Double> stats = Concurrent.newMap();
+        private ConcurrentLinkedMap<String, Objective> objectives = Concurrent.newLinkedMap();
+        private ConcurrentLinkedMap<String, Quest> quests = Concurrent.newLinkedMap();
         @SerializedName("crafted_generators")
-        private ConcurrentList<String> craftedMinions;
+        private ConcurrentList<String> craftedMinions = Concurrent.newList();
         @SerializedName("sacks_counts")
-        private ConcurrentLinkedMap<String, Integer> sacksCounts;
-        private ConcurrentLinkedMap<String, SlayerBoss> slayer_bosses;
-        private ConcurrentList<String> unlocked_coll_tiers;
-        private ConcurrentLinkedMap<String, Integer> collection;
+        private ConcurrentLinkedMap<String, Integer> sacksCounts = Concurrent.newLinkedMap();
+        private ConcurrentLinkedMap<String, SlayerBoss> slayer_bosses = Concurrent.newLinkedMap();
+        private ConcurrentList<String> unlocked_coll_tiers = Concurrent.newList();
+        private ConcurrentLinkedMap<String, Integer> collection = Concurrent.newLinkedMap();
         @Getter
         private MelodyHarp melodyHarp;
         @SerializedName("active_effects")
         @Getter
-        private ConcurrentList<Potion> activePotions;
+        private ConcurrentList<Potion> activePotions = Concurrent.newList();
         @SerializedName("paused_effects")
         @Getter
-        private ConcurrentList<Potion> pausedPotions;
+        private ConcurrentList<Potion> pausedPotions = Concurrent.newList();
         @SerializedName("disabled_potion_effects")
         @Getter
-        private ConcurrentList<String> disabledPotions;
+        private ConcurrentList<String> disabledPotions = Concurrent.newList();
         @SerializedName("temp_stat_buffs")
         @Getter
         private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
         @SerializedName("griffin.burrows")
-        private ConcurrentList<GriffinBurrow> griffinBurrows;
+        private ConcurrentList<GriffinBurrow> griffinBurrows = Concurrent.newList();
         @SerializedName("mining_core")
         @Getter
         private Mining mining;
         @SerializedName("jacob2")
-        @Getter
         private JacobsFarming jacobsFarming;
         @SerializedName("forge.forge_processes.forge_1")
         @Getter
@@ -395,6 +394,10 @@ public class SkyBlockIsland {
             return new Essence(this.essenceUndead, this.essenceDiamond, this.essenceDragon, this.essenceGold, this.essenceIce, this.essenceWither, this.essenceSpider);
         }
 
+        public Optional<JacobsFarming> getJacobsFarming() {
+            return Optional.ofNullable(this.jacobsFarming);
+        }
+
         public Minion getMinion(String minionName) {
             return this.getMinion(SimplifiedApi.getRepositoryOf(MinionModel.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
         }
@@ -461,11 +464,12 @@ public class SkyBlockIsland {
 
         public Skill getSkill(SkillModel skillModel) {
             double experience = (double) Reflection.of(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this);
-            return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().getOrDefault(JacobsFarming.Perk.FARMING_LEVEL_CAP, 0) : 0));
+            return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().map(JacobsFarming::getPerks).map(perk -> perk.getOrDefault(JacobsFarming.Perk.FARMING_LEVEL_CAP, 0)).orElse(0) : 0));
         }
 
         public Slayer getSlayer(SlayerModel slayerModel) {
-            return new Slayer(slayerModel, this.slayer_bosses.get(slayerModel.getKey().toLowerCase()));
+            SlayerBoss slayerBoss = this.slayer_bosses.get(slayerModel.getKey().toLowerCase());
+            return new Slayer(slayerModel, slayerBoss != null ? slayerBoss : new SlayerBoss());
         }
 
         public Sack getSack(SackModel sackModel) {
@@ -1250,12 +1254,10 @@ public class SkyBlockIsland {
     public static class JacobsFarming {
 
         @SerializedName("medals_inv")
-        @Getter
-        private ConcurrentMap<Medal, Integer> medalInventory;
-        @Getter
-        private ConcurrentMap<Perk, Integer> perks;
+        @Getter private ConcurrentMap<Medal, Integer> medalInventory = Concurrent.newMap();
+        @Getter private ConcurrentMap<Perk, Integer> perks = Concurrent.newMap();
         @SerializedName("unique_golds2")
-        private ConcurrentSet<String> uniqueGolds;
+        private ConcurrentSet<String> uniqueGolds = Concurrent.newSet();
         private ConcurrentMap<String, Contest> contests = Concurrent.newMap();
         private ConcurrentList<Contest> contestData = Concurrent.newList();
         private boolean talked;
@@ -1282,11 +1284,11 @@ public class SkyBlockIsland {
         }
 
         public int getMedals(Medal medal) {
-            return this.getMedalInventory().get(medal);
+            return this.getMedalInventory().getOrDefault(medal, 0);
         }
 
         public int getPerk(Perk perk) {
-            return this.getPerks().get(perk);
+            return this.getPerks().getOrDefault(perk, 0);
         }
 
         public ConcurrentSet<CollectionItemModel> getUniqueGolds() {
@@ -1324,16 +1326,13 @@ public class SkyBlockIsland {
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Contest {
 
-            @Getter
-            private int collected;
+            @Getter private int collected;
             @SerializedName("claimed_rewards")
             private boolean claimedRewards;
             @SerializedName("claimed_position")
-            @Getter
-            private int position;
+            @Getter private int position;
             @SerializedName("claimed_participants")
-            @Getter
-            private int participants;
+            @Getter private int participants;
 
             @Getter
             private SkyBlockDate skyBlockDate;
@@ -1770,10 +1769,8 @@ public class SkyBlockIsland {
         private final ConcurrentMap<Integer, Boolean> claimed = Concurrent.newMap();
         private final ConcurrentMap<Integer, Boolean> claimedSpecial = Concurrent.newMap();
         private final ConcurrentMap<Integer, Integer> kills = Concurrent.newMap();
-        @Getter
-        private final SlayerModel type;
-        @Getter
-        private final double experience;
+        @Getter private final SlayerModel type;
+        @Getter private final double experience;
 
         private Slayer(SlayerModel type, SlayerBoss slayerBoss) {
             this.type = type;

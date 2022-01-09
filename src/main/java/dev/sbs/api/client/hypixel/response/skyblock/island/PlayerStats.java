@@ -801,11 +801,11 @@ public class PlayerStats {
 
     private void loadJacobsPerks(SkyBlockIsland.Member member) {
         // --- Load Jacobs Perks ---
-        if (member.getJacobsFarming() != null) {
+        if (member.getJacobsFarming().isPresent()) {
             statRepository.findFirst(StatModel::getKey, "FARMING_FORTUNE")
                 .ifPresent(farmingFortuneStatModel -> {
                     // Save Jacobs Perks
-                    double farmingDrops = member.getJacobsFarming().getPerk(SkyBlockIsland.JacobsFarming.Perk.DOUBLE_DROPS);
+                    double farmingDrops = member.getJacobsFarming().get().getPerk(SkyBlockIsland.JacobsFarming.Perk.DOUBLE_DROPS);
                     this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel).addBase(farmingDrops * 2.0);
                 });
         }
