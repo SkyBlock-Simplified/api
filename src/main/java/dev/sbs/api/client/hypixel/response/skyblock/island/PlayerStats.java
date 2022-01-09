@@ -158,7 +158,7 @@ public class PlayerStats {
                 // Handle Bonus Reforge Stats
                 accessoryData.getBonusReforgeStatModel()
                     .ifPresent(bonusReforgeStatModel -> accessoryData.getStats(AccessoryData.Type.REFORGES)
-                        .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel)));
+                        .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel)));
 
                 // Handle Bonus Item Stats
                 accessoryData.getBonusItemStatModel()
@@ -166,19 +166,19 @@ public class PlayerStats {
                         // Handle Bonus Gemstone Stats
                         if (bonusItemStatModel.isForGems()) {
                             accessoryData.getStats(AccessoryData.Type.GEMSTONES)
-                                .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
+                                .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
 
                         // Handle Bonus Reforge Stats
                         if (bonusItemStatModel.isForReforges()) {
                             accessoryData.getStats(AccessoryData.Type.REFORGES)
-                                .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
+                                .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
 
                         // Handle Bonus Stats
                         if (bonusItemStatModel.isForStats()) {
                             accessoryData.getStats(AccessoryData.Type.STATS)
-                                .forEach((statModel, statData) -> statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
+                                .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
                     });
             }));
@@ -189,8 +189,8 @@ public class PlayerStats {
                 itemData.getBonusReforgeStatModel()
                     .ifPresent(bonusReforgeStatModel -> itemData.getStats(ItemData.Type.REFORGES)
                         .forEach((statModel, statData) -> {
-                            statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
-                            statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
+                            statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
+                            statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
                         }));
             });
 
@@ -216,20 +216,20 @@ public class PlayerStats {
                 .ifPresent(bonusItemStatModel -> {
                     // Handle Stats
                     this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                        statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                        statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
+                        statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
+                        statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
                     }));
 
                     // Handle Armor
                     this.armor.forEach((itemModel2, itemData2) -> itemData2.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                        statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                        statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
+                        statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
+                        statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
                     })));
 
                     // Handle Accessories
                     this.accessories.forEach((accessoryModel, accessoryData) -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                        statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
-                        statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
+                        statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
+                        statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel);
                     })));
                 }));
 
@@ -245,108 +245,23 @@ public class PlayerStats {
 
                 // Handle Stats
                 this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
-                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.base = handleBonusEffects(statModel, statData.getBase(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.bonus = handleBonusEffects(statModel, statData.getBonus(), null, this.getExpressionVariables(), bonusPetAbilityStatModel);
                 }));
 
                 // Handle Armor
                 this.armor.forEach((itemModel, itemData) -> itemData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
-                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
                 })));
 
                 // Handle Accessories
                 this.accessories.forEach((accessoryModel, accessoryData) -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                    statData.base = this.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
-                    statData.bonus = this.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.base = handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
+                    statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusPetAbilityStatModel);
                 })));
             });
         }
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
-        MutableDouble value = new MutableDouble(currentTotal);
-        ConcurrentList<StatModel> statModels = statRepository.findAll();
-
-        // Handle Bonus Stats
-        for (BuffEffectsModel bonusBuffEffectModel : bonusEffectsModels) {
-            value.add((double) bonusBuffEffectModel.getEffect(statModel.getKey(), 0.0));
-
-            bonusBuffEffectModel.getBuffEffects().forEach((buffKey, buffValue) -> {
-                String filterKey = (String) buffKey;
-
-                if (filterKey.equals("TIME")) {
-                    SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
-                    int hour = currentDate.getHour();
-                    List<String> timeConstraints = (List<String>) buffValue;
-                    MutableBoolean insideConstraint = new MutableBoolean(false);
-
-                    timeConstraints.forEach(timeConstraint -> {
-                        String[] constraintParts = timeConstraint.split("-");
-                        int start = NumberUtil.toInt(constraintParts[0]);
-                        int end = NumberUtil.toInt(constraintParts[1]);
-
-                        if (hour >= start && hour <= end)
-                            insideConstraint.setTrue(); // At Least 1 Constraint is True
-                    });
-
-                    if (insideConstraint.isFalse())
-                        value.set(0.0);
-                } else {
-                    boolean multiply = false;
-
-                    if (filterKey.startsWith("MULTIPLY_")) {
-                        filterKey = filterKey.replace("MULTIPLY_", "");
-                        multiply = true;
-                    } else if (filterKey.startsWith("ADD_"))
-                        filterKey = filterKey.replace("ADD_", "");
-
-                    if (filterKey.startsWith("STAT_")) {
-                        filterKey = filterKey.replace("STAT_", "");
-
-                        // Handle Buff Stat
-                        if (statModel.getKey().equals(filterKey) || "ALL".equals(filterKey)) {
-                            String valueString = String.valueOf(buffValue);
-
-                            if (NumberUtil.isCreatable(valueString))
-                                value.set(value.get() * (double) buffValue);
-                            else {
-                                if (!multiply || statModel.isMultipliable()) {
-                                    if (compoundTag != null) {
-                                        Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
-
-                                        if (nbtMatcher.matches()) {
-                                            String nbtTag = nbtMatcher.group(2);
-                                            String nbtValue = String.valueOf(compoundTag.getPath(nbtTag).getValue());
-                                            valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
-                                        }
-                                    }
-
-                                    Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
-                                        .variable("CURRENT_VALUE")
-                                        .variable("PET_LEVEL")
-                                        .variable("SKILL_AVERAGE")
-                                        .variable("PET_ABILITY_VALUE")
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("SKILL_LEVEL_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(SimplifiedApi.getRepositoryOf(DungeonModel.class).findAll().stream().map(dungeonModelX -> FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("PET_ABILITY_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .build();
-
-                                    expression.setVariables(variables);
-                                    expression.setVariable("CURRENT_VALUE", currentTotal);
-                                    double newValue = expression.evaluate();
-                                    value.set(newValue);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        return value.get();
     }
 
     public ConcurrentLinkedMap<StatModel, Data> getAllStats() {
@@ -514,11 +429,11 @@ public class PlayerStats {
                             .ifPresent(bonusItemStatModel -> this.getAccessories().get(accessoryModel).setBonusItemStatModel(bonusItemStatModel));
 
                         // Handle Gemstone Stats
-                        this.handleGemstoneBonus(itemTag, rarityModel)
+                        handleGemstoneBonus(itemTag, rarityModel)
                             .forEach((statModel, value) -> this.getAccessories().get(accessoryModel).getStats(AccessoryData.Type.GEMSTONES).get(statModel).addBonus(value));
 
                         // Handle Reforge Stats
-                        this.handleReforgeBonus(this.getAccessories().get(accessoryModel).getReforgeStat())
+                        handleReforgeBonus(this.getAccessories().get(accessoryModel).getReforgeStat())
                             .forEach((statModel, value) -> this.getAccessories().get(accessoryModel).getStats(AccessoryData.Type.REFORGES).get(statModel).addBonus(value));
 
                         // Load Stats
@@ -595,11 +510,11 @@ public class PlayerStats {
                                 }
 
                                 // Save Reforge Stats
-                                this.handleReforgeBonus(this.armor.get(itemModel).getReforgeStat())
+                                handleReforgeBonus(this.armor.get(itemModel).getReforgeStat())
                                     .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
 
                                 // Save Gemstone Stats
-                                this.handleGemstoneBonus(itemTag, rarityModel)
+                                handleGemstoneBonus(itemTag, rarityModel)
                                     .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
                             })));
             }
@@ -937,7 +852,7 @@ public class PlayerStats {
             }));
     }
 
-    private ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
+    public static ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
         ConcurrentMap<StatModel, Double> reforgeBonuses = Concurrent.newMap();
 
         // Load Reforge Stat Effects
@@ -949,7 +864,7 @@ public class PlayerStats {
     }
 
     @SuppressWarnings("unchecked")
-    private ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
+    public static ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
         ConcurrentMap<StatModel, Double> gemstoneAdjusted = Concurrent.newMap();
         CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
 
@@ -981,6 +896,91 @@ public class PlayerStats {
         }
 
         return gemstoneAdjusted;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
+        MutableDouble value = new MutableDouble(currentTotal);
+        ConcurrentList<StatModel> statModels = statRepository.findAll();
+
+        // Handle Bonus Stats
+        for (BuffEffectsModel bonusBuffEffectModel : bonusEffectsModels) {
+            value.add((double) bonusBuffEffectModel.getEffect(statModel.getKey(), 0.0));
+
+            bonusBuffEffectModel.getBuffEffects().forEach((buffKey, buffValue) -> {
+                String filterKey = (String) buffKey;
+
+                if (filterKey.equals("TIME")) {
+                    SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
+                    int hour = currentDate.getHour();
+                    List<String> timeConstraints = (List<String>) buffValue;
+                    MutableBoolean insideConstraint = new MutableBoolean(false);
+
+                    timeConstraints.forEach(timeConstraint -> {
+                        String[] constraintParts = timeConstraint.split("-");
+                        int start = NumberUtil.toInt(constraintParts[0]);
+                        int end = NumberUtil.toInt(constraintParts[1]);
+
+                        if (hour >= start && hour <= end)
+                            insideConstraint.setTrue(); // At Least 1 Constraint is True
+                    });
+
+                    if (insideConstraint.isFalse())
+                        value.set(0.0);
+                } else {
+                    boolean multiply = false;
+
+                    if (filterKey.startsWith("MULTIPLY_")) {
+                        filterKey = filterKey.replace("MULTIPLY_", "");
+                        multiply = true;
+                    } else if (filterKey.startsWith("ADD_"))
+                        filterKey = filterKey.replace("ADD_", "");
+
+                    if (filterKey.startsWith("STAT_")) {
+                        filterKey = filterKey.replace("STAT_", "");
+
+                        // Handle Buff Stat
+                        if (statModel.getKey().equals(filterKey) || "ALL".equals(filterKey)) {
+                            String valueString = String.valueOf(buffValue);
+
+                            if (NumberUtil.isCreatable(valueString))
+                                value.set(value.get() * (double) buffValue);
+                            else {
+                                if (!multiply || statModel.isMultipliable()) {
+                                    if (compoundTag != null) {
+                                        Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
+
+                                        if (nbtMatcher.matches()) {
+                                            String nbtTag = nbtMatcher.group(2);
+                                            String nbtValue = String.valueOf(compoundTag.getPath(nbtTag).getValue());
+                                            valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
+                                        }
+                                    }
+
+                                    Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
+                                        .variable("CURRENT_VALUE")
+                                        .variable("PET_LEVEL")
+                                        .variable("SKILL_AVERAGE")
+                                        .variable("PET_ABILITY_VALUE")
+                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("{0}", statModelX.getKey())).collect(Concurrent.toSet()))
+                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("SKILL_LEVEL_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
+                                        .variables(SimplifiedApi.getRepositoryOf(DungeonModel.class).findAll().stream().map(dungeonModelX -> FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModelX.getKey())).collect(Concurrent.toSet()))
+                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("PET_ABILITY_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
+                                        .build();
+
+                                    expression.setVariables(variables);
+                                    expression.setVariable("CURRENT_VALUE", currentTotal);
+                                    double newValue = expression.evaluate();
+                                    value.set(newValue);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        return value.get();
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
