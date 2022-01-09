@@ -486,7 +486,7 @@ public class PlayerStats {
                         .findFirst(ItemModel::getItemId, itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue())
                         .ifPresent(itemModel -> SimplifiedApi.getRepositoryOf(RarityModel.class)
                             .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + itemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue())
-                            .ifPresent(rarityModel -> this.armor.put(itemModel, getItemData(itemModel, itemTag, rarityModel)))));
+                            .ifPresent(rarityModel -> this.armor.put(itemModel, getItemData(itemModel, itemTag, rarityModel, "ARMOR")))));
             }
         } catch (IOException ioException) {
             throw SimplifiedException.wrapNative(ioException)
@@ -822,8 +822,8 @@ public class PlayerStats {
             }));
     }
 
-    public static ItemData getItemData(ItemModel itemModel, CompoundTag itemTag, RarityModel rarityModel) {
-        ItemData itemData = new ItemData(itemTag, rarityModel);
+    public static ItemData getItemData(ItemModel itemModel, CompoundTag itemTag, RarityModel rarityModel, String reforgeTypeKey) {
+        ItemData itemData = new ItemData(itemTag, rarityModel, reforgeTypeKey);
 
         // Store Bonus Item Stat Model
         SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
@@ -1159,7 +1159,7 @@ public class PlayerStats {
         @Getter
         private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
 
-        public ItemData(CompoundTag compoundTag, RarityModel rarityModel) {
+        public ItemData(CompoundTag compoundTag, RarityModel rarityModel, String reforgeTypeKey) {
             super(compoundTag, rarityModel);
 
             // Handle Hot Potatos
@@ -1167,7 +1167,7 @@ public class PlayerStats {
                 Integer hotPotatoCount = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
 
                 SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
-                    .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), "ARMOR")
+                    .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
                     .forEach(hotPotatoStatModel -> this.stats.get(Type.HOT_POTATOS).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
             }
         }
