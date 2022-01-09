@@ -852,7 +852,7 @@ public class PlayerStats {
             }));
     }
 
-    public static ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
+    private static ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
         ConcurrentMap<StatModel, Double> reforgeBonuses = Concurrent.newMap();
 
         // Load Reforge Stat Effects
