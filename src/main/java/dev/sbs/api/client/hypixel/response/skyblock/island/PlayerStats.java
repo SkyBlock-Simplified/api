@@ -8,6 +8,7 @@ import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilyModel;
+import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetModel;
 import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatModel;
 import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatModel;
 import dev.sbs.api.data.model.skyblock.bonus_reforge_stats.BonusReforgeStatModel;
@@ -88,6 +89,7 @@ public class PlayerStats {
     @Getter private final ConcurrentMap<AccessoryModel, AccessoryData> accessories = Concurrent.newMap();
     @Getter private final ConcurrentMap<ItemModel, ItemData> armor = Concurrent.newMap();
     @Getter private final ConcurrentList<BonusPetAbilityStatModel> bonusPetAbilityStatModels = Concurrent.newList();
+    @Getter private Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
     @Getter private boolean bonusCalculated;
 
     PlayerStats(SkyBlockIsland.Member member) {
@@ -139,10 +141,14 @@ public class PlayerStats {
     }
 
     public PlayerStats calculateBonusStats() {
-        return new PlayerStats(this);
+        return this.calculateBonusStats(true);
     }
 
-    private PlayerStats(PlayerStats playerStats) {
+    public PlayerStats calculateBonusStats(boolean calculateReforges) {
+        return new PlayerStats(this, calculateReforges);
+    }
+
+    private PlayerStats(PlayerStats playerStats, boolean calculateReforges) {
         // Load Previous Data
         this.damageMultiplier = playerStats.getDamageMultiplier();
         this.expressionVariables.putAll(playerStats.getExpressionVariables());
@@ -157,9 +163,11 @@ public class PlayerStats {
             // --- Load Bonus Accessory Item Stats ---
             this.getAccessories().forEach(((accessoryModel, accessoryData) -> {
                 // Handle Bonus Reforge Stats
-                accessoryData.getBonusReforgeStatModel()
-                    .ifPresent(bonusReforgeStatModel -> accessoryData.getStats(AccessoryData.Type.REFORGES)
-                        .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel)));
+                if (calculateReforges) {
+                    accessoryData.getBonusReforgeStatModel()
+                        .ifPresent(bonusReforgeStatModel -> accessoryData.getStats(AccessoryData.Type.REFORGES)
+                            .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel)));
+                }
 
                 // Handle Bonus Item Stats
                 accessoryData.getBonusItemStatModel()
@@ -171,7 +179,7 @@ public class PlayerStats {
                         }
 
                         // Handle Bonus Reforge Stats
-                        if (bonusItemStatModel.isForReforges()) {
+                        if (bonusItemStatModel.isForReforges() && calculateReforges) {
                             accessoryData.getStats(AccessoryData.Type.REFORGES)
                                 .forEach((statModel, statData) -> statData.bonus = handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), this.getExpressionVariables(), bonusItemStatModel));
                         }
@@ -185,15 +193,17 @@ public class PlayerStats {
             }));
 
             // --- Load Bonus Armor Stats ---
-            this.getArmor().forEach((itemModel, itemData) -> {
-                // Handle Reforges
-                itemData.getBonusReforgeStatModel()
-                    .ifPresent(bonusReforgeStatModel -> itemData.getStats(ItemData.Type.REFORGES)
-                        .forEach((statModel, statData) -> {
-                            statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
-                            statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
-                        }));
-            });
+            if (calculateReforges) {
+                this.getArmor().forEach((itemModel, itemData) -> {
+                    // Handle Reforges
+                    itemData.getBonusReforgeStatModel()
+                        .ifPresent(bonusReforgeStatModel -> itemData.getStats(ItemData.Type.REFORGES)
+                            .forEach((statModel, statData) -> {
+                                statData.base = handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
+                                statData.bonus = handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), this.getExpressionVariables(), bonusReforgeStatModel);
+                            }));
+                });
+            }
 
             // --- Load Armor Multiplier Enchantments ---
             this.getArmor().forEach((itemModel, itemData) -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel)
@@ -473,10 +483,30 @@ public class PlayerStats {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void loadArmor(SkyBlockIsland.Member member) {
         try {
             // --- Load Armor ---
+            Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
+
             if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
+                ConcurrentList<Optional<ItemModel>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
+                    .getNbtData()
+                    .<CompoundTag>getList("i")
+                    .stream()
+                    .map(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
+                        .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
+                    )
+                    .collect(Concurrent.toList())
+                    .inverse();
+
+                this.bonusArmorSetModel = SimplifiedApi.getRepositoryOf(BonusArmorSetModel.class).findFirst(
+                    Pair.of(BonusArmorSetModel::getHelmetItem, armorItemModels.get(0).orElse(null)),
+                    Pair.of(BonusArmorSetModel::getChestplateItem, armorItemModels.get(1).orElse(null)),
+                    Pair.of(BonusArmorSetModel::getLeggingsItem, armorItemModels.get(2).orElse(null)),
+                    Pair.of(BonusArmorSetModel::getBootsItem, armorItemModels.get(3).orElse(null))
+                );
+
                 member.getStorage(SkyBlockIsland.Storage.ARMOR)
                     .getNbtData()
                     .<CompoundTag>getList("i")
@@ -1042,26 +1072,13 @@ public class PlayerStats {
 
     public static abstract class ObjectData<T> {
 
-        @Getter
-        protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
-
-        @Getter
-        private final CompoundTag compoundTag;
-
-        @Getter
-        private final RarityModel rarityModel;
-
-        @Getter
-        private Optional<ReforgeModel> reforge = Optional.empty();
-
-        @Getter
-        private Optional<ReforgeStatModel> reforgeStat = Optional.empty();
-
-        @Getter
-        private Optional<BonusItemStatModel> bonusItemStatModel = Optional.empty();
-
-        @Getter
-        private Optional<BonusReforgeStatModel> bonusReforgeStatModel = Optional.empty();
+        @Getter protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
+        @Getter private final CompoundTag compoundTag;
+        @Getter private final RarityModel rarityModel;
+        @Getter private Optional<ReforgeModel> reforge = Optional.empty();
+        @Getter private Optional<ReforgeStatModel> reforgeStat = Optional.empty();
+        @Getter private Optional<BonusItemStatModel> bonusItemStatModel = Optional.empty();
+        @Getter private Optional<BonusReforgeStatModel> bonusReforgeStatModel = Optional.empty();
 
         @SuppressWarnings("unchecked")
         protected ObjectData(CompoundTag compoundTag, RarityModel rarityModel) {
