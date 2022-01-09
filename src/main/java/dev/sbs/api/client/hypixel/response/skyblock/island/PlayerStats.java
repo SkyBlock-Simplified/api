@@ -813,16 +813,18 @@ public class PlayerStats {
 
     private void loadMelodysHarp(SkyBlockIsland.Member member) {
         // --- Load Melody's Harp ---
-        member.getMelodyHarp().getSongs().forEach((songName, songData) -> {
-            // Load Song
-            SimplifiedApi.getRepositoryOf(MelodySongModel.class)
-                .findFirst(MelodySongModel::getKey, songName.toUpperCase())
-                .ifPresent(melodySongModel -> {
-                    // Load Intelligence Stat
-                    statRepository.findFirst(StatModel::getKey, "INTELLIGENCE")
-                        .ifPresent(statModel -> this.stats.get(Type.MELODYS_HARP).get(statModel).addBonus(melodySongModel.getReward()));
-                });
-        });
+        if (member.getMelodyHarp() != null) {
+            member.getMelodyHarp().getSongs().forEach((songName, songData) -> {
+                // Load Song
+                SimplifiedApi.getRepositoryOf(MelodySongModel.class)
+                    .findFirst(MelodySongModel::getKey, songName.toUpperCase())
+                    .ifPresent(melodySongModel -> {
+                        // Load Intelligence Stat
+                        statRepository.findFirst(StatModel::getKey, "INTELLIGENCE")
+                            .ifPresent(statModel -> this.stats.get(Type.MELODYS_HARP).get(statModel).addBonus(melodySongModel.getReward()));
+                    });
+            });
+        }
     }
 
     private void loadFairySouls(SkyBlockIsland.Member member) {
