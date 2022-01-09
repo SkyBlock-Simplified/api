@@ -864,7 +864,7 @@ public class PlayerStats {
     }
 
     @SuppressWarnings("unchecked")
-    public static ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
+    private static ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
         ConcurrentMap<StatModel, Double> gemstoneAdjusted = Concurrent.newMap();
         CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
 
