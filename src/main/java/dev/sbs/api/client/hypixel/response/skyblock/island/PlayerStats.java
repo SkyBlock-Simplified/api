@@ -65,6 +65,7 @@ import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -1017,21 +1018,25 @@ public class PlayerStats {
 
     }
 
-    public enum Type {
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public enum Type implements ObjectType {
 
-        ACTIVE_PET,
-        ACTIVE_POTIONS,
-        BASE_STATS,
-        CENTURY_CAKES,
-        DUNGEONS,
-        ESSENCE,
-        FAIRY_SOULS,
-        JACOBS_FARMING,
-        MELODYS_HARP,
-        MINING_CORE,
-        PET_SCORE,
-        SKILLS,
-        SLAYERS
+        ACTIVE_PET(true),
+        ACTIVE_POTIONS(true),
+        BASE_STATS(true),
+        CENTURY_CAKES(true),
+        DUNGEONS(true),
+        ESSENCE(true),
+        FAIRY_SOULS(true),
+        JACOBS_FARMING(true),
+        MELODYS_HARP(true),
+        MINING_CORE(true),
+        PET_SCORE(true),
+        SKILLS(true),
+        SLAYERS(true);
+
+        @Getter
+        private final boolean optimizerConstant;
 
     }
 
@@ -1189,13 +1194,17 @@ public class PlayerStats {
             return ItemData.Type.values();
         }
 
+        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public enum Type {
 
-            ENCHANTS,
-            GEMSTONES,
-            HOT_POTATOS,
-            REFORGES,
-            STATS
+            ENCHANTS(true),
+            GEMSTONES(true),
+            HOT_POTATOS(true),
+            REFORGES(false),
+            STATS(true);
+
+            @Getter
+            private final boolean optimizerConstant;
 
         }
 
@@ -1212,15 +1221,25 @@ public class PlayerStats {
             return AccessoryData.Type.values();
         }
 
-        public enum Type {
+        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+        public enum Type implements ObjectType {
 
-            CAKE_BAG,
-            GEMSTONES,
-            REFORGES,
-            STATS,
-            ENRICHMENTS
+            CAKE_BAG(true),
+            GEMSTONES(true),
+            REFORGES(false),
+            STATS(true),
+            ENRICHMENTS(true);
+
+            @Getter
+            private final boolean optimizerConstant;
 
         }
+
+    }
+
+    public interface ObjectType {
+
+        boolean isOptimizerConstant();
 
     }
 
