@@ -485,38 +485,7 @@ public class PlayerStats {
                         .findFirst(ItemModel::getItemId, itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue())
                         .ifPresent(itemModel -> SimplifiedApi.getRepositoryOf(RarityModel.class)
                             .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + itemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue())
-                            .ifPresent(rarityModel -> {
-                                this.armor.put(itemModel, new ItemData(itemTag, rarityModel));
-
-                                // Store Bonus Item Stat Model
-                                SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
-                                    .findFirst(BonusItemStatModel::getItem, itemModel)
-                                    .ifPresent(bonusItemStatModel -> this.armor.get(itemModel).setBonusItemStatModel(bonusItemStatModel));
-
-                                // Save Stats
-                                itemModel.getStats().forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
-                                    .ifPresent(statModel -> this.armor.get(itemModel).getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
-
-                                // Handle Enchantment Stats
-                                if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
-                                    CompoundTag enchantments = itemTag.getPath("tag.ExtraAttributes.enchantments");
-
-                                    enchantments.entrySet()
-                                        .stream()
-                                        .map(entry -> Pair.of(entry.getKey().toUpperCase(), ((IntTag)entry.getValue()).getValue()))
-                                        .forEach(pair -> SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
-                                            .findFirst(EnchantmentModel::getKey, pair.getKey())
-                                            .ifPresent(enchantmentModel -> this.armor.get(itemModel).addEnchantment(enchantmentModel, pair.getValue())));
-                                }
-
-                                // Save Reforge Stats
-                                handleReforgeBonus(this.armor.get(itemModel).getReforgeStat())
-                                    .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
-
-                                // Save Gemstone Stats
-                                handleGemstoneBonus(itemTag, rarityModel)
-                                    .forEach((statModel, value) -> this.armor.get(itemModel).getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
-                            })));
+                            .ifPresent(rarityModel -> this.armor.put(itemModel, getItemData(itemModel, itemTag, rarityModel)))));
             }
         } catch (IOException ioException) {
             throw SimplifiedException.wrapNative(ioException)
@@ -850,6 +819,41 @@ public class PlayerStats {
                     statData.addBonus(entry.getValue() * essencePerkModel.getLevelBonus());
                 }
             }));
+    }
+
+    public static ItemData getItemData(ItemModel itemModel, CompoundTag itemTag, RarityModel rarityModel) {
+        ItemData itemData = new ItemData(itemTag, rarityModel);
+
+        // Store Bonus Item Stat Model
+        SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
+            .findFirst(BonusItemStatModel::getItem, itemModel)
+            .ifPresent(itemData::setBonusItemStatModel);
+
+        // Save Stats
+        itemModel.getStats().forEach((key, value) -> statRepository.findFirst(StatModel::getKey, key)
+            .ifPresent(statModel -> itemData.getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
+
+        // Handle Enchantment Stats
+        if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
+            CompoundTag enchantments = itemTag.getPath("tag.ExtraAttributes.enchantments");
+
+            enchantments.entrySet()
+                .stream()
+                .map(entry -> Pair.of(entry.getKey().toUpperCase(), ((IntTag)entry.getValue()).getValue()))
+                .forEach(pair -> SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
+                    .findFirst(EnchantmentModel::getKey, pair.getKey())
+                    .ifPresent(enchantmentModel -> itemData.addEnchantment(enchantmentModel, pair.getValue())));
+        }
+
+        // Save Reforge Stats
+        handleReforgeBonus(itemData.getReforgeStat())
+            .forEach((statModel, value) -> itemData.getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
+
+        // Save Gemstone Stats
+        handleGemstoneBonus(itemTag, rarityModel)
+            .forEach((statModel, value) -> itemData.getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
+
+        return itemData;
     }
 
     private static ConcurrentMap<StatModel, Double> handleReforgeBonus(Optional<ReforgeStatModel> optionalReforgeStatModel) {
