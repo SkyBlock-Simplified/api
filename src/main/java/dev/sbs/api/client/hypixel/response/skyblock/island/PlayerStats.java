@@ -1205,15 +1205,17 @@ public class PlayerStats {
                 });
         }
 
-        public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables) {
+        public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables, boolean calculateReforges) {
             // Handle Reforges
-            this.getBonusReforgeStatModel()
-                .ifPresent(bonusReforgeStatModel -> this.getStats(ItemData.Type.REFORGES)
-                    .forEach((statModel, statData) -> {
-                        statData.base = handleBonusEffects(statModel, statData.getBase(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
-                        statData.bonus = handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
-                    })
-                );
+            if (calculateReforges) {
+                this.getBonusReforgeStatModel()
+                    .ifPresent(bonusReforgeStatModel -> this.getStats(ItemData.Type.REFORGES)
+                        .forEach((statModel, statData) -> {
+                            statData.base = handleBonusEffects(statModel, statData.getBase(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
+                            statData.bonus = handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
+                        })
+                    );
+            }
 
             // Handle Bonus Item Stats
             this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> {
@@ -1224,7 +1226,7 @@ public class PlayerStats {
                 }
 
                 // Handle Bonus Reforges
-                if (bonusItemStatModel.isForReforges()) {
+                if (calculateReforges && bonusItemStatModel.isForReforges()) {
                     this.getStats(Type.REFORGES)
                         .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
                 }
