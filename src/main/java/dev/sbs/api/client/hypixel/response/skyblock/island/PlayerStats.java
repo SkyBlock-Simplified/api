@@ -1214,7 +1214,7 @@ public class PlayerStats {
 
         public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables, boolean reforges) {
             // Handle Bonus Item Stats
-            this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> this.getStats().forEach((type, statEntry) -> {
+            this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> {
                 // Handle Bonus Gemstone Stats
                 if (bonusItemStatModel.isForGems()) {
                     this.getStats(Type.GEMSTONES)
@@ -1223,7 +1223,7 @@ public class PlayerStats {
 
                 // Handle Bonus Reforges
                 if (reforges && bonusItemStatModel.isForReforges()) {
-                    this.getStats(Type.STATS)
+                    this.getStats(Type.REFORGES)
                         .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
                 }
 
@@ -1232,7 +1232,7 @@ public class PlayerStats {
                     this.getStats(Type.STATS)
                         .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
                 }
-            }));
+            });
 
             return this;
         }
