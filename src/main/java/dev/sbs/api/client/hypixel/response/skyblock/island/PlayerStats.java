@@ -1018,10 +1018,8 @@ public class PlayerStats {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Data {
 
-        @Getter
-        private double base;
-        @Getter
-        private double bonus;
+        @Getter private double base;
+        @Getter private double bonus;
 
         public Data() {
             this(0, 0);
@@ -1169,11 +1167,8 @@ public class PlayerStats {
 
     public static class ItemData extends ObjectData<ItemData.Type> {
 
-        @Getter
-        private final ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
-
-        @Getter
-        private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
+        @Getter private final ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
+        @Getter private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
 
         private ItemData(ItemModel itemModel, CompoundTag compoundTag, RarityModel rarityModel, String reforgeTypeKey) {
             super(itemModel, compoundTag, rarityModel);
@@ -1184,7 +1179,14 @@ public class PlayerStats {
 
                 SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
                     .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
-                    .forEach(hotPotatoStatModel -> this.stats.get(Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
+                    .forEach(hotPotatoStatModel -> this.getStats(Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
+            }
+
+            // Handle Art of War
+            if (compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count")) {
+                SimplifiedApi.getRepositoryOf(StatModel.class)
+                    .findFirst(StatModel::getKey, "STRENGTH")
+                    .ifPresent(statModel -> this.stats.get(Type.ART_OF_WAR).get(statModel).addBonus(5.0));
             }
         }
 
@@ -1200,7 +1202,7 @@ public class PlayerStats {
 
                     if (!enchantmentStatModel.isPercentage() && enchantmentStatModel.getStat() != null) {
                         double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * value);
-                        this.stats.get(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                        this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
                     }
                 });
         }
@@ -1249,6 +1251,7 @@ public class PlayerStats {
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public enum Type implements ObjectType {
 
+            ART_OF_WAR(true),
             ENCHANTS(true),
             GEMSTONES(true),
             HOT_POTATOES(true),
