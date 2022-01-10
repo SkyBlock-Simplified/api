@@ -361,7 +361,7 @@ public class PlayerStats {
                     .stream()
                     .filter(CompoundTag::notEmpty)
                     .forEach(itemTag -> {
-                        String itemId = itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue();
+                        String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
 
                         SimplifiedApi.getRepositoryOf(AccessoryModel.class)
                             .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
@@ -389,7 +389,7 @@ public class PlayerStats {
                     .stream()
                     .filter(CompoundTag::notEmpty)
                     .forEach(itemTag -> {
-                        String itemId = itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue();
+                        String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
 
                         SimplifiedApi.getRepositoryOf(AccessoryModel.class)
                             .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
@@ -513,7 +513,7 @@ public class PlayerStats {
                     .stream()
                     .filter(CompoundTag::notEmpty)
                     .forEach(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
-                        .findFirst(ItemModel::getItemId, itemTag.<StringTag>getPath("tag.ExtraAttributes.id").getValue())
+                        .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
                         .ifPresent(itemModel -> SimplifiedApi.getRepositoryOf(RarityModel.class)
                             .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + itemTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue())
                             .ifPresent(rarityModel -> this.armor.put(itemModel, getItemData(itemModel, itemTag, rarityModel, "ARMOR")))));
