@@ -1905,7 +1905,7 @@ public class SkyBlockIsland {
 
     static class SlayerBoss {
 
-        private Map<String, Boolean> claimed_levels; // level_#: true
+        private ConcurrentMap<String, Boolean> claimed_levels = Concurrent.newMap(); // level_#: true
         private int boss_kills_tier_0;
         private int boss_kills_tier_1;
         private int boss_kills_tier_2;
