@@ -288,7 +288,6 @@ public class SkyBlockIsland {
         @SerializedName("griffin.burrows")
         private ConcurrentList<GriffinBurrow> griffinBurrows = Concurrent.newList();
         @SerializedName("mining_core")
-        @Getter
         private Mining mining;
         @SerializedName("jacob2")
         private JacobsFarming jacobsFarming;
@@ -330,7 +329,7 @@ public class SkyBlockIsland {
         private int essenceSpider;
         @SerializedName("perks")
         @Getter
-        private ConcurrentMap<String, Integer> essencePerks;
+        private ConcurrentMap<String, Integer> essencePerks = Concurrent.newMap();
 
         // Inventory Contents
         @SerializedName("inv_armor")
@@ -396,6 +395,10 @@ public class SkyBlockIsland {
 
         public Optional<JacobsFarming> getJacobsFarming() {
             return Optional.ofNullable(this.jacobsFarming);
+        }
+
+        public Optional<Mining> getMining() {
+            return Optional.ofNullable(this.mining);
         }
 
         public Minion getMinion(String minionName) {

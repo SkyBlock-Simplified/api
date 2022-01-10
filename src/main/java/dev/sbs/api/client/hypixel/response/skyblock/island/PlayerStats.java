@@ -775,16 +775,11 @@ public class PlayerStats {
 
     private void loadMiningCore(SkyBlockIsland.Member member) {
         // --- Load Mining Core ---
-        member.getMining().getNodes().forEach((key, level) -> {
-            // Load Hotm Perk
-            SimplifiedApi.getRepositoryOf(HotmPerkModel.class).findFirst(HotmPerkModel::getKey, key.toUpperCase())
-                .ifPresent(hotmPerkModel -> {
-                    // Save Perk Stats
-                    SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
-                        .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
-                        .forEach(hotmPerkStatModel -> this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus()));
-                });
-        });
+        member.getMining()
+            .ifPresent(mining -> mining.getNodes().forEach((key, level) -> SimplifiedApi.getRepositoryOf(HotmPerkModel.class).findFirst(HotmPerkModel::getKey, key.toUpperCase())
+            .ifPresent(hotmPerkModel -> SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
+                .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
+                .forEach(hotmPerkStatModel -> this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()).addBonus(level * hotmPerkModel.getLevelBonus())))));
     }
 
     private void loadCenturyCakes(SkyBlockIsland.Member member) {
