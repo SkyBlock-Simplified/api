@@ -432,7 +432,7 @@ public class PlayerStats {
                 SimplifiedApi.getRepositoryOf(RarityModel.class)
                     .findFirst(RarityModel::getOrdinal, accessoryModel.getRarity().getOrdinal() + rarityUpgrades)
                     .ifPresent(rarityModel -> {
-                        this.accessories.put(accessoryModel, new AccessoryData(itemTag, rarityModel));
+                        this.accessories.put(accessoryModel, new AccessoryData(accessoryModel.getItem(), itemTag, rarityModel));
 
                         // Store Bonus Item Stat Model
                         SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
@@ -855,7 +855,7 @@ public class PlayerStats {
     }
 
     public static ItemData getItemData(ItemModel itemModel, CompoundTag itemTag, RarityModel rarityModel, String reforgeTypeKey) {
-        ItemData itemData = new ItemData(itemTag, rarityModel, reforgeTypeKey);
+        ItemData itemData = new ItemData(itemModel, itemTag, rarityModel, reforgeTypeKey);
 
         // Store Bonus Item Stat Model
         SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
@@ -1075,6 +1075,7 @@ public class PlayerStats {
     public static abstract class ObjectData<T extends ObjectType> {
 
         @Getter protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
+        @Getter private final ItemModel itemModel;
         @Getter private final CompoundTag compoundTag;
         @Getter private final RarityModel rarityModel;
         @Getter private Optional<ReforgeModel> reforge = Optional.empty();
@@ -1083,7 +1084,8 @@ public class PlayerStats {
         @Getter private Optional<BonusReforgeStatModel> bonusReforgeStatModel = Optional.empty();
 
         @SuppressWarnings("unchecked")
-        protected ObjectData(CompoundTag compoundTag, RarityModel rarityModel) {
+        protected ObjectData(ItemModel itemModel, CompoundTag compoundTag, RarityModel rarityModel) {
+            this.itemModel = itemModel;
             this.compoundTag = compoundTag;
             this.rarityModel = rarityModel;
 
@@ -1178,8 +1180,8 @@ public class PlayerStats {
         @Getter
         private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
 
-        public ItemData(CompoundTag compoundTag, RarityModel rarityModel, String reforgeTypeKey) {
-            super(compoundTag, rarityModel);
+        private ItemData(ItemModel itemModel, CompoundTag compoundTag, RarityModel rarityModel, String reforgeTypeKey) {
+            super(itemModel, compoundTag, rarityModel);
 
             // Handle Hot Potatos
             if (compoundTag.containsPath("tag.ExtraAttributes.hot_potato_count")) {
@@ -1187,7 +1189,7 @@ public class PlayerStats {
 
                 SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
                     .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
-                    .forEach(hotPotatoStatModel -> this.stats.get(Type.HOT_POTATOS).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
+                    .forEach(hotPotatoStatModel -> this.stats.get(Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
             }
         }
 
@@ -1252,7 +1254,7 @@ public class PlayerStats {
 
             ENCHANTS(true),
             GEMSTONES(true),
-            HOT_POTATOS(true),
+            HOT_POTATOES(true),
             REFORGES(false),
             STATS(true);
 
@@ -1265,8 +1267,8 @@ public class PlayerStats {
 
     public static class AccessoryData extends ObjectData<AccessoryData.Type> {
 
-        private AccessoryData(CompoundTag compoundTag, RarityModel rarityModel) {
-            super(compoundTag, rarityModel);
+        private AccessoryData(ItemModel itemModel, CompoundTag compoundTag, RarityModel rarityModel) {
+            super(itemModel, compoundTag, rarityModel);
         }
 
         @Override
