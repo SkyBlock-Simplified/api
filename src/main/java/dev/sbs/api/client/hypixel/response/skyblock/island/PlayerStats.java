@@ -661,8 +661,8 @@ public class PlayerStats {
                 if (skillLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
                         .findAll(SkillLevelModel::getSkill, skillModel)
-                        .subList(0, skillLevel)
                         .stream()
+                        .filter(skillLevelModel -> skillLevelModel.getLevel() <= skillLevel)
                         .map(SkillLevelModel::getBuffEffects)
                         .flatMap(map -> map.entrySet().stream())
                         .forEach(entry -> this.damageMultiplier += (double) entry.getValue());
@@ -681,8 +681,8 @@ public class PlayerStats {
                 if (skillLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
                         .findAll(SkillLevelModel::getSkill, skillModel)
-                        .subList(0, skillLevel)
                         .stream()
+                        .filter(skillLevelModel -> skillLevelModel.getLevel() <= skillLevel)
                         .map(SkillLevelModel::getEffects)
                         .flatMap(map -> map.entrySet().stream())
                         .forEach(entry -> {
@@ -710,8 +710,8 @@ public class PlayerStats {
                 if (slayerLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SlayerLevelModel.class)
                         .findAll(SlayerLevelModel::getSlayer, slayerModel)
-                        .subList(0, slayerLevel)
                         .stream()
+                        .filter(slayerLevelModel -> slayerLevelModel.getLevel() <= slayerLevel)
                         .map(SlayerLevelModel::getEffects)
                         .flatMap(map -> map.entrySet().stream())
                         .forEach(entry -> {
@@ -741,8 +741,8 @@ public class PlayerStats {
                     if (dungeonLevel > 0) {
                         SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
                             .findAll()
-                            .subList(0, dungeonLevel)
                             .stream()
+                            .filter(dungeonLevelModel -> dungeonLevelModel.getLevel() <= dungeonLevel)
                             .map(DungeonLevelModel::getEffects)
                             .flatMap(map -> map.entrySet().stream())
                             .forEach(entry -> {
@@ -1209,10 +1209,15 @@ public class PlayerStats {
         }
 
         public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables) {
-            return this.calculateBonus(expressionVariables, true);
-        }
+            // Handle Reforges
+            this.getBonusReforgeStatModel()
+                .ifPresent(bonusReforgeStatModel -> this.getStats(ItemData.Type.REFORGES)
+                    .forEach((statModel, statData) -> {
+                        statData.base = handleBonusEffects(statModel, statData.getBase(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
+                        statData.bonus = handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
+                    })
+                );
 
-        public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables, boolean reforges) {
             // Handle Bonus Item Stats
             this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> {
                 // Handle Bonus Gemstone Stats
@@ -1222,7 +1227,7 @@ public class PlayerStats {
                 }
 
                 // Handle Bonus Reforges
-                if (reforges && bonusItemStatModel.isForReforges()) {
+                if (bonusItemStatModel.isForReforges()) {
                     this.getStats(Type.REFORGES)
                         .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
                 }
