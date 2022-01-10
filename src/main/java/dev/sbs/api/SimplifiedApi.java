@@ -112,6 +112,7 @@ import dev.sbs.api.data.model.skyblock.potion_tiers.PotionTierSqlRepository;
 import dev.sbs.api.data.model.skyblock.potions.PotionSqlRepository;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileSqlRepository;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlRepository;
+import dev.sbs.api.data.model.skyblock.reforge_conditions.ReforgeConditionSqlRepository;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.reforges.ReforgeSqlRepository;
@@ -351,6 +352,7 @@ public final class SimplifiedApi {
             PetSqlRepository.class,
             PetItemSqlRepository.class,
             PotionTierSqlRepository.class,
+            ReforgeConditionSqlRepository.class,
             SackItemSqlRepository.class,
             ShopBitEnchantedBookSqlRepository.class,
             ShopBitItemSqlRepository.class,
