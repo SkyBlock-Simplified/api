@@ -1208,6 +1208,35 @@ public class PlayerStats {
                 });
         }
 
+        public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables) {
+            return this.calculateBonus(expressionVariables, true);
+        }
+
+        public ItemData calculateBonus(ConcurrentMap<String, Double> expressionVariables, boolean reforges) {
+            // Handle Bonus Item Stats
+            this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> this.getStats().forEach((type, statEntry) -> {
+                // Handle Bonus Gemstone Stats
+                if (bonusItemStatModel.isForGems()) {
+                    this.getStats(Type.GEMSTONES)
+                        .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
+                }
+
+                // Handle Bonus Reforges
+                if (reforges && bonusItemStatModel.isForReforges()) {
+                    this.getStats(Type.STATS)
+                        .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
+                }
+
+                // Handle Bonus Stats
+                if (bonusItemStatModel.isForStats()) {
+                    this.getStats(Type.STATS)
+                        .forEach((statModel, statData) -> statData.bonus = PlayerStats.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
+                }
+            }));
+
+            return this;
+        }
+
         @Override
         protected Type[] getAllTypes() {
             return ItemData.Type.values();
