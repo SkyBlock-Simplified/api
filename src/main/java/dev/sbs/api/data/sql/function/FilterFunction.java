@@ -3,7 +3,6 @@ package dev.sbs.api.data.sql.function;
 import dev.sbs.api.data.model.Model;
 import lombok.NonNull;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 public interface FilterFunction<T extends Model, R> extends Function<T, R> {
@@ -27,7 +26,6 @@ public interface FilterFunction<T extends Model, R> extends Function<T, R> {
      */
     @Override
     default <V> FilterFunction<T, V> andThen(@NonNull Function<? super R, ? extends V> after) {
-        Objects.requireNonNull(after);
         return (T t) -> after.apply(apply(t));
     }
 
