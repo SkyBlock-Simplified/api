@@ -1070,19 +1070,19 @@ public class PlayerStats {
     public static abstract class ObjectData<T extends ObjectType> {
 
         @Getter protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
-        @Getter private final ItemModel itemModel;
+        @Getter private final ItemModel item;
         @Getter private final CompoundTag compoundTag;
-        @Getter private final RarityModel rarityModel;
+        @Getter private final RarityModel rarity;
         @Getter private Optional<ReforgeModel> reforge = Optional.empty();
         @Getter private Optional<ReforgeStatModel> reforgeStat = Optional.empty();
         @Getter private Optional<BonusItemStatModel> bonusItemStatModel = Optional.empty();
         @Getter private Optional<BonusReforgeStatModel> bonusReforgeStatModel = Optional.empty();
 
         @SuppressWarnings("unchecked")
-        protected ObjectData(ItemModel itemModel, CompoundTag compoundTag, RarityModel rarityModel) {
-            this.itemModel = itemModel;
+        protected ObjectData(ItemModel item, CompoundTag compoundTag, RarityModel rarity) {
+            this.item = item;
             this.compoundTag = compoundTag;
-            this.rarityModel = rarityModel;
+            this.rarity = rarity;
 
             // Initialize Stats
             Arrays.stream(this.getAllTypes()).forEach(type -> {
@@ -1105,7 +1105,7 @@ public class PlayerStats {
                     SimplifiedApi.getRepositoryOf(ReforgeStatModel.class)
                         .findFirst(
                             Pair.of(ReforgeStatModel::getReforge, reforgeModel),
-                            Pair.of(ReforgeStatModel::getRarity, rarityModel)
+                            Pair.of(ReforgeStatModel::getRarity, rarity)
                         ).ifPresent(reforgeStatModel -> this.reforgeStat = Optional.of(reforgeStatModel));
                 });
         }
