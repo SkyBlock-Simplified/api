@@ -62,10 +62,12 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FormatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         FormatSqlModel that = (FormatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getCode(), that.getCode())
+        return new EqualsBuilder()
+            .append(this.getCode(), that.getCode())
             .append(this.isFormat(), that.isFormat())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
@@ -76,7 +78,14 @@ public class FormatSqlModel implements FormatModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getKey()).append(this.getCode()).append(this.getRgb()).append(this.isFormat()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getCode())
+            .append(this.getRgb())
+            .append(this.isFormat())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

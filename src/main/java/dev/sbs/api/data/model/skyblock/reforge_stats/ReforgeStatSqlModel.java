@@ -61,20 +61,26 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ReforgeStatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         ReforgeStatSqlModel that = (ReforgeStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
             .append(this.getRarity(), that.getRarity())
-            .append(this.getEffects(), that.getEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getReforge()).append(this.getRarity()).append(this.getEffects()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getReforge())
+            .append(this.getRarity())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

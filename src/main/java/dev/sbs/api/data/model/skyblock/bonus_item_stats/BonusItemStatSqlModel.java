@@ -76,20 +76,30 @@ public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BonusItemStatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         BonusItemStatSqlModel that = (BonusItemStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.isForStats(), that.isForStats())
+            .append(this.isForReforges(), that.isForReforges())
+            .append(this.isForGems(), that.isForGems())
+            .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
-            .append(this.getEffects(), that.getEffects())
-            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getItem()).append(this.getEffects()).append(this.getBuffEffects()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getItem())
+            .append(this.isForStats())
+            .append(this.isForReforges())
+            .append(this.isForGems())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

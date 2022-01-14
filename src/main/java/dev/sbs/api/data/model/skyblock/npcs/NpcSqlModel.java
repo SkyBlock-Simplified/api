@@ -90,14 +90,38 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NpcSqlModel that = (NpcSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getX(), that.getX())
+            .append(this.getY(), that.getY())
+            .append(this.getZ(), that.getZ())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getLocation(), that.getLocation())
+            .append(this.getLocationArea(), that.getLocationArea())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getX())
+            .append(this.getY())
+            .append(this.getZ())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getLocation())
+            .append(this.getLocationArea())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

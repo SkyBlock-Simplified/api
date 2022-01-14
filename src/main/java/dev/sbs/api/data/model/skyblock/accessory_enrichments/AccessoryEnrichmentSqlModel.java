@@ -52,15 +52,26 @@ public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, Sq
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AccessoryEnrichmentSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         AccessoryEnrichmentSqlModel that = (AccessoryEnrichmentSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getStat(), that.getStat()).append(this.getValue(), that.getValue()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getStat(), that.getStat())
+            .append(this.getValue(), that.getValue())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getStat()).append(this.getValue()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getStat())
+            .append(this.getValue())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

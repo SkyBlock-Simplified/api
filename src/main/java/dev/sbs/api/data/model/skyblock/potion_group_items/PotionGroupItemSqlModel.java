@@ -57,14 +57,28 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PotionGroupItemSqlModel that = (PotionGroupItemSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getPotionGroup(), that.getPotionGroup())
+            .append(this.getPotionTier(), that.getPotionTier())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getPotionGroup())
+            .append(this.getPotionTier())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

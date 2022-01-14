@@ -79,13 +79,14 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DungeonFloorSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         DungeonFloorSqlModel that = (DungeonFloorSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
-            .append(this.getFloor(), that.getFloor())
             .append(this.getDungeon(), that.getDungeon())
+            .append(this.getFloor(), that.getFloor())
             .append(this.getFloorSize(), that.getFloorSize())
             .append(this.getFloorBoss(), that.getFloorBoss())
             .append(this.getUpdatedAt(), that.getUpdatedAt())

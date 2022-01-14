@@ -97,33 +97,32 @@ public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BonusArmorSetSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         BonusArmorSetSqlModel that = (BonusArmorSetSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getHelmetItem(), that.getHelmetItem())
             .append(this.getChestplateItem(), that.getChestplateItem())
             .append(this.getLeggingsItem(), that.getLeggingsItem())
             .append(this.getBootsItem(), that.getBootsItem())
-            .append(this.getEffects(), that.getEffects())
-            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getHelmetItem())
             .append(this.getChestplateItem())
             .append(this.getLeggingsItem())
             .append(this.getBootsItem())
-            .append(this.getEffects())
-            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
             .build();
     }

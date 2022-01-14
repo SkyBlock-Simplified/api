@@ -76,14 +76,36 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PetAbilityStatSqlModel that = (PetAbilityStatSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isRoundingNeeded(), that.isRoundingNeeded())
+            .append(this.getId(), that.getId())
+            .append(this.getAbility(), that.getAbility())
+            .append(this.getStat(), that.getStat())
+            .append(this.getRarities(), that.getRarities())
+            .append(this.getBaseValue(), that.getBaseValue())
+            .append(this.getLevelBonus(), that.getLevelBonus())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getAbility())
+            .append(this.getStat())
+            .append(this.getRarities())
+            .append(this.getBaseValue())
+            .append(this.getLevelBonus())
+            .append(this.isRoundingNeeded())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

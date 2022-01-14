@@ -2,17 +2,23 @@ package dev.sbs.api.data.model.skyblock.slayers;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
-import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
@@ -64,20 +70,35 @@ public class SlayerSqlModel implements SlayerModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Getter
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "slayer_key", nullable = false)
-    private transient ConcurrentList<SkillLevelSqlModel> levels;
-
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SlayerSqlModel that = (SlayerSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getEmoji(), that.getEmoji())
+            .append(this.getWeightDivider(), that.getWeightDivider())
+            .append(this.getWeightModifier(), that.getWeightModifier())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getEmoji())
+            .append(this.getWeightDivider())
+            .append(this.getWeightModifier())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

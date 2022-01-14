@@ -84,10 +84,12 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EnchantmentStatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         EnchantmentStatSqlModel that = (EnchantmentStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.isPercentage(), that.isPercentage())
+        return new EqualsBuilder()
+            .append(this.isPercentage(), that.isPercentage())
             .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
             .append(this.getStat(), that.getStat())
@@ -100,7 +102,8 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getEnchantment())
             .append(this.getStat())
             .append(this.getBuffKey())

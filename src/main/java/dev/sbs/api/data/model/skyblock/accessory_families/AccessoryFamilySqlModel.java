@@ -56,14 +56,32 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AccessoryFamilySqlModel that = (AccessoryFamilySqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isReforgesStackable(), that.isReforgesStackable())
+            .append(this.isStatsStackable(), that.isStatsStackable())
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.isReforgesStackable())
+            .append(this.isStatsStackable())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

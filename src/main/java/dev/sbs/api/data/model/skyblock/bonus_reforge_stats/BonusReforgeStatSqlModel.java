@@ -63,20 +63,24 @@ public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BonusReforgeStatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         BonusReforgeStatSqlModel that = (BonusReforgeStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
-            .append(this.getEffects(), that.getEffects())
-            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getReforge()).append(this.getEffects()).append(this.getBuffEffects()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getReforge())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

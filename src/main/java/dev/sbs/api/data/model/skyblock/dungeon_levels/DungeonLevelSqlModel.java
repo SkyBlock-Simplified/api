@@ -66,14 +66,30 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DungeonLevelSqlModel that = (DungeonLevelSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getLevel(), that.getLevel())
+            .append(this.getTotalExpRequired(), that.getTotalExpRequired())
+            .append(this.getStatMultiplier(), that.getStatMultiplier())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getLevel())
+            .append(this.getTotalExpRequired())
+            .append(this.getStatMultiplier())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

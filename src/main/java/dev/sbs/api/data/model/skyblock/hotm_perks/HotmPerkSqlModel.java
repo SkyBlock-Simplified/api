@@ -53,10 +53,12 @@ public class HotmPerkSqlModel implements HotmPerkModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof HotmPerkSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         HotmPerkSqlModel that = (HotmPerkSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getLevelBonus(), that.getLevelBonus())
@@ -66,7 +68,13 @@ public class HotmPerkSqlModel implements HotmPerkModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getKey()).append(this.getName()).append(this.getLevelBonus()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getLevelBonus())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

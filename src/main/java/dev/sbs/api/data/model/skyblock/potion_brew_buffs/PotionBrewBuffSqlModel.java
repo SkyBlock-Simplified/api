@@ -69,15 +69,16 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PotionBrewBuffSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         PotionBrewBuffSqlModel that = (PotionBrewBuffSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
-            .append(this.getBuffValue(), that.getBuffValue())
             .append(this.isPercentage(), that.isPercentage())
+            .append(this.getId(), that.getId())
             .append(this.getPotionBrew(), that.getPotionBrew())
             .append(this.getBuffKey(), that.getBuffKey())
+            .append(this.getBuffValue(), that.getBuffValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }

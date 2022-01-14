@@ -64,13 +64,15 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CollectionItemTierSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         CollectionItemTierSqlModel that = (CollectionItemTierSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getCollectionItem(), that.getCollectionItem())
             .append(this.getTier(), that.getTier())
             .append(this.getAmountRequired(), that.getAmountRequired())
-            .append(this.getCollectionItem(), that.getCollectionItem())
             .append(this.getUnlocks(), that.getUnlocks())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
@@ -78,7 +80,8 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getCollectionItem())
             .append(this.getTier())
             .append(this.getAmountRequired())

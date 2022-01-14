@@ -80,17 +80,17 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AccessorySqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         AccessorySqlModel that = (AccessorySqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
-            .append(this.getFamilyRank(), that.getFamilyRank())
             .append(this.getItem(), that.getItem())
             .append(this.getName(), that.getName())
             .append(this.getRarity(), that.getRarity())
             .append(this.getFamily(), that.getFamily())
-            .append(this.getEffects(), that.getEffects())
+            .append(this.getFamilyRank(), that.getFamilyRank())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -104,7 +104,6 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
             .append(this.getRarity())
             .append(this.getFamily())
             .append(this.getFamilyRank())
-            .append(this.getEffects())
             .append(this.getUpdatedAt())
             .build();
     }

@@ -101,14 +101,40 @@ public class PetSqlModel implements PetModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PetSqlModel that = (PetSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getLowestRarity(), that.getLowestRarity())
+            .append(this.getSkill(), that.getSkill())
+            .append(this.getPetType(), that.getPetType())
+            .append(this.getSkin(), that.getSkin())
+            .append(this.getEmoji(), that.getEmoji())
+            .append(this.getMaxLevel(), that.getMaxLevel())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getLowestRarity())
+            .append(this.getSkill())
+            .append(this.getPetType())
+            .append(this.getSkin())
+            .append(this.getEmoji())
+            .append(this.getMaxLevel())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

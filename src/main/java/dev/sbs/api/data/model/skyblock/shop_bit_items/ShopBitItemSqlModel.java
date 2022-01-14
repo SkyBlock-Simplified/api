@@ -65,10 +65,12 @@ public class ShopBitItemSqlModel implements ShopBitItemModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ShopBitItemSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         ShopBitItemSqlModel that = (ShopBitItemSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getType(), that.getType())
             .append(this.getBitCost(), that.getBitCost())
@@ -78,7 +80,13 @@ public class ShopBitItemSqlModel implements ShopBitItemModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getItem()).append(this.getType()).append(this.getBitCost()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getItem())
+            .append(this.getType())
+            .append(this.getBitCost())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

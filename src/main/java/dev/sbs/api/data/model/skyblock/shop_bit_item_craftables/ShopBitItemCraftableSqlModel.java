@@ -70,10 +70,12 @@ public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ShopBitItemCraftableSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         ShopBitItemCraftableSqlModel that = (ShopBitItemCraftableSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getBitItem(), that.getBitItem())
             .append(this.getCraftableItem(), that.getCraftableItem())
             .append(this.getDescription(), that.getDescription())
@@ -84,7 +86,14 @@ public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, 
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getBitItem()).append(this.getCraftableItem()).append(this.getDescription()).append(this.getExpression()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getBitItem())
+            .append(this.getCraftableItem())
+            .append(this.getDescription())
+            .append(this.getExpression())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

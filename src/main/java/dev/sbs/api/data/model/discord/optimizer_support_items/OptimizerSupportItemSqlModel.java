@@ -56,15 +56,24 @@ public class OptimizerSupportItemSqlModel implements OptimizerSupportItemModel, 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OptimizerSupportItemSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         OptimizerSupportItemSqlModel that = (OptimizerSupportItemSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getItem(), that.getItem()).append(this.getEffects(), that.getEffects()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getItem(), that.getItem())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getItem()).append(this.getEffects()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getItem())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

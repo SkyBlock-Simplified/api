@@ -79,10 +79,12 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GemstoneStatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         GemstoneStatSqlModel that = (GemstoneStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getGemstone(), that.getGemstone())
             .append(this.getType(), that.getType())
             .append(this.getRarity(), that.getRarity())
@@ -93,7 +95,14 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getGemstone()).append(this.getType()).append(this.getRarity()).append(this.getValue()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getGemstone())
+            .append(this.getType())
+            .append(this.getRarity())
+            .append(this.getValue())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

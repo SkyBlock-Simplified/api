@@ -77,22 +77,24 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MinionTierUpgradeSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         MinionTierUpgradeSqlModel that = (MinionTierUpgradeSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
-            .append(this.getCoinCost(), that.getCoinCost())
-            .append(this.getItemQuantity(), that.getItemQuantity())
             .append(this.getMinionTier(), that.getMinionTier())
+            .append(this.getCoinCost(), that.getCoinCost())
             .append(this.getItemCost(), that.getItemCost())
+            .append(this.getItemQuantity(), that.getItemQuantity())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getMinionTier())
             .append(this.getCoinCost())
             .append(this.getItemCost())

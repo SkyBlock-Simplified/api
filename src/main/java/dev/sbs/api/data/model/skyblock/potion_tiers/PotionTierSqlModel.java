@@ -91,14 +91,36 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PotionTierSqlModel that = (PotionTierSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getPotion(), that.getPotion())
+            .append(this.getTier(), that.getTier())
+            .append(this.getIngredientItem(), that.getIngredientItem())
+            .append(this.getBaseItem(), that.getBaseItem())
+            .append(this.getExperienceYield(), that.getExperienceYield())
+            .append(this.getSellPrice(), that.getSellPrice())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getPotion())
+            .append(this.getTier())
+            .append(this.getIngredientItem())
+            .append(this.getBaseItem())
+            .append(this.getExperienceYield())
+            .append(this.getSellPrice())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

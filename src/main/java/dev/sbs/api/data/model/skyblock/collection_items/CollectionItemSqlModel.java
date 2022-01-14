@@ -65,10 +65,12 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CollectionItemSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         CollectionItemSqlModel that = (CollectionItemSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getCollection(), that.getCollection())
             .append(this.getItem(), that.getItem())
             .append(this.getMaxTiers(), that.getMaxTiers())
@@ -78,7 +80,13 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getCollection()).append(this.getItem()).append(this.getMaxTiers()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getCollection())
+            .append(this.getItem())
+            .append(this.getMaxTiers())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

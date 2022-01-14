@@ -76,14 +76,36 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SkillLevelSqlModel that = (SkillLevelSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getSkill(), that.getSkill())
+            .append(this.getLevel(), that.getLevel())
+            .append(this.getTotalExpRequired(), that.getTotalExpRequired())
+            .append(this.getUnlocks(), that.getUnlocks())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getSkill())
+            .append(this.getLevel())
+            .append(this.getTotalExpRequired())
+            .append(this.getUnlocks())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

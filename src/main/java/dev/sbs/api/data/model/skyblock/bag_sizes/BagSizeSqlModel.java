@@ -64,10 +64,12 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BagSizeSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         BagSizeSqlModel that = (BagSizeSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getBag(), that.getBag())
             .append(this.getCollectionTier(), that.getCollectionTier())
             .append(this.getSlotCount(), that.getSlotCount())

@@ -52,15 +52,24 @@ public class FairyExchangeSqlModel implements FairyExchangeModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FairyExchangeSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         FairyExchangeSqlModel that = (FairyExchangeSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getExchange(), that.getExchange()).append(this.getEffects(), that.getEffects()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getExchange(), that.getExchange())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getExchange()).append(this.getEffects()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getExchange())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

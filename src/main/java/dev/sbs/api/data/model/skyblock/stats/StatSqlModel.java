@@ -80,14 +80,40 @@ public class StatSqlModel implements StatModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StatSqlModel that = (StatSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getSymbol(), that.getSymbol())
+            .append(this.isMultipliable(), that.isMultipliable())
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getFormat(), that.getFormat())
+            .append(this.getOrdinal(), that.getOrdinal())
+            .append(this.getBaseValue(), that.getBaseValue())
+            .append(this.getMaxValue(), that.getMaxValue())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getSymbol())
+            .append(this.getFormat())
+            .append(this.isMultipliable())
+            .append(this.getOrdinal())
+            .append(this.getBaseValue())
+            .append(this.getMaxValue())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

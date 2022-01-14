@@ -52,10 +52,12 @@ public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ShopBitEnchantedBookSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         ShopBitEnchantedBookSqlModel that = (ShopBitEnchantedBookSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
             .append(this.getBitCost(), that.getBitCost())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -64,7 +66,12 @@ public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, 
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getEnchantment()).append(this.getBitCost()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getEnchantment())
+            .append(this.getBitCost())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

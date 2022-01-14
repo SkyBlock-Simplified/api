@@ -56,14 +56,32 @@ public class PotionSqlModel implements PotionModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PotionSqlModel that = (PotionSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isBuff(), that.isBuff())
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getDescription())
+            .append(this.isBuff())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

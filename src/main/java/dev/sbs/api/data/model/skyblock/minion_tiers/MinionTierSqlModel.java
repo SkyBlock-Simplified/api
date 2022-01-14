@@ -65,14 +65,15 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MinionTierSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         MinionTierSqlModel that = (MinionTierSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
-            .append(this.getSpeed(), that.getSpeed())
             .append(this.getMinion(), that.getMinion())
             .append(this.getItem(), that.getItem())
+            .append(this.getSpeed(), that.getSpeed())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }

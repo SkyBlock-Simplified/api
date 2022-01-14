@@ -90,14 +90,38 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PotionBrewSqlModel that = (PotionBrewSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getRarity(), that.getRarity())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getNpc(), that.getNpc())
+            .append(this.getCoinCost(), that.getCoinCost())
+            .append(this.getAmplified(), that.getAmplified())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getRarity())
+            .append(this.getDescription())
+            .append(this.getNpc())
+            .append(this.getCoinCost())
+            .append(this.getAmplified())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

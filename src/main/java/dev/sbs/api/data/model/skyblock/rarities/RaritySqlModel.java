@@ -61,14 +61,34 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
     public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RaritySqlModel that = (RaritySqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isKeyValid(), that.isKeyValid())
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getOrdinal(), that.getOrdinal())
+            .append(this.getPetExpOffset(), that.getPetExpOffset())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getOrdinal())
+            .append(this.isKeyValid())
+            .append(this.getPetExpOffset())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

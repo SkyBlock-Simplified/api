@@ -76,14 +76,32 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MinionItemSqlModel that = (MinionItemSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getMinion(), that.getMinion())
+            .append(this.getCollectionItem(), that.getCollectionItem())
+            .append(this.getItem(), that.getItem())
+            .append(this.getAverageYield(), that.getAverageYield())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getMinion())
+            .append(this.getCollectionItem())
+            .append(this.getItem())
+            .append(this.getAverageYield())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

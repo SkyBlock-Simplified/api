@@ -87,15 +87,16 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FairySoulSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         FairySoulSqlModel that = (FairySoulSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isWalkable(), that.isWalkable())
             .append(this.getId(), that.getId())
             .append(this.getX(), that.getX())
             .append(this.getY(), that.getY())
             .append(this.getZ(), that.getZ())
-            .append(this.isWalkable(), that.isWalkable())
             .append(this.getLocation(), that.getLocation())
             .append(this.getLocationArea(), that.getLocationArea())
             .append(this.getUpdatedAt(), that.getUpdatedAt())

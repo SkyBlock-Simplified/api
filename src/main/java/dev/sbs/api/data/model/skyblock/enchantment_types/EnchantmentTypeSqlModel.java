@@ -64,10 +64,12 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EnchantmentTypeSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         EnchantmentTypeSqlModel that = (EnchantmentTypeSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
             .append(this.getReforgeType(), that.getReforgeType())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -76,7 +78,12 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getEnchantment()).append(this.getReforgeType()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getEnchantment())
+            .append(this.getReforgeType())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

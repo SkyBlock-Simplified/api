@@ -71,14 +71,34 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
     private Instant updatedAt;
 
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PetItemSqlModel that = (PetItemSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isPercentage(), that.isPercentage())
+            .append(this.getId(), that.getId())
+            .append(this.getItem(), that.getItem())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getItem())
+            .append(this.getDescription())
+            .append(this.isPercentage())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

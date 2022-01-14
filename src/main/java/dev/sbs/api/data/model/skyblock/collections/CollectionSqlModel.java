@@ -47,15 +47,24 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CollectionSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         CollectionSqlModel that = (CollectionSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId()).append(this.getSkill(), that.getSkill()).append(this.getUpdatedAt(), that.getUpdatedAt()).build();
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getSkill(), that.getSkill())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getSkill()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getSkill())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

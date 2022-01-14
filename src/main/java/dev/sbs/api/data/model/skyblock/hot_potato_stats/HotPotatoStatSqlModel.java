@@ -69,10 +69,12 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof HotPotatoStatSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         HotPotatoStatSqlModel that = (HotPotatoStatSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getType(), that.getType())
             .append(this.getStat(), that.getStat())
             .append(this.getValue(), that.getValue())
@@ -82,7 +84,13 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getType()).append(this.getStat()).append(this.getValue()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getType())
+            .append(this.getStat())
+            .append(this.getValue())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }
