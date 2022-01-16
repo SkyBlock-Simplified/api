@@ -127,8 +127,8 @@ public class PlayerStats {
         this.loadSkills(member);
         this.loadSlayers(member);
         this.loadDungeons(member);
-        this.loadAccessories(member);
         this.loadArmor(member);
+        this.loadAccessories(member);
         this.loadActivePet(member);
         this.loadActivePotions(member);
         this.loadPetScore(member);
@@ -1015,9 +1015,11 @@ public class PlayerStats {
             this.rarity = rarity;
 
             // Initialize Stats
+            ConcurrentList<StatModel> statModels = statRepository.findAll();
+            statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
             Arrays.stream(this.getAllTypes()).forEach(type -> {
                 this.stats.put(type, Concurrent.newLinkedMap());
-                statRepository.findAll().forEach(statModel -> this.stats.get(type).put(statModel, new Data()));
+                statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data()));
             });
 
             // Load Reforge Model
@@ -1049,11 +1051,11 @@ public class PlayerStats {
         public final Data getAllData(StatModel statModel) {
             Data statData = new Data();
 
-            for (Map.Entry<T, ConcurrentLinkedMap<StatModel, Data>> newStat : this.stats) {
-                Data statModelData = this.getData(statModel, newStat.getKey());
+            this.getStats().forEach((type, statEntries) -> {
+                Data statModelData = this.getData(statModel, type);
                 statData.addBase(statModelData.getBase());
                 statData.addBonus(statModelData.getBonus());
-            }
+            });
 
             return statData;
         }
@@ -1078,15 +1080,21 @@ public class PlayerStats {
 
         @SafeVarargs
         public final ConcurrentLinkedMap<StatModel, Data> getStatsOf(T... types) {
-            ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
-            statRepository.findAll().forEach(statModel -> totalStats.put(statModel, new Data()));
+            ConcurrentList<StatModel> statModels = statRepository.findAll();
+            statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
 
-            // Collect Stat Data
-            Arrays.stream(types).forEach(type -> this.getStats(type).forEach(((statModel, data) -> {
-                Data statData = totalStats.get(statModel);
-                statData.addBase(data.getBase());
-                statData.addBonus(data.getBonus());
-            })));
+            ConcurrentLinkedMap<StatModel, Data> totalStats = statModels
+                .stream()
+                .map(statModel -> Pair.of(statModel, new Data()))
+                .collect(Concurrent.toLinkedMap());
+
+            Arrays.stream(types)
+                .flatMap(type -> this.getStats().get(type).stream())
+                .forEach(entry -> {
+                    Data statData = totalStats.get(entry.getKey());
+                    statData.addBase(entry.getValue().getBase());
+                    statData.addBonus(entry.getValue().getBonus());
+                });
 
             return totalStats;
         }
@@ -1108,7 +1116,7 @@ public class PlayerStats {
         private ItemData(ItemModel itemModel, CompoundTag compoundTag, RarityModel rarityModel, String reforgeTypeKey) {
             super(itemModel, compoundTag, rarityModel);
 
-            // Handle Hot Potatos
+            // Handle Hot Potatoes
             if (compoundTag.containsPath("tag.ExtraAttributes.hot_potato_count")) {
                 Integer hotPotatoCount = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
 
