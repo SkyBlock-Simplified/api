@@ -3,8 +3,6 @@ package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.data.model.BuffEffectsModel;
-import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemModel;
-import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
 import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
@@ -17,7 +15,6 @@ import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
@@ -42,7 +39,6 @@ public class PlayerDataHelper {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
         MutableDouble value = new MutableDouble(currentTotal);
-        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll();
 
         // Handle Bonus Stats
         for (BuffEffectsModel bonusEffectModel : bonusEffectsModels) {
@@ -99,22 +95,12 @@ public class PlayerDataHelper {
                                     }
 
                                     Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
-                                        .variable("CURRENT_VALUE")
-                                        .variable("PET_LEVEL")
-                                        .variable("BANK")
-                                        .variable("SKILL_AVERAGE")
-                                        .variable("PET_ABILITY_VALUE")
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("STAT_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("SKILL_LEVEL_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .variables(SimplifiedApi.getRepositoryOf(CollectionItemModel.class).findAll().stream().map(collectionItemModel -> FormatUtil.format("COLLECTION_{0}", collectionItemModel.getItem().getItemId())).collect(Concurrent.toSet()))
-                                        .variables(SimplifiedApi.getRepositoryOf(DungeonModel.class).findAll().stream().map(dungeonModel -> FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey())).collect(Concurrent.toSet()))
-                                        .variables(statModels.stream().map(statModelX -> FormatUtil.format("PET_ABILITY_{0}", statModelX.getKey())).collect(Concurrent.toSet()))
-                                        .build();
+                                        .variables(variables.keySet())
+                                        .build()
+                                        .setVariables(variables)
+                                        .setVariable("CURRENT_VALUE", currentTotal);
 
-                                    expression.setVariables(variables);
-                                    expression.setVariable("CURRENT_VALUE", currentTotal);
-                                    double newValue = expression.evaluate();
-                                    value.set(newValue);
+                                    value.set(expression.evaluate());
                                 }
                             }
                         }

@@ -181,12 +181,12 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .filter(BonusPetAbilityStatModel::isPercentage)
                 .forEach(bonusPetAbilityStatModel -> {
                     // Override Pet Variables
-                    petExpressionVariables.put("PET_ABILITY_VALUE", petExpressionVariables.getOrDefault(FormatUtil.format("PET_ABILITY_{0}_VALUE", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
+                    /*petExpressionVariables.put("PET_ABILITY_VALUE", petExpressionVariables.getOrDefault(FormatUtil.format("PET_ABILITY_{0}_VALUE", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
                     SimplifiedApi.getRepositoryOf(StatModel.class).findAll().forEach(statModel -> {
                         String newVariableName = FormatUtil.format("PET_ABILITY_{0}", statModel.getKey());
                         String currentVariableName = FormatUtil.format("PET_ABILITY_{0}_{1}", bonusPetAbilityStatModel.getPetAbility().getKey(), statModel.getKey());
                         petExpressionVariables.put(newVariableName, petExpressionVariables.getOrDefault(currentVariableName, 0.0));
-                    });
+                    });*/
 
                     // Handle Stats
                     this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
@@ -403,8 +403,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                             this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petAbilityStatModel.getStat()), abilityValue);
 
                         // Store Bonus Pet Ability
-                        String statKey = (petAbilityStatModel.getStat() == null ? "VALUE" : petAbilityStatModel.getStat().getKey());
-                        this.expressionVariables.put(FormatUtil.format("PET_ABILITY_{0}_{1}", petAbilityStatPair.getKey().getKey(), statKey), abilityValue);
+                        String statKey = (petAbilityStatModel.getStat() == null ? "" : "_" + petAbilityStatModel.getStat().getKey());
+                        this.expressionVariables.put(FormatUtil.format("PET_ABILITY_{0}{1}", petAbilityStatPair.getKey().getKey(), statKey), abilityValue);
                     });
                 });
 
@@ -414,12 +414,12 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .stream()
                 .filter(BonusPetAbilityStatModel::notPercentage)
                 .forEach(bonusPetAbilityStatModel -> {
-                    petExpressionVariables.put("PET_ABILITY_VALUE", petExpressionVariables.getOrDefault(FormatUtil.format("PET_ABILITY_{0}_VALUE", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
-                    SimplifiedApi.getRepositoryOf(StatModel.class).findAll().forEach(statModel -> {
+                    //petExpressionVariables.put("PET_ABILITY_VALUE", petExpressionVariables.getOrDefault(FormatUtil.format("PET_ABILITY_{0}", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
+                    /*SimplifiedApi.getRepositoryOf(StatModel.class).findAll().forEach(statModel -> {
                         String newVariableName = FormatUtil.format("PET_ABILITY_{0}", statModel.getKey());
                         String currentVariableName = FormatUtil.format("PET_ABILITY_{0}_{1}", bonusPetAbilityStatModel.getPetAbility().getKey(), statModel.getKey());
                         petExpressionVariables.put(newVariableName, petExpressionVariables.getOrDefault(currentVariableName, 0.0));
-                    });
+                    });*/
 
                     this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), null, petExpressionVariables, bonusPetAbilityStatModel)));
                 });
