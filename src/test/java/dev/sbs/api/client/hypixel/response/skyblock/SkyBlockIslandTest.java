@@ -85,10 +85,10 @@ public class SkyBlockIslandTest {
             // skills, skill_levels, slayers, slayer_levels, dungeons, dungeon_classes, dungeon_levels
             SkyBlockIsland.Member member = optionalMember.get();
             double skillAverage = member.getSkillAverage();
-            ConcurrentMap<SkillModel, SkyBlockIsland.Member.Weight> skillWeights = member.getSkillWeight();
-            ConcurrentMap<SlayerModel, SkyBlockIsland.Member.Weight> slayerWeights = member.getSlayerWeight();
-            ConcurrentMap<DungeonModel, SkyBlockIsland.Member.Weight> dungeonWeights = member.getDungeonWeight();
-            ConcurrentMap<DungeonClassModel, SkyBlockIsland.Member.Weight> dungeonClassWeights = member.getDungeonClassWeight();
+            ConcurrentMap<SkillModel, SkyBlockIsland.Experience.Weight> skillWeights = member.getSkillWeight();
+            ConcurrentMap<SlayerModel, SkyBlockIsland.Experience.Weight> slayerWeights = member.getSlayerWeight();
+            ConcurrentMap<DungeonModel, SkyBlockIsland.Experience.Weight> dungeonWeights = member.getDungeonWeight();
+            ConcurrentMap<DungeonClassModel, SkyBlockIsland.Experience.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             assert member.getJacobsFarming().isPresent();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().get().getContests();
 
