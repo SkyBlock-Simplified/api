@@ -3,8 +3,8 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
-import dev.sbs.api.client.hypixel.response.skyblock.island.PlayerStats;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
@@ -50,8 +50,8 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
-            PlayerStats playerStats = member.getPlayerStats().calculateBonusStats();
-            playerStats.getAllStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
+            PlayerStats playerStats = member.getPlayerStats();
+            playerStats.getCombinedStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
             MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
