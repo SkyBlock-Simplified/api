@@ -1,5 +1,7 @@
 package dev.sbs.api.minecraft.nbt.io;
 
+import dev.sbs.api.SimplifiedException;
+import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
@@ -22,17 +24,24 @@ public class NbtReader {
      *
      * @param dataInput the stream to read from.
      * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromStream(@NonNull DataInput dataInput) throws IOException {
-        if (dataInput.readByte() != TagType.COMPOUND.getId())
-            throw new IOException("Root tag in NBT structure must be a compound tag.");
+    public CompoundTag fromStream(@NonNull DataInput dataInput) throws NbtException {
+        try {
+            if (dataInput.readByte() != TagType.COMPOUND.getId())
+                throw new IOException("Root tag in NBT structure must be a compound tag.");
 
-        CompoundTag result = new CompoundTag(true);
-        result.setName(dataInput.readUTF());
-        result.read(dataInput, 0, this.typeRegistry);
+            CompoundTag result = new CompoundTag(true);
+            result.setName(dataInput.readUTF());
+            result.read(dataInput, 0, this.typeRegistry);
 
-        return result;
+            return result;
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**

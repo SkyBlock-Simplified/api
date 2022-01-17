@@ -2,6 +2,8 @@ package dev.sbs.api.minecraft.nbt;
 
 import com.google.gson.JsonObject;
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.SimplifiedException;
+import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.io.NbtReader;
 import dev.sbs.api.minecraft.nbt.io.NbtWriter;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
@@ -63,9 +65,9 @@ public class NbtFactory {
      *
      * @param encoded the encoded Base64 string to decode.
      * @return the decoded root {@link CompoundTag}.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromBase64(@NonNull String encoded) throws IOException {
+    public CompoundTag fromBase64(@NonNull String encoded) throws NbtException {
         return this.fromByteArray(DataUtil.decode(encoded));
     }
 
@@ -74,9 +76,9 @@ public class NbtFactory {
      *
      * @param bytes the {@code Byte[]} array to read from.
      * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromByteArray(Byte[] bytes) throws IOException {
+    public CompoundTag fromByteArray(Byte[] bytes) throws NbtException {
         return this.fromByteArray(Primitives.unwrap(bytes));
     }
 
@@ -85,11 +87,18 @@ public class NbtFactory {
      *
      * @param bytes the {@code byte[]} array to read from.
      * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromByteArray(byte[] bytes) throws IOException {
-        @Cleanup ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        return this.fromStream(byteArrayInputStream);
+    public CompoundTag fromByteArray(byte[] bytes) throws NbtException {
+        try {
+            @Cleanup ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            return this.fromStream(byteArrayInputStream);
+        } catch (Exception ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -97,11 +106,18 @@ public class NbtFactory {
      *
      * @param file the file to read from.
      * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromFile(@NonNull File file) throws IOException {
-        @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
-        return this.fromStream(fileInputStream);
+    public CompoundTag fromFile(@NonNull File file) throws NbtException {
+        try {
+            @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
+            return this.fromStream(fileInputStream);
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -109,11 +125,54 @@ public class NbtFactory {
      *
      * @param file the JSON file to read from.
      * @return the root {@link CompoundTag} deserialized from the JSON file.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromJson(@NonNull File file) throws IOException {
-        @Cleanup FileReader reader = new FileReader(file);
-        return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(reader, JsonObject.class), 0, this.typeRegistry);
+    public CompoundTag fromJson(@NonNull File file) throws NbtException {
+        try {
+            @Cleanup FileReader reader = new FileReader(file);
+            return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(reader, JsonObject.class), 0, this.typeRegistry);
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
+    }
+
+    /**
+     * Deserializes an NBT data structure (root {@link CompoundTag}) from a JSON {@link File}.
+     *
+     * @param json the JSON string to read from.
+     * @return the root {@link CompoundTag} deserialized from the JSON file.
+     * @throws NbtException if any I/O error occurs.
+     */
+    public CompoundTag fromJson(@NonNull String json) throws NbtException {
+        try {
+            return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(json, JsonObject.class), 0, this.typeRegistry);
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
+    }
+
+    /**
+     * Deserializes an NBT data structure (root {@link CompoundTag}) from a JSON {@link File}.
+     *
+     * @param json the JSON object to read from.
+     * @return the root {@link CompoundTag} deserialized from the JSON file.
+     * @throws NbtException if any I/O error occurs.
+     */
+    public CompoundTag fromJson(@NonNull JsonObject json) throws NbtException {
+        try {
+            return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(json, JsonObject.class), 0, this.typeRegistry);
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -121,19 +180,26 @@ public class NbtFactory {
      *
      * @param inputStream the stream to read from.
      * @return the root {@link CompoundTag} read from the stream.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromStream(@NonNull InputStream inputStream) throws IOException {
-        switch (DataUtil.getCompression(inputStream)) {
-            case GZIP:
-                inputStream = new GZIPInputStream(inputStream);
-                break;
-            case ZLIB:
-                inputStream = new InflaterInputStream(inputStream);
-                break;
-        }
+    public CompoundTag fromStream(@NonNull InputStream inputStream) throws NbtException {
+        try {
+            switch (DataUtil.getCompression(inputStream)) {
+                case GZIP:
+                    inputStream = new GZIPInputStream(inputStream);
+                    break;
+                case ZLIB:
+                    inputStream = new InflaterInputStream(inputStream);
+                    break;
+            }
 
-        return this.reader.fromStream(new DataInputStream(new BufferedInputStream(inputStream)));
+            return this.reader.fromStream(new DataInputStream(new BufferedInputStream(inputStream)));
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -141,9 +207,9 @@ public class NbtFactory {
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
      * @return the resulting Base64 encoded string.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public String toBase64(@NonNull CompoundTag compound) throws IOException {
+    public String toBase64(@NonNull CompoundTag compound) throws NbtException {
         return DataUtil.encodeToString(this.toByteArray(compound));
     }
 
@@ -152,13 +218,20 @@ public class NbtFactory {
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
      * @return the resulting {@code byte[]} array.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public byte[] toByteArray(@NonNull CompoundTag compound) throws IOException {
-        @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        @Cleanup DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(byteArrayOutputStream));
-        this.toStream(compound, dataOutputStream);
-        return byteArrayOutputStream.toByteArray();
+    public byte[] toByteArray(@NonNull CompoundTag compound) throws NbtException {
+        try {
+            @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            @Cleanup DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(byteArrayOutputStream));
+            this.toStream(compound, dataOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -166,9 +239,9 @@ public class NbtFactory {
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
      * @param file     the file to write to.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public void toFile(@NonNull CompoundTag compound, @NonNull File file) throws IOException {
+    public void toFile(@NonNull CompoundTag compound, @NonNull File file) throws NbtException {
         this.toFile(compound, file, CompressionType.NONE);
     }
 
@@ -178,20 +251,27 @@ public class NbtFactory {
      * @param compound    the NBT structure to write, contained within a {@link CompoundTag}.
      * @param file        the file to write to.
      * @param compression the compression to be applied.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public void toFile(@NonNull CompoundTag compound, @NonNull File file, @NonNull CompressionType compression) throws IOException {
-        @Cleanup OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+    public void toFile(@NonNull CompoundTag compound, @NonNull File file, @NonNull CompressionType compression) throws NbtException {
+        try {
+            @Cleanup OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
 
-        switch (compression) {
-            case GZIP:
-                outputStream = new GZIPOutputStream(outputStream);
-                break;
-            case ZLIB:
-                outputStream = new DeflaterOutputStream(outputStream);
+            switch (compression) {
+                case GZIP:
+                    outputStream = new GZIPOutputStream(outputStream);
+                    break;
+                case ZLIB:
+                    outputStream = new DeflaterOutputStream(outputStream);
+            }
+
+            this.toStream(compound, new DataOutputStream(outputStream));
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
         }
-
-        this.toStream(compound, new DataOutputStream(outputStream));
     }
 
     /**
@@ -199,11 +279,18 @@ public class NbtFactory {
      *
      * @param compound the NBT structure to serialize to JSON, contained within a {@link CompoundTag}.
      * @param file     the JSON file to write to.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public void toJson(@NonNull CompoundTag compound, @NonNull File file) throws IOException {
-        @Cleanup FileWriter writer = new FileWriter(file);
-        SimplifiedApi.getGson().toJson(compound.toJson(0, this.typeRegistry), writer);
+    public void toJson(@NonNull CompoundTag compound, @NonNull File file) throws NbtException {
+        try {
+            @Cleanup FileWriter writer = new FileWriter(file);
+            SimplifiedApi.getGson().toJson(compound.toJson(0, this.typeRegistry), writer);
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -221,9 +308,9 @@ public class NbtFactory {
      *
      * @param compound the NBT structure to write, contained within a {@link CompoundTag}.
      * @param output   the stream to write to.
-     * @throws IOException if any I/O error occurs.
+     * @throws NbtException if any I/O error occurs.
      */
-    public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws IOException {
+    public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws NbtException {
         this.writer.toStream(compound, output);
     }
 

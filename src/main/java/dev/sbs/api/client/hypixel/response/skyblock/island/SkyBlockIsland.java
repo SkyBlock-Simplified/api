@@ -30,6 +30,7 @@ import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.data.sql.function.FilterFunction;
+import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.Range;
@@ -52,7 +53,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.Comparator;
@@ -1371,7 +1371,7 @@ public class SkyBlockIsland {
             return DataUtil.decode(this.getRawData().toCharArray());
         }
 
-        public CompoundTag getNbtData() throws IOException {
+        public CompoundTag getNbtData() throws NbtException {
             return SimplifiedApi.getNbtFactory().fromBase64(this.getRawData());
         }
 

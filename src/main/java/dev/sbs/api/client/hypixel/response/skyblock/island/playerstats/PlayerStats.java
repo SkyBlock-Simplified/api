@@ -1,7 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.AccessoryData;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.Data;
@@ -38,6 +37,7 @@ import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.data.sql.function.FilterFunction;
+import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
@@ -53,7 +53,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -255,126 +254,120 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadAccessories(SkyBlockIsland.Member member) {
-        try {
-            // --- Load Accessories ---
-            ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagStatModels = Concurrent.newMap();
-            ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagReforgeModels = Concurrent.newMap();
-            ConcurrentMap<AccessoryFamilyModel, ConcurrentList<AccessoryModel>> familyAccessoryTagModels = Concurrent.newMap();
+        // --- Load Accessories ---
+        ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagStatModels = Concurrent.newMap();
+        ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagReforgeModels = Concurrent.newMap();
+        ConcurrentMap<AccessoryFamilyModel, ConcurrentList<AccessoryModel>> familyAccessoryTagModels = Concurrent.newMap();
 
-            // Load From Inventory
-            if (member.hasStorage(SkyBlockIsland.Storage.INVENTORY)) {
-                member.getStorage(SkyBlockIsland.Storage.INVENTORY)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .stream()
-                    .filter(CompoundTag::notEmpty)
-                    .forEach(itemTag -> {
-                        String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
+        // Load From Inventory
+        if (member.hasStorage(SkyBlockIsland.Storage.INVENTORY)) {
+            member.getStorage(SkyBlockIsland.Storage.INVENTORY)
+                .getNbtData()
+                .<CompoundTag>getList("i")
+                .stream()
+                .filter(CompoundTag::notEmpty)
+                .forEach(itemTag -> {
+                    String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
 
-                        SimplifiedApi.getRepositoryOf(AccessoryModel.class)
-                            .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
-                            .ifPresent(accessoryModel -> {
-                                accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
-                                accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
+                    SimplifiedApi.getRepositoryOf(AccessoryModel.class)
+                        .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
+                        .ifPresent(accessoryModel -> {
+                            accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
+                            accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
 
-                                if (accessoryModel.getFamily() != null) {
-                                    // New Accessory Family
-                                    if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
-                                        familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
+                            if (accessoryModel.getFamily() != null) {
+                                // New Accessory Family
+                                if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
+                                    familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
 
-                                    // Store Accessory
-                                    familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
-                                }
-                            });
-                    });
-            }
-
-            // Load From Accessory Bag
-            if (member.hasStorage(SkyBlockIsland.Storage.ACCESSORIES)) {
-                member.getStorage(SkyBlockIsland.Storage.ACCESSORIES)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .stream()
-                    .filter(CompoundTag::notEmpty)
-                    .forEach(itemTag -> {
-                        String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
-
-                        SimplifiedApi.getRepositoryOf(AccessoryModel.class)
-                            .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
-                            .ifPresent(accessoryModel -> {
-                                accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
-                                accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
-
-                                if (accessoryModel.getFamily() != null) {
-                                    // New Accessory Family
-                                    if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
-                                        familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
-
-                                    // Store Accessory
-                                    familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
-                                }
-                            });
-                    });
-            }
-
-            // Non-Stackable Families
-            familyAccessoryTagModels.forEach((accessoryFamilyModel, accessories) -> {
-                // Sort By Highest
-                accessories.sort((a1, a2) -> Comparator.comparing(AccessoryModel::getFamilyRank).compare(a2, a1));
-
-                if (!accessoryFamilyModel.isStatsStackable()) {
-                    accessories.remove(0); // Keep First Accessory
-                    accessories.forEach(accessoryTagStatModels::remove); // Remove Remaining Accessories
-                } else if (!accessoryFamilyModel.isReforgesStackable()) {
-                    accessories.remove(0); // Keep First Accessory
-                    accessories.forEach(accessoryTagReforgeModels::remove); // Remove Remaining Accessories
-                }
-            });
-
-            // Handle Accessories
-            accessoryTagStatModels.putAll(accessoryTagReforgeModels);
-            accessoryTagStatModels.forEach((accessoryModel, compoundTag) -> {
-                // Create New Accessory Data
-                AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
-                this.accessories.add(accessoryData);
-
-                // Handle Gemstone Stats
-                PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
-                    .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
-
-                // Handle Reforge Stats
-                PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
-                    .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
-
-                // Handle Stats
-                accessoryModel.getEffects()
-                    .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
-
-                // Handle Enrichment Stats
-                if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
-                    SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
-                        .findFirst(
-                            FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
-                            compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
-                        ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
-                }
-
-                // New Year Cake Bag
-                if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
-                    try {
-                        Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
-                        ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
-                        SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
-                            .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
-                    } catch (IOException ignore) { }
-                }
-            });
-        } catch (IOException ioException) {
-            throw SimplifiedException.wrapNative(ioException)
-                .withMessage("Unable to read accessory nbt data!")
-                .build();
+                                // Store Accessory
+                                familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
+                            }
+                        });
+                });
         }
+
+        // Load From Accessory Bag
+        if (member.hasStorage(SkyBlockIsland.Storage.ACCESSORIES)) {
+            member.getStorage(SkyBlockIsland.Storage.ACCESSORIES)
+                .getNbtData()
+                .<CompoundTag>getList("i")
+                .stream()
+                .filter(CompoundTag::notEmpty)
+                .forEach(itemTag -> {
+                    String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
+
+                    SimplifiedApi.getRepositoryOf(AccessoryModel.class)
+                        .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
+                        .ifPresent(accessoryModel -> {
+                            accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
+                            accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
+
+                            if (accessoryModel.getFamily() != null) {
+                                // New Accessory Family
+                                if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
+                                    familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
+
+                                // Store Accessory
+                                familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
+                            }
+                        });
+                });
+        }
+
+        // Non-Stackable Families
+        familyAccessoryTagModels.forEach((accessoryFamilyModel, accessories) -> {
+            // Sort By Highest
+            accessories.sort((a1, a2) -> Comparator.comparing(AccessoryModel::getFamilyRank).compare(a2, a1));
+
+            if (!accessoryFamilyModel.isStatsStackable()) {
+                accessories.remove(0); // Keep First Accessory
+                accessories.forEach(accessoryTagStatModels::remove); // Remove Remaining Accessories
+            } else if (!accessoryFamilyModel.isReforgesStackable()) {
+                accessories.remove(0); // Keep First Accessory
+                accessories.forEach(accessoryTagReforgeModels::remove); // Remove Remaining Accessories
+            }
+        });
+
+        // Handle Accessories
+        accessoryTagStatModels.putAll(accessoryTagReforgeModels);
+        accessoryTagStatModels.forEach((accessoryModel, compoundTag) -> {
+            // Create New Accessory Data
+            AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
+            this.accessories.add(accessoryData);
+
+            // Handle Gemstone Stats
+            PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
+                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
+
+            // Handle Reforge Stats
+            PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
+                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
+
+            // Handle Stats
+            accessoryModel.getEffects()
+                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                    .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
+
+            // Handle Enrichment Stats
+            if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
+                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
+                    .findFirst(
+                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+                        compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
+                    ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
+            }
+
+            // New Year Cake Bag
+            if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
+                try {
+                    Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
+                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
+                } catch (NbtException ignore) { }
+            }
+        });
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
@@ -503,41 +496,35 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadArmor(SkyBlockIsland.Member member) {
-        try {
-            Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
+        Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
 
-            if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
-                ConcurrentList<Optional<ItemModel>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .stream()
-                    .map(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
-                        .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
-                    )
-                    .collect(Concurrent.toList())
-                    .inverse();
+        if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
+            ConcurrentList<Optional<ItemModel>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
+                .getNbtData()
+                .<CompoundTag>getList("i")
+                .stream()
+                .map(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
+                    .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
+                )
+                .collect(Concurrent.toList())
+                .inverse();
 
-                this.bonusArmorSetModel = SimplifiedApi.getRepositoryOf(BonusArmorSetModel.class).findFirst(
-                    Pair.of(BonusArmorSetModel::getHelmetItem, armorItemModels.get(0).orElse(null)),
-                    Pair.of(BonusArmorSetModel::getChestplateItem, armorItemModels.get(1).orElse(null)),
-                    Pair.of(BonusArmorSetModel::getLeggingsItem, armorItemModels.get(2).orElse(null)),
-                    Pair.of(BonusArmorSetModel::getBootsItem, armorItemModels.get(3).orElse(null))
+            this.bonusArmorSetModel = SimplifiedApi.getRepositoryOf(BonusArmorSetModel.class).findFirst(
+                Pair.of(BonusArmorSetModel::getHelmetItem, armorItemModels.get(0).orElse(null)),
+                Pair.of(BonusArmorSetModel::getChestplateItem, armorItemModels.get(1).orElse(null)),
+                Pair.of(BonusArmorSetModel::getLeggingsItem, armorItemModels.get(2).orElse(null)),
+                Pair.of(BonusArmorSetModel::getBootsItem, armorItemModels.get(3).orElse(null))
+            );
+
+            member.getStorage(SkyBlockIsland.Storage.ARMOR)
+                .getNbtData()
+                .<CompoundTag>getList("i")
+                .stream()
+                .filter(CompoundTag::notEmpty)
+                .forEach(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
+                    .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
+                    .ifPresent(itemModel -> this.armor.add(PlayerDataHelper.parseItemData(itemModel, itemTag, "ARMOR")))
                 );
-
-                member.getStorage(SkyBlockIsland.Storage.ARMOR)
-                    .getNbtData()
-                    .<CompoundTag>getList("i")
-                    .stream()
-                    .filter(CompoundTag::notEmpty)
-                    .forEach(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
-                        .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
-                        .ifPresent(itemModel -> this.armor.add(PlayerDataHelper.parseItemData(itemModel, itemTag, "ARMOR")))
-                    );
-            }
-        } catch (IOException ioException) {
-            throw SimplifiedException.wrapNative(ioException)
-                .withMessage("Unable to read armor nbt data!")
-                .build();
         }
     }
 
