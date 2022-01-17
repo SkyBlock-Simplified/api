@@ -13,30 +13,25 @@ import java.net.URL;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockNewsResponse {
 
-    @Getter
-    private boolean success;
+    @Getter private boolean success;
     @SerializedName("items")
-    @Getter
-    private ConcurrentList<Article> articles;
+    @Getter private ConcurrentList<Article> articles;
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Article {
 
         @SerializedName("item.material")
-        @Getter
-        private String material;
+        @Getter private String material;
         private String link;
         @SerializedName("text")
-        @Getter
-        private String date;
-        @Getter
-        private String title;
+        @Getter private String date;
+        @Getter private String title;
 
         public URL getUrl() {
             try {
                 return new URL(this.link);
             } catch (MalformedURLException muex) {
-                throw new IllegalArgumentException(FormatUtil.format("Unable to create URL ''{0}''", this.link));
+                throw new IllegalArgumentException(FormatUtil.format("Unable to create URL ''{0}''!", this.link));
             }
         }
 

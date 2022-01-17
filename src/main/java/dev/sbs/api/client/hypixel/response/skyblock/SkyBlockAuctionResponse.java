@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockAuctionResponse {
 
-    @Getter
-    private boolean success;
-    @Getter
-    private ConcurrentList<SkyBlockAuction> auctions = Concurrent.newList();
+    @Getter private boolean success;
+    @Getter private ConcurrentList<SkyBlockAuction> auctions = Concurrent.newList();
 
 }

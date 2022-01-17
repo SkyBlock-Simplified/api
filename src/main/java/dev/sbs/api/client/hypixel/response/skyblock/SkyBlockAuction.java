@@ -19,58 +19,36 @@ import java.util.UUID;
 public class SkyBlockAuction {
 
     @SerializedName("item_bytes")
-    @Getter
-    SkyBlockIsland.NbtContent itemNbt;
+    @Getter SkyBlockIsland.NbtContent itemNbt;
     @SerializedName("uuid")
-    private String auctionId;
+    @Getter private UUID auctionId;
     @SerializedName("auctioneer")
-    private String auctioneerId;
+    @Getter private UUID auctioneerId;
     @SerializedName("profile_id")
-    private String islandId;
+    @Getter private UUID islandId;
     @SerializedName("coop")
     private ConcurrentList<String> coopMembers = Concurrent.newList();
     @SerializedName("start")
-    @Getter
-    private SkyBlockDate.RealTime startedAt;
+    @Getter private SkyBlockDate.RealTime startedAt;
     @SerializedName("end")
-    @Getter
-    private SkyBlockDate.RealTime endsAt;
+    @Getter private SkyBlockDate.RealTime endsAt;
     @SerializedName("item_lore")
     private String lore;
-    @Getter
-    private String extra;
+    @Getter private String extra;
     @SerializedName("tier")
     private String rarity;
     @SerializedName("starting_big")
-    @Getter
-    private long startingBid;
-    @Getter
-    private boolean claimed;
+    @Getter private long startingBid;
+    @Getter private boolean claimed;
     @SerializedName("claimed_bidders")
-    @Getter
-    private ConcurrentList<Bid> claimedBidders = Concurrent.newList(); // TODO: Need sample data
+    @Getter private ConcurrentList<Bid> claimedBidders = Concurrent.newList(); // TODO: Need sample data
     @SerializedName("highest_bid_amount")
-    @Getter
-    private long highestBid;
-    @Getter
-    private ConcurrentList<Bid> bids = Concurrent.newList();
-    @Getter
-    private boolean bin;
-
-    public UUID getAuctionId() {
-        return StringUtil.toUUID(this.auctionId);
-    }
-
-    public UUID getAuctioneerId() {
-        return StringUtil.toUUID(this.auctioneerId);
-    }
+    @Getter private long highestBid;
+    @Getter private ConcurrentList<Bid> bids = Concurrent.newList();
+    @Getter private boolean bin;
 
     public ConcurrentList<UUID> getCoopMembers() {
         return this.coopMembers.stream().map(StringUtil::toUUID).collect(Concurrent.toList());
-    }
-
-    public UUID getIslandId() {
-        return StringUtil.toUUID(this.islandId);
     }
 
     public ConcurrentList<String> getLore() {
@@ -86,28 +64,13 @@ public class SkyBlockAuction {
     public static class Bid {
 
         @SerializedName("auction_id")
-        private String auctionId;
+        @Getter UUID auctionId;
         @SerializedName("bidder")
-        private String bidderId;
+        @Getter private UUID bidderId;
         @SerializedName("profile_id")
-        private String islandId;
-
-        @Getter
-        private long amount;
-        @Getter
-        private SkyBlockDate.RealTime timestamp;
-
-        public UUID getAuctionId() {
-            return StringUtil.toUUID(this.auctionId);
-        }
-
-        public UUID getBidderId() {
-            return StringUtil.toUUID(this.bidderId);
-        }
-
-        public UUID getIslandId() {
-            return StringUtil.toUUID(this.islandId);
-        }
+        @Getter private UUID islandId;
+        @Getter private long amount;
+        @Getter private SkyBlockDate.RealTime timestamp;
 
     }
 
