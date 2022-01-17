@@ -91,9 +91,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
             .findAll()
-            .forEach(dungeonModel -> member.getDungeons()
-                .getDungeon(dungeonModel)
-                .ifPresent(dungeon -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) dungeon.getLevel())));
+            .forEach(dungeonModel -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(CollectionModel.class)
             .findAll()
@@ -147,7 +145,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         this.loadCenturyCakes(member);
         this.loadEssencePerks(member);
         this.loadFairySouls(member);
-        this.loadMelodysHarp(member);
+        this.loadMelodyHarp(member);
         this.loadJacobsPerks(member);
 
         if (calculateBonusStats) {
@@ -552,24 +550,21 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     private void loadDungeons(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
             .findAll()
-            .forEach(dungeonModel -> member.getDungeons()
-                .getDungeon(dungeonModel)
-                .ifPresent(dungeon -> {
-                    int dungeonLevel = dungeon.getLevel();
+            .forEach(dungeonModel -> {
+                int dungeonLevel = member.getDungeons().getDungeon(dungeonModel).getLevel();
 
-                    if (dungeonLevel > 0) {
-                        SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
-                            .findAll()
-                            .stream()
-                            .filter(dungeonLevelModel -> dungeonLevelModel.getLevel() <= dungeonLevel)
-                            .map(DungeonLevelModel::getEffects)
-                            .flatMap(map -> map.entrySet().stream())
-                            .forEach(entry -> SimplifiedApi.getRepositoryOf(StatModel.class)
-                                .findFirst(StatModel::getKey, entry.getKey())
-                                .ifPresent(statModel -> this.addBase(this.stats.get(Type.DUNGEONS).get(statModel), entry.getValue())));
-                    }
-                })
-            );
+                if (dungeonLevel > 0) {
+                    SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
+                        .findAll()
+                        .stream()
+                        .filter(dungeonLevelModel -> dungeonLevelModel.getLevel() <= dungeonLevel)
+                        .map(DungeonLevelModel::getEffects)
+                        .flatMap(map -> map.entrySet().stream())
+                        .forEach(entry -> SimplifiedApi.getRepositoryOf(StatModel.class)
+                            .findFirst(StatModel::getKey, entry.getKey())
+                            .ifPresent(statModel -> this.addBase(this.stats.get(Type.DUNGEONS).get(statModel), entry.getValue())));
+                }
+            });
     }
 
     private void loadEssencePerks(SkyBlockIsland.Member member) {
@@ -597,17 +592,15 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         }
     }
 
-    private void loadMelodysHarp(SkyBlockIsland.Member member) {
-        if (member.getMelodyHarp() != null) {
-            member.getMelodyHarp()
-                .getSongs()
-                .forEach((songName, songData) -> SimplifiedApi.getRepositoryOf(MelodySongModel.class)
-                    .findFirst(MelodySongModel::getKey, songName.toUpperCase())
-                    .ifPresent(melodySongModel -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "INTELLIGENCE")
-                        .ifPresent(statModel -> this.addBonus(this.stats.get(Type.MELODYS_HARP).get(statModel), melodySongModel.getReward()))
-                    )
-                );
-        }
+    private void loadMelodyHarp(SkyBlockIsland.Member member) {
+        member.getMelodyHarp()
+            .map(SkyBlockIsland.MelodyHarp::getSongs)
+            .ifPresent(songMap -> songMap.forEach((songName, songData) -> SimplifiedApi.getRepositoryOf(MelodySongModel.class)
+                .findFirst(MelodySongModel::getKey, songName.toUpperCase())
+                .ifPresent(melodySongModel -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "INTELLIGENCE")
+                    .ifPresent(statModel -> this.addBonus(this.stats.get(Type.MELODYS_HARP).get(statModel), melodySongModel.getReward()))
+                ))
+            );
     }
 
     private void loadMiningCore(SkyBlockIsland.Member member) {
