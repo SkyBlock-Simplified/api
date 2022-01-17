@@ -138,6 +138,14 @@ public class SkyBlockIsland {
         return minion;
     }
 
+    public PlayerStats getPlayerStats(Member member) {
+        return this.getPlayerStats(member, true);
+    }
+
+    public PlayerStats getPlayerStats(Member member, boolean calculateBonus) {
+        return new PlayerStats(this, member, calculateBonus);
+    }
+
     public boolean hasMember(UUID uniqueId) {
         return this.getMember(uniqueId).isPresent();
     }
@@ -420,14 +428,6 @@ public class SkyBlockIsland {
             }
 
             return petScore;
-        }
-
-        public PlayerStats getPlayerStats() {
-            return this.getPlayerStats(true);
-        }
-
-        public PlayerStats getPlayerStats(boolean calculateBonus) {
-            return new PlayerStats(this, calculateBonus);
         }
 
         public ConcurrentLinkedMap<String, Quest> getQuests() {

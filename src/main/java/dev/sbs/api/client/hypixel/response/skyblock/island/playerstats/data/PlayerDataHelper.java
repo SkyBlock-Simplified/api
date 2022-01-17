@@ -101,6 +101,7 @@ public class PlayerDataHelper {
                                     Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
                                         .variable("CURRENT_VALUE")
                                         .variable("PET_LEVEL")
+                                        .variable("BANK")
                                         .variable("SKILL_AVERAGE")
                                         .variable("PET_ABILITY_VALUE")
                                         .variables(statModels.stream().map(statModelX -> FormatUtil.format("STAT_{0}", statModelX.getKey())).collect(Concurrent.toSet()))

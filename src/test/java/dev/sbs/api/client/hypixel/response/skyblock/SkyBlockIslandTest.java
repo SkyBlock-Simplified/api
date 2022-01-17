@@ -50,7 +50,7 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
-            PlayerStats playerStats = member.getPlayerStats();
+            PlayerStats playerStats = island.getPlayerStats(member);
             playerStats.getCombinedStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();

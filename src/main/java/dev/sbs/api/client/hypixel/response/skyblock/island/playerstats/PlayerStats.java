@@ -70,11 +70,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     @Getter private boolean bonusCalculated;
     private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
-    public PlayerStats(SkyBlockIsland.Member member) {
-        this(member, true);
+    public PlayerStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member) {
+        this(skyBlockIsland, member, true);
     }
 
-    public PlayerStats(SkyBlockIsland.Member member, boolean calculateBonusStats) {
+    public PlayerStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member, boolean calculateBonusStats) {
         // --- Initialize ---
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll();
         statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
@@ -87,6 +87,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // --- Populate Default Expression Variables ---
         member.getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
         this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
+        this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(SkyBlockIsland.Banking::getBalance).orElse(0.0));
         SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
