@@ -1790,7 +1790,14 @@ public class SkyBlockIsland {
                         }
                     });
 
-                    songMap.stream().forEach(entry -> melodyHarp.songs.put(entry.getKey(), new MelodyHarp.Song(entry.getValue().get("best_completion"), entry.getValue().get("completions"), entry.getValue().get("perfect_completions"))));
+                    songMap.stream().forEach(entry -> melodyHarp.songs.put(
+                        entry.getKey(),
+                        new MelodyHarp.Song(
+                            entry.getValue().getOrDefault("best_completion", 0),
+                            entry.getValue().getOrDefault("completions", 0),
+                            entry.getValue().getOrDefault("perfect_completions", 0)
+                        )
+                    ));
                     member.melodyHarp = melodyHarp;
                 }
 
