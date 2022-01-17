@@ -1769,9 +1769,9 @@ public class SkyBlockIsland {
                     Map<String, Object> harpQuest = gson.fromJson(memberObject.getAsJsonObject("harp_quest"), Map.class);
                     MelodyHarp melodyHarp = new MelodyHarp();
 
-                    melodyHarp.talismanClaimed = (boolean) harpQuest.remove("claimed_talisman");
-                    melodyHarp.selectedSong = (String) harpQuest.remove("selected_song");
-                    long epoch = NumberUtil.createNumber(String.valueOf(harpQuest.remove("selected_song_epoch"))).longValue();
+                    melodyHarp.talismanClaimed = harpQuest.containsKey("claimed_talisman") ? (boolean) harpQuest.remove("claimed_talisman") : false;
+                    melodyHarp.selectedSong = harpQuest.containsKey("selected_song") ? (String) harpQuest.remove("selected_song") : "";
+                    long epoch = NumberUtil.createNumber(String.valueOf(harpQuest.containsKey("selected_song_epoch") ? harpQuest.remove("selected_song_epoch") : 0)).longValue();
 
                     if (epoch > 0)
                         melodyHarp.selectedSongTimestamp = new SkyBlockDate.RealTime(epoch * 1000);
