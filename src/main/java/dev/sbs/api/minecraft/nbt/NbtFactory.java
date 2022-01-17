@@ -311,7 +311,14 @@ public class NbtFactory {
      * @throws NbtException if any I/O error occurs.
      */
     public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws NbtException {
-        this.writer.toStream(compound, output);
+        try {
+            this.writer.toStream(compound, output);
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
     }
 
     /**
