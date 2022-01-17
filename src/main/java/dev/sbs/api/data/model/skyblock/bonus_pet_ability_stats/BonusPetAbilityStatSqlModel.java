@@ -45,6 +45,11 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
 
     @Getter
     @Setter
+    @Column(name = "percentage", nullable = false)
+    private boolean percentage;
+
+    @Getter
+    @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;

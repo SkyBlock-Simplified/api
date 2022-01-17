@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
+import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
@@ -450,7 +451,11 @@ public class SkyBlockIsland {
         }
 
         public PlayerStats getPlayerStats() {
-            return new PlayerStats(this);
+            return this.getPlayerStats(true);
+        }
+
+        public PlayerStats getPlayerStats(boolean calculateBonus) {
+            return new PlayerStats(this, calculateBonus);
         }
 
         public ConcurrentLinkedMap<String, Quest> getQuests() {

@@ -7,4 +7,10 @@ public interface BonusPetAbilityStatModel extends BuffEffectsModel<Object, Doubl
 
     PetAbilityModel getPetAbility();
 
+    boolean isPercentage();
+
+    default boolean notPercentage() {
+        return !this.isPercentage();
+    }
+
 }

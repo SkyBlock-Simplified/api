@@ -5,8 +5,6 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.data.sql.function.ReturnSessionFunction;
-import dev.sbs.api.data.sql.function.VoidSessionFunction;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.reflection.Reflection;
@@ -30,6 +28,7 @@ import javax.cache.spi.CachingProvider;
 import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -236,11 +235,11 @@ public final class SqlSession {
         cacheManager.createCache(cacheName, defaultConfiguration);
     }
 
-    public void transaction(VoidSessionFunction function) throws SqlException {
+    public void transaction(Consumer<Session> consumer) throws SqlException {
         try {
             Session session = this.openSession();
             Transaction transaction = session.beginTransaction();
-            function.accept(session);
+            consumer.accept(session);
             session.flush();
             transaction.commit();
             session.close();
@@ -249,7 +248,7 @@ public final class SqlSession {
         }
     }
 
-    public <S> S transaction(ReturnSessionFunction<S> function) throws SqlException {
+    public <S> S transaction(Function<Session, S> function) throws SqlException {
         try {
             Session session = this.openSession();
             Transaction transaction = session.beginTransaction();
@@ -271,10 +270,10 @@ public final class SqlSession {
             this.sessionFactory.close();
     }
 
-    public void with(VoidSessionFunction function) throws SqlException {
+    public void with(Consumer<Session> consumer) throws SqlException {
         try {
             Session session = this.openSession();
-            function.accept(session);
+            consumer.accept(session);
             session.close();
         } catch (Exception exception) {
             throw new SqlException(exception);
@@ -285,17 +284,6 @@ public final class SqlSession {
         try {
             Session session = this.openSession();
             R result = function.apply(session);
-            session.close();
-            return result;
-        } catch (Exception exception) {
-            throw new SqlException(exception);
-        }
-    }
-
-    public <S> S with(ReturnSessionFunction<S> function) throws SqlException {
-        try {
-            Session session = this.openSession();
-            S result = function.apply(session);
             session.close();
             return result;
         } catch (Exception exception) {

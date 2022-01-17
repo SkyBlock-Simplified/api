@@ -3,7 +3,6 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.data.sql.function.ReturnSessionFunction;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
@@ -15,6 +14,7 @@ import org.hibernate.Session;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.function.Function;
 
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
@@ -38,7 +38,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     @Override
     public final ConcurrentList<T> findAll() throws SqlException {
-        return this.sqlSession.with((ReturnSessionFunction<ConcurrentList<T>>) this::findAll);
+        return this.sqlSession.with((Function<Session, ConcurrentList<T>>) this::findAll);
     }
 
     public final ConcurrentList<T> findAll(@NonNull Session session) throws SqlException {
@@ -49,8 +49,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
             CriteriaQuery<T> all = cq.select(rootEntry);
 
             return Concurrent.newList(
-                session
-                    .createQuery(all)
+                session.createQuery(all)
                     .setCacheable(true)
                     .getResultList()
             );
