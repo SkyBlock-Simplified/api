@@ -31,7 +31,7 @@ public abstract class SimplifiedException extends RuntimeException {
     }
 
     public static ExceptionBuilder<WrappedException> wrapNative(Throwable throwable) {
-        return of(WrappedException.class).withCause(throwable).withMessage(throwable.getMessage());
+        return of(WrappedException.class).withCause(throwable);
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
