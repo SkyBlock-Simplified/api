@@ -2,6 +2,7 @@ package dev.sbs.api.util.concurrent.atomic;
 
 import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.exception.ReflectionException;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -46,6 +47,24 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
+	public final boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null) return false;
+		if (!(o instanceof AbstractMap)) return false;
+		if (o instanceof AtomicMap<?, ?, ?>) o = ((AtomicMap<?, ?, ?>) o).ref.get();
+		AbstractMap<?, ?> that = (AbstractMap<?, ?>) o;
+		if (this.size() != that.size()) return false;
+
+		Iterator<?> targetIt = that.entrySet().iterator();
+		for (Map.Entry<?, ?> obj : this.ref.get().entrySet()) {
+			if (!obj.equals(targetIt.next()))
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public final V get(Object key) {
 		return this.ref.get().get(key);
 	}
@@ -53,6 +72,13 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	@Override
 	public final V getOrDefault(Object key, V defaultValue) {
 		return this.ref.get().getOrDefault(key, defaultValue);
+	}
+
+	@Override
+	public final int hashCode() {
+		return new HashCodeBuilder()
+			.append(this.ref.get())
+			.build();
 	}
 
 	@Override
@@ -70,7 +96,7 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.ref.get().keySet();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	private M newMap(M current) {
 		try {
 			Map<K, V> map = current.getClass().newInstance();

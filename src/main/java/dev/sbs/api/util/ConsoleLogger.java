@@ -14,16 +14,20 @@ import org.slf4j.Marker;
 import java.io.Serializable;
 import java.util.Iterator;
 
-public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>, Serializable {
+public class ConsoleLogger implements AppenderAttachable<ILoggingEvent>, Serializable {
 
     @Getter(AccessLevel.PROTECTED)
     private final Logger log;
 
-    protected ConsoleLogger(Class<?> tClass) {
+    public ConsoleLogger(Object object) {
+        this(object instanceof String ? object.toString() : object.getClass().getName());
+    }
+
+    public ConsoleLogger(Class<?> tClass) {
         this.log = (Logger) LoggerFactory.getLogger(tClass);
     }
 
-    protected ConsoleLogger(String name) {
+    public ConsoleLogger(String name) {
         this.log = (Logger) LoggerFactory.getLogger(name);
     }
 
@@ -134,12 +138,6 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
         return FormatUtil.format("[{0}]", this.getName());
     }
 
-    // --- Events ---
-
-    protected abstract void onError(String message, Throwable throwable);
-
-    protected abstract void onThrowable(Throwable throwable);
-
     // --- Logging ---
 
     public void debug(String message) {
@@ -187,9 +185,6 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
     }
 
     private void _debug(Marker marker, String message, Throwable throwable) {
-        if (throwable != null)
-            this.onThrowable(throwable);
-
         this.log.debug(marker, message, throwable);
     }
 
@@ -238,11 +233,6 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
     }
 
     private void _error(Marker marker, String message, Throwable throwable) {
-        this.onError(message, throwable);
-
-        if (throwable != null)
-            this.onThrowable(throwable);
-
         this.log.error(marker, message, throwable);
     }
 
@@ -291,9 +281,6 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
     }
 
     private void _info(Marker marker, String message, Throwable throwable) {
-        if (throwable != null)
-            this.onThrowable(throwable);
-
         this.log.info(marker, message, throwable);
     }
 
@@ -342,9 +329,6 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
     }
 
     private void _trace(Marker marker, String message, Throwable throwable) {
-        if (throwable != null)
-            this.onThrowable(throwable);
-
         this.log.trace(marker, message, throwable);
     }
 
@@ -393,9 +377,6 @@ public abstract class ConsoleLogger implements AppenderAttachable<ILoggingEvent>
     }
 
     private void _warn(Marker marker, String message, Throwable throwable) {
-        if (throwable != null)
-            this.onThrowable(throwable);
-
         this.log.warn(marker, message, throwable);
     }
 

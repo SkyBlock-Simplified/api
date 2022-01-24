@@ -2,6 +2,7 @@ package dev.sbs.api.util.concurrent.atomic;
 
 import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.exception.ReflectionException;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
+@SuppressWarnings("all")
 public abstract class AtomicCollection<E, T extends AbstractCollection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
 
 	protected final AtomicReference<T> ref;
@@ -56,6 +58,31 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 	@Override
 	public boolean containsAll(@NotNull Collection<?> collection) {
 		return this.ref.get().containsAll(collection);
+	}
+
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null) return false;
+		if (!(o instanceof Collection)) return false;
+		if (o instanceof AtomicCollection) o = ((AtomicCollection<?, ?>) o).ref.get();
+		Collection<?> that = (Collection<?>) o;
+		if (this.size() != that.size()) return false;
+
+		Iterator<?> targetIt = that.iterator();
+		for (Object obj : this.ref.get()) {
+			if (!obj.equals(targetIt.next()))
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public final int hashCode() {
+		return new HashCodeBuilder()
+			.append(this.ref.get())
+			.build();
 	}
 
 	@Override

@@ -46,14 +46,14 @@ public class MinionSqlModel implements MinionModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "collection_key")
-    private CollectionSqlModel collection;
+    @Column(name = "name", nullable = false, length = 127)
+    private String name;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "collection_key")
+    private CollectionSqlModel collection;
 
     @Getter
     @UpdateTimestamp
