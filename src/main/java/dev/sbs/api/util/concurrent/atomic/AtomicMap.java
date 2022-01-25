@@ -5,6 +5,7 @@ import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Iterable<Map.Entry<K, V>>, Map<K, V> {
+public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Iterable<Map.Entry<K, V>>, Map<K, V>, Serializable {
 
 	protected final AtomicReference<M> ref;
 

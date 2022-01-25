@@ -231,7 +231,6 @@ public final class SqlSession {
         this.with(session -> {
             Transaction transaction = session.beginTransaction();
             consumer.accept(session);
-            //session.flush();
             transaction.commit();
         });
     }

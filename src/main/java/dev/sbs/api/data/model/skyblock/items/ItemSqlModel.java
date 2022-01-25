@@ -98,7 +98,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "stats")
+    @Column(name = "stats", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> stats;
 
@@ -124,7 +124,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "tiered_stats")
+    @Column(name = "tiered_stats", nullable = false)
     @Convert(converter = StringIntegerListMapConverter.class)
     private Map<String, List<Integer>> tieredStats;
 
@@ -135,19 +135,19 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "requirements")
+    @Column(name = "requirements", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> requirements;
 
     @Getter
     @Setter
-    @Column(name = "catacombs_requirements")
+    @Column(name = "catacombs_requirements", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> catacombsRequirements;
 
     @Getter
     @Setter
-    @Column(name = "essence")
+    @Column(name = "essence", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> essence;
 
@@ -163,7 +163,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "enchantments")
+    @Column(name = "enchantments", nullable = false)
     @Convert(converter = StringIntegerMapConverter.class)
     private Map<String, Integer> enchantments;
 

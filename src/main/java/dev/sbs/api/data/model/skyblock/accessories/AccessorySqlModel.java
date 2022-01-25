@@ -68,7 +68,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "effects")
+    @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
