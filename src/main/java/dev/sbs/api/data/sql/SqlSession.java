@@ -161,7 +161,7 @@ public final class SqlSession {
 
                 // SQL
                 put("hibernate.generate_statistics", config.isDatabaseDebugMode());
-                put("hibernate.show_sql", false);
+                put("hibernate.show_sql", true);
                 put("hibernate.format_sql", false); // Log Spam
                 put("hibernate.use_sql_comments", true);
                 put("hibernate.order_inserts", true);
