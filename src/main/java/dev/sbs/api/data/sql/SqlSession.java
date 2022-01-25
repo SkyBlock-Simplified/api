@@ -9,6 +9,7 @@ import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.ConcurrentList;
+import lombok.Cleanup;
 import lombok.Getter;
 import org.ehcache.jsr107.EhcacheCachingProvider;
 import org.hibernate.Session;
@@ -35,24 +36,14 @@ import java.util.function.Function;
 public final class SqlSession {
 
     private final ServiceManager serviceManager = new ServiceManager();
-    @Getter
-    private final SqlConfig config;
-    @Getter
-    private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
+    @Getter private final SqlConfig config;
+    @Getter private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
     private StandardServiceRegistry serviceRegistry;
-    @Getter
-    private SessionFactory sessionFactory;
-    @Getter
-    private boolean active;
-
-    @Getter
-    private boolean cached = false;
-
-    @Getter
-    private long initializationTime;
-
-    @Getter
-    private long startupTime;
+    @Getter private SessionFactory sessionFactory;
+    @Getter private boolean active;
+    @Getter private boolean cached = false;
+    @Getter private long initializationTime;
+    @Getter private long startupTime;
 
     public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
         this.config = config;
@@ -161,11 +152,12 @@ public final class SqlSession {
 
                 // SQL
                 put("hibernate.generate_statistics", config.isDatabaseDebugMode());
-                put("hibernate.show_sql", true);
+                put("hibernate.show_sql", false);
                 put("hibernate.format_sql", false); // Log Spam
                 put("hibernate.use_sql_comments", true);
                 put("hibernate.order_inserts", true);
                 put("hibernate.order_updates", true);
+                put("hibernate.globally_quoted_identifiers", true);
 
                 // Prepared Statements
                 put("hikari.cachePrepStmts", true);
@@ -236,30 +228,12 @@ public final class SqlSession {
     }
 
     public void transaction(Consumer<Session> consumer) throws SqlException {
-        try {
-            Session session = this.openSession();
+        this.with(session -> {
             Transaction transaction = session.beginTransaction();
             consumer.accept(session);
-            session.flush();
+            //session.flush();
             transaction.commit();
-            session.close();
-        } catch (Exception exception) {
-            throw new SqlException(exception);
-        }
-    }
-
-    public <S> S transaction(Function<Session, S> function) throws SqlException {
-        try {
-            Session session = this.openSession();
-            Transaction transaction = session.beginTransaction();
-            S result = function.apply(session);
-            session.flush();
-            transaction.commit();
-            session.close();
-            return result;
-        } catch (Exception exception) {
-            throw new SqlException(exception);
-        }
+        });
     }
 
     public void shutdown() {
@@ -272,9 +246,8 @@ public final class SqlSession {
 
     public void with(Consumer<Session> consumer) throws SqlException {
         try {
-            Session session = this.openSession();
+            @Cleanup Session session = this.openSession();
             consumer.accept(session);
-            session.close();
         } catch (Exception exception) {
             throw new SqlException(exception);
         }
@@ -282,10 +255,8 @@ public final class SqlSession {
 
     public <R> R with(Function<Session, R> function) throws SqlException {
         try {
-            Session session = this.openSession();
-            R result = function.apply(session);
-            session.close();
-            return result;
+            @Cleanup Session session = this.openSession();
+            return function.apply(session);
         } catch (Exception exception) {
             throw new SqlException(exception);
         }
