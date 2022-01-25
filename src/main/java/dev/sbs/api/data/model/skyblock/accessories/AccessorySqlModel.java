@@ -63,8 +63,13 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "family_rank")
+    @Column(name = "family_rank", nullable = false)
     private Integer familyRank;
+
+    @Getter
+    @Setter
+    @Column(name = "attainable", nullable = false)
+    private boolean attainable;
 
     @Getter
     @Setter

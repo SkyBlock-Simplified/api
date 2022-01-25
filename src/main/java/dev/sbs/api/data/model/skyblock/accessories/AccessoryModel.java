@@ -17,4 +17,6 @@ public interface AccessoryModel extends EffectsModel<Double> {
 
     Integer getFamilyRank();
 
+    boolean isAttainable();
+
 }
