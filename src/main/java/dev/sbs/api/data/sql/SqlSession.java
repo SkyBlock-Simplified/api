@@ -9,7 +9,6 @@ import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.ConcurrentList;
-import lombok.Cleanup;
 import lombok.Getter;
 import org.ehcache.jsr107.EhcacheCachingProvider;
 import org.hibernate.Session;
@@ -235,6 +234,15 @@ public final class SqlSession {
         });
     }
 
+    public <R> R transaction(Function<Session, R> function) throws SqlException {
+        return this.with(session -> {
+            Transaction transaction = session.beginTransaction();
+            R result = function.apply(session);
+            transaction.commit();
+            return result;
+        });
+    }
+
     public void shutdown() {
         this.active = false;
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
@@ -245,8 +253,9 @@ public final class SqlSession {
 
     public void with(Consumer<Session> consumer) throws SqlException {
         try {
-            @Cleanup Session session = this.openSession();
+            Session session = this.openSession();
             consumer.accept(session);
+            session.close();
         } catch (Exception exception) {
             throw new SqlException(exception);
         }
@@ -254,8 +263,10 @@ public final class SqlSession {
 
     public <R> R with(Function<Session, R> function) throws SqlException {
         try {
-            @Cleanup Session session = this.openSession();
-            return function.apply(session);
+            Session session = this.openSession();
+            R result = function.apply(session);
+            session.close();
+            return result;
         } catch (Exception exception) {
             throw new SqlException(exception);
         }

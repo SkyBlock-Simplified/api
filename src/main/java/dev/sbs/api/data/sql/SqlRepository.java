@@ -3,26 +3,28 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.Serializable;
 import java.util.function.Function;
 
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     private final SqlSession sqlSession;
-
-    @Getter
-    private final long startupTime;
+    private final Class<T> tClass;
+    @Getter private final long startupTime;
 
     /**
      * Creates a new repository of type {@link T}.
@@ -31,6 +33,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
      */
     public SqlRepository(@NonNull SqlSession sqlSession) {
         this.sqlSession = sqlSession;
+        this.tClass = Reflection.getSuperClass(this);
         long startTime = System.currentTimeMillis();
         this.findAll();
         this.startupTime = System.currentTimeMillis() - startTime;
@@ -58,32 +61,42 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         }
     }
 
-    public void save(T model) throws SqlException {
-        this.sqlSession.transaction(session -> this.save(session, model));
+    public T save(T model) throws SqlException {
+        return this.sqlSession.transaction(session -> {
+            return this.save(session, model);
+        });
     }
 
-    public void save(Session session, T model) throws SqlException {
+    public T save(Session session, T model) throws SqlException {
         try {
-            session.save(model);
+            Serializable identifier = session.save(model);
+            return session.get(this.tClass, identifier);
         } catch (Exception exception) {
             throw new SqlException(exception);
         }
     }
 
-    public void update(T model) throws SqlException {
-        this.sqlSession.transaction(session -> this.update(session, model));
+    public T update(T model) throws SqlException {
+        return this.sqlSession.transaction(session -> {
+            return this.update(session, model);
+        });
     }
 
-    public void update(@NonNull Session session, T model) throws SqlException {
+    public T update(@NonNull Session session, T model) throws SqlException {
         try {
             session.update(model);
+            return model;
+        } catch (NonUniqueObjectException nuoException) {
+            return model;
         } catch (Exception exception) {
             throw new SqlException(exception);
         }
     }
 
     public void saveOrUpdate(T model) throws SqlException {
-        this.sqlSession.transaction(session -> this.saveOrUpdate(session, model));
+        this.sqlSession.transaction(session -> {
+            this.saveOrUpdate(session, model);
+        });
     }
 
     public void saveOrUpdate(@NonNull Session session, T model) throws SqlException {

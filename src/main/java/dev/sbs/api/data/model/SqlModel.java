@@ -12,12 +12,12 @@ public interface SqlModel extends Model {
 
     Instant getUpdatedAt();
 
-    default void save() {
-        ((SqlRepository) SimplifiedApi.getRepositoryOf(this.getClass())).save(this);
+    default <T> T save() {
+        return (T) ((SqlRepository) SimplifiedApi.getRepositoryOf(this.getClass())).save(this);
     }
 
-    default void update() {
-        ((SqlRepository) SimplifiedApi.getRepositoryOf(this.getClass())).update(this);
+    default <T> T update() {
+        return (T) ((SqlRepository) SimplifiedApi.getRepositoryOf(this.getClass())).update(this);
     }
 
 }
