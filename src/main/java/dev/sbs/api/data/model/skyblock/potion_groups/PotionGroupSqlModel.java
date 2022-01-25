@@ -32,12 +32,12 @@ public class PotionGroupSqlModel implements PotionGroupModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 256)
     private String key;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter

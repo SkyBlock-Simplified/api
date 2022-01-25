@@ -48,12 +48,12 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "buff_key", nullable = false, length = 127)
+    @Column(name = "buff_key", nullable = false, length = 256)
     private String buffKey;
 
     @Getter
     @Setter
-    @Column(name = "buff_value", nullable = false, length = 127)
+    @Column(name = "buff_value", nullable = false, length = 256)
     private Double buffValue;
 
     @Getter

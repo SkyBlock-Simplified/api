@@ -41,12 +41,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter
     @Setter
-    @Column(name = "material", length = 127)
+    @Column(name = "material", length = 256)
     private String material;
 
     @Getter
@@ -61,7 +61,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "furniture", length = 127)
+    @Column(name = "furniture", length = 256)
     private String furniture;
 
     @Getter
@@ -73,12 +73,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @Column(name = "item_id", length = 127, unique = true)
+    @Column(name = "item_id", length = 256, unique = true)
     private String itemId;
 
     @Getter
     @Setter
-    @Column(name = "generator", length = 127)
+    @Column(name = "generator", length = 256)
     private String generator;
 
     @Getter
@@ -153,7 +153,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "description", length = 127)
+    @Column(name = "description", length = 256)
     private String description;
 
     @Getter
@@ -169,12 +169,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "crystal", length = 127)
+    @Column(name = "crystal", length = 256)
     private String crystal;
 
     @Getter
     @Setter
-    @Column(name = "private_island", length = 127)
+    @Column(name = "private_island", length = 256)
     private String privateIsland;
 
     @Getter

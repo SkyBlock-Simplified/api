@@ -48,7 +48,7 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "collection_tier", nullable = false, length = 127)
+    @Column(name = "collection_tier", nullable = false, length = 256)
     private Integer collectionTier;
 
     @Getter

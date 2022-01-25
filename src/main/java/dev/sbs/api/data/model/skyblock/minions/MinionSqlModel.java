@@ -41,12 +41,12 @@ public class MinionSqlModel implements MinionModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 256)
     private String key;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter
@@ -70,8 +70,8 @@ public class MinionSqlModel implements MinionModel, SqlModel {
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
-            .append(this.getCollection(), that.getCollection())
             .append(this.getName(), that.getName())
+            .append(this.getCollection(), that.getCollection())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -81,8 +81,8 @@ public class MinionSqlModel implements MinionModel, SqlModel {
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getKey())
-            .append(this.getCollection())
             .append(this.getName())
+            .append(this.getCollection())
             .append(this.getUpdatedAt())
             .build();
     }

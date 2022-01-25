@@ -58,7 +58,7 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "buff_key", length = 127)
+    @Column(name = "buff_key", length = 256)
     private String buffKey;
 
     @Getter

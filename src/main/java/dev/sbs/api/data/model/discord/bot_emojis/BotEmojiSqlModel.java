@@ -47,12 +47,12 @@ public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 127, unique = true)
+    @Column(name = "key", nullable = false, length = 256, unique = true)
     private String key;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter

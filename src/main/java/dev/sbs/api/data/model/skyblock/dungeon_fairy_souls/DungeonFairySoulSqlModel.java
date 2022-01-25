@@ -32,7 +32,7 @@ public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel
 
     @Getter
     @Setter
-    @Column(name = "room", nullable = false, length = 127)
+    @Column(name = "room", nullable = false, length = 256)
     private String room;
 
     @Getter

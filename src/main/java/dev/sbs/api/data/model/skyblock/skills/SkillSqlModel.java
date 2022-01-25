@@ -45,17 +45,17 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 256)
     private String key;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter
     @Setter
-    @Column(name = "description", nullable = false, length = 127)
+    @Column(name = "description", nullable = false, length = 256)
     private String description;
 
     @Getter

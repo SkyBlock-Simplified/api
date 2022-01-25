@@ -32,17 +32,17 @@ public class LocationRemoteSqlModel implements LocationRemoteModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @Column(name = "key", nullable = false, length = 127)
+    @Column(name = "key", nullable = false, length = 256)
     private String key;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter
     @Setter
-    @Column(name = "mode", nullable = false, length = 127, unique = true)
+    @Column(name = "mode", nullable = false, length = 256, unique = true)
     private String mode;
 
     @Getter

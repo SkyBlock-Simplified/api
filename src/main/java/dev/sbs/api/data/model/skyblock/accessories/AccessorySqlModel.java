@@ -46,7 +46,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Getter
