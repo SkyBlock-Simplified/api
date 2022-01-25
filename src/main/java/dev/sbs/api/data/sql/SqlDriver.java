@@ -27,6 +27,7 @@ public abstract class SqlDriver {
         }
 
     };
+
     public static final SqlDriver MySQL = new SqlDriver() {
 
         @Override
@@ -50,6 +51,7 @@ public abstract class SqlDriver {
         }
 
     };
+
     public static final SqlDriver OracleSQL = new SqlDriver() {
 
         @Override
@@ -73,6 +75,7 @@ public abstract class SqlDriver {
         }
 
     };
+
     public static final SqlDriver PostgreSQL = new SqlDriver() {
 
         @Override
@@ -96,6 +99,7 @@ public abstract class SqlDriver {
         }
 
     };
+
     public static final SqlDriver SQLServer = new SqlDriver() {
 
         @Override

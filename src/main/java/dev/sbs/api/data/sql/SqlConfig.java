@@ -91,17 +91,9 @@ public abstract class SqlConfig extends YamlConfig {
     @AllArgsConstructor
     public static final class CacheExpiry {
 
-        @Getter
-        @Setter
-        private Duration creation;
-
-        @Getter
-        @Setter
-        private Duration access = null;
-
-        @Getter
-        @Setter
-        private Duration update = Duration.ZERO;
+        @Getter @Setter private Duration creation;
+        @Getter @Setter private Duration access = null;
+        @Getter @Setter private Duration update = Duration.ZERO;
 
         public CacheExpiry(Duration creation) {
             this.creation = creation;
