@@ -34,7 +34,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", unique = true)
     private Long id;
 
     @Getter
@@ -68,7 +68,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "effects", nullable = false)
+    @Column(name = "effects")
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 

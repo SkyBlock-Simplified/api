@@ -41,7 +41,7 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", unique = true)
     private Long id;
 
     @Getter
