@@ -1,5 +1,6 @@
 package dev.sbs.api.data.sql;
 
+import ch.qos.logback.classic.Level;
 import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
@@ -11,7 +12,6 @@ import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.Cleanup;
 import lombok.Getter;
-import org.ehcache.jsr107.EhcacheCachingProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -24,15 +24,12 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
-import javax.cache.expiry.ExpiryPolicy;
-import javax.cache.spi.CachingProvider;
+import javax.cache.expiry.ModifiedExpiryPolicy;
 import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@SuppressWarnings("unchecked")
 public final class SqlSession {
 
     private final ServiceManager serviceManager = new ServiceManager();
@@ -50,53 +47,20 @@ public final class SqlSession {
         this.repositories = repositories;
     }
 
-    private void buildCacheConfiguration(String cacheName, Function<SqlConfig, SqlConfig.CacheExpiry> function) {
-        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
-        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
-
-            @Override
-            public Duration getExpiryForCreation() {
-                return function.apply(getConfig()).getCreation();
-            }
-
-            @Override
-            public Duration getExpiryForAccess() {
-                return function.apply(getConfig()).getAccess();
-            }
-
-            @Override
-            public Duration getExpiryForUpdate() {
-                return function.apply(getConfig()).getUpdate();
-            }
-
-        });
-
-        this.setCacheConfiguration(cacheName, defaultConfiguration);
+    private Class<SqlModel> buildCacheConfiguration(Class<SqlModel> tClass) {
+        this.buildCacheConfiguration(tClass.getName(), __ -> Duration.ETERNAL);
+        return tClass;
     }
 
-    private Class<?> buildCacheConfiguration(Class<? extends SqlModel> tClass) {
-        MutableConfiguration<Long, String> defaultConfiguration = new MutableConfiguration<>();
-        defaultConfiguration.setExpiryPolicyFactory(() -> new ExpiryPolicy() {
+    private void buildCacheConfiguration(String cacheName, Function<SqlConfig, Duration> function) {
+        // Build Configuration
+        MutableConfiguration<Object, Object> cacheConfiguration = new MutableConfiguration<>()
+            .setStoreByValue(false)
+            .setExpiryPolicyFactory(ModifiedExpiryPolicy.factoryOf(function.apply(this.getConfig())));
 
-            @Override
-            public Duration getExpiryForCreation() {
-                return getConfig().getDatabaseModels().get(tClass).getCreation();
-            }
-
-            @Override
-            public Duration getExpiryForAccess() {
-                return getConfig().getDatabaseModels().get(tClass).getAccess();
-            }
-
-            @Override
-            public Duration getExpiryForUpdate() {
-                return getConfig().getDatabaseModels().get(tClass).getUpdate();
-            }
-
-        });
-
-        this.setCacheConfiguration(tClass.getName(), defaultConfiguration);
-        return tClass;
+        // Set Configuration
+        CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
+        cacheManager.createCache(cacheName, cacheConfiguration);
     }
 
     public void cacheRepositories() {
@@ -135,6 +99,7 @@ public final class SqlSession {
             throw new SqlException("Database connection is not active!");
     }
 
+    @SuppressWarnings("unchecked")
     public void initialize() {
         if (!this.isActive()) {
             long startTime = System.currentTimeMillis();
@@ -150,27 +115,30 @@ public final class SqlSession {
                 put("hibernate.connection.password", config.getDatabasePassword());
                 put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
 
-                // SQL
-                put("hibernate.generate_statistics", config.isDatabaseDebugMode());
-                put("hibernate.show_sql", false);
-                put("hibernate.format_sql", false); // Log Spam
+                // Settings
+                put("hibernate.generate_statistics", true);
+                put("hibernate.globally_quoted_identifiers", true);
+                put("hibernate.show_sql", config.isLoggingLevel(Level.DEBUG));
+                put("hibernate.format_sql", config.isLoggingLevel(Level.TRACE)); // Log Spam
                 put("hibernate.use_sql_comments", true);
+
+                // Batching
+                put("hibernate.jdbc.batch_size", 100);
+                put("hibernate.jdbc.fetch_size", 400);
                 put("hibernate.order_inserts", true);
                 put("hibernate.order_updates", true);
-                put("hibernate.globally_quoted_identifiers", true);
-
-                // Prepared Statements
-                put("hikari.cachePrepStmts", true);
-                put("hikari.prepStmtCacheSize", 256);
-                put("hikari.prepStmtCacheSqlLimit", 2048);
-                put("hikari.useServerPrepStmts", true);
 
                 // Caching
-                put("hibernate.cache.use_second_level_cache", config.isDatabaseCaching());
-                put("hibernate.cache.use_query_cache", config.isDatabaseCaching());
-                put("hibernate.cache.region.factory_class", "org.hibernate.cache.jcache.JCacheRegionFactory");
+                put("hibernate.cache.region.factory_class", "jcache");
                 put("hibernate.cache.provider_class", "org.ehcache.jsr107.EhcacheCachingProvider");
-                put("hibernate.cache.use_structured_entries", config.isDatabaseDebugMode());
+                put("hibernate.cache.use_structured_entries", config.isLoggingLevel(Level.DEBUG));
+                put("hibernate.cache.use_reference_entries", true);
+                put("hibernate.cache.use_query_cache", config.isDatabaseCachingQueries());
+                put("hibernate.cache.default_cache_concurrency_strategy", config.getDatabaseCachingConcurrencyStrategy().toAccessType().getExternalName());
+                put("hibernate.javax.cache.missing_cache_strategy", config.getDatabaseCachingMissingStrategy().getExternalRepresentation());
+
+                // Hikari
+                put("hikari.maximumPoolSize", 20);
             }};
             registryBuilder.applySettings(properties);
             this.serviceRegistry = registryBuilder.build();
@@ -183,27 +151,11 @@ public final class SqlSession {
                 .map(ParameterizedType::getActualTypeArguments)
                 .map(index -> index[0])
                 .map(tClass -> (Class<SqlModel>) tClass)
-                .map(tClass -> {
-                    SqlConfig.CacheExpiry cacheExpiry;
-
-                    // Load Custom Cache Expiry
-                    if (tClass.isAnnotationPresent(SqlCacheExpiry.class)) {
-                        SqlCacheExpiry sqlCacheExpiry = tClass.getAnnotation(SqlCacheExpiry.class);
-
-                        cacheExpiry = new SqlConfig.CacheExpiry(
-                            new Duration(TimeUnit.SECONDS, sqlCacheExpiry.creation()),
-                            new Duration(TimeUnit.SECONDS, sqlCacheExpiry.access()),
-                            new Duration(TimeUnit.SECONDS, sqlCacheExpiry.update())
-                        );
-                    } else
-                        cacheExpiry = new SqlConfig.CacheExpiry(Duration.ONE_MINUTE);
-
-                    return config.addDatabaseModel(tClass, cacheExpiry);
-                })
-                .map(this::buildCacheConfiguration)
+                .map(config::addDatabaseModel)
+                .map(this::buildCacheConfiguration) // Build Entity Cache
                 .forEach(sources::addAnnotatedClass);
 
-            // Build Default Caches
+            // Build Query Caches
             this.buildCacheConfiguration("default-update-timestamps-region", SqlConfig::getDatabaseUpdateTimestampsTTL);
             this.buildCacheConfiguration("default-query-results-region", SqlConfig::getDatabaseQueryResultsTTL);
 
@@ -217,14 +169,7 @@ public final class SqlSession {
     }
 
     public Session openSession() {
-        return this.sessionFactory.openSession();
-    }
-
-    private void setCacheConfiguration(String cacheName, MutableConfiguration<Long, String> defaultConfiguration) {
-        CachingProvider cachingProvider = Caching.getCachingProvider();
-        EhcacheCachingProvider ehcacheProvider = (EhcacheCachingProvider) cachingProvider;
-        CacheManager cacheManager = ehcacheProvider.getCacheManager();
-        cacheManager.createCache(cacheName, defaultConfiguration);
+        return this.getSessionFactory().openSession();
     }
 
     public void transaction(Consumer<Session> consumer) throws SqlException {
@@ -248,8 +193,8 @@ public final class SqlSession {
         this.active = false;
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
 
-        if (this.sessionFactory != null)
-            this.sessionFactory.close();
+        if (this.getSessionFactory() != null)
+            this.getSessionFactory().close();
     }
 
     public void with(Consumer<Session> consumer) throws SqlException {

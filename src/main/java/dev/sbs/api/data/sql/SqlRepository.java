@@ -41,18 +41,19 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     @Override
     public final ConcurrentList<T> findAll() throws SqlException {
-        return this.sqlSession.with((Function<Session, ConcurrentList<T>>) this::findAll);
+        return this.sqlSession.with((Function<Session, ? extends ConcurrentList<T>>) this::findAll);
     }
 
     public final ConcurrentList<T> findAll(@NonNull Session session) throws SqlException {
         try {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(this.getTClass());
-            Root<T> rootEntry = cq.from(this.getTClass());
-            CriteriaQuery<T> all = cq.select(rootEntry);
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getTClass());
+            Root<T> rootEntry = criteriaQuery.from(this.getTClass());
+            CriteriaQuery<T> all = criteriaQuery.select(rootEntry);
 
             return Concurrent.newList(
                 session.createQuery(all)
+                    .setCacheRegion(this.getTClass().getName())
                     .setCacheable(true)
                     .getResultList()
             );
