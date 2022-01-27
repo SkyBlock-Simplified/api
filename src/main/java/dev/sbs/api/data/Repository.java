@@ -22,8 +22,7 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("unchecked")
 public abstract class Repository<T extends Model> {
 
-    @Getter
-    private final Class<T> tClass;
+    @Getter private final Class<T> tClass;
 
     public Repository() {
         ParameterizedType superClass = (ParameterizedType) this.getClass().getGenericSuperclass();
@@ -33,34 +32,31 @@ public abstract class Repository<T extends Model> {
     private <C extends Comparable<C>, S> ConcurrentList<T> compare(FilterFunction.Match match, SortFunction<T, C> sortFunction, TriFunction<FilterFunction<T, S>, T, S, Boolean> compare, Iterable<Pair<FilterFunction<T, S>, S>> predicates) throws SqlException {
         ConcurrentList<T> itemsCopy = this.findAll();
 
-        if (ListUtil.notEmpty(itemsCopy)) {
-            if (match == FilterFunction.Match.ANY) {
-                return itemsCopy
-                    .stream()
-                    .filter(it -> {
-                        boolean matches = false;
+        if (match == FilterFunction.Match.ANY) {
+            return itemsCopy
+                .stream()
+                .filter(it -> {
+                    boolean matches = false;
 
-                        for (Pair<FilterFunction<T, S>, S> predicate : predicates)
-                            matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
+                    for (Pair<FilterFunction<T, S>, S> predicate : predicates)
+                        matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
 
-                        return matches;
-                    })
+                    return matches;
+                })
+                .collect(Concurrent.toList());
+        } else if (match == FilterFunction.Match.ALL) {
+            for (Pair<FilterFunction<T, S>, S> predicate : predicates) {
+                itemsCopy = itemsCopy.stream()
+                    .filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()))
                     .collect(Concurrent.toList());
-            } else if (match == FilterFunction.Match.ALL) {
-                for (Pair<FilterFunction<T, S>, S> predicate : predicates) {
-                    itemsCopy = itemsCopy.stream()
-                        .filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()))
-                        .collect(Concurrent.toList());
-                }
+            }
 
-                if (sortFunction != null)
-                    itemsCopy.sort((s1, s2) -> Comparator.comparing(sortFunction).compare(s1, s2));
+            if (sortFunction != null)
+                itemsCopy.sort((s1, s2) -> Comparator.comparing(sortFunction).compare(s1, s2));
 
-                return itemsCopy;
-            } else
-                throw new SqlException(FormatUtil.format("Invalid match type ''{0}''.", match));
+            return itemsCopy;
         } else
-            throw new SqlException(FormatUtil.format("Unable to load all items of type ''{0}''.", this.getTClass().getSimpleName()));
+            throw new SqlException(FormatUtil.format("Invalid match type ''{0}''.", match));
     }
 
     public abstract ConcurrentList<T> findAll();
