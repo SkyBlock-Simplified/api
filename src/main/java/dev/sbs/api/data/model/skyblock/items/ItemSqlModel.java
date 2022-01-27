@@ -4,7 +4,6 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleListMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
-import dev.sbs.api.data.sql.converter.map.StringIntegerMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -164,8 +163,8 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "enchantments", nullable = false)
-    @Convert(converter = StringIntegerMapConverter.class)
-    private Map<String, Integer> enchantments;
+    @Convert(converter = StringDoubleMapConverter.class)
+    private Map<String, Double> enchantments;
 
     @Getter
     @Setter

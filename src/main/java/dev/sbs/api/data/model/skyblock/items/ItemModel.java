@@ -54,7 +54,7 @@ public interface ItemModel extends Model {
 
     Double getAbilityDamageScaling();
 
-    Map<String, Integer> getEnchantments();
+    Map<String, Double> getEnchantments();
 
     String getCrystal();
 

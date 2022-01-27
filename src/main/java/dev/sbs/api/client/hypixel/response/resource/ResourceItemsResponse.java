@@ -48,7 +48,7 @@ public class ResourceItemsResponse {
         @Getter private String description;
         @SerializedName("ability_damage_scaling")
         @Getter private double abilityDamageScaling;
-        @Getter private ConcurrentMap<String, Integer> enchantments = Concurrent.newMap();
+        @Getter private ConcurrentMap<String, Double> enchantments = Concurrent.newMap();
         @Getter private String crystal;
         @SerializedName("private_island")
         @Getter private String privateIsland;
