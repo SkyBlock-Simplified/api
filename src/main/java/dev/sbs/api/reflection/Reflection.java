@@ -21,7 +21,6 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -361,7 +360,7 @@ public class Reflection<T> {
             return this.getSuperReflection().getMethod(type, paramTypes);
 
         throw SimplifiedException.of(ReflectionException.class)
-            .withMessage("The method with return type ''{0}'' was not found with parameters ''{1}''!", type, Arrays.asList(types))
+            .withMessage("The method with return type ''{0}'' was not found with parameters [''{1}'']!", type, Arrays.asList(types))
             .build();
     }
 
@@ -432,7 +431,7 @@ public class Reflection<T> {
             return this.getSuperReflection().getMethod(name, paramTypes);
 
         throw SimplifiedException.of(ReflectionException.class)
-            .withMessage("The method ''{0}'' was not found with parameters ''{1}''.", name, Collections.singletonList(types))
+            .withMessage("The method ''{0}'' was not found with parameters ''{1}''.", name, Arrays.asList(types))
             .build();
     }
 
