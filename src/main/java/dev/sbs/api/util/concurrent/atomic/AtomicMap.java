@@ -48,21 +48,11 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	public final boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null) return false;
-		if (!(o instanceof AbstractMap)) return false;
-		if (o instanceof AtomicMap<?, ?, ?>) o = ((AtomicMap<?, ?, ?>) o).ref.get();
-		AbstractMap<?, ?> that = (AbstractMap<?, ?>) o;
-		if (this.size() != that.size()) return false;
-
-		Iterator<?> targetIt = that.entrySet().iterator();
-		for (Map.Entry<?, ?> obj : this.ref.get().entrySet()) {
-			if (!obj.equals(targetIt.next()))
-				return false;
-		}
-
-		return true;
+	public final boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (obj instanceof AtomicMap<?, ?, ?>) obj = ((AtomicMap<?, ?, ?>) obj).ref.get();
+		return this.ref.get().equals(obj);
 	}
 
 	@Override

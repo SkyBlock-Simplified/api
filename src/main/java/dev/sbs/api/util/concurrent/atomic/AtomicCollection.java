@@ -61,21 +61,11 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 	}
 
 	@Override
-	public final boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null) return false;
-		if (!(o instanceof Collection)) return false;
-		if (o instanceof AtomicCollection) o = ((AtomicCollection<?, ?>) o).ref.get();
-		Collection<?> that = (Collection<?>) o;
-		if (this.size() != that.size()) return false;
-
-		Iterator<?> targetIt = that.iterator();
-		for (Object obj : this.ref.get()) {
-			if (!obj.equals(targetIt.next()))
-				return false;
-		}
-
-		return true;
+	public final boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (obj instanceof AtomicCollection) obj = ((AtomicCollection<?, ?>) obj).ref.get();
+		return this.ref.get().equals(obj);
 	}
 
 	@Override
