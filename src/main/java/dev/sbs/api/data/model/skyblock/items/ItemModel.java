@@ -40,7 +40,7 @@ public interface ItemModel extends Model {
 
     String getColor();
 
-    Map<String, List<Integer>> getTieredStats();
+    Map<String, List<Double>> getTieredStats();
 
     Integer getGearScore();
 

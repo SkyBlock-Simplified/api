@@ -2,8 +2,8 @@ package dev.sbs.api.data.model.skyblock.items;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
+import dev.sbs.api.data.sql.converter.map.StringDoubleListMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
-import dev.sbs.api.data.sql.converter.map.StringIntegerListMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringIntegerMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -31,7 +31,7 @@ import java.util.Map;
         )
     }
 )
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
@@ -51,7 +51,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "durability")
+    @Column(name = "durability", nullable = false)
     private Integer durability;
 
     @Getter
@@ -83,12 +83,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "generator_tier")
+    @Column(name = "generator_tier", nullable = false)
     private Integer generatorTier;
 
     @Getter
     @Setter
-    @Column(name = "glowing")
+    @Column(name = "glowing", nullable = false)
     private boolean glowing;
 
     @Getter
@@ -104,17 +104,17 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "npc_sell_price")
+    @Column(name = "npc_sell_price", nullable = false)
     private Double npcSellPrice;
 
     @Getter
     @Setter
-    @Column(name = "unstackable")
+    @Column(name = "unstackable", nullable = false)
     private boolean unstackable;
 
     @Getter
     @Setter
-    @Column(name = "dungeon_item")
+    @Column(name = "dungeon_item", nullable = false)
     private boolean dungeonItem;
 
     @Getter
@@ -125,12 +125,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "tiered_stats", nullable = false)
-    @Convert(converter = StringIntegerListMapConverter.class)
-    private Map<String, List<Integer>> tieredStats;
+    @Convert(converter = StringDoubleListMapConverter.class)
+    private Map<String, List<Double>> tieredStats;
 
     @Getter
     @Setter
-    @Column(name = "gear_score")
+    @Column(name = "gear_score", nullable = false)
     private Integer gearScore;
 
     @Getter
@@ -158,7 +158,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "ability_damage_scaling")
+    @Column(name = "ability_damage_scaling", nullable = false)
     private Double abilityDamageScaling;
 
     @Getter
