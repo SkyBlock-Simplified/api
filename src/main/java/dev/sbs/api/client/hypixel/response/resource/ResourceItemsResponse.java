@@ -38,7 +38,7 @@ public class ResourceItemsResponse {
         @Getter private boolean dungeonItem;
         @Getter private String color;
         @SerializedName("tiered_stats")
-        @Getter private ConcurrentMap<String, List<Integer>> tieredStats = Concurrent.newMap();
+        @Getter private ConcurrentMap<String, List<Double>> tieredStats = Concurrent.newMap();
         @SerializedName("gear_score")
         @Getter private int gearScore;
         @Getter private ItemRequirements requirements;
