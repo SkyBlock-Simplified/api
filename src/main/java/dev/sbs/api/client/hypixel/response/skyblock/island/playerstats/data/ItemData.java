@@ -1,13 +1,13 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.data.function.FilterFunction;
 import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.concurrent.Concurrent;

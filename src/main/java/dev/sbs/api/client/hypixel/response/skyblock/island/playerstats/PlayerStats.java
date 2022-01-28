@@ -8,6 +8,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.Item
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.ObjectData;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.PlayerDataHelper;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.StatData;
+import dev.sbs.api.data.function.FilterFunction;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilyModel;
@@ -36,7 +37,6 @@ import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import dev.sbs.api.data.sql.function.FilterFunction;
 import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;

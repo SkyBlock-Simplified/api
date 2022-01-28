@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql;
 
+import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
@@ -23,7 +23,6 @@ import java.util.function.Function;
 public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     private final SqlSession sqlSession;
-    private final Class<T> tClass;
     @Getter private final long startupTime;
 
     /**
@@ -33,7 +32,6 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
      */
     public SqlRepository(@NonNull SqlSession sqlSession) {
         this.sqlSession = sqlSession;
-        this.tClass = Reflection.getSuperClass(this);
         long startTime = System.currentTimeMillis();
         this.findAll();
         this.startupTime = System.currentTimeMillis() - startTime;
@@ -58,7 +56,9 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
                     .getResultList()
             );
         } catch (Exception exception) {
-            throw new SqlException(exception);
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
         }
     }
 
@@ -71,9 +71,11 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
     public T save(Session session, T model) throws SqlException {
         try {
             Serializable identifier = session.save(model);
-            return session.get(this.tClass, identifier);
+            return session.get(this.getTClass(), identifier);
         } catch (Exception exception) {
-            throw new SqlException(exception);
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
         }
     }
 
@@ -90,7 +92,9 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         } catch (NonUniqueObjectException nuoException) {
             return model;
         } catch (Exception exception) {
-            throw new SqlException(exception);
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
         }
     }
 
@@ -104,7 +108,9 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         try {
             session.saveOrUpdate(model);
         } catch (Exception exception) {
-            throw new SqlException(exception);
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
         }
     }
 

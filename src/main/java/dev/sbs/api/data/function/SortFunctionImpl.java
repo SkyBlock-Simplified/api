@@ -1,4 +1,4 @@
-package dev.sbs.api.data.sql.function;
+package dev.sbs.api.data.function;
 
 import dev.sbs.api.data.model.Model;
 import lombok.Getter;

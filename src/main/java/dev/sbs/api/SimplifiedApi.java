@@ -222,7 +222,9 @@ public final class SimplifiedApi {
             if (sqlSession.isActive())
                 sqlSession.shutdown();
         } else
-            throw new SqlException("Database is not active!");
+            throw SimplifiedException.of(SqlException.class)
+                .withMessage("Database is not active!")
+                .build();
     }
 
     public static BuilderManager getBuilderManager() {
@@ -399,7 +401,9 @@ public final class SimplifiedApi {
         if (serviceManager.isRegistered(SqlSession.class))
             return serviceManager.get(SqlSession.class);
         else
-            throw new SqlException("Database has not been initialized!");
+            throw SimplifiedException.of(SqlException.class)
+                .withMessage("Database has not been initialized!")
+                .build();
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {

@@ -1,4 +1,4 @@
-package dev.sbs.api.data.sql.function;
+package dev.sbs.api.data.function;
 
 @FunctionalInterface
 public interface TriFunction<T, U, V, R> {

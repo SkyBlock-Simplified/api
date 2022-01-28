@@ -74,7 +74,9 @@ public final class SqlSession {
 
             this.startupTime = System.currentTimeMillis() - startTime;
         } else
-            throw new SqlException("Database has already cached repositories!");
+            throw SimplifiedException.of(SqlException.class)
+                .withMessage("Database has already cached repositories!")
+                .build();
     }
 
     /**
@@ -96,7 +98,9 @@ public final class SqlSession {
                     .build()
                 );
         } else
-            throw new SqlException("Database connection is not active!");
+            throw SimplifiedException.of(SqlException.class)
+                .withMessage("Database connection is not active!")
+                .build();
     }
 
     @SuppressWarnings("unchecked")
@@ -165,7 +169,9 @@ public final class SqlSession {
             this.active = true;
             this.initializationTime = System.currentTimeMillis() - startTime;
         } else
-            throw new SqlException("Database is already initialized!");
+            throw SimplifiedException.of(SqlException.class)
+                .withMessage("Database is already initialized!")
+                .build();
     }
 
     public Session openSession() {
@@ -202,7 +208,9 @@ public final class SqlSession {
             @Cleanup Session session = this.openSession();
             consumer.accept(session);
         } catch (Exception exception) {
-            throw new SqlException(exception);
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
         }
     }
 
@@ -211,7 +219,9 @@ public final class SqlSession {
             @Cleanup Session session = this.openSession();
             return function.apply(session);
         } catch (Exception exception) {
-            throw new SqlException(exception);
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
         }
     }
 
