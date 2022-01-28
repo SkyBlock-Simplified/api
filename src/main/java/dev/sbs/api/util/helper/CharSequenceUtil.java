@@ -1,16 +1,18 @@
 package dev.sbs.api.util.helper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * <p>Operations on {@link CharSequence} that are
  * {@code null} safe.</p>
  *
  * @see CharSequence
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CharSequenceUtil {
 
     private static final int NOT_FOUND = -1;
-
-    private CharSequenceUtil() { }
 
     //-----------------------------------------------------------------------
     /**

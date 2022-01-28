@@ -2,6 +2,8 @@ package dev.sbs.api.util.helper;
 
 import com.google.common.base.Preconditions;
 import dev.sbs.api.reflection.Reflection;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -16,6 +18,7 @@ import java.util.regex.Pattern;
 /**
  * <p>Provides extra functionality for Java Number classes.</p>
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NumberUtil {
 
     /** Reusable Long constant for zero. */
@@ -101,8 +104,6 @@ public class NumberUtil {
         FORMAT_SUFFIX.put(1_000_000_000_000_000L, "P");
         FORMAT_SUFFIX.put(1_000_000_000_000_000_000L, "E");
     }
-
-    private NumberUtil() { }
 
     public static int ceil(double number) {
         int floor = (int)number;

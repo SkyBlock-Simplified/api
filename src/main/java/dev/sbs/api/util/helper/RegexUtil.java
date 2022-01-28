@@ -1,8 +1,9 @@
 package dev.sbs.api.util.helper;
 
-import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.util.MaxSizeLinkedMap;
 import dev.sbs.api.util.comparator.LastCharCompare;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
  *
  * @see Pattern
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegexUtil {
 
     private static final transient LinkedHashMap<String, String> ORDERED_MESSAGES = new MaxSizeLinkedMap<>(100);
@@ -27,7 +29,7 @@ public class RegexUtil {
 
     // SkyBlock
     public static final Pattern SERVER_REGEX = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{2}) (m(?:ini|ega)?[0-9]{1,3}[A-Za-z])");
-    public static final Pattern API_KEY_REGEX = Pattern.compile("§aYour new API key is §r§b" + HypixelApiBuilder.apiKeyRegex.pattern() + "§r");
+    public static final Pattern API_KEY_REGEX = Pattern.compile("§aYour new API key is §r§b" + StringUtil.UUID_REGEX.pattern() + "§r");
     public static final Pattern TELEPORT_REGEX = Pattern.compile("§aWarped from the §r(.*?)§r§a to the §r(.*?)§r§a!§r");
     public static final Pattern MANA_REGEX = Pattern.compile("§aUsed §r§6(.*?)§r§a! §r§b\\(([\\d]+) Mana\\)§r");
 

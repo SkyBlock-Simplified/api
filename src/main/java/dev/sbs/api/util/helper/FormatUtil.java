@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Format strings using {@link MessageFormat}.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class FormatUtil { // https://regex101.com/r/RFixIy/1
+public class FormatUtil { // https://regex101.com/r/RFixIy/1
 
     private static final transient LinkedHashMap<String, MessageFormat> MESSAGE_CACHE = new MaxSizeLinkedMap<>(1000);
 

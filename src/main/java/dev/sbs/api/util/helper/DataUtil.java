@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 @SuppressWarnings("all")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DataUtil {
+public class DataUtil {
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 

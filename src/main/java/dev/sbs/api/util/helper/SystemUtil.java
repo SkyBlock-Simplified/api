@@ -1,5 +1,8 @@
 package dev.sbs.api.util.helper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.File;
 import java.util.Optional;
 
@@ -15,6 +18,7 @@ import java.util.Optional;
  * #ThreadSafe#
  * </p>
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SystemUtil {
 
     /**
@@ -1210,20 +1214,6 @@ public class SystemUtil {
             return false;
 
         return osName.startsWith(osNamePrefix);
-    }
-
-    // -----------------------------------------------------------------------
-    /**
-     * <p>
-     * SystemUtils instances should NOT be constructed in standard programming. Instead, the class should be used as
-     * {@code SystemUtils.FILE_SEPARATOR}.
-     * </p>
-     * <p>
-     * This constructor is public to permit tools that require a JavaBean instance to operate.
-     * </p>
-     */
-    public SystemUtil() {
-        super();
     }
 
 }

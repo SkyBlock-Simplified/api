@@ -12,11 +12,9 @@ import lombok.Getter;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public final class HypixelApiBuilder extends ApiBuilder<HypixelRequestInterface> {
 
-    public static final Pattern apiKeyRegex = Pattern.compile("[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12}");
     @Getter
     private UUID apiKey;
 

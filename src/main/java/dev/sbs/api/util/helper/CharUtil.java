@@ -1,5 +1,7 @@
 package dev.sbs.api.util.helper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
@@ -11,6 +13,7 @@ import lombok.NonNull;
  *
  * <p>#ThreadSafe#</p>
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CharUtil {
 
     /**
@@ -43,8 +46,6 @@ public class CharUtil {
             CHAR_STRING_ARRAY[c] = String.valueOf(c);
         }
     }
-
-    private CharUtil() { }
 
     /**
      * <p>Converts the String to a Character using the first character, returning

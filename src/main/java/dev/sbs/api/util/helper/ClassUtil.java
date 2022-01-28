@@ -1,5 +1,8 @@
 package dev.sbs.api.util.helper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.Map;
  * non-canonical method variants work with the JVM names, such as
  * {@code [I}. </p>
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClassUtil {
 
     /**
@@ -105,18 +109,6 @@ public class ClassUtil {
         addAbbreviation("byte", "B");
         addAbbreviation("double", "D");
         addAbbreviation("char", "C");
-    }
-
-    /**
-     * <p>ClassUtils instances should NOT be constructed in standard programming.
-     * Instead, the class should be used as
-     * {@code ClassUtils.getShortClassName(cls)}.</p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean
-     * instance to operate.</p>
-     */
-    public ClassUtil() {
-      super();
     }
 
     // Short class name

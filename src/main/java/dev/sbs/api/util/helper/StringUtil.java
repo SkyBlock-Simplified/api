@@ -1,6 +1,8 @@
 package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.builder.string.StringBuilder;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.text.translate.*;
 
 import java.io.IOException;
@@ -98,6 +100,7 @@ import java.util.regex.Pattern;
  * <p>#ThreadSafe#</p>
  * @see String
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtil {
 
     private static final int STRING_BUILDER_SIZE = 256;
@@ -144,11 +147,9 @@ public class StringUtil {
     private static final Pattern STRIP_ACCENTS_PATTERN = Pattern.compile("\\p{InCombiningDiacriticalMarks}+"); //$NON-NLS-1$
 
     // UUID Pattern Matching
-    private static final Pattern UUID_REGEX = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}");
-    private static final Pattern TRIMMED_UUID_REGEX = Pattern.compile("[a-f0-9]{12}4[a-f0-9]{3}[89aAbB][a-f0-9]{15}");
+    public static final Pattern UUID_REGEX = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}");
+    public static final Pattern TRIMMED_UUID_REGEX = Pattern.compile("[a-f0-9]{12}4[a-f0-9]{3}[89aAbB][a-f0-9]{15}");
     private static final Pattern ADD_UUID_HYPHENS_REGEX = Pattern.compile("([a-f0-9]{8})([a-f0-9]{4})(4[a-f0-9]{3})([89aAbB][a-f0-9]{3})([a-f0-9]{12})");
-
-    private StringUtil() { }
 
     /**
      * <p>Abbreviates a String using ellipses. This will turn

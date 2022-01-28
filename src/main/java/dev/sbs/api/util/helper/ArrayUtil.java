@@ -2,6 +2,8 @@ package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.mutable.MutableInt;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -21,6 +23,7 @@ import java.util.*;
  * <p>#ThreadSafe#
  */
 @SuppressWarnings("unchecked")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ArrayUtil {
 
     /**
@@ -148,8 +151,6 @@ public final class ArrayUtil {
      * various method from {@link java.util.List}.
      */
     public static final int INDEX_NOT_FOUND = -1;
-
-    private ArrayUtil() { }
 
     /**
      * <p>Copies the given array and adds the given element at the end of the new array.

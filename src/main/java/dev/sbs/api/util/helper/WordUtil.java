@@ -1,6 +1,8 @@
 package dev.sbs.api.util.helper;
 
 import com.google.common.base.Preconditions;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,9 +19,8 @@ import java.util.regex.Pattern;
  * {@code null} input. Each method documents its behavior in more detail.
  * </p>
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WordUtil {
-
-    private WordUtil() { }
 
     // Wrapping
     //--------------------------------------------------------------------------

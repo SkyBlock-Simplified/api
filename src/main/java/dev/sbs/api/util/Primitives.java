@@ -1,6 +1,8 @@
 package dev.sbs.api.util;
 
 import dev.sbs.api.util.helper.ArrayUtil;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.Collections;
@@ -13,9 +15,8 @@ import java.util.Set;
  * types.
  */
 @SuppressWarnings("all")
-public final class Primitives {
-
-    private Primitives() {}
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Primitives {
 
     /** A map from primitive types to their corresponding wrapper types. */
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;

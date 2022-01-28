@@ -2,6 +2,8 @@ package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.text.SimpleDateFormat;
 
@@ -9,6 +11,7 @@ import java.text.SimpleDateFormat;
  * A collection of time-based utilities to assist with converting words
  * into ticks and datetime values into milliseconds.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeUtil {
 
 	public static final transient SimpleDateFormat SQL_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

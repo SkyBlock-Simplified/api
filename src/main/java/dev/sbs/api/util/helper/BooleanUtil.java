@@ -1,6 +1,8 @@
 package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.Primitives;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>Operations on boolean primitives and Boolean objects.</p>
@@ -11,9 +13,8 @@ import dev.sbs.api.util.Primitives;
  *
  * <p>#ThreadSafe#</p>
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BooleanUtil {
-
-    private BooleanUtil() { }
 
     // Boolean utilities
     //--------------------------------------------------------------------------

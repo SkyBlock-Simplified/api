@@ -1,6 +1,8 @@
 package dev.sbs.api.util.helper;
 
 import com.google.common.collect.Iterables;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -11,7 +13,8 @@ import java.util.stream.Collectors;
 /**
  * Array and List Checking/Converting
  */
-public final class ListUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ListUtil {
 
 	/**
 	 * Gets if the {@code value} is empty or null.

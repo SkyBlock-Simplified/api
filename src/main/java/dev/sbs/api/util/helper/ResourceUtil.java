@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResourceUtil {
+public class ResourceUtil {
 
     public static Map<String, String> getEnvironmentVariables() {
         Map<String, String> env = new HashMap<>();

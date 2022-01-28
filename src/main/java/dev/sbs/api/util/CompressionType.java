@@ -1,7 +1,7 @@
 package dev.sbs.api.util;
 
 /**
- * Defines the types of compression supported by this library for NBT data.
+ * Defines the types of compression used in stream data.
  */
 public enum CompressionType {
 
