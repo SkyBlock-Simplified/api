@@ -22,6 +22,7 @@ import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minions.MinionModel;
 import dev.sbs.api.data.model.skyblock.pet_exp_scales.PetExpScaleModel;
 import dev.sbs.api.data.model.skyblock.pets.PetModel;
+import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sack_items.SackItemModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
@@ -74,7 +75,7 @@ public class SkyBlockIsland {
     private CommunityUpgrades communityUpgrades;
     private Banking banking;
     @SerializedName("cute_name")
-    private ProfileName profileName;
+    private String profileName;
     @SerializedName("game_mode")
     private String gameMode;
     @Getter ConcurrentLinkedList<Member> members = Concurrent.newLinkedList();
@@ -119,8 +120,8 @@ public class SkyBlockIsland {
         return Optional.empty();
     }
 
-    public Optional<ProfileName> getProfileName() {
-        return Optional.ofNullable(this.profileName);
+    public Optional<ProfileModel> getProfileName() {
+        return SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirst(ProfileModel::getKey, this.profileName.toUpperCase());
     }
 
     public Minion getMinion(String minionName) {
@@ -148,53 +149,6 @@ public class SkyBlockIsland {
 
     public boolean hasMember(UUID uniqueId) {
         return this.getMember(uniqueId).isPresent();
-    }
-
-    public enum ProfileName {
-
-        @SerializedName("Apple")
-        APPLE,
-        @SerializedName("Banana")
-        BANANA,
-        @SerializedName("Blueberry")
-        BLUEBERRY,
-        @SerializedName("Coconut")
-        COCONUT,
-        @SerializedName("Cucumber")
-        CUCUMBER,
-        @SerializedName("Grapes")
-        GRAPES,
-        @SerializedName("Kiwi")
-        KIWI,
-        @SerializedName("Lemon")
-        LEMON,
-        @SerializedName("Lime")
-        LIME,
-        @SerializedName("Mango")
-        MANGO,
-        @SerializedName("Orange")
-        ORANGE,
-        @SerializedName("Papaya")
-        PAPAYA,
-        @SerializedName("Peach")
-        PEACH,
-        @SerializedName("Pear")
-        PEAR,
-        @SerializedName("Pineapple")
-        PINEAPPLE,
-        @SerializedName("Pomegranate")
-        POMEGRANATE,
-        @SerializedName("Raspberry")
-        RASPBERRY,
-        @SerializedName("Strawberry")
-        STRAWBERRY,
-        @SerializedName("Tomato")
-        TOMATO,
-        @SerializedName("Watermelon")
-        WATERMELON,
-        @SerializedName("Zucchini")
-        ZUCCHINI
-
     }
 
     public enum Storage {
@@ -1753,7 +1707,7 @@ public class SkyBlockIsland {
             skyBlockIsland.islandId = StringUtil.toUUID(wrapObject(rootObject, "profile_id", JsonElement::getAsString).get());
             skyBlockIsland.gameMode = wrapObject(rootObject, "game_mode", JsonElement::getAsString).orElse(null);
             skyBlockIsland.banking = gson.fromJson(wrapObject(rootObject, "banking", JsonElement::getAsJsonObject).orElse(null), Banking.class);
-            skyBlockIsland.profileName = gson.fromJson(wrapObject(rootObject, "cute_name", JsonElement::getAsString).orElse(null), ProfileName.class);
+            skyBlockIsland.profileName = wrapObject(rootObject, "cute_name", JsonElement::getAsString).orElse(null);
             skyBlockIsland.communityUpgrades = gson.fromJson(wrapObject(rootObject, "community_upgrades", JsonElement::getAsJsonObject).orElse(null), CommunityUpgrades.class);
             Map<String, LinkedTreeMap<String, Object>> memberMap = gson.fromJson(rootObject.getAsJsonObject("members"), Map.class);
 
