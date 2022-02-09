@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.rarities;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,12 +15,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_rarities"
+    name = "skyblock_rarities",
+    indexes = {
+        @Index(
+            columnList = "emoji_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RaritySqlModel implements RarityModel, SqlModel {
@@ -54,6 +61,11 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Setter
     @Column(name = "pet_exp_offset")
     private Integer petExpOffset;
+
+    @Getter
+    @Setter
+    @Column(name = "emoji_key", length = 256)
+    private EmojiSqlModel emoji;
 
     @Getter
     @UpdateTimestamp

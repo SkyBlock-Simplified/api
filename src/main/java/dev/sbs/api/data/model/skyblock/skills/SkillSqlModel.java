@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.skills;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -73,7 +73,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key")
-    private BotEmojiSqlModel emoji;
+    private EmojiSqlModel emoji;
 
     @Getter
     @Setter

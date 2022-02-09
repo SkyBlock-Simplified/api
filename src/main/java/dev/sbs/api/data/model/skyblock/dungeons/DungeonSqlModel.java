@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.dungeons;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -53,7 +53,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key")
-    private BotEmojiSqlModel emoji;
+    private EmojiSqlModel emoji;
 
     @Getter
     @Setter

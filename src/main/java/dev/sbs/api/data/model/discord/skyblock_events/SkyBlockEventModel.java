@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.discord.skyblock_events;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 
 import java.time.Instant;
 
@@ -11,7 +11,7 @@ public interface SkyBlockEventModel extends Model {
 
     String getName();
 
-    BotEmojiModel getBotEmoji();
+    EmojiModel getBotEmoji();
 
     String getDescription();
 

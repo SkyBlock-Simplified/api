@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.slayers;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 
 public interface SlayerModel extends Model {
 
@@ -9,7 +9,7 @@ public interface SlayerModel extends Model {
 
     String getName();
 
-    BotEmojiModel getEmoji();
+    EmojiModel getEmoji();
 
     Double getWeightDivider();
 

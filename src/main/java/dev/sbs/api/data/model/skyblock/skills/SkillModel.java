@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.skills;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 
 public interface SkillModel extends Model {
@@ -16,7 +16,7 @@ public interface SkillModel extends Model {
 
     ItemModel getItem();
 
-    BotEmojiModel getEmoji();
+    EmojiModel getEmoji();
 
     boolean isCosmetic();
 

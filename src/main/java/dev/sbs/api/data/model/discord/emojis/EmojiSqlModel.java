@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.discord.bot_emojis;
+package dev.sbs.api.data.model.discord.emojis;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.guilds.GuildSqlModel;
@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_bot_emojis",
+    name = "discord_emojis",
     indexes = {
         @Index(
             columnList = "guild_id"
@@ -31,13 +32,18 @@ import java.time.Instant;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
+public class EmojiSqlModel implements EmojiModel, SqlModel {
 
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
+
+    @Getter
+    @Setter
+    @Column(name = "emoji_id", nullable = false, unique = true)
+    private Long emojiId;
 
     @Getter
     @Setter
@@ -57,11 +63,12 @@ public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "emoji_id", nullable = false, unique = true)
-    private Long emojiId;
+    @Column(name = "animated", nullable = false)
+    private boolean animated;
 
     @Getter
-    @Column(name = "submitted_at", nullable = false)
+    @CreationTimestamp
+    @Column(name = "submitted_at")
     private Instant submittedAt;
 
     @Getter
@@ -72,8 +79,8 @@ public class BotEmojiSqlModel implements BotEmojiModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BotEmojiSqlModel)) return false;
-        BotEmojiSqlModel that = (BotEmojiSqlModel) o;
+        if (!(o instanceof EmojiSqlModel)) return false;
+        EmojiSqlModel that = (EmojiSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())

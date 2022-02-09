@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.rarities;
 
 import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 
 public interface RarityModel extends Model {
 
@@ -13,5 +14,7 @@ public interface RarityModel extends Model {
     boolean isKeyValid();
 
     Integer getPetExpOffset();
+
+    EmojiModel getEmoji();
 
 }

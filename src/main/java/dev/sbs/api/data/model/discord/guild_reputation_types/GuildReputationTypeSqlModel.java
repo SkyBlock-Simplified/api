@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -65,6 +66,7 @@ public class GuildReputationTypeSqlModel implements GuildReputationTypeModel, Sq
     private boolean enabled;
 
     @Getter
+    @CreationTimestamp
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;
 

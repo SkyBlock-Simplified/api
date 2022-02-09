@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -110,6 +111,7 @@ public class GuildSqlModel implements GuildModel, SqlModel {
     private List<Long> helperRoles;
 
     @Getter
+    @CreationTimestamp
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;
 

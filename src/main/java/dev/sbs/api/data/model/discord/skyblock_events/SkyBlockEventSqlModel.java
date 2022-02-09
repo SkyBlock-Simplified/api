@@ -1,13 +1,14 @@
 package dev.sbs.api.data.model.discord.skyblock_events;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -53,7 +54,7 @@ public class SkyBlockEventSqlModel implements SkyBlockEventModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key")
-    private BotEmojiSqlModel botEmoji;
+    private EmojiSqlModel botEmoji;
 
     @Getter
     @Setter
@@ -81,6 +82,7 @@ public class SkyBlockEventSqlModel implements SkyBlockEventModel, SqlModel {
     private String thirdPartyJsonUrl;
 
     @Getter
+    @CreationTimestamp
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;
 

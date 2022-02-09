@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.pets;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiSqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.data.model.skyblock.pet_types.PetTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillSqlModel;
@@ -88,7 +88,7 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key")
-    private BotEmojiSqlModel emoji;
+    private EmojiSqlModel emoji;
 
     @Getter
     @Setter

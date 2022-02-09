@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.dungeons;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.bot_emojis.BotEmojiModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 
 public interface DungeonModel extends Model {
 
@@ -9,7 +9,7 @@ public interface DungeonModel extends Model {
 
     String getName();
 
-    BotEmojiModel getEmoji();
+    EmojiModel getEmoji();
 
     Double getWeightMultiplier();
 
