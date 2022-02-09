@@ -4,6 +4,7 @@ import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ArrayUtil;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.tuple.Triple;
@@ -18,12 +19,13 @@ import java.util.Map;
 @SuppressWarnings("all")
 public abstract class SimplifiedException extends RuntimeException {
 
-    @Getter
-    private final ConcurrentList<Triple<String, String, Boolean>> fields;
+    @Getter private final ConcurrentList<Triple<String, String, Boolean>> fields;
+    @Getter private final ConcurrentMap<String, Object> data;
 
-    protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields) {
+    protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
         super(message, cause, enableSuppression, writableStackTrace);
-        this.fields = fields;
+        this.fields = Concurrent.newUnmodifiableList(fields);
+        this.data = Concurrent.newUnmodifiableMap(data);
     }
 
     public static <T extends SimplifiedException> ExceptionBuilder<T> of(Class<T> eClass) {
@@ -43,9 +45,15 @@ public abstract class SimplifiedException extends RuntimeException {
         protected boolean writableStackTrace = true;
         protected Throwable cause;
         private final ConcurrentList<Triple<String, String, Boolean>> fields = Concurrent.newList();
+        private final ConcurrentMap<String, Object> data = Concurrent.newMap();
+
+        public ExceptionBuilder<T> addData(String key, Object value) {
+            this.data.put(key, value);
+            return this;
+        }
 
         public ExceptionBuilder<T> addField(String name, String value) {
-            return this.addField(name, value, true);
+            return this.addField(name, value, false);
         }
 
         public ExceptionBuilder<T> addField(String name, String value, boolean inline) {
@@ -93,15 +101,15 @@ public abstract class SimplifiedException extends RuntimeException {
 
         @Override
         public T build() {
-            return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace, this.fields);
+            return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace, this.fields, this.data);
         }
 
     }
 
     public static class WrappedException extends SimplifiedException {
 
-        private WrappedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields) {
-            super(message, cause, enableSuppression, writableStackTrace, fields);
+        private WrappedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
+            super(message, cause, enableSuppression, writableStackTrace, fields, data);
         }
 
     }
