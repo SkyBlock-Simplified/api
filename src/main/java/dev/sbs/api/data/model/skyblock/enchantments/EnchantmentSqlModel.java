@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.skyblock.enchantments;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.enchantment_families.EnchantmentFamilySqlModel;
+import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -10,16 +11,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(
@@ -62,6 +56,12 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "mob_types", nullable = false)
+    @Convert(converter = StringListConverter.class)
+    private List<String> mobTypes;
+
+    @Getter
+    @Setter
     @Column(name = "required_level", nullable = false)
     private Integer requiredLevel;
 
@@ -83,6 +83,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
             .append(this.getName(), that.getName())
             .append(this.getFamily(), that.getFamily())
             .append(this.getDescription(), that.getDescription())
+            .append(this.getMobTypes(), that.getMobTypes())
             .append(this.getRequiredLevel(), that.getRequiredLevel())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
@@ -96,6 +97,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
             .append(this.getName())
             .append(this.getFamily())
             .append(this.getDescription())
+            .append(this.getMobTypes())
             .append(this.getRequiredLevel())
             .append(this.getUpdatedAt())
             .build();
