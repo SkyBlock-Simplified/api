@@ -13,6 +13,7 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +93,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
             .forEach(enchantmentStatModel -> {
                 this.enchantmentStats.get(enchantmentModel).add(enchantmentStatModel);
 
-                if (!enchantmentStatModel.isPercentage() && enchantmentStatModel.getStat() != null) {
+                if (!enchantmentStatModel.isPercentage() && enchantmentStatModel.getStat() != null && ListUtil.isEmpty(enchantmentModel.getMobTypes())) {
                     double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * value);
                     this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
                 }
