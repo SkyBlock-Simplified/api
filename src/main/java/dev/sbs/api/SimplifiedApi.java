@@ -37,6 +37,7 @@ import dev.sbs.api.data.model.discord.guild_reputation.GuildReputationSqlReposit
 import dev.sbs.api.data.model.discord.guild_reputation_types.GuildReputationTypeSqlRepository;
 import dev.sbs.api.data.model.discord.guild_skyblock_events.GuildSkyBlockEventSqlRepository;
 import dev.sbs.api.data.model.discord.guilds.GuildSqlRepository;
+import dev.sbs.api.data.model.discord.optimizer_mob_types.OptimizerMobTypeSqlRepository;
 import dev.sbs.api.data.model.discord.optimizer_support_items.OptimizerSupportItemSqlRepository;
 import dev.sbs.api.data.model.discord.sbs_beta_testers.SbsBetaTesterSqlRepository;
 import dev.sbs.api.data.model.discord.sbs_developers.SbsDeveloperSqlRepository;
@@ -295,6 +296,7 @@ public final class SimplifiedApi {
             MelodySongSqlRepository.class,
             MenuSqlRepository.class,
             MinionUniqueSqlRepository.class,
+            OptimizerMobTypeSqlRepository.class,
             PetExpScaleSqlRepository.class,
             PetScoreSqlRepository.class,
             PetTypeSqlRepository.class,
