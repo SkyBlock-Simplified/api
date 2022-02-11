@@ -1,7 +1,7 @@
 package dev.sbs.api.util.math.tokenizer;
 
-import dev.sbs.api.util.math.function.Function;
 import dev.sbs.api.util.math.function.Functions;
+import dev.sbs.api.util.math.function.MathFunction;
 import dev.sbs.api.util.math.operator.Operator;
 import dev.sbs.api.util.math.operator.Operators;
 
@@ -14,7 +14,7 @@ public class Tokenizer {
 
     private final int expressionLength;
 
-    private final Map<String, Function> userFunctions;
+    private final Map<String, MathFunction> userFunctions;
 
     private final Map<String, Operator> userOperators;
 
@@ -27,7 +27,7 @@ public class Tokenizer {
     private Token lastToken;
 
 
-    public Tokenizer(String expression, final Map<String, Function> userFunctions,
+    public Tokenizer(String expression, final Map<String, MathFunction> userFunctions,
                      final Map<String, Operator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
         this.expression = expression.trim().toCharArray();
         this.expressionLength = this.expression.length;
@@ -37,7 +37,7 @@ public class Tokenizer {
         this.implicitMultiplication = implicitMultiplication;
     }
 
-    public Tokenizer(String expression, final Map<String, Function> userFunctions,
+    public Tokenizer(String expression, final Map<String, MathFunction> userFunctions,
                      final Map<String, Operator> userOperators, final Set<String> variableNames) {
         this.expression = expression.trim().toCharArray();
         this.expressionLength = this.expression.length;
@@ -165,7 +165,7 @@ public class Tokenizer {
                 lastValidLen = len;
                 lastValidToken = new VariableToken(name);
             } else {
-                final Function f = getFunction(name);
+                final MathFunction f = getFunction(name);
                 if (f != null) {
                     lastValidLen = len;
                     lastValidToken = new FunctionToken(f);
@@ -182,8 +182,8 @@ public class Tokenizer {
         return lastToken;
     }
 
-    private Function getFunction(String name) {
-        Function f = null;
+    private MathFunction getFunction(String name) {
+        MathFunction f = null;
         if (this.userFunctions != null) {
             f = this.userFunctions.get(name);
         }

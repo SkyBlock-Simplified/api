@@ -1,8 +1,8 @@
 package dev.sbs.api.util.math;
 
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.math.function.Function;
 import dev.sbs.api.util.math.function.Functions;
+import dev.sbs.api.util.math.function.MathFunction;
 import dev.sbs.api.util.math.operator.Operator;
 import dev.sbs.api.util.math.shuntingyard.ShuntingYard;
 
@@ -20,7 +20,7 @@ import java.util.Set;
 public class ExpressionBuilder {
 
     private final String expression;
-    private final Map<String, Function> userFunctions;
+    private final Map<String, MathFunction> userFunctions;
     private final Map<String, Operator> userOperators;
     private final Set<String> variableNames;
     private boolean implicitMultiplication = true;
@@ -41,37 +41,37 @@ public class ExpressionBuilder {
     }
 
     /**
-     * Add a {@link Function} implementation available for use in the expression
+     * Add a {@link MathFunction} implementation available for use in the expression
      *
-     * @param function the custom {@link Function} implementation that should be available for use in the expression.
+     * @param function the custom {@link MathFunction} implementation that should be available for use in the expression.
      * @return the ExpressionBuilder instance
      */
-    public ExpressionBuilder function(Function function) {
+    public ExpressionBuilder function(MathFunction function) {
         this.userFunctions.put(function.getName(), function);
         return this;
     }
 
     /**
-     * Add multiple {@link Function} implementations available for use in the expression
+     * Add multiple {@link MathFunction} implementations available for use in the expression
      *
-     * @param functions the custom {@link Function} implementations
+     * @param functions the custom {@link MathFunction} implementations
      * @return the ExpressionBuilder instance
      */
-    public ExpressionBuilder functions(Function... functions) {
-        for (Function f : functions)
+    public ExpressionBuilder functions(MathFunction... functions) {
+        for (MathFunction f : functions)
             this.userFunctions.put(f.getName(), f);
 
         return this;
     }
 
     /**
-     * Add multiple {@link Function} implementations available for use in the expression
+     * Add multiple {@link MathFunction} implementations available for use in the expression
      *
-     * @param functions A {@link List} of custom {@link Function} implementations
+     * @param functions A {@link List} of custom {@link MathFunction} implementations
      * @return the ExpressionBuilder instance
      */
-    public ExpressionBuilder functions(List<Function> functions) {
-        for (Function f : functions)
+    public ExpressionBuilder functions(List<MathFunction> functions) {
+        for (MathFunction f : functions)
             this.userFunctions.put(f.getName(), f);
 
         return this;

@@ -1,8 +1,8 @@
 package dev.sbs.api.util.math;
 
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.math.function.Function;
 import dev.sbs.api.util.math.function.Functions;
+import dev.sbs.api.util.math.function.MathFunction;
 import dev.sbs.api.util.math.operator.Operator;
 import dev.sbs.api.util.math.operator.Operators;
 import dev.sbs.api.util.math.tokenizer.FunctionToken;
@@ -133,7 +133,7 @@ public class Expression {
                     count++;
                     break;
                 case Token.TOKEN_FUNCTION:
-                    final Function func = ((FunctionToken) token).getFunction();
+                    final MathFunction func = ((FunctionToken) token).getFunction();
                     final int argsNum = ((FunctionToken) token).getArgumentCount();
 
                     if (func.getMinArguments() > argsNum || func.getMaxArguments() < argsNum)
@@ -337,7 +337,7 @@ public class Expression {
 
                 return leftOperand + symbol + rightOperand;
             case Token.TOKEN_FUNCTION:
-                Function function = ((FunctionToken) token).getFunction();
+                MathFunction function = ((FunctionToken) token).getFunction();
 
                 if (function.getName().equals("pow")) {
                     tokens.set(tokens.size() - 1, new OperatorToken(Operators.getBuiltinOperator('^', 2)));

@@ -6,24 +6,21 @@ import lombok.Getter;
 /**
  * A class representing a Function which can be used in an expression
  */
-public abstract class Function {
+public abstract class MathFunction {
 
-    @Getter
-    protected final int minArguments;
-    @Getter
-    protected final int maxArguments;
+    @Getter protected final int minArguments;
+    @Getter protected final int maxArguments;
     /**
      * Get the name of the Function
      */
-    @Getter
-    private final String name;
+    @Getter private final String name;
 
     /**
      * Create a new Function with a given name that takes a single argument
      *
      * @param name the name of the Function
      */
-    public Function(String name) {
+    public MathFunction(String name) {
         this(name, 1, 1);
     }
 
@@ -33,7 +30,7 @@ public abstract class Function {
      * @param name         the name of the Function
      * @param numArguments the number of arguments the function takes
      */
-    public Function(String name, int numArguments) {
+    public MathFunction(String name, int numArguments) {
         this(name, numArguments, numArguments);
     }
 
@@ -44,7 +41,7 @@ public abstract class Function {
      * @param minArguments the minimum number of arguments the function takes
      * @param maxArguments the maximum number of arguments the function takes
      */
-    public Function(String name, int minArguments, int maxArguments) {
+    public MathFunction(String name, int minArguments, int maxArguments) {
         if (minArguments < 0 || minArguments > maxArguments)
             throw new IllegalArgumentException(FormatUtil.format("The number of function arguments can not be less than 0 or more than ''{0}'' for ''{1}''", maxArguments, name));
 
