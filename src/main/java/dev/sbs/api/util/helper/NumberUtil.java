@@ -79,23 +79,25 @@ public class NumberUtil {
         return Pattern.compile(fpPattern);
     }
 
-    private final static TreeMap<Integer, String> ROMAN_MAP = new TreeMap<>();
+    private final static TreeMap<Integer, String> TO_ROMAN_MAP = new TreeMap<>();
+    private final static TreeMap<String, Integer> FROM_ROMAN_MAP = new TreeMap<>();
     private final static NavigableMap<Long, String> FORMAT_SUFFIX = new TreeMap<>();
 
     static {
-        ROMAN_MAP.put(1000, "M");
-        ROMAN_MAP.put(900, "CM");
-        ROMAN_MAP.put(500, "D");
-        ROMAN_MAP.put(400, "CD");
-        ROMAN_MAP.put(100, "C");
-        ROMAN_MAP.put(90, "XC");
-        ROMAN_MAP.put(50, "L");
-        ROMAN_MAP.put(40, "XL");
-        ROMAN_MAP.put(10, "X");
-        ROMAN_MAP.put(9, "IX");
-        ROMAN_MAP.put(5, "V");
-        ROMAN_MAP.put(4, "IV");
-        ROMAN_MAP.put(1, "I");
+        TO_ROMAN_MAP.put(1000, "M");
+        TO_ROMAN_MAP.put(900, "CM");
+        TO_ROMAN_MAP.put(500, "D");
+        TO_ROMAN_MAP.put(400, "CD");
+        TO_ROMAN_MAP.put(100, "C");
+        TO_ROMAN_MAP.put(90, "XC");
+        TO_ROMAN_MAP.put(50, "L");
+        TO_ROMAN_MAP.put(40, "XL");
+        TO_ROMAN_MAP.put(10, "X");
+        TO_ROMAN_MAP.put(9, "IX");
+        TO_ROMAN_MAP.put(5, "V");
+        TO_ROMAN_MAP.put(4, "IV");
+        TO_ROMAN_MAP.put(1, "I");
+        TO_ROMAN_MAP.forEach((value, roman) -> FROM_ROMAN_MAP.put(roman, value));
 
         FORMAT_SUFFIX.put(1_000L, "k");
         FORMAT_SUFFIX.put(1_000_000L, "M");
@@ -145,6 +147,32 @@ public class NumberUtil {
         long truncated = value / (divideBy / 10); // the number part of the output times 10
         boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
         return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
+    }
+
+    public static int fromRoman(String roman) {
+        int result = 0;
+
+        for (int i = 0; i < StringUtil.length(roman); i++) {
+            // Getting value of symbol s[i]
+            int s1 = FROM_ROMAN_MAP.get(Character.toString(roman.charAt(i)));
+
+            // Getting value of symbol s[i+1]
+            if (i + 1 < StringUtil.length(roman)) {
+                int s2 = FROM_ROMAN_MAP.get(Character.toString(roman.charAt(i + 1)));
+
+                // Comparing both values
+                if (s1 >= s2)
+                    result += s1; // Value of current symbol is >= the next symbol
+                else {
+                    // Value of current symbol is < the next symbol
+                    result += s2 - s1;
+                    i++;
+                }
+            } else
+                result += s1;
+        }
+
+        return result;
     }
 
     public static boolean isFinite(double d) {
@@ -252,12 +280,12 @@ public class NumberUtil {
      */
     public static String toRoman(int number) {
         if (number == 0) return "";
-        int highest = ROMAN_MAP.floorKey(number);
+        int highest = TO_ROMAN_MAP.floorKey(number);
 
         if (number == highest)
-            return ROMAN_MAP.get(number);
+            return TO_ROMAN_MAP.get(number);
 
-        return ROMAN_MAP.get(highest) + toRoman(number - highest);
+        return TO_ROMAN_MAP.get(highest) + toRoman(number - highest);
     }
 
     public static <N extends Number> N to(Object value, Class<N> clazz) {
