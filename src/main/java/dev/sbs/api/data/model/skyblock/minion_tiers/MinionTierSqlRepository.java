@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.skyblock.minion_tiers;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class MinionTierSqlRepository extends SqlRepository<MinionTierSqlModel> {
 
-    public MinionTierSqlRepository(@NonNull SqlSession sqlSession) {
+    public MinionTierSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

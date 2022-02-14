@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.discord.optimizer_mob_types;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class OptimizerMobTypeSqlRepository extends SqlRepository<OptimizerMobTypeSqlModel> {
 
-    public OptimizerMobTypeSqlRepository(@NonNull SqlSession sqlSession) {
+    public OptimizerMobTypeSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.skyblock.dungeons;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class DungeonSqlRepository extends SqlRepository<DungeonSqlModel> {
 
-    public DungeonSqlRepository(@NonNull SqlSession sqlSession) {
+    public DungeonSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

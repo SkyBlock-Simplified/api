@@ -10,11 +10,11 @@ import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.ehcache.core.Ehcache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.cache.jcache.MissingCacheStrategy;
+import org.jetbrains.annotations.NotNull;
 
 import javax.cache.expiry.Duration;
 import java.io.File;
@@ -72,12 +72,12 @@ public abstract class SqlConfig extends YamlConfig {
     @Getter
     protected Level loggingLevel;
 
-    public SqlConfig(@NonNull File configDir, @NonNull String fileName, String... header) {
+    public SqlConfig(@NotNull File configDir, @NotNull String fileName, String... header) {
         super(configDir, fileName, header);
         this.setLoggingLevel(Level.toLevel(ResourceUtil.getEnv("DATABASE_LOGGING").orElse(""), Level.WARN));
     }
 
-    Class<SqlModel> addDatabaseModel(@NonNull Class<SqlModel> model) {
+    Class<SqlModel> addDatabaseModel(@NotNull Class<SqlModel> model) {
         this.databaseModels.add(model);
         SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, model.getName())).setLevel(this.getLoggingLevel());
         return model;
@@ -87,11 +87,11 @@ public abstract class SqlConfig extends YamlConfig {
         return Concurrent.newUnmodifiableList(this.databaseModels);
     }
 
-    public final boolean isLoggingLevel(@NonNull Level level) {
+    public final boolean isLoggingLevel(@NotNull Level level) {
         return level.toInt() >= this.loggingLevel.toInt();
     }
 
-    public final void setLoggingLevel(@NonNull Level level) {
+    public final void setLoggingLevel(@NotNull Level level) {
         this.loggingLevel = level;
 
         // Set Logging Level

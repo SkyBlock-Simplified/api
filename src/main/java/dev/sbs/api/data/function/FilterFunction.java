@@ -1,7 +1,7 @@
 package dev.sbs.api.data.function;
 
 import dev.sbs.api.data.model.Model;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
@@ -25,7 +25,7 @@ public interface FilterFunction<T extends Model, R> extends Function<T, R> {
      * {@inheritDoc}
      */
     @Override
-    default <V> FilterFunction<T, V> andThen(@NonNull Function<? super R, ? extends V> after) {
+    default <V> FilterFunction<T, V> andThen(@NotNull Function<? super R, ? extends V> after) {
         return (T t) -> after.apply(apply(t));
     }
 

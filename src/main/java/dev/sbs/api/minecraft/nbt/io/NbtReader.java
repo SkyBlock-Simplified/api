@@ -4,7 +4,7 @@ import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class NbtReader {
 
-    private @NonNull TagTypeRegistry typeRegistry;
+    private @NotNull TagTypeRegistry typeRegistry;
 
     /**
      * Reads a root {@link CompoundTag} from a {@link DataInput} stream.
@@ -24,7 +24,7 @@ public class NbtReader {
      * @return the root {@link CompoundTag} read from the stream.
      * @throws IOException if any I/O error occurs.
      */
-    public CompoundTag fromStream(@NonNull DataInput dataInput) throws IOException {
+    public CompoundTag fromStream(@NotNull DataInput dataInput) throws IOException {
         if (dataInput.readByte() != TagType.COMPOUND.getId())
             throw new IOException("Root tag in NBT structure must be a compound tag.");
 
@@ -40,7 +40,7 @@ public class NbtReader {
      *
      * @return the {@link TagTypeRegistry} currently in use by this reader.
      */
-    @NonNull
+    @NotNull
     public TagTypeRegistry getTypeRegistry() {
         return this.typeRegistry;
     }
@@ -50,7 +50,7 @@ public class NbtReader {
      *
      * @param typeRegistry the new {@link TagTypeRegistry} to be set.
      */
-    public void setTypeRegistry(@NonNull TagTypeRegistry typeRegistry) {
+    public void setTypeRegistry(@NotNull TagTypeRegistry typeRegistry) {
         this.typeRegistry = typeRegistry;
     }
 

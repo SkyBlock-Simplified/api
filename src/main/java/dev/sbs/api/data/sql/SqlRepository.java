@@ -9,9 +9,9 @@ import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,7 +30,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
      *
      * @param sqlSession the sql session to use
      */
-    public SqlRepository(@NonNull SqlSession sqlSession) {
+    public SqlRepository(@NotNull SqlSession sqlSession) {
         this.sqlSession = sqlSession;
         long startTime = System.currentTimeMillis();
         this.findAll();
@@ -42,7 +42,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         return this.sqlSession.with((Function<Session, ? extends ConcurrentList<T>>) this::findAll);
     }
 
-    public final ConcurrentList<T> findAll(@NonNull Session session) throws SqlException {
+    public final ConcurrentList<T> findAll(@NotNull Session session) throws SqlException {
         try {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getTClass());
@@ -85,7 +85,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         });
     }
 
-    public T update(@NonNull Session session, T model) throws SqlException {
+    public T update(@NotNull Session session, T model) throws SqlException {
         try {
             session.update(model);
             return model;
@@ -104,7 +104,7 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         });
     }
 
-    public void saveOrUpdate(@NonNull Session session, T model) throws SqlException {
+    public void saveOrUpdate(@NotNull Session session, T model) throws SqlException {
         try {
             session.saveOrUpdate(model);
         } catch (Exception exception) {

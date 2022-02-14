@@ -8,7 +8,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.util.Primitives;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -57,7 +57,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      *
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code long[]} array.
      */
-    public LongArrayTag(@NonNull List<Long> value) {
+    public LongArrayTag(@NotNull List<Long> value) {
         this(null, value);
     }
 
@@ -67,7 +67,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code long[]} array.
      */
-    public LongArrayTag(String name, @NonNull List<Long> value) {
+    public LongArrayTag(String name, @NotNull List<Long> value) {
         super(name, value.toArray(new Long[0]));
     }
 

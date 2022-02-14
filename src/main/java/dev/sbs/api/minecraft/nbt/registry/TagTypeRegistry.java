@@ -7,7 +7,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.helper.FormatUtil;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -16,13 +16,13 @@ import java.util.Map;
  */
 public class TagTypeRegistry {
 
-    private final BiMap<Byte, @NonNull Class<?>> typeRegistry = HashBiMap.create();
+    private final BiMap<Byte, Class<?>> typeRegistry = HashBiMap.create();
 
     {
         TagType.registerAllTypes(this);
     }
 
-    private final BiMap<Byte, @NonNull Class<? extends Tag<?>>> tagRegistry = HashBiMap.create();
+    private final BiMap<Byte, Class<? extends Tag<?>>> tagRegistry = HashBiMap.create();
 
     {
         TagType.registerAllTags(this);
@@ -35,7 +35,7 @@ public class TagTypeRegistry {
      * @param tClass the java type class.
      * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
      */
-    public void registerClassType(byte id, @NonNull Class<?> tClass) throws TagTypeRegistryException {
+    public void registerClassType(byte id, @NotNull Class<?> tClass) throws TagTypeRegistryException {
         if (id == 0)
             throw new TagTypeRegistryException(FormatUtil.format("Cannot register class type ''{0}'' with ID {1}. That ID is reserved.", tClass.getSimpleName(), id));
 
@@ -62,7 +62,7 @@ public class TagTypeRegistry {
      * @param tagClass the tag type class.
      * @throws TagTypeRegistryException if the ID provided is either registered already or is a reserved ID (0-12 inclusive).
      */
-    public void registerTagType(byte id, @NonNull Class<? extends Tag<?>> tagClass) throws TagTypeRegistryException {
+    public void registerTagType(byte id, @NotNull Class<? extends Tag<?>> tagClass) throws TagTypeRegistryException {
         if (id == 0)
             throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is reserved.", tagClass.getSimpleName(), id));
 
@@ -153,7 +153,7 @@ public class TagTypeRegistry {
      * @return an empty instance of the tag type provided.
      * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
      */
-    public Tag<?> instantiate(@NonNull Class<? extends Tag> tagClass) throws TagTypeRegistryException {
+    public Tag<?> instantiate(@NotNull Class<? extends Tag> tagClass) throws TagTypeRegistryException {
         try {
             Tag<?> whatIsThis = Reflection.of(tagClass).newInstance();
 
@@ -176,7 +176,7 @@ public class TagTypeRegistry {
      * @return an empty instance of the tag type provided.
      * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
      */
-    public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass, Object value) throws TagTypeRegistryException {
+    public Tag<?> instantiate(@NotNull Class<? extends Tag<?>> tagClass, Object value) throws TagTypeRegistryException {
         return this.instantiate(tagClass, null, value);
     }
 
@@ -188,7 +188,7 @@ public class TagTypeRegistry {
      * @return an empty instance of the tag type provided.
      * @throws TagTypeRegistryException if a reflection error occurs when instantiating the tag.
      */
-    public Tag<?> instantiate(@NonNull Class<? extends Tag<?>> tagClass, String name, Object value) throws TagTypeRegistryException {
+    public Tag<?> instantiate(@NotNull Class<? extends Tag<?>> tagClass, String name, Object value) throws TagTypeRegistryException {
         try {
             Tag<?> tag = Reflection.of(tagClass).newInstance(name, value);
             tag.setRegistry(this);

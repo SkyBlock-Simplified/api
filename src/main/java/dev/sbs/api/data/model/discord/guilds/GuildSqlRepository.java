@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.discord.guilds;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildSqlRepository extends SqlRepository<GuildSqlModel> {
 
-    public GuildSqlRepository(@NonNull SqlSession sqlSession) {
+    public GuildSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

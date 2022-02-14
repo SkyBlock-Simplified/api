@@ -8,7 +8,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -35,7 +35,7 @@ public class StringTag extends Tag<String> implements SnbtSerializable, JsonSeri
      * @param name  the tag's name.
      * @param value the tag's {@code String} value.
      */
-    public StringTag(String name, @NonNull String value) {
+    public StringTag(String name, @NotNull String value) {
         super(name, value, new TagTypeRegistry(), true);
     }
 

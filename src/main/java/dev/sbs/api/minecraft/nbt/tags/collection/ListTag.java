@@ -14,10 +14,8 @@ import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
-import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -59,7 +57,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value.
      */
-    public ListTag(String name, @NonNull List<E> value) {
+    public ListTag(String name, @NotNull List<E> value) {
         super(name, value, new TagTypeRegistry(), true);
     }
 
@@ -74,7 +72,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      * @return true if added successfully.
      */
     @Override
-    public boolean add(@NonNull E element) {
+    public boolean add(@NotNull E element) {
         if (this.value.isEmpty())
             this.tagTypeId = this.registry.getIdFromTypeClass(element.getClass());
 
@@ -283,7 +281,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
         return this.value.isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Iterator<E> iterator() {
         return this.getValue().iterator();

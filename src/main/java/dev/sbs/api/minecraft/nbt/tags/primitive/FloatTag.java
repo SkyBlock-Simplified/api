@@ -5,7 +5,7 @@ import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -30,7 +30,7 @@ public class FloatTag extends NumericalTag<Float> {
      *
      * @param value the tag's {@code Number} value, to be converted to {@code float}.
      */
-    public FloatTag(@NonNull Number value) {
+    public FloatTag(@NotNull Number value) {
         this(null, value.floatValue());
     }
 

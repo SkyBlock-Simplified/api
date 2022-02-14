@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.skyblock.pet_abilities;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class PetAbilitySqlRepository extends SqlRepository<PetAbilitySqlModel> {
 
-    public PetAbilitySqlRepository(@NonNull SqlSession sqlSession) {
+    public PetAbilitySqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

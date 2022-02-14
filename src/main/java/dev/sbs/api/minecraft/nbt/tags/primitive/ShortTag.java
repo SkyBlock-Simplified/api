@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -30,7 +30,7 @@ public class ShortTag extends NumericalTag<Short> {
      *
      * @param value the tag's {@code Number} value, to be converted to {@code short}.
      */
-    public ShortTag(@NonNull Number value) {
+    public ShortTag(@NotNull Number value) {
         this(null, value);
     }
 
@@ -40,7 +40,7 @@ public class ShortTag extends NumericalTag<Short> {
      * @param name  the tag's name.
      * @param value the tag's {@code Number} value, to be converted to {@code short}.
      */
-    public ShortTag(String name, @NonNull Number value) {
+    public ShortTag(String name, @NotNull Number value) {
         this(name, value.shortValue());
     }
 

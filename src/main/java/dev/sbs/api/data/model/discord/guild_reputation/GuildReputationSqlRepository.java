@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.discord.guild_reputation;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildReputationSqlRepository extends SqlRepository<GuildReputationSqlModel> {
 
-    public GuildReputationSqlRepository(@NonNull SqlSession sqlSession) {
+    public GuildReputationSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

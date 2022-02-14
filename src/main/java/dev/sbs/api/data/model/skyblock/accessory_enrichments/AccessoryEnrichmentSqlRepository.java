@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.skyblock.accessory_enrichments;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class AccessoryEnrichmentSqlRepository extends SqlRepository<AccessoryEnrichmentSqlModel> {
 
-    public AccessoryEnrichmentSqlRepository(@NonNull SqlSession sqlSession) {
+    public AccessoryEnrichmentSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

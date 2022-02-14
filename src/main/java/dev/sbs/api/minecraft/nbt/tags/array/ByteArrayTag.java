@@ -8,7 +8,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ByteTag;
 import dev.sbs.api.util.Primitives;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -57,7 +57,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
      *
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code byte[]} array.
      */
-    public ByteArrayTag(@NonNull List<Byte> value) {
+    public ByteArrayTag(@NotNull List<Byte> value) {
         this(null, value);
     }
 
@@ -67,7 +67,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code byte[]} array.
      */
-    public ByteArrayTag(String name, @NonNull List<Byte> value) {
+    public ByteArrayTag(String name, @NotNull List<Byte> value) {
         super(name, value.toArray(new Byte[0]));
     }
 

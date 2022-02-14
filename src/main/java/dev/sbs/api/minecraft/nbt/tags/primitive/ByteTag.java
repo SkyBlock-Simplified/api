@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -30,7 +30,7 @@ public class ByteTag extends NumericalTag<Byte> {
      *
      * @param value the tag's {@code Number} value, to be converted to {@code byte}.
      */
-    public ByteTag(@NonNull Number value) {
+    public ByteTag(@NotNull Number value) {
         this(null, value);
     }
 
@@ -40,7 +40,7 @@ public class ByteTag extends NumericalTag<Byte> {
      * @param name  the tag's name.
      * @param value the tag's {@code Number} value, to be converted to {@code byte}.
      */
-    public ByteTag(String name, @NonNull Number value) {
+    public ByteTag(String name, @NotNull Number value) {
         this(name, value.byteValue());
     }
 

@@ -13,7 +13,7 @@ import dev.sbs.api.util.CompressionType;
 import dev.sbs.api.util.Primitives;
 import dev.sbs.api.util.helper.DataUtil;
 import lombok.Cleanup;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.zip.DeflaterOutputStream;
@@ -26,10 +26,10 @@ import java.util.zip.InflaterInputStream;
  */
 public class NbtFactory {
 
-    private final @NonNull NbtWriter writer;
-    private final @NonNull NbtReader reader;
-    private @NonNull TagTypeRegistry typeRegistry;
-    private @NonNull SnbtConfig snbtConfig;
+    private final @NotNull NbtWriter writer;
+    private final @NotNull NbtReader reader;
+    private @NotNull TagTypeRegistry typeRegistry;
+    private @NotNull SnbtConfig snbtConfig;
 
     /**
      * Constructs an instance of this class using a default {@link TagTypeRegistry} (supporting the standard 12 tag types).
@@ -43,7 +43,7 @@ public class NbtFactory {
      *
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
      */
-    public NbtFactory(@NonNull TagTypeRegistry typeRegistry) {
+    public NbtFactory(@NotNull TagTypeRegistry typeRegistry) {
         this(typeRegistry, new SnbtConfig());
     }
 
@@ -53,7 +53,7 @@ public class NbtFactory {
      * @param typeRegistry the tag type registry to be used, typically containing custom tag entries.
      * @param snbtConfig   the SNBT config object to be used.
      */
-    public NbtFactory(@NonNull TagTypeRegistry typeRegistry, @NonNull SnbtConfig snbtConfig) {
+    public NbtFactory(@NotNull TagTypeRegistry typeRegistry, @NotNull SnbtConfig snbtConfig) {
         this.typeRegistry = typeRegistry;
         this.snbtConfig = snbtConfig;
         this.writer = new NbtWriter(typeRegistry);
@@ -67,7 +67,7 @@ public class NbtFactory {
      * @return the decoded root {@link CompoundTag}.
      * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromBase64(@NonNull String encoded) throws NbtException {
+    public CompoundTag fromBase64(@NotNull String encoded) throws NbtException {
         return this.fromByteArray(DataUtil.decode(encoded));
     }
 
@@ -108,7 +108,7 @@ public class NbtFactory {
      * @return the root {@link CompoundTag} read from the stream.
      * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromFile(@NonNull File file) throws NbtException {
+    public CompoundTag fromFile(@NotNull File file) throws NbtException {
         try {
             @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
             return this.fromStream(fileInputStream);
@@ -127,7 +127,7 @@ public class NbtFactory {
      * @return the root {@link CompoundTag} deserialized from the JSON file.
      * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromJson(@NonNull File file) throws NbtException {
+    public CompoundTag fromJson(@NotNull File file) throws NbtException {
         try {
             @Cleanup FileReader reader = new FileReader(file);
             return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(reader, JsonObject.class), 0, this.typeRegistry);
@@ -146,7 +146,7 @@ public class NbtFactory {
      * @return the root {@link CompoundTag} deserialized from the JSON file.
      * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromJson(@NonNull String json) throws NbtException {
+    public CompoundTag fromJson(@NotNull String json) throws NbtException {
         try {
             return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(json, JsonObject.class), 0, this.typeRegistry);
         } catch (IOException ioException) {
@@ -164,7 +164,7 @@ public class NbtFactory {
      * @return the root {@link CompoundTag} deserialized from the JSON file.
      * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromJson(@NonNull JsonObject json) throws NbtException {
+    public CompoundTag fromJson(@NotNull JsonObject json) throws NbtException {
         try {
             return new CompoundTag(true).fromJson(SimplifiedApi.getGson().fromJson(json, JsonObject.class), 0, this.typeRegistry);
         } catch (IOException ioException) {
@@ -182,7 +182,7 @@ public class NbtFactory {
      * @return the root {@link CompoundTag} read from the stream.
      * @throws NbtException if any I/O error occurs.
      */
-    public CompoundTag fromStream(@NonNull InputStream inputStream) throws NbtException {
+    public CompoundTag fromStream(@NotNull InputStream inputStream) throws NbtException {
         try {
             switch (DataUtil.getCompression(inputStream)) {
                 case GZIP:
@@ -209,7 +209,7 @@ public class NbtFactory {
      * @return the resulting Base64 encoded string.
      * @throws NbtException if any I/O error occurs.
      */
-    public String toBase64(@NonNull CompoundTag compound) throws NbtException {
+    public String toBase64(@NotNull CompoundTag compound) throws NbtException {
         return DataUtil.encodeToString(this.toByteArray(compound));
     }
 
@@ -220,7 +220,7 @@ public class NbtFactory {
      * @return the resulting {@code byte[]} array.
      * @throws NbtException if any I/O error occurs.
      */
-    public byte[] toByteArray(@NonNull CompoundTag compound) throws NbtException {
+    public byte[] toByteArray(@NotNull CompoundTag compound) throws NbtException {
         try {
             @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             @Cleanup DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(byteArrayOutputStream));
@@ -241,7 +241,7 @@ public class NbtFactory {
      * @param file     the file to write to.
      * @throws NbtException if any I/O error occurs.
      */
-    public void toFile(@NonNull CompoundTag compound, @NonNull File file) throws NbtException {
+    public void toFile(@NotNull CompoundTag compound, @NotNull File file) throws NbtException {
         this.toFile(compound, file, CompressionType.NONE);
     }
 
@@ -253,7 +253,7 @@ public class NbtFactory {
      * @param compression the compression to be applied.
      * @throws NbtException if any I/O error occurs.
      */
-    public void toFile(@NonNull CompoundTag compound, @NonNull File file, @NonNull CompressionType compression) throws NbtException {
+    public void toFile(@NotNull CompoundTag compound, @NotNull File file, @NotNull CompressionType compression) throws NbtException {
         try {
             @Cleanup OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
 
@@ -281,7 +281,7 @@ public class NbtFactory {
      * @param file     the JSON file to write to.
      * @throws NbtException if any I/O error occurs.
      */
-    public void toJson(@NonNull CompoundTag compound, @NonNull File file) throws NbtException {
+    public void toJson(@NotNull CompoundTag compound, @NotNull File file) throws NbtException {
         try {
             @Cleanup FileWriter writer = new FileWriter(file);
             SimplifiedApi.getGson().toJson(compound.toJson(0, this.typeRegistry), writer);
@@ -299,7 +299,7 @@ public class NbtFactory {
      * @param compound the NBT structure to serialize to SNBT, contained within a {@link CompoundTag}.
      * @return the serialized SNBT string.
      */
-    public String toSnbt(@NonNull CompoundTag compound) {
+    public String toSnbt(@NotNull CompoundTag compound) {
         return compound.toSnbt(0, this.typeRegistry, this.snbtConfig);
     }
 
@@ -310,7 +310,7 @@ public class NbtFactory {
      * @param output   the stream to write to.
      * @throws NbtException if any I/O error occurs.
      */
-    public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws NbtException {
+    public void toStream(@NotNull CompoundTag compound, @NotNull DataOutput output) throws NbtException {
         try {
             this.writer.toStream(compound, output);
         } catch (IOException ioException) {
@@ -326,7 +326,7 @@ public class NbtFactory {
      *
      * @return the {@link SnbtConfig} currently in use by this instance.
      */
-    @NonNull
+    @NotNull
     public SnbtConfig getSnbtConfig() {
         return this.snbtConfig;
     }
@@ -336,7 +336,7 @@ public class NbtFactory {
      *
      * @return the {@link TagTypeRegistry} currently in use by this instance.
      */
-    @NonNull
+    @NotNull
     public TagTypeRegistry getTypeRegistry() {
         return this.typeRegistry;
     }
@@ -346,7 +346,7 @@ public class NbtFactory {
      *
      * @param snbtConfig the new {@link SnbtConfig} to be set.
      */
-    public void setSnbtConfig(@NonNull SnbtConfig snbtConfig) {
+    public void setSnbtConfig(@NotNull SnbtConfig snbtConfig) {
         this.snbtConfig = snbtConfig;
     }
 
@@ -355,7 +355,7 @@ public class NbtFactory {
      *
      * @param typeRegistry the new {@link TagTypeRegistry} to be set.
      */
-    public void setTypeRegistry(@NonNull TagTypeRegistry typeRegistry) {
+    public void setTypeRegistry(@NotNull TagTypeRegistry typeRegistry) {
         this.typeRegistry = typeRegistry;
         this.writer.setTypeRegistry(typeRegistry);
         this.reader.setTypeRegistry(typeRegistry);

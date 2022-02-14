@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.discord.guild_report_types;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildReportTypeSqlRepository extends SqlRepository<GuildReportTypeSqlModel> {
 
-    public GuildReportTypeSqlRepository(@NonNull SqlSession sqlSession) {
+    public GuildReportTypeSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

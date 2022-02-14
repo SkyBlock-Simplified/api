@@ -6,8 +6,8 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtSerializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -28,7 +28,7 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
      * Returns the value held by this tag.
      */
     @Getter
-    @NonNull
+    @NotNull
     protected T value;
     @Setter
     protected TagTypeRegistry registry;
@@ -71,7 +71,7 @@ public abstract class Tag<T> implements SnbtSerializable, JsonSerializable {
      *
      * @param value new {@link T} value to be set.
      */
-    public final void setValue(@NonNull T value) {
+    public final void setValue(@NotNull T value) {
         if (this.updatable)
             this.value = value;
     }

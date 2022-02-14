@@ -13,7 +13,6 @@ import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.Getter;
-import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,7 +78,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param name  the tag's name.
      * @param value the tag's {@code Map<>} value.
      */
-    public CompoundTag(String name, @NonNull Map<String, Tag<?>> value) {
+    public CompoundTag(String name, @NotNull Map<String, Tag<?>> value) {
         this(name, value, false);
     }
 
@@ -89,7 +88,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param name  the tag's name.
      * @param value the tag's {@code Map<>} value.
      */
-    public CompoundTag(String name, @NonNull Map<String, Tag<?>> value, boolean root) {
+    public CompoundTag(String name, @NotNull Map<String, Tag<?>> value, boolean root) {
         super(name, value, new TagTypeRegistry(), true);
         this.root = root;
     }
@@ -121,7 +120,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return this.value.containsKey(key);
     }
 
-    public boolean containsListOf(@NonNull String key, byte of) {
+    public boolean containsListOf(@NotNull String key, byte of) {
         return this.containsType(key, TagType.LIST) && this.getList(key).getListType() == of;
     }
 
@@ -132,14 +131,14 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param typeId the tag type ID to test for.
      * @return true if this compound contains an entry with a given name (key) and if that entry is of a given tag type, false otherwise.
      */
-    public boolean containsType(@NonNull String key, byte typeId) {
+    public boolean containsType(@NotNull String key, byte typeId) {
         if (!this.containsKey(key))
             return false;
 
         return this.getTag(key).getTypeId() == typeId;
     }
 
-    public boolean containsType(@NonNull String key, TagType tagType) {
+    public boolean containsType(@NotNull String key, TagType tagType) {
         return this.containsType(key, tagType.getId());
     }
 
@@ -246,7 +245,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return this.getValue().get(key);
     }
 
-    public <T extends Tag<?>> ListTag<T> getList(@NonNull String key) {
+    public <T extends Tag<?>> ListTag<T> getList(@NotNull String key) {
         return this.getTag(key);
     }
 
@@ -338,7 +337,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param <T> the tag type you believe you are retrieving.
      * @return the value associated with {@code key} as type T.
      */
-    public <T extends Tag<?>> T getTag(@NonNull String key) {
+    public <T extends Tag<?>> T getTag(@NotNull String key) {
         return (T) this.get(key);
     }
 
@@ -411,7 +410,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @return the previous value mapped with the tag's name as type E if provided, or null if there wasn't any.
      * @throws NullPointerException if the tag's name is null.
      */
-    public <E extends Tag<?>> E putTag(@NonNull Tag<?> tag) {
+    public <E extends Tag<?>> E putTag(@NotNull Tag<?> tag) {
         return (E) this.put(tag.getName(), tag);
     }
 
@@ -528,7 +527,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param <T> the tag type you believe you are removing (optional).
      * @return the previous value associated with {@code key} as type T if provided.
      */
-    public <T extends Tag<?>> T removeTag(@NonNull String key) {
+    public <T extends Tag<?>> T removeTag(@NotNull String key) {
         return (T) this.getValue().remove(key);
     }
 

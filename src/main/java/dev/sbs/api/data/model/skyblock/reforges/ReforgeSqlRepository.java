@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.skyblock.reforges;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class ReforgeSqlRepository extends SqlRepository<ReforgeSqlModel> {
 
-    public ReforgeSqlRepository(@NonNull SqlSession sqlSession) {
+    public ReforgeSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

@@ -2,11 +2,11 @@ package dev.sbs.api.data.model.skyblock.potion_mixins;
 
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class PotionMixinSqlRepository extends SqlRepository<PotionMixinSqlModel> {
 
-    public PotionMixinSqlRepository(@NonNull SqlSession sqlSession) {
+    public PotionMixinSqlRepository(@NotNull SqlSession sqlSession) {
         super(sqlSession);
     }
 

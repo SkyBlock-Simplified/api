@@ -3,7 +3,6 @@ package dev.sbs.api.minecraft.nbt.tags.array;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.util.helper.ArrayUtil;
-import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -63,7 +62,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * @param elements element(s) to be inserted.
      */
     @SafeVarargs
-    public final void insert(int index, @NonNull T... elements) {
+    public final void insert(int index, @NotNull T... elements) {
         this.value = ArrayUtil.insert(index, this.value, elements);
     }
 
@@ -94,7 +93,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * @param element element to be stored at the specified position.
      * @return the element previously at the specified position.
      */
-    public final T set(int index, @NonNull T element) {
+    public final T set(int index, @NotNull T element) {
         return this.value[index] = element;
     }
 

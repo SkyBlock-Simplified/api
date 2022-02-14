@@ -5,7 +5,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataOutput;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class NbtWriter {
 
-    private @NonNull TagTypeRegistry typeRegistry;
+    private @NotNull TagTypeRegistry typeRegistry;
 
     /**
      * Writes the given root {@link CompoundTag} to a {@link DataOutput} stream.
@@ -25,7 +25,7 @@ public class NbtWriter {
      * @param output   the stream to write to.
      * @throws IOException if any I/O error occurs.
      */
-    public void toStream(@NonNull CompoundTag compound, @NonNull DataOutput output) throws IOException {
+    public void toStream(@NotNull CompoundTag compound, @NotNull DataOutput output) throws IOException {
         output.writeByte(TagType.COMPOUND.getId());
         output.writeUTF(StringUtil.isEmpty(compound.getName()) ? "" : compound.getName());
         compound.write(output, 0, this.typeRegistry);
@@ -36,7 +36,7 @@ public class NbtWriter {
      *
      * @return the {@link TagTypeRegistry} currently in use by this writer.
      */
-    @NonNull
+    @NotNull
     public TagTypeRegistry getTypeRegistry() {
         return typeRegistry;
     }
@@ -46,7 +46,7 @@ public class NbtWriter {
      *
      * @param typeRegistry the new {@link TagTypeRegistry} to be set.
      */
-    public void setTypeRegistry(@NonNull TagTypeRegistry typeRegistry) {
+    public void setTypeRegistry(@NotNull TagTypeRegistry typeRegistry) {
         this.typeRegistry = typeRegistry;
     }
 

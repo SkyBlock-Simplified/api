@@ -8,7 +8,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.Primitives;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -57,7 +57,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      *
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code int[]} array.
      */
-    public IntArrayTag(@NonNull List<Integer> value) {
+    public IntArrayTag(@NotNull List<Integer> value) {
         this(null, value);
     }
 
@@ -67,7 +67,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code int[]} array.
      */
-    public IntArrayTag(String name, @NonNull List<Integer> value) {
+    public IntArrayTag(String name, @NotNull List<Integer> value) {
         super(name, value.toArray(new Integer[0]));
     }
 
