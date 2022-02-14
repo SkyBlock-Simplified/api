@@ -4,7 +4,6 @@ import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -165,7 +164,7 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override @Nonnull
+	@Override @NotNull
 	public ConcurrentList<E> subList(int fromIndex, int toIndex) {
 		return new ConcurrentUnmodifiableList<>(super.subList(fromIndex, toIndex));
 	}

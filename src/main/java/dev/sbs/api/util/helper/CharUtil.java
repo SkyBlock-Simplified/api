@@ -2,7 +2,7 @@ package dev.sbs.api.util.helper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>Operations on char primitives and Character objects.</p>
@@ -86,7 +86,7 @@ public class CharUtil {
      * @return the char value of the Character
      * @throws NullPointerException if the Character is null
      */
-    public static char toChar(@NonNull final Character ch) {
+    public static char toChar(@NotNull final Character ch) {
         return ch;
     }
 
@@ -128,7 +128,7 @@ public class CharUtil {
      * @throws NullPointerException     if the string is null
      * @throws IllegalArgumentException if the String is empty
      */
-    public static char toChar(@NonNull final String str) {
+    public static char toChar(@NotNull final String str) {
         return str.charAt(0);
     }
 
@@ -217,7 +217,7 @@ public class CharUtil {
      * @throws NullPointerException     if the Character is null
      * @throws IllegalArgumentException if the Character is not ASCII numeric
      */
-    public static int toIntValue(@NonNull final Character ch) {
+    public static int toIntValue(@NotNull final Character ch) {
         return toIntValue(ch.charValue());
     }
 

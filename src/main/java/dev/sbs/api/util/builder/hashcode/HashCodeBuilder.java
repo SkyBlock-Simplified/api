@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.IDKey;
 import dev.sbs.api.util.helper.ArrayUtil;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -341,7 +341,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * @see HashCodeExclude
      * @since 2.0
      */
-    public static <T> int reflectionHashCode(final int initialNonZeroOddNumber, final int multiplierNonZeroOddNumber, @NonNull final T object,
+    public static <T> int reflectionHashCode(final int initialNonZeroOddNumber, final int multiplierNonZeroOddNumber, @NotNull final T object,
                                              final boolean testTransients, final Class<? super T> reflectUpToClass, final String... excludeFields) {
         final HashCodeBuilder builder = new HashCodeBuilder(initialNonZeroOddNumber, multiplierNonZeroOddNumber);
         Class<?> clazz = object.getClass();

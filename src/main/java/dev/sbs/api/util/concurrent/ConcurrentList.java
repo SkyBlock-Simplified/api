@@ -1,8 +1,8 @@
 package dev.sbs.api.util.concurrent;
 
 import dev.sbs.api.util.concurrent.atomic.AtomicList;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 		return Concurrent.newList(super.inverse());
 	}
 
-	@Override @Nonnull
+	@Override @NotNull
 	public ConcurrentList<E> subList(int fromIndex, int toIndex) {
 		return Concurrent.newList(super.subList(fromIndex, toIndex));
 	}

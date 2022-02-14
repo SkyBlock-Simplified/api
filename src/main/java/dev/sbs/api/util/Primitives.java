@@ -3,7 +3,7 @@ package dev.sbs.api.util;
 import dev.sbs.api.util.helper.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -75,7 +75,7 @@ public class Primitives {
      *
      * @see Class#isPrimitive
      */
-    public static boolean isWrapperType(@NonNull Class<?> type) {
+    public static boolean isWrapperType(@NotNull Class<?> type) {
         return WRAPPER_TO_PRIMITIVE_TYPE.containsKey(type);
     }
 
@@ -89,7 +89,7 @@ public class Primitives {
      *     wrap(String.class) == String.class
      * </pre>
      */
-    public static <T> Class<T> wrap(@NonNull Class<T> type) {
+    public static <T> Class<T> wrap(@NotNull Class<T> type) {
         Class<T> wrapped = (Class<T>) PRIMITIVE_TO_WRAPPER_TYPE.get(type);
         return (wrapped == null) ? type : wrapped;
     }
@@ -104,7 +104,7 @@ public class Primitives {
      *     unwrap(String.class) == String.class
      * </pre>
      */
-    public static <T> Class<T> unwrap(@NonNull Class<T> type) {
+    public static <T> Class<T> unwrap(@NotNull Class<T> type) {
         Class<T> unwrapped = (Class<T>) WRAPPER_TO_PRIMITIVE_TYPE.get(type);
         return (unwrapped == null) ? type : unwrapped;
     }

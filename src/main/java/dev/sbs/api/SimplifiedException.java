@@ -10,8 +10,8 @@ import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.tuple.Triple;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -61,12 +61,12 @@ public abstract class SimplifiedException extends RuntimeException {
             return this;
         }
 
-        public ExceptionBuilder<T> addFields(@NonNull Map.Entry<String, String>... entries) {
+        public ExceptionBuilder<T> addFields(@NotNull Map.Entry<String, String>... entries) {
             Arrays.stream(entries).forEach(entry -> this.addField(entry.getKey(), entry.getValue()));
             return this;
         }
 
-        public ExceptionBuilder<T> addFields(@NonNull Triple<String, String, Boolean>... fields) {
+        public ExceptionBuilder<T> addFields(@NotNull Triple<String, String, Boolean>... fields) {
             Arrays.stream(fields).forEach(field -> this.addField(field.getLeft(), field.getMiddle(), field.getRight()));
             return this;
         }
