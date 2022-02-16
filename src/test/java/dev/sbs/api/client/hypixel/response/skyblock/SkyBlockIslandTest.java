@@ -34,7 +34,7 @@ public class SkyBlockIslandTest {
     public void getPlayerStats_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.enableDatabase();
+            SimplifiedApi.connectDatabase();
             System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
@@ -67,7 +67,7 @@ public class SkyBlockIslandTest {
     public void getIsland_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.enableDatabase();
+            SimplifiedApi.connectDatabase();
             System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);

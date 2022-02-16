@@ -14,7 +14,7 @@ public class SqlRepositoryTest {
     public void checkRepositories_ok() {
         try {
             System.out.println("ENABLING DATABASE");
-            SimplifiedApi.enableDatabase();
+            SimplifiedApi.connectDatabase();
             SimplifiedApi.getConfig().setLoggingLevel(Level.DEBUG);
 
             System.out.println("QUERYING RARITIES #1");

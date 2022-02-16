@@ -201,7 +201,7 @@ public final class SimplifiedApi {
         serviceManager.add(MojangData.class, mojangApiBuilder.build(MojangData.class));
     }
 
-    public static void enableDatabase() {
+    public static void connectDatabase() {
         if (!serviceManager.isRegistered(SqlSession.class)) {
             // Create SqlSession
             SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());

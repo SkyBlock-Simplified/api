@@ -23,7 +23,7 @@ public class ReforgeRepositoryTest {
     private static final Repository<ReforgeStatModel> reforgeStatRepository;
 
     static {
-        SimplifiedApi.enableDatabase();
+        SimplifiedApi.connectDatabase();
         reforgeTypeRepository = SimplifiedApi.getRepositoryOf(ReforgeTypeModel.class);
         rarityRepository = SimplifiedApi.getRepositoryOf(RarityModel.class);
         reforgeRepository = SimplifiedApi.getRepositoryOf(ReforgeModel.class);

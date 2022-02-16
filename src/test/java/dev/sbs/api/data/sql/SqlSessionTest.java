@@ -10,7 +10,7 @@ public class SqlSessionTest {
 
     @Test
     public void openSession_ok() {
-        SimplifiedApi.enableDatabase();
+        SimplifiedApi.connectDatabase();
         Session session = SimplifiedApi.getSqlSession().openSession();
         MatcherAssert.assertThat(session, Matchers.notNullValue());
         session.close();
