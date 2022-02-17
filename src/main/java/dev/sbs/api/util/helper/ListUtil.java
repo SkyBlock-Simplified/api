@@ -1,6 +1,8 @@
 package dev.sbs.api.util.helper;
 
 import com.google.common.collect.Iterables;
+import dev.sbs.api.util.concurrent.Concurrent;
+import dev.sbs.api.util.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -162,6 +164,14 @@ public class ListUtil {
 		} catch (NullPointerException npe) {
 			return (T[]) Array.newInstance(type, 0);
 		}
+	}
+
+	public static ConcurrentList<String> appendEach(ConcurrentList<String> stringList, String entryValue, String lastEntry) {
+		return StreamUtil.appendEach(stringList.stream(), entryValue, lastEntry).collect(Concurrent.toList());
+	}
+
+	public static ConcurrentList<String> prependEach(ConcurrentList<String> stringList, String entryValue, String lastEntry) {
+		return StreamUtil.prependEach(stringList.stream(), entryValue, lastEntry).collect(Concurrent.toList());
 	}
 
 	/**

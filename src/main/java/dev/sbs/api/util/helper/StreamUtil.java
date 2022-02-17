@@ -1,5 +1,6 @@
 package dev.sbs.api.util.helper;
 
+import dev.sbs.api.data.function.TriFunction;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentCollection;
@@ -7,14 +8,17 @@ import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.util.tuple.Pair;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @SuppressWarnings("all")
 public class StreamUtil {
@@ -28,6 +32,21 @@ public class StreamUtil {
 
     private static <T> BinaryOperator<T> throwingMerger() {
         return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}!", key)); };
+    }
+
+    public static <T> Stream<T> modifyStream(Stream<T> stringStream, TriFunction<Integer, T, Integer, T> modFunction) {
+        AtomicInteger counter = new AtomicInteger();
+
+        return stringStream.map(value -> Pair.of(counter.getAndIncrement(), value))
+            .map(pair -> modFunction.apply(pair.getKey(), pair.getValue(), counter.get()));
+    }
+
+    public static Stream<String> appendEach(Stream<String> stringStream, String entryValue, String lastEntry) {
+        return modifyStream(stringStream, (index, value, size) -> value + (index < size - 1 ? entryValue : lastEntry));
+    }
+
+    public static Stream<String> prependEach(Stream<String> stringStream, String entryValue, String lastEntry) {
+        return modifyStream(stringStream, (index, value, size) -> (index < size - 1 ? entryValue : lastEntry) + value);
     }
 
     public static <E> Collector<E, ?, ConcurrentCollection<E>> toConcurrentCollection() {
@@ -88,8 +107,34 @@ public class StreamUtil {
         return new StreamCollector<>(ConcurrentSet::new, ConcurrentSet::add, (left, right) -> { left.addAll(right); return left; }, UN_CHARACTERISTICS);
     }
 
-    public static <E> Collector<E, ?, StringBuilder> toStringBuilder() {
-        return new StreamCollector<>(StringBuilder::new, StringBuilder::append, (left, right) -> { left.append(right); return left; }, CHARACTERISTICS);
+    public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder() {
+        return toStringBuilder(true);
+    }
+
+    public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(boolean newLine) {
+        return toStringBuilder(newLine, null);
+    }
+
+    public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(String separator) {
+        return toStringBuilder(true, separator);
+    }
+
+    public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(boolean newLine, String separator) {
+        return new StreamCollector<>(
+            StringBuilder::new,
+            newLine ? StringBuilder::appendln : StringBuilder::append,
+            (left, right) -> {
+                if (newLine)
+                    left.appendln(right);
+                else
+                    left.append(right);
+
+                left.appendSeparator(separator);
+
+                return left;
+            },
+            CHARACTERISTICS
+        );
     }
 
     private static class StreamCollector<T, A, R> implements Collector<T, A, R> {

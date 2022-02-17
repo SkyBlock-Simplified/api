@@ -1,8 +1,8 @@
 package dev.sbs.api.util.builder.string;
 
+import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.helper.ArrayUtil;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.builder.Builder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -1410,6 +1410,69 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
             for (int i = 1; i < array.length; i++) {
                 append(sep);
                 append(array[i]);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Appends an iterable placing separators between each value, but not before the first or after the last. Appending
+     * a null iterable will have no effect. Each object is appended using {@link #appendln(Object)}.
+     *
+     * @param iterable the iterable to append
+     * @param separator the separator to use, null means no separator
+     * @return this, to enable chaining
+     */
+    public StringBuilder appendlnWithSeparators(final Iterable<?> iterable, final String separator) {
+        if (iterable != null) {
+            final String sep = Objects.toString(separator, StringUtil.EMPTY);
+            final Iterator<?> it = iterable.iterator();
+            while (it.hasNext()) {
+                appendln(it.next());
+                if (it.hasNext()) {
+                    appendln(sep);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Appends an iterator placing separators between each value, but not before the first or after the last. Appending
+     * a null iterator will have no effect. Each object is appended using {@link #appendln(Object)}.
+     *
+     * @param it the iterator to append
+     * @param separator the separator to use, null means no separator
+     * @return this, to enable chaining
+     */
+    public StringBuilder appendlnWithSeparators(final Iterator<?> it, final String separator) {
+        if (it != null) {
+            final String sep = Objects.toString(separator, StringUtil.EMPTY);
+            while (it.hasNext()) {
+                appendln(it.next());
+                if (it.hasNext()) {
+                    appendln(sep);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Appends an array placing separators between each value, but not before the first or after the last. Appending a
+     * null array will have no effect. Each object is appended using {@link #appendln(Object)}.
+     *
+     * @param array the array to append
+     * @param separator the separator to use, null means no separator
+     * @return this, to enable chaining
+     */
+    public StringBuilder appendlnWithSeparators(final Object[] array, final String separator) {
+        if (array != null && array.length > 0) {
+            final String sep = Objects.toString(separator, StringUtil.EMPTY);
+            appendln(array[0]);
+            for (int i = 1; i < array.length; i++) {
+                appendln(sep);
+                appendln(array[i]);
             }
         }
         return this;
