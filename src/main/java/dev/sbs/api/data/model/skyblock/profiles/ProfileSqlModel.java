@@ -52,7 +52,7 @@ public class ProfileSqlModel implements ProfileModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "emoji_key", nullable = false)
+    @JoinColumn(name = "emoji_key", nullable = false, referencedColumnName = "key")
     private EmojiSqlModel emoji;
 
     @Getter
