@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.profiles;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -41,6 +43,11 @@ public class ProfileSqlModel implements ProfileModel, SqlModel {
     private String name;
 
     @Getter
+    @Setter
+    @JoinColumn(name = "emoji_key")
+    private EmojiSqlModel emoji;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -56,6 +63,7 @@ public class ProfileSqlModel implements ProfileModel, SqlModel {
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
+            .append(this.getEmoji(), that.getEmoji())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -66,6 +74,7 @@ public class ProfileSqlModel implements ProfileModel, SqlModel {
             .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
+            .append(this.getEmoji())
             .append(this.getUpdatedAt())
             .build();
     }
