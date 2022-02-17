@@ -7,12 +7,10 @@ import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableCollection
 import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableList;
 import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
 import dev.sbs.api.util.concurrent.unmodifiable.ConcurrentUnmodifiableSet;
-import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.helper.StreamUtil;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -22,18 +20,6 @@ import java.util.stream.Collector;
  * Helper class to build a new concurrent collection instance.
  */
 public final class Concurrent {
-
-	private static final ConcurrentSet<Collector.Characteristics> CHARACTERISTICS = Concurrent.newSet(Collector.Characteristics.CONCURRENT, Collector.Characteristics.IDENTITY_FINISH);
-	private static final ConcurrentSet<Collector.Characteristics> UN_CHARACTERISTICS = Concurrent.newSet(Collector.Characteristics.CONCURRENT, Collector.Characteristics.IDENTITY_FINISH, Collector.Characteristics.UNORDERED);
-
-	@SuppressWarnings("unchecked")
-	private static <I, R> Function<I, R> castingIdentity() {
-		return i -> (R)i;
-	}
-
-	private static <T> BinaryOperator<T> throwingMerger() {
-		return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}", key)); };
-	}
 
 	public static <E> ConcurrentCollection<E> newCollection() {
 		return new ConcurrentCollection<>();
@@ -200,110 +186,47 @@ public final class Concurrent {
 	}
 
 	public static <E> Collector<E, ?, ConcurrentCollection<E>> toCollection() {
-		return new ConcurrentCollector<>(ConcurrentCollection::new, ConcurrentCollection::add, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
+		return StreamUtil.toConcurrentCollection();
 	}
 
 	public static <E> Collector<E, ?, ConcurrentList<E>> toList() {
-		return new ConcurrentCollector<>(ConcurrentList::new, ConcurrentList::add, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
+		return StreamUtil.toConcurrentList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toMap() {
-		Function<? super T, ? extends K> keyMapper = entry -> ((Map.Entry<K, V>)entry).getKey();
-		Function<? super T, ? extends V> valueMapper = entry -> ((Map.Entry<K, V>)entry).getValue();
-		return toMap(keyMapper, valueMapper);
+		return StreamUtil.toConcurrentMap();
 	}
 
 	public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-		return toMap(keyMapper, valueMapper, throwingMerger(), ConcurrentMap::new);
+		return StreamUtil.toConcurrentMap(keyMapper, valueMapper);
 	}
 
 	public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper, BinaryOperator<V> mergeFunction) {
-		return toMap(keyMapper, valueMapper, mergeFunction, ConcurrentMap::new);
+		return StreamUtil.toConcurrentMap(keyMapper, valueMapper, mergeFunction);
 	}
 
 	public static <T, K, V, M extends ConcurrentMap<K, V>> Collector<T, ?, M> toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper, BinaryOperator<V> mergeFunction, Supplier<M> mapSupplier) {
-		BiConsumer<M, T> accumulator = (map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
-
-		return new ConcurrentCollector<>(mapSupplier, accumulator, (m1, m2) -> {
-			m2.forEach((key, value) -> m1.merge(key, value, mergeFunction));
-			return m1;
-		}, UN_CHARACTERISTICS);
+		return StreamUtil.toConcurrentMap(keyMapper, valueMapper, mergeFunction, mapSupplier);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toLinkedMap() {
-		Function<? super T, ? extends K> keyMapper = entry -> ((Map.Entry<K, V>)entry).getKey();
-		Function<? super T, ? extends V> valueMapper = entry -> ((Map.Entry<K, V>)entry).getValue();
-		return toLinkedMap(keyMapper, valueMapper);
+		return StreamUtil.toConcurrentLinkedMap();
 	}
 
 	public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toLinkedMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-		return toLinkedMap(keyMapper, valueMapper, throwingMerger(), ConcurrentLinkedMap::new);
+		return StreamUtil.toConcurrentLinkedMap(keyMapper, valueMapper);
 	}
 
 	public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toLinkedMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper, BinaryOperator<V> mergeFunction) {
-		return toLinkedMap(keyMapper, valueMapper, mergeFunction, ConcurrentLinkedMap::new);
+		return StreamUtil.toConcurrentLinkedMap(keyMapper, valueMapper, mergeFunction);
 	}
 
 	public static <T, K, V, M extends ConcurrentLinkedMap<K, V>> Collector<T, ?, M> toLinkedMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper, BinaryOperator<V> mergeFunction, Supplier<M> mapSupplier) {
-		BiConsumer<M, T> accumulator = (map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
-
-		return new ConcurrentCollector<>(mapSupplier, accumulator, (m1, m2) -> {
-			m2.forEach((key, value) -> m1.merge(key, value, mergeFunction));
-			return m1;
-		}, UN_CHARACTERISTICS);
+		return StreamUtil.toConcurrentLinkedMap(keyMapper, valueMapper, mergeFunction, mapSupplier);
 	}
 
 	public static <E> Collector<E, ?, ConcurrentSet<E>> toSet() {
-		return new ConcurrentCollector<>(ConcurrentSet::new, ConcurrentSet::add, (left, right) -> { left.addAll(right); return left; }, UN_CHARACTERISTICS);
-	}
-
-	private static class ConcurrentCollector<T, A, R> implements Collector<T, A, R> {
-
-		private final Supplier<A> supplier;
-		private final BiConsumer<A, T> accumulator;
-		private final BinaryOperator<A> combiner;
-		private final Function<A, R> finisher;
-		private final Set<Characteristics> characteristics;
-
-		public ConcurrentCollector(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner, Set<Characteristics> characteristics) {
-			this(supplier, accumulator, combiner, castingIdentity(), characteristics);
-		}
-
-		public ConcurrentCollector(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner, Function<A,R> finisher, Set<Characteristics> characteristics) {
-			this.supplier = supplier;
-			this.accumulator = accumulator;
-			this.combiner = combiner;
-			this.finisher = finisher;
-			this.characteristics = characteristics;
-		}
-
-		@Override
-		public BiConsumer<A, T> accumulator() {
-			return this.accumulator;
-		}
-
-		@Override
-		public Set<Characteristics> characteristics() {
-			return this.characteristics;
-		}
-
-		@Override
-		public BinaryOperator<A> combiner() {
-			return this.combiner;
-		}
-
-		@Override
-		public Function<A, R> finisher() {
-			return this.finisher;
-		}
-
-		@Override
-		public Supplier<A> supplier() {
-			return this.supplier;
-		}
-
+		return StreamUtil.toConcurrentSet();
 	}
 
 }
