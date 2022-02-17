@@ -41,8 +41,16 @@ public class StreamUtil {
             .map(pair -> modFunction.apply(pair.getKey(), pair.getValue(), counter.get()));
     }
 
+    public static Stream<String> appendEach(Stream<String> stringStream, String entryValue) {
+        return appendEach(stringStream, entryValue, entryValue);
+    }
+
     public static Stream<String> appendEach(Stream<String> stringStream, String entryValue, String lastEntry) {
         return modifyStream(stringStream, (index, value, size) -> value + (index < size - 1 ? entryValue : lastEntry));
+    }
+
+    public static Stream<String> prependEach(Stream<String> stringStream, String entryValue) {
+        return prependEach(stringStream, entryValue, entryValue);
     }
 
     public static Stream<String> prependEach(Stream<String> stringStream, String entryValue, String lastEntry) {
