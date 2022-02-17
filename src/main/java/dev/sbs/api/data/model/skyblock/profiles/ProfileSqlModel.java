@@ -15,13 +15,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_profiles"
+    name = "skyblock_profiles",
+    indexes = {
+        @Index(
+            columnList = "emoji_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProfileSqlModel implements ProfileModel, SqlModel {
@@ -44,7 +51,8 @@ public class ProfileSqlModel implements ProfileModel, SqlModel {
 
     @Getter
     @Setter
-    @JoinColumn(name = "emoji_key")
+    @ManyToOne
+    @JoinColumn(name = "emoji_key", nullable = false)
     private EmojiSqlModel emoji;
 
     @Getter
