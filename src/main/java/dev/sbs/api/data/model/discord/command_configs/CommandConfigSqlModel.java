@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.discord.command_configs;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -15,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -35,6 +38,22 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Id
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Getter
+    @Setter
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Getter
+    @Setter
+    @Column(name = "long_description")
+    private String longDescription;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
+    private EmojiSqlModel emoji;
 
     @Getter
     @Setter
