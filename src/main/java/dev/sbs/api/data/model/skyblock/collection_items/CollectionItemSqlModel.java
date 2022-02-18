@@ -58,6 +58,11 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     private Integer maxTiers;
 
     @Getter
+    @Setter
+    @Column(name = "farming_event", nullable = false)
+    private boolean farmingEvent;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -70,6 +75,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
         CollectionItemSqlModel that = (CollectionItemSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isFarmingEvent(), that.isFarmingEvent())
             .append(this.getId(), that.getId())
             .append(this.getCollection(), that.getCollection())
             .append(this.getItem(), that.getItem())
@@ -85,6 +91,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
             .append(this.getCollection())
             .append(this.getItem())
             .append(this.getMaxTiers())
+            .append(this.isFarmingEvent())
             .append(this.getUpdatedAt())
             .build();
     }
