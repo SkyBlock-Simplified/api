@@ -5,6 +5,8 @@ import dev.sbs.api.data.sql.converter.list.LongListConverter;
 import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.data.sql.converter.map.LongListStringMapConverter;
 import dev.sbs.api.data.sql.converter.map.LongStringMapConverter;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -56,21 +58,9 @@ public class UserSqlModel implements UserModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "guild_commands_blacklisted", nullable = false)
+    @Column(name = "guild_interaction_blacklisted", nullable = false)
     @Convert(converter = LongListStringMapConverter.class)
-    private Map<Long, List<String>> guildCommandsBlacklisted;
-
-    @Getter
-    @Setter
-    @Column(name = "guild_reputation_blacklisted", nullable = false)
-    @Convert(converter = LongListStringMapConverter.class)
-    private Map<Long, List<String>> guildReputationBlacklisted;
-
-    @Getter
-    @Setter
-    @Column(name = "guild_tickets_blacklisted", nullable = false)
-    @Convert(converter = LongListStringMapConverter.class)
-    private Map<Long, List<String>> guildTicketsBlacklisted;
+    private List<Long> guildInteractionBlacklisted;
 
     @Getter
     @Setter
@@ -79,24 +69,8 @@ public class UserSqlModel implements UserModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "developer_reports_enabled", nullable = false)
-    private boolean developerReportsEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_reputation_enabled", nullable = false)
-    private boolean developerReputationEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_commands_enabled", nullable = false)
-    private boolean developerCommandsEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_commands_blacklisted", nullable = false)
-    @Convert(converter = StringListConverter.class)
-    private List<String> developerCommandsBlacklisted;
+    @Column(name = "developer_interaction_enabled", nullable = false)
+    private boolean botInteractionEnabled;
 
     @Getter
     @CreationTimestamp
@@ -107,5 +81,40 @@ public class UserSqlModel implements UserModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserSqlModel that = (UserSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isDeveloperProtected(), that.isDeveloperProtected())
+            .append(this.isBotInteractionEnabled(), that.isBotInteractionEnabled())
+            .append(this.getId(), that.getId())
+            .append(this.getDiscordIds(), that.getDiscordIds())
+            .append(this.getMojangUniqueIds(), that.getMojangUniqueIds())
+            .append(this.getNotes(), that.getNotes())
+            .append(this.getGuildInteractionBlacklisted(), that.getGuildInteractionBlacklisted())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getDiscordIds())
+            .append(this.getMojangUniqueIds())
+            .append(this.getNotes())
+            .append(this.getGuildInteractionBlacklisted())
+            .append(this.isDeveloperProtected())
+            .append(this.isBotInteractionEnabled())
+            .append(this.getSubmittedAt())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

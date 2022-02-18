@@ -2,7 +2,6 @@ package dev.sbs.api.data.model.discord.guilds;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.converter.list.LongListConverter;
-import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -47,8 +46,8 @@ public class GuildSqlModel implements GuildModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "reports_visible", nullable = false)
-    private boolean reportsVisible;
+    @Column(name = "reports_public", nullable = false)
+    private boolean reportsPublic;
 
     @Getter
     @Setter
@@ -62,29 +61,8 @@ public class GuildSqlModel implements GuildModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "developer_reports_enabled", nullable = false)
-    private boolean developerReportsEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_tickets_enabled", nullable = false)
-    private boolean developerTicketsEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_reputation_enabled", nullable = false)
-    private boolean developerReputationEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_bot_enabled", nullable = false)
-    private boolean developerBotEnabled;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_commands_blacklisted", nullable = false)
-    @Convert(converter = StringListConverter.class)
-    private List<String> developerBlacklistedCommands;
+    @Column(name = "developer_interaction_enabled", nullable = false)
+    private boolean botInteractionEnabled;
 
     @Getter
     @Setter
@@ -123,21 +101,18 @@ public class GuildSqlModel implements GuildModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         GuildSqlModel that = (GuildSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isReportsVisible(), that.isReportsVisible())
+            .append(this.isReportsPublic(), that.isReportsPublic())
             .append(this.isBotEnabled(), that.isBotEnabled())
             .append(this.isEmojiServer(), that.isEmojiServer())
-            .append(this.isDeveloperReportsEnabled(), that.isDeveloperReportsEnabled())
-            .append(this.isDeveloperTicketsEnabled(), that.isDeveloperTicketsEnabled())
-            .append(this.isDeveloperReputationEnabled(), that.isDeveloperReputationEnabled())
-            .append(this.isDeveloperBotEnabled(), that.isDeveloperBotEnabled())
+            .append(this.isBotInteractionEnabled(), that.isBotInteractionEnabled())
             .append(this.getId(), that.getId())
             .append(this.getGuildId(), that.getGuildId())
             .append(this.getName(), that.getName())
-            .append(this.getDeveloperBlacklistedCommands(), that.getDeveloperBlacklistedCommands())
             .append(this.getAdminRoles(), that.getAdminRoles())
             .append(this.getManagerRoles(), that.getManagerRoles())
             .append(this.getModRoles(), that.getModRoles())
@@ -153,14 +128,10 @@ public class GuildSqlModel implements GuildModel, SqlModel {
             .append(this.getId())
             .append(this.getGuildId())
             .append(this.getName())
-            .append(this.isReportsVisible())
+            .append(this.isReportsPublic())
             .append(this.isBotEnabled())
             .append(this.isEmojiServer())
-            .append(this.isDeveloperReportsEnabled())
-            .append(this.isDeveloperTicketsEnabled())
-            .append(this.isDeveloperReputationEnabled())
-            .append(this.isDeveloperBotEnabled())
-            .append(this.getDeveloperBlacklistedCommands())
+            .append(this.isBotInteractionEnabled())
             .append(this.getAdminRoles())
             .append(this.getManagerRoles())
             .append(this.getModRoles())

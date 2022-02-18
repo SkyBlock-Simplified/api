@@ -14,21 +14,11 @@ public interface UserModel extends Model {
 
     Map<Long, String> getNotes();
 
-    Map<Long, List<String>> getGuildCommandsBlacklisted();
-
-    Map<Long, List<String>> getGuildReputationBlacklisted();
-
-    Map<Long, List<String>> getGuildTicketsBlacklisted();
+    List<Long> getGuildInteractionBlacklisted();
 
     boolean isDeveloperProtected();
 
-    boolean isDeveloperReportsEnabled();
-
-    boolean isDeveloperReputationEnabled();
-
-    boolean isDeveloperCommandsEnabled();
-
-    List<String> getDeveloperCommandsBlacklisted();
+    boolean isBotInteractionEnabled();
 
     Instant getSubmittedAt();
 
