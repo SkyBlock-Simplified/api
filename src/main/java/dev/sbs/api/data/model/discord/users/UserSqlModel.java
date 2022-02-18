@@ -3,7 +3,6 @@ package dev.sbs.api.data.model.discord.users;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.converter.list.LongListConverter;
 import dev.sbs.api.data.sql.converter.list.StringListConverter;
-import dev.sbs.api.data.sql.converter.map.LongListStringMapConverter;
 import dev.sbs.api.data.sql.converter.map.LongStringMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -59,7 +58,7 @@ public class UserSqlModel implements UserModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "guild_interaction_blacklisted", nullable = false)
-    @Convert(converter = LongListStringMapConverter.class)
+    @Convert(converter = LongListConverter.class)
     private List<Long> guildInteractionBlacklisted;
 
     @Getter
