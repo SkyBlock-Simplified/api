@@ -46,23 +46,18 @@ public class GuildSqlModel implements GuildModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "developer_bot_enabled", nullable = false)
+    private boolean developerBotEnabled;
+
+    @Getter
+    @Setter
     @Column(name = "reports_public", nullable = false)
     private boolean reportsPublic;
 
     @Getter
     @Setter
-    @Column(name = "bot_enabled", nullable = false)
-    private boolean botEnabled;
-
-    @Getter
-    @Setter
     @Column(name = "emoji_management", nullable = false)
     private boolean emojiServer;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_interaction_enabled", nullable = false)
-    private boolean botInteractionEnabled;
 
     @Getter
     @Setter
@@ -106,10 +101,9 @@ public class GuildSqlModel implements GuildModel, SqlModel {
         GuildSqlModel that = (GuildSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isDeveloperBotEnabled(), that.isDeveloperBotEnabled())
             .append(this.isReportsPublic(), that.isReportsPublic())
-            .append(this.isBotEnabled(), that.isBotEnabled())
             .append(this.isEmojiServer(), that.isEmojiServer())
-            .append(this.isBotInteractionEnabled(), that.isBotInteractionEnabled())
             .append(this.getId(), that.getId())
             .append(this.getGuildId(), that.getGuildId())
             .append(this.getName(), that.getName())
@@ -128,10 +122,9 @@ public class GuildSqlModel implements GuildModel, SqlModel {
             .append(this.getId())
             .append(this.getGuildId())
             .append(this.getName())
+            .append(this.isDeveloperBotEnabled())
             .append(this.isReportsPublic())
-            .append(this.isBotEnabled())
             .append(this.isEmojiServer())
-            .append(this.isBotInteractionEnabled())
             .append(this.getAdminRoles())
             .append(this.getManagerRoles())
             .append(this.getModRoles())

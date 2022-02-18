@@ -11,13 +11,11 @@ public interface GuildModel extends Model {
 
     String getName();
 
+    boolean isDeveloperBotEnabled();
+
     boolean isReportsPublic();
 
-    boolean isBotEnabled();
-
     boolean isEmojiServer();
-
-    boolean isBotInteractionEnabled();
 
     List<Long> getAdminRoles();
 
