@@ -26,6 +26,7 @@ import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sack_items.SackItemModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
+import dev.sbs.api.data.model.skyblock.shop_profile_upgrades.ShopProfileUpgradeModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
@@ -397,9 +398,30 @@ public class SkyBlockIsland {
             return new Skill(skillModel, experience, (skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().map(JacobsFarming::getPerks).map(perk -> perk.getOrDefault(JacobsFarming.Perk.FARMING_LEVEL_CAP, 0)).orElse(0) : 0));
         }
 
+        public ConcurrentList<Skill> getSkills() {
+            return this.getSkills(true);
+        }
+
+        public ConcurrentList<Skill> getSkills(boolean cosmetic) {
+            return SimplifiedApi.getRepositoryOf(SkillModel.class)
+                .findAll()
+                .stream()
+                .filter(skillModel -> cosmetic || !skillModel.isCosmetic())
+                .map(skillModel -> this.getSkill(skillModel))
+                .collect(Concurrent.toList());
+        }
+
         public Slayer getSlayer(SlayerModel slayerModel) {
             Slayer.SlayerBoss slayerBoss = this.slayer_bosses.get(slayerModel.getKey().toLowerCase());
             return new Slayer(slayerModel, slayerBoss != null ? slayerBoss : new Slayer.SlayerBoss());
+        }
+
+        public ConcurrentList<Slayer> getSlayers() {
+            return SimplifiedApi.getRepositoryOf(SlayerModel.class)
+                .findAll()
+                .stream()
+                .map(slayerModel -> this.getSlayer(slayerModel))
+                .collect(Concurrent.toList());
         }
 
         public Sack getSack(SackModel sackModel) {
@@ -407,7 +429,7 @@ public class SkyBlockIsland {
 
             SimplifiedApi.getRepositoryOf(SackItemModel.class)
                 .findAll(SackItemModel::getSack, sackModel)
-                .parallelStream()
+                .stream()
                 .map(sackItem -> Pair.of(sackItem, this.sacksCounts.getOrDefault(sackItem.getItem().getItemId(), 0)))
                 .forEach(entry -> sack.stored.put(entry.getKey(), entry.getValue()));
 
@@ -415,14 +437,48 @@ public class SkyBlockIsland {
         }
 
         public double getSkillAverage() {
-            ConcurrentList<Skill> skills = SimplifiedApi.getRepositoryOf(SkillModel.class)
-                .findAll()
-                .parallelStream()
-                .filter(skillModel -> !skillModel.isCosmetic())
-                .map(skillModel -> this.getSkill(skillModel))
-                .collect(Concurrent.toList());
-
+            ConcurrentList<Skill> skills = this.getSkills(false);
             return skills.stream().mapToDouble(Skill::getLevel).sum() / skills.size();
+        }
+
+        public double getSkillExperience() {
+            ConcurrentList<Skill> skills = this.getSkills(false);
+            return skills.stream().mapToDouble(Skill::getExperience).sum();
+        }
+
+        public double getSkillProgressPercentage() {
+            ConcurrentList<Skill> skills = this.getSkills(false);
+            return skills.stream().mapToDouble(Skill::getTotalProgressPercentage).sum() / skills.size();
+        }
+
+        public double getSlayerAverage() {
+            ConcurrentList<Slayer> slayers = this.getSlayers();
+            return slayers.stream().mapToDouble(Slayer::getLevel).sum() / slayers.size();
+        }
+
+        public double getSlayerExperience() {
+            ConcurrentList<Slayer> slayers = this.getSlayers();
+            return slayers.stream().mapToDouble(Slayer::getExperience).sum();
+        }
+
+        public double getSlayerProgressPercentage() {
+            ConcurrentList<Slayer> slayers = this.getSlayers();
+            return slayers.stream().mapToDouble(Slayer::getTotalProgressPercentage).sum() / slayers.size();
+        }
+
+        public double getDungeonClassAverage() {
+            ConcurrentList<Dungeon.Class> dungeonClasses = this.getDungeons().getClasses();
+            return dungeonClasses.stream().mapToDouble(Dungeon.Class::getLevel).sum() / dungeonClasses.size();
+        }
+
+        public double getDungeonClassExperience() {
+            ConcurrentList<Dungeon.Class> dungeonClasses = this.getDungeons().getClasses();
+            return dungeonClasses.stream().mapToDouble(Dungeon.Class::getExperience).sum();
+        }
+
+        public double getDungeonClassProgressPercentage() {
+            ConcurrentList<Dungeon.Class> dungeonClasses = this.getDungeons().getClasses();
+            return dungeonClasses.stream().mapToDouble(Dungeon.Class::getTotalProgressPercentage).sum() / dungeonClasses.size();
         }
 
         public NbtContent getStorage(Storage type) {
@@ -478,7 +534,7 @@ public class SkyBlockIsland {
             return SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
                 .findAll()
                 .parallelStream()
-                .map(dungeonClassModel -> this.getDungeons().getPlayerClass(dungeonClassModel).getWeight())
+                .map(dungeonClassModel -> this.getDungeons().getClass(dungeonClassModel).getWeight())
                 .collect(Concurrent.toMap());
         }
 
@@ -656,6 +712,24 @@ public class SkyBlockIsland {
             return Optional.ofNullable(this.upgrading);
         }
 
+        public int getHighestTier(ShopProfileUpgradeModel shopProfileUpgradeModel) {
+            return this.getUpgraded()
+                .stream()
+                .filter(upgraded -> upgraded.getUpgradeName().equalsIgnoreCase(shopProfileUpgradeModel.getKey()))
+                .sorted((o1, o2) -> Comparator.comparing(Upgraded::getTier).compare(o1, o2))
+                .map(Upgraded::getTier)
+                .findFirst()
+                .orElse(0);
+        }
+
+        public ConcurrentList<Upgraded> getUpgrades(ShopProfileUpgradeModel shopProfileUpgradeModel) {
+            return this.getUpgraded()
+                .stream()
+                .filter(upgraded -> upgraded.getUpgradeName().equalsIgnoreCase(shopProfileUpgradeModel.getKey()))
+                .sorted((o1, o2) -> Comparator.comparing(Upgraded::getTier).compare(o1, o2))
+                .collect(Concurrent.toList());
+        }
+
         public enum Upgrade {
 
             @SerializedName("minion_slots")
@@ -674,7 +748,8 @@ public class SkyBlockIsland {
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Upgraded {
 
-            @Getter private Upgrade upgrade;
+            @SerializedName("upgrade")
+            @Getter private String upgradeName;
             @Getter private int tier;
             @SerializedName("started_ms")
             @Getter private SkyBlockDate.RealTime started;
@@ -687,18 +762,27 @@ public class SkyBlockIsland {
             @SerializedName("fasttracked")
             @Getter private boolean fastTracked;
 
+            public Optional<ShopProfileUpgradeModel> getUpgrade() {
+                return SimplifiedApi.getRepositoryOf(ShopProfileUpgradeModel.class).findFirst(ShopProfileUpgradeModel::getKey, this.getUpgradeName().toUpperCase());
+            }
+
         }
 
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Upgrading {
 
-            @Getter private Upgrade upgrade;
+            @SerializedName("upgrade")
+            @Getter private String upgradeName;
             @SerializedName("new_tier")
             @Getter private int newTier;
             @SerializedName("start_ms")
             @Getter private SkyBlockDate.RealTime started;
             @SerializedName("who_started")
             @Getter private String startedBy;
+
+            public Optional<ShopProfileUpgradeModel> getUpgrade() {
+                return SimplifiedApi.getRepositoryOf(ShopProfileUpgradeModel.class).findFirst(ShopProfileUpgradeModel::getKey, this.getUpgradeName().toUpperCase());
+            }
 
         }
 
@@ -718,20 +802,32 @@ public class SkyBlockIsland {
         @SerializedName("dungeon_types")
         private ConcurrentMap<String, Dungeon> types;
 
+        public Dungeon.Class getClass(DungeonClassModel dungeonClassModel) {
+            Dungeon.Class dungeonClass = this.playerClasses.get(dungeonClassModel.getKey().toLowerCase());
+            dungeonClass.type = dungeonClassModel;
+            return dungeonClass;
+        }
+
+        public ConcurrentList<Dungeon.Class> getClasses() {
+            return this.playerClasses.stream()
+                .map(entry -> this.getClass(SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
+                    .findFirstOrNull(DungeonClassModel::getKey, entry.getKey()))
+                )
+                .collect(Concurrent.toList());
+        }
+
         public Dungeon getDungeon(DungeonModel dungeonModel) {
             Dungeon dungeon = this.types.get(dungeonModel.getKey().toLowerCase());
             dungeon.type = dungeonModel;
             return dungeon;
         }
 
-        public Dungeon.Class getPlayerClass(DungeonClassModel dungeonClassModel) {
-            Dungeon.Class dungeonClass = this.playerClasses.get(dungeonClassModel.getKey().toLowerCase());
-            dungeonClass.type = dungeonClassModel;
-            return dungeonClass;
+        public Optional<Dungeon.Class> getSelectedClass() {
+            return this.getSelectedClassModel().map(this::getClass);
         }
 
-        public DungeonClassModel getSelectedClass() {
-            return SimplifiedApi.getRepositoryOf(DungeonClassModel.class).findFirstOrNull(DungeonClassModel::getKey, this.selectedClass.toUpperCase());
+        public Optional<DungeonClassModel> getSelectedClassModel() {
+            return SimplifiedApi.getRepositoryOf(DungeonClassModel.class).findFirst(DungeonClassModel::getKey, this.selectedClass.toUpperCase());
         }
 
     }
@@ -1674,7 +1770,18 @@ public class SkyBlockIsland {
         }
 
         public final double getProgressPercentage(double experience) {
-            return (this.getProgressExperience(experience) / this.getNextExperience(experience)) * 100;
+            return (this.getProgressExperience(experience) / this.getNextExperience(experience)) * 100.0;
+        }
+
+        public final double getTotalExperience() {
+            return this.getExperienceTiers()
+                .stream()
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        }
+
+        public final double getTotalProgressPercentage() {
+            return (this.getExperience() / this.getTotalExperience()) * 100.0;
         }
 
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
