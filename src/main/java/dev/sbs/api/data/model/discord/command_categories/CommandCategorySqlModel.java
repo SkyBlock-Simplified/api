@@ -1,7 +1,6 @@
-package dev.sbs.api.data.model.discord.command_configs;
+package dev.sbs.api.data.model.discord.command_categories;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.command_categories.CommandCategorySqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -24,10 +22,10 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_command_configs"
+    name = "discord_command_categories"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
+public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +35,11 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Getter
     @Setter
     @Id
+    @Column(name = "key", nullable = false)
+    private String key;
+
+    @Getter
+    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -57,37 +60,6 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     private EmojiSqlModel emoji;
 
     @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "category_key", referencedColumnName = "key")
-    private CommandCategorySqlModel category;
-
-    @Getter
-    @Setter
-    @Column(name = "developer_only", nullable = false)
-    private boolean developerOnly;
-
-    @Getter
-    @Setter
-    @Column(name = "enabled", nullable = false)
-    private boolean enabled;
-
-    @Getter
-    @Setter
-    @Column(name = "guild_toggleable", nullable = false)
-    private boolean guildToggleable;
-
-    @Getter
-    @Setter
-    @Column(name = "status", nullable = false)
-    private String status;
-
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -97,16 +69,15 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CommandConfigSqlModel that = (CommandConfigSqlModel) o;
+        CommandCategorySqlModel that = (CommandCategorySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isDeveloperOnly(), that.isDeveloperOnly())
-            .append(this.isEnabled(), that.isEnabled())
-            .append(this.isGuildToggleable(), that.isGuildToggleable())
             .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
-            .append(this.getStatus(), that.getStatus())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getLongDescription(), that.getLongDescription())
+            .append(this.getEmoji(), that.getEmoji())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -115,12 +86,11 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
+            .append(this.getKey())
             .append(this.getName())
-            .append(this.isDeveloperOnly())
-            .append(this.isEnabled())
-            .append(this.isGuildToggleable())
-            .append(this.getStatus())
-            .append(this.getSubmittedAt())
+            .append(this.getDescription())
+            .append(this.getLongDescription())
+            .append(this.getEmoji())
             .append(this.getUpdatedAt())
             .build();
     }
