@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.discord.command_configs;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.command_categories.CommandCategorySqlModel;
+import dev.sbs.api.data.model.discord.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -61,6 +62,12 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @ManyToOne
     @JoinColumn(name = "category_key", referencedColumnName = "key")
     private CommandCategorySqlModel category;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "group_key", referencedColumnName = "key")
+    private CommandGroupSqlModel group;
 
     @Getter
     @Setter
