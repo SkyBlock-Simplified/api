@@ -5,12 +5,13 @@ import dev.sbs.api.data.model.Model;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface UserModel extends Model {
 
     List<Long> getDiscordIds();
 
-    List<String> getMojangUniqueIds();
+    List<UUID> getMojangUniqueIds();
 
     Map<Long, String> getNotes();
 

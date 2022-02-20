@@ -2,7 +2,7 @@ package dev.sbs.api.data.model.discord.users;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.converter.list.LongListConverter;
-import dev.sbs.api.data.sql.converter.list.StringListConverter;
+import dev.sbs.api.data.sql.converter.list.UUIDListConverter;
 import dev.sbs.api.data.sql.converter.map.LongStringMapConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -46,8 +47,8 @@ public class UserSqlModel implements UserModel, SqlModel {
     @Getter
     @Setter
     @Column(name = "mojang_uuids", nullable = false)
-    @Convert(converter = StringListConverter.class)
-    private List<String> mojangUniqueIds;
+    @Convert(converter = UUIDListConverter.class)
+    private List<UUID> mojangUniqueIds;
 
     @Getter
     @Setter
