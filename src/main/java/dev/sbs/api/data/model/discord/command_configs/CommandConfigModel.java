@@ -6,8 +6,11 @@ import dev.sbs.api.data.model.discord.command_groups.CommandGroupModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public interface CommandConfigModel extends Model {
+
+    UUID getUniqueId();
 
     String getName();
 
@@ -24,6 +27,8 @@ public interface CommandConfigModel extends Model {
     boolean isDeveloperOnly();
 
     boolean isEnabled();
+
+    boolean isInheritingPermissions();
 
     boolean isGuildToggleable();
 

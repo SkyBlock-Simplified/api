@@ -4,6 +4,7 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.command_categories.CommandCategorySqlModel;
 import dev.sbs.api.data.model.discord.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
+import dev.sbs.api.data.sql.converter.UUIDConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -38,6 +41,12 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Getter
     @Setter
     @Id
+    @Column(name = "identifier", nullable = false)
+    @Convert(converter = UUIDConverter.class)
+    private UUID uniqueId;
+
+    @Getter
+    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -78,6 +87,11 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Setter
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
+
+    @Getter
+    @Setter
+    @Column(name = "inherit_permissions", nullable = false)
+    private boolean inheritingPermissions;
 
     @Getter
     @Setter
