@@ -22,6 +22,7 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.application_requirements.ApplicationRequirementSqlRepository;
+import dev.sbs.api.data.model.discord.command_categories.CommandCategorySqlRepository;
 import dev.sbs.api.data.model.discord.command_configs.CommandConfigSqlRepository;
 import dev.sbs.api.data.model.discord.embed_types.EmbedTypeSqlRepository;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlRepository;
@@ -317,6 +318,7 @@ public final class SimplifiedApi {
 
             // Requires Above
             EmojiSqlRepository.class,
+            CommandCategorySqlRepository.class,
             CraftingTableRecipeSlotSqlRepository.class,
             EnchantmentSqlRepository.class,
             GuildApplicationTypeSqlRepository.class,
