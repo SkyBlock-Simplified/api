@@ -505,36 +505,40 @@ public class SkyBlockIsland {
             }
         }
 
-        public ConcurrentMap<SkillModel, Experience.Weight> getSkillWeight() {
+        public ConcurrentMap<Skill, Experience.Weight> getSkillWeight() {
             return SimplifiedApi.getRepositoryOf(SkillModel.class)
                 .findAll()
                 .parallelStream()
                 .filter(skillModel -> !skillModel.isCosmetic())
-                .map(skillModel -> this.getSkill(skillModel).getWeight())
+                .map(this::getSkill)
+                .map(skill -> Pair.of(skill, skill.getWeight()))
                 .collect(Concurrent.toMap());
         }
 
-        public ConcurrentMap<SlayerModel, Experience.Weight> getSlayerWeight() {
+        public ConcurrentMap<Slayer, Experience.Weight> getSlayerWeight() {
             return SimplifiedApi.getRepositoryOf(SlayerModel.class)
                 .findAll()
                 .parallelStream()
-                .map(slayerModel -> this.getSlayer(slayerModel).getWeight())
+                .map(this::getSlayer)
+                .map(slayer -> Pair.of(slayer, slayer.getWeight()))
                 .collect(Concurrent.toMap());
         }
 
-        public ConcurrentMap<DungeonModel, Experience.Weight> getDungeonWeight() {
+        public ConcurrentMap<Dungeon, Experience.Weight> getDungeonWeight() {
             return SimplifiedApi.getRepositoryOf(DungeonModel.class)
                 .findAll()
                 .parallelStream()
-                .map(dungeonModel -> this.getDungeons().getDungeon(dungeonModel).getWeight())
+                .map(this.getDungeons()::getDungeon)
+                .map(dungeon -> Pair.of(dungeon, dungeon.getWeight()))
                 .collect(Concurrent.toMap());
         }
 
-        public ConcurrentMap<DungeonClassModel, Experience.Weight> getDungeonClassWeight() {
+        public ConcurrentMap<Dungeon.Class, Experience.Weight> getDungeonClassWeight() {
             return SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
                 .findAll()
                 .parallelStream()
-                .map(dungeonClassModel -> this.getDungeons().getClass(dungeonClassModel).getWeight())
+                .map(this.getDungeons()::getClass)
+                .map(dungeonClass -> Pair.of(dungeonClass, dungeonClass.getWeight()))
                 .collect(Concurrent.toMap());
         }
 

@@ -7,8 +7,6 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.function.FilterFunction;
-import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
-import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.skyblock.minion_tiers.MinionTierModel;
@@ -16,7 +14,6 @@ import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
-import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
@@ -85,10 +82,10 @@ public class SkyBlockIslandTest {
             // skills, skill_levels, slayers, slayer_levels, dungeons, dungeon_classes, dungeon_levels
             SkyBlockIsland.Member member = optionalMember.get();
             double skillAverage = member.getSkillAverage();
-            ConcurrentMap<SkillModel, SkyBlockIsland.Experience.Weight> skillWeights = member.getSkillWeight();
-            ConcurrentMap<SlayerModel, SkyBlockIsland.Experience.Weight> slayerWeights = member.getSlayerWeight();
-            ConcurrentMap<DungeonModel, SkyBlockIsland.Experience.Weight> dungeonWeights = member.getDungeonWeight();
-            ConcurrentMap<DungeonClassModel, SkyBlockIsland.Experience.Weight> dungeonClassWeights = member.getDungeonClassWeight();
+            ConcurrentMap<SkyBlockIsland.Skill, SkyBlockIsland.Experience.Weight> skillWeights = member.getSkillWeight();
+            ConcurrentMap<SkyBlockIsland.Slayer, SkyBlockIsland.Experience.Weight> slayerWeights = member.getSlayerWeight();
+            ConcurrentMap<SkyBlockIsland.Dungeon, SkyBlockIsland.Experience.Weight> dungeonWeights = member.getDungeonWeight();
+            ConcurrentMap<SkyBlockIsland.Dungeon.Class, SkyBlockIsland.Experience.Weight> dungeonClassWeights = member.getDungeonClassWeight();
             assert member.getJacobsFarming().isPresent();
             ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().get().getContests();
 
