@@ -15,6 +15,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -58,6 +59,144 @@ public abstract class Repository<T extends Model> {
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Invalid match type ''{0}''.", match)
                 .build();
+    }
+
+    private <C extends Comparable<C>, S> ConcurrentList<T> contains(FilterFunction.Match match, SortFunction<T, C> sortFunction, TriFunction<FilterFunction<T, List<S>>, T, S, Boolean> compare, Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        ConcurrentList<T> itemsCopy = this.findAll();
+
+        if (match == FilterFunction.Match.ANY) {
+            return itemsCopy
+                .stream()
+                .filter(it -> {
+                    boolean matches = false;
+
+                    for (Pair<FilterFunction<T, List<S>>, S> predicate : predicates)
+                        matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
+
+                    return matches;
+                })
+                .collect(Concurrent.toList());
+        } else if (match == FilterFunction.Match.ALL) {
+            for (Pair<FilterFunction<T, List<S>>, S> predicate : predicates) {
+                itemsCopy = itemsCopy.stream()
+                    .filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()))
+                    .collect(Concurrent.toList());
+            }
+
+            if (sortFunction != null)
+                itemsCopy.sort((s1, s2) -> Comparator.comparing(sortFunction).compare(s1, s2));
+
+            return itemsCopy;
+        } else
+            throw SimplifiedException.of(DataException.class)
+                .withMessage("Invalid match type ''{0}''.", match)
+                .build();
+    }
+
+    public final <C extends Comparable<C>> ConcurrentList<T> containsAll(@NotNull SortFunction<T, C> sortFunction) {
+        return this.containsAll(sortFunction, Concurrent.newList());
+    }
+
+    public final <S> ConcurrentList<T> containsAll(@NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsAll((SortFunction<T, ?>) null, function, value);
+    }
+
+    public final <C extends Comparable<C>, S> ConcurrentList<T> containsAll(SortFunction<T, C> sortFunction, @NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsAll(FilterFunction.Match.ALL, sortFunction, function, value);
+    }
+
+    public final <S> ConcurrentList<T> containsAll(@NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsAll((SortFunction<T, ?>) null, predicates);
+    }
+
+    public final <C extends Comparable<C>, S> ConcurrentList<T> containsAll(SortFunction<T, C> sortFunction, @NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsAll(sortFunction, Concurrent.newList(predicates));
+    }
+
+    public final <S> ConcurrentList<T> containsAll(@NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.containsAll((SortFunction<T, ?>) null, predicates);
+    }
+
+    public final <C extends Comparable<C>, S> ConcurrentList<T> containsAll(SortFunction<T, C> sortFunction, @NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.containsAll(FilterFunction.Match.ALL, sortFunction, predicates);
+    }
+
+    public final <S> ConcurrentList<T> containsAll(@NotNull FilterFunction.Match match, @NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsAll(match, (SortFunction<T, ?>) null, function, value);
+    }
+
+    public final <C extends Comparable<C>, S> ConcurrentList<T> containsAll(@NotNull FilterFunction.Match match, SortFunction<T, C> sortFunction, @NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsAll(match, sortFunction, Pair.of(function, value));
+    }
+
+    public final <S> ConcurrentList<T> containsAll(@NotNull FilterFunction.Match match, @NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsAll(match, (SortFunction<T, ?>) null, predicates);
+    }
+
+    public final <C extends Comparable<C>, S> ConcurrentList<T> containsAll(@NotNull FilterFunction.Match match, SortFunction<T, C> sortFunction, @NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsAll(match, sortFunction, Concurrent.newList(predicates));
+    }
+
+    public final <S> ConcurrentList<T> containsAll(@NotNull FilterFunction.Match match, @NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.containsAll(match, (SortFunction<T, ?>) null, predicates);
+    }
+
+    public final <C extends Comparable<C>, S> ConcurrentList<T> containsAll(@NotNull FilterFunction.Match match, SortFunction<T, C> sortFunction, @NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.contains(
+            match,
+            sortFunction,
+            (predicate, it, value) -> (predicate.apply(it)).contains(value),
+            predicates
+        );
+    }
+
+    public final <S> Optional<T> containsFirst(@NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsFirst(FilterFunction.Match.ALL, function, value);
+    }
+
+    public final <S> Optional<T> containsFirst(@NotNull FilterFunction.Match match, @NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsFirst(match, Pair.of(function, value));
+    }
+
+    public final <S> Optional<T> containsFirst(@NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsFirst(FilterFunction.Match.ALL, predicates);
+    }
+
+    public final <S> Optional<T> containsFirst(@NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.containsFirst(FilterFunction.Match.ALL, predicates);
+    }
+
+    public final <S> Optional<T> containsFirst(@NotNull FilterFunction.Match match, @NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsFirst(match, Concurrent.newList(predicates));
+    }
+
+    public final <S> Optional<T> containsFirst(@NotNull FilterFunction.Match match, @NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        ConcurrentList<T> allMatches = this.containsAll(match, predicates);
+        return Optional.ofNullable(ListUtil.isEmpty(allMatches) ? null : allMatches.get(0));
+    }
+
+    public final <S> T containsFirstOrNull(@NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsFirst(function, value).orElse(null);
+    }
+
+    public final <S> T containsFirstOrNull(@NotNull FilterFunction.Match match, @NotNull FilterFunction<T, List<S>> function, S value) throws DataException {
+        return this.containsFirstOrNull(match, Pair.of(function, value));
+    }
+
+    public final <S> T containsFirstOrNull(@NotNull FilterFunction.Match match, @NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsFirstOrNull(match, Concurrent.newList(predicates));
+    }
+
+    public final <S> T containsFirstOrNull(@NotNull FilterFunction.Match match, @NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.containsFirst(match, predicates).orElse(null);
+    }
+
+    public final <S> T containsFirstOrNull(@NotNull Pair<FilterFunction<T, List<S>>, S>... predicates) throws DataException {
+        return this.containsFirstOrNull(Concurrent.newList(predicates));
+    }
+
+    public final <S> T containsFirstOrNull(@NotNull Iterable<Pair<FilterFunction<T, List<S>>, S>> predicates) throws DataException {
+        return this.containsFirst(predicates).orElse(null);
     }
 
     public abstract ConcurrentList<T> findAll() throws DataException;
