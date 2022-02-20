@@ -25,14 +25,14 @@ import java.time.Instant;
 public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
 
     @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
     @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
     @Getter
