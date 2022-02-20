@@ -52,22 +52,22 @@ public abstract class SimplifiedException extends RuntimeException {
             return this;
         }
 
-        public ExceptionBuilder<T> addField(String name, String value) {
-            return this.addField(name, value, false);
+        public ExceptionBuilder<T> withField(String name, String value) {
+            return this.withField(name, value, false);
         }
 
-        public ExceptionBuilder<T> addField(String name, String value, boolean inline) {
+        public ExceptionBuilder<T> withField(String name, String value, boolean inline) {
             this.fields.add(Triple.of(name, value, inline));
             return this;
         }
 
-        public ExceptionBuilder<T> addFields(@NotNull Map.Entry<String, String>... entries) {
-            Arrays.stream(entries).forEach(entry -> this.addField(entry.getKey(), entry.getValue()));
+        public ExceptionBuilder<T> withFields(@NotNull Map.Entry<String, String>... entries) {
+            Arrays.stream(entries).forEach(entry -> this.withField(entry.getKey(), entry.getValue()));
             return this;
         }
 
-        public ExceptionBuilder<T> addFields(@NotNull Triple<String, String, Boolean>... fields) {
-            Arrays.stream(fields).forEach(field -> this.addField(field.getLeft(), field.getMiddle(), field.getRight()));
+        public ExceptionBuilder<T> withFields(@NotNull Triple<String, String, Boolean>... fields) {
+            Arrays.stream(fields).forEach(field -> this.withField(field.getLeft(), field.getMiddle(), field.getRight()));
             return this;
         }
 
