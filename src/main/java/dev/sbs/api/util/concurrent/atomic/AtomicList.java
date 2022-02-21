@@ -1,6 +1,7 @@
 package dev.sbs.api.util.concurrent.atomic;
 
 import dev.sbs.api.SimplifiedException;
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.search.function.SortFunction;
@@ -100,7 +101,7 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 	@SuppressWarnings("unchecked")
 	private T newList(T current) {
 		try {
-			List<E> list = current.getClass().newInstance();
+			List<E> list = Reflection.of(current.getClass()).newInstance();
 			list.addAll(current);
 			return (T) list;
 		} catch (Exception ex) {
@@ -184,6 +185,7 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public AtomicList<E, T> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
 		if (ListUtil.notEmpty(sortFunctions)) {
 			this.sort((s1, s2) -> {

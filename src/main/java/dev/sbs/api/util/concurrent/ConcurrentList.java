@@ -57,10 +57,11 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 
 	@Override
 	public ConcurrentList<E> findAll() throws DataException {
-		return this;
+		return new ConcurrentList<>(this);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public final ConcurrentList<E> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;

@@ -48,10 +48,11 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 
 	@Override
 	public ConcurrentLinkedList<E> findAll() throws DataException {
-		return this;
+		return new ConcurrentLinkedList<>(this);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public final ConcurrentLinkedList<E> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
