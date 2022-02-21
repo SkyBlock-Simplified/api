@@ -9,7 +9,9 @@ import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 @SuppressWarnings("all")
@@ -52,7 +54,18 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 
 	@Override
 	public boolean contains(Object item) {
-		return ref.get().contains(item);
+		return this.ref.get().contains(item);
+	}
+
+	public final <S> boolean contains(Function<E, S> function, S value) {
+		T current = this.ref.get();
+
+		for (E element : current) {
+			if (Objects.equals(function.apply(element), value))
+				return true;
+		}
+
+		return false;
 	}
 
 	@Override

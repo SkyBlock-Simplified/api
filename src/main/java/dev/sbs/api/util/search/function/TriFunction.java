@@ -1,4 +1,4 @@
-package dev.sbs.api.data.function;
+package dev.sbs.api.util.search.function;
 
 @FunctionalInterface
 public interface TriFunction<T, U, V, R> {
