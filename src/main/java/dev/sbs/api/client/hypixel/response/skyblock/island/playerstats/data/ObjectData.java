@@ -29,14 +29,18 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final Optional<ReforgeModel> reforge;
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
+    @Getter private final boolean recombobulated;
 
     protected ObjectData(ItemModel itemModel, CompoundTag compoundTag) {
         this.item = itemModel;
         this.compoundTag = compoundTag;
 
+        // Load Recombobulator
+        this.recombobulated = compoundTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue() == 1;
+
         // Load Rarity
         this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
-            .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + compoundTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue())
+            .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + (recombobulated ? 1 : 0))
             .orElse(itemModel.getRarity());
 
         // Initialize Stats
