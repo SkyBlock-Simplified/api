@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockProfilesResponse {
@@ -24,6 +25,36 @@ public class SkyBlockProfilesResponse {
             .stream()
             .filter(skyBlockIsland -> skyBlockIsland.getProfileName().map(profileModel::equals).orElse(false))
             .findFirst();
+    }
+
+    public SkyBlockIsland getLastPlayed(UUID uniqueId) {
+        Optional<SkyBlockIsland> lastPlayedIsland = Optional.empty();
+        long lastPlayed = 0;
+
+        for (SkyBlockIsland skyBlockIsland : this.getIslands()) {
+            if (!lastPlayedIsland.isPresent()) {
+                lastPlayedIsland = Optional.of(skyBlockIsland);
+                lastPlayed = skyBlockIsland.getMember(uniqueId)
+                    .map(SkyBlockIsland.Member::getLastSave)
+                    .map(SkyBlockDate::getRealTime)
+                    .orElse(0L);
+                continue;
+            }
+
+            Optional<SkyBlockIsland.Member> optionalMember = skyBlockIsland.getMember(uniqueId);
+
+            if (optionalMember.isPresent()) {
+                SkyBlockIsland.Member member = optionalMember.get();
+                long memberLastPlayed = member.getLastSave().getRealTime();
+
+                if (memberLastPlayed > lastPlayed) {
+                    lastPlayedIsland = Optional.of(skyBlockIsland);
+                    lastPlayed = memberLastPlayed;
+                }
+            }
+        }
+
+        return lastPlayedIsland.orElse(this.getIslands().get(0));
     }
 
 }
