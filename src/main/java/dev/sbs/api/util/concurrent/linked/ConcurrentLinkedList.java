@@ -53,7 +53,7 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final ConcurrentLinkedList<E> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
+	public <C extends Comparable<C>> ConcurrentLinkedList<E> sort(@NotNull SortFunction<E, C>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
 	}

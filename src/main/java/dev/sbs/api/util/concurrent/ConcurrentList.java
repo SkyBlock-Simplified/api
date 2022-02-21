@@ -62,7 +62,7 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final ConcurrentList<E> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
+	public <C extends Comparable<C>> ConcurrentList<E> sort(@NotNull SortFunction<E, C>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
 	}

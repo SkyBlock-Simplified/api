@@ -186,7 +186,7 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 	}
 
 	@SuppressWarnings("unchecked")
-	public AtomicList<E, T> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
+	public <C extends Comparable<C>> AtomicList<E, T> sort(@NotNull SortFunction<E, C>... sortFunctions) {
 		if (ListUtil.notEmpty(sortFunctions)) {
 			this.sort((s1, s2) -> {
 				Comparator<E> comparator = Comparator.comparing(sortFunctions[0]);
