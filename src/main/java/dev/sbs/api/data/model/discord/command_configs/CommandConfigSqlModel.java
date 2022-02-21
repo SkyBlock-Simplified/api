@@ -4,7 +4,6 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.command_categories.CommandCategorySqlModel;
 import dev.sbs.api.data.model.discord.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
-import dev.sbs.api.data.sql.converter.UUIDConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -12,10 +11,10 @@ import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,13 +41,13 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Setter
     @Id
     @Column(name = "identifier", nullable = false)
-    @Convert(converter = UUIDConverter.class)
+    @Type(type = "uuid-char")
     private UUID uniqueId;
 
     @Getter
     @Setter
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "command_path", nullable = false)
+    private String commandPath;
 
     @Getter
     @Setter
@@ -100,7 +99,7 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private String status;
 
     @Getter
@@ -123,9 +122,16 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
         return new EqualsBuilder()
             .append(this.isDeveloperOnly(), that.isDeveloperOnly())
             .append(this.isEnabled(), that.isEnabled())
+            .append(this.isInheritingPermissions(), that.isInheritingPermissions())
             .append(this.isGuildToggleable(), that.isGuildToggleable())
             .append(this.getId(), that.getId())
-            .append(this.getName(), that.getName())
+            .append(this.getUniqueId(), that.getUniqueId())
+            .append(this.getCommandPath(), that.getCommandPath())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getLongDescription(), that.getLongDescription())
+            .append(this.getEmoji(), that.getEmoji())
+            .append(this.getCategory(), that.getCategory())
+            .append(this.getGroup(), that.getGroup())
             .append(this.getStatus(), that.getStatus())
             .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -136,9 +142,16 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
-            .append(this.getName())
+            .append(this.getUniqueId())
+            .append(this.getCommandPath())
+            .append(this.getDescription())
+            .append(this.getLongDescription())
+            .append(this.getEmoji())
+            .append(this.getCategory())
+            .append(this.getGroup())
             .append(this.isDeveloperOnly())
             .append(this.isEnabled())
+            .append(this.isInheritingPermissions())
             .append(this.isGuildToggleable())
             .append(this.getStatus())
             .append(this.getSubmittedAt())

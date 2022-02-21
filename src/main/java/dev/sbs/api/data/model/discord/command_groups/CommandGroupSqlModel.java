@@ -37,6 +37,11 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "group", nullable = false, unique = true)
+    private String group;
+
+    @Getter
+    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -66,6 +71,7 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
             .append(this.isRequired(), that.isRequired())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
+            .append(this.getGroup(), that.getGroup())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -77,6 +83,7 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getKey())
+            .append(this.getGroup())
             .append(this.getName())
             .append(this.getDescription())
             .append(this.isRequired())

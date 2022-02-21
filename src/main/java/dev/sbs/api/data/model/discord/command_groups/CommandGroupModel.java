@@ -6,6 +6,8 @@ public interface CommandGroupModel extends Model {
 
     String getKey();
 
+    String getGroup();
+
     String getName();
 
     String getDescription();

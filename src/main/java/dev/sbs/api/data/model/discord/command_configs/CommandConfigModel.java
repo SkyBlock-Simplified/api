@@ -12,7 +12,7 @@ public interface CommandConfigModel extends Model {
 
     UUID getUniqueId();
 
-    String getName();
+    String getCommandPath();
 
     String getDescription();
 
