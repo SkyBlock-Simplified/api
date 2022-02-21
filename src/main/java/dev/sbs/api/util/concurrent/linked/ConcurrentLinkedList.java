@@ -4,6 +4,7 @@ import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.search.SearchQuery;
 import dev.sbs.api.util.search.function.SortFunction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,8 +52,8 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	}
 
 	@Override
-	public final <C extends Comparable<C>> ConcurrentLinkedList<E> sort(SortFunction<E, C> sortFunction) {
-		super.sort(sortFunction);
+	public final ConcurrentLinkedList<E> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
+		super.sort(sortFunctions);
 		return this;
 	}
 

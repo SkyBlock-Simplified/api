@@ -11,8 +11,8 @@ public interface FilterFunction<T, R> extends Function<T, R> {
      *
      * @param first  The first function in the chain
      * @param second The last function in the chain
-     * @param <T1>   The first SqlModel to traverse
-     * @param <T2>   The second SqlModel to traverse
+     * @param <T1>   The first class to traverse
+     * @param <T2>   The second class to traverse
      * @param <T3>   The return type
      * @return The method reference between {@link T1} and {@link T3}
      */

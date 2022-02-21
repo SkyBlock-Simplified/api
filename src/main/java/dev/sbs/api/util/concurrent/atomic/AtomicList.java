@@ -2,6 +2,7 @@ package dev.sbs.api.util.concurrent.atomic;
 
 import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.exception.ReflectionException;
+import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.search.function.SortFunction;
 import org.jetbrains.annotations.NotNull;
 
@@ -183,8 +184,18 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 		}
 	}
 
-	public <C extends Comparable<C>> AtomicList<E, T> sort(SortFunction<E, C> sortFunction) {
-		this.sort((s1, s2) -> Comparator.comparing(sortFunction).compare(s1, s2));
+	public AtomicList<E, T> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
+		if (ListUtil.notEmpty(sortFunctions)) {
+			this.sort((s1, s2) -> {
+				Comparator<E> comparator = Comparator.comparing(sortFunctions[0]);
+
+				for (int i = 1; i < sortFunctions.length; i++)
+					comparator = comparator.thenComparing(sortFunctions[i]);
+
+				return comparator.compare(s1, s2);
+			});
+		}
+
 		return this;
 	}
 

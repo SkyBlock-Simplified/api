@@ -61,8 +61,8 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 	}
 
 	@Override
-	public final <C extends Comparable<C>> ConcurrentList<E> sort(SortFunction<E, C> sortFunction) {
-		super.sort(sortFunction);
+	public final ConcurrentList<E> sort(@NotNull SortFunction<E, ? extends Comparable<?>>... sortFunctions) {
+		super.sort(sortFunctions);
 		return this;
 	}
 
