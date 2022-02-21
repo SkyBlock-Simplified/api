@@ -90,12 +90,14 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
         AccessorySqlModel that = (AccessorySqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isAttainable(), that.isAttainable())
             .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getName(), that.getName())
             .append(this.getRarity(), that.getRarity())
             .append(this.getFamily(), that.getFamily())
             .append(this.getFamilyRank(), that.getFamilyRank())
+            .append(this.getEffects(), that.getEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -109,6 +111,8 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
             .append(this.getRarity())
             .append(this.getFamily())
             .append(this.getFamilyRank())
+            .append(this.isAttainable())
+            .append(this.getEffects())
             .append(this.getUpdatedAt())
             .build();
     }

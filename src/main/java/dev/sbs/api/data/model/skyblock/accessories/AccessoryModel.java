@@ -19,4 +19,8 @@ public interface AccessoryModel extends EffectsModel<Double> {
 
     boolean isAttainable();
 
+    default boolean isNotAttainable() {
+        return !this.isAttainable();
+    }
+
 }
