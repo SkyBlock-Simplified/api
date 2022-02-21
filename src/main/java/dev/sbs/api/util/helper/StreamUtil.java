@@ -120,14 +120,6 @@ public class StreamUtil {
     }
 
     public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(boolean newLine) {
-        return toStringBuilder(newLine, null);
-    }
-
-    public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(String separator) {
-        return toStringBuilder(true, separator);
-    }
-
-    public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(boolean newLine, String separator) {
         return new StreamCollector<>(
             StringBuilder::new,
             newLine ? StringBuilder::appendln : StringBuilder::append,
@@ -136,8 +128,6 @@ public class StreamUtil {
                     left.appendln(right);
                 else
                     left.append(right);
-
-                left.appendSeparator(separator);
 
                 return left;
             },
