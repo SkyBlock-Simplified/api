@@ -1,7 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.function.FilterFunction;
 import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
@@ -14,6 +13,7 @@ import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ListUtil;
+import dev.sbs.api.util.search.function.FilterFunction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

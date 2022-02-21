@@ -1,6 +1,5 @@
 package dev.sbs.api.util.helper;
 
-import dev.sbs.api.data.function.TriFunction;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentCollection;
@@ -8,6 +7,7 @@ import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.util.search.function.TriFunction;
 import dev.sbs.api.util.tuple.Pair;
 
 import java.util.Map;

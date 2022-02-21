@@ -1,6 +1,8 @@
 package dev.sbs.api.util.concurrent;
 
+import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.concurrent.atomic.AtomicList;
+import dev.sbs.api.util.search.SearchQuery;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @param <E> type of elements
  */
-public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
+public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements SearchQuery<E, ConcurrentList<E>> {
 
 	/**
 	 * Create a new concurrent list.
@@ -50,6 +52,11 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 	@Override @NotNull
 	public ConcurrentList<E> subList(int fromIndex, int toIndex) {
 		return Concurrent.newList(super.subList(fromIndex, toIndex));
+	}
+
+	@Override
+	public ConcurrentList<E> findAll() throws DataException {
+		return this;
 	}
 
 }

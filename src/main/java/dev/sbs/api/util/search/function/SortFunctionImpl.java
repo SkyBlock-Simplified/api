@@ -1,11 +1,10 @@
-package dev.sbs.api.data.function;
+package dev.sbs.api.util.search.function;
 
-import dev.sbs.api.data.model.Model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-class SortFunctionImpl<T extends Model, C extends Comparable<C>> implements SortFunction<T, C> {
+class SortFunctionImpl<T, C extends Comparable<C>> implements SortFunction<T, C> {
 
     @Getter private final FilterFunction<T, C> function;
 

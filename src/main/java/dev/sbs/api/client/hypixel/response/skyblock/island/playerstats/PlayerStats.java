@@ -8,7 +8,6 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.Item
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.ObjectData;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.PlayerDataHelper;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.StatData;
-import dev.sbs.api.data.function.FilterFunction;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilyModel;
@@ -48,6 +47,7 @@ import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.mutable.MutableBoolean;
+import dev.sbs.api.util.search.function.FilterFunction;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
