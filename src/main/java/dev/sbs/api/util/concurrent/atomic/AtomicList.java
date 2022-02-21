@@ -2,6 +2,7 @@ package dev.sbs.api.util.concurrent.atomic;
 
 import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.exception.ReflectionException;
+import dev.sbs.api.util.search.function.SortFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractList;
@@ -180,6 +181,11 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 			if (this.ref.compareAndSet(current, modified))
 				return old;
 		}
+	}
+
+	public <C extends Comparable<C>> AtomicList<E, T> sort(SortFunction<E, C> sortFunction) {
+		this.sort((s1, s2) -> Comparator.comparing(sortFunction).compare(s1, s2));
+		return this;
 	}
 
 	@Override

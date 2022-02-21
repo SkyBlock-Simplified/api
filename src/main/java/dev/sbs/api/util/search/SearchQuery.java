@@ -88,11 +88,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <S> T containsAll(@NotNull Pair<FilterFunction<E, List<S>>, S>... predicates) throws DataException {
-        return this.containsAll((SortFunction<E, ?>) null, predicates);
-    }
-
-    default <C extends Comparable<C>, S> T containsAll(SortFunction<E, C> sortFunction, @NotNull Pair<FilterFunction<E, List<S>>, S>... predicates) throws DataException {
-        return this.containsAll(sortFunction, Concurrent.newList(predicates));
+        return this.containsAll(Concurrent.newList(predicates));
     }
 
     default <S> T containsAll(@NotNull Iterable<Pair<FilterFunction<E, List<S>>, S>> predicates) throws DataException {
@@ -108,15 +104,11 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <C extends Comparable<C>, S> T containsAll(@NotNull FilterFunction.Match match, SortFunction<E, C> sortFunction, @NotNull FilterFunction<E, List<S>> function, S value) throws DataException {
-        return this.containsAll(match, sortFunction, Pair.of(function, value));
+        return this.containsAll(match, Concurrent.newList(Pair.of(function, value)));
     }
 
     default <S> T containsAll(@NotNull FilterFunction.Match match, @NotNull Pair<FilterFunction<E, List<S>>, S>... predicates) throws DataException {
-        return this.containsAll(match, (SortFunction<E, ?>) null, predicates);
-    }
-
-    default <C extends Comparable<C>, S> T containsAll(@NotNull FilterFunction.Match match, SortFunction<E, C> sortFunction, @NotNull Pair<FilterFunction<E, List<S>>, S>... predicates) throws DataException {
-        return this.containsAll(match, sortFunction, Concurrent.newList(predicates));
+        return this.containsAll(match, Concurrent.newList(predicates));
     }
 
     default <S> T containsAll(@NotNull FilterFunction.Match match, @NotNull Iterable<Pair<FilterFunction<E, List<S>>, S>> predicates) throws DataException {
@@ -194,11 +186,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <S> T findAll(@NotNull Pair<FilterFunction<E, S>, S>... predicates) throws DataException {
-        return this.findAll((SortFunction<E, ?>) null, predicates);
-    }
-
-    default <C extends Comparable<C>, S> T findAll(SortFunction<E, C> sortFunction, @NotNull Pair<FilterFunction<E, S>, S>... predicates) throws DataException {
-        return this.findAll(sortFunction, Concurrent.newList(predicates));
+        return this.findAll(Concurrent.newList(predicates));
     }
 
     default <S> T findAll(@NotNull Iterable<Pair<FilterFunction<E, S>, S>> predicates) throws DataException {
@@ -214,15 +202,11 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <C extends Comparable<C>, S> T findAll(@NotNull FilterFunction.Match match, SortFunction<E, C> sortFunction, @NotNull FilterFunction<E, S> function, S value) throws DataException {
-        return this.findAll(match, sortFunction, Pair.of(function, value));
+        return this.findAll(match, sortFunction, Concurrent.newList(Pair.of(function, value)));
     }
 
     default <S> T findAll(@NotNull FilterFunction.Match match, @NotNull Pair<FilterFunction<E, S>, S>... predicates) throws DataException {
-        return this.findAll(match, (SortFunction<E, ?>) null, predicates);
-    }
-
-    default <C extends Comparable<C>, S> T findAll(@NotNull FilterFunction.Match match, SortFunction<E, C> sortFunction, @NotNull Pair<FilterFunction<E, S>, S>... predicates) throws DataException {
-        return this.findAll(match, sortFunction, Concurrent.newList(predicates));
+        return this.findAll(match, Concurrent.newList(predicates));
     }
 
     default <S> T findAll(@NotNull FilterFunction.Match match, @NotNull Iterable<Pair<FilterFunction<E, S>, S>> predicates) throws DataException {
@@ -288,11 +272,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default T matchAll(@NotNull FilterFunction<E, Boolean>... predicates) throws DataException {
-        return this.matchAll((SortFunction<E, ?>) null, predicates);
-    }
-
-    default <C extends Comparable<C>> T matchAll(SortFunction<E, C> sortFunction, @NotNull FilterFunction<E, Boolean>... predicates) throws DataException {
-        return this.matchAll(sortFunction, Concurrent.newList(predicates));
+        return this.matchAll(Concurrent.newList(predicates));
     }
 
     default T matchAll(@NotNull Iterable<FilterFunction<E, Boolean>> predicates) throws DataException {
@@ -304,11 +284,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default T matchAll(@NotNull FilterFunction.Match match, @NotNull FilterFunction<E, Boolean>... predicates) throws DataException {
-        return this.matchAll(match, (SortFunction<E, ?>) null, predicates);
-    }
-
-    default <C extends Comparable<C>> T matchAll(@NotNull FilterFunction.Match match, SortFunction<E, C> sortFunction, @NotNull FilterFunction<E, Boolean>... predicates) throws DataException {
-        return this.matchAll(match, sortFunction, Concurrent.newList(predicates));
+        return this.matchAll(match, Concurrent.newList(predicates));
     }
 
     default T matchAll(@NotNull FilterFunction.Match match, @NotNull Iterable<FilterFunction<E, Boolean>> predicates) throws DataException {

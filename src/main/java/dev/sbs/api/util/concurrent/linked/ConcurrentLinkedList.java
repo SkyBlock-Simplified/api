@@ -3,6 +3,7 @@ package dev.sbs.api.util.concurrent.linked;
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.search.SearchQuery;
+import dev.sbs.api.util.search.function.SortFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,12 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 
 	@Override
 	public ConcurrentLinkedList<E> findAll() throws DataException {
+		return this;
+	}
+
+	@Override
+	public final <C extends Comparable<C>> ConcurrentLinkedList<E> sort(SortFunction<E, C> sortFunction) {
+		super.sort(sortFunction);
 		return this;
 	}
 
