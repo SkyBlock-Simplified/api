@@ -2,6 +2,7 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractQueue;
 import java.util.Collection;
@@ -22,7 +23,7 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 	}
 
 	@Override
-	public final boolean addAll(Collection<? extends E> collection) {
+	public final boolean addAll(@NotNull Collection<? extends E> collection) {
 		return this.storage.addAll(collection);
 	}
 
@@ -37,7 +38,7 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 	}
 
 	@Override
-	public final boolean containsAll(Collection<?> collection) {
+	public final boolean containsAll(@NotNull Collection<?> collection) {
 		return this.storage.containsAll(collection);
 	}
 
@@ -51,6 +52,7 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 		return this.storage.isEmpty();
 	}
 
+	@NotNull
 	@Override
 	public final Iterator<E> iterator() {
 		return this.storage.iterator();
@@ -82,12 +84,12 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 	}
 
 	@Override
-	public final boolean removeAll(Collection<?> collection) {
+	public final boolean removeAll(@NotNull Collection<?> collection) {
 		return this.storage.removeAll(collection);
 	}
 
 	@Override
-	public final boolean retainAll(Collection<?> collection) {
+	public final boolean retainAll(@NotNull Collection<?> collection) {
 		return this.storage.retainAll(collection);
 	}
 
@@ -96,14 +98,16 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 		return this.storage.size();
 	}
 
+	@NotNull
 	@Override
 	public final Object[] toArray() {
 		return this.storage.toArray();
 	}
 
+	@NotNull
 	@SuppressWarnings("SuspiciousToArrayCall")
 	@Override
-	public final <T> T[] toArray(T[] array) {
+	public final <T> T[] toArray(@NotNull T[] array) {
 		return this.storage.toArray(array);
 	}
 

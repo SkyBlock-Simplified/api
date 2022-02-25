@@ -1,5 +1,6 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.SimplifiedException;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public abstract class AtomicSet<E, T extends AbstractSet<E>> extends AtomicColle
 	@SuppressWarnings("unchecked")
 	private T newSet(T current) {
 		try {
-			Set<E> set = current.getClass().newInstance();
+			Set<E> set = Reflection.of(current.getClass()).newInstance();
 			set.addAll(current);
 			return (T) set;
 		} catch (Exception ex) {

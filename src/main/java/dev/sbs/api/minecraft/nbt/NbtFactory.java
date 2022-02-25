@@ -2,7 +2,6 @@ package dev.sbs.api.minecraft.nbt;
 
 import com.google.gson.JsonObject;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.io.NbtReader;
 import dev.sbs.api.minecraft.nbt.io.NbtWriter;
@@ -11,6 +10,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.util.CompressionType;
 import dev.sbs.api.util.Primitives;
+import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.helper.DataUtil;
 import lombok.Cleanup;
 import org.jetbrains.annotations.NotNull;

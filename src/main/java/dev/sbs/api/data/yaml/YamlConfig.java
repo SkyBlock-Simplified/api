@@ -6,8 +6,8 @@ import dev.sbs.api.data.yaml.annotation.Comments;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentSet;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 
 import java.io.File;
 import java.io.IOException;

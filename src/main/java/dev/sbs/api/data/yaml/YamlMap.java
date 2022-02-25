@@ -4,8 +4,8 @@ import dev.sbs.api.data.yaml.annotation.ConfigMode;
 import dev.sbs.api.data.yaml.annotation.Path;
 import dev.sbs.api.data.yaml.annotation.PreserveStatic;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

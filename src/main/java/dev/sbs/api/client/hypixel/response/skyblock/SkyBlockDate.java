@@ -5,7 +5,7 @@ import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.tuple.Pair;
+import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.date.CustomDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

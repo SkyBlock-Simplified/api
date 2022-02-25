@@ -1,10 +1,10 @@
 package dev.sbs.api.manager;
 
 import com.google.common.base.Preconditions;
-import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentSet;
+import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 
 /**
  * Manager for containing providers of class instances.

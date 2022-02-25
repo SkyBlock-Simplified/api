@@ -1,7 +1,6 @@
 package dev.sbs.api.data.sql;
 
 import ch.qos.logback.classic.Level;
-import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
@@ -9,7 +8,8 @@ import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.manager.service.exception.UnknownServiceException;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Cleanup;
 import lombok.Getter;
 import org.hibernate.Session;

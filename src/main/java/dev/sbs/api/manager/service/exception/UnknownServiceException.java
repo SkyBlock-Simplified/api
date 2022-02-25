@@ -1,10 +1,10 @@
 package dev.sbs.api.manager.service.exception;
 
-import dev.sbs.api.SimplifiedException;
-import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.data.tuple.Triple;
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.tuple.Triple;
 
 public final class UnknownServiceException extends SimplifiedException {
 

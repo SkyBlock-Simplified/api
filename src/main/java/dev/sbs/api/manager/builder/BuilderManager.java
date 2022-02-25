@@ -1,13 +1,13 @@
 package dev.sbs.api.manager.builder;
 
 import com.google.common.base.Preconditions;
-import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.builder.exception.InvalidBuilderException;
 import dev.sbs.api.manager.builder.exception.RegisteredBuilderException;
 import dev.sbs.api.manager.builder.exception.UnknownBuilderException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
+import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.builder.CoreBuilder;

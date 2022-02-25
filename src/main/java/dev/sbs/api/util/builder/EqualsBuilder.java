@@ -1,8 +1,8 @@
 package dev.sbs.api.util.builder;
 
 import dev.sbs.api.util.builder.tostring.ReflectionToStringBuilder;
+import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.ArrayUtil;
-import dev.sbs.api.util.tuple.Pair;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;

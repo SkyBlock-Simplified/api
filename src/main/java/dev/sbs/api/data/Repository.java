@@ -2,8 +2,8 @@ package dev.sbs.api.data;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.search.SearchQuery;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.search.SearchQuery;
 import lombok.Getter;
 
 public abstract class Repository<T extends Model> implements SearchQuery<T, ConcurrentList<T>> {

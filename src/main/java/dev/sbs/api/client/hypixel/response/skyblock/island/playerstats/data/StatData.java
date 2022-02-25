@@ -2,10 +2,10 @@ package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
-import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.tuple.Pair;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.util.data.tuple.Pair;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -17,10 +17,12 @@ public abstract class StatData<T extends ObjectData.Type> {
     public final Data getAllData(StatModel statModel) {
         Data statData = new Data();
 
-        this.stats.forEach((type, statEntries) -> statEntries.forEach((statEntryModel, statEntryData) -> {
-            statData.addBase(statEntryData.getBase());
-            statData.addBonus(statEntryData.getBonus());
-        }));
+        this.stats.forEach((type, statEntries) -> statEntries.stream()
+            .filter(statModelDataEntry -> statModelDataEntry.getKey().equals(statModel))
+            .forEach(statModelDataEntry -> {
+                statData.addBase(statModelDataEntry.getValue().getBase());
+                statData.addBonus(statModelDataEntry.getValue().getBonus());
+            }));
 
         return statData;
     }
@@ -51,7 +53,8 @@ public abstract class StatData<T extends ObjectData.Type> {
     @SafeVarargs
     public final ConcurrentLinkedMap<StatModel, Data> getStatsOf(T... types) {
         ConcurrentLinkedMap<StatModel, Data> totalStats = SimplifiedApi.getRepositoryOf(StatModel.class)
-            .findAll(StatModel::getOrdinal)
+            .findAll()
+            .sort(StatModel::getOrdinal)
             .stream()
             .map(statModel -> Pair.of(statModel, new Data()))
             .collect(Concurrent.toLinkedMap());

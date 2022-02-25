@@ -1,13 +1,13 @@
-package dev.sbs.api;
+package dev.sbs.api.util;
 
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.builder.Builder;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.data.tuple.Triple;
 import dev.sbs.api.util.helper.ArrayUtil;
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.tuple.Triple;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

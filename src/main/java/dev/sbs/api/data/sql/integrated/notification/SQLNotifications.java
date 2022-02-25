@@ -2,8 +2,8 @@ package dev.sbs.api.data.sql.integrated.notification;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.integrated.pooling.SQLPooling;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentSet;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 

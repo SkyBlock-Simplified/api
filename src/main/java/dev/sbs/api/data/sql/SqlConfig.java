@@ -4,8 +4,8 @@ import ch.qos.logback.classic.Level;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.yaml.YamlConfig;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("all")
 public abstract class SqlConfig extends YamlConfig {
 
-    //private static final ConcurrentList<String> modelFormats = Concurrent.newList("{0}-{1}", "{0}-query-{1}");
     private final ConcurrentList<Class<? extends SqlModel>> databaseModels = Concurrent.newList();
 
     @Getter

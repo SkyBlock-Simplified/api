@@ -3,8 +3,8 @@ package dev.sbs.api.minecraft.text;
 import dev.sbs.api.minecraft.text.event.ClickEvent;
 import dev.sbs.api.minecraft.text.event.HoverEvent;
 import dev.sbs.api.util.builder.Builder;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 
 public final class MinecraftTextBuilder implements Builder<MinecraftTextObject> {
 

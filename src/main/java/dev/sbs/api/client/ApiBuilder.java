@@ -2,15 +2,17 @@ package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.builder.ClassBuilder;
-import dev.sbs.api.util.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.helper.FormatUtil;
 import feign.Feign;
+import feign.Request;
 import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public abstract class ApiBuilder<R extends RequestInterface> implements ClassBuilder<R> {
 
@@ -28,6 +30,13 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(template -> ApiBuilder.this.getHeaders().forEach(template::header))
             .errorDecoder(this.getErrorDecoder())
+            .options(new Request.Options(
+                5,
+                TimeUnit.SECONDS,
+                10,
+                TimeUnit.SECONDS,
+                true
+            ))
             .target(tClass, this.getUrl());
     }
 
