@@ -1,6 +1,6 @@
 package dev.sbs.api.util.helper;
 
-import dev.sbs.api.util.MaxSizeLinkedMap;
+import dev.sbs.api.util.collection.MaxSizeLinkedMap;
 import dev.sbs.api.util.comparator.LastCharCompare;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

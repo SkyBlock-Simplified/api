@@ -1,8 +1,15 @@
 package dev.sbs.api.util.date;
 
+import dev.sbs.api.util.helper.StringUtil;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Calendar;
 
 public class RealDate extends CustomDate {
+
+    public RealDate(String duration) {
+        this(System.currentTimeMillis() + getDateTime(duration));
+    }
 
     public RealDate(long realTime) {
         super(realTime);
@@ -12,6 +19,50 @@ public class RealDate extends CustomDate {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(this.getRealTime());
         return calendar;
+    }
+
+    /**
+     * Gets the millisecond duration of {@code dateTime}. Months is unsupported, use days.
+     * <p>
+     * Valid values are: {@code 1y2w3d4h5m6s - 1 year 2 weeks 3 days 4 hours 5 minutes 6 seconds}
+     *
+     * @param duration to convert
+     * @return milliseconds based on {@code time}
+     */
+    public static long getDateTime(@NotNull String duration) {
+        long durationMillis = 0;
+        long component = 0;
+
+        if (StringUtil.isNotEmpty(duration)) {
+            for (int i = 0; i < duration.length(); i++) {
+                char chr = duration.charAt(i);
+
+                if (Character.isDigit(chr)) {
+                    component *= 10;
+                    component += chr - '0';
+                } else {
+                    switch (Character.toLowerCase(chr)) {
+                        case 'y':
+                            component *= 52;
+                        case 'w':
+                            component *= 7;
+                        case 'd':
+                            component *= 24;
+                        case 'h':
+                            component *= 60;
+                        case 'm':
+                            component *= 60;
+                        case 's':
+                            component *= 1000;
+                    }
+
+                    durationMillis += component;
+                    component = 0;
+                }
+            }
+        }
+
+        return durationMillis;
     }
 
     /**

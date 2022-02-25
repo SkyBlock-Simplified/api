@@ -1,14 +1,14 @@
 package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentCollection;
-import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
-import dev.sbs.api.util.concurrent.ConcurrentSet;
-import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.search.function.TriFunction;
-import dev.sbs.api.util.tuple.Pair;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentCollection;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.util.collection.search.function.TriFunction;
+import dev.sbs.api.util.data.tuple.Pair;
 
 import java.util.Map;
 import java.util.Set;

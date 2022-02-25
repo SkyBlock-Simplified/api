@@ -1,6 +1,6 @@
 package dev.sbs.api.util.helper;
 
-import dev.sbs.api.util.MaxSizeLinkedMap;
+import dev.sbs.api.util.collection.MaxSizeLinkedMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.text.StringSubstitutor;
