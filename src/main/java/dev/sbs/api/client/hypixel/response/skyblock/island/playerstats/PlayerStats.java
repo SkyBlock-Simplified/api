@@ -48,7 +48,7 @@ import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.mutable.MutableBoolean;
-import dev.sbs.api.util.search.function.FilterFunction;
+import dev.sbs.api.util.search.function.SearchFunction;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -225,7 +225,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     public ConcurrentLinkedMap<StatModel, Data> getCombinedStats() {
         // Initialize
-        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll(StatModel::getOrdinal);
+        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sort(StatModel::getOrdinal);
         ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
         statModels.forEach(statModel -> totalStats.put(statModel, new Data()));
 
@@ -274,7 +274,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .filter(CompoundTag::notEmpty)
                 .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
                     .findFirst(
-                        FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
+                        SearchFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
                         compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue()
                     )
                     .ifPresent(accessoryModel -> tagAccessoryModels.put(compoundTag, accessoryModel))
@@ -290,7 +290,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .filter(CompoundTag::notEmpty)
                 .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
                     .findFirst(
-                        FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
+                        SearchFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
                         compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue()
                     )
                     .ifPresent(accessoryModel -> tagAccessoryModels.put(compoundTag, accessoryModel))
@@ -319,7 +319,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
                 SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
                     .findFirst(
-                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+                        SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
                         compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
                     ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
             }

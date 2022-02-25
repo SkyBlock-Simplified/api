@@ -15,7 +15,7 @@ import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ListUtil;
-import dev.sbs.api.util.search.function.FilterFunction;
+import dev.sbs.api.util.search.function.SearchFunction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
             Integer hotPotatoCount = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
 
             SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
-                .findAll(FilterFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
+                .findAll(SearchFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
                 .forEach(hotPotatoStatModel -> this.getStats(Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
         }
 

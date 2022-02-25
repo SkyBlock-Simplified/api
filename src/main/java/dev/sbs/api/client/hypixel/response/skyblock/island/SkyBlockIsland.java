@@ -48,7 +48,7 @@ import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.helper.WordUtil;
-import dev.sbs.api.util.search.function.FilterFunction;
+import dev.sbs.api.util.search.function.SearchFunction;
 import dev.sbs.api.util.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -126,7 +126,7 @@ public class SkyBlockIsland {
     }
 
     public Minion getMinion(String minionName) {
-        return this.getMinion(SimplifiedApi.getRepositoryOf(MinionModel.class).findFirstOrNull(FilterFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
+        return this.getMinion(SimplifiedApi.getRepositoryOf(MinionModel.class).findFirstOrNull(SearchFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
     }
 
     public Minion getMinion(MinionModel minionModel) {
@@ -303,8 +303,8 @@ public class SkyBlockIsland {
             // Fill Collection
             SimplifiedApi.getRepositoryOf(CollectionItemModel.class)
                 .findAll(
-                    FilterFunction.combine(
-                        FilterFunction.combine(CollectionItemModel::getCollection, CollectionModel::getSkill),
+                    SearchFunction.combine(
+                        SearchFunction.combine(CollectionItemModel::getCollection, CollectionModel::getSkill),
                         SkillModel::getKey
                     ),
                     type.getKey()

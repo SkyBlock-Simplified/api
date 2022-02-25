@@ -7,7 +7,7 @@ import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.reforges.ReforgeModel;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.util.search.function.FilterFunction;
+import dev.sbs.api.util.search.function.SearchFunction;
 import dev.sbs.api.util.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,7 +49,7 @@ public class ReforgeRepositoryTest {
                 Pair.of(ReforgeModel::getName, "Spicy")
         );
         ReforgeStatModel spicyStat = reforgeStatRepository.findFirstOrNull(
-                Pair.of(FilterFunction.combine(ReforgeStatModel::getReforge, ReforgeModel::getKey), spicy.getKey()),
+                Pair.of(SearchFunction.combine(ReforgeStatModel::getReforge, ReforgeModel::getKey), spicy.getKey()),
                 Pair.of(ReforgeStatModel::getRarity, legendary)
         );
         MatcherAssert.assertThat(spicyStat, Matchers.notNullValue());

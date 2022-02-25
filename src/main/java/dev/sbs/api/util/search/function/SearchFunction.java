@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public interface FilterFunction<T, R> extends Function<T, R> {
+public interface SearchFunction<T, R> extends Function<T, R> {
 
     /**
      * Alows you to traverse down through method references.
@@ -16,7 +16,7 @@ public interface FilterFunction<T, R> extends Function<T, R> {
      * @param <T3>   The return type
      * @return The method reference between {@link T1} and {@link T3}
      */
-    static <T1, T2, T3> FilterFunction<T1, T3> combine(FilterFunction<T1, T2> first, FilterFunction<T2, T3> second) {
+    static <T1, T2, T3> SearchFunction<T1, T3> combine(SearchFunction<T1, T2> first, SearchFunction<T2, T3> second) {
         return first.andThen(second);
     }
 
@@ -24,7 +24,7 @@ public interface FilterFunction<T, R> extends Function<T, R> {
      * {@inheritDoc}
      */
     @Override
-    default <V> FilterFunction<T, V> andThen(@NotNull Function<? super R, ? extends V> after) {
+    default <V> SearchFunction<T, V> andThen(@NotNull Function<? super R, ? extends V> after) {
         return (T t) -> after.apply(apply(t));
     }
 
