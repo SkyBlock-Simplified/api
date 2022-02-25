@@ -44,6 +44,7 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.concurrent.ConcurrentSet;
 import dev.sbs.api.util.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.mutable.MutableBoolean;
@@ -203,6 +204,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                     })));
 
                     // Handle Accessories
+                    this.accessories.forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                        this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
+                        this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
+                    })));
+
                     this.filteredAccessories.forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
@@ -330,46 +336,50 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         });
 
         // Store Families
-        ConcurrentMap<AccessoryFamilyModel, ConcurrentList<AccessoryData>> familyAccessoryData = Concurrent.newMap();
+        ConcurrentMap<AccessoryFamilyModel, ConcurrentSet<AccessoryModel>> familyAccessoryDataMap = Concurrent.newMap();
         this.accessories.stream()
             .filter(accessoryData -> Objects.nonNull(accessoryData.getAccessory().getFamily()))
             .forEach(accessoryData -> {
                 // New Accessory Family
-                if (!familyAccessoryData.containsKey(accessoryData.getAccessory().getFamily()))
-                    familyAccessoryData.put(accessoryData.getAccessory().getFamily(), Concurrent.newList());
+                if (!familyAccessoryDataMap.containsKey(accessoryData.getAccessory().getFamily()))
+                    familyAccessoryDataMap.put(accessoryData.getAccessory().getFamily(), Concurrent.newSet());
 
                 // Store Accessory
-                familyAccessoryData.get(accessoryData.getAccessory().getFamily()).add(accessoryData);
+                familyAccessoryDataMap.get(accessoryData.getAccessory().getFamily()).add(accessoryData.getAccessory());
             });
 
         // Store Non-Stackable Families
-        ConcurrentList<AccessoryModel> processedAccessories = Concurrent.newList();
-        ConcurrentList<AccessoryData> filteredAccessories = this.accessories.stream()
-            .filter(accessoryData -> {
-                AccessoryFamilyModel accessoryFamilyModel = accessoryData.getAccessory().getFamily();
-                AccessoryData firstAccessory = accessoryData;
+        ConcurrentSet<AccessoryModel> processedAccessories = Concurrent.newSet();
+        this.filteredAccessories.addAll(
+            this.accessories.stream()
+                .filter(accessoryData -> {
+                    AccessoryFamilyModel accessoryFamilyModel = accessoryData.getAccessory().getFamily();
 
-                if (Objects.nonNull(accessoryFamilyModel)) {
-                    if (accessoryFamilyModel.isStatsStackable())
-                        return true;
-                    else if (accessoryFamilyModel.isReforgesStackable())
-                        return true;
-                    else {
-                        ConcurrentList<AccessoryData> familyData = familyAccessoryData.get(accessoryFamilyModel);
-                        familyData.sort(familyAccessoryEntry -> familyAccessoryEntry.getAccessory().getFamilyRank()); // Sort By Highest
-                        firstAccessory = familyData.get(0);
+                    // Handle Families
+                    if (Objects.nonNull(accessoryFamilyModel)) {
+                        if (accessoryFamilyModel.isStatsStackable())
+                            return true;
+                        else if (accessoryFamilyModel.isReforgesStackable())
+                            return true;
+                        else {
+                            ConcurrentList<AccessoryModel> familyData = Concurrent.newList(familyAccessoryDataMap.get(accessoryFamilyModel))
+                                .sort(AccessoryModel::getFamilyRank)
+                                .inverse(); // Sort By Highest
+
+                            // Ignore Lowest Accessories
+                            AccessoryModel topAccessory = familyData.remove(0);
+                            processedAccessories.addAll(familyData);
+
+                            // Top Accessory Only
+                            if (!accessoryData.getAccessory().equals(topAccessory))
+                                return false;
+                        }
                     }
-                }
 
-                if (!processedAccessories.contains(firstAccessory.getAccessory())) {
-                    processedAccessories.add(firstAccessory.getAccessory());
-                    return accessoryData.getAccessory().equals(firstAccessory.getAccessory()); // Keep First Accessory
-                }
-
-                return false;
-            })
-            .collect(Concurrent.toList());
-        this.filteredAccessories.addAll(filteredAccessories);
+                    return processedAccessories.add(accessoryData.getAccessory());
+                })
+                .collect(Concurrent.toList())
+        );
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
