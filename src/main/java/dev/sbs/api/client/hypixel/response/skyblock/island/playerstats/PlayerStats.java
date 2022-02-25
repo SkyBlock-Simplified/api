@@ -56,6 +56,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
@@ -256,9 +257,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     private void loadAccessories(SkyBlockIsland.Member member) {
         // --- Load Accessories ---
-        ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagStatModels = Concurrent.newMap();
-        ConcurrentMap<AccessoryModel, CompoundTag> accessoryTagReforgeModels = Concurrent.newMap();
-        ConcurrentMap<AccessoryFamilyModel, ConcurrentList<AccessoryModel>> familyAccessoryTagModels = Concurrent.newMap();
+        ConcurrentMap<CompoundTag, AccessoryModel> tagAccessoryModels = Concurrent.newMap();
 
         // Load From Inventory
         if (member.hasStorage(SkyBlockIsland.Storage.INVENTORY)) {
@@ -267,25 +266,13 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .<CompoundTag>getList("i")
                 .stream()
                 .filter(CompoundTag::notEmpty)
-                .forEach(itemTag -> {
-                    String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
-
-                    SimplifiedApi.getRepositoryOf(AccessoryModel.class)
-                        .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
-                        .ifPresent(accessoryModel -> {
-                            accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
-                            accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
-
-                            if (accessoryModel.getFamily() != null) {
-                                // New Accessory Family
-                                if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
-                                    familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
-
-                                // Store Accessory
-                                familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
-                            }
-                        });
-                });
+                .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
+                    .findFirst(
+                        FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
+                        compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue()
+                    )
+                    .ifPresent(accessoryModel -> tagAccessoryModels.put(compoundTag, accessoryModel))
+                );
         }
 
         // Load From Accessory Bag
@@ -295,77 +282,93 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .<CompoundTag>getList("i")
                 .stream()
                 .filter(CompoundTag::notEmpty)
-                .forEach(compoundTag -> {
-                    String itemId = compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
-
-                    SimplifiedApi.getRepositoryOf(AccessoryModel.class)
-                        .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
-                        .ifPresent(accessoryModel -> {
-                            // Create New Accessory Data
-                            AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
-                            this.accessories.add(accessoryData);
-                            accessoryTagStatModels.putIfAbsent(accessoryModel, compoundTag);
-                            accessoryTagReforgeModels.putIfAbsent(accessoryModel, compoundTag);
-
-                            if (accessoryModel.getFamily() != null) {
-                                // New Accessory Family
-                                if (!familyAccessoryTagModels.containsKey(accessoryModel.getFamily()))
-                                    familyAccessoryTagModels.put(accessoryModel.getFamily(), Concurrent.newList());
-
-                                // Store Accessory
-                                familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
-                            }
-
-                            // Handle Gemstone Stats
-                            PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
-                                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
-
-                            // Handle Reforge Stats
-                            PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
-                                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
-
-                            // Handle Stats
-                            accessoryModel.getEffects()
-                                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                                    .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
-
-                            // Handle Enrichment Stats
-                            if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
-                                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
-                                    .findFirst(
-                                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
-                                        compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
-                                    ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
-                            }
-
-                            // New Year Cake Bag
-                            if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
-                                try {
-                                    Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
-                                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
-                                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
-                                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
-                                } catch (NbtException ignore) { }
-                            }
-                        });
-                });
+                .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
+                    .findFirst(
+                        FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
+                        compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue()
+                    )
+                    .ifPresent(accessoryModel -> tagAccessoryModels.put(compoundTag, accessoryModel))
+                );
         }
 
-        // Non-Stackable Families
-        ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList(this.accessories);
-        familyAccessoryTagModels.forEach((accessoryFamilyModel, accessories) -> {
-            // Sort By Highest
-            accessories.sort(AccessoryModel::getFamilyRank);
+        // Create Accessory Data
+        tagAccessoryModels.forEach((compoundTag, accessoryModel) -> {
+            AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
+            this.accessories.add(accessoryData);
 
-            if (!accessoryFamilyModel.isStatsStackable()) {
-                accessories.remove(0); // Keep First Accessory
-                accessories.forEach(accessoryModel -> filteredAccessories.removeIf(accessoryData -> accessoryData.getAccessory().equals(accessoryModel))); // Remove Remaining Accessories
-            } else if (!accessoryFamilyModel.isReforgesStackable()) {
-                accessories.remove(0); // Keep First Accessory
-                accessories.forEach(accessoryModel -> filteredAccessories.removeIf(accessoryData -> accessoryData.getAccessory().equals(accessoryModel))); // Remove Remaining Accessories
+            // Handle Gemstone Stats
+            PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
+                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
+
+            // Handle Reforge Stats
+            PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
+                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
+
+            // Handle Stats
+            accessoryModel.getEffects()
+                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                    .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
+
+            // Handle Enrichment Stats
+            if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
+                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
+                    .findFirst(
+                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+                        compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
+                    ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
+            }
+
+            // New Year Cake Bag
+            if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
+                try {
+                    Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
+                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
+                } catch (NbtException ignore) { }
             }
         });
 
+        // Store Families
+        ConcurrentMap<AccessoryFamilyModel, ConcurrentList<AccessoryData>> familyAccessoryData = Concurrent.newMap();
+        this.accessories.stream()
+            .filter(accessoryData -> Objects.nonNull(accessoryData.getAccessory().getFamily()))
+            .forEach(accessoryData -> {
+                // New Accessory Family
+                if (!familyAccessoryData.containsKey(accessoryData.getAccessory().getFamily()))
+                    familyAccessoryData.put(accessoryData.getAccessory().getFamily(), Concurrent.newList());
+
+                // Store Accessory
+                familyAccessoryData.get(accessoryData.getAccessory().getFamily()).add(accessoryData);
+            });
+
+        // Store Non-Stackable Families
+        ConcurrentList<AccessoryModel> processedAccessories = Concurrent.newList();
+        ConcurrentList<AccessoryData> filteredAccessories = this.accessories.stream()
+            .filter(accessoryData -> {
+                AccessoryFamilyModel accessoryFamilyModel = accessoryData.getAccessory().getFamily();
+                AccessoryData firstAccessory = accessoryData;
+
+                if (Objects.nonNull(accessoryFamilyModel)) {
+                    if (accessoryFamilyModel.isStatsStackable())
+                        return true;
+                    else if (accessoryFamilyModel.isReforgesStackable())
+                        return true;
+                    else {
+                        ConcurrentList<AccessoryData> familyData = familyAccessoryData.get(accessoryFamilyModel);
+                        familyData.sort(familyAccessoryEntry -> familyAccessoryEntry.getAccessory().getFamilyRank()); // Sort By Highest
+                        firstAccessory = familyData.get(0);
+                    }
+                }
+
+                if (!processedAccessories.contains(firstAccessory.getAccessory())) {
+                    processedAccessories.add(firstAccessory.getAccessory());
+                    return accessoryData.getAccessory().equals(firstAccessory.getAccessory()); // Keep First Accessory
+                }
+
+                return false;
+            })
+            .collect(Concurrent.toList());
         this.filteredAccessories.addAll(filteredAccessories);
     }
 
