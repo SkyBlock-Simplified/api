@@ -63,6 +63,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     @Getter private final double damageMultiplier;
     @Getter private final ConcurrentList<AccessoryData> accessories = Concurrent.newList();
+    @Getter private final ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList();
     @Getter private final ConcurrentList<ItemData> armor = Concurrent.newList();
     @Getter private final ConcurrentList<BonusPetAbilityStatModel> bonusPetAbilityStatModels = Concurrent.newList();
     @Getter private Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
@@ -151,7 +152,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         if (calculateBonusStats) {
             ConcurrentMap<String, Double> expressionVariables = this.getExpressionVariables();
             // --- Load Bonus Accessory Item Stats ---
-            this.getAccessories().forEach(accessoryData -> accessoryData.calculateBonus(expressionVariables));
+            this.getFilteredAccessories().forEach(accessoryData -> accessoryData.calculateBonus(expressionVariables));
 
             // --- Load Bonus Armor Stats ---
             this.getArmor().forEach(itemData -> itemData.calculateBonus(expressionVariables));
@@ -201,7 +202,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                     })));
 
                     // Handle Accessories
-                    this.accessories.forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    this.filteredAccessories.forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                     })));
@@ -228,7 +229,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         }));
 
         // Collect Accessory Data
-        this.getAccessories()
+        this.getFilteredAccessories()
             .stream()
             .map(StatData::getStats)
             .forEach(statTypeEntries -> statTypeEntries.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
@@ -294,14 +295,17 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .<CompoundTag>getList("i")
                 .stream()
                 .filter(CompoundTag::notEmpty)
-                .forEach(itemTag -> {
-                    String itemId = itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
+                .forEach(compoundTag -> {
+                    String itemId = compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue();
 
                     SimplifiedApi.getRepositoryOf(AccessoryModel.class)
                         .findFirst(FilterFunction.combine(AccessoryModel::getItem, ItemModel::getItemId), itemId)
                         .ifPresent(accessoryModel -> {
-                            accessoryTagStatModels.putIfAbsent(accessoryModel, itemTag);
-                            accessoryTagReforgeModels.putIfAbsent(accessoryModel, itemTag);
+                            // Create New Accessory Data
+                            AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
+                            this.accessories.add(accessoryData);
+                            accessoryTagStatModels.putIfAbsent(accessoryModel, compoundTag);
+                            accessoryTagReforgeModels.putIfAbsent(accessoryModel, compoundTag);
 
                             if (accessoryModel.getFamily() != null) {
                                 // New Accessory Family
@@ -311,63 +315,58 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                                 // Store Accessory
                                 familyAccessoryTagModels.get(accessoryModel.getFamily()).add(accessoryModel);
                             }
+
+                            // Handle Gemstone Stats
+                            PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
+                                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
+
+                            // Handle Reforge Stats
+                            PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
+                                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
+
+                            // Handle Stats
+                            accessoryModel.getEffects()
+                                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                                    .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
+
+                            // Handle Enrichment Stats
+                            if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
+                                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
+                                    .findFirst(
+                                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+                                        compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
+                                    ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
+                            }
+
+                            // New Year Cake Bag
+                            if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
+                                try {
+                                    Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
+                                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+                                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
+                                } catch (NbtException ignore) { }
+                            }
                         });
                 });
         }
 
         // Non-Stackable Families
+        ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList(this.accessories);
         familyAccessoryTagModels.forEach((accessoryFamilyModel, accessories) -> {
             // Sort By Highest
-            accessories.sort((a1, a2) -> Comparator.comparing(AccessoryModel::getFamilyRank).compare(a2, a1));
+            accessories.sort(AccessoryModel::getFamilyRank);
 
             if (!accessoryFamilyModel.isStatsStackable()) {
                 accessories.remove(0); // Keep First Accessory
-                accessories.forEach(accessoryTagStatModels::remove); // Remove Remaining Accessories
+                accessories.forEach(accessoryModel -> filteredAccessories.removeIf(accessoryData -> accessoryData.getAccessory().equals(accessoryModel))); // Remove Remaining Accessories
             } else if (!accessoryFamilyModel.isReforgesStackable()) {
                 accessories.remove(0); // Keep First Accessory
-                accessories.forEach(accessoryTagReforgeModels::remove); // Remove Remaining Accessories
+                accessories.forEach(accessoryModel -> filteredAccessories.removeIf(accessoryData -> accessoryData.getAccessory().equals(accessoryModel))); // Remove Remaining Accessories
             }
         });
 
-        // Handle Accessories
-        accessoryTagStatModels.putAll(accessoryTagReforgeModels);
-        accessoryTagStatModels.forEach((accessoryModel, compoundTag) -> {
-            // Create New Accessory Data
-            AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
-            this.accessories.add(accessoryData);
-
-            // Handle Gemstone Stats
-            PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
-                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
-
-            // Handle Reforge Stats
-            PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
-                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
-
-            // Handle Stats
-            accessoryModel.getEffects()
-                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                    .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
-
-            // Handle Enrichment Stats
-            if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
-                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
-                    .findFirst(
-                        FilterFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
-                        compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
-                    ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
-            }
-
-            // New Year Cake Bag
-            if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
-                try {
-                    Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
-                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
-                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
-                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
-                } catch (NbtException ignore) { }
-            }
-        });
+        this.filteredAccessories.addAll(filteredAccessories);
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
