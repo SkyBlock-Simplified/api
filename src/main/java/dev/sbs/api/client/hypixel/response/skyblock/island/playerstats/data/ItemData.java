@@ -9,6 +9,8 @@ import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
@@ -101,8 +103,33 @@ public class ItemData extends ObjectData<ItemData.Type> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ItemData itemData = (ItemData) o;
+
+        return new EqualsBuilder()
+            .append(this.isBonusCalculated(), itemData.isBonusCalculated())
+            .append(this.getEnchantments(), itemData.getEnchantments())
+            .append(this.getEnchantmentStats(), itemData.getEnchantmentStats())
+            .build();
+    }
+
+    @Override
     protected Type[] getAllTypes() {
         return ItemData.Type.values();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .appendSuper(super.hashCode())
+            .append(this.getEnchantments())
+            .append(this.getEnchantmentStats())
+            .append(this.isBonusCalculated())
+            .build();
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

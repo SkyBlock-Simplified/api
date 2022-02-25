@@ -11,6 +11,8 @@ import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.concurrent.Concurrent;
 import dev.sbs.api.util.concurrent.ConcurrentList;
 import dev.sbs.api.util.concurrent.ConcurrentMap;
@@ -77,6 +79,41 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     }
 
     public abstract ObjectData<T> calculateBonus(ConcurrentMap<String, Double> expressionVariables);
+
+    public abstract boolean isBonusCalculated();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ObjectData<?> that = (ObjectData<?>) o;
+
+        return new EqualsBuilder()
+            .append(this.isRecombobulated(), that.isRecombobulated())
+            .append(this.getItem(), that.getItem())
+            .append(this.getCompoundTag(), that.getCompoundTag())
+            .append(this.getRarity(), that.getRarity())
+            .append(this.getBonusItemStatModel(), that.getBonusItemStatModel())
+            .append(this.getReforge(), that.getReforge())
+            .append(this.getBonusReforgeStatModel(), that.getBonusReforgeStatModel())
+            .append(this.getReforgeStat(), that.getReforgeStat())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getItem())
+            .append(this.getCompoundTag())
+            .append(this.getRarity())
+            .append(this.getBonusItemStatModel())
+            .append(this.getReforge())
+            .append(this.getBonusReforgeStatModel())
+            .append(this.getReforgeStat())
+            .append(this.isRecombobulated())
+            .build();
+    }
 
     public interface Type {
 
