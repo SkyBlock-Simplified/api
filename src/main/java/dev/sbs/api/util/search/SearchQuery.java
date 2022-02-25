@@ -119,7 +119,13 @@ public interface SearchQuery<E, T extends List<E>> {
         return this.contains(
             match,
             sortFunction,
-            (predicate, it, value) -> (predicate.apply(it)).contains(value),
+            (predicate, it, value) -> {
+                try {
+                    return predicate.apply(it).contains(value);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
             predicates
         );
     }
@@ -217,7 +223,13 @@ public interface SearchQuery<E, T extends List<E>> {
         return this.compare(
             match,
             sortFunction,
-            (predicate, it, value) -> Objects.equals(predicate.apply(it), value),
+            (predicate, it, value) -> {
+                try {
+                    return Objects.equals(predicate.apply(it), value);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
             predicates
         );
     }
@@ -295,7 +307,13 @@ public interface SearchQuery<E, T extends List<E>> {
         return this.compare(
             match,
             sortFunction,
-            (predicate, it, value) -> predicate.apply(it),
+            (predicate, it, value) -> {
+                try {
+                    return predicate.apply(it);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
             StreamSupport.stream(predicates.spliterator(), false)
                 .map(predicate -> Pair.of(predicate, true))
                 .collect(Concurrent.toList())
