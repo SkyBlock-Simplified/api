@@ -3,13 +3,13 @@ package dev.sbs.api.util.concurrent;
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.search.SearchQuery;
-import dev.sbs.api.util.search.function.SortFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 /**
  * A concurrent list that allows for simultaneous fast reading, iteration and
@@ -61,8 +61,8 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <C extends Comparable<C>> ConcurrentList<E> sort(@NotNull SortFunction<E, C>... sortFunctions) {
+	@SuppressWarnings("all")
+	public ConcurrentList<E> sort(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
 	}

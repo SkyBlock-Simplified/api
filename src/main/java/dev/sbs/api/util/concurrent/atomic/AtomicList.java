@@ -4,7 +4,6 @@ import dev.sbs.api.SimplifiedException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.helper.ListUtil;
-import dev.sbs.api.util.search.function.SortFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractList;
@@ -13,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.function.Function;
 
 public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCollection<E, T> implements List<E> {
 
@@ -185,14 +185,14 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <C extends Comparable<C>> AtomicList<E, T> sort(@NotNull SortFunction<E, C>... sortFunctions) {
-		if (ListUtil.notEmpty(sortFunctions)) {
+	@SuppressWarnings("all")
+	public AtomicList<E, T> sort(Function<E, ? extends Comparable>... functions) {
+		if (ListUtil.notEmpty(functions)) {
 			this.sort((s1, s2) -> {
-				Comparator<E> comparator = Comparator.comparing(sortFunctions[0]);
+				Comparator<E> comparator = Comparator.comparing(functions[0]);
 
-				for (int i = 1; i < sortFunctions.length; i++)
-					comparator = comparator.thenComparing(sortFunctions[i]);
+				for (int i = 1; i < functions.length; i++)
+					comparator = comparator.thenComparing(functions[i]);
 
 				return comparator.compare(s1, s2);
 			});

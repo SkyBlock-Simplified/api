@@ -3,7 +3,6 @@ package dev.sbs.api.util.concurrent.linked;
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.search.SearchQuery;
-import dev.sbs.api.util.search.function.SortFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 /**
  * A concurrent list that allows for simultaneously fast reading, iteration and
@@ -52,8 +52,8 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <C extends Comparable<C>> ConcurrentLinkedList<E> sort(@NotNull SortFunction<E, C>... sortFunctions) {
+	@SuppressWarnings("all")
+	public ConcurrentLinkedList<E> sort(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
 	}
