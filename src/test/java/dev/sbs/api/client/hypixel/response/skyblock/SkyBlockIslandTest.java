@@ -1,6 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.TestConfig;
 import dev.sbs.api.client.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
@@ -13,25 +14,37 @@ import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
-import dev.sbs.api.util.concurrent.ConcurrentList;
-import dev.sbs.api.util.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.search.function.SearchFunction;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 
 public class SkyBlockIslandTest {
 
+    private static final TestConfig testConfig;
+
+    static {
+        try {
+            File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
+        }
+    }
+
     @Test
     public void getPlayerStats_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.connectDatabase();
+            SimplifiedApi.connectDatabase(testConfig);
             System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
@@ -64,7 +77,7 @@ public class SkyBlockIslandTest {
     public void getIsland_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.connectDatabase();
+            SimplifiedApi.connectDatabase(testConfig);
             System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);

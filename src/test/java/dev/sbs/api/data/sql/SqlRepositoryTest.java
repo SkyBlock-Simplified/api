@@ -2,20 +2,34 @@ package dev.sbs.api.data.sql;
 
 import ch.qos.logback.classic.Level;
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.TestConfig;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 public class SqlRepositoryTest {
+
+    private static final TestConfig testConfig;
+
+    static {
+        try {
+            File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
+        }
+    }
 
     @Test
     public void checkRepositories_ok() {
         try {
             System.out.println("ENABLING DATABASE");
-            SimplifiedApi.connectDatabase();
-            SimplifiedApi.getConfig().setLoggingLevel(Level.DEBUG);
+            SimplifiedApi.connectDatabase(testConfig);
+            testConfig.setLoggingLevel(Level.DEBUG);
 
             System.out.println("QUERYING RARITIES #1");
             // Retrieve object from the database

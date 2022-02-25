@@ -133,6 +133,7 @@ import dev.sbs.api.data.model.skyblock.skills.SkillSqlRepository;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelSqlRepository;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerSqlRepository;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlRepository;
+import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.data.sql.exception.SqlException;
@@ -142,10 +143,13 @@ import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
 import dev.sbs.api.scheduler.Scheduler;
+import dev.sbs.api.util.HypixelConfig;
+import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.concurrent.Concurrent;
-import dev.sbs.api.util.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import feign.gson.DoubleToIntMapTypeAdapter;
+import lombok.SneakyThrows;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -159,10 +163,10 @@ public final class SimplifiedApi {
 
     static {
         // Load Config
-        SimplifiedConfig config;
+        HypixelConfig config;
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            config = new SimplifiedConfig(currentDir.getParentFile(), "simplified");
+            config = new HypixelConfig(currentDir.getParentFile(), "simplified");
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
@@ -179,7 +183,7 @@ public final class SimplifiedApi {
             .setPrettyPrinting().create();
 
         // Provide Services
-        serviceManager.add(SimplifiedConfig.class, config);
+        serviceManager.add(HypixelConfig.class, config);
         serviceManager.add(Gson.class, gson);
         serviceManager.add(NbtFactory.class, new NbtFactory());
         serviceManager.add(Scheduler.class, new Scheduler());
@@ -203,10 +207,10 @@ public final class SimplifiedApi {
         serviceManager.add(MojangData.class, mojangApiBuilder.build(MojangData.class));
     }
 
-    public static void connectDatabase() {
+    public static void connectDatabase(SqlConfig sqlConfig) {
         if (!serviceManager.isRegistered(SqlSession.class)) {
             // Create SqlSession
-            SqlSession sqlSession = new SqlSession(getConfig(), getAllSqlRepositoryClasses());
+            SqlSession sqlSession = new SqlSession(sqlConfig, getAllSqlRepositoryClasses());
             serviceManager.add(SqlSession.class, sqlSession);
 
             // Initialize Database
@@ -218,7 +222,7 @@ public final class SimplifiedApi {
             serviceManager.get(SqlSession.class).initialize(); // Reinitialize Database
     }
 
-    public static void disableDatabase() {
+    public static void disconnectDatabase() {
         if (serviceManager.isRegistered(SqlSession.class)) {
             SqlSession sqlSession = serviceManager.get(SqlSession.class);
 
@@ -234,12 +238,13 @@ public final class SimplifiedApi {
         return builderManager;
     }
 
-    public static SimplifiedConfig getConfig() {
-        return serviceManager.get(SimplifiedConfig.class);
+    public static HypixelConfig getConfig() {
+        return serviceManager.get(HypixelConfig.class);
     }
 
+    @SneakyThrows
     public static File getCurrentDirectory() {
-        return getConfig().getParentDirectory();
+        return new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
     }
 
     public static Gson getGson() {

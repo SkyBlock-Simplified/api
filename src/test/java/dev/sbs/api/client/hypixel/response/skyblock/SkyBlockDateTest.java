@@ -1,6 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
-import dev.sbs.api.util.tuple.Pair;
+import dev.sbs.api.util.data.tuple.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
