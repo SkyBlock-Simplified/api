@@ -1,22 +1,37 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
+import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
+import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.search.function.SearchFunction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 public class AccessoryData extends ObjectData<AccessoryData.Type> {
 
     @Getter private final AccessoryModel accessory;
     @Getter private boolean bonusCalculated;
+    @Getter private final Optional<AccessoryEnrichmentModel> enrichment;
 
     public AccessoryData(AccessoryModel accessory, CompoundTag compoundTag) {
         super(accessory.getItem(), compoundTag);
         this.accessory = accessory;
+
+        // Load Enrichment
+        this.enrichment = SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
+            .findFirst(
+                SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+                compoundTag.getPathOrDefault("tag.ExtraAttributes.talisman_enrichment", StringTag.EMPTY).getValue()
+            );
     }
 
     @Override

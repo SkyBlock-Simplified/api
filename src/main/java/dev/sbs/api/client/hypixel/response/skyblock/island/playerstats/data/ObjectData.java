@@ -17,13 +17,20 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
 
 public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> {
 
+    // 6/25/20 10:29 PM
+    private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("M/d/yy h:m a");
     @Getter private final ItemModel item;
     @Getter private final CompoundTag compoundTag;
     @Getter private final RarityModel rarity;
@@ -32,10 +39,27 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
     @Getter private final boolean recombobulated;
+    @Getter private final Optional<Long> timestamp;
 
     protected ObjectData(ItemModel itemModel, CompoundTag compoundTag) {
         this.item = itemModel;
         this.compoundTag = compoundTag;
+
+        // Load Timestamp
+        this.timestamp = Optional.ofNullable(
+                StringUtil.defaultIfEmpty(
+                    compoundTag.getPathOrDefault("tag.ExtraAttributes.timestamp", StringTag.EMPTY).getValue(),
+                    null
+                )
+            )
+            .map(timestamp -> {
+                try {
+                    return TIMESTAMP_FORMAT.parse(timestamp);
+                } catch (ParseException e) {
+                    return Date.from(Instant.EPOCH);
+                }
+            })
+            .map(Date::getTime);
 
         // Load Recombobulator
         this.recombobulated = compoundTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue() == 1;
@@ -81,6 +105,10 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     public abstract ObjectData<T> calculateBonus(ConcurrentMap<String, Double> expressionVariables);
 
     public abstract boolean isBonusCalculated();
+
+    public final boolean notRecombobulated() {
+        return !this.isRecombobulated();
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -7,15 +7,18 @@ import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
 import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
+import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
+import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.mutable.MutableObject;
@@ -165,11 +168,10 @@ public class PlayerDataHelper {
             .findFirst(StatModel::getKey, key)
             .ifPresent(statModel -> itemData.getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
 
-        // Handle Enchantment Stats
+        // Save Enchantment Stats
         if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
-            CompoundTag enchantments = itemTag.getPath("tag.ExtraAttributes.enchantments");
-
-            enchantments.entrySet()
+            itemTag.<CompoundTag>getPath("tag.ExtraAttributes.enchantments")
+                .entrySet()
                 .stream()
                 .map(entry -> Pair.of(entry.getKey().toUpperCase(), ((IntTag)entry.getValue()).getValue()))
                 .forEach(pair -> SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
@@ -184,6 +186,16 @@ public class PlayerDataHelper {
         // Save Gemstone Stats
         handleGemstoneBonus(itemTag, itemData.getRarity())
             .forEach((statModel, value) -> itemData.getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
+
+        // Save Hot Potato Book Stats
+        SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
+            .findAll(SearchFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
+            .forEach(hotPotatoStatModel -> itemData.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(itemData.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
+
+        // Save Art Of War Stats
+        SimplifiedApi.getRepositoryOf(StatModel.class)
+            .findFirst(StatModel::getKey, "STRENGTH")
+            .ifPresent(statModel -> itemData.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
 
         return itemData;
     }

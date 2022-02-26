@@ -3,10 +3,7 @@ package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
-import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
-import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -14,7 +11,6 @@ import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,26 +20,14 @@ public class ItemData extends ObjectData<ItemData.Type> {
 
     @Getter private final ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
     @Getter private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
+    @Getter private final int hotPotatoBooks;
+    private final Boolean hasArtOfWar;
     @Getter private boolean bonusCalculated;
 
     public ItemData(ItemModel itemModel, CompoundTag compoundTag, String reforgeTypeKey) {
         super(itemModel, compoundTag);
-
-        // Handle Hot Potatoes
-        if (compoundTag.containsPath("tag.ExtraAttributes.hot_potato_count")) {
-            Integer hotPotatoCount = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
-
-            SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
-                .findAll(SearchFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
-                .forEach(hotPotatoStatModel -> this.getStats(Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(hotPotatoCount * hotPotatoStatModel.getValue()));
-        }
-
-        // Handle Art of War
-        if (compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count")) {
-            SimplifiedApi.getRepositoryOf(StatModel.class)
-                .findFirst(StatModel::getKey, "STRENGTH")
-                .ifPresent(statModel -> this.stats.get(Type.ART_OF_WAR).get(statModel).addBonus(5.0));
-        }
+        this.hotPotatoBooks = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
+        this.hasArtOfWar = compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count");
     }
 
     @Override
@@ -120,6 +104,10 @@ public class ItemData extends ObjectData<ItemData.Type> {
     @Override
     protected Type[] getAllTypes() {
         return ItemData.Type.values();
+    }
+
+    public final boolean hasArtOfWar() {
+        return this.hasArtOfWar;
     }
 
     @Override

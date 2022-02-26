@@ -9,7 +9,6 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.Obje
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.PlayerDataHelper;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.StatData;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
-import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilyModel;
 import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetModel;
 import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatModel;
@@ -311,18 +310,12 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
 
             // Handle Stats
-            accessoryModel.getEffects()
-                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                    .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
+            accessoryModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
 
             // Handle Enrichment Stats
-            if (compoundTag.containsPath("tag.ExtraAttributes.talisman_enrichment")) {
-                SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
-                    .findFirst(
-                        SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
-                        compoundTag.<StringTag>getPath("tag.ExtraAttributes.talisman_enrichment").getValue()
-                    ).ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
-            }
+            accessoryData.getEnrichment()
+                .ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
 
             // New Year Cake Bag
             if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
