@@ -1,6 +1,8 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
@@ -13,19 +15,23 @@ public class SkyBlockBazaarResponse {
 
     @Getter private boolean success;
     @Getter private SkyBlockDate.RealTime lastUpdated;
-    @Getter private ConcurrentMap<String, Product> products = Concurrent.newMap();
+    @Getter private final ConcurrentMap<String, Product> products = Concurrent.newMap();
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product {
 
         @SerializedName("product_id")
-        @Getter private String id;
+        private String id;
         @SerializedName("buy_summary")
         @Getter private ConcurrentList<Summary> buySummary = Concurrent.newList();
         @SerializedName("sell_summary")
         @Getter private ConcurrentList<Summary> sellSummary = Concurrent.newList();
         @SerializedName("quick_status")
         @Getter private Status quickStatus;
+
+        public ItemModel getItem() {
+            return SimplifiedApi.getRepositoryOf(ItemModel.class).findFirstOrNull(ItemModel::getItemId, this.id);
+        }
 
     }
 

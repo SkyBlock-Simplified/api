@@ -2,6 +2,8 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ public class SkyBlockAuctionsEndedResponse {
 
     @Getter private boolean success;
     @Getter private SkyBlockDate.RealTime lastUpdated;
+    @Getter private final ConcurrentList<EndedAuction> auctions = Concurrent.newList();
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class EndedAuction {
