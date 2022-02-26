@@ -20,17 +20,18 @@ import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 
 public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> {
 
-    // 6/25/20 10:29 PM
-    private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("M/d/yy h:m a");
+    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a", Locale.US);
     @Getter private final ItemModel item;
     @Getter private final CompoundTag compoundTag;
     @Getter private final RarityModel rarity;
@@ -52,14 +53,10 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
                     null
                 )
             )
-            .map(timestamp -> {
-                try {
-                    return TIMESTAMP_FORMAT.parse(timestamp);
-                } catch (ParseException e) {
-                    return Date.from(Instant.EPOCH);
-                }
-            })
-            .map(Date::getTime);
+            .map(timestamp -> LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT))
+            .map(localDateTime -> localDateTime.atZone(ZoneId.of("EST", ZoneId.SHORT_IDS)))
+            .map(ZonedDateTime::toInstant)
+            .map(Instant::toEpochMilli);
 
         // Load Recombobulator
         this.recombobulated = compoundTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue() == 1;
