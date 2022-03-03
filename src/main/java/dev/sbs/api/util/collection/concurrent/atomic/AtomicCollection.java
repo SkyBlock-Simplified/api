@@ -112,6 +112,10 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 		}
 	}
 
+	public final boolean notContains(Object item) {
+		return !this.contains(item);
+	}
+
 	@Override
 	public Stream<E> parallelStream() {
 		return this.ref.get().parallelStream();
