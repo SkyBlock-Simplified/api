@@ -13,28 +13,33 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings({ "unchecked", "unused" })
 public interface SearchQuery<E, T extends List<E>> {
 
+    Stream<E> stream() throws DataException;
+
     T findAll() throws DataException;
 
-    default <S> T compare(SearchFunction.Match match, TriFunction<Function<E, S>, E, S, Boolean> compare, Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
-        T itemsCopy = this.findAll();
+    T toList(@NotNull Stream<E> stream) throws DataException;
+
+    default <S> Stream<E> compare(SearchFunction.Match match, TriFunction<Function<E, S>, E, S, Boolean> compare, Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
+        Stream<E> itemsCopy = this.stream();
 
         if (match == SearchFunction.Match.ANY) {
-            itemsCopy.removeIf(it -> {
+            itemsCopy = itemsCopy.filter(it -> {
                 boolean matches = false;
 
                 for (Pair<Function<E, S>, S> predicate : predicates)
                     matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
 
-                return !matches;
+                return matches;
             });
         } else if (match == SearchFunction.Match.ALL) {
             for (Pair<Function<E, S>, S> predicate : predicates)
-                itemsCopy.removeIf(it -> !compare.apply(predicate.getLeft(), it, predicate.getRight()));
+                itemsCopy = itemsCopy.filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()));
         } else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Invalid match type ''{0}''.", match)
@@ -43,21 +48,21 @@ public interface SearchQuery<E, T extends List<E>> {
         return itemsCopy;
     }
 
-    default <S> T contains(SearchFunction.Match match, TriFunction<Function<E, List<S>>, E, S, Boolean> compare, Iterable<Pair<Function<E, List<S>>, S>> predicates) throws DataException {
-        T itemsCopy = this.findAll();
+    default <S> Stream<E> contains(SearchFunction.Match match, TriFunction<Function<E, List<S>>, E, S, Boolean> compare, Iterable<Pair<Function<E, List<S>>, S>> predicates) throws DataException {
+        Stream<E> itemsCopy = this.stream();
 
         if (match == SearchFunction.Match.ANY) {
-            itemsCopy.removeIf(it -> {
+            itemsCopy = itemsCopy.filter(it -> {
                 boolean matches = false;
 
                 for (Pair<Function<E, List<S>>, S> predicate : predicates)
                     matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
 
-                return !matches;
+                return matches;
             });
         } else if (match == SearchFunction.Match.ALL) {
             for (Pair<Function<E, List<S>>, S> predicate : predicates)
-                itemsCopy.removeIf(it -> !compare.apply(predicate.getLeft(), it, predicate.getRight()));
+                itemsCopy = itemsCopy.filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()));
         } else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Invalid match type ''{0}''.", match)
@@ -87,7 +92,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <S> T containsAll(@NotNull SearchFunction.Match match, @NotNull Iterable<Pair<Function<E, List<S>>, S>> predicates) throws DataException {
-        return this.contains(
+        return this.toList(this.contains(
             match,
             (predicate, it, value) -> {
                 try {
@@ -97,7 +102,7 @@ public interface SearchQuery<E, T extends List<E>> {
                 }
             },
             predicates
-        );
+        ));
     }
 
     default <S> Optional<E> containsFirst(@NotNull Function<E, List<S>> function, S value) throws DataException {
@@ -170,7 +175,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <S> T findAll(@NotNull SearchFunction.Match match, @NotNull Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
-        return this.compare(
+        return this.toList(this.compare(
             match,
             (predicate, it, value) -> {
                 try {
@@ -180,7 +185,7 @@ public interface SearchQuery<E, T extends List<E>> {
                 }
             },
             predicates
-        );
+        ));
     }
 
     default <S> Optional<E> findFirst(@NotNull Function<E, S> function, S value) throws DataException {
@@ -204,8 +209,17 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default <S> Optional<E> findFirst(@NotNull SearchFunction.Match match, @NotNull Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
-        T allMatches = this.findAll(match, predicates);
-        return Optional.ofNullable(ListUtil.isEmpty(allMatches) ? null : allMatches.get(0));
+        return this.compare(
+            match,
+            (predicate, it, value) -> {
+                try {
+                    return Objects.equals(predicate.apply(it), value);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
+            predicates
+        ).findFirst();
     }
 
     default <S> E findFirstOrNull(@NotNull SearchFunction<E, S> function, S value) throws DataException {
@@ -245,7 +259,7 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default T matchAll(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
-        return this.compare(
+        return this.toList(this.compare(
             match,
             (predicate, it, value) -> {
                 try {
@@ -257,7 +271,7 @@ public interface SearchQuery<E, T extends List<E>> {
             StreamSupport.stream(predicates.spliterator(), false)
                 .map(predicate -> Pair.of(predicate, true))
                 .collect(Concurrent.toList())
-        );
+        ));
     }
 
     default Optional<E> matchFirst(@NotNull Function<E, Boolean>... predicates) throws DataException {
@@ -273,8 +287,19 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     default Optional<E> matchFirst(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
-        T allMatches = this.matchAll(match, predicates);
-        return Optional.ofNullable(ListUtil.isEmpty(allMatches) ? null : allMatches.get(0));
+        return this.compare(
+            match,
+            (predicate, it, value) -> {
+                try {
+                    return predicate.apply(it);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
+            StreamSupport.stream(predicates.spliterator(), false)
+                .map(predicate -> Pair.of(predicate, true))
+                .collect(Concurrent.toList())
+        ).findFirst();
     }
 
     default E matchFirstOrNull(@NotNull Function<E, Boolean>... predicates) throws DataException {

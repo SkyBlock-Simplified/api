@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A concurrent list that allows for simultaneous fast reading, iteration and
@@ -65,6 +66,11 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 	public ConcurrentList<E> sort(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
+	}
+
+	@Override
+	public final ConcurrentList<E> toList(@NotNull Stream<E> stream) throws DataException {
+		return stream.collect(Concurrent.toList());
 	}
 
 }

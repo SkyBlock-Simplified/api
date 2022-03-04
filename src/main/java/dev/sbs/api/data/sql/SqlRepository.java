@@ -1,11 +1,10 @@
 package dev.sbs.api.data.sql;
 
 import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
@@ -37,24 +37,22 @@ public abstract class SqlRepository<T extends SqlModel> extends Repository<T> {
         this.startupTime = System.currentTimeMillis() - startTime;
     }
 
-    @Override
-    public final ConcurrentList<T> findAll() throws SqlException {
-        return this.sqlSession.with((Function<Session, ? extends ConcurrentList<T>>) this::findAll);
+    public final Stream<T> stream() throws DataException {
+        return this.sqlSession.with((Function<Session, Stream<T>>) this::stream);
     }
 
-    public final ConcurrentList<T> findAll(@NotNull Session session) throws SqlException {
+    public final Stream<T> stream(@NotNull Session session) throws DataException {
         try {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getTClass());
             Root<T> rootEntry = criteriaQuery.from(this.getTClass());
             CriteriaQuery<T> all = criteriaQuery.select(rootEntry);
 
-            return Concurrent.newList(
-                session.createQuery(all)
-                    .setCacheRegion(this.getTClass().getName())
-                    .setCacheable(true)
-                    .getResultList()
-            );
+            return session.createQuery(all)
+                .setCacheRegion(this.getTClass().getName())
+                .setCacheable(true)
+                .getResultList() // Dirty
+                .stream();
         } catch (Exception exception) {
             throw SimplifiedException.of(SqlException.class)
                 .withCause(exception)

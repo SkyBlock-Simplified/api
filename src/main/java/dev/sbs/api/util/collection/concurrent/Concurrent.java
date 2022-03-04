@@ -189,6 +189,10 @@ public final class Concurrent {
 		return StreamUtil.toConcurrentCollection();
 	}
 
+	public static <E> Collector<E, ?, ConcurrentLinkedList<E>> toLinkedList() {
+		return StreamUtil.toConcurrentLinkedList();
+	}
+
 	public static <E> Collector<E, ?, ConcurrentList<E>> toList() {
 		return StreamUtil.toConcurrentList();
 	}

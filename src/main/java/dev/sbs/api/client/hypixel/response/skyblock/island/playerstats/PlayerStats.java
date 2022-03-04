@@ -92,11 +92,10 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
-            .findAll()
+            .stream()
             .forEach(dungeonModel -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(CollectionModel.class)
-            .findAll()
             .stream()
             .map(collectionModel -> member.getCollection(collectionModel.getSkill()))
             .flatMap(collection -> collection.getCollected().stream())
@@ -542,13 +541,12 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     private void loadDungeons(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
-            .findAll()
+            .stream()
             .forEach(dungeonModel -> {
                 int dungeonLevel = member.getDungeons().getDungeon(dungeonModel).getLevel();
 
                 if (dungeonLevel > 0) {
                     SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
-                        .findAll()
                         .stream()
                         .filter(dungeonLevelModel -> dungeonLevelModel.getLevel() <= dungeonLevel)
                         .map(DungeonLevelModel::getEffects)
@@ -569,7 +567,6 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     private void loadFairySouls(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(FairyExchangeModel.class)
-            .findAll()
             .stream()
             .filter(fairyExchangeModel -> fairyExchangeModel.getExchange() <= member.getFairyExchanges())
             .flatMap(fairyExchangeModel -> fairyExchangeModel.getEffects().entrySet().stream())
@@ -613,7 +610,6 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         SimplifiedApi.getRepositoryOf(StatModel.class)
             .findFirst(StatModel::getKey, "MAGIC_FIND")
             .ifPresent(magicFindStatModel -> this.addBase(this.stats.get(Type.PET_SCORE).get(magicFindStatModel), SimplifiedApi.getRepositoryOf(PetScoreModel.class)
-                .findAll()
                 .stream()
                 .filter(petScoreModel -> member.getPetScore() >= petScoreModel.getBreakpoint())
                 .collect(Concurrent.toList())
@@ -623,7 +619,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     private void loadSkills(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(SkillModel.class)
-            .findAll()
+            .stream()
             .forEach(skillModel -> {
                 int skillLevel = member.getSkill(skillModel).getLevel();
 
@@ -644,7 +640,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     private void loadSlayers(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(SlayerModel.class)
-            .findAll()
+            .stream()
             .forEach(slayerModel -> {
                 int slayerLevel = member.getSlayer(slayerModel).getLevel();
 

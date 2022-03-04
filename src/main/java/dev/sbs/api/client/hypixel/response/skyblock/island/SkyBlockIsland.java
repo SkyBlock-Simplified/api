@@ -356,7 +356,7 @@ public class SkyBlockIsland {
         }
 
         public ConcurrentList<Minion> getMinions() {
-            return SimplifiedApi.getRepositoryOf(MinionModel.class).findAll().stream().map(this::getMinion).collect(Concurrent.toList());
+            return SimplifiedApi.getRepositoryOf(MinionModel.class).stream().map(this::getMinion).collect(Concurrent.toList());
         }
 
         public ConcurrentLinkedMap<String, Objective> getObjectives() {
@@ -404,7 +404,6 @@ public class SkyBlockIsland {
 
         public ConcurrentList<Skill> getSkills(boolean cosmetic) {
             return SimplifiedApi.getRepositoryOf(SkillModel.class)
-                .findAll()
                 .stream()
                 .filter(skillModel -> cosmetic || !skillModel.isCosmetic())
                 .map(skillModel -> this.getSkill(skillModel))
@@ -418,7 +417,6 @@ public class SkyBlockIsland {
 
         public ConcurrentList<Slayer> getSlayers() {
             return SimplifiedApi.getRepositoryOf(SlayerModel.class)
-                .findAll()
                 .stream()
                 .map(slayerModel -> this.getSlayer(slayerModel))
                 .collect(Concurrent.toList());
@@ -507,8 +505,7 @@ public class SkyBlockIsland {
 
         public ConcurrentMap<Skill, Experience.Weight> getSkillWeight() {
             return SimplifiedApi.getRepositoryOf(SkillModel.class)
-                .findAll()
-                .parallelStream()
+                .stream()
                 .filter(skillModel -> !skillModel.isCosmetic())
                 .map(this::getSkill)
                 .map(skill -> Pair.of(skill, skill.getWeight()))
@@ -517,8 +514,7 @@ public class SkyBlockIsland {
 
         public ConcurrentMap<Slayer, Experience.Weight> getSlayerWeight() {
             return SimplifiedApi.getRepositoryOf(SlayerModel.class)
-                .findAll()
-                .parallelStream()
+                .stream()
                 .map(this::getSlayer)
                 .map(slayer -> Pair.of(slayer, slayer.getWeight()))
                 .collect(Concurrent.toMap());
@@ -526,8 +522,7 @@ public class SkyBlockIsland {
 
         public ConcurrentMap<Dungeon, Experience.Weight> getDungeonWeight() {
             return SimplifiedApi.getRepositoryOf(DungeonModel.class)
-                .findAll()
-                .parallelStream()
+                .stream()
                 .map(this.getDungeons()::getDungeon)
                 .map(dungeon -> Pair.of(dungeon, dungeon.getWeight()))
                 .collect(Concurrent.toMap());
@@ -535,8 +530,7 @@ public class SkyBlockIsland {
 
         public ConcurrentMap<Dungeon.Class, Experience.Weight> getDungeonClassWeight() {
             return SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
-                .findAll()
-                .parallelStream()
+                .stream()
                 .map(this.getDungeons()::getClass)
                 .map(dungeonClass -> Pair.of(dungeonClass, dungeonClass.getWeight()))
                 .collect(Concurrent.toMap());
@@ -956,7 +950,6 @@ public class SkyBlockIsland {
         @Override
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
-                .findAll()
                 .stream()
                 .map(DungeonLevelModel::getTotalExpRequired)
                 .collect(Concurrent.toList());
@@ -1018,7 +1011,6 @@ public class SkyBlockIsland {
             @Override
             public ConcurrentList<Double> getExperienceTiers() {
                 return SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
-                    .findAll()
                     .stream()
                     .map(DungeonLevelModel::getTotalExpRequired)
                     .collect(Concurrent.toList());
@@ -1178,7 +1170,6 @@ public class SkyBlockIsland {
 
         public ConcurrentSet<CollectionItemModel> getUniqueGolds() {
             return SimplifiedApi.getRepositoryOf(CollectionItemModel.class)
-                .findAll()
                 .stream()
                 .filter(collectionItem -> uniqueGolds.contains(collectionItem.getItem().getItemId()))
                 .collect(Concurrent.toSet());
@@ -1561,7 +1552,6 @@ public class SkyBlockIsland {
         @Override
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
-                .findAll()
                 .stream()
                 .filter(slayerLevel -> slayerLevel.getSkill().getKey().equals(this.getType().getKey()))
                 .map(SkillLevelModel::getTotalExpRequired)
@@ -1630,7 +1620,6 @@ public class SkyBlockIsland {
         @Override
         public ConcurrentList<Double> getExperienceTiers() {
             return SimplifiedApi.getRepositoryOf(SlayerLevelModel.class)
-                .findAll()
                 .stream()
                 .filter(slayerLevel -> slayerLevel.getSlayer().getKey().equals(this.getType().getKey()))
                 .map(SlayerLevelModel::getTotalExpRequired)

@@ -6,6 +6,7 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentCollection;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.search.function.TriFunction;
 import dev.sbs.api.util.data.tuple.Pair;
@@ -59,6 +60,10 @@ public class StreamUtil {
 
     public static <E> Collector<E, ?, ConcurrentCollection<E>> toConcurrentCollection() {
         return new StreamCollector<>(ConcurrentCollection::new, ConcurrentCollection::add, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
+    }
+
+    public static <E> Collector<E, ?, ConcurrentLinkedList<E>> toConcurrentLinkedList() {
+        return new StreamCollector<>(ConcurrentLinkedList::new, ConcurrentLinkedList::add, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
     }
 
     public static <E> Collector<E, ?, ConcurrentList<E>> toConcurrentList() {

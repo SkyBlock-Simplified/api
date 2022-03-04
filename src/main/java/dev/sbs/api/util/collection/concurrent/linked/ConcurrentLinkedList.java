@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.linked;
 
 import dev.sbs.api.data.exception.DataException;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.collection.search.SearchQuery;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A concurrent list that allows for simultaneously fast reading, iteration and
@@ -56,6 +58,11 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	public ConcurrentLinkedList<E> sort(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
 		super.sort(sortFunctions);
 		return this;
+	}
+
+	@Override
+	public final ConcurrentLinkedList<E> toList(@NotNull Stream<E> stream) throws DataException {
+		return stream.collect(Concurrent.toLinkedList());
 	}
 
 }
