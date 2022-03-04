@@ -17,15 +17,14 @@ public enum HttpState {
     NGINX_ERROR("nginx"),
     SUCCESS;
 
-    @Getter
-    private final String title;
+    @Getter private final String title;
 
     HttpState() {
         this(null);
     }
 
     HttpState(String title) {
-        this.title = StringUtil.isEmpty(title) ? WordUtil.capitalizeFully(this.name().replace("_ERROR", "")) : title;
+        this.title = StringUtil.isEmpty(title) ? WordUtil.capitalizeFully(this.name()) : title;
     }
 
 }

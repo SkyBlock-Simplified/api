@@ -97,12 +97,9 @@ public enum HttpStatus {
     IO_ERROR(991, "IO Error", HttpState.JAVA_ERROR),
     UNKNOWN_ERROR(999, HttpState.JAVA_ERROR);
 
-    @Getter
-    private final int code;
-    @Getter
-    private final String message;
-    @Getter
-    private final HttpState state;
+    @Getter private final int code;
+    @Getter private final String message;
+    @Getter private final HttpState state;
 
     HttpStatus(int code) {
         this(code, null, null);
