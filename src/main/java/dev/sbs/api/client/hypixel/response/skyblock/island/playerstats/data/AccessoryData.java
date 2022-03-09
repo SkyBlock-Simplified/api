@@ -101,6 +101,10 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
             .build();
     }
 
+    public final boolean isMissingEnrichment() {
+        return this.getRarity().isEnrichable() && !this.getEnrichment().isPresent();
+    }
+
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public enum Type implements ObjectData.Type {
 
