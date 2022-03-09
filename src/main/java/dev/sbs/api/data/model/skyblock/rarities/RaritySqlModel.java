@@ -54,8 +54,8 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "key_valid", nullable = false)
-    private boolean keyValid;
+    @Column(name = "enrichment", nullable = false)
+    private boolean enrichable;
 
     @Getter
     @Setter
@@ -80,7 +80,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
         RaritySqlModel that = (RaritySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isKeyValid(), that.isKeyValid())
+            .append(this.isEnrichable(), that.isEnrichable())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
@@ -97,7 +97,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getOrdinal())
-            .append(this.isKeyValid())
+            .append(this.isEnrichable())
             .append(this.getPetExpOffset())
             .append(this.getUpdatedAt())
             .build();

@@ -11,7 +11,7 @@ public interface RarityModel extends Model {
 
     Integer getOrdinal();
 
-    boolean isKeyValid();
+    boolean isEnrichable();
 
     Integer getPetExpOffset();
 
