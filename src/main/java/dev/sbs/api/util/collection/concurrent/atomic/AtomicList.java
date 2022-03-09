@@ -72,6 +72,14 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 		return this.ref.get().get(index);
 	}
 
+	public final E getFirst() {
+		return this.get(0);
+	}
+
+	public final E getLast() {
+		return this.get(this.size() - 1);
+	}
+
 	@Override
 	public final int indexOf(Object item) {
 		return this.ref.get().indexOf(item);
@@ -155,6 +163,14 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 			if (this.ref.compareAndSet(current, modified))
 				return result;
 		}
+	}
+
+	public final E removeFirst() {
+		return this.remove(0);
+	}
+
+	public final E removeLast() {
+		return this.remove(this.size() - 1);
 	}
 
 	@Override
