@@ -5,6 +5,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.date.CustomDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +46,7 @@ public class SkyBlockProfilesResponse {
 
             if (optionalMember.isPresent()) {
                 SkyBlockIsland.Member member = optionalMember.get();
-                long memberLastPlayed = member.getLastSave().getRealTime();
+                long memberLastPlayed = Optional.ofNullable(member.getLastSave()).map(CustomDate::getRealTime).orElse(-1L);
 
                 if (memberLastPlayed > lastPlayed) {
                     lastPlayedIsland = Optional.of(skyBlockIsland);
