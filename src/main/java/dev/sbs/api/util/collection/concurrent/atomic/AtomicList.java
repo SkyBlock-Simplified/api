@@ -80,6 +80,10 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 		return this.get(this.size() - 1);
 	}
 
+	public final E getOrDefault(int index, E defaultValue) {
+		return index < this.size() ? this.get(index) : defaultValue;
+	}
+
 	@Override
 	public final int indexOf(Object item) {
 		return this.ref.get().indexOf(item);
