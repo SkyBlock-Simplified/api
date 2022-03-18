@@ -40,6 +40,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
     @Getter private final boolean recombobulated;
+    @Getter private final boolean tierBoosted;
     @Getter private final Optional<Long> timestamp;
 
     protected ObjectData(ItemModel itemModel, CompoundTag compoundTag) {
@@ -61,9 +62,17 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         // Load Recombobulator
         this.recombobulated = compoundTag.getPathOrDefault("tag.ExtraAttributes.rarity_upgrades", IntTag.EMPTY).getValue() == 1;
 
+        // Load Tier Boost
+        this.tierBoosted = compoundTag.getPathOrDefault("tag.ExtraAttributes.baseStatBoostPercentage", IntTag.EMPTY).getValue() > 0;
+
         // Load Rarity
         this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
-            .findFirst(RarityModel::getOrdinal, itemModel.getRarity().getOrdinal() + (recombobulated ? 1 : 0))
+            .findFirst(
+                RarityModel::getOrdinal,
+                itemModel.getRarity().getOrdinal() +
+                    (this.isRecombobulated() ? 1 : 0) +
+                    (this.isTierBoosted() ? 1 : 0)
+            )
             .orElse(itemModel.getRarity());
 
         // Initialize Stats
