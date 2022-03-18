@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
@@ -33,6 +34,10 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 			if (this.ref.compareAndSet(current, modified))
 				return result;
 		}
+	}
+
+	public final boolean addAll(@NotNull E... collection) {
+		return this.addAll(Arrays.asList(collection));
 	}
 
 	@Override
