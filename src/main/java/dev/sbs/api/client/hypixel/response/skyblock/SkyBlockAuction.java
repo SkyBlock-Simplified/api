@@ -60,6 +60,10 @@ public class SkyBlockAuction {
         return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarity);
     }
 
+    public boolean isUnclaimed() {
+        return !this.isClaimed();
+    }
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Bid {
 
