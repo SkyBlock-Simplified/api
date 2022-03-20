@@ -348,8 +348,8 @@ public class SkyBlockIsland {
             if (this.craftedMinions != null) {
                 minion.unlocked.addAll(
                     this.craftedMinions.stream()
-                        .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", minionModel.getCollection().getSkill().getKey())))
-                        .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", minionModel.getCollection().getSkill().getKey()), "")))
+                        .filter(item -> item.matches(FormatUtil.format("^{0}_[\\d]+$", minionModel.getKey())))
+                        .map(item -> Integer.parseInt(item.replace(FormatUtil.format("{0}_", minionModel.getKey()), "")))
                         .collect(Collectors.toList())
                 );
             }
