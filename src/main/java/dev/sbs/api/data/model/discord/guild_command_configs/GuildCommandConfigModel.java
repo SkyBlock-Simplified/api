@@ -12,8 +12,6 @@ public interface GuildCommandConfigModel extends Model {
 
     String getName();
 
-    boolean isEnabled();
-
     List<Long> getUsers();
 
     List<Long> getRoles();

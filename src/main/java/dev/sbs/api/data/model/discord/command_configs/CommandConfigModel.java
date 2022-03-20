@@ -30,7 +30,7 @@ public interface CommandConfigModel extends Model {
 
     boolean isInheritingPermissions();
 
-    boolean isGuildToggleable();
+    boolean isGuildPermissible();
 
     String getStatus();
 

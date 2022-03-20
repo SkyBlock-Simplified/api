@@ -48,11 +48,6 @@ public class GuildCommandConfigSqlModel implements GuildCommandConfigModel, SqlM
 
     @Getter
     @Setter
-    @Column(name = "enabled", nullable = false)
-    private boolean enabled;
-
-    @Getter
-    @Setter
     @Column(name = "user_list", nullable = false)
     @Convert(converter = LongListConverter.class)
     private List<Long> users;
@@ -80,7 +75,6 @@ public class GuildCommandConfigSqlModel implements GuildCommandConfigModel, SqlM
         GuildCommandConfigSqlModel that = (GuildCommandConfigSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isEnabled(), that.isEnabled())
             .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getName(), that.getName())
@@ -97,7 +91,6 @@ public class GuildCommandConfigSqlModel implements GuildCommandConfigModel, SqlM
             .append(this.getId())
             .append(this.getGuild())
             .append(this.getName())
-            .append(this.isEnabled())
             .append(this.getUsers())
             .append(this.getRoles())
             .append(this.getSubmittedAt())

@@ -94,8 +94,8 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "guild_toggleable", nullable = false)
-    private boolean guildToggleable;
+    @Column(name = "guild_permissible", nullable = false)
+    private boolean guildPermissible;
 
     @Getter
     @Setter
@@ -123,7 +123,7 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
             .append(this.isDeveloperOnly(), that.isDeveloperOnly())
             .append(this.isEnabled(), that.isEnabled())
             .append(this.isInheritingPermissions(), that.isInheritingPermissions())
-            .append(this.isGuildToggleable(), that.isGuildToggleable())
+            .append(this.isGuildPermissible(), that.isGuildPermissible())
             .append(this.getId(), that.getId())
             .append(this.getUniqueId(), that.getUniqueId())
             .append(this.getCommandPath(), that.getCommandPath())
@@ -152,7 +152,7 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
             .append(this.isDeveloperOnly())
             .append(this.isEnabled())
             .append(this.isInheritingPermissions())
-            .append(this.isGuildToggleable())
+            .append(this.isGuildPermissible())
             .append(this.getStatus())
             .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
