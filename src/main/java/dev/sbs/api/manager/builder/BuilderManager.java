@@ -5,6 +5,7 @@ import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.builder.exception.InvalidBuilderException;
 import dev.sbs.api.manager.builder.exception.RegisteredBuilderException;
 import dev.sbs.api.manager.builder.exception.UnknownBuilderException;
+import dev.sbs.api.manager.service.exception.RegisteredServiceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.SimplifiedException;
@@ -108,6 +109,30 @@ public class BuilderManager extends Manager<BuilderProvider> {
                 if (provider.getService().isAssignableFrom(service))
                     return provider;
             }
+        }
+
+        throw SimplifiedException.of(UnknownBuilderException.class)
+            .withMessage(UnknownBuilderException.getMessage(service))
+            .build();
+    }
+
+    /**
+     * Replaces a builder for the given service class.
+     *
+     * @param service Service class.
+     * @param builder Builder class.
+     * @param <T>     Type of service.
+     * @param <B>     Type of builder class.
+     * @throws UnknownBuilderException When the given class does not have a registered builder.
+     * @see #isRegistered(Class)
+     */
+    public final <T, B extends CoreBuilder> void replace(Class<T> service, Class<B> builder) throws RegisteredServiceException {
+        Preconditions.checkNotNull(builder, "Builder cannot be NULL!");
+
+        if (this.isRegistered(service)) {
+            super.providers.remove(this.getProvider(service));
+            this.add(service, builder);
+            return;
         }
 
         throw SimplifiedException.of(UnknownBuilderException.class)

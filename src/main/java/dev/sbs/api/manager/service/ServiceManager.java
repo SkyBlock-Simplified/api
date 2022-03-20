@@ -62,10 +62,10 @@ public class ServiceManager extends Manager<ServiceProvider> {
     /**
      * Gets the instance for the given service class.
      *
-     * @param service class type to get
-     * @param <T>     type of service
-     * @return builder instance for the given class
-     * @throws UnknownServiceException When the given service class does not have a registered instance
+     * @param service Class type to get.
+     * @param <T>     Type of service.
+     * @return Builder Instance for the given class.
+     * @throws UnknownServiceException When the given service class does not have a registered instance.
      * @see #isRegistered(Class)
      */
     public final <T> T get(Class<T> service) throws UnknownServiceException {
@@ -75,10 +75,10 @@ public class ServiceManager extends Manager<ServiceProvider> {
     /**
      * Gets all providers that extend from service.
      *
-     * @param service class type to inherit
-     * @param <T>     type of service
-     * @return set of builder instances for the given class
-     * @throws UnknownServiceException When the given service class does not have any registered instances
+     * @param service Class type to inherit.
+     * @param <T>     Type of service.
+     * @return Set of builder instances for the given class.
+     * @throws UnknownServiceException When the given service class does not have any registered instances.
      * @see #isRegistered(Class)
      */
     public final <T> ConcurrentSet<T> getAll(Class<T> service) throws UnknownServiceException {
@@ -100,10 +100,10 @@ public class ServiceManager extends Manager<ServiceProvider> {
     /**
      * Gets the builder provider for the given service class.
      *
-     * @param service class type to get
-     * @param <T>     type of service
-     * @return service provider for the given class
-     * @throws UnknownServiceException When the given service class does not have a registered instance
+     * @param service Class type to get.
+     * @param <T>     Type of service.
+     * @return Service provider for the given class.
+     * @throws UnknownServiceException When the given service class does not have a registered instance.
      * @see #isRegistered(Class)
      */
     @Override
@@ -114,10 +114,10 @@ public class ServiceManager extends Manager<ServiceProvider> {
     /**
      * Gets the instance for the given service class.
      *
-     * @param service class type to get
-     * @param <T>     type of service
-     * @return set of service instances for the given class
-     * @throws UnknownServiceException When the given service class does not have a registered instance
+     * @param service Class type to get.
+     * @param <T>     Type of service.
+     * @return Set of service instances for the given class.
+     * @throws UnknownServiceException When the given service class does not have a registered instance.
      * @see #isRegistered(Class)
      */
     public final <T> ConcurrentSet<Class<?>> getServices(Class<T> service) throws UnknownServiceException {
@@ -134,6 +134,29 @@ public class ServiceManager extends Manager<ServiceProvider> {
                 .build();
 
         return providers;
+    }
+
+    /**
+     * Replaces an instance for the given service class.
+     *
+     * @param service  Service class.
+     * @param instance New instance of service.
+     * @param <T>      Type of service.
+     * @throws UnknownServiceException When the given class does not have a registered instance.
+     * @see #isRegistered(Class)
+     */
+    public final <T> void replace(Class<T> service, T instance) throws RegisteredServiceException {
+        Preconditions.checkArgument(instance != null, "Instance cannot be NULL!");
+
+        if (this.isRegistered(service)) {
+            super.providers.remove(this.getProvider(service));
+            this.add(service, instance);
+            return;
+        }
+
+        throw SimplifiedException.of(UnknownServiceException.class)
+            .withMessage(UnknownServiceException.getMessage(service))
+            .build();
     }
 
 }
