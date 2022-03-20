@@ -56,6 +56,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
@@ -844,9 +845,14 @@ public class SkyBlockIsland {
                 .collect(Concurrent.toList());
         }
 
-        public Dungeon getDungeon(DungeonModel dungeonModel) {
-            Dungeon dungeon = this.types.get(dungeonModel.getKey().toLowerCase());
+        public Dungeon getDungeon(@NotNull DungeonModel dungeonModel) {
+            return this.getDungeon(dungeonModel, false);
+        }
+
+        public Dungeon getDungeon(@NotNull DungeonModel dungeonModel, boolean masterMode) {
+            Dungeon dungeon = this.types.getOrDefault(FormatUtil.format("{0}{1}", (masterMode ? "master_" : ""), dungeonModel.getKey().toLowerCase()), new Dungeon());
             dungeon.type = dungeonModel;
+            dungeon.masterMode = masterMode;
             return dungeon;
         }
 
@@ -864,49 +870,50 @@ public class SkyBlockIsland {
     public static class Dungeon extends Experience implements Weighted {
 
         @Getter private DungeonModel type;
+        @Getter private boolean masterMode;
         @Getter private double experience;
         @SerializedName("highest_tier_completed")
         @Getter private int highestCompletedTier;
         @SerializedName("best_runs")
-        @Getter private ConcurrentMap<Integer, ConcurrentList<Run>> bestRuns;
+        @Getter private ConcurrentMap<Integer, ConcurrentList<Run>> bestRuns = Concurrent.newMap();
 
         @SerializedName("times_played")
-        @Getter private ConcurrentMap<Integer, Integer> timesPlayed;
+        @Getter private ConcurrentMap<Integer, Integer> timesPlayed = Concurrent.newMap();
         @SerializedName("tier_completions")
-        @Getter private ConcurrentMap<Integer, Integer> completions;
+        @Getter private ConcurrentMap<Integer, Integer> completions = Concurrent.newMap();
         @SerializedName("milestone_completions")
-        @Getter private ConcurrentMap<Integer, Integer> milestoneCompletions;
+        @Getter private ConcurrentMap<Integer, Integer> milestoneCompletions = Concurrent.newMap();
 
         @SerializedName("best_score")
-        @Getter private ConcurrentMap<Integer, Integer> bestScore;
+        @Getter private ConcurrentMap<Integer, Integer> bestScore = Concurrent.newMap();
         @SerializedName("watcher_kills")
-        @Getter private ConcurrentMap<Integer, Integer> watcherKills;
+        @Getter private ConcurrentMap<Integer, Integer> watcherKills = Concurrent.newMap();
         @SerializedName("mobs_killed")
-        @Getter private ConcurrentMap<Integer, Integer> mobsKilled;
+        @Getter private ConcurrentMap<Integer, Integer> mobsKilled = Concurrent.newMap();
         @SerializedName("most_mobs_killed")
-        @Getter private ConcurrentMap<Integer, Integer> mostMobsKilled;
+        @Getter private ConcurrentMap<Integer, Integer> mostMobsKilled = Concurrent.newMap();
         @SerializedName("most_healing")
-        @Getter private ConcurrentMap<Integer, Double> mostHealing;
+        @Getter private ConcurrentMap<Integer, Double> mostHealing = Concurrent.newMap();
 
         // Class Damage
         @SerializedName("most_damage_healer")
-        @Getter private ConcurrentMap<Integer, Double> mostDamageHealer;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageHealer = Concurrent.newMap();
         @SerializedName("most_damage_mage")
-        @Getter private ConcurrentMap<Integer, Double> mostDamageMage;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageMage = Concurrent.newMap();
         @SerializedName("most_damage_berserk")
-        @Getter private ConcurrentMap<Integer, Double> mostDamageBerserk;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageBerserk = Concurrent.newMap();
         @SerializedName("most_damage_archer")
-        @Getter private ConcurrentMap<Integer, Double> mostDamageArcher;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageArcher = Concurrent.newMap();
         @SerializedName("most_damage_tank")
-        @Getter private ConcurrentMap<Integer, Double> mostDamageTank;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageTank = Concurrent.newMap();
 
         // Fastest Times
         @SerializedName("fastest_time")
-        @Getter private ConcurrentMap<Integer, Integer> fastestTime;
+        @Getter private ConcurrentMap<Integer, Integer> fastestTime = Concurrent.newMap();
         @SerializedName("fastest_time_s")
-        @Getter private ConcurrentMap<Integer, Integer> fastestSTierTime;
+        @Getter private ConcurrentMap<Integer, Integer> fastestSTierTime = Concurrent.newMap();
         @SerializedName("fastest_time_s_plus")
-        @Getter private ConcurrentMap<Integer, Integer> fastestSPlusTierTime;
+        @Getter private ConcurrentMap<Integer, Integer> fastestSPlusTierTime = Concurrent.newMap();
 
         public ConcurrentList<Run> getBestRuns(DungeonFloorModel dungeonFloorModel) {
             return this.getBestRuns().get(dungeonFloorModel.getFloor());
