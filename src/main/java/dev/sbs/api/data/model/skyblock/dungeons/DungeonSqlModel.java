@@ -78,6 +78,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
         DungeonSqlModel that = (DungeonSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isMasterModeEnabled(), that.isMasterModeEnabled())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
@@ -95,6 +96,7 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
             .append(this.getName())
             .append(this.getEmoji())
             .append(this.getWeightMultiplier())
+            .append(this.isMasterModeEnabled())
             .append(this.getUpdatedAt())
             .build();
     }

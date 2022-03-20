@@ -76,13 +76,15 @@ public class GuildCommandConfigSqlModel implements GuildCommandConfigModel, SqlM
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildCommandConfigSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         GuildCommandConfigSqlModel that = (GuildCommandConfigSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getName(), that.getName())
+            .append(this.getPermissionOverride(), that.getPermissionOverride())
             .append(this.getUsers(), that.getUsers())
             .append(this.getRoles(), that.getRoles())
             .append(this.getSubmittedAt(), that.getSubmittedAt())
@@ -96,6 +98,7 @@ public class GuildCommandConfigSqlModel implements GuildCommandConfigModel, SqlM
             .append(this.getId())
             .append(this.getGuild())
             .append(this.getName())
+            .append(this.getPermissionOverride())
             .append(this.getUsers())
             .append(this.getRoles())
             .append(this.getSubmittedAt())

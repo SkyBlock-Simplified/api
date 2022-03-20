@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.dungeon_bosses;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,12 +15,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_dungeon_bosses"
+    name = "skyblock_dungeon_bosses",
+    indexes = {
+        @Index(
+            columnList = "emoji_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
@@ -46,6 +55,12 @@ public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
     private String description;
 
     @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "emoji_key", nullable = false)
+    private EmojiSqlModel emoji;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -62,6 +77,7 @@ public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
+            .append(this.getEmoji(), that.getEmoji())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -73,6 +89,7 @@ public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())
+            .append(this.getEmoji())
             .append(this.getUpdatedAt())
             .build();
     }
