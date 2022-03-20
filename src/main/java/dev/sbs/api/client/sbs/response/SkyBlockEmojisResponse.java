@@ -31,6 +31,10 @@ public class SkyBlockEmojisResponse {
         });
     }
 
+    public Optional<Emoji> getPetEmoji(String petId) {
+        return this.getEmoji(petId + "_PET");
+    }
+
     public static class Emoji {
 
         @Getter private String name;
