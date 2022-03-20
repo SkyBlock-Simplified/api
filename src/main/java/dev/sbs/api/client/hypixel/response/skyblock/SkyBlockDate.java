@@ -19,9 +19,9 @@ import java.text.SimpleDateFormat;
  */
 public class SkyBlockDate extends CustomDate {
 
-    private static final SimpleDateFormat realDateFormat = new SimpleDateFormat("MMMMM dd, yyyy HH:mm z");
-    @Getter private static final ConcurrentList<String> zooCycle = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
-    @Getter private static final ConcurrentList<String> specialMayorCycle = Concurrent.newUnmodifiableList("SCORPIUS", "DERPY", "JERRY");
+    private static final SimpleDateFormat FULL_DATE_FORMAT = new SimpleDateFormat("MMMMM dd, yyyy HH:mm z");
+    public static final ConcurrentList<String> ZOO_CYCLE = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
+    public static final ConcurrentList<String> SPECIAL_MAYOR_CYCLE = Concurrent.newUnmodifiableList("SCORPIUS", "DERPY", "JERRY");
 
     public SkyBlockDate(Season season, int day) {
         this(season, day, 0);
@@ -145,7 +145,7 @@ public class SkyBlockDate extends CustomDate {
             iterations++;
         }
 
-        return Pair.of(nextSpecialMayor, getSpecialMayorCycle().get(iterations % 3));
+        return Pair.of(nextSpecialMayor, SPECIAL_MAYOR_CYCLE.get(iterations % 3));
     }
 
     public static long getSkyBlockTime(Season season) {
