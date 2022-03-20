@@ -13,4 +13,6 @@ public interface DungeonModel extends Model {
 
     Double getWeightMultiplier();
 
+    boolean isMasterModeEnabled();
+
 }

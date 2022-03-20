@@ -61,6 +61,11 @@ public class DungeonSqlModel implements DungeonModel, SqlModel {
     private Double weightMultiplier;
 
     @Getter
+    @Setter
+    @Column(name = "master_enabled", nullable = false)
+    private boolean masterModeEnabled;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
