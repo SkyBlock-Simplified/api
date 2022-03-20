@@ -71,6 +71,7 @@ public interface SearchQuery<E, T extends List<E>> {
         return itemsCopy;
     }
 
+    // --- CONTAINS ALL ---
     default <S> T containsAll(@NotNull Function<E, List<S>> function, S value) throws DataException {
         return this.containsAll(SearchFunction.Match.ALL, function, value);
     }
@@ -105,6 +106,7 @@ public interface SearchQuery<E, T extends List<E>> {
         ));
     }
 
+    // --- CONTAINS FIRST ---
     default <S> Optional<E> containsFirst(@NotNull Function<E, List<S>> function, S value) throws DataException {
         return this.containsFirst(SearchFunction.Match.ALL, function, value);
     }
@@ -154,6 +156,7 @@ public interface SearchQuery<E, T extends List<E>> {
         return this.containsFirst(predicates).orElse(null);
     }
 
+    // --- FIND ALL ---
     default <S> T findAll(@NotNull Function<E, S> function, S value) throws DataException {
         return this.findAll(SearchFunction.Match.ALL, function, value);
     }
@@ -188,6 +191,7 @@ public interface SearchQuery<E, T extends List<E>> {
         ));
     }
 
+    // --- FIND FIRST ---
     default <S> Optional<E> findFirst(@NotNull Function<E, S> function, S value) throws DataException {
         return this.findFirst(SearchFunction.Match.ALL, function, value);
     }
@@ -246,6 +250,67 @@ public interface SearchQuery<E, T extends List<E>> {
         return this.findFirst(predicates).orElse(null);
     }
 
+    // --- FIND LAST ---
+    default <S> Optional<E> findLast(@NotNull Function<E, S> function, S value) throws DataException {
+        return this.findLast(SearchFunction.Match.ALL, function, value);
+    }
+
+    default <S> Optional<E> findLast(@NotNull SearchFunction.Match match, @NotNull Function<E, S> function, S value) throws DataException {
+        return this.findLast(match, Pair.of(function, value));
+    }
+
+    default <S> Optional<E> findLast(@NotNull Pair<Function<E, S>, S>... predicates) throws DataException {
+        return this.findLast(SearchFunction.Match.ALL, predicates);
+    }
+
+    default <S> Optional<E> findLast(@NotNull Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
+        return this.findLast(SearchFunction.Match.ALL, predicates);
+    }
+
+    default <S> Optional<E> findLast(@NotNull SearchFunction.Match match, @NotNull Pair<Function<E, S>, S>... predicates) throws DataException {
+        return this.findLast(match, Concurrent.newList(predicates));
+    }
+
+    default <S> Optional<E> findLast(@NotNull SearchFunction.Match match, @NotNull Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
+        return this.compare(
+            match,
+            (predicate, it, value) -> {
+                try {
+                    return Objects.equals(predicate.apply(it), value);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
+            predicates
+        ).reduce((first, second) -> second);
+    }
+
+    // --- FIND LAST ---
+    default <S> E findLastOrNull(@NotNull SearchFunction<E, S> function, S value) throws DataException {
+        return this.findLast(function, value).orElse(null);
+    }
+
+    default <S> E findLastOrNull(@NotNull SearchFunction.Match match, @NotNull Function<E, S> function, S value) throws DataException {
+        return this.findLastOrNull(match, Pair.of(function, value));
+    }
+
+    default <S> E findLastOrNull(@NotNull SearchFunction.Match match, @NotNull Pair<Function<E, S>, S>... predicates) throws DataException {
+        return this.findLastOrNull(match, Concurrent.newList(predicates));
+    }
+
+    default <S> E findLastOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
+        return this.findLast(match, predicates).orElse(null);
+    }
+
+    default <S> E findLastOrNull(@NotNull Pair<Function<E, S>, S>... predicates) throws DataException {
+        return this.findLastOrNull(Concurrent.newList(predicates));
+    }
+
+    default <S> E findLastOrNull(@NotNull Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
+        return this.findLast(predicates).orElse(null);
+    }
+
+    // --- MATCH ALL ---
     default T matchAll(@NotNull Function<E, Boolean>... predicates) throws DataException {
         return this.matchAll(Concurrent.newList(predicates));
     }
@@ -274,6 +339,7 @@ public interface SearchQuery<E, T extends List<E>> {
         ));
     }
 
+    // --- MATCH FIRST ---
     default Optional<E> matchFirst(@NotNull Function<E, Boolean>... predicates) throws DataException {
         return this.matchFirst(Concurrent.newList(predicates));
     }
@@ -316,6 +382,51 @@ public interface SearchQuery<E, T extends List<E>> {
 
     default E matchFirstOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
         return this.matchFirst(match, predicates).orElse(null);
+    }
+
+    // --- MATCH LAST ---
+    default Optional<E> matchLast(@NotNull Function<E, Boolean>... predicates) throws DataException {
+        return this.matchLast(Concurrent.newList(predicates));
+    }
+
+    default Optional<E> matchLast(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+        return this.matchLast(SearchFunction.Match.ALL, predicates);
+    }
+
+    default Optional<E> matchLast(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+        return this.matchLast(match, Concurrent.newList(predicates));
+    }
+
+    default Optional<E> matchLast(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+        return this.compare(
+            match,
+            (predicate, it, value) -> {
+                try {
+                    return predicate.apply(it);
+                } catch (NullPointerException nullPointerException) {
+                    return false;
+                }
+            },
+            StreamSupport.stream(predicates.spliterator(), false)
+                .map(predicate -> Pair.of(predicate, true))
+                .collect(Concurrent.toList())
+        ).reduce((first, second) -> second);
+    }
+
+    default E matchLastOrNull(@NotNull Function<E, Boolean>... predicates) throws DataException {
+        return this.matchLastOrNull(Concurrent.newList(predicates));
+    }
+
+    default E matchLastOrNull(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+        return this.matchLastOrNull(SearchFunction.Match.ALL, predicates);
+    }
+
+    default E matchLastOrNull(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+        return this.matchLastOrNull(match, Concurrent.newList(predicates));
+    }
+
+    default E matchLastOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+        return this.matchLast(match, predicates).orElse(null);
     }
 
 }
