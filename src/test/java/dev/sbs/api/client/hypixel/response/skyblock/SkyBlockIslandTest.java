@@ -2,7 +2,7 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
-import dev.sbs.api.client.exception.HypixelApiException;
+import dev.sbs.api.client.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
@@ -10,6 +10,7 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.skyblock.minion_tiers.MinionTierModel;
+import dev.sbs.api.data.model.skyblock.pets.PetModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
@@ -133,17 +134,16 @@ public class SkyBlockIslandTest {
                 int spiderLevel = spiderPetInfo.getLevel();
                 MatcherAssert.assertThat(spiderLevel, Matchers.equalTo(100));
 
-                spiderPetInfo.getPet().ifPresent(wolfPet -> {
-                    RarityModel commonRarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, "COMMON");
-                    MatcherAssert.assertThat(wolfPet.getLowestRarity(), Matchers.equalTo(commonRarity));
+                PetModel spiderPet = spiderPetInfo.getPet();
+                PetModel dragPet = dragInfo.getPet();
 
-                    dragInfo.getPet().ifPresent(dragPet -> {
-                        int wolf_hs = wolfPet.hashCode();
-                        int drag_hs = dragPet.hashCode();
+                RarityModel commonRarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, "COMMON");
+                MatcherAssert.assertThat(spiderPet.getLowestRarity(), Matchers.equalTo(commonRarity));
 
-                        MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
-                    });
-                });
+                int wolf_hs = spiderPet.hashCode();
+                int drag_hs = dragPet.hashCode();
+
+                MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
             }));
 
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
