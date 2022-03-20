@@ -839,7 +839,7 @@ public class SkyBlockIsland {
         public ConcurrentList<Dungeon.Class> getClasses() {
             return this.playerClasses.stream()
                 .map(entry -> this.getClass(SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
-                    .findFirstOrNull(DungeonClassModel::getKey, entry.getKey()))
+                    .findFirstOrNull(DungeonClassModel::getKey, entry.getKey().toUpperCase()))
                 )
                 .collect(Concurrent.toList());
         }
