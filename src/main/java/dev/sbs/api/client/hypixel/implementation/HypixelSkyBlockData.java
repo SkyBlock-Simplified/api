@@ -28,13 +28,13 @@ public interface HypixelSkyBlockData extends HypixelRequestInterface {
     @RequestLine("GET /skyblock/bazaar")
     SkyBlockBazaarResponse getBazaar();
 
-    @RequestLine("GET /skyblock/auction")
+    @RequestLine("GET /skyblock/auction?uuid={uuid}")
     SkyBlockAuctionResponse getAuction(@Param("uuid") UUID auctionId);
 
-    @RequestLine("GET /skyblock/auction")
+    @RequestLine("GET /skyblock/auction?profile={profile}")
     SkyBlockAuctionResponse getAuctionByIsland(@Param("profile") UUID islandId);
 
-    @RequestLine("GET /skyblock/auction")
+    @RequestLine("GET /skyblock/auction?player={player}")
     SkyBlockAuctionResponse getAuctionByPlayer(@Param("player") UUID playerId);
 
     @RequestLine("GET /skyblock/auctions")
