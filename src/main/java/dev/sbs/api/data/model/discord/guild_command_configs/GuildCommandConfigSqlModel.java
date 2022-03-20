@@ -48,6 +48,11 @@ public class GuildCommandConfigSqlModel implements GuildCommandConfigModel, SqlM
 
     @Getter
     @Setter
+    @Column(name = "permission_override", nullable = false)
+    private String permissionOverride;
+
+    @Getter
+    @Setter
     @Column(name = "user_list", nullable = false)
     @Convert(converter = LongListConverter.class)
     private List<Long> users;

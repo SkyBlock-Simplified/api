@@ -12,6 +12,8 @@ public interface GuildCommandConfigModel extends Model {
 
     String getName();
 
+    String getPermissionOverride();
+
     List<Long> getUsers();
 
     List<Long> getRoles();
