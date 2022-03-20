@@ -744,7 +744,7 @@ public class SkyBlockIsland {
             return this.getUpgraded()
                 .stream()
                 .filter(upgraded -> upgraded.getUpgradeName().equalsIgnoreCase(shopProfileUpgradeModel.getKey()))
-                .sorted((o1, o2) -> Comparator.comparing(Upgraded::getTier).compare(o1, o2))
+                .sorted((o1, o2) -> Comparator.comparing(Upgraded::getTier).compare(o2, o1))
                 .map(Upgraded::getTier)
                 .findFirst()
                 .orElse(0);
