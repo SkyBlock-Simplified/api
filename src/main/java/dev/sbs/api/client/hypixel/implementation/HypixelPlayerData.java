@@ -27,15 +27,15 @@ public interface HypixelPlayerData extends HypixelRequestInterface {
     HypixelGuildResponse getGuildByName(@Param("name") String guildName);
 
     @RequestLine("GET /guild?player={player}")
-    HypixelGuildResponse getGuildByPlayer(@Param("player") UUID uniqueId);
+    HypixelGuildResponse getGuildByPlayer(@Param("player") UUID playerId);
 
     @RequestLine("GET /player?uuid={uuid}")
-    HypixelPlayerResponse getPlayer(@Param("uuid") UUID uniqueId);
+    HypixelPlayerResponse getPlayer(@Param("uuid") UUID playerId);
 
     @RequestLine("GET /punishmentstats")
     HypixelPunishmentStatsResponse getPunishmentStats();
 
     @RequestLine("GET /status?uuid={uuid}")
-    HypixelStatusResponse getStatus(@Param("uuid") UUID uniqueId);
+    HypixelStatusResponse getStatus(@Param("uuid") UUID playerId);
 
 }

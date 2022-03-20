@@ -5,24 +5,20 @@ import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ListUtil;
-import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class HypixelGuildResponse {
 
-    private boolean success;
+    @Getter private boolean success;
     private Guild guild;
 
-    public Guild getGuild() {
-        return guild;
-    }
-
-    public boolean isSuccess() {
-        return success;
+    public Optional<Guild> getGuild() {
+        return Optional.ofNullable(this.guild);
     }
 
     public static class Guild {
@@ -63,7 +59,7 @@ public class HypixelGuildResponse {
         public class Member {
 
             @SerializedName("uuid")
-            private String uniqueId;
+            @Getter private UUID uniqueId;
             private String rank;
             @Getter
             private Instant joined;
@@ -75,10 +71,6 @@ public class HypixelGuildResponse {
 
             public Rank getRank() {
                 return Guild.this.ranks.stream().filter(rank -> rank.getName().equals(this.rank) || ("Admin".equals(rank.getName()) && "Guild Master".equals(this.rank))).collect(ListUtil.toSingleton());
-            }
-
-            public UUID getUniqueId() {
-                return StringUtil.toUUID(this.uniqueId);
             }
 
         }

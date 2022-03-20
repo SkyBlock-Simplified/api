@@ -1,30 +1,29 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
-import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class HypixelStatusResponse {
 
-    @Getter
-    private boolean success;
-    private String uuid;
-    @Getter
-    private Session session;
-
-    public UUID getUniqueId() {
-        return StringUtil.toUUID(this.uuid);
-    }
+    @Getter private boolean success;
+    private UUID uuid;
+    @Getter private Session session;
 
     public static class Session {
 
-        @Getter
-        private boolean online;
-        @Getter
+        @Getter private boolean online;
         private String gameType;
-        @Getter
         private String mode;
+
+        public Optional<String> getGameType() {
+            return Optional.ofNullable(this.gameType);
+        }
+
+        public Optional<String> getMode() {
+            return Optional.ofNullable(this.mode);
+        }
 
     }
 
