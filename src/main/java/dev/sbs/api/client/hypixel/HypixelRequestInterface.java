@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.implementation;
+package dev.sbs.api.client.hypixel;
 
 import dev.sbs.api.client.RequestInterface;
 

@@ -15,6 +15,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerSta
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.skyblock.dungeon_floors.DungeonFloorModel;
 import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
@@ -43,6 +44,7 @@ import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.Range;
 import dev.sbs.api.util.data.Vector;
+import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.DataUtil;
 import dev.sbs.api.util.helper.FormatUtil;
@@ -406,7 +408,7 @@ public class SkyBlockIsland {
             return SimplifiedApi.getRepositoryOf(SkillModel.class)
                 .stream()
                 .filter(skillModel -> cosmetic || !skillModel.isCosmetic())
-                .map(skillModel -> this.getSkill(skillModel))
+                .map(this::getSkill)
                 .collect(Concurrent.toList());
         }
 
@@ -418,7 +420,7 @@ public class SkyBlockIsland {
         public ConcurrentList<Slayer> getSlayers() {
             return SimplifiedApi.getRepositoryOf(SlayerModel.class)
                 .stream()
-                .map(slayerModel -> this.getSlayer(slayerModel))
+                .map(this::getSlayer)
                 .collect(Concurrent.toList());
         }
 
@@ -534,6 +536,34 @@ public class SkyBlockIsland {
                 .map(this.getDungeons()::getClass)
                 .map(dungeonClass -> Pair.of(dungeonClass, dungeonClass.getWeight()))
                 .collect(Concurrent.toMap());
+        }
+
+        public Experience.Weight getTotalWeight() {
+            // Load Weights
+            Experience.Weight skillWeight = this.getTotalWeight(Member::getSkillWeight);
+            Experience.Weight slayerWeight = this.getTotalWeight(Member::getSlayerWeight);
+            Experience.Weight dungeonWeight = this.getTotalWeight(Member::getDungeonWeight);
+            Experience.Weight dungeonClassWeight = this.getTotalWeight(Member::getDungeonClassWeight);
+
+            return new Experience.Weight(
+                skillWeight.getValue() + slayerWeight.getValue() + dungeonWeight.getValue() + dungeonClassWeight.getValue(),
+                skillWeight.getOverflow() + slayerWeight.getOverflow() + dungeonWeight.getOverflow() + dungeonClassWeight.getOverflow()
+            );
+        }
+
+        private Experience.Weight getTotalWeight(Function<Member, ConcurrentMap<?, Experience.Weight>> weightMapFunction) {
+            MutableDouble totalWeight = new MutableDouble();
+            MutableDouble totalOverflow = new MutableDouble();
+
+            weightMapFunction.apply(this)
+                .stream()
+                .map(Map.Entry::getValue)
+                .forEach(skillWeight -> {
+                    totalWeight.add(skillWeight.getValue());
+                    totalOverflow.add(skillWeight.getOverflow());
+                });
+
+            return new Experience.Weight(totalWeight.get(), totalOverflow.get());
         }
 
         public boolean hasStorage(Storage type) {
@@ -838,113 +868,143 @@ public class SkyBlockIsland {
         @SerializedName("highest_tier_completed")
         @Getter private int highestCompletedTier;
         @SerializedName("best_runs")
-        @Getter private ConcurrentMap<Floor, ConcurrentList<Run>> bestRuns;
+        @Getter private ConcurrentMap<Integer, ConcurrentList<Run>> bestRuns;
 
         @SerializedName("times_played")
-        @Getter private ConcurrentMap<Floor, Integer> timesPlayed;
+        @Getter private ConcurrentMap<Integer, Integer> timesPlayed;
         @SerializedName("tier_completions")
-        @Getter private ConcurrentMap<Floor, Integer> completions;
+        @Getter private ConcurrentMap<Integer, Integer> completions;
         @SerializedName("milestone_completions")
-        @Getter private ConcurrentMap<Floor, Integer> milestoneCompletions;
+        @Getter private ConcurrentMap<Integer, Integer> milestoneCompletions;
 
         @SerializedName("best_score")
-        @Getter private ConcurrentMap<Floor, Integer> bestScore;
+        @Getter private ConcurrentMap<Integer, Integer> bestScore;
         @SerializedName("watcher_kills")
-        @Getter private ConcurrentMap<Floor, Integer> watcherKills;
+        @Getter private ConcurrentMap<Integer, Integer> watcherKills;
         @SerializedName("mobs_killed")
-        @Getter private ConcurrentMap<Floor, Integer> mobsKilled;
+        @Getter private ConcurrentMap<Integer, Integer> mobsKilled;
         @SerializedName("most_mobs_killed")
-        @Getter private ConcurrentMap<Floor, Integer> mostMobsKilled;
+        @Getter private ConcurrentMap<Integer, Integer> mostMobsKilled;
         @SerializedName("most_healing")
-        @Getter private ConcurrentMap<Floor, Double> mostHealing;
+        @Getter private ConcurrentMap<Integer, Double> mostHealing;
 
         // Class Damage
         @SerializedName("most_damage_healer")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageHealer;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageHealer;
         @SerializedName("most_damage_mage")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageMage;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageMage;
         @SerializedName("most_damage_berserk")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageBerserk;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageBerserk;
         @SerializedName("most_damage_archer")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageArcher;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageArcher;
         @SerializedName("most_damage_tank")
-        @Getter private ConcurrentMap<Floor, Double> mostDamageTank;
+        @Getter private ConcurrentMap<Integer, Double> mostDamageTank;
 
         // Fastest Times
         @SerializedName("fastest_time")
-        @Getter private ConcurrentMap<Floor, Integer> fastestTime;
+        @Getter private ConcurrentMap<Integer, Integer> fastestTime;
         @SerializedName("fastest_time_s")
-        @Getter private ConcurrentMap<Floor, Integer> fastestSTierTime;
+        @Getter private ConcurrentMap<Integer, Integer> fastestSTierTime;
         @SerializedName("fastest_time_s_plus")
-        @Getter private ConcurrentMap<Floor, Integer> fastestSPlusTierTime;
+        @Getter private ConcurrentMap<Integer, Integer> fastestSPlusTierTime;
 
-        public ConcurrentList<Run> getBestRuns(Floor floor) {
-            return this.getBestRuns().get(floor);
+        public ConcurrentList<Run> getBestRuns(DungeonFloorModel dungeonFloorModel) {
+            return this.getBestRuns().get(dungeonFloorModel.getFloor());
         }
 
-        public int getBestScore(Floor floor) {
-            return this.getBestScore().get(floor);
+        public int getBestScore(DungeonFloorModel dungeonFloorModel) {
+            return this.getBestScore().get(dungeonFloorModel.getFloor());
         }
 
-        public int getCompletions(Floor floor) {
-            return this.getCompletions().get(floor);
+        public int getCompletions(DungeonFloorModel dungeonFloorModel) {
+            return this.getCompletions().get(dungeonFloorModel.getFloor());
         }
 
-        public int getFastestTime(Floor floor) {
-            return this.getFastestTime().get(floor);
+        public int getFastestTime(DungeonFloorModel dungeonFloorModel) {
+            return this.getFastestTime().get(dungeonFloorModel.getFloor());
         }
 
-        public int getFastestSTierTime(Floor floor) {
-            return this.getFastestSTierTime().get(floor);
+        public int getFastestSTierTime(DungeonFloorModel dungeonFloorModel) {
+            return this.getFastestSTierTime().get(dungeonFloorModel.getFloor());
         }
 
-        public int getFastestSPlusTierTime(Floor floor) {
-            return this.getFastestSPlusTierTime().get(floor);
+        public int getFastestSPlusTierTime(DungeonFloorModel dungeonFloorModel) {
+            return this.getFastestSPlusTierTime().get(dungeonFloorModel.getFloor());
         }
 
-        public int getMilestoneCompletions(Floor floor) {
-            return this.getMilestoneCompletions().get(floor);
+        public int getMilestoneCompletions(DungeonFloorModel dungeonFloorModel) {
+            return this.getMilestoneCompletions().get(dungeonFloorModel.getFloor());
         }
 
-        public ConcurrentMap<Floor, Double> getMostDamage(DungeonClassModel dungeonClassModel) {
+        public ConcurrentMap<DungeonFloorModel, Double> getMostDamage(DungeonClassModel dungeonClassModel) {
             switch (dungeonClassModel.getKey()) {
                 case "HEALER":
-                    return this.getMostDamageHealer();
+                    return this.getMostDamageHealer()
+                        .stream()
+                        .map(entry -> Pair.of(
+                            SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                            entry.getValue()
+                        ))
+                        .collect(Concurrent.toMap());
                 case "MAGE":
-                    return this.getMostDamageMage();
+                    return this.getMostDamageMage()
+                        .stream()
+                        .map(entry -> Pair.of(
+                            SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                            entry.getValue()
+                        ))
+                        .collect(Concurrent.toMap());
                 case "BERSERK":
-                    return this.getMostDamageBerserk();
+                    return this.getMostDamageBerserk()
+                        .stream()
+                        .map(entry -> Pair.of(
+                            SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                            entry.getValue()
+                        ))
+                        .collect(Concurrent.toMap());
                 case "ARCHER":
-                    return this.getMostDamageArcher();
+                    return this.getMostDamageArcher()
+                        .stream()
+                        .map(entry -> Pair.of(
+                            SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                            entry.getValue()
+                        ))
+                        .collect(Concurrent.toMap());
                 case "TANK":
-                    return this.getMostDamageTank();
+                    return this.getMostDamageTank()
+                        .stream()
+                        .map(entry -> Pair.of(
+                            SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                            entry.getValue()
+                        ))
+                        .collect(Concurrent.toMap());
                 default:
                     return null;
             }
         }
 
-        public double getMostDamage(DungeonClassModel dungeonClassModel, Floor floor) {
-            return this.getMostDamage(dungeonClassModel).get(floor);
+        public double getMostDamage(DungeonClassModel dungeonClassModel, DungeonFloorModel dungeonFloorModel) {
+            return this.getMostDamage(dungeonClassModel).get(dungeonFloorModel.getFloor());
         }
 
-        public int getTimesPlayed(Floor floor) {
-            return this.getTimesPlayed().get(floor);
+        public int getTimesPlayed(DungeonFloorModel dungeonFloorModel) {
+            return this.getTimesPlayed().get(dungeonFloorModel.getFloor());
         }
 
-        public int getWatcherKills(Floor floor) {
-            return this.getWatcherKills().get(floor);
+        public int getWatcherKills(DungeonFloorModel dungeonFloorModel) {
+            return this.getWatcherKills().get(dungeonFloorModel.getFloor());
         }
 
-        public int getMobsKilled(Floor floor) {
-            return this.getMobsKilled().get(floor);
+        public int getMobsKilled(DungeonFloorModel dungeonFloorModel) {
+            return this.getMobsKilled().get(dungeonFloorModel.getFloor());
         }
 
-        public int getMostMobsKilled(Floor floor) {
-            return this.getMostMobsKilled().get(floor);
+        public int getMostMobsKilled(DungeonFloorModel dungeonFloorModel) {
+            return this.getMostMobsKilled().get(dungeonFloorModel.getFloor());
         }
 
-        public double getMostHealing(Floor floor) {
-            return this.getMostHealing().get(floor);
+        public double getMostHealing(DungeonFloorModel dungeonFloorModel) {
+            return this.getMostHealing().get(dungeonFloorModel.getFloor());
         }
 
         @Override
@@ -979,27 +1039,6 @@ public class SkyBlockIsland {
             }
 
             return new Weight(weightValue, weightOverflow);
-        }
-
-        public enum Floor {
-
-            @SerializedName("0")
-            ENTRANCE,
-            @SerializedName("1")
-            ONE,
-            @SerializedName("2")
-            TWO,
-            @SerializedName("3")
-            THREE,
-            @SerializedName("4")
-            FOUR,
-            @SerializedName("5")
-            FIVE,
-            @SerializedName("6")
-            SIX,
-            @SerializedName("7")
-            SEVEN
-
         }
 
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -1451,17 +1490,15 @@ public class SkyBlockIsland {
             ConcurrentList<PetExpScaleModel> petExpScaleModels = SimplifiedApi.getRepositoryOf(PetExpScaleModel.class).findAll();
 
             // Load Experience Block
-            ConcurrentList<Double> petExpScaleValues = petExpScaleModels
+            return petExpScaleModels
                 .subList(petExpOffset, petExpOffset + this.getMaxLevel())
                 .stream()
                 .map(PetExpScaleModel::getValue)
                 .collect(Concurrent.toList());
-
-            return petExpScaleValues;
         }
 
-        public Optional<String> getDefaultSkin() {
-            return this.getPet().map(PetModel::getSkin);
+        public String getDefaultSkin() {
+            return this.getPet().getSkin();
         }
 
         public Optional<ItemModel> getHeldItem() {
@@ -1470,11 +1507,11 @@ public class SkyBlockIsland {
 
         @Override
         public int getMaxLevel() {
-            return this.getPet().map(PetModel::getMaxLevel).orElse(100);
+            return this.getPet().getMaxLevel();
         }
 
-        public Optional<PetModel> getPet() {
-            return SimplifiedApi.getRepositoryOf(PetModel.class).findFirst(PetModel::getKey, this.getName());
+        public PetModel getPet() {
+            return SimplifiedApi.getRepositoryOf(PetModel.class).findFirstOrNull(PetModel::getKey, this.getName());
         }
 
         public String getPrettyName() {
@@ -1823,7 +1860,7 @@ public class SkyBlockIsland {
                     Map<String, Object> harpQuest = gson.fromJson(memberObject.getAsJsonObject("harp_quest"), Map.class);
                     MelodyHarp melodyHarp = new MelodyHarp();
 
-                    melodyHarp.talismanClaimed = harpQuest.containsKey("claimed_talisman") ? (boolean) harpQuest.remove("claimed_talisman") : false;
+                    melodyHarp.talismanClaimed = harpQuest.containsKey("claimed_talisman") && (boolean) harpQuest.remove("claimed_talisman");
                     melodyHarp.selectedSong = harpQuest.containsKey("selected_song") ? (String) harpQuest.remove("selected_song") : "";
                     long epoch = NumberUtil.createNumber(String.valueOf(harpQuest.containsKey("selected_song_epoch") ? harpQuest.remove("selected_song_epoch") : 0)).longValue();
 

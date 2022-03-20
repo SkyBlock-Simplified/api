@@ -1,13 +1,14 @@
-package dev.sbs.api.client.mojang.implementation;
+package dev.sbs.api.client.sbs.implementation;
 
-import dev.sbs.api.client.mojang.response.MojangProfileResponse;
-import dev.sbs.api.client.mojang.response.MojangStatusResponse;
+import dev.sbs.api.client.sbs.SbsRequestInterface;
+import dev.sbs.api.client.sbs.response.MojangProfileResponse;
+import dev.sbs.api.client.sbs.response.MojangStatusResponse;
 import feign.Param;
 import feign.RequestLine;
 
 import java.util.UUID;
 
-public interface MojangData extends MojangRequestInterface {
+public interface MojangData extends SbsRequestInterface {
 
     @RequestLine("GET /mojang/user/{username}")
     MojangProfileResponse getProfileFromUsername(@Param("username") String username);

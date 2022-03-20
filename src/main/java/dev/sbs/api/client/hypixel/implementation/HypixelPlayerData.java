@@ -1,5 +1,6 @@
 package dev.sbs.api.client.hypixel.implementation;
 
+import dev.sbs.api.client.hypixel.HypixelRequestInterface;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelCountsResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelFriendsResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelGuildResponse;

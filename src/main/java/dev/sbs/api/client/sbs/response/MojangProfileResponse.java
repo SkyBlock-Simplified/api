@@ -1,4 +1,4 @@
-package dev.sbs.api.client.mojang.response;
+package dev.sbs.api.client.sbs.response;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;

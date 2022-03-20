@@ -16,8 +16,8 @@ import dev.sbs.api.client.hypixel.implementation.HypixelResourceData;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
-import dev.sbs.api.client.mojang.MojangApiBuilder;
-import dev.sbs.api.client.mojang.implementation.MojangData;
+import dev.sbs.api.client.sbs.SbsApiBuilder;
+import dev.sbs.api.client.sbs.implementation.MojangData;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
@@ -189,11 +189,11 @@ public final class SimplifiedApi {
         serviceManager.add(Scheduler.class, new Scheduler());
 
         // Create Api Builders
-        MojangApiBuilder mojangApiBuilder = new MojangApiBuilder();
+        SbsApiBuilder sbsApiBuilder = new SbsApiBuilder();
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
 
         // Provide Builders
-        builderManager.add(MojangData.class, MojangApiBuilder.class);
+        builderManager.add(MojangData.class, SbsApiBuilder.class);
         builderManager.add(HypixelPlayerData.class, HypixelApiBuilder.class);
         builderManager.add(HypixelResourceData.class, HypixelApiBuilder.class);
         builderManager.add(HypixelSkyBlockData.class, HypixelApiBuilder.class);
@@ -204,7 +204,7 @@ public final class SimplifiedApi {
         serviceManager.add(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
         serviceManager.add(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
         serviceManager.add(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
-        serviceManager.add(MojangData.class, mojangApiBuilder.build(MojangData.class));
+        serviceManager.add(MojangData.class, sbsApiBuilder.build(MojangData.class));
     }
 
     public static void connectDatabase(SqlConfig sqlConfig) {

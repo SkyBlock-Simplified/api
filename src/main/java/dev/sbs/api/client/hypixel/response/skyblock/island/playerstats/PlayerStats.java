@@ -375,17 +375,17 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
-        member.getActivePet().ifPresent(petInfo -> petInfo.getPet().ifPresent(pet -> {
+        member.getActivePet().ifPresent(petInfo -> {
             // Load Rarity Filtered Pet Stats
             SimplifiedApi.getRepositoryOf(PetStatModel.class)
-                .findAll(PetStatModel::getPet, pet)
+                .findAll(PetStatModel::getPet, petInfo.getPet())
                 .parallelStream()
                 .filter(petStatModel -> petStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
                 .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel())));
 
             // Load Rarity Filtered Ability Stats
             SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
-                .findAll(PetAbilityModel::getPet, pet)
+                .findAll(PetAbilityModel::getPet, petInfo.getPet())
                 .parallelStream()
                 .map(petAbilityModel -> Pair.of(petAbilityModel, SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
                     .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
@@ -427,7 +427,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
                     this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), null, petExpressionVariables, bonusPetAbilityStatModel)));
                 });
-        }));
+        });
     }
 
     private void loadActivePotions(SkyBlockIsland.Member member) {

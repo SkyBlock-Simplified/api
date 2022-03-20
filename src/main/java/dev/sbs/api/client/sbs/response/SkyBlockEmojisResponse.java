@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock;
+package dev.sbs.api.client.sbs.response;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.Concurrent;

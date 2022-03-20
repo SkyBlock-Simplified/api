@@ -1,4 +1,4 @@
-package dev.sbs.api.client.mojang;
+package dev.sbs.api.client.sbs;
 
 import dev.sbs.api.util.helper.FormatUtil;
 

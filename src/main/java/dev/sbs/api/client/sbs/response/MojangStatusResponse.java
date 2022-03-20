@@ -1,8 +1,8 @@
-package dev.sbs.api.client.mojang.response;
+package dev.sbs.api.client.sbs.response;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.HttpStatus;
-import dev.sbs.api.client.mojang.MojangServices;
+import dev.sbs.api.client.sbs.MojangServices;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
 

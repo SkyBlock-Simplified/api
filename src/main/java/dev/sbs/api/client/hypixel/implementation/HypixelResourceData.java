@@ -1,5 +1,6 @@
 package dev.sbs.api.client.hypixel.implementation;
 
+import dev.sbs.api.client.hypixel.HypixelRequestInterface;
 import dev.sbs.api.client.hypixel.response.resource.ResourceCollectionsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceElectionResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;

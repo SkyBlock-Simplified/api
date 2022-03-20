@@ -1,7 +1,7 @@
-package dev.sbs.api.client.exception;
+package dev.sbs.api.client.hypixel.exception;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.response.hypixel.HypixelErrorResponse;
+import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.util.helper.StringUtil;
 import feign.FeignException;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public final class HypixelApiException extends ApiException {
             String bodyString = StringUtil.toEncodedString(this.responseBody().get().array(), StandardCharsets.UTF_8);
             this.errorResponse = SimplifiedApi.getGson().fromJson(bodyString, HypixelErrorResponse.class);
         } else
-            this.errorResponse = null;
+            this.errorResponse = new HypixelErrorResponse.Unknown();
     }
 
 }
