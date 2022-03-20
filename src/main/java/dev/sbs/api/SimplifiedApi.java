@@ -155,6 +155,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 public final class SimplifiedApi {
 
@@ -175,10 +176,10 @@ public final class SimplifiedApi {
         Gson gson = new GsonBuilder()
             .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
-            .registerTypeAdapter(UUIDTypeAdapter.class, new UUIDTypeAdapter())
             .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
             .setPrettyPrinting().create();
 
