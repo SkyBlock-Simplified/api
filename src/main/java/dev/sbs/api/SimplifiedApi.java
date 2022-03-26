@@ -422,4 +422,8 @@ public final class SimplifiedApi {
         return serviceManager.get(tClass);
     }
 
+    public static boolean isDatabaseConnected() {
+        return serviceManager.isRegistered(SqlSession.class) && serviceManager.get(SqlSession.class).isActive();
+    }
+
 }
