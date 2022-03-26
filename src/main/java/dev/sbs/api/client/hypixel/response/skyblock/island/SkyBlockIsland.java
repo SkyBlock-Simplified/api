@@ -1526,7 +1526,12 @@ public class SkyBlockIsland {
         }
 
         public RarityModel getRarity() {
-            return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarityKey);
+            RarityModel rarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarityKey);
+
+            if (this.isTierBoosted())
+                return SimplifiedApi.getRepositoryOf(RarityModel.class).matchFirstOrNull(rarityModel -> rarityModel.getOrdinal() == rarity.getOrdinal() + (this.isTierBoosted() ? 1 : 0));
+            else
+                return rarity;
         }
 
         public Optional<String> getSkin() {
@@ -1536,6 +1541,10 @@ public class SkyBlockIsland {
         @Override
         public int getStartingLevel() {
             return 1;
+        }
+
+        public boolean isTierBoosted() {
+            return this.getHeldItem().map(itemModel -> itemModel.getItemId().equals("PET_ITEM_TIER_BOOST")).orElse(false);
         }
 
     }
