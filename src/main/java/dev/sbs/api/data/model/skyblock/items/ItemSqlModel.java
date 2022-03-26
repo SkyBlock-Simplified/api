@@ -30,7 +30,7 @@ import java.util.Map;
         )
     }
 )
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
