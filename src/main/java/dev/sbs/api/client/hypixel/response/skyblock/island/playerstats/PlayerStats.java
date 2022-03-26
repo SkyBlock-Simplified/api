@@ -49,6 +49,7 @@ import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -379,20 +380,21 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             // Load Rarity Filtered Pet Stats
             SimplifiedApi.getRepositoryOf(PetStatModel.class)
                 .findAll(PetStatModel::getPet, petInfo.getPet())
-                .parallelStream()
+                .stream()
                 .filter(petStatModel -> petStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
                 .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel())));
 
             // Load Rarity Filtered Ability Stats
             SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
                 .findAll(PetAbilityModel::getPet, petInfo.getPet())
-                .parallelStream()
+                .stream()
                 .map(petAbilityModel -> Pair.of(petAbilityModel, SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
                     .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
-                    .parallelStream()
+                    .stream()
                     .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
-                    .collect(Concurrent.toList()))
-                )
+                    .collect(Concurrent.toList())
+                ))
+                .filter(petAbilityStatPair -> ListUtil.notEmpty(petAbilityStatPair.getRight()))
                 .forEach(petAbilityStatPair -> {
                     // Load Bonus Pet Ability Stats
                     SimplifiedApi.getRepositoryOf(BonusPetAbilityStatModel.class)
@@ -417,16 +419,17 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.getBonusPetAbilityStatModels()
                 .stream()
                 .filter(BonusPetAbilityStatModel::notPercentage)
-                .forEach(bonusPetAbilityStatModel -> {
-                    //petExpressionVariables.put("PET_ABILITY_VALUE", petExpressionVariables.getOrDefault(FormatUtil.format("PET_ABILITY_{0}", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
-                    /*SimplifiedApi.getRepositoryOf(StatModel.class).findAll().forEach(statModel -> {
-                        String newVariableName = FormatUtil.format("PET_ABILITY_{0}", statModel.getKey());
-                        String currentVariableName = FormatUtil.format("PET_ABILITY_{0}_{1}", bonusPetAbilityStatModel.getPetAbility().getKey(), statModel.getKey());
-                        petExpressionVariables.put(newVariableName, petExpressionVariables.getOrDefault(currentVariableName, 0.0));
-                    });*/
-
-                    this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), null, petExpressionVariables, bonusPetAbilityStatModel)));
-                });
+                .forEach(bonusPetAbilityStatModel -> this.stats.get(Type.ACTIVE_PET)
+                    .forEach((statModel, statData) -> this.setBonus(
+                    statData,
+                    PlayerDataHelper.handleBonusEffects(
+                        statModel,
+                        statData.getBonus(),
+                        null,
+                        petExpressionVariables,
+                        bonusPetAbilityStatModel
+                    )))
+                );
         });
     }
 
@@ -444,7 +447,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                     .ifPresent(potionModel -> {
                         ConcurrentList<PotionTierModel> potionTierModels = SimplifiedApi.getRepositoryOf(PotionTierModel.class)
                             .findAll(PotionTierModel::getPotion, potionModel)
-                            .parallelStream()
+                            .stream()
                             .filter(potionTierModel -> potionTierModel.getTier() == potion.getLevel())
                             .collect(Concurrent.toList());
 
