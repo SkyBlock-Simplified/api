@@ -3,7 +3,10 @@ package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
+import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
+import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
+import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -11,15 +14,19 @@ import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.search.function.SearchFunction;
+import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Objects;
+
 public class ItemData extends ObjectData<ItemData.Type> {
 
-    @Getter private final ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
-    @Getter private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
+    @Getter private final ConcurrentMap<EnchantmentModel, Integer> enchantments;
+    @Getter private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats;
     @Getter private final int hotPotatoBooks;
     private final Boolean hasArtOfWar;
     @Getter private boolean bonusCalculated;
@@ -28,6 +35,68 @@ public class ItemData extends ObjectData<ItemData.Type> {
         super(itemModel, compoundTag);
         this.hotPotatoBooks = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
         this.hasArtOfWar = compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count");
+
+        // Save Stats
+        itemModel.getStats().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class)
+            .findFirst(StatModel::getKey, key)
+            .ifPresent(statModel -> this.getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
+
+        // Save Reforge Stats
+        PlayerDataHelper.handleReforgeBonus(this.getReforgeStat())
+            .forEach((statModel, value) -> this.getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
+
+        // Save Gemstone Stats
+        PlayerDataHelper.handleGemstoneBonus(this)
+            .forEach((statModel, value) -> this.getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
+
+        // Save Hot Potato Book Stats
+        SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
+            .findAll(SearchFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
+            .forEach(hotPotatoStatModel -> this.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(this.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
+
+        // Save Art Of War Stats
+        if (this.hasArtOfWar()) {
+            SimplifiedApi.getRepositoryOf(StatModel.class)
+                .findFirst(StatModel::getKey, "STRENGTH")
+                .ifPresent(statModel -> this.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
+        }
+
+        // Save Enchantment Stats
+        ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
+        ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
+
+        if (compoundTag.containsPath("tag.ExtraAttributes.enchantments")) {
+            compoundTag.<CompoundTag>getPath("tag.ExtraAttributes.enchantments")
+                .entrySet()
+                .stream()
+                .map(entry -> Pair.of(entry.getKey().toUpperCase(), ((IntTag)entry.getValue()).getValue()))
+                .map(pair -> Pair.of(
+                    SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
+                    .findFirstOrNull(EnchantmentModel::getKey, pair.getKey()),
+                    pair.getRight()
+                ))
+                .filter(enchantmentData -> Objects.nonNull(enchantmentData.getLeft()))
+                .filter(enchantmentData -> ListUtil.isEmpty(enchantmentData.getLeft().getMobTypes()))
+                .forEach(enchantmentData -> {
+                    enchantments.put(enchantmentData.getKey(), enchantmentData.getValue());
+                    enchantmentStats.put(enchantmentData.getKey(), Concurrent.newList());
+
+                    SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
+                        .findAll(EnchantmentStatModel::getEnchantment, enchantmentData.getLeft())
+                        .stream()
+                        .filter(EnchantmentStatModel::notPercentage) // Percentage Only
+                        .filter(EnchantmentStatModel::hasStat) // Has Stat
+                        .filter(enchantmentStatModel -> enchantmentStatModel.getLevels().stream().anyMatch(level -> enchantmentData.getValue() >= level)) // Contains Level
+                        .forEach(enchantmentStatModel -> {
+                            enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel);
+                            double enchantBonus = enchantmentStatModel.getLevels().stream().filter(level -> enchantmentData.getValue() >= level).mapToDouble(__ -> enchantmentStatModel.getLevelBonus()).sum();
+                            this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                        });
+                });
+        }
+
+        this.enchantments = enchantments;
+        this.enchantmentStats = enchantmentStats;
     }
 
     @Override
@@ -63,23 +132,6 @@ public class ItemData extends ObjectData<ItemData.Type> {
         }
 
         return this;
-    }
-
-    public void addEnchantment(EnchantmentModel enchantmentModel, Integer value) {
-        this.enchantments.put(enchantmentModel, value);
-        this.enchantmentStats.put(enchantmentModel, Concurrent.newList());
-
-        // Handle Static Enchants
-        SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
-            .findAll(EnchantmentStatModel::getEnchantment, enchantmentModel)
-            .forEach(enchantmentStatModel -> {
-                this.enchantmentStats.get(enchantmentModel).add(enchantmentStatModel);
-
-                if (!enchantmentStatModel.isPercentage() && enchantmentStatModel.getStat() != null && ListUtil.isEmpty(enchantmentModel.getMobTypes())) {
-                    double enchantBonus = enchantmentStatModel.getBaseValue() + (enchantmentStatModel.getLevelBonus() * value);
-                    this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
-                }
-            });
     }
 
     @Override

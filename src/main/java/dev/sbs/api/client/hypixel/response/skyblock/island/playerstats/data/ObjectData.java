@@ -73,6 +73,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         // Load Gemstones
         CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
         ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> gemstones = Concurrent.newMap();
+
         if (gemTag != null && gemTag.notEmpty()) {
             gemTag.forEach((key, tag) -> {
                 String upperKey = key.toUpperCase();
@@ -100,6 +101,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
                 });
             });
         }
+
         this.gemstones = Concurrent.newUnmodifiableMap(gemstones);
 
         // Initialize Stats

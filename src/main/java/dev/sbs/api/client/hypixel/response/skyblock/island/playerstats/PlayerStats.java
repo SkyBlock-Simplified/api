@@ -35,10 +35,7 @@ import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import dev.sbs.api.minecraft.nbt.exception.NbtException;
-import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -294,36 +291,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         }
 
         // Create Accessory Data
-        tagAccessoryModels.forEach((compoundTag, accessoryModel) -> {
-            AccessoryData accessoryData = new AccessoryData(accessoryModel, compoundTag);
-            this.accessories.add(accessoryData);
-
-            // Handle Gemstone Stats
-            PlayerDataHelper.handleGemstoneBonus(accessoryData)
-                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
-
-            // Handle Reforge Stats
-            PlayerDataHelper.handleReforgeBonus(accessoryData.getReforgeStat())
-                .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
-
-            // Handle Stats
-            accessoryModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.STATS).get(statModel), value)));
-
-            // Handle Enrichment Stats
-            accessoryData.getEnrichment()
-                .ifPresent(accessoryEnrichmentModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
-
-            // New Year Cake Bag
-            if ("NEW_YEAR_CAKE_BAG".equals(accessoryModel.getItem().getItemId())) {
-                try {
-                    Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
-                    ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
-                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
-                        .ifPresent(statModel -> this.addBonus(accessoryData.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
-                } catch (NbtException ignore) { }
-            }
-        });
+        this.accessories.addAll(
+            tagAccessoryModels.stream()
+                .map(entry -> new AccessoryData(entry.getValue(), entry.getKey()))
+                .collect(Concurrent.toList())
+        );
 
         // Store Families
         ConcurrentMap<AccessoryFamilyModel, ConcurrentSet<AccessoryModel>> familyAccessoryDataMap = Concurrent.newMap();
@@ -524,7 +496,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 ItemData itemData = null;
 
                 if (armorItemModelPair.getLeft().notEmpty() && armorItemModelPair.getRight().isPresent())
-                    itemData = PlayerDataHelper.parseItemData(armorItemModelPair.getRight().get(), armorItemModelPair.getLeft(), "ARMOR");
+                    itemData = new ItemData(armorItemModelPair.getRight().get(), armorItemModelPair.getLeft(), "ARMOR");
 
                 this.armor.add(Optional.ofNullable(itemData));
             });

@@ -4,7 +4,10 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
+import dev.sbs.api.minecraft.nbt.exception.NbtException;
+import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
@@ -31,6 +34,32 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
             SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
             compoundTag.getPathOrDefault("tag.ExtraAttributes.talisman_enrichment", StringTag.EMPTY).getValue()
         );
+
+        // Handle Gemstone Stats
+        PlayerDataHelper.handleGemstoneBonus(this)
+            .forEach((statModel, value) -> this.addBonus(this.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
+
+        // Handle Reforge Stats
+        PlayerDataHelper.handleReforgeBonus(this.getReforgeStat())
+            .forEach((statModel, value) -> this.addBonus(this.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
+
+        // Handle Stats
+        this.getAccessory().getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+            .ifPresent(statModel -> this.addBonus(this.getStats(AccessoryData.Type.STATS).get(statModel), value)));
+
+        // Handle Enrichment Stats
+        this.getEnrichment()
+            .ifPresent(accessoryEnrichmentModel -> this.addBonus(this.getStats(AccessoryData.Type.ENRICHMENTS).get(accessoryEnrichmentModel.getStat()), accessoryEnrichmentModel.getValue()));
+
+        // New Year Cake Bag
+        if ("NEW_YEAR_CAKE_BAG".equals(this.getAccessory().getItem().getItemId())) {
+            try {
+                Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
+                ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+                    .ifPresent(statModel -> this.addBonus(this.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
+            } catch (NbtException ignore) { }
+        }
     }
 
     @Override

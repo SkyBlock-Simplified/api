@@ -3,18 +3,12 @@ package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.data.model.BuffEffectsModel;
-import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
-import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
-import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;
@@ -143,48 +137,6 @@ public class PlayerDataHelper {
                 .ifPresent(statModel -> reforgeBonuses.put(statModel, value + reforgeBonuses.getOrDefault(statModel, 0.0)))));
 
         return reforgeBonuses;
-    }
-
-    public static ItemData parseItemData(ItemModel itemModel, CompoundTag itemTag, String reforgeTypeKey) {
-        ItemData itemData = new ItemData(itemModel, itemTag, reforgeTypeKey);
-
-        // Save Stats
-        itemModel.getStats().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class)
-            .findFirst(StatModel::getKey, key)
-            .ifPresent(statModel -> itemData.getStats(ItemData.Type.STATS).get(statModel).addBonus(value)));
-
-        // Save Enchantment Stats
-        if (itemTag.containsPath("tag.ExtraAttributes.enchantments")) {
-            itemTag.<CompoundTag>getPath("tag.ExtraAttributes.enchantments")
-                .entrySet()
-                .stream()
-                .map(entry -> Pair.of(entry.getKey().toUpperCase(), ((IntTag)entry.getValue()).getValue()))
-                .forEach(pair -> SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
-                    .findFirst(EnchantmentModel::getKey, pair.getKey())
-                    .ifPresent(enchantmentModel -> itemData.addEnchantment(enchantmentModel, pair.getValue())));
-        }
-
-        // Save Reforge Stats
-        handleReforgeBonus(itemData.getReforgeStat())
-            .forEach((statModel, value) -> itemData.getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
-
-        // Save Gemstone Stats
-        handleGemstoneBonus(itemData)
-            .forEach((statModel, value) -> itemData.getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
-
-        // Save Hot Potato Book Stats
-        SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
-            .findAll(SearchFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
-            .forEach(hotPotatoStatModel -> itemData.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(itemData.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
-
-        // Save Art Of War Stats
-        if (itemData.hasArtOfWar()) {
-            SimplifiedApi.getRepositoryOf(StatModel.class)
-                .findFirst(StatModel::getKey, "STRENGTH")
-                .ifPresent(statModel -> itemData.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
-        }
-
-        return itemData;
     }
 
 }
