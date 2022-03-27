@@ -167,7 +167,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .flatMap(StreamUtil::flattenOptional)
                 .forEach(itemData -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel)
                     .stream()
-                    .filter(enchantmentStatModel -> enchantmentStatModel.getStat() != null)
+                    .filter(EnchantmentStatModel::hasStat)
                     .filter(EnchantmentStatModel::isPercentage)
                     .forEach(enchantmentStatModel -> {
                         double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * value) / 100.0);
@@ -204,11 +204,6 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                         })));
 
                     // Handle Accessories
-                    this.getAccessories().forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                        this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
-                        this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
-                    })));
-
                     this.getFilteredAccessories().forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));

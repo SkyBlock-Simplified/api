@@ -53,8 +53,8 @@ public class SkyBlockIslandTest {
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
             SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
-            SkyBlockIsland island = profiles.getIslands().get(1); // Bingo Profile = 0
-            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
+            SkyBlockIsland island = profiles.getLastPlayed(uniqueId); // Bingo Profile = 0
+            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(uniqueId);
 
             // Did Hypixel Reply / Does a Member Exist
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
@@ -62,6 +62,10 @@ public class SkyBlockIslandTest {
 
             SkyBlockIsland.Member member = optionalMember.get();
             PlayerStats playerStats = island.getPlayerStats(member);
+
+            //playerStats.getStats(PlayerStats.Type.ACTIVE_PET)
+            //    .forEach((statModel, statData) -> System.out.println("PET: " + statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
+
             playerStats.getCombinedStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
@@ -70,7 +74,7 @@ public class SkyBlockIslandTest {
             exception.printStackTrace();
             Assertions.fail();
         } finally {
-            SimplifiedApi.getSqlSession().shutdown();
+            SimplifiedApi.disconnectDatabase();
         }
     }
 
@@ -86,8 +90,8 @@ public class SkyBlockIslandTest {
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
             SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
-            SkyBlockIsland island = profiles.getIslands().get(1); // Bingo Profile = 0
-            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(0);
+            SkyBlockIsland island = profiles.getLastPlayed(uniqueId); // Bingo Profile = 0
+            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(uniqueId);
 
             // Did Hypixel Reply / Does a Member Exist
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));

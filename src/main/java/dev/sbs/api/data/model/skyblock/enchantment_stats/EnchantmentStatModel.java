@@ -22,6 +22,10 @@ public interface EnchantmentStatModel extends Model {
 
     boolean isPercentage();
 
+    default boolean hasStat() {
+        return this.getStat() != null;
+    }
+
     default boolean notPercentage() {
         return !this.isPercentage();
     }
