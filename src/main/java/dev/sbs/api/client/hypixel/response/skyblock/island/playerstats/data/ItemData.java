@@ -69,29 +69,34 @@ public class ItemData extends ObjectData<ItemData.Type> {
             compoundTag.<CompoundTag>getPath("tag.ExtraAttributes.enchantments")
                 .entrySet()
                 .stream()
-                .map(entry -> Pair.of(entry.getKey().toUpperCase(), ((IntTag)entry.getValue()).getValue()))
-                .map(pair -> Pair.of(
+                .map(entry -> Pair.of(
                     SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
-                    .findFirstOrNull(EnchantmentModel::getKey, pair.getKey()),
-                    pair.getRight()
+                        .findFirstOrNull(EnchantmentModel::getKey, entry.getKey().toUpperCase()),
+                    ((IntTag)entry.getValue()).getValue()
                 ))
                 .filter(enchantmentData -> Objects.nonNull(enchantmentData.getLeft()))
-                .filter(enchantmentData -> ListUtil.isEmpty(enchantmentData.getLeft().getMobTypes()))
                 .forEach(enchantmentData -> {
                     enchantments.put(enchantmentData.getKey(), enchantmentData.getValue());
                     enchantmentStats.put(enchantmentData.getKey(), Concurrent.newList());
 
+                    // Handle Enchantment Stat Models
                     SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
                         .findAll(EnchantmentStatModel::getEnchantment, enchantmentData.getLeft())
                         .stream()
-                        .filter(EnchantmentStatModel::notPercentage) // Percentage Only
-                        .filter(EnchantmentStatModel::hasStat) // Has Stat
                         .filter(enchantmentStatModel -> enchantmentStatModel.getLevels().stream().anyMatch(level -> enchantmentData.getValue() >= level)) // Contains Level
-                        .forEach(enchantmentStatModel -> {
-                            enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel);
-                            double enchantBonus = enchantmentStatModel.getLevels().stream().filter(level -> enchantmentData.getValue() >= level).mapToDouble(__ -> enchantmentStatModel.getLevelBonus()).sum();
-                            this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
-                        });
+                        .forEach(enchantmentStatModel -> enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel));
+
+                    // Handle Enchantment Stats
+                    if (ListUtil.isEmpty(enchantmentData.getLeft().getMobTypes())) {
+                        enchantmentStats.get(enchantmentData.getKey())
+                            .stream()
+                            .filter(EnchantmentStatModel::notPercentage) // Static Only
+                            .filter(EnchantmentStatModel::hasStat) // Has Stat
+                            .forEach(enchantmentStatModel -> {
+                                double enchantBonus = enchantmentStatModel.getLevels().stream().filter(level -> enchantmentData.getValue() >= level).mapToDouble(__ -> enchantmentStatModel.getLevelBonus()).sum();
+                                this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                            });
+                    }
                 });
         }
 
