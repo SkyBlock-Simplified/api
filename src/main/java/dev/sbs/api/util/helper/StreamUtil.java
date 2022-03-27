@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -39,6 +40,10 @@ public class StreamUtil {
 
     private static <T> BinaryOperator<T> throwingMerger() {
         return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}!", key)); };
+    }
+
+    public static <T> Stream<T> flattenOptional(Optional<T> optional) {
+        return Stream.ofNullable(optional.orElse(null));
     }
 
     /**
