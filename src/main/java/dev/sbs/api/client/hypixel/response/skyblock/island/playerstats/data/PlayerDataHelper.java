@@ -5,27 +5,22 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
-import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
-import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
 import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
-import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
-import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.mutable.MutableDouble;
-import dev.sbs.api.util.data.mutable.MutableObject;
 import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.Triple;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
-import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.math.Expression;
 import dev.sbs.api.util.math.ExpressionBuilder;
 
@@ -115,36 +110,25 @@ public class PlayerDataHelper {
         return value.get();
     }
 
-    public static ConcurrentMap<StatModel, Double> handleGemstoneBonus(CompoundTag compoundTag, RarityModel rarityModel) {
+    public static ConcurrentMap<StatModel, Double> handleGemstoneBonus(ObjectData<?> objectData) {
         ConcurrentMap<StatModel, Double> gemstoneAdjusted = Concurrent.newMap();
-        CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
 
-        if (gemTag != null && gemTag.notEmpty()) {
-            gemTag.forEach((key, tag) -> {
-                String upperKey = key.toUpperCase();
-                String gemKey = RegexUtil.replaceAll(upperKey, "_[\\d]", "");
-                MutableObject<String> gemTypeKey = new MutableObject<>(((StringTag) tag).getValue().toUpperCase());
-                Optional<GemstoneModel> optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemKey);
-
-                // Handle Typed Slots
-                if (!optionalGemstoneModel.isPresent()) {
-                    if (gemKey.endsWith("_GEM")) {
-                        optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemTypeKey.get());
-                        gemTypeKey.set(gemTag.getValue(upperKey.replace("_GEM", "")));
-                    }
-                }
-
-                // Load Gemstone
-                optionalGemstoneModel.ifPresent(gemstoneModel -> SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
-                    .findFirst(GemstoneTypeModel::getKey, gemTypeKey.get())
-                    .flatMap(gemstoneTypeModel -> SimplifiedApi.getRepositoryOf(GemstoneStatModel.class).findFirst(
-                        Pair.of(GemstoneStatModel::getGemstone, gemstoneModel),
-                        Pair.of(GemstoneStatModel::getType, gemstoneTypeModel),
-                        Pair.of(GemstoneStatModel::getRarity, rarityModel)
-                    ))
-                    .ifPresent(gemstoneStatModel -> gemstoneAdjusted.put(gemstoneModel.getStat(), gemstoneStatModel.getValue() + gemstoneAdjusted.getOrDefault(gemstoneModel.getStat(), 0.0))));
-            });
-        }
+        objectData.getGemstones()
+            .stream()
+            .map(entry -> Triple.of(
+                entry.getKey(),
+                entry.getValue(),
+                SimplifiedApi.getRepositoryOf(GemstoneStatModel.class).findFirst(
+                    Pair.of(GemstoneStatModel::getGemstone, entry.getKey()),
+                    Pair.of(GemstoneStatModel::getType, entry.getValue()),
+                    Pair.of(GemstoneStatModel::getRarity, objectData.getRarity())
+                )
+            ))
+            .filter(gemstoneData -> gemstoneData.getRight().isPresent())
+            .forEach(gemstoneData -> gemstoneAdjusted.put(
+                gemstoneData.getLeft().getStat(),
+                gemstoneData.getRight().get().getValue() + gemstoneAdjusted.getOrDefault(gemstoneData.getLeft().getStat(), 0.0))
+            );
 
         return gemstoneAdjusted;
     }
@@ -184,7 +168,7 @@ public class PlayerDataHelper {
             .forEach((statModel, value) -> itemData.getStats(ItemData.Type.REFORGES).get(statModel).addBonus(value));
 
         // Save Gemstone Stats
-        handleGemstoneBonus(itemTag, itemData.getRarity())
+        handleGemstoneBonus(itemData)
             .forEach((statModel, value) -> itemData.getStats(ItemData.Type.GEMSTONES).get(statModel).addBonus(value));
 
         // Save Hot Potato Book Stats
@@ -193,9 +177,11 @@ public class PlayerDataHelper {
             .forEach(hotPotatoStatModel -> itemData.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(itemData.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
 
         // Save Art Of War Stats
-        SimplifiedApi.getRepositoryOf(StatModel.class)
-            .findFirst(StatModel::getKey, "STRENGTH")
-            .ifPresent(statModel -> itemData.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
+        if (itemData.hasArtOfWar()) {
+            SimplifiedApi.getRepositoryOf(StatModel.class)
+                .findFirst(StatModel::getKey, "STRENGTH")
+                .ifPresent(statModel -> itemData.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
+        }
 
         return itemData;
     }

@@ -36,13 +36,9 @@ public class ItemData extends ObjectData<ItemData.Type> {
             this.bonusCalculated = true;
 
             // Handle Reforges
-            this.getBonusReforgeStatModel()
-                .ifPresent(bonusReforgeStatModel -> this.getStats(ItemData.Type.REFORGES)
-                    .forEach((statModel, statData) -> {
-                        statData.base = PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
-                        statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
-                    })
-                );
+            this.getBonusReforgeStatModel().ifPresent(bonusReforgeStatModel -> this.getStats(ItemData.Type.REFORGES)
+                .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel))
+            );
 
             // Handle Bonus Item Stats
             this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> {

@@ -3,6 +3,8 @@ package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatModel;
 import dev.sbs.api.data.model.skyblock.bonus_reforge_stats.BonusReforgeStatModel;
+import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
+import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
@@ -16,7 +18,9 @@ import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.data.mutable.MutableObject;
 import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
@@ -39,6 +43,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final Optional<ReforgeModel> reforge;
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
+    @Getter private final ConcurrentList<Pair<GemstoneModel, GemstoneTypeModel>> gemstones;
     @Getter private final boolean recombobulated;
     @Getter private final boolean tierBoosted;
     @Getter private final Optional<Long> timestamp;
@@ -65,15 +70,32 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         // Load Tier Boost
         this.tierBoosted = compoundTag.getPathOrDefault("tag.ExtraAttributes.baseStatBoostPercentage", IntTag.EMPTY).getValue() > 0;
 
-        // Load Rarity
-        this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
-            .findFirst(
-                RarityModel::getOrdinal,
-                itemModel.getRarity().getOrdinal() +
-                    (this.isRecombobulated() ? 1 : 0) +
-                    (this.isTierBoosted() ? 1 : 0)
-            )
-            .orElse(itemModel.getRarity());
+        // Load Gemstones
+        CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
+        ConcurrentList<Pair<GemstoneModel, GemstoneTypeModel>> gemstones = Concurrent.newList();
+        if (gemTag != null && gemTag.notEmpty()) {
+            gemTag.forEach((key, tag) -> {
+                String upperKey = key.toUpperCase();
+                String gemKey = RegexUtil.replaceAll(upperKey, "_[\\d]", "");
+                MutableObject<String> gemTypeKey = new MutableObject<>(((StringTag) tag).getValue().toUpperCase());
+                Optional<GemstoneModel> optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemKey);
+
+                // Handle Typed Slots
+                if (!optionalGemstoneModel.isPresent()) {
+                    if (gemKey.endsWith("_GEM")) {
+                        optionalGemstoneModel = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findFirst(GemstoneModel::getKey, gemTypeKey.get());
+                        gemTypeKey.set(gemTag.getValue(upperKey.replace("_GEM", "")));
+                    }
+                }
+
+                // Load Gemstone
+                optionalGemstoneModel.ifPresent(gemstoneModel -> SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
+                    .findFirst(GemstoneTypeModel::getKey, gemTypeKey.get())
+                    .ifPresent(gemstoneTypeModel -> gemstones.add(Pair.of(gemstoneModel, gemstoneTypeModel)))
+                );
+            });
+        }
+        this.gemstones = Concurrent.newUnmodifiableList(gemstones);
 
         // Initialize Stats
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sort(StatModel::getOrdinal);
@@ -95,20 +117,36 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
             .findFirst(BonusReforgeStatModel::getReforge, reforgeModel)
         );
 
-        // Load Reforge Stat Model
-        this.reforgeStat = this.reforge.flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(ReforgeStatModel.class)
-            .findFirst(
-                Pair.of(ReforgeStatModel::getReforge, reforgeModel),
-                Pair.of(ReforgeStatModel::getRarity, rarity)
-            )
-        );
-
         // Load Bonus Item Stat Model
         this.bonusItemStatModel = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
             .findFirst(BonusItemStatModel::getItem, itemModel);
+
+        // Load Rarity
+        this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
+            .findFirst(
+                RarityModel::getOrdinal,
+                this.handleRarityUpgrades(
+                    itemModel.getRarity().getOrdinal() +
+                        (this.isRecombobulated() ? 1 : 0) +
+                        (this.isTierBoosted() ? 1 : 0)
+                )
+            )
+            .orElse(itemModel.getRarity());
+
+        // Load Reforge Stat Model
+        this.reforgeStat = this.getReforge().flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(ReforgeStatModel.class)
+            .findFirst(
+                Pair.of(ReforgeStatModel::getReforge, reforgeModel),
+                Pair.of(ReforgeStatModel::getRarity, this.getRarity())
+            )
+        );
     }
 
     public abstract ObjectData<T> calculateBonus(ConcurrentMap<String, Double> expressionVariables);
+
+    protected int handleRarityUpgrades(int rarityOrdinal) {
+        return rarityOrdinal;
+    }
 
     public abstract boolean isBonusCalculated();
 

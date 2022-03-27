@@ -27,11 +27,28 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         this.accessory = accessory;
 
         // Load Enrichment
-        this.enrichment = SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class)
-            .findFirst(
-                SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
-                compoundTag.getPathOrDefault("tag.ExtraAttributes.talisman_enrichment", StringTag.EMPTY).getValue()
-            );
+        this.enrichment = SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class).findFirst(
+            SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
+            compoundTag.getPathOrDefault("tag.ExtraAttributes.talisman_enrichment", StringTag.EMPTY).getValue()
+        );
+    }
+
+    @Override
+    protected int handleRarityUpgrades(int rarityOrdinal) {
+        boolean upgradeRarity = false;
+
+        if (this.getItem().getItemId().equals("POWER_ARTIFACT")) {
+            if (this.getGemstones().size() == 7) {
+                long perfects = this.getGemstones()
+                    .stream()
+                    .filter(entry -> entry.getValue().getKey().equals("PERFECT"))
+                    .count();
+
+                upgradeRarity = (perfects == 7);
+            }
+        }
+
+        return rarityOrdinal + (upgradeRarity ? 1 : 0);
     }
 
     @Override
@@ -40,13 +57,9 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
             this.bonusCalculated = true;
 
             // Handle Reforges
-            this.getBonusReforgeStatModel()
-                .ifPresent(bonusReforgeStatModel -> this.getStats(AccessoryData.Type.REFORGES)
-                    .forEach((statModel, statData) -> {
-                        statData.base = PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
-                        statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel);
-                    })
-                );
+            this.getBonusReforgeStatModel().ifPresent(bonusReforgeStatModel -> this.getStats(AccessoryData.Type.REFORGES)
+                .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel))
+            );
 
             // Handle Bonus Item Stats
             this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> {

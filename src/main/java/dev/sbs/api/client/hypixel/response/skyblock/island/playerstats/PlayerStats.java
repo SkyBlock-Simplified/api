@@ -50,12 +50,12 @@ import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
+import dev.sbs.api.util.helper.StreamUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,7 +66,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     @Getter private final double damageMultiplier;
     @Getter private final ConcurrentList<AccessoryData> accessories = Concurrent.newList();
     @Getter private final ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList();
-    @Getter private final ConcurrentList<ItemData> armor = Concurrent.newList();
+    @Getter private final ConcurrentList<Optional<ItemData>> armor = Concurrent.newList();
     @Getter private final ConcurrentList<BonusPetAbilityStatModel> bonusPetAbilityStatModels = Concurrent.newList();
     @Getter private Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
     @Getter private boolean bonusCalculated;
@@ -78,8 +78,9 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     public PlayerStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member, boolean calculateBonusStats) {
         // --- Initialize ---
-        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll();
-        statModels.sort((s1, s2) -> Comparator.comparing(StatModel::getOrdinal).compare(s1, s2));
+        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class)
+            .findAll()
+            .sort(StatModel::getOrdinal);
         Arrays.stream(Type.values()).forEach(type -> {
             this.stats.put(type, Concurrent.newLinkedMap());
             statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data()));
@@ -110,8 +111,6 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         //     Defused Traps:      +6 Intelligence
         //     Bestiary:           +84 Health
         //     Account Upgrades:   +5 Magic Find
-        //  Hypixel Bugs
-        //     Catacombs:          2x Health
 
         // --- Load Damage Multiplier ---
         this.damageMultiplier = SimplifiedApi.getRepositoryOf(SkillModel.class)
@@ -156,25 +155,32 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.getFilteredAccessories().forEach(accessoryData -> accessoryData.calculateBonus(expressionVariables));
 
             // --- Load Bonus Armor Stats ---
-            this.getArmor().forEach(itemData -> itemData.calculateBonus(expressionVariables));
+            this.getArmor()
+                .stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(itemData -> itemData.calculateBonus(expressionVariables));
 
             // --- Load Armor Multiplier Enchantments ---
-            this.getArmor().forEach(itemData -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel)
+            this.getArmor()
                 .stream()
-                .filter(enchantmentStatModel -> enchantmentStatModel.getStat() != null)
-                .filter(EnchantmentStatModel::isPercentage)
-                .forEach(enchantmentStatModel -> {
-                    double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * value) / 100.0);
+                .flatMap(StreamUtil::flattenOptional)
+                .forEach(itemData -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel)
+                    .stream()
+                    .filter(enchantmentStatModel -> enchantmentStatModel.getStat() != null)
+                    .filter(EnchantmentStatModel::isPercentage)
+                    .forEach(enchantmentStatModel -> {
+                        double enchantMultiplier = 1 + (enchantmentStatModel.getBaseValue() / 100.0) + ((enchantmentStatModel.getLevelBonus() * value) / 100.0);
 
-                    this.stats.forEach((type, statEntries) -> {
-                        Data statData = statEntries.get(enchantmentStatModel.getStat());
+                        this.stats.forEach((type, statEntries) -> {
+                            Data statData = statEntries.get(enchantmentStatModel.getStat());
 
-                        // Apply Multiplier
-                        this.setBase(statData, statData.getBase() * enchantMultiplier);
-                        this.setBonus(statData, statData.getBonus() * enchantMultiplier);
-                    });
-                }))
-            );
+                            // Apply Multiplier
+                            this.setBase(statData, statData.getBase() * enchantMultiplier);
+                            this.setBonus(statData, statData.getBonus() * enchantMultiplier);
+                        });
+                    }))
+                );
 
             // --- Load Bonus Pet Item Stats ---
             ConcurrentMap<String, Double> petExpressionVariables = this.getExpressionVariables();
@@ -182,33 +188,28 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .stream()
                 .filter(BonusPetAbilityStatModel::isPercentage)
                 .forEach(bonusPetAbilityStatModel -> {
-                    // Override Pet Variables
-                    /*petExpressionVariables.put("PET_ABILITY_VALUE", petExpressionVariables.getOrDefault(FormatUtil.format("PET_ABILITY_{0}_VALUE", bonusPetAbilityStatModel.getPetAbility().getKey()), 0.0));
-                    SimplifiedApi.getRepositoryOf(StatModel.class).findAll().forEach(statModel -> {
-                        String newVariableName = FormatUtil.format("PET_ABILITY_{0}", statModel.getKey());
-                        String currentVariableName = FormatUtil.format("PET_ABILITY_{0}_{1}", bonusPetAbilityStatModel.getPetAbility().getKey(), statModel.getKey());
-                        petExpressionVariables.put(newVariableName, petExpressionVariables.getOrDefault(currentVariableName, 0.0));
-                    });*/
-
                     // Handle Stats
-                    this.stats.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    this.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), null, petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), null, petExpressionVariables, bonusPetAbilityStatModel));
                     }));
 
                     // Handle Armor
-                    this.armor.forEach(itemData -> itemData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                        this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
-                        this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
-                    })));
+                    this.getArmor()
+                        .stream()
+                        .flatMap(StreamUtil::flattenOptional)
+                        .forEach(itemData -> itemData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                            this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
+                            this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
+                        })));
 
                     // Handle Accessories
-                    this.accessories.forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    this.getAccessories().forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                     })));
 
-                    this.filteredAccessories.forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    this.getFilteredAccessories().forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                     })));
@@ -246,6 +247,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // Collect Armor Data
         this.getArmor()
             .stream()
+            .flatMap(StreamUtil::flattenOptional)
             .map(StatData::getStats)
             .forEach(statTypeEntries -> statTypeEntries.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                 this.addBase(totalStats.get(statModel), statData.getBase());
@@ -302,7 +304,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.accessories.add(accessoryData);
 
             // Handle Gemstone Stats
-            PlayerDataHelper.handleGemstoneBonus(compoundTag, accessoryModel.getRarity())
+            PlayerDataHelper.handleGemstoneBonus(accessoryData)
                 .forEach((statModel, value) -> this.addBonus(accessoryData.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
 
             // Handle Reforge Stats
@@ -503,35 +505,34 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadArmor(SkyBlockIsland.Member member) {
-        Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
-
         if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
-            ConcurrentList<Optional<ItemModel>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
+            ConcurrentList<Pair<CompoundTag, Optional<ItemModel>>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
                 .getNbtData()
                 .<CompoundTag>getList("i")
                 .stream()
-                .map(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
-                    .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
-                )
+                .map(itemTag -> Pair.of(
+                    itemTag,
+                    SimplifiedApi.getRepositoryOf(ItemModel.class)
+                        .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
+                ))
                 .collect(Concurrent.toList())
                 .inverse();
 
             this.bonusArmorSetModel = SimplifiedApi.getRepositoryOf(BonusArmorSetModel.class).findFirst(
-                Pair.of(BonusArmorSetModel::getHelmetItem, armorItemModels.get(0).orElse(null)),
-                Pair.of(BonusArmorSetModel::getChestplateItem, armorItemModels.get(1).orElse(null)),
-                Pair.of(BonusArmorSetModel::getLeggingsItem, armorItemModels.get(2).orElse(null)),
-                Pair.of(BonusArmorSetModel::getBootsItem, armorItemModels.get(3).orElse(null))
+                Pair.of(BonusArmorSetModel::getHelmetItem, armorItemModels.get(0).getRight().orElse(null)),
+                Pair.of(BonusArmorSetModel::getChestplateItem, armorItemModels.get(1).getRight().orElse(null)),
+                Pair.of(BonusArmorSetModel::getLeggingsItem, armorItemModels.get(2).getRight().orElse(null)),
+                Pair.of(BonusArmorSetModel::getBootsItem, armorItemModels.get(3).getRight().orElse(null))
             );
 
-            member.getStorage(SkyBlockIsland.Storage.ARMOR)
-                .getNbtData()
-                .<CompoundTag>getList("i")
-                .stream()
-                .filter(CompoundTag::notEmpty)
-                .forEach(itemTag -> SimplifiedApi.getRepositoryOf(ItemModel.class)
-                    .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
-                    .ifPresent(itemModel -> this.armor.add(PlayerDataHelper.parseItemData(itemModel, itemTag, "ARMOR")))
-                );
+            armorItemModels.forEach(armorItemModelPair -> {
+                ItemData itemData = null;
+
+                if (armorItemModelPair.getLeft().notEmpty() && armorItemModelPair.getRight().isPresent())
+                    itemData = PlayerDataHelper.parseItemData(armorItemModelPair.getRight().get(), armorItemModelPair.getLeft(), "ARMOR");
+
+                this.armor.add(Optional.ofNullable(itemData));
+            });
         }
     }
 
