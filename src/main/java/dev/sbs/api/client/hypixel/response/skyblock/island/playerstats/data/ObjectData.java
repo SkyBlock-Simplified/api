@@ -43,7 +43,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final Optional<ReforgeModel> reforge;
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
-    @Getter private final ConcurrentList<Pair<GemstoneModel, GemstoneTypeModel>> gemstones;
+    @Getter private final ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> gemstones;
     @Getter private final boolean recombobulated;
     @Getter private final boolean tierBoosted;
     @Getter private final Optional<Long> timestamp;
@@ -72,7 +72,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
 
         // Load Gemstones
         CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
-        ConcurrentList<Pair<GemstoneModel, GemstoneTypeModel>> gemstones = Concurrent.newList();
+        ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> gemstones = Concurrent.newMap();
         if (gemTag != null && gemTag.notEmpty()) {
             gemTag.forEach((key, tag) -> {
                 String upperKey = key.toUpperCase();
@@ -89,13 +89,18 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
                 }
 
                 // Load Gemstone
-                optionalGemstoneModel.ifPresent(gemstoneModel -> SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
-                    .findFirst(GemstoneTypeModel::getKey, gemTypeKey.get())
-                    .ifPresent(gemstoneTypeModel -> gemstones.add(Pair.of(gemstoneModel, gemstoneTypeModel)))
-                );
+                optionalGemstoneModel.ifPresent(gemstoneModel -> {
+                    // Handle New Gemstone
+                    gemstones.putIfAbsent(gemstoneModel, Concurrent.newList());
+
+                    // Add Gemstone Type
+                    SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
+                        .findFirst(GemstoneTypeModel::getKey, gemTypeKey.get())
+                        .ifPresent(gemstoneTypeModel -> gemstones.get(gemstoneModel).add(gemstoneTypeModel));
+                });
             });
         }
-        this.gemstones = Concurrent.newUnmodifiableList(gemstones);
+        this.gemstones = Concurrent.newUnmodifiableMap(gemstones);
 
         // Initialize Stats
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sort(StatModel::getOrdinal);

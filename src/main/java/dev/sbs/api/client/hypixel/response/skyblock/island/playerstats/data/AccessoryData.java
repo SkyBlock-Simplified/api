@@ -41,7 +41,8 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
             if (this.getGemstones().size() == 7) {
                 long perfects = this.getGemstones()
                     .stream()
-                    .filter(entry -> entry.getValue().getKey().equals("PERFECT"))
+                    .flatMap(entry -> entry.getValue().stream())
+                    .filter(gemstoneTypeModel -> gemstoneTypeModel.getKey().equals("PERFECT"))
                     .count();
 
                 upgradeRarity = (perfects == 7);

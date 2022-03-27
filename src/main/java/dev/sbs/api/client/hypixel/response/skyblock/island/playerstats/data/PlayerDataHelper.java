@@ -113,14 +113,14 @@ public class PlayerDataHelper {
     public static ConcurrentMap<StatModel, Double> handleGemstoneBonus(ObjectData<?> objectData) {
         ConcurrentMap<StatModel, Double> gemstoneAdjusted = Concurrent.newMap();
 
-        objectData.getGemstones()
+        objectData.getGemstones().forEach(entry -> entry.getValue()
             .stream()
-            .map(entry -> Triple.of(
+            .map(gemstoneTypeModel -> Triple.of(
                 entry.getKey(),
-                entry.getValue(),
+                gemstoneTypeModel,
                 SimplifiedApi.getRepositoryOf(GemstoneStatModel.class).findFirst(
                     Pair.of(GemstoneStatModel::getGemstone, entry.getKey()),
-                    Pair.of(GemstoneStatModel::getType, entry.getValue()),
+                    Pair.of(GemstoneStatModel::getType, gemstoneTypeModel),
                     Pair.of(GemstoneStatModel::getRarity, objectData.getRarity())
                 )
             ))
@@ -128,7 +128,8 @@ public class PlayerDataHelper {
             .forEach(gemstoneData -> gemstoneAdjusted.put(
                 gemstoneData.getLeft().getStat(),
                 gemstoneData.getRight().get().getValue() + gemstoneAdjusted.getOrDefault(gemstoneData.getLeft().getStat(), 0.0))
-            );
+            )
+        );
 
         return gemstoneAdjusted;
     }
