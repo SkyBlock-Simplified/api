@@ -41,8 +41,9 @@ public class Functions {
     private static final int INDEX_LENGTH = 31;
     private static final int INDEX_MAX = 32;
     private static final int INDEX_MIN = 33;
+    private static final int INDEX_ROUND = 34;
 
-    private static final MathFunction[] BUILT_IN_FUNCTIONS = new MathFunction[34];
+    private static final MathFunction[] BUILT_IN_FUNCTIONS = new MathFunction[35];
 
     static {
         BUILT_IN_FUNCTIONS[INDEX_SIN] = new MathFunction("sin") {
@@ -272,6 +273,12 @@ public class Functions {
                 return Math.min(args[0], args[1]);
             }
         };
+        BUILT_IN_FUNCTIONS[INDEX_ROUND] = new MathFunction("round", 1) {
+            @Override
+            public double apply(double... args) {
+                return Math.round(args[0]);
+            }
+        };
 
     }
 
@@ -350,6 +357,8 @@ public class Functions {
                 return BUILT_IN_FUNCTIONS[INDEX_MAX];
             case "min":
                 return BUILT_IN_FUNCTIONS[INDEX_MIN];
+            case "round":
+                return BUILT_IN_FUNCTIONS[INDEX_ROUND];
             default:
                 return null;
         }
