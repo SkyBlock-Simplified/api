@@ -201,6 +201,10 @@ public final class Concurrent {
 		return StreamUtil.toConcurrentMap();
 	}
 
+	public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toMap(BinaryOperator<V> mergeFunction) {
+		return StreamUtil.toConcurrentMap(mergeFunction);
+	}
+
 	public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
 		return StreamUtil.toConcurrentMap(keyMapper, valueMapper);
 	}
@@ -215,6 +219,10 @@ public final class Concurrent {
 
 	public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toLinkedMap() {
 		return StreamUtil.toConcurrentLinkedMap();
+	}
+
+	public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toLinkedMap(BinaryOperator<V> mergeFunction) {
+		return StreamUtil.toConcurrentLinkedMap(mergeFunction);
 	}
 
 	public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toLinkedMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {

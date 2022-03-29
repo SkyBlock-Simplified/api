@@ -167,9 +167,13 @@ public class StreamUtil {
     }
 
     public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toConcurrentMap() {
+        return toConcurrentMap(throwingMerger());
+    }
+
+    public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toConcurrentMap(BinaryOperator<V> mergeFunction) {
         Function<? super T, ? extends K> keyMapper = entry -> ((Map.Entry<K, V>) entry).getKey();
         Function<? super T, ? extends V> valueMapper = entry -> ((Map.Entry<K, V>) entry).getValue();
-        return toConcurrentMap(keyMapper, valueMapper);
+        return toConcurrentMap(keyMapper, valueMapper, mergeFunction);
     }
 
     public static <T, K, V> Collector<T, ?, ConcurrentMap<K, V>> toConcurrentMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
@@ -190,9 +194,13 @@ public class StreamUtil {
     }
 
     public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toConcurrentLinkedMap() {
+        return toConcurrentLinkedMap(throwingMerger());
+    }
+
+    public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toConcurrentLinkedMap(BinaryOperator<V> mergeFunction) {
         Function<? super T, ? extends K> keyMapper = entry -> ((Map.Entry<K, V>) entry).getKey();
         Function<? super T, ? extends V> valueMapper = entry -> ((Map.Entry<K, V>) entry).getValue();
-        return toConcurrentLinkedMap(keyMapper, valueMapper);
+        return toConcurrentLinkedMap(keyMapper, valueMapper, mergeFunction);
     }
 
     public static <T, K, V> Collector<T, ?, ConcurrentLinkedMap<K, V>> toConcurrentLinkedMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
