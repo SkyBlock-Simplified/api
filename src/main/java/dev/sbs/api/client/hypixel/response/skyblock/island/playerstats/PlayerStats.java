@@ -218,6 +218,10 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     public ConcurrentLinkedMap<StatModel, Data> getCombinedStats() {
+        return this.getCombinedStats(false);
+    }
+
+    public ConcurrentLinkedMap<StatModel, Data> getCombinedStats(boolean optimizerConstant) {
         // Initialize
         ConcurrentLinkedMap<StatModel, Data> totalStats = SimplifiedApi.getRepositoryOf(StatModel.class)
             .findAll()
@@ -227,29 +231,38 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             .collect(Concurrent.toLinkedMap());
 
         // Collect Stat Data
-        this.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-            this.addBase(totalStats.get(statModel), statData.getBase());
-            this.addBonus(totalStats.get(statModel), statData.getBonus());
-        }));
+        this.getStats()
+            .stream()
+            .filter(entry -> !optimizerConstant || entry.getKey().isOptimizerConstant())
+            .forEach(entry -> entry.getValue().forEach((statModel, statData) -> {
+                this.addBase(totalStats.get(statModel), statData.getBase());
+                this.addBonus(totalStats.get(statModel), statData.getBonus());
+            }));
 
         // Collect Accessory Data
         this.getFilteredAccessories()
             .stream()
             .map(StatData::getStats)
-            .forEach(statTypeEntries -> statTypeEntries.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                this.addBase(totalStats.get(statModel), statData.getBase());
-                this.addBonus(totalStats.get(statModel), statData.getBonus());
-            })));
+            .forEach(statTypeEntries -> statTypeEntries.stream()
+                .filter(entry -> !optimizerConstant || entry.getKey().isOptimizerConstant())
+                .forEach(entry -> entry.getValue().forEach((statModel, statData) -> {
+                    this.addBase(totalStats.get(statModel), statData.getBase());
+                    this.addBonus(totalStats.get(statModel), statData.getBonus());
+                }))
+            );
 
         // Collect Armor Data
         this.getArmor()
             .stream()
             .flatMap(StreamUtil::flattenOptional)
             .map(StatData::getStats)
-            .forEach(statTypeEntries -> statTypeEntries.forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
-                this.addBase(totalStats.get(statModel), statData.getBase());
-                this.addBonus(totalStats.get(statModel), statData.getBonus());
-            })));
+            .forEach(statTypeEntries -> statTypeEntries.stream()
+                .filter(entry -> !optimizerConstant || entry.getKey().isOptimizerConstant())
+                .forEach(entry -> entry.getValue().forEach((statModel, statData) -> {
+                    this.addBase(totalStats.get(statModel), statData.getBase());
+                    this.addBonus(totalStats.get(statModel), statData.getBonus());
+                }))
+            );
 
         return totalStats;
     }
