@@ -184,6 +184,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.getBonusPetAbilityStatModels()
                 .stream()
                 .filter(BonusPetAbilityStatModel::isPercentage)
+                .filter(BonusPetAbilityStatModel::noRequiredItem)
+                .filter(BonusPetAbilityStatModel::noRequiredMobType)
                 .forEach(bonusPetAbilityStatModel -> {
                     // Handle Stats
                     this.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
@@ -217,9 +219,12 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     public ConcurrentLinkedMap<StatModel, Data> getCombinedStats() {
         // Initialize
-        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sort(StatModel::getOrdinal);
-        ConcurrentLinkedMap<StatModel, Data> totalStats = Concurrent.newLinkedMap();
-        statModels.forEach(statModel -> totalStats.put(statModel, new Data()));
+        ConcurrentLinkedMap<StatModel, Data> totalStats = SimplifiedApi.getRepositoryOf(StatModel.class)
+            .findAll()
+            .sort(StatModel::getOrdinal)
+            .stream()
+            .map(statModel -> Pair.of(statModel, new Data()))
+            .collect(Concurrent.toLinkedMap());
 
         // Collect Stat Data
         this.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
@@ -388,16 +393,19 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.getBonusPetAbilityStatModels()
                 .stream()
                 .filter(BonusPetAbilityStatModel::notPercentage)
+                .filter(BonusPetAbilityStatModel::noRequiredItem)
+                .filter(BonusPetAbilityStatModel::noRequiredMobType)
                 .forEach(bonusPetAbilityStatModel -> this.stats.get(Type.ACTIVE_PET)
                     .forEach((statModel, statData) -> this.setBonus(
-                    statData,
-                    PlayerDataHelper.handleBonusEffects(
-                        statModel,
-                        statData.getBonus(),
-                        null,
-                        petExpressionVariables,
-                        bonusPetAbilityStatModel
-                    )))
+                        statData,
+                        PlayerDataHelper.handleBonusEffects(
+                            statModel,
+                            statData.getBonus(),
+                            null,
+                            petExpressionVariables,
+                            bonusPetAbilityStatModel
+                        ))
+                    )
                 );
         });
     }

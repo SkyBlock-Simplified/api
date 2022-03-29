@@ -1,6 +1,8 @@
 package dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.optimizer_mob_types.OptimizerMobTypeSqlModel;
+import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.model.skyblock.pet_abilities.PetAbilitySqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
@@ -12,21 +14,21 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
 @Entity
 @Table(
-    name = "skyblock_bonus_pet_ability_stats"
+    name = "skyblock_bonus_pet_ability_stats",
+    indexes = {
+        @Index(
+            columnList = "required_item_id"
+        ),
+        @Index(
+            columnList = "required_mob_type_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, SqlModel {
@@ -47,6 +49,18 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "required_item_id", nullable = false, referencedColumnName = "item_id")
+    private ItemSqlModel requiredItem;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "required_mob_type_key", nullable = false, referencedColumnName = "key")
+    private OptimizerMobTypeSqlModel requiredMobType;
 
     @Getter
     @Setter
@@ -73,8 +87,13 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
         BonusPetAbilityStatSqlModel that = (BonusPetAbilityStatSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isPercentage(), that.isPercentage())
             .append(this.getId(), that.getId())
             .append(this.getPetAbility(), that.getPetAbility())
+            .append(this.getRequiredItem(), that.getRequiredItem())
+            .append(this.getRequiredMobType(), that.getRequiredMobType())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -84,6 +103,11 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getPetAbility())
+            .append(this.isPercentage())
+            .append(this.getRequiredItem())
+            .append(this.getRequiredMobType())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
             .build();
     }
