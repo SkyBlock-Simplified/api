@@ -7,6 +7,7 @@ import dev.sbs.api.data.model.skyblock.gemstone_stats.GemstoneStatModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
@@ -81,7 +82,7 @@ public class PlayerDataHelper {
 
                                         if (nbtMatcher.matches()) {
                                             String nbtTag = nbtMatcher.group(2);
-                                            String nbtValue = String.valueOf(compoundTag.getPath(nbtTag).getValue());
+                                            String nbtValue = String.valueOf(compoundTag.getPathOrDefault(nbtTag, IntTag.EMPTY).getValue());
                                             valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
                                         }
                                     }
