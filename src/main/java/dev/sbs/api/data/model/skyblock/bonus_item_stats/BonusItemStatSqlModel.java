@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.bonus_item_stats;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.optimizer_mob_types.OptimizerMobTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
@@ -21,7 +22,7 @@ import java.util.Map;
     name = "skyblock_bonus_item_stats",
     indexes = {
         @Index(
-            columnList = "item_id, stats, reforges, gems",
+            columnList = "item_id, stats, reforges, gems, required_mob_type_key",
             unique = true
         )
     }
@@ -55,6 +56,12 @@ public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
     @Setter
     @Column(name = "gems", nullable = false)
     private boolean forGems;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "required_mob_type_key", referencedColumnName = "key")
+    private OptimizerMobTypeSqlModel requiredMobType;
 
     @Getter
     @Setter
