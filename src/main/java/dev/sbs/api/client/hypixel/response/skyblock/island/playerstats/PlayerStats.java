@@ -24,6 +24,7 @@ import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.melodys_songs.MelodySongModel;
 import dev.sbs.api.data.model.skyblock.pet_abilities.PetAbilityModel;
 import dev.sbs.api.data.model.skyblock.pet_ability_stats.PetAbilityStatModel;
+import dev.sbs.api.data.model.skyblock.pet_items.PetItemModel;
 import dev.sbs.api.data.model.skyblock.pet_scores.PetScoreModel;
 import dev.sbs.api.data.model.skyblock.pet_stats.PetStatModel;
 import dev.sbs.api.data.model.skyblock.potion_brew_buffs.PotionBrewBuffModel;
@@ -401,6 +402,16 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                     });
                 });
 
+            // Handle Static Pet Item Bonuses
+            petInfo.getHeldItem()
+                .flatMap(itemModel -> SimplifiedApi.getRepositoryOf(PetItemModel.class)
+                    .findFirst(PetItemModel::getItem, itemModel)
+                )
+                .filter(PetItemModel::notPercentage)
+                .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                    .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(statModel), petItemModel.getEffect(key)))
+                ));
+
             // Handle Static Pet Stat Bonuses
             ConcurrentMap<String, Double> petExpressionVariables = this.getExpressionVariables();
             this.getBonusPetAbilityStatModels()
@@ -420,6 +431,24 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                         ))
                     )
                 );
+
+            // Handle Percentage Pet Item Bonuses
+            petInfo.getHeldItem()
+                .flatMap(itemModel -> SimplifiedApi.getRepositoryOf(PetItemModel.class)
+                    .findFirst(PetItemModel::getItem, itemModel)
+                )
+                .filter(PetItemModel::isPercentage)
+                .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                    .ifPresent(statModel -> {
+                        double statMultiplier = 1 + (petItemModel.getEffect(key, 0.0) / 100.0);
+                        Data statData = this.stats.get(Type.ACTIVE_PET).get(statModel);
+
+                        this.setBonus(
+                            statData,
+                            statData.getBonus() * statMultiplier
+                        );
+                    })
+                ));
         });
     }
 

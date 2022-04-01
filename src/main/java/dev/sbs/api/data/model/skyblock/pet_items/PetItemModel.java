@@ -11,4 +11,8 @@ public interface PetItemModel extends BuffEffectsModel<Object, Double> {
 
     boolean isPercentage();
 
+    default boolean notPercentage() {
+        return !this.isPercentage();
+    }
+
 }
