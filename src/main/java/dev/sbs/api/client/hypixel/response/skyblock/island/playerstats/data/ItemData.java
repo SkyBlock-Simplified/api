@@ -1,6 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatModel;
 import dev.sbs.api.data.model.skyblock.enchantment_stats.EnchantmentStatModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
@@ -115,25 +116,28 @@ public class ItemData extends ObjectData<ItemData.Type> {
             );
 
             // Handle Bonus Item Stats
-            this.getBonusItemStatModel().ifPresent(bonusItemStatModel -> {
-                // Handle Bonus Gemstone Stats
-                if (bonusItemStatModel.isForGems()) {
-                    this.getStats(Type.GEMSTONES)
-                        .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
-                }
+            this.getBonusItemStatModels()
+                .stream()
+                .filter(BonusItemStatModel::noRequiredMobType)
+                .forEach(bonusItemStatModel -> {
+                    // Handle Bonus Gemstone Stats
+                    if (bonusItemStatModel.isForGems()) {
+                        this.getStats(Type.GEMSTONES)
+                            .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
+                    }
 
-                // Handle Bonus Reforges
-                if (bonusItemStatModel.isForReforges()) {
-                    this.getStats(Type.REFORGES)
-                        .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
-                }
+                    // Handle Bonus Reforges
+                    if (bonusItemStatModel.isForReforges()) {
+                        this.getStats(Type.REFORGES)
+                            .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
+                    }
 
-                // Handle Bonus Stats
-                if (bonusItemStatModel.isForStats()) {
-                    this.getStats(Type.STATS)
-                        .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
-                }
-            });
+                    // Handle Bonus Stats
+                    if (bonusItemStatModel.isForStats()) {
+                        this.getStats(Type.STATS)
+                            .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
+                    }
+                });
         }
 
         return this;

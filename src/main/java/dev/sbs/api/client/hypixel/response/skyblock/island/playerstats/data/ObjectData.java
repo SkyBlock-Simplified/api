@@ -39,7 +39,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final ItemModel item;
     @Getter private final CompoundTag compoundTag;
     @Getter private final RarityModel rarity;
-    @Getter private final Optional<BonusItemStatModel> bonusItemStatModel;
+    @Getter private final ConcurrentList<BonusItemStatModel> bonusItemStatModels;
     @Getter private final Optional<ReforgeModel> reforge;
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
@@ -125,8 +125,8 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         );
 
         // Load Bonus Item Stat Model
-        this.bonusItemStatModel = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
-            .findFirst(BonusItemStatModel::getItem, itemModel);
+        this.bonusItemStatModels = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
+            .findAll(BonusItemStatModel::getItem, itemModel);
 
         // Load Rarity
         this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
@@ -173,7 +173,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
             .append(this.getItem(), that.getItem())
             .append(this.getCompoundTag(), that.getCompoundTag())
             .append(this.getRarity(), that.getRarity())
-            .append(this.getBonusItemStatModel(), that.getBonusItemStatModel())
+            .append(this.getBonusItemStatModels(), that.getBonusItemStatModels())
             .append(this.getReforge(), that.getReforge())
             .append(this.getBonusReforgeStatModel(), that.getBonusReforgeStatModel())
             .append(this.getReforgeStat(), that.getReforgeStat())
@@ -186,7 +186,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
             .append(this.getItem())
             .append(this.getCompoundTag())
             .append(this.getRarity())
-            .append(this.getBonusItemStatModel())
+            .append(this.getBonusItemStatModels())
             .append(this.getReforge())
             .append(this.getBonusReforgeStatModel())
             .append(this.getReforgeStat())
