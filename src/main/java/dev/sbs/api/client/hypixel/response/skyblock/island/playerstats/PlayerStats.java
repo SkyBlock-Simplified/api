@@ -372,6 +372,9 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .filter(petStatModel -> petStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
                 .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel())));
 
+            // Save Pet Stats to Expression Variables
+            this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.expressionVariables.put(FormatUtil.format("STAT_PET_{0}", statModel.getKey()), statData.getTotal()));
+
             // Load Rarity Filtered Ability Stats
             SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
                 .findAll(PetAbilityModel::getPet, petInfo.getPet())

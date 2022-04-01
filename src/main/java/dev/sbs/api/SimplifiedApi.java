@@ -56,6 +56,7 @@ import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepo
 import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetSqlRepository;
+import dev.sbs.api.data.model.skyblock.bonus_enchantment_stats.BonusEnchantmentStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_reforge_stats.BonusReforgeStatSqlRepository;
@@ -346,6 +347,7 @@ public final class SimplifiedApi {
             AccessorySqlRepository.class,
             AccessoryEnrichmentSqlRepository.class,
             BonusArmorSetSqlRepository.class,
+            BonusEnchantmentStatSqlRepository.class,
             BonusItemStatSqlRepository.class,
             BonusPetAbilityStatSqlRepository.class,
             BonusReforgeStatSqlRepository.class,
