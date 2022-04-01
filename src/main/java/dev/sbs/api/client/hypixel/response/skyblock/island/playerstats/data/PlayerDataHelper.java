@@ -33,7 +33,6 @@ public class PlayerDataHelper {
     public static double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
         MutableDouble value = new MutableDouble(currentTotal);
 
-        // Handle Bonus Stats
         for (BuffEffectsModel bonusEffectModel : bonusEffectsModels) {
             value.add((double) bonusEffectModel.getEffect(statModel.getKey(), 0.0));
 
