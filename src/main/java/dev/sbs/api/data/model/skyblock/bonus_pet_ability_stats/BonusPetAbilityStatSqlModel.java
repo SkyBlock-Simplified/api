@@ -23,6 +23,10 @@ import java.util.Map;
     name = "skyblock_bonus_pet_ability_stats",
     indexes = {
         @Index(
+            columnList = "ability_key, required_item_id, required_mob_type_key",
+            unique = true
+        ),
+        @Index(
             columnList = "required_item_id"
         ),
         @Index(
@@ -34,13 +38,13 @@ import java.util.Map;
 public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, SqlModel {
 
     @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
     @Getter
     @Setter
-    @Id
     @ManyToOne
     @JoinColumn(name = "ability_key", nullable = false)
     private PetAbilitySqlModel petAbility;
@@ -53,13 +57,13 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "required_item_id", nullable = false, referencedColumnName = "item_id")
+    @JoinColumn(name = "required_item_id", referencedColumnName = "item_id")
     private ItemSqlModel requiredItem;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "required_mob_type_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "required_mob_type_key", referencedColumnName = "key")
     private OptimizerMobTypeSqlModel requiredMobType;
 
     @Getter
