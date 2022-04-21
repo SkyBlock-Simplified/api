@@ -72,10 +72,12 @@ public class GuildReportTypeSqlModel implements GuildReportTypeModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildReportTypeSqlModel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         GuildReportTypeSqlModel that = (GuildReportTypeSqlModel) o;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
@@ -86,7 +88,14 @@ public class GuildReportTypeSqlModel implements GuildReportTypeModel, SqlModel {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId()).append(this.getGuild()).append(this.getKey()).append(this.getName()).append(this.getDescription()).append(this.getUpdatedAt()).build();
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getGuild())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getDescription())
+            .append(this.getUpdatedAt())
+            .build();
     }
 
 }

@@ -1,6 +1,8 @@
 package dev.sbs.api.data.model.discord.sbs_developers;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -37,5 +39,28 @@ public class SbsDeveloperSqlModel implements SbsDeveloperModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SbsDeveloperSqlModel that = (SbsDeveloperSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getDiscordId(), that.getDiscordId())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getDiscordId())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

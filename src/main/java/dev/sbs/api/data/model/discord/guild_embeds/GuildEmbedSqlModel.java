@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.discord.guild_embeds;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.embed_types.EmbedTypeSqlModel;
 import dev.sbs.api.data.model.discord.guilds.GuildSqlModel;
 import dev.sbs.api.data.sql.converter.ColorConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
@@ -51,11 +50,6 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
     @Setter
     @Column(name = "title", nullable = false)
     private String title;
-
-    @Getter
-    @Setter
-    @Column(name = "type_key", nullable = false)
-    private EmbedTypeSqlModel type;
 
     @Getter
     @Setter
@@ -153,7 +147,6 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getTitle(), that.getTitle())
-            .append(this.getType(), that.getType())
             .append(this.getColor(), that.getColor())
             .append(this.getUrl(), that.getUrl())
             .append(this.getDescription(), that.getDescription())
@@ -180,7 +173,6 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
             .append(this.getGuild())
             .append(this.getKey())
             .append(this.getTitle())
-            .append(this.getType())
             .append(this.getColor())
             .append(this.getUrl())
             .append(this.getDescription())

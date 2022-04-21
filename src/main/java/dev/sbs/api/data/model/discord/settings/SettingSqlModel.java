@@ -2,6 +2,8 @@ package dev.sbs.api.data.model.discord.settings;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -62,5 +64,34 @@ public class SettingSqlModel implements SettingModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SettingSqlModel that = (SettingSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getType(), that.getType())
+            .append(this.getValue(), that.getValue())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getType())
+            .append(this.getValue())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

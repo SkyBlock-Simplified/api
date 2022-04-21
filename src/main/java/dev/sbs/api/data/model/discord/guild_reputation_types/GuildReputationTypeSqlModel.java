@@ -2,6 +2,8 @@ package dev.sbs.api.data.model.discord.guild_reputation_types;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.guilds.GuildSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -74,5 +76,38 @@ public class GuildReputationTypeSqlModel implements GuildReputationTypeModel, Sq
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GuildReputationTypeSqlModel that = (GuildReputationTypeSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isEnabled(), that.isEnabled())
+            .append(this.getId(), that.getId())
+            .append(this.getGuild(), that.getGuild())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getDescription(), that.getDescription())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getGuild())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getDescription())
+            .append(this.isEnabled())
+            .append(this.getSubmittedAt())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

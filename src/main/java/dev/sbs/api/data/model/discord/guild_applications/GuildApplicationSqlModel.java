@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.discord.guild_applications;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.guild_application_types.GuildApplicationTypeSqlModel;
 import dev.sbs.api.data.model.discord.guild_embeds.GuildEmbedSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -94,5 +96,44 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GuildApplicationSqlModel that = (GuildApplicationSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isEnabled(), that.isEnabled())
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getGuildId(), that.getGuildId())
+            .append(this.getType(), that.getType())
+            .append(this.getEmbed(), that.getEmbed())
+            .append(this.getNotes(), that.getNotes())
+            .append(this.getLiveAt(), that.getLiveAt())
+            .append(this.getCloseAt(), that.getCloseAt())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getGuildId())
+            .append(this.getType())
+            .append(this.getEmbed())
+            .append(this.isEnabled())
+            .append(this.getNotes())
+            .append(this.getLiveAt())
+            .append(this.getCloseAt())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

@@ -1,6 +1,8 @@
 package dev.sbs.api.data.model.discord.sbs_legacy_donors;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -42,5 +44,30 @@ public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SbsLegacyDonorSqlModel that = (SbsLegacyDonorSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getDiscordId(), that.getDiscordId())
+            .append(this.getAmount(), that.getAmount())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getDiscordId())
+            .append(this.getAmount())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }

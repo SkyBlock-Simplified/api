@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.discord.guild_embeds;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.embed_types.EmbedTypeModel;
 import dev.sbs.api.data.model.discord.guilds.GuildModel;
 
 import java.awt.*;
@@ -14,8 +13,6 @@ public interface GuildEmbedModel extends Model {
     String getKey();
 
     String getTitle();
-
-    EmbedTypeModel getType();
 
     Color getColor();
 

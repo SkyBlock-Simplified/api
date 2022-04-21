@@ -2,6 +2,8 @@ package dev.sbs.api.data.model.discord.guild_application_entries;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.guild_applications.GuildApplicationSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -54,5 +56,32 @@ public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GuildApplicationEntrySqlModel that = (GuildApplicationEntrySqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getApplication(), that.getApplication())
+            .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getApplication())
+            .append(this.getSubmitterDiscordId())
+            .append(this.getSubmittedAt())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }
