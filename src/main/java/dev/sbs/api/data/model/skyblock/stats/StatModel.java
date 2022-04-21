@@ -15,6 +15,8 @@ public interface StatModel extends Model {
 
     boolean isMultipliable();
 
+    boolean isTunable();
+
     Integer getOrdinal();
 
     Integer getBaseValue();

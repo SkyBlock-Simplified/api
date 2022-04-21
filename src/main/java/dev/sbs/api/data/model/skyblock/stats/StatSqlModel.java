@@ -61,6 +61,11 @@ public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "tunable")
+    private boolean tunable;
+
+    @Getter
+    @Setter
     @Column(name = "ordinal")
     private Integer ordinal;
 
