@@ -15,6 +15,8 @@ public interface RarityModel extends Model {
 
     Integer getPetExpOffset();
 
+    Integer getMagicPowerMultiplier();
+
     EmojiModel getEmoji();
 
 }

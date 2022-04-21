@@ -54,13 +54,18 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "enrichment", nullable = false)
+    @Column(name = "enrichable", nullable = false)
     private boolean enrichable;
 
     @Getter
     @Setter
     @Column(name = "pet_exp_offset")
     private Integer petExpOffset;
+
+    @Getter
+    @Setter
+    @Column(name = "mp_multiplier")
+    private Integer magicPowerMultiplier;
 
     @Getter
     @Setter
