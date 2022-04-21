@@ -25,7 +25,6 @@ import dev.sbs.api.data.model.discord.application_requirements.ApplicationRequir
 import dev.sbs.api.data.model.discord.command_categories.CommandCategorySqlRepository;
 import dev.sbs.api.data.model.discord.command_configs.CommandConfigSqlRepository;
 import dev.sbs.api.data.model.discord.command_groups.CommandGroupSqlRepository;
-import dev.sbs.api.data.model.discord.embed_types.EmbedTypeSqlRepository;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlRepository;
 import dev.sbs.api.data.model.discord.guild_application_entries.GuildApplicationEntrySqlRepository;
 import dev.sbs.api.data.model.discord.guild_application_requirements.GuildApplicationRequirementSqlRepository;
@@ -292,7 +291,6 @@ public final class SimplifiedApi {
             DungeonFairySoulSqlRepository.class,
             DungeonFloorSizeSqlRepository.class,
             DungeonLevelSqlRepository.class,
-            EmbedTypeSqlRepository.class,
             EnchantmentFamilySqlRepository.class,
             FairyExchangeSqlRepository.class,
             FormatSqlRepository.class,
