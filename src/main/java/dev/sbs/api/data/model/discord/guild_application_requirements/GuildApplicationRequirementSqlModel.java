@@ -3,7 +3,6 @@ package dev.sbs.api.data.model.discord.guild_application_requirements;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.application_requirements.ApplicationRequirementSqlModel;
 import dev.sbs.api.data.model.discord.guild_applications.GuildApplicationSqlModel;
-import dev.sbs.api.data.model.discord.setting_evals.SettingEvalSqlModel;
 import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,9 +22,6 @@ import java.time.Instant;
         ),
         @Index(
             columnList = "requirement_key"
-        ),
-        @Index(
-            columnList = "setting_eval_key"
         ),
         @Index(
             columnList = "setting_type_key"
@@ -55,12 +51,6 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
     @ManyToOne
     @JoinColumn(name = "requirement_key", nullable = false, referencedColumnName = "key")
     private ApplicationRequirementSqlModel requirement;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "setting_eval_key", nullable = false, referencedColumnName = "key")
-    private SettingEvalSqlModel eval;
 
     @Getter
     @Setter

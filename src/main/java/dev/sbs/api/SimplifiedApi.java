@@ -44,7 +44,6 @@ import dev.sbs.api.data.model.discord.optimizer_support_items.OptimizerSupportIt
 import dev.sbs.api.data.model.discord.sbs_beta_testers.SbsBetaTesterSqlRepository;
 import dev.sbs.api.data.model.discord.sbs_developers.SbsDeveloperSqlRepository;
 import dev.sbs.api.data.model.discord.sbs_legacy_donors.SbsLegacyDonorSqlRepository;
-import dev.sbs.api.data.model.discord.setting_evals.SettingEvalSqlRepository;
 import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlRepository;
 import dev.sbs.api.data.model.discord.settings.SettingSqlRepository;
 import dev.sbs.api.data.model.discord.skyblock_event_timers.SkyBlockEventTimerSqlRepository;
@@ -319,7 +318,6 @@ public final class SimplifiedApi {
             SbsDeveloperSqlRepository.class,
             SbsLegacyDonorSqlRepository.class,
             SeasonSqlRepository.class,
-            SettingEvalSqlRepository.class,
             SettingTypeSqlRepository.class,
             ShopBitTypeSqlRepository.class,
             ShopProfileUpgradeSqlRepository.class,

@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.discord.settings;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.setting_evals.SettingEvalSqlModel;
 import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +25,6 @@ import java.time.Instant;
     indexes = {
         @Index(
             columnList = "type_key"
-        ),
-        @Index(
-            columnList = "eval_key"
         )
     }
 )
@@ -56,12 +52,6 @@ public class SettingSqlModel implements SettingModel, SqlModel {
     @ManyToOne
     @JoinColumn(name = "type_key", nullable = false)
     private SettingTypeSqlModel type;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "eval_key", nullable = false)
-    private SettingEvalSqlModel eval;
 
     @Getter
     @Setter
