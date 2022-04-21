@@ -209,6 +209,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                     })));
                 });
+
+            // TODO: Load Post Bonus Stats
         }
     }
 

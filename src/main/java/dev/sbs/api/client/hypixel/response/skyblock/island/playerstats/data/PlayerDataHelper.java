@@ -19,6 +19,7 @@ import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.math.Expression;
 import dev.sbs.api.util.math.ExpressionBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +29,53 @@ import java.util.regex.Pattern;
 public class PlayerDataHelper {
 
     private static final Pattern nbtVariablePattern = Pattern.compile(".*?(nbt_([a-zA-Z0-9_\\-.]+)).*?");
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static double handlePostBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
+        MutableDouble value = new MutableDouble(currentTotal);
+
+        Arrays.stream(bonusEffectsModels).forEach(bonusEffectsModel -> bonusEffectsModel.getBuffEffects()
+            .forEach((buffKey, buffValue) -> {
+                String filterKey = (String) buffKey;
+                boolean copy = false;
+
+                if (filterKey.startsWith("COPY_")) {
+                    filterKey = filterKey.replace("COPY_", "");
+                    copy = true;
+                } else if (filterKey.startsWith("SET_"))
+                    filterKey = filterKey.replace("SET_", "");
+
+                if (statModel.getKey().equals(filterKey) || filterKey.endsWith("ALL")) {
+                    String valueString = String.valueOf(buffValue);
+                    valueString = valueString.replace("PET_ALL", FormatUtil.format("PET_", statModel.getKey()));
+
+                    if (compoundTag != null) {
+                        Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
+
+                        if (nbtMatcher.matches()) {
+                            String nbtTag = nbtMatcher.group(2);
+                            String nbtValue = String.valueOf(compoundTag.getPathOrDefault(nbtTag, IntTag.EMPTY).getValue());
+                            valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
+                        }
+                    }
+
+                    if (copy) {
+                        Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} * ({1})", currentTotal, valueString))
+                            .variables(variables.keySet())
+                            .build()
+                            .setVariables(variables)
+                            .setVariable("CURRENT_VALUE", currentTotal);
+
+                        value.set(expression.evaluate());
+                    } else {
+                        // TODO: HMMM???
+                    }
+                }
+            })
+        );
+
+        return value.get();
+    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static double handleBonusEffects(StatModel statModel, double currentTotal, CompoundTag compoundTag, Map<String, Double> variables, BuffEffectsModel... bonusEffectsModels) {
@@ -65,35 +113,31 @@ public class PlayerDataHelper {
                     } else if (filterKey.startsWith("ADD_"))
                         filterKey = filterKey.replace("ADD_", "");
 
-                    if (filterKey.startsWith("STAT_")) {
-                        filterKey = filterKey.replace("STAT_", "");
+                    // Handle Buff Stat
+                    if (statModel.getKey().equals(filterKey) || "ALL".equals(filterKey)) {
+                        String valueString = String.valueOf(buffValue);
 
-                        // Handle Buff Stat
-                        if (statModel.getKey().equals(filterKey) || "ALL".equals(filterKey)) {
-                            String valueString = String.valueOf(buffValue);
+                        if (NumberUtil.isCreatable(valueString))
+                            value.set(value.get() * (double) buffValue);
+                        else {
+                            if (!multiply || statModel.isMultipliable()) {
+                                if (compoundTag != null) {
+                                    Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
 
-                            if (NumberUtil.isCreatable(valueString))
-                                value.set(value.get() * (double) buffValue);
-                            else {
-                                if (!multiply || statModel.isMultipliable()) {
-                                    if (compoundTag != null) {
-                                        Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
-
-                                        if (nbtMatcher.matches()) {
-                                            String nbtTag = nbtMatcher.group(2);
-                                            String nbtValue = String.valueOf(compoundTag.getPathOrDefault(nbtTag, IntTag.EMPTY).getValue());
-                                            valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
-                                        }
+                                    if (nbtMatcher.matches()) {
+                                        String nbtTag = nbtMatcher.group(2);
+                                        String nbtValue = String.valueOf(compoundTag.getPathOrDefault(nbtTag, IntTag.EMPTY).getValue());
+                                        valueString = valueString.replace(nbtMatcher.group(1), nbtValue);
                                     }
-
-                                    Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
-                                        .variables(variables.keySet())
-                                        .build()
-                                        .setVariables(variables)
-                                        .setVariable("CURRENT_VALUE", currentTotal);
-
-                                    value.set(expression.evaluate());
                                 }
+
+                                Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
+                                    .variables(variables.keySet())
+                                    .build()
+                                    .setVariables(variables)
+                                    .setVariable("CURRENT_VALUE", currentTotal);
+
+                                value.set(expression.evaluate());
                             }
                         }
                     }
