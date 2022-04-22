@@ -21,6 +21,7 @@ import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minions.MinionModel;
 import dev.sbs.api.data.model.skyblock.pet_exp_scales.PetExpScaleModel;
+import dev.sbs.api.data.model.skyblock.pet_items.PetItemModel;
 import dev.sbs.api.data.model.skyblock.pets.PetModel;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
@@ -1497,11 +1498,14 @@ public class SkyBlockIsland {
             ConcurrentList<PetExpScaleModel> petExpScaleModels = SimplifiedApi.getRepositoryOf(PetExpScaleModel.class).findAll();
 
             // Load Experience Block
-            return petExpScaleModels
-                .subList(petExpOffset, petExpOffset + this.getMaxLevel())
+            ConcurrentList<Double> experienceTiers = petExpScaleModels
+                .subList(petExpOffset + 0, petExpOffset + this.getMaxLevel())
                 .stream()
                 .map(PetExpScaleModel::getValue)
                 .collect(Concurrent.toList());
+
+            //experienceTiers.add(0, 0.0);
+            return experienceTiers;
         }
 
         public String getDefaultSkin() {
@@ -1510,6 +1514,10 @@ public class SkyBlockIsland {
 
         public Optional<ItemModel> getHeldItem() {
             return SimplifiedApi.getRepositoryOf(ItemModel.class).findFirst(ItemModel::getItemId, this.heldItem);
+        }
+
+        public Optional<PetItemModel> getHeldPetItem() {
+            return this.getHeldItem().flatMap(itemModel -> SimplifiedApi.getRepositoryOf(PetItemModel.class).findFirst(PetItemModel::getItem, itemModel));
         }
 
         @Override
@@ -1526,12 +1534,15 @@ public class SkyBlockIsland {
         }
 
         public RarityModel getRarity() {
-            RarityModel rarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarityKey);
+            int rarityOrdinal = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarityKey).getOrdinal();
 
             if (this.isTierBoosted())
-                return SimplifiedApi.getRepositoryOf(RarityModel.class).matchFirstOrNull(rarityModel -> rarityModel.getOrdinal() == rarity.getOrdinal() + (this.isTierBoosted() ? 1 : 0));
-            else
-                return rarity;
+                rarityOrdinal++;
+
+            if (this.isHeldItemBoosted())
+                rarityOrdinal++;
+
+            return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getOrdinal, rarityOrdinal);
         }
 
         public Optional<String> getSkin() {
@@ -1541,6 +1552,10 @@ public class SkyBlockIsland {
         @Override
         public int getStartingLevel() {
             return 1;
+        }
+
+        public boolean isHeldItemBoosted() {
+            return this.getHeldPetItem().map(petItemModel -> petItemModel.isRarityBoost()).orElse(false);
         }
 
         public boolean isTierBoosted() {
@@ -1816,7 +1831,9 @@ public class SkyBlockIsland {
         }
 
         public final double getProgressPercentage(double experience) {
-            return (this.getProgressExperience(experience) / this.getNextExperience(experience)) * 100.0;
+            double progressExperience = this.getProgressExperience(experience);
+            double nextExperience = this.getNextExperience(experience);
+            return nextExperience == 0 ? 100.0 : (progressExperience / nextExperience) * 100.0;
         }
 
         public final double getTotalExperience() {
