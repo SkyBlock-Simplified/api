@@ -55,6 +55,11 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Getter
     @Setter
+    @Column(name = "rarity_boost", nullable = false)
+    private boolean rarityBoost;
+
+    @Getter
+    @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
