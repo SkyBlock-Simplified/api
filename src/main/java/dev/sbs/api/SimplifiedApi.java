@@ -18,6 +18,8 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
 import dev.sbs.api.client.sbs.SbsApiBuilder;
 import dev.sbs.api.client.sbs.implementation.MojangData;
+import dev.sbs.api.client.sbs.implementation.SkyBlockData;
+import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
@@ -180,6 +182,7 @@ public final class SimplifiedApi {
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
+            .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
             .setPrettyPrinting().create();
 
         // Provide Services
@@ -194,6 +197,7 @@ public final class SimplifiedApi {
 
         // Provide Builders
         builderManager.add(MojangData.class, SbsApiBuilder.class);
+        builderManager.add(SkyBlockData.class, SbsApiBuilder.class);
         builderManager.add(HypixelPlayerData.class, HypixelApiBuilder.class);
         builderManager.add(HypixelResourceData.class, HypixelApiBuilder.class);
         builderManager.add(HypixelSkyBlockData.class, HypixelApiBuilder.class);
@@ -205,6 +209,7 @@ public final class SimplifiedApi {
         serviceManager.add(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
         serviceManager.add(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
         serviceManager.add(MojangData.class, sbsApiBuilder.build(MojangData.class));
+        serviceManager.add(SkyBlockData.class, sbsApiBuilder.build(SkyBlockData.class));
     }
 
     public static void connectDatabase(SqlConfig sqlConfig) {

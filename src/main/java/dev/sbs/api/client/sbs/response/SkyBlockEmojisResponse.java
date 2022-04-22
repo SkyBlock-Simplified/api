@@ -1,12 +1,19 @@
 package dev.sbs.api.client.sbs.response;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -38,11 +45,40 @@ public class SkyBlockEmojisResponse {
     public static class Emoji {
 
         @Getter private String name;
-        @Getter private long id;
+        private String id;
         @SerializedName("formatted")
         @Getter private String format;
         @Getter private boolean animated;
         @Getter private boolean enchanted;
+
+        public long getId() {
+            return Long.parseLong(this.id);
+        }
+
+    }
+
+    public static class Deserializer implements JsonDeserializer<SkyBlockEmojisResponse> {
+
+        @Override
+        public SkyBlockEmojisResponse deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+            Gson gson = SimplifiedApi.getGson();
+            SkyBlockEmojisResponse skyBlockEmojisResponse = new SkyBlockEmojisResponse();
+
+            jsonElement.getAsJsonObject()
+                .entrySet()
+                .forEach(entry -> {
+                    skyBlockEmojisResponse.emojis.put(entry.getKey(), Concurrent.newMap());
+
+                    entry.getValue()
+                        .getAsJsonObject()
+                        .entrySet()
+                        .forEach(subEntry -> skyBlockEmojisResponse.emojis.get(entry.getKey())
+                            .put(subEntry.getKey(), gson.fromJson(subEntry.getValue(), Emoji.class))
+                        );
+                });
+
+            return skyBlockEmojisResponse;
+        }
 
     }
 
