@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class SkyBlockIslandTest {
 
     private static final TestConfig testConfig;
@@ -129,6 +130,22 @@ public class SkyBlockIslandTest {
             ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
             Optional<SkyBlockIsland.PetInfo> optionalSpiderPet = pets.stream().filter(petInfo -> petInfo.getName().equals("SPIDER")).findFirst();
             Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
+
+            Optional<SkyBlockIsland.PetInfo> optionalTestPet = pets.stream().filter(petInfo -> petInfo.getName().equals("BEE")).findFirst();
+            optionalTestPet.ifPresent(testPetInfo -> {
+                ConcurrentList<Double> tiers = testPetInfo.getExperienceTiers();
+                double tierSum = tiers.stream().mapToDouble(value -> value).sum();
+                double testExperience = testPetInfo.getExperience();
+                double testX1 = testPetInfo.getProgressExperience();
+                double testX2 = testPetInfo.getNextExperience();
+                double testX3 = testPetInfo.getMissingExperience();
+                double testX4 = testPetInfo.getTotalProgressPercentage();
+                int testLevel = testPetInfo.getLevel();
+                int testRawLevel = testPetInfo.getRawLevel();
+                int testMaxLevel = testPetInfo.getMaxLevel();
+                double testPercentage = testPetInfo.getProgressPercentage();
+                String stop = "here";
+            });
 
             optionalSpiderPet.ifPresent(spiderPetInfo -> optionalDragonPet.ifPresent(dragInfo -> {
                 spiderPetInfo.getHeldItem().ifPresent(itemModel -> MatcherAssert.assertThat(itemModel.getRarity().getOrdinal(), Matchers.greaterThanOrEqualTo(0)));
