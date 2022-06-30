@@ -53,6 +53,7 @@ import dev.sbs.api.data.model.discord.users.UserSqlRepository;
 import dev.sbs.api.data.model.skyblock.accessories.AccessorySqlRepository;
 import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentSqlRepository;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilySqlRepository;
+import dev.sbs.api.data.model.skyblock.accessory_powers.AccessoryPowerSqlRepository;
 import dev.sbs.api.data.model.skyblock.bag_sizes.BagSizeSqlRepository;
 import dev.sbs.api.data.model.skyblock.bags.BagSqlRepository;
 import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetSqlRepository;
@@ -347,6 +348,7 @@ public final class SimplifiedApi {
             // Requires Above
             AccessorySqlRepository.class,
             AccessoryEnrichmentSqlRepository.class,
+            AccessoryPowerSqlRepository.class,
             BonusArmorSetSqlRepository.class,
             BonusEnchantmentStatSqlRepository.class,
             BonusItemStatSqlRepository.class,
