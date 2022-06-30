@@ -3,6 +3,7 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -207,6 +208,11 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 
 	@SuppressWarnings("all")
 	public AtomicList<E, T> sort(Function<E, ? extends Comparable>... functions) {
+		return this.sort(SortOrder.ASCENDING, functions);
+	}
+
+	@SuppressWarnings("all")
+	public AtomicList<E, T> sort(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
 		if (ListUtil.notEmpty(functions)) {
 			this.sort((s1, s2) -> {
 				Comparator<E> comparator = Comparator.comparing(functions[0]);
@@ -214,7 +220,7 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 				for (int i = 1; i < functions.length; i++)
 					comparator = comparator.thenComparing(functions[i]);
 
-				return comparator.compare(s1, s2);
+				return sortOrder == SortOrder.ASCENDING ? comparator.compare(s1, s2) : comparator.compare(s2, s1);
 			});
 		}
 
