@@ -40,10 +40,6 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         PlayerDataHelper.handleGemstoneBonus(this)
             .forEach((statModel, value) -> this.addBonus(this.getStats(AccessoryData.Type.GEMSTONES).get(statModel), value));
 
-        // Handle Reforge Stats
-        PlayerDataHelper.handleReforgeBonus(this.getReforgeStat())
-            .forEach((statModel, value) -> this.addBonus(this.getStats(AccessoryData.Type.REFORGES).get(statModel), value));
-
         // Handle Stats
         this.getAccessory().getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
             .ifPresent(statModel -> this.addBonus(this.getStats(AccessoryData.Type.STATS).get(statModel), value)));
@@ -87,10 +83,12 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         if (!this.isBonusCalculated()) {
             this.bonusCalculated = true;
 
+            // TODO: REMOVE REFORGE STUFF
+
             // Handle Reforges
-            this.getBonusReforgeStatModel().ifPresent(bonusReforgeStatModel -> this.getStats(AccessoryData.Type.REFORGES)
-                .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel))
-            );
+            //this.getBonusReforgeStatModel().ifPresent(bonusReforgeStatModel -> this.getStats(AccessoryData.Type.REFORGES)
+            //    .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel))
+            //);
 
             // Handle Bonus Item Stats
             this.getBonusItemStatModels()
@@ -104,10 +102,10 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
                     }
 
                     // Handle Bonus Reforges
-                    if (bonusItemStatModel.isForReforges()) {
+                    /*if (bonusItemStatModel.isForReforges()) {
                         this.getStats(AccessoryData.Type.REFORGES)
                             .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
-                    }
+                    }*/
 
                     // Handle Bonus Stats
                     if (bonusItemStatModel.isForStats()) {
@@ -157,7 +155,6 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
 
         CAKE_BAG(true),
         GEMSTONES(true),
-        REFORGES(false),
         STATS(true),
         ENRICHMENTS(true);
 
