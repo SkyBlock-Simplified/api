@@ -10,6 +10,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.Play
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.StatData;
 import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_families.AccessoryFamilyModel;
+import dev.sbs.api.data.model.skyblock.accessory_powers.AccessoryPowerModel;
 import dev.sbs.api.data.model.skyblock.bonus_armor_sets.BonusArmorSetModel;
 import dev.sbs.api.data.model.skyblock.bonus_pet_ability_stats.BonusPetAbilityStatModel;
 import dev.sbs.api.data.model.skyblock.collections.CollectionModel;
@@ -283,22 +284,6 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         ConcurrentList<AccessoryData> accessories = Concurrent.newList();
         ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList();
 
-        // Load From Inventory
-        if (member.hasStorage(SkyBlockIsland.Storage.INVENTORY)) {
-            member.getStorage(SkyBlockIsland.Storage.INVENTORY)
-                .getNbtData()
-                .<CompoundTag>getList("i")
-                .stream()
-                .filter(CompoundTag::notEmpty)
-                .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
-                    .findFirst(
-                        SearchFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
-                        compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue()
-                    )
-                    .ifPresent(accessoryModel -> tagAccessoryModels.put(compoundTag, accessoryModel))
-                );
-        }
-
         // Load From Accessory Bag
         if (member.hasStorage(SkyBlockIsland.Storage.ACCESSORIES)) {
             member.getStorage(SkyBlockIsland.Storage.ACCESSORIES)
@@ -368,7 +353,28 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .collect(Concurrent.toList())
         );
 
-        this.accessoryBag = new AccessoryBag(accessories, filteredAccessories);
+        this.accessoryBag = new AccessoryBag(
+            accessories,
+            filteredAccessories,
+            member.getAccessoryBag().getSelectedPower(),
+            member.getAccessoryBag().getTuning().getCurrent()
+        );
+
+        // Accessory Power Effects
+        member.getAccessoryBag()
+            .getSelectedPower()
+            .getEffects()
+            .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), this.accessoryBag.getMagicalPowerMultiplier() * value))
+            );
+
+        // Accessory Power Unique Effects
+        member.getAccessoryBag()
+            .getSelectedPower()
+            .getUniqueEffects()
+            .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), value))
+            );
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
@@ -695,16 +701,28 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
         @Getter private final @NotNull ConcurrentList<AccessoryData> accessories;
         @Getter private final @NotNull ConcurrentList<AccessoryData> filteredAccessories;
+        @Getter private final @NotNull AccessoryPowerModel currentPower;
+        @Getter private final @NotNull ConcurrentMap<StatModel, Integer> currentTuning;
         @Getter private final int magicalPower;
         @Getter private final int tuningPoints;
+        @Getter private final double magicalPowerMultiplier;
 
-        private AccessoryBag(@NotNull ConcurrentList<AccessoryData> accessories, @NotNull ConcurrentList<AccessoryData> filteredAccessories) {
+        private AccessoryBag(
+            @NotNull ConcurrentList<AccessoryData> accessories,
+            @NotNull ConcurrentList<AccessoryData> filteredAccessories,
+            @NotNull AccessoryPowerModel currentPowerModel,
+            @NotNull ConcurrentMap<StatModel, Integer> currentTuning
+        ) {
             this.accessories = accessories;
             this.filteredAccessories = filteredAccessories;
+            this.currentPower = currentPowerModel;
+            this.currentTuning = currentTuning;
 
             this.magicalPower = this.filteredAccessories.stream()
                 .mapToInt(accessoryData -> accessoryData.getRarity().getMagicPowerMultiplier())
                 .sum();
+
+            this.magicalPowerMultiplier = 29.97 * Math.pow(Math.log(0.0019 * this.magicalPower + 1), 1.2);
 
             this.tuningPoints = this.magicalPower / 10;
         }
@@ -714,6 +732,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public enum Type implements ObjectData.Type {
 
+        ACCESSORY_POWER(false),
         ACTIVE_PET(true),
         ACTIVE_POTIONS(true),
         BASE_STATS(true),
