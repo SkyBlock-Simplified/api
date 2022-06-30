@@ -68,6 +68,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     @Getter private final ConcurrentList<BonusPetAbilityStatModel> bonusPetAbilityStatModels = Concurrent.newList();
     @Getter private Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
     @Getter private boolean bonusCalculated;
+    @Getter private int magicalPower;
+    @Getter private int tuningPoints;
     private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
     public PlayerStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member) {
@@ -146,6 +148,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         this.loadFairySouls(member);
         this.loadMelodyHarp(member);
         this.loadJacobsPerks(member);
+        this.loadMagicalPower(member);
 
         if (calculateBonusStats) {
             ConcurrentMap<String, Double> expressionVariables = this.getExpressionVariables();
@@ -273,6 +276,16 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     @Override
     protected Type[] getAllTypes() {
         return PlayerStats.Type.values();
+    }
+
+    private void loadMagicalPower(SkyBlockIsland.Member member) {
+        // Magical Power
+        this.magicalPower = this.filteredAccessories.stream()
+            .mapToInt(accessoryData -> accessoryData.getRarity().getMagicPowerMultiplier())
+            .sum();
+
+        // Tuning Points
+        this.tuningPoints = this.magicalPower / 10;
     }
 
     private void loadAccessories(SkyBlockIsland.Member member) {

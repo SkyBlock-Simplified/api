@@ -17,6 +17,8 @@ public interface StatModel extends Model {
 
     boolean isTunable();
 
+    Double getTuningBonus();
+
     Integer getOrdinal();
 
     Integer getBaseValue();

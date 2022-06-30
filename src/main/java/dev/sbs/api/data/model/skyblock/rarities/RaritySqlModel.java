@@ -91,6 +91,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getName(), that.getName())
             .append(this.getOrdinal(), that.getOrdinal())
             .append(this.getPetExpOffset(), that.getPetExpOffset())
+            .append(this.getMagicPowerMultiplier(), that.getMagicPowerMultiplier())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -104,6 +105,7 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getOrdinal())
             .append(this.isEnrichable())
             .append(this.getPetExpOffset())
+            .append(this.getMagicPowerMultiplier())
             .append(this.getUpdatedAt())
             .build();
     }

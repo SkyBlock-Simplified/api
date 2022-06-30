@@ -61,22 +61,27 @@ public class StatSqlModel implements StatModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "tunable")
+    @Column(name = "tunable", nullable = false)
     private boolean tunable;
 
     @Getter
     @Setter
-    @Column(name = "ordinal")
+    @Column(name = "tuning_bonus", nullable = false)
+    private Double tuningBonus;
+
+    @Getter
+    @Setter
+    @Column(name = "ordinal", nullable = false)
     private Integer ordinal;
 
     @Getter
     @Setter
-    @Column(name = "base_value")
+    @Column(name = "base_value", nullable = false)
     private Integer baseValue;
 
     @Getter
     @Setter
-    @Column(name = "max_value")
+    @Column(name = "max_value", nullable = false)
     private Integer maxValue;
 
     @Getter
@@ -94,10 +99,12 @@ public class StatSqlModel implements StatModel, SqlModel {
         return new EqualsBuilder()
             .append(this.getSymbol(), that.getSymbol())
             .append(this.isMultipliable(), that.isMultipliable())
+            .append(this.isTunable(), that.isTunable())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getFormat(), that.getFormat())
+            .append(this.getTuningBonus(), that.getTuningBonus())
             .append(this.getOrdinal(), that.getOrdinal())
             .append(this.getBaseValue(), that.getBaseValue())
             .append(this.getMaxValue(), that.getMaxValue())
@@ -114,6 +121,8 @@ public class StatSqlModel implements StatModel, SqlModel {
             .append(this.getSymbol())
             .append(this.getFormat())
             .append(this.isMultipliable())
+            .append(this.isTunable())
+            .append(this.getTuningBonus())
             .append(this.getOrdinal())
             .append(this.getBaseValue())
             .append(this.getMaxValue())
