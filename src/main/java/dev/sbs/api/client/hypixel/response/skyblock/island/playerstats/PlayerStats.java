@@ -52,6 +52,7 @@ import dev.sbs.api.util.helper.StreamUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -62,14 +63,11 @@ import java.util.Optional;
 public class PlayerStats extends StatData<PlayerStats.Type> {
 
     @Getter private final double damageMultiplier;
-    @Getter private final ConcurrentList<AccessoryData> accessories = Concurrent.newList();
-    @Getter private final ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList();
+    @Getter private AccessoryBag accessoryBag;
     @Getter private final ConcurrentList<Optional<ItemData>> armor = Concurrent.newList();
     @Getter private final ConcurrentList<BonusPetAbilityStatModel> bonusPetAbilityStatModels = Concurrent.newList();
     @Getter private Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
     @Getter private boolean bonusCalculated;
-    @Getter private int magicalPower;
-    @Getter private int tuningPoints;
     private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
     public PlayerStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member) {
@@ -109,8 +107,9 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         //     Beacon:             +5 Magic Find
         //  Optimizer Request: Missing API Data
         //     Defused Traps:      +6 Intelligence
-        //     Bestiary:           +84 Health
         //     Account Upgrades:   +5 Magic Find
+        //  Add: Now in API
+        //     Bestiary:           +84 Health
 
         // --- Load Damage Multiplier ---
         this.damageMultiplier = SimplifiedApi.getRepositoryOf(SkillModel.class)
@@ -148,12 +147,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         this.loadFairySouls(member);
         this.loadMelodyHarp(member);
         this.loadJacobsPerks(member);
-        this.loadMagicalPower(member);
 
         if (calculateBonusStats) {
             ConcurrentMap<String, Double> expressionVariables = this.getExpressionVariables();
             // --- Load Bonus Accessory Item Stats ---
-            this.getFilteredAccessories().forEach(accessoryData -> accessoryData.calculateBonus(expressionVariables));
+            this.getAccessoryBag().getFilteredAccessories().forEach(accessoryData -> accessoryData.calculateBonus(expressionVariables));
 
             // --- Load Bonus Armor Stats ---
             this.getArmor()
@@ -207,7 +205,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                         })));
 
                     // Handle Accessories
-                    this.getFilteredAccessories().forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
+                    this.getAccessoryBag().getFilteredAccessories().forEach(accessoryData -> accessoryData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                         this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                         this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), accessoryData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                     })));
@@ -246,7 +244,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             }));
 
         // Collect Accessory Data
-        this.getFilteredAccessories()
+        this.getAccessoryBag()
+            .getFilteredAccessories()
             .stream()
             .map(StatData::getStats)
             .forEach(statTypeEntries -> statTypeEntries.stream()
@@ -278,19 +277,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         return PlayerStats.Type.values();
     }
 
-    private void loadMagicalPower(SkyBlockIsland.Member member) {
-        // Magical Power
-        this.magicalPower = this.filteredAccessories.stream()
-            .mapToInt(accessoryData -> accessoryData.getRarity().getMagicPowerMultiplier())
-            .sum();
-
-        // Tuning Points
-        this.tuningPoints = this.magicalPower / 10;
-    }
-
     private void loadAccessories(SkyBlockIsland.Member member) {
         // --- Load Accessories ---
         ConcurrentMap<CompoundTag, AccessoryModel> tagAccessoryModels = Concurrent.newMap();
+        ConcurrentList<AccessoryData> accessories = Concurrent.newList();
+        ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList();
 
         // Load From Inventory
         if (member.hasStorage(SkyBlockIsland.Storage.INVENTORY)) {
@@ -325,7 +316,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         }
 
         // Create Accessory Data
-        this.accessories.addAll(
+        accessories.addAll(
             tagAccessoryModels.stream()
                 .map(entry -> new AccessoryData(entry.getValue(), entry.getKey()))
                 .collect(Concurrent.toList())
@@ -333,7 +324,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
         // Store Families
         ConcurrentMap<AccessoryFamilyModel, ConcurrentSet<AccessoryModel>> familyAccessoryDataMap = Concurrent.newMap();
-        this.accessories.stream()
+        accessories.stream()
             .filter(accessoryData -> Objects.nonNull(accessoryData.getAccessory().getFamily()))
             .forEach(accessoryData -> {
                 // New Accessory Family
@@ -346,8 +337,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
         // Store Non-Stackable Families
         ConcurrentSet<AccessoryModel> processedAccessories = Concurrent.newSet();
-        this.filteredAccessories.addAll(
-            this.accessories.stream()
+        filteredAccessories.addAll(
+            accessories.stream()
                 .filter(accessoryData -> {
                     AccessoryFamilyModel accessoryFamilyModel = accessoryData.getAccessory().getFamily();
 
@@ -376,6 +367,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 })
                 .collect(Concurrent.toList())
         );
+
+        this.accessoryBag = new AccessoryBag(accessories, filteredAccessories);
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
@@ -696,6 +689,26 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                         );
                 }
             });
+    }
+
+    public static class AccessoryBag {
+
+        @Getter private final @NotNull ConcurrentList<AccessoryData> accessories;
+        @Getter private final @NotNull ConcurrentList<AccessoryData> filteredAccessories;
+        @Getter private final int magicalPower;
+        @Getter private final int tuningPoints;
+
+        private AccessoryBag(@NotNull ConcurrentList<AccessoryData> accessories, @NotNull ConcurrentList<AccessoryData> filteredAccessories) {
+            this.accessories = accessories;
+            this.filteredAccessories = filteredAccessories;
+
+            this.magicalPower = this.filteredAccessories.stream()
+                .mapToInt(accessoryData -> accessoryData.getRarity().getMagicPowerMultiplier())
+                .sum();
+
+            this.tuningPoints = this.magicalPower / 10;
+        }
+
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
