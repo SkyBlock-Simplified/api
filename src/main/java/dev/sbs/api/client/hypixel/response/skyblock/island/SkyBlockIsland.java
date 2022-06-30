@@ -12,6 +12,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
+import dev.sbs.api.data.model.skyblock.accessory_powers.AccessoryPowerModel;
 import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
@@ -166,7 +167,8 @@ public class SkyBlockIsland {
         POTIONS,
         ACCESSORIES,
         CANDY,
-        PERSONAL_VAULT
+        PERSONAL_VAULT,
+        EQUIPMENT
 
     }
 
@@ -225,8 +227,6 @@ public class SkyBlockIsland {
         @Getter private ConcurrentList<String> disabledPotions = Concurrent.newList();
         @SerializedName("temp_stat_buffs")
         @Getter private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
-        @SerializedName("griffin.burrows")
-        private ConcurrentList<GriffinBurrow> griffinBurrows = Concurrent.newList();
         @SerializedName("mining_core")
         private Mining mining;
         @SerializedName("jacob2")
@@ -235,6 +235,7 @@ public class SkyBlockIsland {
         @Getter private ConcurrentList<ForgeItem> forgeItems = Concurrent.newList();
         @Getter private Dungeons dungeons;
         @Getter private Experimentation experimentation;
+        @Getter private AccessoryBag accessoryBag;
 
         // Experience, DO NOT RENAME
         private double experience_skill_farming = -1;
@@ -288,6 +289,8 @@ public class SkyBlockIsland {
         private NbtContent wardrobeContents;
         @SerializedName("personal_vault_contents")
         private NbtContent personalVaultContents;
+        @SerializedName("equipment_contents")
+        private NbtContent equipmentContents;
         @SerializedName("backpack_contents")
         private ConcurrentMap<Integer, NbtContent> backpackContents = Concurrent.newMap();
         @SerializedName("backpack_icons")
@@ -486,24 +489,26 @@ public class SkyBlockIsland {
         public NbtContent getStorage(Storage type) {
             switch (type) {
                 case INVENTORY:
-                    return inventoryContents;
+                    return this.inventoryContents;
                 case ENDER_CHEST:
-                    return enderChestContents;
+                    return this.enderChestContents;
                 case FISHING:
-                    return fishingBagContents;
+                    return this.fishingBagContents;
                 case QUIVER:
-                    return quiverBagContents;
+                    return this.quiverBagContents;
                 case POTIONS:
-                    return potionBagContents;
+                    return this.potionBagContents;
                 case ACCESSORIES:
-                    return accessoryBagContents;
+                    return this.accessoryBagContents;
                 case CANDY:
-                    return candyBagContents;
+                    return this.candyBagContents;
                 case PERSONAL_VAULT:
-                    return personalVaultContents;
+                    return this.personalVaultContents;
+                case EQUIPMENT:
+                    return this.equipmentContents;
                 case ARMOR:
                 default:
-                    return armorContents;
+                    return this.armorContents;
             }
         }
 
@@ -575,6 +580,44 @@ public class SkyBlockIsland {
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class AccessoryBag {
+
+        @Getter private NbtContent contents;
+        @SerializedName("bag_upgrades_purchased")
+        @Getter private int purchasedBagUpgrades;
+        private Tuning tuningObj;
+        @SerializedName("selected_power")
+        private String selectedPower;
+        private ConcurrentList<String> unlockedPowers = Concurrent.newList();
+
+        public AccessoryPowerModel getSelectedPower() {
+            return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).findFirstOrNull(AccessoryPowerModel::getKey, selectedPower.toUpperCase());
+        }
+
+        public Tuning getTuning() {
+            return this.tuningObj;
+        }
+
+        public ConcurrentList<AccessoryPowerModel> getUnlockedPowers() {
+            return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class)
+                .findAll()
+                .stream()
+                .filter(accessoryPowerModel -> this.unlockedPowers.contains(accessoryPowerModel.getKey().toLowerCase()))
+                .collect(Concurrent.toList());
+        }
+
+        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Tuning {
+
+            @Getter private final ConcurrentMap<StatModel, Integer> current;
+            @Getter private final ConcurrentList<ConcurrentMap<StatModel, Integer>> slots;
+            @Getter private final int highestUnlockedSlot;
+
+        }
+
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Backpacks {
 
         @Getter private final ConcurrentMap<Integer, NbtContent> contents;
@@ -594,7 +637,8 @@ public class SkyBlockIsland {
             @Getter private double amount;
             @Getter private SkyBlockDate.RealTime timestamp;
             @Getter private Banking.Transaction.Action action;
-            @SerializedName("initiator_name") private String initiatorName;
+            @SerializedName("initiator_name")
+            private String initiatorName;
 
             public String getInitiatorName() {
                 return this.initiatorName.replace("Â", ""); // API Artifact
@@ -1372,11 +1416,10 @@ public class SkyBlockIsland {
             return this.toggles;
         }
 
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Biome {
 
             @NoArgsConstructor(access = AccessLevel.PRIVATE)
-            public static class Dwarven {
+            public static class Dwarven extends Biome {
 
                 @SerializedName("statues_placed")
                 @Getter private ConcurrentList<Object> placedStatues = Concurrent.newList();
@@ -1384,7 +1427,7 @@ public class SkyBlockIsland {
             }
 
             @NoArgsConstructor(access = AccessLevel.PRIVATE)
-            public static class Precursor {
+            public static class Precursor extends Biome {
 
                 @SerializedName("parts_delivered")
                 @Getter private ConcurrentList<Object> deliveredParts = Concurrent.newList();
@@ -1392,7 +1435,7 @@ public class SkyBlockIsland {
             }
 
             @NoArgsConstructor(access = AccessLevel.PRIVATE)
-            public static class Goblin {
+            public static class Goblin extends Biome {
 
                 @SerializedName("king_quest_active")
                 @Getter private boolean kingQuestActive;
@@ -1941,16 +1984,41 @@ public class SkyBlockIsland {
                     JsonObject forge = memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes");
 
                     if (forge.has("forge_1")) {
-                        member.forgeItems.addAll(((ConcurrentMap<Integer, ForgeItem>) gson.fromJson(forge.getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass()))
-                                                     .stream()
-                                                     .map(Map.Entry::getValue)
-                                                     .collect(Concurrent.toList()));
+                        member.forgeItems.addAll(
+                            ((ConcurrentMap<Integer, ForgeItem>) gson.fromJson(forge.getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass()))
+                                .stream()
+                                .map(Map.Entry::getValue)
+                                .collect(Concurrent.toList())
+                        );
                     }
                 }
 
-                // Griffin Burrows
-                if (memberObject.has("griffin"))
-                    member.griffinBurrows = gson.fromJson(memberObject.getAsJsonObject("griffin").getAsJsonArray("burrows"), new ConcurrentList<>().getClass());
+                // Accessory Bag
+                JsonObject accessoryBagStorage = memberObject.getAsJsonObject("accessory_bag_storage");
+                AccessoryBag accessoryBag = gson.fromJson(accessoryBagStorage, AccessoryBag.class);
+                Map<String, Object> tuningMap = gson.fromJson(accessoryBagStorage.getAsJsonObject("tuning"), Map.class);
+                ConcurrentList<ConcurrentMap<StatModel, Integer>> tuningSlots = Concurrent.newList();
+
+                for (int i = 0; i <= 5; i++) {
+                    String slotName = FormatUtil.format("slot_{0}", i);
+
+                    if (tuningMap.containsKey(slotName)) {
+                        tuningSlots.add(
+                            ((Map<String, Integer>) tuningMap.get(slotName)).entrySet()
+                                .stream()
+                                .map(entry -> Pair.of(
+                                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, entry.getKey().toUpperCase()),
+                                    entry.getValue()
+                                ))
+                                .collect(Concurrent.toMap())
+                        );
+                    }
+                }
+
+                ConcurrentMap<StatModel, Integer> currentTuning = tuningSlots.removeFirst();
+                accessoryBag.contents = member.accessoryBagContents;
+                accessoryBag.tuningObj = new AccessoryBag.Tuning(currentTuning, tuningSlots, (int) tuningMap.get("highest_unlocked_slot"));
+                member.accessoryBag = accessoryBag;
 
                 // Experimentation
                 if (member.experimentation != null) {
