@@ -155,8 +155,8 @@ public class SkyBlockIslandTest {
                 int spiderLevel = spiderPetInfo.getLevel();
                 MatcherAssert.assertThat(spiderLevel, Matchers.equalTo(100));
 
-                PetModel spiderPet = spiderPetInfo.getPet();
-                PetModel dragPet = dragInfo.getPet();
+                PetModel spiderPet = spiderPetInfo.getPet().get();
+                PetModel dragPet = dragInfo.getPet().get();
 
                 RarityModel commonRarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, "COMMON");
                 MatcherAssert.assertThat(spiderPet.getLowestRarity(), Matchers.equalTo(commonRarity));
