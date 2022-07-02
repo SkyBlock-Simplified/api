@@ -13,8 +13,6 @@ public interface RarityModel extends Model {
 
     boolean isEnrichable();
 
-    Integer getPetExpOffset();
-
     Integer getMagicPowerMultiplier();
 
     EmojiModel getEmoji();

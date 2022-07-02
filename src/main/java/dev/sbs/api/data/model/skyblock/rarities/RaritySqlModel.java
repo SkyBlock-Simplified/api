@@ -59,11 +59,6 @@ public class RaritySqlModel implements RarityModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "pet_exp_offset")
-    private Integer petExpOffset;
-
-    @Getter
-    @Setter
     @Column(name = "mp_multiplier")
     private Integer magicPowerMultiplier;
 
@@ -90,7 +85,6 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getOrdinal(), that.getOrdinal())
-            .append(this.getPetExpOffset(), that.getPetExpOffset())
             .append(this.getMagicPowerMultiplier(), that.getMagicPowerMultiplier())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
@@ -104,7 +98,6 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getName())
             .append(this.getOrdinal())
             .append(this.isEnrichable())
-            .append(this.getPetExpOffset())
             .append(this.getMagicPowerMultiplier())
             .append(this.getUpdatedAt())
             .build();
