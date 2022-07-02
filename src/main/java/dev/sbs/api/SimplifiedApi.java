@@ -103,8 +103,8 @@ import dev.sbs.api.data.model.skyblock.minions.MinionSqlRepository;
 import dev.sbs.api.data.model.skyblock.npcs.NpcSqlRepository;
 import dev.sbs.api.data.model.skyblock.pet_abilities.PetAbilitySqlRepository;
 import dev.sbs.api.data.model.skyblock.pet_ability_stats.PetAbilityStatSqlRepository;
-import dev.sbs.api.data.model.skyblock.pet_exp_scales.PetExpScaleSqlRepository;
 import dev.sbs.api.data.model.skyblock.pet_items.PetItemSqlRepository;
+import dev.sbs.api.data.model.skyblock.pet_levels.PetLevelSqlRepository;
 import dev.sbs.api.data.model.skyblock.pet_scores.PetScoreSqlRepository;
 import dev.sbs.api.data.model.skyblock.pet_stats.PetStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.pet_types.PetTypeSqlRepository;
@@ -310,7 +310,7 @@ public final class SimplifiedApi {
             MenuSqlRepository.class,
             MinionUniqueSqlRepository.class,
             OptimizerMobTypeSqlRepository.class,
-            PetExpScaleSqlRepository.class,
+            PetLevelSqlRepository.class,
             PetScoreSqlRepository.class,
             PetTypeSqlRepository.class,
             PotionSqlRepository.class,

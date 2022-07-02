@@ -1,6 +1,7 @@
-package dev.sbs.api.data.model.skyblock.pet_exp_scales;
+package dev.sbs.api.data.model.skyblock.pet_levels;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,15 +15,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_pet_exp_scales"
+    name = "skyblock_pet_levels",
+    indexes = {
+        @Index(
+            columnList = "rarity_key"
+        ),
+        @Index(
+            columnList = "rarity_key, level",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
+public class PetLevelSqlModel implements PetLevelModel, SqlModel {
 
     @Getter
     @Id
@@ -32,7 +45,18 @@ public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "value", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "rarity_key")
+    private RaritySqlModel rarity;
+
+    @Getter
+    @Setter
+    @Column(name = "level", nullable = false)
+    private Integer level;
+
+    @Getter
+    @Setter
+    @Column(name = "value", nullable = false)
     private Double value;
 
     @Getter
@@ -45,7 +69,7 @@ public class PetExpScaleSqlModel implements PetExpScaleModel, SqlModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PetExpScaleSqlModel that = (PetExpScaleSqlModel) o;
+        PetLevelSqlModel that = (PetLevelSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
