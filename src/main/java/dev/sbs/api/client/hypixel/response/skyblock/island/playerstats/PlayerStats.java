@@ -363,17 +363,19 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // Accessory Power Effects
         member.getAccessoryBag()
             .getSelectedPower()
-            .getEffects()
-            .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), this.accessoryBag.getMagicalPowerMultiplier() * value))
+            .ifPresent(accessoryPowerModel -> accessoryPowerModel.getEffects()
+                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                    .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), this.accessoryBag.getMagicalPowerMultiplier() * value))
+                )
             );
 
         // Accessory Power Unique Effects
         member.getAccessoryBag()
             .getSelectedPower()
-            .getUniqueEffects()
-            .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), value))
+            .ifPresent(accessoryPowerModel -> accessoryPowerModel.getUniqueEffects()
+                .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                    .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), value))
+                )
             );
     }
 
@@ -701,7 +703,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
         @Getter private final @NotNull ConcurrentList<AccessoryData> accessories;
         @Getter private final @NotNull ConcurrentList<AccessoryData> filteredAccessories;
-        @Getter private final @NotNull AccessoryPowerModel currentPower;
+        @Getter private final @NotNull Optional<AccessoryPowerModel> currentPower;
         @Getter private final @NotNull ConcurrentMap<StatModel, Integer> currentTuning;
         @Getter private final int magicalPower;
         @Getter private final int tuningPoints;
@@ -710,7 +712,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         private AccessoryBag(
             @NotNull ConcurrentList<AccessoryData> accessories,
             @NotNull ConcurrentList<AccessoryData> filteredAccessories,
-            @NotNull AccessoryPowerModel currentPowerModel,
+            @NotNull Optional<AccessoryPowerModel> currentPowerModel,
             @NotNull ConcurrentMap<StatModel, Integer> currentTuning
         ) {
             this.accessories = accessories;

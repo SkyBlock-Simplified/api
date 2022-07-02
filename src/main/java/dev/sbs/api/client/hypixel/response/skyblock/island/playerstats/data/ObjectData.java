@@ -6,6 +6,7 @@ import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
 import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
+import dev.sbs.api.data.model.skyblock.reforges.ReforgeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
@@ -36,6 +37,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     @Getter private final CompoundTag compoundTag;
     @Getter private final RarityModel rarity;
     @Getter private final ConcurrentList<BonusItemStatModel> bonusItemStatModels;
+    @Getter private final Optional<ReforgeModel> reforge;
     @Getter private final ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> gemstones;
     @Getter private final boolean recombobulated;
     @Getter private final boolean tierBoosted;
@@ -108,6 +110,14 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         this.bonusItemStatModels = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
             .findAll(BonusItemStatModel::getItem, itemModel);
 
+        // Load Reforge Model
+        this.reforge = SimplifiedApi.getRepositoryOf(ReforgeModel.class)
+            .findFirst(ReforgeModel::getKey, this.getCompoundTag()
+                .getPathOrDefault("tag.ExtraAttributes.modifier", StringTag.EMPTY)
+                .getValue()
+                .toUpperCase()
+            );
+
         // Load Rarity
         this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
             .findFirst(
@@ -147,6 +157,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
             .append(this.getCompoundTag(), that.getCompoundTag())
             .append(this.getRarity(), that.getRarity())
             .append(this.getBonusItemStatModels(), that.getBonusItemStatModels())
+            .append(this.getReforge(), that.getReforge())
             .append(this.getGemstones(), that.getGemstones())
             .append(this.getTimestamp(), that.getTimestamp())
             .build();
@@ -159,6 +170,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
             .append(this.getCompoundTag())
             .append(this.getRarity())
             .append(this.getBonusItemStatModels())
+            .append(this.getReforge())
             .append(this.getGemstones())
             .append(this.isRecombobulated())
             .append(this.isTierBoosted())

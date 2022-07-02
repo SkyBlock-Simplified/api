@@ -9,11 +9,9 @@ import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
 import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
-import dev.sbs.api.data.model.skyblock.reforges.ReforgeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
-import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
@@ -33,7 +31,6 @@ public class ItemData extends ObjectData<ItemData.Type> {
 
     @Getter private final ConcurrentMap<EnchantmentModel, Integer> enchantments;
     @Getter private final ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats;
-    @Getter private final Optional<ReforgeModel> reforge;
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
     @Getter private final int hotPotatoBooks;
@@ -44,6 +41,19 @@ public class ItemData extends ObjectData<ItemData.Type> {
         super(itemModel, compoundTag);
         this.hotPotatoBooks = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
         this.hasArtOfWar = compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count");
+
+        // Load Bonus Reforge Model
+        this.bonusReforgeStatModel = this.getReforge().flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(BonusReforgeStatModel.class)
+            .findFirst(BonusReforgeStatModel::getReforge, reforgeModel)
+        );
+
+        // Load Reforge Stat Model
+        this.reforgeStat = this.getReforge().flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(ReforgeStatModel.class)
+            .findFirst(
+                Pair.of(ReforgeStatModel::getReforge, reforgeModel),
+                Pair.of(ReforgeStatModel::getRarity, this.getRarity())
+            )
+        );
 
         // Save Stats
         itemModel.getStats().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class)
@@ -69,27 +79,6 @@ public class ItemData extends ObjectData<ItemData.Type> {
                 .findFirst(StatModel::getKey, "STRENGTH")
                 .ifPresent(statModel -> this.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
         }
-
-        // Load Reforge Model
-        this.reforge = SimplifiedApi.getRepositoryOf(ReforgeModel.class)
-            .findFirst(ReforgeModel::getKey, this.getCompoundTag()
-                .getPathOrDefault("tag.ExtraAttributes.modifier", StringTag.EMPTY)
-                .getValue()
-                .toUpperCase()
-            );
-
-        // Load Bonus Reforge Model
-        this.bonusReforgeStatModel = this.reforge.flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(BonusReforgeStatModel.class)
-            .findFirst(BonusReforgeStatModel::getReforge, reforgeModel)
-        );
-
-        // Load Reforge Stat Model
-        this.reforgeStat = this.getReforge().flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(ReforgeStatModel.class)
-            .findFirst(
-                Pair.of(ReforgeStatModel::getReforge, reforgeModel),
-                Pair.of(ReforgeStatModel::getRarity, this.getRarity())
-            )
-        );
 
         // Save Enchantment Stats
         ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
@@ -185,10 +174,9 @@ public class ItemData extends ObjectData<ItemData.Type> {
             .append(this.isBonusCalculated(), itemData.isBonusCalculated())
             .append(this.getEnchantments(), itemData.getEnchantments())
             .append(this.getEnchantmentStats(), itemData.getEnchantmentStats())
-            .append(this.getReforge(), itemData.getReforge())
             .append(this.getBonusReforgeStatModel(), itemData.getBonusReforgeStatModel())
             .append(this.getReforgeStat(), itemData.getReforgeStat())
-            .append(this.hasArtOfWar, itemData.hasArtOfWar)
+            .append(this.hasArtOfWar(), itemData.hasArtOfWar())
             .build();
     }
 
@@ -207,11 +195,10 @@ public class ItemData extends ObjectData<ItemData.Type> {
             .appendSuper(super.hashCode())
             .append(this.getEnchantments())
             .append(this.getEnchantmentStats())
-            .append(this.getReforge())
             .append(this.getBonusReforgeStatModel())
             .append(this.getReforgeStat())
             .append(this.getHotPotatoBooks())
-            .append(this.hasArtOfWar)
+            .append(this.hasArtOfWar())
             .append(this.isBonusCalculated())
             .build();
     }
