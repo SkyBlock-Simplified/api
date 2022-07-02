@@ -2,8 +2,16 @@ package dev.sbs.api.data.model.skyblock.rarities;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
+import org.jetbrains.annotations.NotNull;
 
-public interface RarityModel extends Model {
+import java.util.Comparator;
+
+public interface RarityModel extends Model, Comparable<RarityModel> {
+
+    @Override
+    default int compareTo(@NotNull RarityModel o) {
+        return Comparator.comparing(RarityModel::getOrdinal).compare(this, o);
+    }
 
     String getKey();
 
