@@ -79,7 +79,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // --- Initialize ---
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class)
             .findAll()
-            .sort(StatModel::getOrdinal);
+            .sorted(StatModel::getOrdinal);
         Arrays.stream(Type.values()).forEach(type -> {
             this.stats.put(type, Concurrent.newLinkedMap());
             statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data()));
@@ -230,7 +230,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // Initialize
         ConcurrentLinkedMap<StatModel, Data> totalStats = SimplifiedApi.getRepositoryOf(StatModel.class)
             .findAll()
-            .sort(StatModel::getOrdinal)
+            .sorted(StatModel::getOrdinal)
             .stream()
             .map(statModel -> Pair.of(statModel, new Data()))
             .collect(Concurrent.toLinkedMap());
@@ -335,7 +335,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                             return true;
                         else {
                             ConcurrentList<AccessoryModel> familyData = Concurrent.newList(familyAccessoryDataMap.get(accessoryFamilyModel))
-                                .sort(AccessoryModel::getFamilyRank)
+                                .sorted(AccessoryModel::getFamilyRank)
                                 .inverse(); // Sort By Highest
 
                             // Ignore Lowest Accessories

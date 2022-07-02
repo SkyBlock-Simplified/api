@@ -4,11 +4,13 @@ import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.collection.search.SearchQuery;
+import dev.sbs.api.util.collection.sort.SortOrder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -55,8 +57,21 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 
 	@Override
 	@SuppressWarnings("all")
-	public ConcurrentLinkedList<E> sort(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
-		super.sort(sortFunctions);
+	public ConcurrentLinkedList<E> sorted(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
+		super.sorted(sortFunctions);
+		return this;
+	}
+
+	@Override
+	@SuppressWarnings("all")
+	public ConcurrentLinkedList<E> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
+		super.sorted(sortOrder, functions);
+		return this;
+	}
+
+	@Override
+	public ConcurrentLinkedList<E> sorted(Comparator<? super E> comparator) {
+		super.sorted(comparator);
 		return this;
 	}
 

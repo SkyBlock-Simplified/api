@@ -54,7 +54,7 @@ public abstract class StatData<T extends ObjectData.Type> {
     public final ConcurrentLinkedMap<StatModel, Data> getStatsOf(T... types) {
         ConcurrentLinkedMap<StatModel, Data> totalStats = SimplifiedApi.getRepositoryOf(StatModel.class)
             .findAll()
-            .sort(StatModel::getOrdinal)
+            .sorted(StatModel::getOrdinal)
             .stream()
             .map(statModel -> Pair.of(statModel, new Data()))
             .collect(Concurrent.toLinkedMap());

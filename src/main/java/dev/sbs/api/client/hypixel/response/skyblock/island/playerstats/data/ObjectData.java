@@ -100,7 +100,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         this.gemstones = Concurrent.newUnmodifiableMap(gemstones);
 
         // Initialize Stats
-        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sort(StatModel::getOrdinal);
+        ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sorted(StatModel::getOrdinal);
         Arrays.stream(this.getAllTypes()).forEach(type -> {
             this.stats.put(type, Concurrent.newLinkedMap());
             statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data()));

@@ -207,12 +207,12 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 	}
 
 	@SuppressWarnings("all")
-	public AtomicList<E, T> sort(Function<E, ? extends Comparable>... functions) {
-		return this.sort(SortOrder.ASCENDING, functions);
+	public AtomicList<E, T> sorted(Function<E, ? extends Comparable>... functions) {
+		return this.sorted(SortOrder.ASCENDING, functions);
 	}
 
 	@SuppressWarnings("all")
-	public AtomicList<E, T> sort(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
+	public AtomicList<E, T> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
 		if (ListUtil.notEmpty(functions)) {
 			this.sort((s1, s2) -> {
 				Comparator<E> comparator = Comparator.comparing(functions[0]);
@@ -224,6 +224,11 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 			});
 		}
 
+		return this;
+	}
+
+	public AtomicList<E, T> sorted(Comparator<? super E> comparator) {
+		this.sort(comparator);
 		return this;
 	}
 
