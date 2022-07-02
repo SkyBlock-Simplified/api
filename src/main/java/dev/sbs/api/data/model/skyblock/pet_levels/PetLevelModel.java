@@ -7,6 +7,10 @@ public interface PetLevelModel extends Model {
 
     RarityModel getRarity();
 
+    default Integer getRarityOrdinal() {
+        return this.getRarity().getOrdinal();
+    }
+
     Integer getLevel();
 
     Double getValue();

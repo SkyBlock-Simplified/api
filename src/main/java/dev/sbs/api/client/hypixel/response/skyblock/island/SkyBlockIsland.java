@@ -21,8 +21,8 @@ import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minions.MinionModel;
-import dev.sbs.api.data.model.skyblock.pet_exp_scales.PetExpScaleModel;
 import dev.sbs.api.data.model.skyblock.pet_items.PetItemModel;
+import dev.sbs.api.data.model.skyblock.pet_levels.PetLevelModel;
 import dev.sbs.api.data.model.skyblock.pets.PetModel;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
@@ -64,6 +64,7 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -587,11 +588,11 @@ public class SkyBlockIsland {
         @Getter private int purchasedBagUpgrades;
         private Tuning tuningObj;
         @SerializedName("selected_power")
-        private String selectedPower;
+        private String selectedPower = "";
         private ConcurrentList<String> unlockedPowers = Concurrent.newList();
 
-        public AccessoryPowerModel getSelectedPower() {
-            return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).findFirstOrNull(AccessoryPowerModel::getKey, selectedPower.toUpperCase());
+        public Optional<AccessoryPowerModel> getSelectedPower() {
+            return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).findFirst(AccessoryPowerModel::getKey, selectedPower.toUpperCase());
         }
 
         public Tuning getTuning() {
@@ -1534,25 +1535,27 @@ public class SkyBlockIsland {
         @Getter private int candyUsed;
         private String heldItem;
         private String skin;
+        private RarityModel baseRarity;
+        private RarityModel rarity;
+
+        public RarityModel getBaseRarity() {
+            if (Objects.isNull(this.baseRarity))
+                this.baseRarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarityKey);
+
+            return this.baseRarity;
+        }
 
         @Override
         public ConcurrentList<Double> getExperienceTiers() {
-            int petExpOffset = this.getRarity().getPetExpOffset();
-            ConcurrentList<PetExpScaleModel> petExpScaleModels = SimplifiedApi.getRepositoryOf(PetExpScaleModel.class).findAll();
-
-            // Load Experience Block
-            ConcurrentList<Double> experienceTiers = petExpScaleModels
-                .subList(petExpOffset + 0, petExpOffset + this.getMaxLevel())
+            return SimplifiedApi.getRepositoryOf(PetLevelModel.class)
+                .findAll(PetLevelModel::getRarityOrdinal, Math.min(this.getRarityOrdinal(), 4))
                 .stream()
-                .map(PetExpScaleModel::getValue)
+                .map(PetLevelModel::getValue)
                 .collect(Concurrent.toList());
-
-            //experienceTiers.add(0, 0.0);
-            return experienceTiers;
         }
 
         public String getDefaultSkin() {
-            return this.getPet().getSkin();
+            return this.getPet().map(PetModel::getSkin).orElse("");
         }
 
         public Optional<ItemModel> getHeldItem() {
@@ -1565,11 +1568,11 @@ public class SkyBlockIsland {
 
         @Override
         public int getMaxLevel() {
-            return this.getPet().getMaxLevel();
+            return this.getPet().map(PetModel::getMaxLevel).orElse(100);
         }
 
-        public PetModel getPet() {
-            return SimplifiedApi.getRepositoryOf(PetModel.class).findFirstOrNull(PetModel::getKey, this.getName());
+        public Optional<PetModel> getPet() {
+            return SimplifiedApi.getRepositoryOf(PetModel.class).findFirst(PetModel::getKey, this.getName());
         }
 
         public String getPrettyName() {
@@ -1577,15 +1580,23 @@ public class SkyBlockIsland {
         }
 
         public RarityModel getRarity() {
-            int rarityOrdinal = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarityKey).getOrdinal();
+            if (Objects.isNull(this.rarity)) {
+                int rarityOrdinal = this.getBaseRarity().getOrdinal();
 
-            if (this.isTierBoosted())
-                rarityOrdinal++;
+                if (this.isTierBoosted())
+                    rarityOrdinal++;
 
-            if (this.isHeldItemBoosted())
-                rarityOrdinal++;
+                if (this.isHeldItemBoosted())
+                    rarityOrdinal++;
 
-            return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getOrdinal, rarityOrdinal);
+                this.rarity = SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getOrdinal, rarityOrdinal);
+            }
+
+            return this.rarity;
+        }
+
+        public int getRarityOrdinal() {
+            return this.getRarity().getOrdinal();
         }
 
         public Optional<String> getSkin() {
@@ -1851,12 +1862,16 @@ public class SkyBlockIsland {
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
             int rawLevel = this.getRawLevel(experience);
 
-            if (rawLevel == 0)
-                return experience;
-            else if (rawLevel >= this.getMaxLevel())
-                return experience - experienceTiers.get(experienceTiers.size() - 1);
-            else
-                return experience - experienceTiers.get(rawLevel - 1);
+            try {
+                if (rawLevel == 0)
+                    return experience;
+                else if (rawLevel >= this.getMaxLevel())
+                    return experience - experienceTiers.get(experienceTiers.size() - 1);
+            } catch (Exception ex) {
+                String stop = "here";
+            }
+
+            return experience - experienceTiers.get(rawLevel - 1);
         }
 
         public final double getMissingExperience() {
@@ -1994,30 +2009,39 @@ public class SkyBlockIsland {
                 }
 
                 // Accessory Bag
-                JsonObject accessoryBagStorage = memberObject.getAsJsonObject("accessory_bag_storage");
-                AccessoryBag accessoryBag = gson.fromJson(accessoryBagStorage, AccessoryBag.class);
-                Map<String, Object> tuningMap = gson.fromJson(accessoryBagStorage.getAsJsonObject("tuning"), Map.class);
-                ConcurrentList<ConcurrentMap<StatModel, Integer>> tuningSlots = Concurrent.newList();
+                AccessoryBag accessoryBag;
+                if (memberObject.has("accessory_bag_storage")) {
+                    JsonObject accessoryBagStorage = memberObject.getAsJsonObject("accessory_bag_storage");
+                    accessoryBag = gson.fromJson(accessoryBagStorage, AccessoryBag.class);
+                    Map<String, Object> tuningMap = gson.fromJson(accessoryBagStorage.getAsJsonObject("tuning"), Map.class);
+                    ConcurrentList<ConcurrentMap<StatModel, Integer>> tuningSlots = Concurrent.newList();
 
-                for (int i = 0; i <= 5; i++) {
-                    String slotName = FormatUtil.format("slot_{0}", i);
+                    for (int i = 0; i <= 5; i++) {
+                        String slotName = FormatUtil.format("slot_{0}", i);
 
-                    if (tuningMap.containsKey(slotName)) {
-                        tuningSlots.add(
-                            ((Map<String, Integer>) tuningMap.get(slotName)).entrySet()
-                                .stream()
-                                .map(entry -> Pair.of(
-                                    SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, entry.getKey().toUpperCase()),
-                                    entry.getValue()
-                                ))
-                                .collect(Concurrent.toMap())
-                        );
+                        if (tuningMap.containsKey(slotName)) {
+                            tuningSlots.add(
+                                ((Map<String, Double>) tuningMap.get(slotName)).entrySet()
+                                    .stream()
+                                    .map(entry -> Pair.of(
+                                        SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, entry.getKey().toUpperCase()),
+                                        entry.getValue()
+                                    ))
+                                    .collect(Concurrent.toMap())
+                            );
+                        }
                     }
-                }
 
-                ConcurrentMap<StatModel, Integer> currentTuning = tuningSlots.removeFirst();
+                    ConcurrentMap<StatModel, Integer> currentTuning = tuningSlots.removeFirst();
+                    accessoryBag.tuningObj = new AccessoryBag.Tuning(
+                        currentTuning,
+                        tuningSlots,
+                        ((Double) tuningMap.getOrDefault("highest_unlocked_slot", 0.0)).intValue()
+                    );
+                } else
+                    accessoryBag = new AccessoryBag();
+
                 accessoryBag.contents = member.accessoryBagContents;
-                accessoryBag.tuningObj = new AccessoryBag.Tuning(currentTuning, tuningSlots, (int) tuningMap.get("highest_unlocked_slot"));
                 member.accessoryBag = accessoryBag;
 
                 // Experimentation
