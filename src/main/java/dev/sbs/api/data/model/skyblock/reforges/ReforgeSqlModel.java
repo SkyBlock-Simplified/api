@@ -1,7 +1,8 @@
 package dev.sbs.api.data.model.skyblock.reforges;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlModel;
+import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
+import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -10,19 +11,19 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(
-    name = "skyblock_reforges"
+    name = "skyblock_reforges",
+    indexes = {
+        @Index(
+            columnList = "item_id",
+            unique = true
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
@@ -46,18 +47,14 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "reforge_type_key", nullable = false)
-    private ReforgeTypeSqlModel type;
+    @JoinColumn(name = "item_id", unique = true)
+    private ItemSqlModel item;
 
     @Getter
     @Setter
-    @Column(name = "blacksmith", nullable = false)
-    private boolean blacksmith;
-
-    @Getter
-    @Setter
-    @Column(name = "stone", nullable = false)
-    private boolean stone;
+    @Column(name = "item_types", nullable = false)
+    @Convert(converter = StringListConverter.class)
+    private List<String> itemTypes;
 
     @Getter
     @UpdateTimestamp
@@ -72,12 +69,11 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
         ReforgeSqlModel that = (ReforgeSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isBlacksmith(), that.isBlacksmith())
-            .append(this.isStone(), that.isStone())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
-            .append(this.getType(), that.getType())
+            .append(this.getItem(), that.getItem())
+            .append(this.getItemTypes(), that.getItemTypes())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -88,9 +84,8 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
             .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
-            .append(this.getType())
-            .append(this.isBlacksmith())
-            .append(this.isStone())
+            .append(this.getItem())
+            .append(this.getItemTypes())
             .append(this.getUpdatedAt())
             .build();
     }
