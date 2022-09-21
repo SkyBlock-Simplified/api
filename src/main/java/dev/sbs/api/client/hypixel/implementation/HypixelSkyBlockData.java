@@ -5,6 +5,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsEndedResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockBazaarResponse;
+import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockFireSaleResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockNewsResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfileResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
@@ -45,5 +46,8 @@ public interface HypixelSkyBlockData extends HypixelRequestInterface {
 
     @RequestLine("GET /skyblock/auctions_ended")
     SkyBlockAuctionsEndedResponse getEndedAuctions();
+
+    @RequestLine("GET /skyblock/firesales")
+    SkyBlockFireSaleResponse getFireSales();
 
 }
