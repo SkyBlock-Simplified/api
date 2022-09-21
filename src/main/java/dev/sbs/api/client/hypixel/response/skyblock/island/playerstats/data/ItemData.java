@@ -68,7 +68,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
 
         // Save Hot Potato Book Stats
         SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
-            .matchAll(hotPotatoStatModel -> hotPotatoStatModel.getItemTypes().contains(itemModel.getItemType().getKey()))
+            .matchAll(hotPotatoStatModel -> hotPotatoStatModel.getItemTypes().contains(itemModel.getType().getKey()))
             .forEach(hotPotatoStatModel -> this.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(this.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
 
         // Save Art Of War Stats

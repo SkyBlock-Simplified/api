@@ -79,7 +79,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_type_key")
-    private ItemTypeSqlModel itemType;
+    private ItemTypeSqlModel type;
 
     @Getter
     @Setter
@@ -242,7 +242,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
             .append(this.getSkin(), that.getSkin())
             .append(this.getFurniture(), that.getFurniture())
             .append(this.getRarity(), that.getRarity())
-            .append(this.getItemType(), that.getItemType())
+            .append(this.getType(), that.getType())
             .append(this.getItemId(), that.getItemId())
             .append(this.getColor(), that.getColor())
             .append(this.getGenerator(), that.getGenerator())
@@ -276,7 +276,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
             .append(this.getSkin())
             .append(this.getFurniture())
             .append(this.getRarity())
-            .append(this.getItemType())
+            .append(this.getType())
             .append(this.getItemId())
             .append(this.getColor())
             .append(this.getGenerator())

@@ -21,7 +21,7 @@ public interface ItemModel extends Model {
 
     RarityModel getRarity();
 
-    ItemTypeModel getItemType();
+    ItemTypeModel getType();
 
     String getItemId();
 
