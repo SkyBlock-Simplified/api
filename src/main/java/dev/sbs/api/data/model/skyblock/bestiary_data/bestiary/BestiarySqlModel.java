@@ -3,6 +3,8 @@ package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilySqlModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_types.BestiaryTypeSqlModel;
+import dev.sbs.api.util.builder.EqualsBuilder;
+import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -73,6 +75,35 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        BestiarySqlModel that = (BestiarySqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getType(), that.getType())
+            .append(this.getFamily(), that.getFamily())
+            .append(this.getOrdinal(), that.getOrdinal())
+            .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+            .append(this.getId())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getType())
+            .append(this.getFamily())
+            .append(this.getOrdinal())
+            .append(this.getUpdatedAt())
+            .build();
+    }
 
 }
