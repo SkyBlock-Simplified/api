@@ -79,7 +79,6 @@ import dev.sbs.api.data.model.skyblock.enchantment_data.enchantment_stats.Enchan
 import dev.sbs.api.data.model.skyblock.enchantment_data.enchantment_types.EnchantmentTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.enchantment_data.enchantments.EnchantmentSqlRepository;
 import dev.sbs.api.data.model.skyblock.essence_perks.EssencePerkSqlRepository;
-import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeSqlRepository;
 import dev.sbs.api.data.model.skyblock.fairy_souls.FairySoulSqlRepository;
 import dev.sbs.api.data.model.skyblock.formats.FormatSqlRepository;
 import dev.sbs.api.data.model.skyblock.gemstone_data.gemstone_stats.GemstoneStatSqlRepository;
@@ -298,7 +297,6 @@ public final class SimplifiedApi {
             DungeonFloorSizeSqlRepository.class,
             DungeonLevelSqlRepository.class,
             EnchantmentFamilySqlRepository.class,
-            FairyExchangeSqlRepository.class,
             FormatSqlRepository.class,
             GemstoneTypeSqlRepository.class,
             GuildLevelSqlRepository.class,

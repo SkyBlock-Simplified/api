@@ -18,7 +18,6 @@ import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_levels.DungeonLevelM
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.enchantment_data.enchantment_stats.EnchantmentStatModel;
 import dev.sbs.api.data.model.skyblock.essence_perks.EssencePerkModel;
-import dev.sbs.api.data.model.skyblock.fairy_exchanges.FairyExchangeModel;
 import dev.sbs.api.data.model.skyblock.hotm_perk_stats.HotmPerkStatModel;
 import dev.sbs.api.data.model.skyblock.hotm_perks.HotmPerkModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
@@ -609,13 +608,14 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadFairySouls(SkyBlockIsland.Member member) {
-        SimplifiedApi.getRepositoryOf(FairyExchangeModel.class)
+        // TODO: Removed in preparation of skyblock levels
+        /*SimplifiedApi.getRepositoryOf(FairyExchangeModel.class)
             .stream()
             .filter(fairyExchangeModel -> fairyExchangeModel.getExchange() <= member.getFairyExchanges())
             .flatMap(fairyExchangeModel -> fairyExchangeModel.getEffects().entrySet().stream())
             .forEach(entry -> SimplifiedApi.getRepositoryOf(StatModel.class)
                 .findFirst(StatModel::getKey, entry.getKey())
-                .ifPresent(statModel -> this.addBase(this.stats.get(Type.FAIRY_SOULS).get(statModel), entry.getValue())));
+                .ifPresent(statModel -> this.addBase(this.stats.get(Type.FAIRY_SOULS).get(statModel), entry.getValue())));*/
     }
 
     private void loadJacobsPerks(SkyBlockIsland.Member member) {
