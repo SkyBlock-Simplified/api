@@ -17,10 +17,4 @@ public interface AccessoryModel extends EffectsModel<Double> {
 
     Integer getFamilyRank();
 
-    boolean isAttainable();
-
-    default boolean isNotAttainable() {
-        return !this.isAttainable();
-    }
-
 }

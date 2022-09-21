@@ -68,11 +68,6 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "attainable", nullable = false)
-    private boolean attainable;
-
-    @Getter
-    @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
@@ -90,7 +85,6 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
         AccessorySqlModel that = (AccessorySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isAttainable(), that.isAttainable())
             .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getName(), that.getName())
@@ -111,7 +105,6 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
             .append(this.getRarity())
             .append(this.getFamily())
             .append(this.getFamilyRank())
-            .append(this.isAttainable())
             .append(this.getEffects())
             .append(this.getUpdatedAt())
             .build();
