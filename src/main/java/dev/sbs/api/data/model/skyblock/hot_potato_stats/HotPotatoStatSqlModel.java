@@ -1,8 +1,8 @@
 package dev.sbs.api.data.model.skyblock.hot_potato_stats;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
+import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -11,27 +11,20 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(
     name = "skyblock_hot_potato_stats",
     indexes = {
         @Index(
-            columnList = "reforge_type_key, stat_key",
+            columnList = "group_key, stat_key",
             unique = true
         ),
         @Index(
-            columnList = "reforge_type_key"
+            columnList = "group_key"
         )
     }
 )
@@ -46,9 +39,14 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "reforge_type_key", nullable = false)
-    private ReforgeTypeSqlModel type;
+    @Column(name = "group_key", nullable = false)
+    private String groupKey;
+
+    @Getter
+    @Setter
+    @Column(name = "item_types", nullable = false)
+    @Convert(converter = StringListConverter.class)
+    private List<String> itemTypes;
 
     @Getter
     @Setter
@@ -75,7 +73,8 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
-            .append(this.getType(), that.getType())
+            .append(this.getGroupKey(), that.getGroupKey())
+            .append(this.getItemTypes(), that.getItemTypes())
             .append(this.getStat(), that.getStat())
             .append(this.getValue(), that.getValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -86,7 +85,8 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
-            .append(this.getType())
+            .append(this.getGroupKey())
+            .append(this.getItemTypes())
             .append(this.getStat())
             .append(this.getValue())
             .append(this.getUpdatedAt())

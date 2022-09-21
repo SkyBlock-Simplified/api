@@ -8,7 +8,6 @@ import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentModel;
 import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.reforge_stats.ReforgeStatModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
@@ -17,7 +16,6 @@ import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
@@ -37,7 +35,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
     private final Boolean hasArtOfWar;
     @Getter private boolean bonusCalculated;
 
-    public ItemData(ItemModel itemModel, CompoundTag compoundTag, String reforgeTypeKey) {
+    public ItemData(ItemModel itemModel, CompoundTag compoundTag) {
         super(itemModel, compoundTag);
         this.hotPotatoBooks = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
         this.hasArtOfWar = compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count");
@@ -70,7 +68,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
 
         // Save Hot Potato Book Stats
         SimplifiedApi.getRepositoryOf(HotPotatoStatModel.class)
-            .findAll(SearchFunction.combine(HotPotatoStatModel::getType, ReforgeTypeModel::getKey), reforgeTypeKey)
+            .matchAll(hotPotatoStatModel -> hotPotatoStatModel.getItemTypes().contains(itemModel.getItemType().getKey()))
             .forEach(hotPotatoStatModel -> this.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(this.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
 
         // Save Art Of War Stats

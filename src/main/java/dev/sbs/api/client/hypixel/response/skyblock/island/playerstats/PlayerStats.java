@@ -565,7 +565,10 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 ItemData itemData = null;
 
                 if (armorItemModelPair.getLeft().notEmpty() && armorItemModelPair.getRight().isPresent())
-                    itemData = new ItemData(armorItemModelPair.getRight().get(), armorItemModelPair.getLeft(), "ARMOR");
+                    itemData = new ItemData(
+                        armorItemModelPair.getRight().get(),
+                        armorItemModelPair.getLeft()
+                    );
 
                 this.armor.add(Optional.ofNullable(itemData));
             });

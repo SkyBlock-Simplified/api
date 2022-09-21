@@ -14,12 +14,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "skyblock_item_types"
+    name = "skyblock_item_types",
+    indexes = {
+        @Index(
+            columnList = "item_type_group_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ItemTypeSqlModel implements ItemTypeModel, SqlModel {

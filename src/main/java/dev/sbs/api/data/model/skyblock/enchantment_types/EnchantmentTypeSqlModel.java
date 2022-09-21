@@ -2,7 +2,7 @@ package dev.sbs.api.data.model.skyblock.enchantment_types;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.enchantments.EnchantmentSqlModel;
-import dev.sbs.api.data.model.skyblock.reforge_types.ReforgeTypeSqlModel;
+import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -11,27 +11,17 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(
     name = "skyblock_enchantment_types",
     indexes = {
         @Index(
-            columnList = "enchantment_key, reforge_type_key",
+            columnList = "enchantment_key",
             unique = true
-        ),
-        @Index(
-            columnList = "reforge_type_key"
         )
     }
 )
@@ -52,9 +42,9 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "reforge_type_key", nullable = false)
-    private ReforgeTypeSqlModel reforgeType;
+    @Column(name = "item_types", nullable = false)
+    @Convert(converter = StringListConverter.class)
+    private List<String> itemTypes;
 
     @Getter
     @UpdateTimestamp
@@ -71,7 +61,7 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
-            .append(this.getReforgeType(), that.getReforgeType())
+            .append(this.getItemTypes(), that.getItemTypes())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -81,7 +71,7 @@ public class EnchantmentTypeSqlModel implements EnchantmentTypeModel, SqlModel {
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getEnchantment())
-            .append(this.getReforgeType())
+            .append(this.getItemTypes())
             .append(this.getUpdatedAt())
             .build();
     }
