@@ -33,15 +33,39 @@ public interface ItemModel extends Model {
 
     boolean isObtainable();
 
+    default boolean isNotObtainable() {
+        return !this.isObtainable();
+    }
+
     boolean isGlowing();
+
+    default boolean isNotGlowing() {
+        return !this.isGlowing();
+    }
 
     boolean isUnstackable();
 
+    default boolean isStackable() {
+        return !this.isUnstackable();
+    }
+
     boolean isInMuseum();
+
+    default boolean isNotInMuseum() {
+        return !this.isInMuseum();
+    }
 
     boolean isDungeonItem();
 
+    default boolean isNotDungeonItem() {
+        return !this.isDungeonItem();
+    }
+
     boolean isAttributable();
+
+    default boolean isNotAttributable() {
+        return !this.isAttributable();
+    }
 
     Double getNpcSellPrice();
 
