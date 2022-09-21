@@ -1,12 +1,12 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatModel;
-import dev.sbs.api.data.model.skyblock.gemstone_types.GemstoneTypeModel;
-import dev.sbs.api.data.model.skyblock.gemstones.GemstoneModel;
+import dev.sbs.api.data.model.skyblock.bonus_data.bonus_item_stats.BonusItemStatModel;
+import dev.sbs.api.data.model.skyblock.gemstone_data.gemstone_types.GemstoneTypeModel;
+import dev.sbs.api.data.model.skyblock.gemstone_data.gemstones.GemstoneModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
-import dev.sbs.api.data.model.skyblock.reforges.ReforgeModel;
+import dev.sbs.api.data.model.skyblock.reforge_data.reforges.ReforgeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;

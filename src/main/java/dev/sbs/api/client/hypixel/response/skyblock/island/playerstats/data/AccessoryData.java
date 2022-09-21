@@ -1,9 +1,9 @@
 package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.model.skyblock.accessories.AccessoryModel;
-import dev.sbs.api.data.model.skyblock.accessory_enrichments.AccessoryEnrichmentModel;
-import dev.sbs.api.data.model.skyblock.bonus_item_stats.BonusItemStatModel;
+import dev.sbs.api.data.model.skyblock.accessory_data.accessories.AccessoryModel;
+import dev.sbs.api.data.model.skyblock.accessory_data.accessory_enrichments.AccessoryEnrichmentModel;
+import dev.sbs.api.data.model.skyblock.bonus_data.bonus_item_stats.BonusItemStatModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
