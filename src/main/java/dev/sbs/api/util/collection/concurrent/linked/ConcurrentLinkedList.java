@@ -5,6 +5,7 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.collection.search.SearchQuery;
 import dev.sbs.api.util.collection.sort.SortOrder;
+import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	 * Create a new concurrent list and fill it with the given collection.
 	 */
 	public ConcurrentLinkedList(Collection<? extends E> collection) {
-		super(new LinkedList<>(collection));
+		super(ListUtil.isEmpty(collection) ? new LinkedList<>() : new LinkedList<>(collection));
 	}
 
 	@Override
