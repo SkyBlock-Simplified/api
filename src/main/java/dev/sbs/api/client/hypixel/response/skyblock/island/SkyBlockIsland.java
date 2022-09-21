@@ -12,23 +12,23 @@ import com.google.gson.internal.LinkedTreeMap;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
-import dev.sbs.api.data.model.skyblock.accessory_powers.AccessoryPowerModel;
-import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemModel;
-import dev.sbs.api.data.model.skyblock.collections.CollectionModel;
-import dev.sbs.api.data.model.skyblock.dungeon_classes.DungeonClassModel;
-import dev.sbs.api.data.model.skyblock.dungeon_floors.DungeonFloorModel;
-import dev.sbs.api.data.model.skyblock.dungeon_levels.DungeonLevelModel;
-import dev.sbs.api.data.model.skyblock.dungeons.DungeonModel;
+import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
+import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemModel;
+import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
+import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_classes.DungeonClassModel;
+import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_floors.DungeonFloorModel;
+import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_levels.DungeonLevelModel;
+import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
-import dev.sbs.api.data.model.skyblock.minions.MinionModel;
-import dev.sbs.api.data.model.skyblock.pet_items.PetItemModel;
-import dev.sbs.api.data.model.skyblock.pet_levels.PetLevelModel;
-import dev.sbs.api.data.model.skyblock.pets.PetModel;
+import dev.sbs.api.data.model.skyblock.minion_data.minions.MinionModel;
+import dev.sbs.api.data.model.skyblock.pet_data.pet_items.PetItemModel;
+import dev.sbs.api.data.model.skyblock.pet_data.pet_levels.PetLevelModel;
+import dev.sbs.api.data.model.skyblock.pet_data.pets.PetModel;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sack_items.SackItemModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
-import dev.sbs.api.data.model.skyblock.shop_profile_upgrades.ShopProfileUpgradeModel;
+import dev.sbs.api.data.model.skyblock.shop_data.shop_profile_upgrades.ShopProfileUpgradeModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
@@ -266,6 +266,8 @@ public class SkyBlockIsland {
         private int essenceWither;
         @SerializedName("essence_spider")
         private int essenceSpider;
+        @SerializedName("essence_crimson")
+        private int essenceCrimson;
         @SerializedName("perks")
         @Getter private ConcurrentMap<String, Integer> essencePerks = Concurrent.newMap();
 
@@ -333,7 +335,16 @@ public class SkyBlockIsland {
         }
 
         public Essence getEssence() {
-            return new Essence(this.essenceUndead, this.essenceDiamond, this.essenceDragon, this.essenceGold, this.essenceIce, this.essenceWither, this.essenceSpider);
+            return new Essence(
+                this.essenceUndead,
+                this.essenceDiamond,
+                this.essenceDragon,
+                this.essenceGold,
+                this.essenceIce,
+                this.essenceWither,
+                this.essenceSpider,
+                this.essenceCrimson
+            );
         }
 
         public Optional<JacobsFarming> getJacobsFarming() {
@@ -1183,20 +1194,14 @@ public class SkyBlockIsland {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Essence {
 
-        @Getter
-        private final int undead;
-        @Getter
-        private final int diamond;
-        @Getter
-        private final int dragon;
-        @Getter
-        private final int gold;
-        @Getter
-        private final int ice;
-        @Getter
-        private final int wither;
-        @Getter
-        private final int spider;
+        @Getter private final int undead;
+        @Getter private final int diamond;
+        @Getter private final int dragon;
+        @Getter private final int gold;
+        @Getter private final int ice;
+        @Getter private final int wither;
+        @Getter private final int spider;
+        @Getter private final int crimson;
 
     }
 
@@ -1868,7 +1873,7 @@ public class SkyBlockIsland {
                 else if (rawLevel >= this.getMaxLevel())
                     return experience - experienceTiers.get(experienceTiers.size() - 1);
             } catch (Exception ex) {
-                String stop = "here";
+                String stop = "here"; // TODO: ???
             }
 
             return experience - experienceTiers.get(rawLevel - 1);
