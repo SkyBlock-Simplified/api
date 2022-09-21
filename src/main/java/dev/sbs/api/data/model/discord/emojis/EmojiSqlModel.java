@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.discord.emojis;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.guilds.GuildSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package dev.sbs.api.data.model.skyblock.npcs;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlModel;
-import dev.sbs.api.data.model.skyblock.locations.LocationSqlModel;
+import dev.sbs.api.data.model.skyblock.location_data.location_areas.LocationAreaSqlModel;
+import dev.sbs.api.data.model.skyblock.location_data.locations.LocationSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;

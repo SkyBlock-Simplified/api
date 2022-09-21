@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.discord.emojis;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.guilds.GuildModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildModel;
 import dev.sbs.api.util.helper.FormatUtil;
 
 import java.time.Instant;

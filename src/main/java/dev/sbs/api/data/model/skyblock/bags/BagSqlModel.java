@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.bags;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.collection_items.CollectionItemSqlModel;
+import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
