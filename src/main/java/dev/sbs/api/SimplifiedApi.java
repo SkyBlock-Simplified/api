@@ -89,6 +89,7 @@ import dev.sbs.api.data.model.skyblock.guild_levels.GuildLevelSqlRepository;
 import dev.sbs.api.data.model.skyblock.hot_potato_stats.HotPotatoStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.hotm_perk_stats.HotmPerkStatSqlRepository;
 import dev.sbs.api.data.model.skyblock.hotm_perks.HotmPerkSqlRepository;
+import dev.sbs.api.data.model.skyblock.item_types.ItemTypeSqlRepository;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_areas.LocationAreaSqlRepository;
 import dev.sbs.api.data.model.skyblock.location_remotes.LocationRemoteSqlRepository;
@@ -304,6 +305,7 @@ public final class SimplifiedApi {
             GuildLevelSqlRepository.class,
             GuildSqlRepository.class,
             HotmPerkSqlRepository.class,
+            ItemTypeSqlRepository.class,
             LocationSqlRepository.class,
             LocationRemoteSqlRepository.class,
             MelodySongSqlRepository.class,
