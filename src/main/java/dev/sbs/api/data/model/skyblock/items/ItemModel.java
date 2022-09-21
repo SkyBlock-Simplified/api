@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.items;
 
 import dev.sbs.api.data.model.Model;
+import dev.sbs.api.data.model.skyblock.item_types.ItemTypeModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 
 import java.util.List;
@@ -18,43 +19,55 @@ public interface ItemModel extends Model {
 
     String getFurniture();
 
+    RarityModel getRarity();
+
+    ItemTypeModel getItemType();
+
     String getItemId();
 
-    RarityModel getRarity();
+    String getColor();
 
     String getGenerator();
 
     Integer getGeneratorTier();
 
+    boolean isObtainable();
+
     boolean isGlowing();
-
-    String getCategory();
-
-    Map<String, Double> getStats();
-
-    Double getNpcSellPrice();
 
     boolean isUnstackable();
 
+    boolean isInMuseum();
+
     boolean isDungeonItem();
 
-    String getColor();
+    boolean isAttributable();
 
-    Map<String, List<Double>> getTieredStats();
+    Double getNpcSellPrice();
 
     Integer getGearScore();
 
-    Map<String, Object> getRequirements();
+    Map<String, Double> getStats();
 
-    Map<String, Object> getCatacombsRequirements();
+    Map<String, List<Double>> getTieredStats();
 
-    Map<String, Object> getEssence();
+    List<Map<String, Object>> getRequirements();
+
+    List<Map<String, Object>> getCatacombsRequirements();
+
+    List<List<Map<String, Object>>> getUpgradeCosts();
+
+    List<Map<String, Object>> getGemstoneSlots();
+
+    Map<String, Double> getEnchantments();
+
+    Map<String, Object> getDungeonItemConversionCost();
+
+    Map<String, Object> getPrestige();
 
     String getDescription();
 
     Double getAbilityDamageScaling();
-
-    Map<String, Double> getEnchantments();
 
     String getCrystal();
 

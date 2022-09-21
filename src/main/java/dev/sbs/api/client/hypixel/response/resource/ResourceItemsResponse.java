@@ -28,27 +28,39 @@ public class ResourceItemsResponse {
         @Getter private String tier;
         @Getter private String id;
         @Getter private String generator;
+        @SerializedName("generator_tier")
         @Getter private int generatorTier;
         @Getter private boolean glowing;
-        @Getter private String category;
+        @SerializedName("category")
+        @Getter private String itemType;
         @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
         @SerializedName("npc_sell_price")
         @Getter private double npcSellPrice;
         @Getter private boolean unstackable;
         @Getter private boolean dungeonItem;
+        @Getter private boolean museum;
+        @SerializedName("can_have_attributes")
+        @Getter private boolean attributable;
         @Getter private String color;
         @SerializedName("tiered_stats")
         @Getter private ConcurrentMap<String, List<Double>> tieredStats = Concurrent.newMap();
         @SerializedName("gear_score")
         @Getter private int gearScore;
-        @Getter private ItemRequirements requirements;
+        @Getter private ConcurrentList<ConcurrentMap<String, Object>> requirements = Concurrent.newList();
         @SerializedName("catacombs_requirements")
-        @Getter private ItemCatacombsRequirements catacombsRequirements;
-        @Getter private ItemEssence essence;
+        @Getter private ConcurrentList<ConcurrentMap<String, Object>> catacombsRequirements;
+        //@Getter private ConcurrentList<ItemCatacombsRequirements> catacombsRequirements;
+        @SerializedName("upgrade_costs")
+        @Getter private ConcurrentList<ConcurrentList<ConcurrentMap<String, Object>>> upgradeCosts = Concurrent.newList();
+        @SerializedName("gemstone_slots")
+        @Getter private ConcurrentList<ConcurrentMap<String, Object>> gemstoneSlots = Concurrent.newList();
+        @Getter private ConcurrentMap<String, Double> enchantments = Concurrent.newMap();
+        @SerializedName("dungeon_item_conversion_cost")
+        @Getter private ConcurrentMap<String, Object> dungeonItemConversionCost = Concurrent.newMap();
+        @Getter private ConcurrentMap<String, Object> prestige = Concurrent.newMap();
         @Getter private String description;
         @SerializedName("ability_damage_scaling")
         @Getter private double abilityDamageScaling;
-        @Getter private ConcurrentMap<String, Double> enchantments = Concurrent.newMap();
         @Getter private String crystal;
         @SerializedName("private_island")
         @Getter private String privateIsland;
@@ -56,62 +68,12 @@ public class ResourceItemsResponse {
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ItemRequirements {
-
-        @SerializedName("dungeon_completion")
-        @Getter private TypeTierRequirement dungeonCompletion;
-        @Getter private TypeLevelRequirement skill;
-        @Getter private SlayerLevelRequirement slayer;
-        @SerializedName("heart_of_the_mountain")
-        @Getter private TierRequirement heartOfTheMountain;
-        @SerializedName("target_practice_requirement")
-        @Getter private TargetPracticeRequirement targetPracticeRequirement;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ItemCatacombsRequirements {
 
-        @Getter private TypeLevelRequirement dungeon;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class TypeLevelRequirement {
-
         @Getter private String type;
         @Getter private int level;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class TypeTierRequirement {
-
-        @Getter private String type;
-        @Getter private int tier;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class SlayerLevelRequirement {
-
-        @SerializedName("slayer_boss_type")
-        @Getter private String slayerBossType;
-        @Getter private int level;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class TierRequirement {
-
-        @Getter private int tier;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class TargetPracticeRequirement {
-
-        @Getter private String mode;
+        @SerializedName("dungeon_type")
+        @Getter private String dungeonType;
 
     }
 
