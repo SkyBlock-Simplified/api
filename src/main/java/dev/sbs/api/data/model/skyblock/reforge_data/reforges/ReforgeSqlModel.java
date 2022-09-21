@@ -11,19 +11,21 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(
-    name = "skyblock_reforges",
-    indexes = {
-        @Index(
-            columnList = "item_id",
-            unique = true
-        )
-    }
+    name = "skyblock_reforges"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
