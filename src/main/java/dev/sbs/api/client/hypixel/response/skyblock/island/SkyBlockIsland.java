@@ -78,6 +78,8 @@ public class SkyBlockIsland {
 
     @SerializedName("profile_id")
     @Getter private UUID islandId;
+    @SerializedName("last_save")
+    @Getter private SkyBlockDate.RealTime lastSave; // Real Time
     @SerializedName("community_upgrades")
     private CommunityUpgrades communityUpgrades;
     private Banking banking;
@@ -185,8 +187,6 @@ public class SkyBlockIsland {
         @Getter private SkyBlockDate.SkyBlockTime lastDeath; // SkyBlock Time
         @SerializedName("death_count")
         @Getter private int deathCount;
-        @SerializedName("last_save")
-        @Getter private SkyBlockDate.RealTime lastSave; // Real Time
         @SerializedName("coin_purse")
         @Getter private double purse;
         @SerializedName("fishing_treasure_caught")
@@ -1938,6 +1938,7 @@ public class SkyBlockIsland {
             SkyBlockIsland skyBlockIsland = new SkyBlockIsland();
             JsonObject rootObject = jsonElement.getAsJsonObject();
             skyBlockIsland.islandId = StringUtil.toUUID(wrapObject(rootObject, "profile_id", JsonElement::getAsString).get());
+            skyBlockIsland.lastSave = new SkyBlockDate.RealTime(wrapObject(rootObject, "last_save", JsonElement::getAsLong).orElse(0L));
             skyBlockIsland.gameMode = wrapObject(rootObject, "game_mode", JsonElement::getAsString).orElse(null);
             skyBlockIsland.banking = gson.fromJson(wrapObject(rootObject, "banking", JsonElement::getAsJsonObject).orElse(null), Banking.class);
             skyBlockIsland.profileName = wrapObject(rootObject, "cute_name", JsonElement::getAsString).orElse(null);
