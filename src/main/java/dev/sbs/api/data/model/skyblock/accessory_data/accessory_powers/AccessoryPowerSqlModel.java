@@ -57,11 +57,6 @@ public class AccessoryPowerSqlModel implements AccessoryPowerModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "is_stone", nullable = false)
-    private boolean stone;
-
-    @Getter
-    @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
