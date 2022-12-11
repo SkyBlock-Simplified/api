@@ -33,7 +33,7 @@ public class HypixelGuildResponse {
         @Getter
         private String description;
         @Getter
-        private int chatMute;
+        private long chatMute;
         @Getter
         private int coins;
         @Getter
