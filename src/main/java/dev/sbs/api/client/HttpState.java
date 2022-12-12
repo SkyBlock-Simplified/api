@@ -24,7 +24,7 @@ public enum HttpState {
     }
 
     HttpState(String title) {
-        this.title = StringUtil.isEmpty(title) ? WordUtil.capitalizeFully(this.name()) : title;
+        this.title = StringUtil.isEmpty(title) ? WordUtil.capitalizeFully(this.name().replace("_", " ")) : title;
     }
 
 }
