@@ -230,12 +230,12 @@ public class SkyBlockIsland {
         @Getter private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
         @SerializedName("mining_core")
         private Mining mining;
+        private Experimentation experimentation;
         @SerializedName("jacob2")
         private JacobsFarming jacobsFarming;
         @SerializedName("forge.forge_processes.forge_1")
         @Getter private ConcurrentList<ForgeItem> forgeItems = Concurrent.newList();
         @Getter private Dungeons dungeons;
-        @Getter private Experimentation experimentation;
         @Getter private AccessoryBag accessoryBag;
 
         // Experience, DO NOT RENAME
@@ -345,6 +345,10 @@ public class SkyBlockIsland {
                 this.essenceSpider,
                 this.essenceCrimson
             );
+        }
+
+        public Optional<Experimentation> getExperimentation() {
+            return Optional.ofNullable(this.experimentation);
         }
 
         public Optional<JacobsFarming> getJacobsFarming() {
@@ -674,24 +678,65 @@ public class SkyBlockIsland {
         @Getter private int resetClaims;
         @SerializedName("claims_resets_timestamp")
         @Getter private SkyBlockDate.RealTime resetClaimsTimestamp;
-        @SerializedName("pairings")
-        private Table superpairs;
-        @SerializedName("simon")
-        private Table chronomatron;
-        @SerializedName("numbers")
-        private Table ultrasequencer;
 
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        private ConcurrentMap<String, Long> pairings;
+        private Optional<Table> superpairs;
+
+        private ConcurrentMap<String, Long> simon;
+        private Optional<Table> chronomatron;
+
+        private ConcurrentMap<String, Long> numbers;
+        private Optional<Table> ultrasequencer;
+
+        public final Optional<Table> getSuperpairs() {
+            if (Objects.isNull(this.superpairs))
+                this.superpairs = Optional.ofNullable(Objects.nonNull(this.pairings) ? new Table(this.pairings) : null);
+
+            return this.superpairs;
+        }
+
+        public final Optional<Table> getChronomatron() {
+            if (Objects.isNull(this.chronomatron))
+                this.chronomatron = Optional.ofNullable(Objects.nonNull(this.simon) ? new Table(this.simon) : null);
+
+            return this.chronomatron;
+        }
+
+        public final Optional<Table> getUltrasequencer() {
+            if (Objects.isNull(this.ultrasequencer))
+                this.ultrasequencer = Optional.ofNullable(Objects.nonNull(this.numbers) ? new Table(this.numbers) : null);
+
+            return this.ultrasequencer;
+        }
+
         public static class Table {
 
-            @SerializedName("last_attempt")
-            @Getter private SkyBlockDate.RealTime lastAttempt;
-            @SerializedName("last_claimed")
-            @Getter private SkyBlockDate.RealTime lastClaimed;
-            private ConcurrentMap<Integer, Integer> attempts = Concurrent.newMap();
-            private ConcurrentMap<Integer, Integer> claims = Concurrent.newMap();
-            @SerializedName("best_score")
-            private ConcurrentMap<Integer, Integer> bestScore = Concurrent.newMap();
+            @Getter private final SkyBlockDate.RealTime lastAttempt;
+            @Getter private final SkyBlockDate.RealTime lastClaimed;
+            @Getter private final int bonusClicks;
+            @Getter private final ConcurrentMap<Integer, Integer> attempts;
+            @Getter private final ConcurrentMap<Integer, Integer> claims;
+            @Getter private final ConcurrentMap<Integer, Integer> bestScore;
+
+            private Table(@NotNull ConcurrentMap<String, Long> tableData) {
+                this.lastAttempt = new SkyBlockDate.RealTime(tableData.removeOrGet("last_attempt", 0L));
+                this.lastClaimed = new SkyBlockDate.RealTime(tableData.removeOrGet("last_claimed", 0L));
+                this.bonusClicks = tableData.removeOrGet("bonus_clicks", 0L).intValue();
+
+                ConcurrentMap<String, ConcurrentMap<Integer, Integer>> filteredData = Concurrent.newMap();
+
+                tableData.forEach((key, value) -> {
+                    if (!filteredData.containsKey(key))
+                        filteredData.put(key, Concurrent.newMap());
+
+                    String actual = key.substring(0, key.lastIndexOf("_"));
+                    filteredData.get(key).put(Integer.parseInt(key.replace(FormatUtil.format("{0}_",actual), "")), value.intValue());
+                });
+
+                this.attempts = filteredData.removeOrGet("attempts", Concurrent.newMap());
+                this.claims = filteredData.removeOrGet("claims", Concurrent.newMap());
+                this.bestScore = filteredData.removeOrGet("best_score", Concurrent.newMap());
+            }
 
         }
 
@@ -1352,7 +1397,7 @@ public class SkyBlockIsland {
         private ConcurrentMap<String, Boolean> toggles;
         @SerializedName("last_reset")
         @Getter private SkyBlockDate.RealTime lastReset;
-        @Getter private int experience;
+        @Getter private double experience;
         @SerializedName("received_free_tier")
         @Getter private boolean receivedFreeTier;
         @SerializedName("retroactive_tier2_token")
@@ -2049,33 +2094,6 @@ public class SkyBlockIsland {
 
                 accessoryBag.contents = member.accessoryBagContents;
                 member.accessoryBag = accessoryBag;
-
-                // Experimentation
-                if (member.experimentation != null) {
-                    ConcurrentMap<String, Experimentation.Table> tableLinkMap = Concurrent.newMap();
-                    tableLinkMap.put("pairings", member.experimentation.superpairs);
-                    tableLinkMap.put("simon", member.experimentation.chronomatron);
-                    tableLinkMap.put("numbers", member.experimentation.ultrasequencer);
-
-                    ConcurrentList<Pair<String, String>> replaceList = Concurrent.newList(
-                        Pair.of("attempts", "attempts"),
-                        Pair.of("bestScore", "best_score"),
-                        Pair.of("claims", "claims")
-                    );
-
-                    tableLinkMap.forEach(tableLink -> {
-                        ConcurrentMap<String, Double> experimentMap = gson.fromJson(memberObject.getAsJsonObject("experimentation").getAsJsonObject(tableLink.getKey()), ConcurrentMap.class);
-
-                        replaceList.forEach(replacePair -> {
-                            ConcurrentMap<Integer, Integer> tableMap = (ConcurrentMap<Integer, Integer>) Reflection.of(Experimentation.Table.class).getValue(replacePair.getLeft(), tableLink.getValue());
-
-                            experimentMap.stream()
-                                .filter(entry -> entry.getKey().startsWith(replacePair.getRight()))
-                                .map(entry -> Pair.of(Integer.parseInt(entry.getKey().replace(FormatUtil.format("{0}_", replacePair.getRight()), "")), entry.getValue().intValue()))
-                                .forEach(entry -> tableMap.put(entry.getKey(), entry.getValue()));
-                        });
-                    });
-                }
 
                 // Add Member
                 skyBlockIsland.members.add(member);
