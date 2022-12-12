@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -160,6 +161,10 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 			if (this.ref.compareAndSet(current, modified))
 				return old;
 		}
+	}
+
+	public final V removeOrGet(Object key, V defaultValue) {
+		return Optional.ofNullable(this.remove(key)).orElse(defaultValue);
 	}
 
 	@Override
