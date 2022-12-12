@@ -45,7 +45,6 @@ import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.Range;
-import dev.sbs.api.util.data.Vector;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.DataUtil;
@@ -737,42 +736,6 @@ public class SkyBlockIsland {
                 this.claims = filteredData.removeOrGet("claims", Concurrent.newMap());
                 this.bestScore = filteredData.removeOrGet("best_score", Concurrent.newMap());
             }
-
-        }
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class GriffinBurrow {
-
-        @SerializedName("ts")
-        @Getter private SkyBlockDate.RealTime timestamp;
-        private int x;
-        private int y;
-        private int z;
-        private int tier; // Rarity (No Griffin is -1)
-        @Getter private Type type; // Start/Empty, Mob, Treasure
-        @Getter private int chain; // (Position - 1) / 4
-
-        // Type == 0 + Chain == 0, Start
-        // Type == 0 + Chain != 0, Empty
-
-        public Vector getCoordinates() {
-            return new Vector(this.x, this.y, this.z);
-        }
-
-        public RarityModel getGriffinRarity() {
-            return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getOrdinal, this.tier);
-        }
-
-        public enum Type {
-
-            @SerializedName("0")
-            START,
-            @SerializedName("1")
-            MOB,
-            @SerializedName(value = "2", alternate = { "3" })
-            TREASURE
 
         }
 
