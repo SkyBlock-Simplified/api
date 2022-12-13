@@ -248,7 +248,8 @@ public class SkyBlockIsland {
         private double experience_skill_taming = -1;
         private double experience_skill_carpentry = -1;
         private double experience_skill_runecrafting = -1;
-        private double experience_skill_social = 0; // NOT IN USE
+        @SerializedName("experience_skill_social2")
+        private double experience_skill_social = -1;
 
         // Essence
         @SerializedName("essence_undead")
@@ -1923,6 +1924,10 @@ public class SkyBlockIsland {
 
             @Getter private final double value;
             @Getter private final double overflow;
+
+            public final double getTotal() {
+                return this.getValue() + this.getOverflow();
+            }
 
         }
 
