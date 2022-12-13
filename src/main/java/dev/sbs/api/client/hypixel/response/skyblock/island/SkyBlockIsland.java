@@ -680,29 +680,29 @@ public class SkyBlockIsland {
         @Getter private SkyBlockDate.RealTime resetClaimsTimestamp;
 
         private ConcurrentMap<String, Long> pairings;
-        private Optional<Table> superpairs;
+        private transient Optional<Table> superpairs;
 
         private ConcurrentMap<String, Long> simon;
-        private Optional<Table> chronomatron;
+        private transient Optional<Table> chronomatron;
 
         private ConcurrentMap<String, Long> numbers;
-        private Optional<Table> ultrasequencer;
+        private transient Optional<Table> ultrasequencer;
 
-        public final Optional<Table> getSuperpairs() {
+        public Optional<Table> getSuperpairs() {
             if (Objects.isNull(this.superpairs))
                 this.superpairs = Optional.ofNullable(Objects.nonNull(this.pairings) ? new Table(this.pairings) : null);
 
             return this.superpairs;
         }
 
-        public final Optional<Table> getChronomatron() {
+        public Optional<Table> getChronomatron() {
             if (Objects.isNull(this.chronomatron))
                 this.chronomatron = Optional.ofNullable(Objects.nonNull(this.simon) ? new Table(this.simon) : null);
 
             return this.chronomatron;
         }
 
-        public final Optional<Table> getUltrasequencer() {
+        public Optional<Table> getUltrasequencer() {
             if (Objects.isNull(this.ultrasequencer))
                 this.ultrasequencer = Optional.ofNullable(Objects.nonNull(this.numbers) ? new Table(this.numbers) : null);
 
