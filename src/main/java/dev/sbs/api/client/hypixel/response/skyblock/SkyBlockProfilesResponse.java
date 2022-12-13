@@ -21,7 +21,7 @@ public class SkyBlockProfilesResponse {
     @SerializedName("profiles")
     @Getter private ConcurrentList<SkyBlockIsland> islands = Concurrent.newList();
 
-    public final Optional<SkyBlockIsland> getIsland(@NotNull ProfileModel profileModel) {
+    public Optional<SkyBlockIsland> getIsland(@NotNull ProfileModel profileModel) {
         return this.getIslands()
             .stream()
             .filter(skyBlockIsland -> skyBlockIsland.getProfileName().map(profileModel::equals).orElse(false))

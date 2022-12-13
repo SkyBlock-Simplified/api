@@ -6,6 +6,7 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.helper.FormatUtil;
 import feign.Feign;
 import feign.Request;
+import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
@@ -30,6 +31,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(template -> ApiBuilder.this.getHeaders().forEach(template::header))
             .errorDecoder(this.getErrorDecoder())
+            .retryer(Retryer.NEVER_RETRY)
             .options(new Request.Options(
                 5,
                 TimeUnit.SECONDS,
