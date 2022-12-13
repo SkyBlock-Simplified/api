@@ -11,6 +11,7 @@ import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tiers.MinionTierModel;
 import dev.sbs.api.data.model.skyblock.pet_data.pets.PetModel;
+import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
@@ -87,11 +88,15 @@ public class SkyBlockIslandTest {
             System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
+            ProfileModel pineappleProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE");
 
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
             SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
-            SkyBlockIsland island = profiles.getLastPlayed(); // Bingo Profile = 0
+            //SkyBlockIsland island = profiles.getLastPlayed(); // Bingo Profile = 0
+            Optional<SkyBlockIsland> pineappleIsland = profiles.getIsland(pineappleProfile);
+            assert pineappleIsland.isPresent();
+            SkyBlockIsland island = pineappleIsland.get();
             Optional<SkyBlockIsland.Member> optionalMember = island.getMember(uniqueId);
 
             // Did Hypixel Reply / Does a Member Exist
