@@ -33,67 +33,42 @@ public class HypixelPlayerResponse {
     public static class Player {
 
         @SerializedName("_id")
-        @Getter
-        private String hypixelId;
+        @Getter private String hypixelId;
         private String uuid;
         @SerializedName("displayname")
-        @Getter
-        private String displayName;
+        @Getter private String displayName;
         @SerializedName("channel")
-        @Getter
-        private String chatChannel;
-        @Getter
-        private Instant firstLogin;
-        @Getter
-        private Instant lastLogin;
-        @Getter
-        private Instant lastLogout;
-        @Getter
-        private long networkExp;
-        @Getter
-        private long karma;
-        @Getter
-        private int achievementPoints;
-        @Getter
-        private long totalDailyRewards;
-        @Getter
-        private long totalRewards;
-        @Getter
-        private String mcVersionRp;
-        @Getter
-        private String mostRecentGameType;
+        @Getter private String chatChannel;
+        @Getter private Instant firstLogin;
+        @Getter private Instant lastLogin;
+        @Getter private Instant lastLogout;
+        @Getter private long networkExp;
+        @Getter private long karma;
+        @Getter private int achievementPoints;
+        @Getter private long totalDailyRewards;
+        @Getter private long totalRewards;
+        @Getter private String mcVersionRp;
+        @Getter private String mostRecentGameType;
         @SerializedName("playername")
         private String playerName;
-        @Getter
-        private ConcurrentList<String> knownAliases;
-        @Getter
-        private SocialMedia socialMedia;
-        @Getter
-        private ConcurrentList<String> achievementsOneTime;
-        @Getter
-        private String currentClickEffect;
-        @Getter
-        private String currentGadget;
+        @Getter private ConcurrentList<String> knownAliases;
+        @Getter private SocialMedia socialMedia;
+        private ConcurrentList<Object> achievementsOneTime;
+        private transient ConcurrentList<String> achievementsOneTimeFixed;
+        @Getter private String currentClickEffect;
+        @Getter private String currentGadget;
         @SerializedName("claimed_potato_talisman")
-        @Getter
-        private Instant claimedPotatoTalisman;
+        @Getter private Instant claimedPotatoTalisman;
         @SerializedName("skyblock_free_cookie")
-        @Getter
-        private Instant skyblockFreeCookie;
+        @Getter private Instant skyblockFreeCookie;
         @SerializedName("claimed_century_cake")
-        @Getter
-        private Instant claimedCenturyCake;
+        @Getter private Instant claimedCenturyCake;
         @SerializedName("scorpius_bribe_120")
-        @Getter
-        private Instant scorpiusBribe120;
-        @Getter
-        private ConcurrentMap<String, Long> voting;
-        @Getter
-        private ConcurrentMap<String, Integer> petConsumables;
-        @Getter
-        private ConcurrentMap<String, Integer> achievements;
-        @Getter
-        private ConcurrentMap<String, Instant> achievementRewardsNew;
+        @Getter private Instant scorpiusBribe120;
+        @Getter private ConcurrentMap<String, Long> voting;
+        @Getter private ConcurrentMap<String, Integer> petConsumables;
+        @Getter private ConcurrentMap<String, Integer> achievements;
+        @Getter private ConcurrentMap<String, Instant> achievementRewardsNew;
 
         // Rank
         private String packageRank;
@@ -106,8 +81,17 @@ public class HypixelPlayerResponse {
         private String mostRecentMonthlyPackageRank;
 
         // Stats (Only SkyBlock Currently)
-        @Getter
-        private Stats stats;
+        @Getter private Stats stats;
+
+        public ConcurrentList<String> getAchievementsOneTime() {
+            if (this.achievementsOneTimeFixed == null)
+                this.achievementsOneTimeFixed = this.achievementsOneTime.stream()
+                    .filter(obj -> (obj instanceof String))
+                    .map(String::valueOf)
+                    .collect(Concurrent.toList());
+
+            return achievementsOneTimeFixed;
+        }
 
         public RankInfo getRank() {
             Rank rank = Rank.NONE;
