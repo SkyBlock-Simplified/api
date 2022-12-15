@@ -24,37 +24,30 @@ public class HypixelGuildResponse {
     public static class Guild {
 
         @SerializedName("_id")
-        @Getter
-        private String guildId;
-        @Getter
-        private String name;
-        @Getter
+        @Getter private String guildId;
+        @Getter private String name;
         private String tag;
-        @Getter
         private String description;
-        @Getter
-        private long chatMute;
-        @Getter
-        private int coins;
-        @Getter
-        private int coinsEver;
-        @Getter
-        private Instant created;
-        @Getter
-        private boolean publiclyListed;
-        @Getter
-        private MinecraftChatFormatting tagColor;
-        @Getter
-        private ConcurrentList<Member> members;
-        @Getter
-        private ConcurrentList<Rank> ranks;
-        @Getter
-        private ConcurrentMap<String, Integer> achievements;
-        @Getter
-        private ConcurrentList<String> preferredGames;
+        @Getter private long chatMute;
+        @Getter private int coins;
+        @Getter private int coinsEver;
+        @Getter private Instant created;
+        @Getter private boolean publiclyListed;
+        @Getter private MinecraftChatFormatting tagColor;
+        @Getter private ConcurrentList<Member> members;
+        @Getter private ConcurrentList<Rank> ranks;
+        @Getter private ConcurrentMap<String, Integer> achievements;
+        @Getter private ConcurrentList<String> preferredGames;
         @SerializedName("guildExpByGameType")
-        @Getter
-        private ConcurrentMap<String, Long> experienceByGameType;
+        @Getter private ConcurrentMap<String, Long> experienceByGameType;
+
+        public Optional<String> getTag() {
+            return Optional.ofNullable(this.tag);
+        }
+
+        public Optional<String> getDescription() {
+            return Optional.ofNullable(this.description);
+        }
 
         public class Member {
 
