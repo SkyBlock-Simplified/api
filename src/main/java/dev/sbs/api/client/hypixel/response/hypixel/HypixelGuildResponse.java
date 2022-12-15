@@ -7,6 +7,7 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ListUtil;
 import lombok.Getter;
 
+import java.awt.*;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class HypixelGuildResponse {
         @Getter private int coinsEver;
         @Getter private Instant created;
         @Getter private boolean publiclyListed;
-        @Getter private MinecraftChatFormatting tagColor;
+        private MinecraftChatFormatting tagColor;
         @Getter private ConcurrentList<Member> members;
         @Getter private ConcurrentList<Rank> ranks;
         @Getter private ConcurrentMap<String, Integer> achievements;
@@ -47,6 +48,10 @@ public class HypixelGuildResponse {
 
         public Optional<String> getDescription() {
             return Optional.ofNullable(this.description);
+        }
+
+        public Optional<MinecraftChatFormatting> getTagColor() {
+            return Optional.ofNullable(this.tagColor);
         }
 
         public class Member {
