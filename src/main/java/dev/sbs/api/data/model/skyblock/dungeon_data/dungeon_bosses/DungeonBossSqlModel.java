@@ -57,7 +57,7 @@ public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "emoji_key", nullable = false)
+    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
     private EmojiSqlModel emoji;
 
     @Getter
