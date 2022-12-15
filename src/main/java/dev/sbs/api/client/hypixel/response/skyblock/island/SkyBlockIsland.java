@@ -1706,6 +1706,9 @@ public class SkyBlockIsland {
 
         @Override
         public Weight getWeight() {
+            if (this.getType().getWeightDivider() == 0.00)
+                return new Weight(0, 0);
+
             double rawLevel = this.getRawLevel();
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
             double maxSkillExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
@@ -1777,6 +1780,9 @@ public class SkyBlockIsland {
 
         @Override
         public Weight getWeight() {
+            if (this.getType().getWeightDivider() == 0.00)
+                return new Weight(0, 0);
+
             ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
             double maxSlayerExperienceRequired = experienceTiers.get(experienceTiers.size() - 1);
             double base = Math.min(this.getExperience(), maxSlayerExperienceRequired) / this.getType().getWeightDivider();
