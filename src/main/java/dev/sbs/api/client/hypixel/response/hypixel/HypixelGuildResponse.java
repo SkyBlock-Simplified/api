@@ -54,7 +54,7 @@ public class HypixelGuildResponse {
         private ConcurrentList<String> preferredGames;
         @SerializedName("guildExpByGameType")
         @Getter
-        private ConcurrentMap<String, Integer> experienceByGameType;
+        private ConcurrentMap<String, Long> experienceByGameType;
 
         public class Member {
 

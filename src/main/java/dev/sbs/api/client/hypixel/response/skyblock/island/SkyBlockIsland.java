@@ -97,7 +97,7 @@ public class SkyBlockIsland {
 
         for (Member profile : this.getMembers()) {
             Collection profileCollection = profile.getCollection(type);
-            profileCollection.collected.forEach(entry -> collection.collected.put(entry.getKey(), Math.max(collection.collected.getOrDefault(entry.getKey(), 0), entry.getValue())));
+            profileCollection.collected.forEach(entry -> collection.collected.put(entry.getKey(), Math.max(collection.collected.getOrDefault(entry.getKey(), 0L), entry.getValue())));
             collection.unlocked.putAll(profileCollection.unlocked);
         }
 
@@ -217,7 +217,7 @@ public class SkyBlockIsland {
         private ConcurrentLinkedMap<String, Integer> sacksCounts = Concurrent.newLinkedMap();
         private ConcurrentLinkedMap<String, Slayer.SlayerBoss> slayer_bosses = Concurrent.newLinkedMap();
         private ConcurrentList<String> unlocked_coll_tiers = Concurrent.newList();
-        private ConcurrentLinkedMap<String, Integer> collection = Concurrent.newLinkedMap();
+        private ConcurrentLinkedMap<String, Long> collection = Concurrent.newLinkedMap();
         private MelodyHarp melodyHarp;
         @SerializedName("active_effects")
         @Getter private ConcurrentList<Potion> activePotions = Concurrent.newList();
@@ -320,7 +320,7 @@ public class SkyBlockIsland {
                     type.getKey()
                 )
                 .forEach(collectionItemModel -> {
-                    collection.collected.put(collectionItemModel, this.collection.getOrDefault(collectionItemModel.getItem().getItemId(), 0));
+                    collection.collected.put(collectionItemModel, this.collection.getOrDefault(collectionItemModel.getItem().getItemId(), 0L));
 
                     this.unlocked_coll_tiers.stream()
                         .filter(tier -> tier.matches(FormatUtil.format("^{0}_[\\d]+$", collectionItemModel.getItem().getItemId())))
@@ -782,10 +782,10 @@ public class SkyBlockIsland {
 
         @Getter private final SkillModel type;
         @SerializedName("items")
-        @Getter private ConcurrentLinkedMap<CollectionItemModel, Integer> collected = Concurrent.newLinkedMap();
+        @Getter private ConcurrentLinkedMap<CollectionItemModel, Long> collected = Concurrent.newLinkedMap();
         @Getter private ConcurrentLinkedMap<CollectionItemModel, Integer> unlocked = Concurrent.newLinkedMap();
 
-        public int getCollected(CollectionItemModel collection) {
+        public long getCollected(CollectionItemModel collection) {
             return this.collected.get(collection);
         }
 
