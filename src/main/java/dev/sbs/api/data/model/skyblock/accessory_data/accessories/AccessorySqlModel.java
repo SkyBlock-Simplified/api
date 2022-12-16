@@ -26,6 +26,10 @@ import java.util.Map;
         ),
         @Index(
             columnList = "rarity_key"
+        ),
+        @Index(
+            columnList = "family_key, family_rank",
+            unique = true
         )
     }
 )
@@ -63,7 +67,7 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "family_rank", nullable = false)
+    @Column(name = "family_rank")
     private Integer familyRank;
 
     @Getter
