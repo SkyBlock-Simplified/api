@@ -118,6 +118,10 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		}
 	}
 
+	public final V put(Map.Entry<K, V> entry) {
+		return this.put(entry.getKey(), entry.getValue());
+	}
+
 	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
 		while (true) {
