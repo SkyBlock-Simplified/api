@@ -33,7 +33,7 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         // Load Enrichment
         this.enrichment = SimplifiedApi.getRepositoryOf(AccessoryEnrichmentModel.class).findFirst(
             SearchFunction.combine(AccessoryEnrichmentModel::getStat, StatModel::getKey),
-            compoundTag.getPathOrDefault("tag.ExtraAttributes.talisman_enrichment", StringTag.EMPTY).getValue()
+            compoundTag.getPathOrDefault("tag.ExtraAttributes.talisman_enrichment", StringTag.EMPTY).getValue().toUpperCase()
         );
 
         // Handle Gemstone Stats
