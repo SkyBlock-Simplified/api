@@ -175,6 +175,14 @@ public class NumberUtil {
         return result;
     }
 
+    public static int ensureRange(int value, int min, int max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    public static boolean inRange(int value, int min, int max) {
+        return (value >= min) && (value <= max);
+    }
+
     public static boolean isFinite(double d) {
         return Math.abs(d) <= 1.7976931348623157E308D;
     }
