@@ -986,27 +986,27 @@ public class SkyBlockIsland {
         }
 
         public int getBestScore(DungeonFloorModel dungeonFloorModel) {
-            return this.getBestScore().get(dungeonFloorModel.getFloor());
+            return this.getBestScore().getOrDefault(dungeonFloorModel.getFloor(), 0);
         }
 
         public int getCompletions(DungeonFloorModel dungeonFloorModel) {
-            return this.getCompletions().get(dungeonFloorModel.getFloor());
+            return this.getCompletions().getOrDefault(dungeonFloorModel.getFloor(), 0);
         }
 
         public int getFastestTime(DungeonFloorModel dungeonFloorModel) {
-            return this.getFastestTime().get(dungeonFloorModel.getFloor());
+            return this.getFastestTime().getOrDefault(dungeonFloorModel.getFloor(), 0);
         }
 
         public int getFastestSTierTime(DungeonFloorModel dungeonFloorModel) {
-            return this.getFastestSTierTime().get(dungeonFloorModel.getFloor());
+            return this.getFastestSTierTime().getOrDefault(dungeonFloorModel.getFloor(), 0);
         }
 
         public int getFastestSPlusTierTime(DungeonFloorModel dungeonFloorModel) {
-            return this.getFastestSPlusTierTime().get(dungeonFloorModel.getFloor());
+            return this.getFastestSPlusTierTime().getOrDefault(dungeonFloorModel.getFloor(), 0);
         }
 
         public int getMilestoneCompletions(DungeonFloorModel dungeonFloorModel) {
-            return this.getMilestoneCompletions().get(dungeonFloorModel.getFloor());
+            return this.getMilestoneCompletions().getOrDefault(dungeonFloorModel.getFloor(), 0);
         }
 
         public ConcurrentMap<DungeonFloorModel, Double> getMostDamage(DungeonClassModel dungeonClassModel) {
