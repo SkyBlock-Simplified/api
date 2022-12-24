@@ -4,10 +4,14 @@ import dev.sbs.api.util.collection.MaxSizeLinkedMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.text.StringSubstitutor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -30,7 +34,7 @@ public class FormatUtil { // https://regex101.com/r/RFixIy/1
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String format(String format, Object... objects) {
+    public static String format(@NotNull String format, @NotNull Object... objects) {
         return format(format, null, objects);
     }
 
@@ -41,7 +45,7 @@ public class FormatUtil { // https://regex101.com/r/RFixIy/1
      * @param objects The objects to be used for replacement
      * @return The formatted string
      */
-    public static String format(String format, Map<String, Object> placeholders, Object... objects) {
+    public static String format(@NotNull String format, @Nullable Map<String, Object> placeholders, @NotNull Object... objects) {
         if (!MESSAGE_CACHE.containsKey(format)) {
             MessageFormat messageFormat = null;
             String replaceFormat = "$1";
@@ -68,6 +72,14 @@ public class FormatUtil { // https://regex101.com/r/RFixIy/1
             result = StringSubstitutor.replace(result, placeholders);
 
         return result;
+    }
+
+    public static Optional<String> formatNullable(@Nullable String format, @NotNull Object... objects) {
+        return formatNullable(format, null, objects);
+    }
+
+    public static Optional<String> formatNullable(@Nullable String format, @Nullable Map<String, Object> placeholders, @NotNull Object... objects) {
+        return Optional.ofNullable(Objects.isNull(format) ? null : format(format, placeholders, objects));
     }
 
 }
