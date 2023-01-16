@@ -91,13 +91,6 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         if (!this.isBonusCalculated()) {
             this.bonusCalculated = true;
 
-            // TODO: REMOVE REFORGE STUFF
-
-            // Handle Reforges
-            //this.getBonusReforgeStatModel().ifPresent(bonusReforgeStatModel -> this.getStats(AccessoryData.Type.REFORGES)
-            //    .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusReforgeStatModel))
-            //);
-
             // Handle Bonus Item Stats
             this.getBonusItemStatModels()
                 .stream()
@@ -108,12 +101,6 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
                         this.getStats(AccessoryData.Type.GEMSTONES)
                             .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
                     }
-
-                    // Handle Bonus Reforges
-                    /*if (bonusItemStatModel.isForReforges()) {
-                        this.getStats(AccessoryData.Type.REFORGES)
-                            .forEach((statModel, statData) -> statData.bonus = PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), this.getCompoundTag(), expressionVariables, bonusItemStatModel));
-                    }*/
 
                     // Handle Bonus Stats
                     if (bonusItemStatModel.isForStats()) {
