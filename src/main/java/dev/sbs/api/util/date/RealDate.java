@@ -3,12 +3,17 @@ package dev.sbs.api.util.date;
 import dev.sbs.api.util.helper.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.Calendar;
 
 public class RealDate extends CustomDate {
 
     public RealDate(String duration) {
         this(System.currentTimeMillis() + getDateTime(duration));
+    }
+
+    public RealDate(Instant instant) {
+        this(instant.toEpochMilli());
     }
 
     public RealDate(long realTime) {

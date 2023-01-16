@@ -11,7 +11,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.TimeZone;
 
 public abstract class CustomDate {
 
@@ -23,9 +22,9 @@ public abstract class CustomDate {
     @Getter private final long realTime;
 
     /**
-     * The TimeZone used in {@link #toString()}. Defaults to EST.
+     * The TimeZone used in {@link #toString()}. Defaults to America/New_York.
      */
-    @Getter private transient TimeZone timeZone;
+    @Getter private transient ZoneId zoneId;
 
     /**
      * The DateTimeFormatter used in {@link #toString()}. Defaults to {@link DateTimeFormatter#ISO_LOCAL_DATE_TIME}.
@@ -36,7 +35,7 @@ public abstract class CustomDate {
     protected CustomDate(long realTime) {
         this.realTime = realTime;
         this.dateFormat = DEFAULT_DATE_FORMAT;
-        this.timeZone = TimeZone.getTimeZone("EST");
+        this.zoneId = ZoneId.of("America/New_York");
     }
 
     @Override
@@ -48,7 +47,7 @@ public abstract class CustomDate {
 
         return new EqualsBuilder()
             .append(this.getRealTime(), that.getRealTime())
-            .append(this.getTimeZone(), that.getTimeZone())
+            .append(this.getZoneId(), that.getZoneId())
             .append(this.getDateFormat(), that.getDateFormat())
             .build();
     }
@@ -99,21 +98,17 @@ public abstract class CustomDate {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getRealTime())
-            .append(this.getTimeZone())
+            .append(this.getZoneId())
             .append(this.getDateFormat())
             .build();
     }
 
-    public final void setTimeZone(@NotNull String timeZoneId) {
-        this.setTimeZone(ZoneId.of(timeZoneId, ZoneId.SHORT_IDS));
+    public final void setZoneId(@NotNull String timeZoneId) {
+        this.setZoneId(ZoneId.of(timeZoneId, ZoneId.SHORT_IDS));
     }
 
-    public final void setTimeZone(@NotNull ZoneId timeZoneId) {
-        this.setTimeZone(TimeZone.getTimeZone(timeZoneId));
-    }
-
-    public final void setTimeZone(@NotNull TimeZone timeZone) {
-        this.timeZone = timeZone;
+    public final void setZoneId(@NotNull ZoneId timeZoneId) {
+        this.zoneId = timeZoneId;
     }
 
     /**
@@ -146,7 +141,7 @@ public abstract class CustomDate {
     @Override
     public final String toString() {
         return this.getDateFormat()
-            .withZone(this.getTimeZone().toZoneId())
+            .withZone(this.getZoneId())
             .format(this.toInstant());
     }
 
