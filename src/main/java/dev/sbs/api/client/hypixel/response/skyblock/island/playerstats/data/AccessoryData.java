@@ -4,6 +4,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_enrichments.AccessoryEnrichmentModel;
 import dev.sbs.api.data.model.skyblock.bonus_data.bonus_item_stats.BonusItemStatModel;
+import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
@@ -73,6 +74,13 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
 
                 upgradeRarity = (perfects == 7);
             }
+        }
+
+        if (this.getItem().getItemId().equals("PANDORAS_BOX")) {
+            return SimplifiedApi.getRepositoryOf(RarityModel.class)
+                .findFirst(RarityModel::getKey, super.getCompoundTag().getPathOrDefault("tag.ExtraAttributes.pandora-rarity", StringTag.EMPTY).getValue())
+                .map(RarityModel::getOrdinal)
+                .orElse(rarityOrdinal);
         }
 
         return rarityOrdinal + (upgradeRarity ? 1 : 0);

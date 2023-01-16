@@ -32,6 +32,7 @@ import java.util.Optional;
 public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> {
 
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a", Locale.US);
+    private static final ZoneId HYPIXEL_TIMEZONE = ZoneId.of("America/New_York");
     @Getter private final ItemModel item;
     @Getter private final CompoundTag compoundTag;
     @Getter private final RarityModel rarity;
@@ -54,7 +55,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
                 )
             )
             .map(timestamp -> LocalDateTime.parse(timestamp, TIMESTAMP_FORMAT))
-            .map(localDateTime -> localDateTime.atZone(ZoneId.of("EST", ZoneId.SHORT_IDS)))
+            .map(localDateTime -> localDateTime.atZone(HYPIXEL_TIMEZONE))
             .map(ZonedDateTime::toInstant)
             .map(Instant::toEpochMilli);
 
