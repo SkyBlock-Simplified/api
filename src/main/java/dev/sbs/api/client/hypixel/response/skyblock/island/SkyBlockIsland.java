@@ -37,6 +37,7 @@ import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.util.SerializedPath;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
@@ -232,7 +233,7 @@ public class SkyBlockIsland {
         private Experimentation experimentation;
         @SerializedName("jacob2")
         private JacobsFarming jacobsFarming;
-        @SerializedName("forge.forge_processes.forge_1")
+        @SerializedPath("forge.forge_processes.forge_1")
         @Getter private ConcurrentList<ForgeItem> forgeItems = Concurrent.newList();
         @Getter private Dungeons dungeons;
         @Getter private AccessoryBag accessoryBag;
@@ -250,6 +251,8 @@ public class SkyBlockIsland {
         private double experience_skill_runecrafting = -1;
         @SerializedName("experience_skill_social2")
         private double experience_skill_social = -1;
+        @SerializedPath("leveling.experience")
+        @Getter private int levelExperience;
 
         // Essence
         @SerializedName("essence_undead")
@@ -353,6 +356,10 @@ public class SkyBlockIsland {
 
         public Optional<JacobsFarming> getJacobsFarming() {
             return Optional.ofNullable(this.jacobsFarming);
+        }
+
+        public int getLevel() {
+            return this.getLevelExperience() / 100;
         }
 
         public Optional<MelodyHarp> getMelodyHarp() {

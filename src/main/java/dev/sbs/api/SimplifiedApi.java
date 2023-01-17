@@ -145,6 +145,7 @@ import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
 import dev.sbs.api.minecraft.text.MinecraftTextObject;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.HypixelConfig;
+import dev.sbs.api.util.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
@@ -183,7 +184,9 @@ public final class SimplifiedApi {
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
             .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
-            .setPrettyPrinting().create();
+            .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
+            .setPrettyPrinting()
+            .create();
 
         // Provide Services
         serviceManager.add(HypixelConfig.class, config);
