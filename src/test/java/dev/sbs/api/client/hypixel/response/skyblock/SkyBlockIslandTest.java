@@ -3,9 +3,9 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
+import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
 import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.PlayerStats;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tier_upgrades.MinionTierUpgradeModel;
@@ -16,9 +16,12 @@ import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
+import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.helper.StreamUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -26,6 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +44,54 @@ public class SkyBlockIslandTest {
             testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
+        }
+    }
+
+    @Test
+    public void getGuildLevels_ok() {
+        try {
+            System.out.println("Database Starting... ");
+            SimplifiedApi.connectDatabase(testConfig);
+            System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
+            HypixelPlayerData hypixelPlayerData = SimplifiedApi.getWebApi(HypixelPlayerData.class);
+            HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
+            String guildName = "SkyBlock Simplified";
+
+            hypixelPlayerData.getGuildByName(guildName)
+                .getGuild()
+                .ifPresent(guild -> {
+                    ConcurrentMap<Pair<UUID, String>, Integer> playerLevels = guild.getMembers()
+                        .stream()
+                        .map(member -> hypixelSkyBlockData.getProfiles(member.getUniqueId())
+                            .getIslands()
+                            .stream()
+                            .max(Comparator.comparingInt(island -> island.getMember(member.getUniqueId())
+                                .map(SkyBlockIsland.Member::getLevelExperience)
+                                .orElse(0)
+                            ))
+                            .map(island -> Pair.of(
+                                Pair.of(
+                                    member.getUniqueId(),
+                                    hypixelPlayerData.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
+                                ),
+                                island.getMember(member.getUniqueId()).map(SkyBlockIsland.Member::getLevel).orElse(0))
+                            )
+                        )
+                        .flatMap(StreamUtil::flattenOptional)
+                        .sorted(Comparator.comparingInt(Pair::getRight))
+                        .collect(Concurrent.toMap());
+
+                    playerLevels.forEach((pair, level) -> System.out.println(pair.getRight() + ": " + level + " (" + pair.getLeft().toString() + ")"));
+                });
+        } catch (HypixelApiException hypixelApiException) {
+            hypixelApiException.printStackTrace();
+            MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            Assertions.fail();
+        } finally {
+            SimplifiedApi.disconnectDatabase();
         }
     }
 
@@ -63,12 +115,19 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
 
             SkyBlockIsland.Member member = optionalMember.get();
-            PlayerStats playerStats = island.getPlayerStats(member);
+
+            // SkyBlock Levels
+            int exp1 = member.getLevelExperience();
+
+
+            assert exp1 > 0;
+            // Player Stats
+            //PlayerStats playerStats = island.getPlayerStats(member);
 
             //playerStats.getStats(PlayerStats.Type.ACTIVE_PET)
             //    .forEach((statModel, statData) -> System.out.println("PET: " + statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
 
-            playerStats.getCombinedStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
+            //playerStats.getCombinedStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
             MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
