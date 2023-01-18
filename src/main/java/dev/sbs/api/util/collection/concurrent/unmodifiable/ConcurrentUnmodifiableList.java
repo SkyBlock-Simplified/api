@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,12 +46,12 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 	}
 
 	@Override
-	public final void add(int index, E element) {
+	public final void add(int index, @NotNull E element) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public final boolean add(E element) {
+	public final boolean add(@NotNull E element) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -71,15 +72,16 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 
 	@Override
 	public final ConcurrentUnmodifiableList<E> inverse() {
-		return Concurrent.newUnmodifiableList(super.inverse());
+		ConcurrentList<E> list = Concurrent.newList(this);
+		Collections.reverse(list);
+		return Concurrent.newUnmodifiableList(list);
 	}
 
-	@NotNull
 	@Override
-	public final ListIterator<E> listIterator(int index) {
+	public final @NotNull ListIterator<E> listIterator(int index) {
 		return new ListIterator<E>() {
 
-			private final ListIterator<? extends E> atomicIterator = ConcurrentUnmodifiableList.super.ref.get().listIterator(index);
+			private final ListIterator<? extends E> atomicIterator = ConcurrentUnmodifiableList.super.listIterator(index);
 
 			@Override
 			public boolean hasNext() {
@@ -146,11 +148,6 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 
 	@Override
 	public final boolean retainAll(@NotNull Collection<?> collection) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void reverse() {
 		throw new UnsupportedOperationException();
 	}
 

@@ -1,76 +1,42 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
-import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
 import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCollection<E, T> implements List<E> {
+public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<E, T> implements List<E> {
 
 	protected AtomicList(T type) {
 		super(type);
 	}
 
-	public void add(int index, E element) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			modified.add(index, element);
-
-			if (this.ref.compareAndSet(current, modified))
-				return;
-		}
-	}
-
-	@Override
-	public boolean add(E element) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			boolean result = modified.add(element);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
-		}
-	}
-
-	@Override
-	public boolean addAll(@NotNull Collection<? extends E> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			boolean result = modified.addAll(collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+	public void add(int index, @NotNull E element) {
+		synchronized (this.lock) {
+			this.ref.add(index, element);
 		}
 	}
 
 	@Override
 	public boolean addAll(int index, @NotNull Collection<? extends E> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			boolean result = modified.addAll(index, collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+		synchronized (this.lock) {
+			return this.ref.addAll(index, collection);
 		}
 	}
 
 	@Override
 	public final E get(int index) {
-		return this.ref.get().get(index);
+		synchronized (this.lock) {
+			return this.ref.get(index);
+		}
 	}
 
 	public final E getFirst() {
@@ -87,18 +53,21 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 
 	@Override
 	public final int indexOf(Object item) {
-		return this.ref.get().indexOf(item);
+		synchronized (this.lock) {
+			return this.ref.indexOf(item);
+		}
 	}
 
 	public List<E> inverse() {
-		T list = this.newList(this.ref.get());
-		Collections.reverse(list);
-		return list;
+		Collections.reverse(this.ref);
+		return this;
 	}
 
 	@Override
 	public final int lastIndexOf(Object item) {
-		return this.ref.get().lastIndexOf(item);
+		synchronized (this.lock) {
+			return this.ref.lastIndexOf(item);
+		}
 	}
 
 	@Override @NotNull
@@ -108,65 +77,13 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 
 	@Override @NotNull
 	public ListIterator<E> listIterator(int index) {
-		return this.ref.get().listIterator(index);
-	}
-
-	@SuppressWarnings("unchecked")
-	private T newList(T current) {
-		try {
-			List<E> list = Reflection.of(current.getClass()).newInstance();
-			list.addAll(current);
-			return (T) list;
-		} catch (Exception ex) {
-			throw SimplifiedException.of(ReflectionException.class)
-				.withMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
-				.withCause(ex)
-				.build();
-		}
+		return new ConcurrentListIterator(this.ref.toArray(), index);
 	}
 
 	@Override
 	public E remove(int index) {
-		while (true) {
-			T current = this.ref.get();
-
-			if (index >= current.size())
-				return null;
-
-			T modified = this.newList(current);
-			E old = modified.remove(index);
-
-			if (this.ref.compareAndSet(current, modified))
-				return old;
-		}
-	}
-
-	@Override
-	@SuppressWarnings("all")
-	public boolean remove(Object element) {
-		while (true) {
-			T current = this.ref.get();
-
-			if (!current.contains(element))
-				return false;
-
-			T modified = this.newList(current);
-			boolean result = modified.remove(element);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
-		}
-	}
-
-	@Override
-	public boolean removeAll(@NotNull Collection<?> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			boolean result = modified.removeAll(collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+		synchronized (this.lock) {
+			return this.ref.remove(index);
 		}
 	}
 
@@ -179,30 +96,9 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 	}
 
 	@Override
-	public boolean retainAll(@NotNull Collection<?> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			boolean result = modified.retainAll(collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
-		}
-	}
-
-	public void reverse() {
-		Collections.reverse(this);
-	}
-
-	@Override
 	public E set(int index, E element) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newList(current);
-			E old = modified.set(index, element);
-
-			if (this.ref.compareAndSet(current, modified))
-				return old;
+		synchronized (this.lock) {
+			return this.ref.set(index, element);
 		}
 	}
 
@@ -239,7 +135,56 @@ public abstract class AtomicList<E, T extends AbstractList<E>> extends AtomicCol
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		return this.ref.get().subList(fromIndex, toIndex);
+		synchronized (this.lock) {
+			return this.ref.subList(fromIndex, toIndex);
+		}
+	}
+
+	/**
+	 * A concurrent list version of {@link ConcurrentIterator}.
+	 */
+	private final class ConcurrentListIterator extends ConcurrentCollectionIterator implements ListIterator<E> {
+
+		private ConcurrentListIterator(Object[] snapshot, int index) {
+			super(snapshot, index);
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public E previous() {
+			if (this.hasPrevious())
+				return (E) this.snapshot[--this.cursor];
+			else
+				throw new NoSuchElementException();
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void set(E element) {
+			AtomicList.this.set(this.cursor, element);
+			this.snapshot = AtomicList.this.toArray();
+		}
+
+		@Override
+		public void add(E element) {
+			AtomicList.this.add(element);
+			this.snapshot = AtomicList.this.toArray();
+		}
+
 	}
 
 }

@@ -130,7 +130,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
 
         public void forEach(Consumer<? super Map.Entry<K, V>> action) {
             Objects.requireNonNull(action);
-            this.ref.get().forEach(entryConsumer(action));
+            this.ref.forEach(entryConsumer(action));
         }
 
         @Override
@@ -140,7 +140,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
 
         @Override
         public Spliterator<Map.Entry<K, V>> spliterator() {
-            return new UnmodifiableSpliterator<>(this.ref.get().spliterator());
+            return new UnmodifiableSpliterator<>(this.ref.spliterator());
         }
 
         @Override
@@ -202,7 +202,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
         public Iterator<Map.Entry<K,V>> iterator() {
             return new Iterator<Map.Entry<K,V>>() {
 
-                private final Iterator<? extends Map.Entry<? extends K, ? extends V>> iterator = UnmodifiableEntrySet.this.ref.get().iterator();
+                private final Iterator<? extends Map.Entry<? extends K, ? extends V>> iterator = UnmodifiableEntrySet.this.ref.iterator();
 
                 public boolean hasNext() {
                     return this.iterator.hasNext();
@@ -222,7 +222,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
         @Override @NotNull
         @SuppressWarnings("unchecked")
         public Object[] toArray() {
-            Object[] a = this.ref.get().toArray();
+            Object[] a = this.ref.toArray();
 
             for (int i = 0; i < a.length; i++)
                 a[i] = new UnmodifiableEntry<>((Map.Entry<? extends K, ? extends V>) a[i]);
@@ -236,7 +236,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
             // We don't pass a to ref.toArray, to avoid window of
             // vulnerability wherein an unscrupulous multithreaded client
             // could get his hands on raw (unwrapped) Entries from ref.
-            Object[] arr = this.ref.get().toArray(array.length == 0 ? array : Arrays.copyOf(array, 0));
+            Object[] arr = this.ref.toArray(array.length == 0 ? array : Arrays.copyOf(array, 0));
 
             for (int i = 0; i < arr.length; i++)
                 arr[i] = new UnmodifiableEntry<>((Map.Entry<? extends K, ? extends V>)arr[i]);
@@ -260,7 +260,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
         @Override
         public boolean contains(Object item) {
             if (!(item instanceof Map.Entry)) return false;
-            return this.ref.get().contains(new UnmodifiableEntry<>((Map.Entry<?,?>) item));
+            return this.ref.contains(new UnmodifiableEntry<>((Map.Entry<?,?>) item));
         }
 
         /**

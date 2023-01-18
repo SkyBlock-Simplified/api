@@ -2,7 +2,8 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.helper.NumberUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -13,79 +14,91 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Iterable<Map.Entry<K, V>>, Map<K, V>, Serializable {
 
-	protected final AtomicReference<M> ref;
+	protected final @NotNull M ref;
+	protected final transient @NotNull Object lock = new Object();
 
 	/**
 	 * Create a new concurrent map.
 	 */
-	protected AtomicMap(M type, Map<? extends K, ? extends V> items) {
-		if (Objects.nonNull(items)) type.putAll(items);
-		this.ref = new AtomicReference<>(type);
+	protected AtomicMap(@NotNull M ref, Map<? extends K, ? extends V> items) {
+		if (Objects.nonNull(items)) ref.putAll(items);
+		this.ref = ref;
 	}
 
 	@Override
 	public void clear() {
-		this.ref.get().clear();
+		synchronized (this.lock) {
+			this.ref.clear();
+		}
 	}
 
 	@Override
 	public final boolean containsKey(Object key) {
-		return this.ref.get().containsKey(key);
+		synchronized (this.lock) {
+			return this.ref.containsKey(key);
+		}
 	}
 
 	@Override
 	public final boolean containsValue(Object value) {
-		return this.ref.get().containsValue(value);
+		synchronized (this.lock) {
+			return this.ref.containsValue(value);
+		}
 	}
 
-	@Override @NotNull
-	public Set<Entry<K, V>> entrySet() {
-		return this.ref.get().entrySet();
+	@Override
+	public @NotNull Set<Entry<K, V>> entrySet() {
+		return this.ref.entrySet();
 	}
 
 	@Override
 	public final boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (obj instanceof AtomicMap<?, ?, ?>) obj = ((AtomicMap<?, ?, ?>) obj).ref.get();
-		return this.ref.get().equals(obj);
+		if (obj instanceof AtomicMap<?, ?, ?>) obj = ((AtomicMap<?, ?, ?>) obj).ref;
+		return this.ref.equals(obj);
 	}
 
 	@Override
 	public final V get(Object key) {
-		return this.ref.get().get(key);
+		synchronized (this.lock) {
+			return this.ref.get(key);
+		}
 	}
 
 	@Override
 	public final V getOrDefault(Object key, V defaultValue) {
-		return this.ref.get().getOrDefault(key, defaultValue);
+		synchronized (this.lock) {
+			return this.ref.getOrDefault(key, defaultValue);
+		}
 	}
 
 	@Override
 	public final int hashCode() {
-		return new HashCodeBuilder()
-			.append(this.ref.get())
-			.build();
+		synchronized (this.lock) {
+			return this.ref.hashCode();
+		}
 	}
 
 	@Override
 	public final boolean isEmpty() {
-		return this.ref.get().isEmpty();
+		synchronized (this.lock) {
+			return this.ref.isEmpty();
+		}
 	}
 
-	@Override @NotNull
-	public final Iterator<Entry<K, V>> iterator() {
-		return this.entrySet().iterator();
+	@Override
+	public final @NotNull Iterator<Entry<K, V>> iterator() {
+		return new ConcurrentMapIterator(this.entrySet().toArray(), 0);
 	}
 
-	@Override @NotNull
-	public Set<K> keySet() {
-		return this.ref.get().keySet();
+	@Override
+	public @NotNull Set<K> keySet() {
+		return this.ref.keySet();
 	}
 
 	@SuppressWarnings("all")
@@ -108,13 +121,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 
 	@Override
 	public V put(K key, V value) {
-		while (true) {
-			M current = this.ref.get();
-			M modified = this.newMap(current);
-			V old = modified.put(key, value);
-
-			if (this.ref.compareAndSet(current, modified))
-				return old;
+		synchronized (this.lock) {
+			return this.ref.put(key, value);
 		}
 	}
 
@@ -124,46 +132,22 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 
 	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
-		while (true) {
-			M current = this.ref.get();
-			M modified = this.newMap(current);
-			modified.putAll(map);
-
-			if (this.ref.compareAndSet(current, modified))
-				return;
+		synchronized (this.lock) {
+			this.ref.putAll(map);
 		}
 	}
 
 	@Override
 	public V putIfAbsent(K key, V value) {
-		while (true) {
-			M current = this.ref.get();
-			M modified = this.newMap(current);
-
-			if (!modified.containsKey(key) || modified.get(key) == null) {
-				V old = modified.put(key, value);
-
-				if (this.ref.compareAndSet(current, modified))
-					return old;
-			} else
-				return null;
+		synchronized (this.lock) {
+			return this.ref.putIfAbsent(key, value);
 		}
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public V remove(Object key) {
-		while (true) {
-			M current = this.ref.get();
-
-			if (!current.containsKey(key))
-				return null;
-
-			M modified = this.newMap(current);
-			V old = modified.remove(key);
-
-			if (this.ref.compareAndSet(current, modified))
-				return old;
+		synchronized (this.lock) {
+			return this.ref.remove(key);
 		}
 	}
 
@@ -172,30 +156,15 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public boolean remove(Object key, Object value) {
-		while (true) {
-			M current = this.ref.get();
-
-			if (!current.containsKey(key))
-				return false;
-
-			M modified = this.newMap(current);
-			V currentValue = modified.get(key);
-
-			if (Objects.equals(currentValue, value)) {
-				modified.remove(key);
-
-				if (this.ref.compareAndSet(current, modified))
-					return true;
-			} else
-				return false;
+		synchronized (this.lock) {
+			return this.ref.remove(key, value);
 		}
 	}
 
 	@Override
 	public final int size() {
-		return this.ref.get().size();
+		return this.ref.size();
 	}
 
 	public final Stream<Entry<K, V>> stream() {
@@ -204,7 +173,24 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 
 	@Override @NotNull
 	public Collection<V> values() {
-		return this.ref.get().values();
+		synchronized (this.lock) {
+			return this.ref.values();
+		}
+	}
+
+	protected class ConcurrentMapIterator extends ConcurrentIterator<Map.Entry<K, V>> {
+
+		protected ConcurrentMapIterator(Object[] snapshot, int index) {
+			super(snapshot, index);
+		}
+
+		@Override
+		public void remove() {
+			AtomicMap.this.remove(this.snapshot[this.cursor]);
+			this.snapshot = AtomicMap.this.entrySet().toArray();
+			this.cursor = NumberUtil.ensureRange(this.cursor, 0, this.snapshot.length - 1);
+		}
+
 	}
 
 }

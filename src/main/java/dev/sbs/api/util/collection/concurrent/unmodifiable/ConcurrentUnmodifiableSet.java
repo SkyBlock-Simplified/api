@@ -42,7 +42,7 @@ public class ConcurrentUnmodifiableSet<E> extends ConcurrentSet<E> {
 	}
 
 	@Override
-	public final boolean add(E element) {
+	public final boolean add(@NotNull E element) {
 		throw new UnsupportedOperationException();
 	}
 

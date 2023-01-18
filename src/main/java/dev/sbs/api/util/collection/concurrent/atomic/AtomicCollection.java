@@ -1,8 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
-import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.helper.NumberUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -11,28 +10,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 @SuppressWarnings("all")
-public abstract class AtomicCollection<E, T extends AbstractCollection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
+public abstract class AtomicCollection<E, T extends Collection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
 
-	protected final AtomicReference<T> ref;
+	protected final @NotNull T ref;
+	protected final transient @NotNull Object lock = new Object();
 
-	protected AtomicCollection(T type) {
-		this.ref = new AtomicReference<>(type);
+	protected AtomicCollection(@NotNull T ref) {
+		this.ref = ref;
 	}
 
 	@Override
-	public boolean add(E element) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newCollection(current);
-			boolean result = modified.add(element);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+	public boolean add(@NotNull E element) {
+		synchronized (this.lock) {
+			return this.ref.add(element);
 		}
 	}
 
@@ -42,32 +37,31 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 
 	@Override
 	public boolean addAll(@NotNull Collection<? extends E> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newCollection(current);
-			boolean result = modified.addAll(collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+		synchronized (this.lock) {
+			return this.ref.addAll(collection);
 		}
 	}
 
 	@Override
 	public void clear() {
-		this.ref.get().clear();
+		synchronized (this.lock) {
+			this.ref.clear();
+		}
 	}
 
 	@Override
 	public boolean contains(Object item) {
-		return this.ref.get().contains(item);
+		synchronized (this.lock) {
+			return this.ref.contains(item);
+		}
 	}
 
-	public final <S> boolean contains(Function<E, S> function, S value) {
-		T current = this.ref.get();
-
-		for (E element : current) {
-			if (Objects.equals(function.apply(element), value))
-				return true;
+	public final <S> boolean contains(@NotNull Function<E, S> function, S value) {
+		synchronized (this.lock) {
+			for (E element : this.ref) {
+				if (Objects.equals(function.apply(element), value))
+					return true;
+			}
 		}
 
 		return false;
@@ -75,46 +69,36 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 
 	@Override
 	public boolean containsAll(@NotNull Collection<?> collection) {
-		return this.ref.get().containsAll(collection);
+		synchronized (this.lock) {
+			return this.ref.containsAll(collection);
+		}
 	}
 
 	@Override
 	public final boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (obj instanceof AtomicCollection) obj = ((AtomicCollection<?, ?>) obj).ref.get();
-		return this.ref.get().equals(obj);
+		if (obj instanceof AtomicCollection) obj = ((AtomicCollection<?, ?>) obj).ref;
+		return this.ref.equals(obj);
 	}
 
 	@Override
 	public final int hashCode() {
-		return new HashCodeBuilder()
-			.append(this.ref.get())
-			.build();
+		synchronized (this.lock) {
+			return this.ref.hashCode();
+		}
 	}
 
 	@Override
 	public final boolean isEmpty() {
-		return this.ref.get().isEmpty();
+		synchronized (this.lock) {
+			return this.ref.isEmpty();
+		}
 	}
 
 	@Override @NotNull
 	public Iterator<E> iterator() {
-		return this.ref.get().iterator();
-	} // Iterator#remove calls AtomicList#remove
-
-	@SuppressWarnings("unchecked")
-	private T newCollection(T current) {
-		try {
-			Collection<E> collection = current.getClass().newInstance();
-			collection.addAll(current);
-			return (T) collection;
-		} catch (Exception ex) {
-			throw SimplifiedException.of(ReflectionException.class)
-				.withMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
-				.withCause(ex)
-				.build();
-		}
+		return new ConcurrentCollectionIterator(this.ref.toArray(), 0);
 	}
 
 	public final boolean notContains(Object item) {
@@ -123,69 +107,68 @@ public abstract class AtomicCollection<E, T extends AbstractCollection<E>> exten
 
 	@Override
 	public Stream<E> parallelStream() {
-		return this.ref.get().parallelStream();
+		return this.ref.parallelStream();
 	}
 
 	@Override
 	@SuppressWarnings("all")
 	public boolean remove(Object element) {
-		while (true) {
-			T current = this.ref.get();
-
-			if (!current.contains(element))
-				return false;
-
-			T modified = this.newCollection(current);
-			boolean result = modified.remove(element);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+		synchronized (this.lock) {
+			return this.ref.remove(element);
 		}
 	}
 
 	@Override
 	public boolean removeAll(@NotNull Collection<?> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newCollection(current);
-			boolean result = modified.removeAll(collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+		synchronized (this.lock) {
+			return this.ref.removeAll(collection);
 		}
 	}
 
 	@Override
 	public boolean retainAll(@NotNull Collection<?> collection) {
-		while (true) {
-			T current = this.ref.get();
-			T modified = this.newCollection(current);
-			boolean result = modified.retainAll(collection);
-
-			if (this.ref.compareAndSet(current, modified))
-				return result;
+		synchronized (this.lock) {
+			return this.ref.retainAll(collection);
 		}
 	}
 
 	@Override
 	public final int size() {
-		return this.ref.get().size();
+		return this.ref.size();
 	}
 
 	@Override
 	public Stream<E> stream() {
-		return this.ref.get().stream();
+		return this.ref.stream();
 	}
 
 	@Override @NotNull
 	public Object[] toArray() {
-		return this.ref.get().toArray();
+		return this.ref.toArray();
 	}
 
 	@Override @NotNull
 	@SuppressWarnings("SuspiciousToArrayCall")
 	public <U> U[] toArray(@NotNull U[] array) {
-		return this.ref.get().toArray(array);
+		return this.ref.toArray(array);
+	}
+
+	/**
+	 * A concurrent version of {@link CopyOnWriteArrayList.COWIterator}.
+	 */
+	protected class ConcurrentCollectionIterator extends ConcurrentIterator<E> {
+
+		protected ConcurrentCollectionIterator(Object[] snapshot, int index) {
+			super(snapshot, index);
+		}
+
+		@Override
+		public void remove() {
+			AtomicCollection.this.remove(this.snapshot[this.cursor]);
+			this.snapshot = AtomicCollection.this.toArray();
+			this.cursor = NumberUtil.ensureRange(this.cursor, 0, this.snapshot.length - 1);
+		}
+
 	}
 
 }
