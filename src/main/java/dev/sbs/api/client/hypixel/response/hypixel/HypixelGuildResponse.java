@@ -7,7 +7,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ListUtil;
 import lombok.Getter;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +41,14 @@ public class HypixelGuildResponse {
         @SerializedName("guildExpByGameType")
         @Getter private ConcurrentMap<String, Long> experienceByGameType;
 
+        public Member getGuildMaster() {
+            return this.getMembers()
+                .stream()
+                .filter(member -> member.rank.equals("Guild Master"))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new); // Will Never Throw
+        }
+
         public Optional<String> getTag() {
             return Optional.ofNullable(this.tag);
         }
@@ -68,7 +75,10 @@ public class HypixelGuildResponse {
             private Map<String, Integer> experienceHistory;
 
             public Rank getRank() {
-                return Guild.this.ranks.stream().filter(rank -> rank.getName().equals(this.rank) || ("Admin".equals(rank.getName()) && "Guild Master".equals(this.rank))).collect(ListUtil.toSingleton());
+                if ("Guild Master".equals(this.rank))
+                    return Rank.buildGM(Guild.this.created);
+                else
+                    return Guild.this.ranks.stream().filter(rank -> rank.getName().equals(this.rank)).collect(ListUtil.toSingleton());
             }
 
         }
@@ -86,6 +96,16 @@ public class HypixelGuildResponse {
             @SerializedName("default")
             @Getter
             private boolean isDefault;
+
+            private static Rank buildGM(Instant created) {
+                Rank rank = new Rank();
+                rank.name = "Guild Master";
+                rank.tag = "GM";
+                rank.created = created;
+                rank.priority = 10;
+                rank.isDefault = false;
+                return rank;
+            }
 
         }
 
