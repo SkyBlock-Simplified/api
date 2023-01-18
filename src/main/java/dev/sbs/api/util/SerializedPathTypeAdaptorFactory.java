@@ -79,6 +79,12 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
                             skip = true;
                             break;
                         }
+
+                        // Ignore empty objects/arrays
+                        if (innerJsonElement.isJsonObject() && innerJsonElement.getAsJsonObject().size() == 0)
+                            skip = true;
+                        else if (innerJsonObject.isJsonArray() && innerJsonElement.getAsJsonArray().size() == 0)
+                            skip = true;
                     }
 
                     if (skip)
@@ -89,8 +95,6 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
 
                     // Now it can be assigned to the object field...
                     fieldInfo.getField().set(value, innerValue);
-                //} catch (PathNotFoundException ignored) {
-                    // if no path given, then just ignore the assignment to the field
                 } catch (IllegalAccessException ex) {
                     throw new IOException(ex);
                 }
