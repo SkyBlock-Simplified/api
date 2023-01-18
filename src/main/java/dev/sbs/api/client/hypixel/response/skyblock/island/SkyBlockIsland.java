@@ -234,7 +234,7 @@ public class SkyBlockIsland {
         @SerializedName("jacob2")
         private JacobsFarming jacobsFarming;
         @SerializedPath("forge.forge_processes.forge_1")
-        @Getter private ConcurrentList<ForgeItem> forgeItems = Concurrent.newList();
+        @Getter private ConcurrentMap<Integer, ForgeItem> forgeItems = Concurrent.newMap();
         @Getter private Dungeons dungeons;
         @Getter private AccessoryBag accessoryBag;
 
@@ -1412,11 +1412,11 @@ public class SkyBlockIsland {
         @Getter private int dailyOresMinedDayGemstone;
 
         // Biomes
-        @SerializedName("biomes.dwarven")
+        @SerializedPath("biomes.dwarven")
         @Getter private Biome.Dwarven dwarvenMinesBiome;
-        @SerializedName("biomes.precursor")
+        @SerializedPath("biomes.precursor")
         @Getter private Biome.Precursor precursorCityBiome;
-        @SerializedName("biomes.goblin")
+        @SerializedPath("biomes.goblin")
         @Getter private Biome.Goblin goblinHideoutBiome;
 
         public Crystal getCrystal(Crystal.Type type) {
@@ -2013,31 +2013,6 @@ public class SkyBlockIsland {
                         )
                     ));
                     member.melodyHarp = melodyHarp;
-                }
-
-                // Mining
-                if (memberObject.has("mining_core")) {
-                    JsonObject miningCore = memberObject.getAsJsonObject("mining_core");
-
-                    if (miningCore.has("biomes")) {
-                        JsonObject miningBiomes = miningCore.getAsJsonObject("biomes");
-                        member.mining.dwarvenMinesBiome = gson.fromJson(miningBiomes.getAsJsonObject("dwarven"), Mining.Biome.Dwarven.class);
-                        member.mining.precursorCityBiome = gson.fromJson(miningBiomes.getAsJsonObject("precursor"), Mining.Biome.Precursor.class);
-                        member.mining.goblinHideoutBiome = gson.fromJson(miningBiomes.getAsJsonObject("goblin"), Mining.Biome.Goblin.class);
-                    }
-                }
-
-                if (memberObject.has("forge")) {
-                    JsonObject forge = memberObject.getAsJsonObject("forge").getAsJsonObject("forge_processes");
-
-                    if (forge.has("forge_1")) {
-                        member.forgeItems.addAll(
-                            ((ConcurrentMap<Integer, ForgeItem>) gson.fromJson(forge.getAsJsonObject("forge_1"), new ConcurrentMap<>().getClass()))
-                                .stream()
-                                .map(Map.Entry::getValue)
-                                .collect(Concurrent.toList())
-                        );
-                    }
                 }
 
                 // Accessory Bag

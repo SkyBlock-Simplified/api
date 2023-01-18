@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -83,6 +84,26 @@ public class SkyBlockIslandTest {
                         .collect(Concurrent.toMap());
 
                     playerLevels.forEach((pair, level) -> System.out.println(pair.getRight() + ": " + level + " (" + pair.getLeft().toString() + ")"));
+                    System.out.println("---");
+                    double averageLevel = playerLevels.stream()
+                        .filter(entry -> entry.getValue() > 0)
+                        .mapToDouble(Map.Entry::getValue)
+                        .sum() / playerLevels.size();
+                    long belowAverage = playerLevels.stream()
+                        .filter(entry -> entry.getValue() > 0)
+                        .map(Map.Entry::getValue)
+                        .filter(level -> level <= averageLevel)
+                        .count();
+                    long below200 = playerLevels.stream()
+                        .filter(entry -> entry.getValue() > 0)
+                        .map(Map.Entry::getValue)
+                        .filter(level -> level <= 200)
+                        .count();
+                    System.out.println("Average Level: " + averageLevel + " / Below Average: " + belowAverage + " / Below 200: " + below200);
+                    System.out.println("---");
+                    playerLevels.stream()
+                        .filter(entry -> entry.getValue() == 0)
+                        .forEach(entry -> System.out.println(entry.getKey().getRight() + ": " + entry.getValue() + " (" + entry.getKey().getLeft().toString() + ")"));
                 });
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
