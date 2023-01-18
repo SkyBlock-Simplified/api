@@ -1,13 +1,13 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
-import dev.sbs.api.util.helper.NumberUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -164,9 +164,17 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 
 		@Override
 		public void remove() {
-			AtomicCollection.this.remove(this.snapshot[this.cursor]);
-			this.snapshot = AtomicCollection.this.toArray();
-			this.cursor = NumberUtil.ensureRange(this.cursor, 0, this.snapshot.length - 1);
+			if (this.last < 0)
+				throw new IllegalStateException();
+
+			try {
+				AtomicCollection.this.remove(this.snapshot[this.last]);
+				this.snapshot = AtomicCollection.this.toArray();
+				this.cursor = this.last;
+				this.last = -1;
+			} catch (IndexOutOfBoundsException ex) {
+				throw new ConcurrentModificationException();
+			}
 		}
 
 	}

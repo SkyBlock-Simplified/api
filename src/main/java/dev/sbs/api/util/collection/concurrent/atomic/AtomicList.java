@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -158,7 +159,7 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 		@Override
 		public E previous() {
 			if (this.hasPrevious())
-				return (E) this.snapshot[--this.cursor];
+				return (E) this.snapshot[this.last = --this.cursor];
 			else
 				throw new NoSuchElementException();
 		}
@@ -175,14 +176,27 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 		@Override
 		public void set(E element) {
-			AtomicList.this.set(this.cursor, element);
-			this.snapshot = AtomicList.this.toArray();
+			if (this.last < 0)
+				throw new IllegalStateException();
+
+			try {
+				AtomicList.this.set(this.last, element);
+				this.snapshot = AtomicList.this.toArray();
+			} catch (IndexOutOfBoundsException ex) {
+				throw new ConcurrentModificationException();
+			}
 		}
 
 		@Override
 		public void add(E element) {
-			AtomicList.this.add(element);
 			this.snapshot = AtomicList.this.toArray();
+
+			try {
+				AtomicList.this.add(this.cursor++, element);
+				this.last = -1;
+			} catch (IndexOutOfBoundsException ex) {
+				throw new ConcurrentModificationException();
+			}
 		}
 
 	}
