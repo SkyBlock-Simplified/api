@@ -405,7 +405,7 @@ public class SkyBlockIsland {
         }
 
         public int getPetScore() {
-            int petScore = 0;
+            int petScore = 1;
             ConcurrentList<String> noDuplicatePets = Concurrent.newList();
 
             for (PetInfo petInfo : this.getPets()) {

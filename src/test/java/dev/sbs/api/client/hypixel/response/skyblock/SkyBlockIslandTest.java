@@ -171,21 +171,33 @@ public class SkyBlockIslandTest {
             ProfileModel pineappleProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE");
             ProfileModel bananaProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "BANANA");
 
-            UUID craftedfuryId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
-            UUID crazyhjonkId = StringUtil.toUUID("c360fb57-1e6c-458c-86b5-c971e864536c"); // CrazyHjonk
-            UUID goldenduskId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
+            Pair<UUID, ProfileModel> pair_CraftedFury = Pair.of(
+                StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"),
+                SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE")
+            );
+            Pair<UUID, ProfileModel> pair_GoldenDusk = Pair.of(
+                StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"),
+                SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "POMEGRANATE")
+            );
+            Pair<UUID, ProfileModel> pair_CrazyHjonk = Pair.of(
+                StringUtil.toUUID("c360fb57-1e6c-458c-86b5-c971e864536c"),
+                SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "BANANA")
+            );
+            Pair<UUID, ProfileModel> checkThis = pair_CraftedFury;
 
-            SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(crazyhjonkId);
+            SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(checkThis.getKey());
             //SkyBlockIsland island = profiles.getLastPlayed(); // Bingo Profile = 0
-            Optional<SkyBlockIsland> pineappleIsland = profiles.getIsland(bananaProfile);
+            Optional<SkyBlockIsland> pineappleIsland = profiles.getIsland(checkThis.getRight());
             assert pineappleIsland.isPresent();
             SkyBlockIsland island = pineappleIsland.get();
-            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(crazyhjonkId);
+            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(checkThis.getKey());
 
             // Did Hypixel Reply / Does a Member Exist
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
             SkyBlockIsland.Member member = optionalMember.get();
+
+            int petScore = member.getPetScore();
 
             int uniques = island.getMinions()
                 .stream()
@@ -260,7 +272,7 @@ public class SkyBlockIslandTest {
                 MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
             }));
 
-            MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(crazyhjonkId));
+            MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(checkThis.getKey()));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
             MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
