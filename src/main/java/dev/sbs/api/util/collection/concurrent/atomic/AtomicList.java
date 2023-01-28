@@ -125,14 +125,17 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 		if (ListUtil.notEmpty(functions)) {
 			Iterator<Function<E, ? extends Comparable>> iterator = functions.iterator();
 
-			this.sort((s1, s2) -> {
-				Comparator<E> comparator = Comparator.comparing(iterator.next());
+			if (iterator.hasNext()) {
+				this.sort((s1, s2) -> {
+					Comparator<E> comparator = Comparator.comparing(iterator.next());
 
-				while (iterator.hasNext())
-					comparator = comparator.thenComparing(iterator.next());
+					while (iterator.hasNext()) {
+						comparator = comparator.thenComparing(iterator.next());
+					}
 
-				return sortOrder == SortOrder.ASCENDING ? comparator.compare(s1, s2) : comparator.compare(s2, s1);
-			});
+					return sortOrder == SortOrder.ASCENDING ? comparator.compare(s1, s2) : comparator.compare(s2, s1);
+				});
+			}
 		}
 
 		return this;
