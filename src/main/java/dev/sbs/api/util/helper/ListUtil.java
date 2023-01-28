@@ -29,13 +29,16 @@ public class ListUtil {
 	}
 
 	/**
-	 * Gets if the {@code value} is empty or null.
+	 * Gets if the {@code iterable} is empty or null.
 	 *
-	 * @param collection to check
+	 * @param iterable to check
 	 * @return true if empty or null, otherwise false
 	 */
-	public static <T> boolean isEmpty(Collection<? extends T> collection) {
-		return collection == null || collection.size() == 0;
+	public static <T> boolean isEmpty(Iterable<T> iterable) {
+		if (iterable instanceof Collection)
+			return ((Collection<?>) iterable).isEmpty();
+
+		return iterable == null || !iterable.iterator().hasNext();
 	}
 
 	/**
@@ -111,7 +114,7 @@ public class ListUtil {
 	}
 
 	/**
-	 * Gets if the {@code value} is not empty.
+	 * Gets if the {@code array} is not empty.
 	 *
 	 * @param array to check
 	 * @return true if not empty or null, otherwise false
@@ -121,13 +124,13 @@ public class ListUtil {
 	}
 
 	/**
-	 * Gets if the {@code value} is not empty.
+	 * Gets if the {@code iterable} is not empty.
 	 *
-	 * @param collection to check
+	 * @param iterable to check
 	 * @return true if not empty or null, otherwise false
 	 */
-	public static <T> boolean notEmpty(Collection<? extends T> collection) {
-		return !isEmpty(collection);
+	public static <T> boolean notEmpty(Iterable<T> iterable) {
+		return !isEmpty(iterable);
 	}
 
 	/**
