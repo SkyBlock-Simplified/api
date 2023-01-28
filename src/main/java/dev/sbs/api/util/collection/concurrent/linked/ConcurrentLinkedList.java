@@ -27,6 +27,7 @@ import java.util.stream.Stream;
  *
  * @param <E> type of elements
  */
+@SuppressWarnings("all")
 public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implements SearchQuery<E, ConcurrentLinkedList<E>> {
 
 	/**
@@ -57,15 +58,25 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public ConcurrentLinkedList<E> sorted(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
 		super.sorted(sortFunctions);
 		return this;
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public ConcurrentLinkedList<E> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
+		super.sorted(sortOrder, functions);
+		return this;
+	}
+
+	@Override
+	public ConcurrentLinkedList<E> sorted(@NotNull Iterable<Function<E, ? extends Comparable>> functions) {
+		super.sorted(functions);
+		return this;
+	}
+
+	@Override
+	public ConcurrentLinkedList<E> sorted(@NotNull SortOrder sortOrder, @NotNull Iterable<Function<E, ? extends Comparable>> functions) {
 		super.sorted(sortOrder, functions);
 		return this;
 	}

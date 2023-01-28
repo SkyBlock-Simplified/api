@@ -5,10 +5,12 @@ import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -105,17 +107,29 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@SuppressWarnings("all")
 	public AtomicList<E, T> sorted(Function<E, ? extends Comparable>... functions) {
-		return this.sorted(SortOrder.ASCENDING, functions);
+		return this.sorted(SortOrder.DESCENDING, functions);
+	}
+
+	@SuppressWarnings("all")
+	public AtomicList<E, T> sorted(@NotNull Iterable<Function<E, ? extends Comparable>> functions) {
+		return this.sorted(SortOrder.DESCENDING, functions);
 	}
 
 	@SuppressWarnings("all")
 	public AtomicList<E, T> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
-		if (ListUtil.notEmpty(functions)) {
-			this.sort((s1, s2) -> {
-				Comparator<E> comparator = Comparator.comparing(functions[0]);
+		return this.sorted(sortOrder, Arrays.asList(functions));
+	}
 
-				for (int i = 1; i < functions.length; i++)
-					comparator = comparator.thenComparing(functions[i]);
+	@SuppressWarnings("all")
+	public AtomicList<E, T> sorted(@NotNull SortOrder sortOrder, @NotNull Iterable<Function<E, ? extends Comparable>> functions) {
+		if (ListUtil.notEmpty(functions)) {
+			Iterator<Function<E, ? extends Comparable>> iterator = functions.iterator();
+
+			this.sort((s1, s2) -> {
+				Comparator<E> comparator = Comparator.comparing(iterator.next());
+
+				while (iterator.hasNext())
+					comparator = comparator.thenComparing(iterator.next());
 
 				return sortOrder == SortOrder.ASCENDING ? comparator.compare(s1, s2) : comparator.compare(s2, s1);
 			});

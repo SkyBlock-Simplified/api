@@ -25,6 +25,7 @@ import java.util.stream.Stream;
  *
  * @param <E> type of elements
  */
+@SuppressWarnings("all")
 public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements SearchQuery<E, ConcurrentList<E>> {
 
 	/**
@@ -65,15 +66,25 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public ConcurrentList<E> sorted(@NotNull Function<E, ? extends Comparable>... sortFunctions) {
 		super.sorted(sortFunctions);
 		return this;
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public ConcurrentList<E> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
+		super.sorted(sortOrder, functions);
+		return this;
+	}
+
+	@Override
+	public ConcurrentList<E> sorted(@NotNull Iterable<Function<E, ? extends Comparable>> functions) {
+		super.sorted(functions);
+		return this;
+	}
+
+	@Override
+	public ConcurrentList<E> sorted(@NotNull SortOrder sortOrder, @NotNull Iterable<Function<E, ? extends Comparable>> functions) {
 		super.sorted(sortOrder, functions);
 		return this;
 	}
