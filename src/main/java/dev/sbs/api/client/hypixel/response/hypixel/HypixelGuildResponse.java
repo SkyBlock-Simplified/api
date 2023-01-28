@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class HypixelGuildResponse {
 
-    private final static ConcurrentList<Integer> BELOW_LEVEL_8 = Concurrent.newList(100_000, 250_000, 500_000, 1_000_000, 1_750_000, 2_750_000, 4_000_000, 5_500_500, 7_500_500);
+    private final static ConcurrentList<Integer> BELOW_LEVEL_8 = Concurrent.newList(100_000, 250_000, 500_000, 1_000_000, 1_750_000, 2_750_000, 4_000_000, 5_500_000, 7_500_000);
 
     @Getter private boolean success;
     private Guild guild;
