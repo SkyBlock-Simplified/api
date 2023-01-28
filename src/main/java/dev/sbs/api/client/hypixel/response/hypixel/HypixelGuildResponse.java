@@ -15,7 +15,10 @@ import java.util.UUID;
 
 public class HypixelGuildResponse {
 
-    private final static ConcurrentList<Integer> BELOW_LEVEL_8 = Concurrent.newList(100_000, 250_000, 500_000, 1_000_000, 1_750_000, 2_750_000, 4_000_000, 5_500_000, 7_500_000);
+    private final static ConcurrentList<Integer> HYPIXEL_GUILD_EXP = Concurrent.newList(
+        100_000, 150_000, 250_000, 500_000, 750_000, 1_000_000, 1_250_000, 1_500_000,
+        2_000_000, 2_500_000, 2_500_000, 2_500_000, 2_500_000, 2_500_000, 3_000_000
+    );
 
     @Getter private boolean success;
     private Guild guild;
@@ -67,15 +70,18 @@ public class HypixelGuildResponse {
         }
 
         public int getLevel() {
-            for (int levelExp : BELOW_LEVEL_8) {
-                if (this.getExperience() < levelExp)
-                    return BELOW_LEVEL_8.indexOf(levelExp);
-            }
+            int level = 0;
+            long experience = this.getExperience();
 
-            if (this.getExperience() < 15_000_000)
-                return (int) Math.floor((this.getExperience() - BELOW_LEVEL_8.getLast()) / 2_500_000f) + 9;
-            else
-                return (int) Math.floor((this.getExperience() - 15_000_000) / 3_000_000f) + 12;
+            for (int i = 0; ; i++) {
+                int next = i >= ListUtil.sizeOf(HYPIXEL_GUILD_EXP) ? HYPIXEL_GUILD_EXP.getLast() : HYPIXEL_GUILD_EXP.get(i);
+                experience -= next;
+
+                if (experience < 0)
+                    return level;
+                else
+                    level++;
+            }
         }
 
         public class Member {
