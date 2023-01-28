@@ -2,6 +2,7 @@ package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.ListUtil;
@@ -13,6 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class HypixelGuildResponse {
+
+    private final static ConcurrentList<Integer> BELOW_LEVEL_8 = Concurrent.newList(100_000, 250_000, 500_000, 1_000_000, 1_750_000, 2_750_000, 4_000_000, 5_500_500, 7_500_500);
 
     @Getter private boolean success;
     private Guild guild;
@@ -34,6 +37,8 @@ public class HypixelGuildResponse {
         @Getter private Instant created;
         @Getter private boolean publiclyListed;
         private MinecraftChatFormatting tagColor;
+        @SerializedName("exp")
+        @Getter private long experience;
         @Getter private ConcurrentList<Member> members;
         @Getter private ConcurrentList<Rank> ranks;
         @Getter private ConcurrentMap<String, Integer> achievements;
@@ -59,6 +64,18 @@ public class HypixelGuildResponse {
 
         public Optional<MinecraftChatFormatting> getTagColor() {
             return Optional.ofNullable(this.tagColor);
+        }
+
+        public int getLevel() {
+            for (int levelExp : BELOW_LEVEL_8) {
+                if (this.getExperience() < levelExp)
+                    return BELOW_LEVEL_8.indexOf(levelExp);
+            }
+
+            if (this.getExperience() < 15_000_000)
+                return (int) Math.floor((this.getExperience() - BELOW_LEVEL_8.getLast()) / 2_500_000f) + 9;
+            else
+                return (int) Math.floor((this.getExperience() - 15_000_000) / 3_000_000f) + 12;
         }
 
         public class Member {
