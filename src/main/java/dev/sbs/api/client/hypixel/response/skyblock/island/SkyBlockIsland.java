@@ -133,10 +133,6 @@ public class SkyBlockIsland {
         return SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirst(ProfileModel::getKey, this.profileName.toUpperCase());
     }
 
-    public Minion getMinion(String minionName) {
-        return this.getMinion(SimplifiedApi.getRepositoryOf(MinionModel.class).findFirstOrNull(SearchFunction.Match.ANY, Pair.of(MinionModel::getKey, minionName), Pair.of(MinionModel::getName, minionName)));
-    }
-
     public Minion getMinion(MinionModel minionModel) {
         Minion minion = new Minion(minionModel);
 
@@ -146,6 +142,14 @@ public class SkyBlockIsland {
         }
 
         return minion;
+    }
+
+    public ConcurrentList<Minion> getMinions() {
+        return SimplifiedApi.getRepositoryOf(MinionModel.class)
+            .findAll()
+            .stream()
+            .map(this::getMinion)
+            .collect(Concurrent.toList());
     }
 
     public PlayerStats getPlayerStats(Member member) {

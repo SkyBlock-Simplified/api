@@ -169,22 +169,30 @@ public class SkyBlockIslandTest {
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
             ProfileModel pineappleProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE");
+            ProfileModel bananaProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "BANANA");
 
-            UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
-            //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
-            SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(uniqueId);
+            UUID craftedfuryId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
+            UUID crazyhjonkId = StringUtil.toUUID("c360fb57-1e6c-458c-86b5-c971e864536c"); // CrazyHjonk
+            UUID goldenduskId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
+
+            SkyBlockProfilesResponse profiles = hypixelSkyBlockData.getProfiles(crazyhjonkId);
             //SkyBlockIsland island = profiles.getLastPlayed(); // Bingo Profile = 0
-            Optional<SkyBlockIsland> pineappleIsland = profiles.getIsland(pineappleProfile);
+            Optional<SkyBlockIsland> pineappleIsland = profiles.getIsland(bananaProfile);
             assert pineappleIsland.isPresent();
             SkyBlockIsland island = pineappleIsland.get();
-            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(uniqueId);
+            Optional<SkyBlockIsland.Member> optionalMember = island.getMember(crazyhjonkId);
 
             // Did Hypixel Reply / Does a Member Exist
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
+            SkyBlockIsland.Member member = optionalMember.get();
+
+            int uniques = island.getMinions()
+                .stream()
+                .mapToInt(minion -> minion.getUnlocked().size())
+                .sum();
 
             // skills, skill_levels, slayers, slayer_levels, dungeons, dungeon_classes, dungeon_levels
-            SkyBlockIsland.Member member = optionalMember.get();
             double skillAverage = member.getSkillAverage();
             ConcurrentMap<SkyBlockIsland.Skill, SkyBlockIsland.Experience.Weight> skillWeights = member.getSkillWeight();
             ConcurrentMap<SkyBlockIsland.Slayer, SkyBlockIsland.Experience.Weight> slayerWeights = member.getSlayerWeight();
@@ -252,7 +260,7 @@ public class SkyBlockIslandTest {
                 MatcherAssert.assertThat(wolf_hs, Matchers.not(drag_hs));
             }));
 
-            MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(uniqueId));
+            MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(crazyhjonkId));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
             MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
