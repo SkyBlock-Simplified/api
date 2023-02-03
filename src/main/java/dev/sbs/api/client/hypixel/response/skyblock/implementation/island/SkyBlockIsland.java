@@ -298,14 +298,12 @@ public class SkyBlockIsland {
         private MelodyHarp melodyHarp;
         private Experimentation experimentation;
         private Leveling leveling;
-        @SerializedName("mining_core")
-        private Mining mining;
-        @SerializedName("jacob2")
-        private JacobsFarming jacobsFarming;
-        @SerializedName("nether_island_player_data")
-        private CrimsonIsle crimsonIsle;
+        private Mining mining_core;
+        private JacobsFarming jacob2;
+        private CrimsonIsle nether_island_player_data;
         private ConcurrentList<Pet> pets = Concurrent.newList();
         private AutoPet autopet;
+        private Trapper trapper_quest;
 
         public Backpacks getBackpacks() {
             return new Backpacks(
@@ -349,10 +347,10 @@ public class SkyBlockIsland {
         }
 
         public CrimsonIsle getCrimsonIsle() {
-            if (Objects.isNull(this.crimsonIsle))
-                this.crimsonIsle = new CrimsonIsle();
+            if (Objects.isNull(this.nether_island_player_data))
+                this.nether_island_player_data = new CrimsonIsle();
 
-            return this.crimsonIsle;
+            return this.nether_island_player_data;
         }
 
         public Essence getEssence() {
@@ -385,10 +383,10 @@ public class SkyBlockIsland {
         }
 
         public JacobsFarming getJacobsFarming() {
-            if (Objects.isNull(this.jacobsFarming))
-                this.jacobsFarming = new JacobsFarming();
+            if (Objects.isNull(this.jacob2))
+                this.jacob2 = new JacobsFarming();
 
-            return this.jacobsFarming;
+            return this.jacob2;
         }
 
         public Leveling getLeveling() {
@@ -406,10 +404,10 @@ public class SkyBlockIsland {
         }
 
         public Mining getMining() {
-            if (Objects.isNull(this.mining))
-                this.mining = new Mining();
+            if (Objects.isNull(this.mining_core))
+                this.mining_core = new Mining();
 
-            return this.mining;
+            return this.mining_core;
         }
 
         public Minion getMinion(MinionModel minionModel) {
@@ -626,6 +624,13 @@ public class SkyBlockIsland {
                 });
 
             return new Experience.Weight(totalWeight.get(), totalOverflow.get());
+        }
+
+        public Trapper getTrapper() {
+            if (Objects.isNull(this.trapper_quest))
+                this.trapper_quest = new Trapper();
+
+            return this.trapper_quest;
         }
 
         public boolean hasStorage(Storage type) {
