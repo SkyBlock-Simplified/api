@@ -2,6 +2,8 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Weighted;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.reflection.Reflection;

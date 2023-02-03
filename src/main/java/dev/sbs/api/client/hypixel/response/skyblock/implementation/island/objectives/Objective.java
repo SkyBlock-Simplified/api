@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objective;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objectives;
 
 import lombok.AccessLevel;
 import lombok.Getter;

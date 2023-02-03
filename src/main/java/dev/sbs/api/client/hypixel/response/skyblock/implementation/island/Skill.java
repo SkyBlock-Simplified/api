@@ -1,6 +1,8 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Weighted;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;

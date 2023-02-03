@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util;
 
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
