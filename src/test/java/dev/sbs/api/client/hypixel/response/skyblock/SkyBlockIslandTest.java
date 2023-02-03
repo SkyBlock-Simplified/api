@@ -3,9 +3,16 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
-import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
-import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
+import dev.sbs.api.client.hypixel.request.HypixelSkyBlockData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Collection;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Dungeon;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Experience;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.PetInfo;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Skill;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Slayer;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tier_upgrades.MinionTierUpgradeModel;
@@ -55,11 +62,11 @@ public class SkyBlockIslandTest {
             SimplifiedApi.connectDatabase(testConfig);
             System.out.println("Database initialized in " + SimplifiedApi.getSqlSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSqlSession().getStartupTime() + "ms");
-            HypixelPlayerData hypixelPlayerData = SimplifiedApi.getWebApi(HypixelPlayerData.class);
+            HypixelPlayerRequest hypixelPlayerRequest = SimplifiedApi.getWebApi(HypixelPlayerRequest.class);
             HypixelSkyBlockData hypixelSkyBlockData = SimplifiedApi.getWebApi(HypixelSkyBlockData.class);
             String guildName = "SkyBlock Simplified";
 
-            hypixelPlayerData.getGuildByName(guildName)
+            hypixelPlayerRequest.getGuildByName(guildName)
                 .getGuild()
                 .ifPresent(guild -> {
                     ConcurrentMap<Pair<UUID, String>, Integer> playerLevels = guild.getMembers()
@@ -74,7 +81,7 @@ public class SkyBlockIslandTest {
                             .map(island -> Pair.of(
                                 Pair.of(
                                     member.getUniqueId(),
-                                    hypixelPlayerData.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
+                                    hypixelPlayerRequest.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
                                 ),
                                 island.getMember(member.getUniqueId()).map(SkyBlockIsland.Member::getLevel).orElse(0))
                             )
@@ -206,12 +213,11 @@ public class SkyBlockIslandTest {
 
             // skills, skill_levels, slayers, slayer_levels, dungeons, dungeon_classes, dungeon_levels
             double skillAverage = member.getSkillAverage();
-            ConcurrentMap<SkyBlockIsland.Skill, SkyBlockIsland.Experience.Weight> skillWeights = member.getSkillWeight();
-            ConcurrentMap<SkyBlockIsland.Slayer, SkyBlockIsland.Experience.Weight> slayerWeights = member.getSlayerWeight();
-            ConcurrentMap<SkyBlockIsland.Dungeon, SkyBlockIsland.Experience.Weight> dungeonWeights = member.getDungeonWeight();
-            ConcurrentMap<SkyBlockIsland.Dungeon.Class, SkyBlockIsland.Experience.Weight> dungeonClassWeights = member.getDungeonClassWeight();
-            assert member.getJacobsFarming().isPresent();
-            ConcurrentList<SkyBlockIsland.JacobsFarming.Contest> contests = member.getJacobsFarming().get().getContests();
+            ConcurrentMap<Skill, Experience.Weight> skillWeights = member.getSkillWeight();
+            ConcurrentMap<Slayer, Experience.Weight> slayerWeights = member.getSlayerWeight();
+            ConcurrentMap<Dungeon, Experience.Weight> dungeonWeights = member.getDungeonWeight();
+            ConcurrentMap<Dungeon.Class, Experience.Weight> dungeonClassWeights = member.getDungeonClassWeight();
+            ConcurrentList<JacobsFarming.Contest> contests = member.getJacobsFarming().getContests();
 
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
@@ -220,7 +226,7 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
 
             // collection_items, collections
-            SkyBlockIsland.Collection sbCollection = member.getCollection(combatSkillModel);
+            Collection sbCollection = member.getCollection(combatSkillModel);
             SackModel sbSack = SimplifiedApi.getRepositoryOf(SackModel.class).findFirstOrNull(SackModel::getKey, "MINING");
             MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
@@ -232,11 +238,11 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(wheatGen11.getItemCost().getItemId(), Matchers.equalTo("ENCHANTED_HAY_BLOCK"));
 
             // rarities, pets, pet_items, pet_exp_scales
-            ConcurrentList<SkyBlockIsland.PetInfo> pets = member.getPets();
-            Optional<SkyBlockIsland.PetInfo> optionalSpiderPet = pets.stream().filter(petInfo -> petInfo.getName().equals("SPIDER")).findFirst();
-            Optional<SkyBlockIsland.PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
+            ConcurrentList<PetInfo> pets = member.getPets();
+            Optional<PetInfo> optionalSpiderPet = pets.stream().filter(petInfo -> petInfo.getName().equals("SPIDER")).findFirst();
+            Optional<PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
 
-            Optional<SkyBlockIsland.PetInfo> optionalTestPet = pets.stream().filter(petInfo -> petInfo.getName().equals("BEE")).findFirst();
+            Optional<PetInfo> optionalTestPet = pets.stream().filter(petInfo -> petInfo.getName().equals("BEE")).findFirst();
             optionalTestPet.ifPresent(testPetInfo -> {
                 ConcurrentList<Double> tiers = testPetInfo.getExperienceTiers();
                 double tierSum = tiers.stream().mapToDouble(value -> value).sum();

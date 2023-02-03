@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;

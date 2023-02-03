@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation;
 
 import com.google.common.base.Preconditions;
 import dev.sbs.api.util.builder.EqualsBuilder;

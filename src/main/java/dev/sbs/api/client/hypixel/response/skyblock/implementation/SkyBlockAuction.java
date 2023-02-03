@@ -1,8 +1,8 @@
-package dev.sbs.api.client.hypixel.response.skyblock;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.NbtContent;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class SkyBlockAuction {
 
     @SerializedName("item_bytes")
-    @Getter SkyBlockIsland.NbtContent itemNbt;
+    @Getter NbtContent itemNbt;
     @SerializedName("uuid")
     @Getter private UUID auctionId;
     @SerializedName("auctioneer")

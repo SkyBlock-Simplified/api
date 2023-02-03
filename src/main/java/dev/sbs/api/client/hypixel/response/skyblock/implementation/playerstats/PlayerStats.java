@@ -1,13 +1,15 @@
-package dev.sbs.api.client.hypixel.response.skyblock.island.playerstats;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.AccessoryData;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.Data;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.ItemData;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.ObjectData;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.PlayerDataHelper;
-import dev.sbs.api.client.hypixel.response.skyblock.island.playerstats.data.StatData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Banking;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.AccessoryData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.Data;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.ItemData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.ObjectData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.PlayerDataHelper;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.StatData;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_families.AccessoryFamilyModel;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
@@ -88,7 +90,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // --- Populate Default Expression Variables ---
         member.getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
         this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
-        this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(SkyBlockIsland.Banking::getBalance).orElse(0.0));
+        this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(Banking::getBalance).orElse(0.0));
         SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
@@ -619,32 +621,29 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadJacobsPerks(SkyBlockIsland.Member member) {
-        if (member.getJacobsFarming().isPresent()) {
-            SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "FARMING_FORTUNE")
-                .ifPresent(farmingFortuneStatModel -> this.addBase(this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel), member.getJacobsFarming().get().getPerk(SkyBlockIsland.JacobsFarming.Perk.DOUBLE_DROPS) * 2.0));
-        }
+        SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "FARMING_FORTUNE")
+            .ifPresent(farmingFortuneStatModel -> this.addBase(this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel), member.getJacobsFarming().getPerk(JacobsFarming.Perk.DOUBLE_DROPS) * 2.0));
     }
 
     private void loadMelodyHarp(SkyBlockIsland.Member member) {
         member.getMelodyHarp()
-            .map(SkyBlockIsland.MelodyHarp::getSongs)
-            .ifPresent(songMap -> songMap.forEach((songName, songData) -> SimplifiedApi.getRepositoryOf(MelodySongModel.class)
+            .getSongs()
+            .forEach((songName, songData) -> SimplifiedApi.getRepositoryOf(MelodySongModel.class)
                 .findFirst(MelodySongModel::getKey, songName.toUpperCase())
                 .ifPresent(melodySongModel -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "INTELLIGENCE")
                     .ifPresent(statModel -> this.addBonus(this.stats.get(Type.MELODYS_HARP).get(statModel), melodySongModel.getReward()))
-                ))
+                )
             );
     }
 
     private void loadMiningCore(SkyBlockIsland.Member member) {
         member.getMining()
-            .ifPresent(mining -> mining.getNodes()
-                .forEach((key, level) -> SimplifiedApi.getRepositoryOf(HotmPerkModel.class)
-                    .findFirst(HotmPerkModel::getKey, key.toUpperCase())
-                    .ifPresent(hotmPerkModel -> SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
-                        .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
-                        .forEach(hotmPerkStatModel -> this.addBonus(this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()), level * hotmPerkModel.getLevelBonus()))
-                    )
+            .getNodes()
+            .forEach((key, level) -> SimplifiedApi.getRepositoryOf(HotmPerkModel.class)
+                .findFirst(HotmPerkModel::getKey, key.toUpperCase())
+                .ifPresent(hotmPerkModel -> SimplifiedApi.getRepositoryOf(HotmPerkStatModel.class)
+                    .findAll(HotmPerkStatModel::getPerk, hotmPerkModel)
+                    .forEach(hotmPerkStatModel -> this.addBonus(this.stats.get(Type.MINING_CORE).get(hotmPerkStatModel.getStat()), level * hotmPerkModel.getLevelBonus()))
                 )
             );
     }
