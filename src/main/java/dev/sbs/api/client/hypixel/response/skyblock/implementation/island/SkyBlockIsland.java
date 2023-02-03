@@ -292,6 +292,7 @@ public class SkyBlockIsland {
         private ConcurrentMap<String, Object> accessory_bag_storage = Concurrent.newMap();
         @SerializedPath("forge.forge_processes.forge_1")
         private ConcurrentMap<Integer, ForgeItem> forge_items = Concurrent.newMap();
+        private ConcurrentMap<String, Object> trophy_fish = Concurrent.newMap();
 
         // Filtered Data
         private AccessoryBag accessoryBag;
@@ -304,6 +305,7 @@ public class SkyBlockIsland {
         private ConcurrentList<Pet> pets = Concurrent.newList();
         private AutoPet autopet;
         private Trapper trapper_quest;
+        private TrophyFish trophyFish;
 
         public Backpacks getBackpacks() {
             return new Backpacks(
@@ -631,6 +633,13 @@ public class SkyBlockIsland {
                 this.trapper_quest = new Trapper();
 
             return this.trapper_quest;
+        }
+
+        public TrophyFish getTrophyFish() {
+            if (Objects.isNull(this.trophyFish))
+                this.trophyFish = new TrophyFish(this.trophy_fish);
+
+            return this.trophyFish;
         }
 
         public boolean hasStorage(Storage type) {
