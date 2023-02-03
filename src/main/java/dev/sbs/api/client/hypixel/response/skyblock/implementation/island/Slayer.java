@@ -30,7 +30,7 @@ public class Slayer extends Experience implements Weighted {
     private int boss_kills_tier_3;
     private int boss_kills_tier_4;
     @SerializedName("xp")
-    @Getter private int experience;
+    @Getter private double experience;
     @Getter SlayerModel type;
 
     private ConcurrentMap<Integer, Boolean> claimed;
