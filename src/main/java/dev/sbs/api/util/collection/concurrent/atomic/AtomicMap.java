@@ -1,7 +1,5 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
-import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
 import dev.sbs.api.util.helper.NumberUtil;
 import org.jetbrains.annotations.NotNull;
@@ -101,18 +99,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.ref.keySet();
 	}
 
-	@SuppressWarnings("all")
-	private M newMap(M current) {
-		try {
-			Map<K, V> map = current.getClass().newInstance();
-			map.putAll(current);
-			return (M) map;
-		} catch (Exception ex) {
-			throw SimplifiedException.of(ReflectionException.class)
-				.withMessage("Unable to create new list instance of " + current.getClass().getSimpleName() + "!") // Cannot use FormatUtil
-				.withCause(ex)
-				.build();
-		}
+	public final boolean notEmpty() {
+		return !this.isEmpty();
 	}
 
 	public final Stream<Entry<K, V>> parallelStream() {
