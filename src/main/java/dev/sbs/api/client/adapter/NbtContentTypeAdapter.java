@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.NbtContent;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.reflection.Reflection;
 
 import java.lang.reflect.Type;

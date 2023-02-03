@@ -7,12 +7,12 @@ import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Collection;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Dungeon;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.PetInfo;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Skill;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Slayer;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.Pet;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tier_upgrades.MinionTierUpgradeModel;
@@ -205,7 +205,7 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(optionalMember.isPresent(), Matchers.equalTo(true));
             SkyBlockIsland.Member member = optionalMember.get();
 
-            int petScore = member.getPetScore();
+            int petScore = member.getPetData().getPetScore();
 
             int uniques = island.getMinions()
                 .stream()
@@ -239,23 +239,23 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(wheatGen11.getItemCost().getItemId(), Matchers.equalTo("ENCHANTED_HAY_BLOCK"));
 
             // rarities, pets, pet_items, pet_exp_scales
-            ConcurrentList<PetInfo> pets = member.getPets();
-            Optional<PetInfo> optionalSpiderPet = pets.stream().filter(petInfo -> petInfo.getName().equals("SPIDER")).findFirst();
-            Optional<PetInfo> optionalDragonPet = pets.stream().filter(petInfo -> petInfo.getName().equals("ENDER_DRAGON")).findFirst();
+            ConcurrentList<Pet> pets = member.getPetData().getPets();
+            Optional<Pet> optionalSpiderPet = pets.stream().filter(pet -> pet.getName().equals("SPIDER")).findFirst();
+            Optional<Pet> optionalDragonPet = pets.stream().filter(pet -> pet.getName().equals("ENDER_DRAGON")).findFirst();
 
-            Optional<PetInfo> optionalTestPet = pets.stream().filter(petInfo -> petInfo.getName().equals("BEE")).findFirst();
-            optionalTestPet.ifPresent(testPetInfo -> {
-                ConcurrentList<Double> tiers = testPetInfo.getExperienceTiers();
+            Optional<Pet> optionalTestPet = pets.stream().filter(pet -> pet.getName().equals("BEE")).findFirst();
+            optionalTestPet.ifPresent(testPet -> {
+                ConcurrentList<Double> tiers = testPet.getExperienceTiers();
                 double tierSum = tiers.stream().mapToDouble(value -> value).sum();
-                double testExperience = testPetInfo.getExperience();
-                double testX1 = testPetInfo.getProgressExperience();
-                double testX2 = testPetInfo.getNextExperience();
-                double testX3 = testPetInfo.getMissingExperience();
-                double testX4 = testPetInfo.getTotalProgressPercentage();
-                int testLevel = testPetInfo.getLevel();
-                int testRawLevel = testPetInfo.getRawLevel();
-                int testMaxLevel = testPetInfo.getMaxLevel();
-                double testPercentage = testPetInfo.getProgressPercentage();
+                double testExperience = testPet.getExperience();
+                double testX1 = testPet.getProgressExperience();
+                double testX2 = testPet.getNextExperience();
+                double testX3 = testPet.getMissingExperience();
+                double testX4 = testPet.getTotalProgressPercentage();
+                int testLevel = testPet.getLevel();
+                int testRawLevel = testPet.getRawLevel();
+                int testMaxLevel = testPet.getMaxLevel();
+                double testPercentage = testPet.getProgressPercentage();
                 String stop = "here";
             });
 

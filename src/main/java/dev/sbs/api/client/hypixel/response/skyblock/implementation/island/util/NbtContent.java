@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
@@ -14,8 +14,7 @@ public class NbtContent {
 
     private int type; // Always 0
     @SerializedName("data")
-    @Getter
-    private String rawData;
+    @Getter private String rawData;
 
     public byte[] getData() {
         return DataUtil.decode(this.getRawData().toCharArray());

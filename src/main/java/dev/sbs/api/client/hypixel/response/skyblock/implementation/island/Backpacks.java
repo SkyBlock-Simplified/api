@@ -1,5 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Getter;

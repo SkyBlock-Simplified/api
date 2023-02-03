@@ -15,7 +15,7 @@ import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
 import dev.sbs.api.client.hypixel.request.HypixelSkyBlockData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.NbtContent;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.client.sbs.SbsApiBuilder;
 import dev.sbs.api.client.sbs.request.MojangRequest;
 import dev.sbs.api.client.sbs.request.SkyBlockRequest;

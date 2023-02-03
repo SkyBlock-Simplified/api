@@ -3,9 +3,16 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objective.BasicObjective;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objective.Objective;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objective.Quest;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.account.Banking;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.account.CommunityUpgrades;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objectives.BasicObjective;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objectives.Objective;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objectives.Quest;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.AutoPet;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.Pet;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.PetData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.PlayerStats;
 import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
@@ -289,17 +296,14 @@ public class SkyBlockIsland {
         private JacobsFarming jacobsFarming;
         @SerializedName("nether_island_player_data")
         private CrimsonIsle crimsonIsle;
+        private ConcurrentList<Pet> pets = Concurrent.newList();
+        private AutoPet autopet;
 
         // Miscellaneous
-        @Getter private ConcurrentList<PetInfo> pets = Concurrent.newList();
         @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
         @SerializedName("temp_stat_buffs")
         @Getter private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
         @Getter private Dungeons dungeons;
-
-        public Optional<PetInfo> getActivePet() {
-            return this.getPets().stream().filter(PetInfo::isActive).findFirst();
-        }
 
         public Backpacks getBackpacks() {
             return new Backpacks(
@@ -424,19 +428,8 @@ public class SkyBlockIsland {
                 .collect(Concurrent.toLinkedMap());
         }
 
-        public int getPetScore() {
-            int petScore = 1;
-            ConcurrentList<String> noDuplicatePets = Concurrent.newList();
-
-            for (PetInfo petInfo : this.getPets()) {
-                if (noDuplicatePets.contains(petInfo.getName()))
-                    continue;
-
-                petScore += petInfo.getRarity().getOrdinal() + 1;
-                noDuplicatePets.add(petInfo.getName());
-            }
-
-            return petScore;
+        public PetData getPetData() {
+            return Reflection.of(PetData.class).newInstance(this.pets, this.autopet);
         }
 
         public ConcurrentLinkedMap<String, Quest> getQuests() {

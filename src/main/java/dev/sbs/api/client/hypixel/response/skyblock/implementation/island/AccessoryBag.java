@@ -1,6 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;

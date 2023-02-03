@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Banking;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.account.Banking;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.AccessoryData;
@@ -88,7 +88,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         statModels.forEach(statModel -> this.addBase(this.stats.get(Type.BASE_STATS).get(statModel), statModel.getBaseValue()));
 
         // --- Populate Default Expression Variables ---
-        member.getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
+        member.getPetData().getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
         this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
         this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(Banking::getBalance).orElse(0.0));
         SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
@@ -381,7 +381,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
-        member.getActivePet().ifPresent(petInfo -> {
+        member.getPetData().getActivePet().ifPresent(petInfo -> {
             // Load Rarity Filtered Pet Stats
             SimplifiedApi.getRepositoryOf(PetStatModel.class)
                 .findAll(PetStatModel::getPet, petInfo.getPet())
@@ -653,7 +653,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             .findFirst(StatModel::getKey, "MAGIC_FIND")
             .ifPresent(magicFindStatModel -> this.addBase(this.stats.get(Type.PET_SCORE).get(magicFindStatModel), SimplifiedApi.getRepositoryOf(PetScoreModel.class)
                 .stream()
-                .filter(petScoreModel -> member.getPetScore() >= petScoreModel.getBreakpoint())
+                .filter(petScoreModel -> member.getPetData().getPetScore() >= petScoreModel.getBreakpoint())
                 .collect(Concurrent.toList())
                 .size())
             );
