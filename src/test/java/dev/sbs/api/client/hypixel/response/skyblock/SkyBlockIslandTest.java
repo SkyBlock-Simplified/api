@@ -75,7 +75,7 @@ public class SkyBlockIslandTest {
                             .getIslands()
                             .stream()
                             .max(Comparator.comparingInt(island -> island.getMember(member.getUniqueId())
-                                .map(SkyBlockIsland.Member::getLevelExperience)
+                                .map(sbmember -> sbmember.getLeveling().getExperience())
                                 .orElse(0)
                             ))
                             .map(island -> Pair.of(
@@ -83,7 +83,7 @@ public class SkyBlockIslandTest {
                                     member.getUniqueId(),
                                     hypixelPlayerRequest.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
                                 ),
-                                island.getMember(member.getUniqueId()).map(SkyBlockIsland.Member::getLevel).orElse(0))
+                                island.getMember(member.getUniqueId()).map(sbmember -> sbmember.getLeveling().getLevel()).orElse(0))
                             )
                         )
                         .flatMap(StreamUtil::flattenOptional)
@@ -145,7 +145,8 @@ public class SkyBlockIslandTest {
             SkyBlockIsland.Member member = optionalMember.get();
 
             // SkyBlock Levels
-            int exp1 = member.getLevelExperience();
+            int exp1 = member.getLeveling().getExperience();
+            int explevel = member.getLeveling().getLevel();
 
 
             assert exp1 > 0;

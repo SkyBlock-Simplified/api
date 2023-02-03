@@ -172,6 +172,13 @@ public class SkyBlockIsland {
         @Getter private int caughtFishingTreasure;
         @SerializedName("wardrobe_equipped_slot")
         @Getter private int equippedWardrobeSlot;
+        @SerializedName("personal_bank_upgrade")
+        @Getter private int personalBankUpgrade;
+        @SerializedName("reaper_peppers_eaten")
+        @Getter private int eatenReaperPeppers;
+        @SerializedName("favorite_arrow")
+        @Getter private String selectedArrow;
+        @Getter private int soulflow;
 
         // Experience, DO NOT RENAME
         private double experience_skill_farming = -1;
@@ -186,8 +193,6 @@ public class SkyBlockIsland {
         private double experience_skill_runecrafting = -1;
         @SerializedName("experience_skill_social2")
         private double experience_skill_social = -1;
-        @SerializedPath("leveling.experience")
-        @Getter private int levelExperience;
 
         // Fairy Souls
         @SerializedName("fairy_souls_collected")
@@ -277,6 +282,7 @@ public class SkyBlockIsland {
         private AccessoryBag accessoryBag;
         private MelodyHarp melodyHarp;
         private Experimentation experimentation;
+        private Leveling leveling;
         @SerializedName("mining_core")
         private Mining mining;
         @SerializedName("jacob2")
@@ -378,8 +384,11 @@ public class SkyBlockIsland {
             return this.jacobsFarming;
         }
 
-        public int getLevel() {
-            return (int) Math.floor(this.getLevelExperience() / 100.0);
+        public Leveling getLeveling() {
+            if (Objects.isNull(this.leveling))
+                this.leveling = new Leveling();
+
+            return this.leveling;
         }
 
         public MelodyHarp getMelodyHarp() {
