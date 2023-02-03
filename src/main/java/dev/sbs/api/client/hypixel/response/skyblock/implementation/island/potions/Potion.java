@@ -1,4 +1,4 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.potions;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.Concurrent;

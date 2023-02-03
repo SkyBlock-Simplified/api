@@ -11,6 +11,8 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.object
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.AutoPet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.Pet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.PetData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.potions.Potion;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.potions.PotionData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.PlayerStats;
@@ -227,7 +229,7 @@ public class SkyBlockIsland {
         @SerializedName("essence_crimson")
         private int essenceCrimson;
         @SerializedName("perks")
-        @Getter private ConcurrentMap<String, Integer> essencePerks = Concurrent.newMap();
+        private ConcurrentMap<String, Integer> essencePerks = Concurrent.newMap();
 
         // Inventory Contents
         @SerializedName("inv_armor")
@@ -264,13 +266,19 @@ public class SkyBlockIsland {
         @SerializedName("achievement_spawned_island_types")
         @Getter private ConcurrentList<String> spawnedIslandTypes = Concurrent.newList();
 
+        // Miscellaneous
+        @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
+        @SerializedName("temp_stat_buffs")
+        @Getter private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
+        @Getter private Dungeons dungeons;
+
         // Potions
         @SerializedName("active_effects")
-        @Getter private ConcurrentList<Potion> activePotions = Concurrent.newList();
+        private ConcurrentList<Potion> activePotions = Concurrent.newList();
         @SerializedName("paused_effects")
-        @Getter private ConcurrentList<Potion> pausedPotions = Concurrent.newList();
+        private ConcurrentList<Potion> pausedPotions = Concurrent.newList();
         @SerializedName("disabled_potion_effects")
-        @Getter private ConcurrentList<String> disabledPotions = Concurrent.newList();
+        private ConcurrentList<String> disabledPotions = Concurrent.newList();
 
         // Unfiltered Collections
         private ConcurrentLinkedMap<String, Objective> objectives = Concurrent.newLinkedMap();
@@ -298,12 +306,6 @@ public class SkyBlockIsland {
         private CrimsonIsle crimsonIsle;
         private ConcurrentList<Pet> pets = Concurrent.newList();
         private AutoPet autopet;
-
-        // Miscellaneous
-        @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
-        @SerializedName("temp_stat_buffs")
-        @Getter private ConcurrentList<CenturyCake> centuryCakes = Concurrent.newList();
-        @Getter private Dungeons dungeons;
 
         public Backpacks getBackpacks() {
             return new Backpacks(
@@ -362,7 +364,8 @@ public class SkyBlockIsland {
                 this.essenceIce,
                 this.essenceWither,
                 this.essenceSpider,
-                this.essenceCrimson
+                this.essenceCrimson,
+                this.essencePerks
             );
         }
 
@@ -430,6 +433,10 @@ public class SkyBlockIsland {
 
         public PetData getPetData() {
             return Reflection.of(PetData.class).newInstance(this.pets, this.autopet);
+        }
+
+        public PotionData getPotionData() {
+            return Reflection.of(PotionData.class).newInstance(this.activePotions, this.pausedPotions, this.disabledPotions);
         }
 
         public ConcurrentLinkedMap<String, Quest> getQuests() {

@@ -1,5 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +16,6 @@ public class Essence {
     @Getter private final int wither;
     @Getter private final int spider;
     @Getter private final int crimson;
+    @Getter private final ConcurrentMap<String, Integer> perks;
 
 }

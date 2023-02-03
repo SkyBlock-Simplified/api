@@ -473,9 +473,10 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadActivePotions(SkyBlockIsland.Member member) {
-        member.getActivePotions()
+        member.getPotionData()
+            .getActive()
             .stream()
-            .filter(potion -> !member.getDisabledPotions().contains(potion.getEffect()))
+            .filter(potion -> !member.getPotionData().getDisabled().contains(potion.getEffect()))
             .forEach(potion -> {
                 ConcurrentMap<StatModel, Double> potionStatEffects = Concurrent.newMap();
                 ConcurrentMap<String, Double> potionBuffEffects = Concurrent.newMap();
@@ -603,7 +604,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
     }
 
     private void loadEssencePerks(SkyBlockIsland.Member member) {
-        member.getEssencePerks().forEach(entry -> SimplifiedApi.getRepositoryOf(EssencePerkModel.class)
+        member.getEssence().getPerks().forEach(entry -> SimplifiedApi.getRepositoryOf(EssencePerkModel.class)
             .findFirst(EssencePerkModel::getKey, entry.getKey().toUpperCase())
             .filter(EssencePerkModel::isPermanent)
             .ifPresent(essencePerkModel -> this.addBonus(this.stats.get(Type.ESSENCE).get(essencePerkModel.getStat()), entry.getValue() * essencePerkModel.getLevelBonus())));
