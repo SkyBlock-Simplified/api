@@ -11,14 +11,14 @@ import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
 import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
 import dev.sbs.api.client.adapter.UUIDTypeAdapter;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
-import dev.sbs.api.client.hypixel.implementation.HypixelPlayerData;
-import dev.sbs.api.client.hypixel.implementation.HypixelResourceData;
-import dev.sbs.api.client.hypixel.implementation.HypixelSkyBlockData;
-import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockDate;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
+import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
+import dev.sbs.api.client.hypixel.request.HypixelSkyBlockData;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.NbtContent;
 import dev.sbs.api.client.sbs.SbsApiBuilder;
-import dev.sbs.api.client.sbs.implementation.MojangData;
-import dev.sbs.api.client.sbs.implementation.SkyBlockData;
+import dev.sbs.api.client.sbs.request.MojangRequest;
+import dev.sbs.api.client.sbs.request.SkyBlockRequest;
 import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
@@ -179,10 +179,9 @@ public final class SimplifiedApi {
             .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .registerTypeAdapter(SkyBlockIsland.NbtContent.class, new NbtContentTypeAdapter())
+            .registerTypeAdapter(NbtContent.class, new NbtContentTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
-            .registerTypeAdapter(SkyBlockIsland.class, new SkyBlockIsland.Deserializer())
             .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .setPrettyPrinting()
@@ -199,20 +198,20 @@ public final class SimplifiedApi {
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
 
         // Provide Builders
-        builderManager.add(MojangData.class, SbsApiBuilder.class);
-        builderManager.add(SkyBlockData.class, SbsApiBuilder.class);
-        builderManager.add(HypixelPlayerData.class, HypixelApiBuilder.class);
-        builderManager.add(HypixelResourceData.class, HypixelApiBuilder.class);
+        builderManager.add(MojangRequest.class, SbsApiBuilder.class);
+        builderManager.add(SkyBlockRequest.class, SbsApiBuilder.class);
+        builderManager.add(HypixelPlayerRequest.class, HypixelApiBuilder.class);
+        builderManager.add(HypixelResourceRequest.class, HypixelApiBuilder.class);
         builderManager.add(HypixelSkyBlockData.class, HypixelApiBuilder.class);
         builderManager.add(String.class, StringBuilder.class);
         builderManager.add(MinecraftTextObject.class, MinecraftTextBuilder.class);
 
         // Provide Client Api Implementations
-        serviceManager.add(HypixelPlayerData.class, hypixelApiBuilder.build(HypixelPlayerData.class));
-        serviceManager.add(HypixelResourceData.class, hypixelApiBuilder.build(HypixelResourceData.class));
+        serviceManager.add(HypixelPlayerRequest.class, hypixelApiBuilder.build(HypixelPlayerRequest.class));
+        serviceManager.add(HypixelResourceRequest.class, hypixelApiBuilder.build(HypixelResourceRequest.class));
         serviceManager.add(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
-        serviceManager.add(MojangData.class, sbsApiBuilder.build(MojangData.class));
-        serviceManager.add(SkyBlockData.class, sbsApiBuilder.build(SkyBlockData.class));
+        serviceManager.add(MojangRequest.class, sbsApiBuilder.build(MojangRequest.class));
+        serviceManager.add(SkyBlockRequest.class, sbsApiBuilder.build(SkyBlockRequest.class));
     }
 
     public static void connectDatabase(SqlConfig sqlConfig) {
