@@ -189,7 +189,7 @@ public class SkyBlockIsland {
         @Getter private String selectedArrow;
         @Getter private int soulflow;
 
-        // Experience, DO NOT RENAME
+        // Experience
         private double experience_skill_farming = -1;
         private double experience_skill_mining = -1;
         private double experience_skill_combat = -1;
@@ -212,59 +212,36 @@ public class SkyBlockIsland {
         private int fairyExchanges;
 
         // Essence
-        @SerializedName("essence_undead")
-        private int essenceUndead;
-        @SerializedName("essence_diamond")
-        private int essenceDiamond;
-        @SerializedName("essence_dragon")
-        private int essenceDragon;
-        @SerializedName("essence_gold")
-        private int essenceGold;
-        @SerializedName("essence_ice")
-        private int essenceIce;
-        @SerializedName("essence_wither")
-        private int essenceWither;
-        @SerializedName("essence_spider")
-        private int essenceSpider;
-        @SerializedName("essence_crimson")
-        private int essenceCrimson;
+        private int essence_undead;
+        private int essence_diamond;
+        private int essence_dragon;
+        private int essence_gold;
+        private int essence_ice;
+        private int essence_wither;
+        private int essence_spider;
+        private int essence_crimson;
         @SerializedName("perks")
         private ConcurrentMap<String, Integer> essencePerks = Concurrent.newMap();
 
         // Inventory Contents
-        @SerializedName("inv_armor")
-        private NbtContent armorContents;
-        @SerializedName("inv_contents")
-        private NbtContent inventoryContents;
-        @SerializedName("ender_chest_contents")
-        private NbtContent enderChestContents;
-        @SerializedName("fishing_bag")
-        private NbtContent fishingBagContents;
-        @SerializedName("quiver")
-        private NbtContent quiverBagContents;
-        @SerializedName("potion_bag")
-        private NbtContent potionBagContents;
-        @SerializedName("talisman_bag")
-        private NbtContent accessoryBagContents;
-        @SerializedName("candy_inventory_contents")
-        private NbtContent candyBagContents;
-        @SerializedName("wardrobe_contents")
-        private NbtContent wardrobeContents;
-        @SerializedName("personal_vault_contents")
-        private NbtContent personalVaultContents;
-        @SerializedName("equipment_contents")
-        private NbtContent equipmentContents;
-        @SerializedName("backpack_contents")
-        private ConcurrentMap<Integer, NbtContent> backpackContents = Concurrent.newMap();
-        @SerializedName("backpack_icons")
-        private ConcurrentMap<Integer, NbtContent> backpackIcons = Concurrent.newMap();
+        private NbtContent inv_armor;
+        private NbtContent inv_contents;
+        private NbtContent ender_chest_contents;
+        private NbtContent fishing_bag;
+        private NbtContent quiver;
+        private NbtContent potion_bag;
+        private NbtContent talisman_bag;
+        private NbtContent candy_inventory_contents;
+        private NbtContent wardrobe_contents;
+        private NbtContent personal_vault_contents;
+        private NbtContent equipment_contents;
+        private ConcurrentMap<Integer, NbtContent> backpack_contents = Concurrent.newMap();
+        private ConcurrentMap<Integer, NbtContent> backpack_icons = Concurrent.newMap();
 
         // Zones/Islands
         @Getter private ConcurrentList<String> tutorial = Concurrent.newList();
-        @SerializedName("visited_zones")
         @Getter private ConcurrentList<String> visited_zones = Concurrent.newList();
-        @SerializedName("achievement_spawned_island_types")
-        @Getter private ConcurrentList<String> spawnedIslandTypes = Concurrent.newList();
+        @Getter private ConcurrentList<String> achievement_spawned_island_types = Concurrent.newList();
 
         // Miscellaneous
         @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
@@ -273,12 +250,9 @@ public class SkyBlockIsland {
         @Getter private Dungeons dungeons;
 
         // Potions
-        @SerializedName("active_effects")
-        private ConcurrentList<Potion> activePotions = Concurrent.newList();
-        @SerializedName("paused_effects")
-        private ConcurrentList<Potion> pausedPotions = Concurrent.newList();
-        @SerializedName("disabled_potion_effects")
-        private ConcurrentList<String> disabledPotions = Concurrent.newList();
+        private ConcurrentList<Potion> active_effects = Concurrent.newList();
+        private ConcurrentList<Potion> paused_effects = Concurrent.newList();
+        private ConcurrentList<String> disabled_potion_effects = Concurrent.newList();
 
         // Unfiltered Collections
         private ConcurrentLinkedMap<String, Objective> objectives = Concurrent.newLinkedMap();
@@ -309,8 +283,8 @@ public class SkyBlockIsland {
 
         public Backpacks getBackpacks() {
             return new Backpacks(
-                this.backpackContents,
-                this.backpackIcons
+                this.backpack_contents,
+                this.backpack_icons
             );
         }
 
@@ -343,7 +317,7 @@ public class SkyBlockIsland {
 
         public AccessoryBag getAccessoryBag() {
             if (Objects.isNull(this.accessoryBag))
-                this.accessoryBag = new AccessoryBag(this.accessoryBagContents, this.accessory_bag_storage);
+                this.accessoryBag = new AccessoryBag(this.talisman_bag, this.accessory_bag_storage);
 
             return this.accessoryBag;
         }
@@ -357,14 +331,14 @@ public class SkyBlockIsland {
 
         public Essence getEssence() {
             return new Essence(
-                this.essenceUndead,
-                this.essenceDiamond,
-                this.essenceDragon,
-                this.essenceGold,
-                this.essenceIce,
-                this.essenceWither,
-                this.essenceSpider,
-                this.essenceCrimson,
+                this.essence_undead,
+                this.essence_diamond,
+                this.essence_dragon,
+                this.essence_gold,
+                this.essence_ice,
+                this.essence_wither,
+                this.essence_spider,
+                this.essence_crimson,
                 this.essencePerks
             );
         }
@@ -436,7 +410,7 @@ public class SkyBlockIsland {
         }
 
         public PotionData getPotionData() {
-            return Reflection.of(PotionData.class).newInstance(this.activePotions, this.pausedPotions, this.disabledPotions);
+            return Reflection.of(PotionData.class).newInstance(this.active_effects, this.paused_effects, this.disabled_potion_effects);
         }
 
         public ConcurrentLinkedMap<String, Quest> getQuests() {
@@ -544,26 +518,26 @@ public class SkyBlockIsland {
         public NbtContent getStorage(Storage type) {
             switch (type) {
                 case INVENTORY:
-                    return this.inventoryContents;
+                    return this.inv_contents;
                 case ENDER_CHEST:
-                    return this.enderChestContents;
+                    return this.ender_chest_contents;
                 case FISHING:
-                    return this.fishingBagContents;
+                    return this.fishing_bag;
                 case QUIVER:
-                    return this.quiverBagContents;
+                    return this.quiver;
                 case POTIONS:
-                    return this.potionBagContents;
+                    return this.potion_bag;
                 case ACCESSORIES:
-                    return this.accessoryBagContents;
+                    return this.talisman_bag;
                 case CANDY:
-                    return this.candyBagContents;
+                    return this.candy_inventory_contents;
                 case PERSONAL_VAULT:
-                    return this.personalVaultContents;
+                    return this.personal_vault_contents;
                 case EQUIPMENT:
-                    return this.equipmentContents;
+                    return this.equipment_contents;
                 case ARMOR:
                 default:
-                    return this.armorContents;
+                    return this.inv_armor;
             }
         }
 
