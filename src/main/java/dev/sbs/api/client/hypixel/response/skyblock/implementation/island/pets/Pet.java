@@ -1,7 +1,8 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.pet_data.pet_items.PetItemModel;
 import dev.sbs.api.data.model.skyblock.pet_data.pet_levels.PetLevelModel;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PetInfo extends Experience {
+public class Pet extends Experience {
 
     @SerializedName("uuid")
     @Getter private UUID uniqueId;
