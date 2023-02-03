@@ -1,7 +1,8 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.NbtContent;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
@@ -33,7 +34,7 @@ public class SkyBlockAuctionsEndedResponse {
         @Getter private long price;
         @Getter private boolean bin;
         @SerializedName("item_bytes")
-        @Getter SkyBlockIsland.NbtContent itemNbt;
+        @Getter NbtContent itemNbt;
 
     }
 

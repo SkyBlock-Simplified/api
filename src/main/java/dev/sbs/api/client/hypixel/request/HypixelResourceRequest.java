@@ -1,13 +1,12 @@
-package dev.sbs.api.client.hypixel.implementation;
+package dev.sbs.api.client.hypixel.request;
 
-import dev.sbs.api.client.hypixel.HypixelRequestInterface;
 import dev.sbs.api.client.hypixel.response.resource.ResourceCollectionsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceElectionResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;
 import feign.RequestLine;
 
-public interface HypixelResourceData extends HypixelRequestInterface {
+public interface HypixelResourceRequest extends HypixelRequestInterface {
 
     @RequestLine("GET /resources/skyblock/skills")
     ResourceSkillsResponse getSkills();

@@ -1,7 +1,8 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -24,7 +25,7 @@ public class SkyBlockProfilesResponse {
     public Optional<SkyBlockIsland> getIsland(@NotNull ProfileModel profileModel) {
         return this.getIslands()
             .stream()
-            .filter(skyBlockIsland -> skyBlockIsland.getProfileName().map(profileModel::equals).orElse(false))
+            .filter(skyBlockIsland -> skyBlockIsland.getProfileModel().map(profileModel::equals).orElse(false))
             .findFirst();
     }
 

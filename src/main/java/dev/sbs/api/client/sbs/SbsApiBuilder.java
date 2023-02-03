@@ -2,6 +2,7 @@ package dev.sbs.api.client.sbs;
 
 import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.sbs.exception.SbsApiException;
+import dev.sbs.api.client.sbs.request.SbsRequestInterface;
 import feign.FeignException;
 import feign.codec.ErrorDecoder;
 

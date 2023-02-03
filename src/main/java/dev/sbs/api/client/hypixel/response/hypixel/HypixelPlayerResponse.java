@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.client.hypixel.response.skyblock.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
 import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;

@@ -3,6 +3,7 @@ package dev.sbs.api.client.hypixel;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
+import dev.sbs.api.client.hypixel.request.HypixelRequestInterface;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import feign.FeignException;

@@ -1,6 +1,5 @@
-package dev.sbs.api.client.hypixel.implementation;
+package dev.sbs.api.client.hypixel.request;
 
-import dev.sbs.api.client.hypixel.HypixelRequestInterface;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelCountsResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelFriendsResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelGuildResponse;
@@ -12,7 +11,7 @@ import feign.RequestLine;
 
 import java.util.UUID;
 
-public interface HypixelPlayerData extends HypixelRequestInterface {
+public interface HypixelPlayerRequest extends HypixelRequestInterface {
 
     @RequestLine("GET /counts")
     HypixelCountsResponse getCounts();

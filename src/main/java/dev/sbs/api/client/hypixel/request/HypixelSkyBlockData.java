@@ -1,6 +1,5 @@
-package dev.sbs.api.client.hypixel.implementation;
+package dev.sbs.api.client.hypixel.request;
 
-import dev.sbs.api.client.hypixel.HypixelRequestInterface;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsEndedResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsResponse;
