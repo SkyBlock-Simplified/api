@@ -11,7 +11,7 @@ import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
 import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
 import dev.sbs.api.client.adapter.UUIDTypeAdapter;
 import dev.sbs.api.client.antisniper.AntiSniperApiBuilder;
-import dev.sbs.api.client.antisniper.request.DenickRequest;
+import dev.sbs.api.client.antisniper.request.NickRequest;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
@@ -201,7 +201,7 @@ public final class SimplifiedApi {
         builderManager.add(HypixelPlayerRequest.class, HypixelApiBuilder.class);
         builderManager.add(HypixelResourceRequest.class, HypixelApiBuilder.class);
         builderManager.add(HypixelSkyBlockData.class, HypixelApiBuilder.class);
-        builderManager.add(DenickRequest.class, AntiSniperApiBuilder.class);
+        builderManager.add(NickRequest.class, AntiSniperApiBuilder.class);
         builderManager.add(String.class, StringBuilder.class);
         builderManager.add(MinecraftTextObject.class, MinecraftTextBuilder.class);
 
@@ -216,7 +216,7 @@ public final class SimplifiedApi {
         serviceManager.add(HypixelSkyBlockData.class, hypixelApiBuilder.build(HypixelSkyBlockData.class));
         serviceManager.add(MojangRequest.class, sbsApiBuilder.build(MojangRequest.class));
         serviceManager.add(SkyBlockRequest.class, sbsApiBuilder.build(SkyBlockRequest.class));
-        serviceManager.add(DenickRequest.class, antiSniperApiBuilder.build(DenickRequest.class));
+        serviceManager.add(NickRequest.class, antiSniperApiBuilder.build(NickRequest.class));
     }
 
     public static void connectDatabase(SqlConfig sqlConfig) {

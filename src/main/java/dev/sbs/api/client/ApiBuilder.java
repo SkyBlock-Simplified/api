@@ -3,6 +3,8 @@ package dev.sbs.api.client;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import feign.Feign;
 import feign.Request;
@@ -29,7 +31,10 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             .client(new OkHttpClient())
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
-            .requestInterceptor(template -> ApiBuilder.this.getHeaders().forEach(template::header))
+            .requestInterceptor(template -> {
+                ApiBuilder.this.getHeaders().forEach(template::header);
+                ApiBuilder.this.getQueries().forEach((key, values) -> template.query(key, values));
+            })
             .errorDecoder(this.getErrorDecoder())
             .retryer(Retryer.NEVER_RETRY)
             .options(new Request.Options(
@@ -52,6 +57,10 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
 
     public ErrorDecoder getErrorDecoder() {
         return new ErrorDecoder.Default();
+    }
+
+    public ConcurrentMap<String, ConcurrentList<String>> getQueries() {
+        return Concurrent.newMap();
     }
 
 }

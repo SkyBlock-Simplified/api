@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-public class DenickResponse {
+public class DeNickResponse {
 
     @Getter private boolean success;
     private Player player;
@@ -24,9 +24,9 @@ public class DenickResponse {
         @SerializedName("ign")
         @Getter private String name;
         @SerializedName("first_detected")
-        @Getter private Instant firstDetected;
+        private long firstDetected;
         @SerializedName("last_seen")
-        @Getter private Instant lastSeen;
+        private long lastSeen;
 
         @SerializedName("queried_nick")
         @Getter private String queriedNick;
@@ -34,6 +34,14 @@ public class DenickResponse {
         @Getter private String latestNick;
         @SerializedName("nick_in_pool")
         @Getter private boolean nickInPool;
+
+        public Instant getFirstDetected() {
+            return Instant.ofEpochSecond(this.firstDetected);
+        }
+
+        public Instant getLastSeen() {
+            return Instant.ofEpochSecond(this.lastSeen);
+        }
 
     }
 
