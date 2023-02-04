@@ -224,11 +224,11 @@ public final class SimplifiedApi {
             SqlSession sqlSession = new SqlSession(sqlConfig, getAllSqlModels());
             serviceManager.add(SqlSession.class, sqlSession);
 
-            // Initialize Database
-            sqlSession.initialize();
-
             // Cache Repositories
             sqlSession.cacheRepositories();
+
+            // Initialize Database
+            sqlSession.initialize();
         } else
             serviceManager.get(SqlSession.class).initialize(); // Reinitialize Database
     }
