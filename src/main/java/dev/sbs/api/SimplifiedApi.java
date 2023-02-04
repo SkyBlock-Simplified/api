@@ -136,6 +136,7 @@ import dev.sbs.api.data.model.skyblock.skills.SkillSqlModel;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelSqlModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerSqlModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
+import dev.sbs.api.data.model.skyblock.trophy_fishes.TrophyFishSqlModel;
 import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.data.sql.exception.SqlException;
@@ -384,6 +385,7 @@ public final class SimplifiedApi {
             SkillSqlModel.class,
             SkyBlockEventTimerSqlModel.class,
             SlayerSqlModel.class,
+            TrophyFishSqlModel.class,
 
             // Requires Above
             CollectionSqlModel.class,
