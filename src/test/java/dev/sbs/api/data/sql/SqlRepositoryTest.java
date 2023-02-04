@@ -1,12 +1,9 @@
 package dev.sbs.api.data.sql;
 
-import ch.qos.logback.classic.Level;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -29,12 +26,13 @@ public class SqlRepositoryTest {
         try {
             System.out.println("ENABLING DATABASE");
             SimplifiedApi.connectDatabase(testConfig);
-            testConfig.setLoggingLevel(Level.DEBUG);
+            //testConfig.setLoggingLevel(Level.DEBUG);
+
 
             System.out.println("QUERYING RARITIES #1");
             // Retrieve object from the database
-            Session session = SimplifiedApi.getSqlSession().getSessionFactory().openSession();
-            Transaction transaction = session.beginTransaction();
+            //Session session = SimplifiedApi.getSqlSession().getSessionFactory().openSession();
+            //Transaction transaction = session.beginTransaction();
 
             /*ItemSqlModel rarity1 = session.get(ItemSqlModel.class, "WHEAT_GENERATOR_10");
             System.out.println(rarity1);

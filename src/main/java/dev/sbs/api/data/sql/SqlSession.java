@@ -6,8 +6,6 @@ import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.manager.service.ServiceManager;
-import dev.sbs.api.manager.service.exception.UnknownServiceException;
-import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Cleanup;
@@ -19,22 +17,22 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
 import javax.cache.expiry.ModifiedExpiryPolicy;
-import java.lang.reflect.ParameterizedType;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class SqlSession {
 
-    private final ServiceManager serviceManager = new ServiceManager();
-    @Getter private final SqlConfig config;
-    @Getter private final ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories;
+    private final @NotNull ServiceManager serviceManager = new ServiceManager();
+    @Getter private final @NotNull SqlConfig config;
+    @Getter private @NotNull ConcurrentList<Class<? extends SqlModel>> models;
     private StandardServiceRegistry serviceRegistry;
     @Getter private SessionFactory sessionFactory;
     @Getter private boolean active;
@@ -42,9 +40,9 @@ public final class SqlSession {
     @Getter private long initializationTime;
     @Getter private long startupTime;
 
-    public SqlSession(SqlConfig config, ConcurrentList<Class<? extends SqlRepository<? extends SqlModel>>> repositories) {
+    public SqlSession(@NotNull SqlConfig config, @NotNull ConcurrentList<Class<? extends SqlModel>> models) {
         this.config = config;
-        this.repositories = repositories;
+        this.models = models;
     }
 
     private Class<SqlModel> buildCacheConfiguration(Class<SqlModel> tClass) {
@@ -69,8 +67,8 @@ public final class SqlSession {
             long startTime = System.currentTimeMillis();
 
             // Provide SqlRepositories
-            for (Class<? extends SqlRepository<? extends SqlModel>> repository : this.getRepositories())
-                this.serviceManager.addRaw(repository, Reflection.of(repository).newInstance(this));
+            for (Class<? extends SqlModel> model : this.getModels())
+                this.serviceManager.addRepository(model, new SqlRepository<>(this, model));
 
             this.startupTime = System.currentTimeMillis() - startTime;
         } else
@@ -88,16 +86,9 @@ public final class SqlSession {
      */
     @SuppressWarnings("unchecked")
     public <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
-        if (this.isActive()) {
-            return this.serviceManager.getAll(SqlRepository.class)
-                .stream()
-                .filter(sqlRepository -> tClass.isAssignableFrom(sqlRepository.getTClass()))
-                .findFirst()
-                .orElseThrow(() -> SimplifiedException.of(UnknownServiceException.class)
-                    .withMessage(UnknownServiceException.getMessage(tClass))
-                    .build()
-                );
-        } else
+        if (this.isActive())
+            return (Repository<T>) this.serviceManager.getProvider(tClass).getProvider();
+        else
             throw SimplifiedException.of(SqlException.class)
                 .withMessage("Database connection is not active!")
                 .build();
@@ -149,11 +140,7 @@ public final class SqlSession {
 
             // Register SqlModel Classes
             MetadataSources sources = new MetadataSources(this.serviceRegistry);
-            this.repositories.stream()
-                .map(Class::getGenericSuperclass)
-                .map(ParameterizedType.class::cast)
-                .map(ParameterizedType::getActualTypeArguments)
-                .map(index -> index[0])
+            this.models.stream()
                 .map(tClass -> (Class<SqlModel>) tClass)
                 .map(config::addDatabaseModel)
                 .map(this::buildCacheConfiguration) // Build Entity Cache
