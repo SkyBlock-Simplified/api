@@ -1,6 +1,8 @@
 package dev.sbs.api.manager.service;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.model.Model;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.service.exception.InvalidServiceException;
 import dev.sbs.api.manager.service.exception.RegisteredServiceException;
@@ -57,6 +59,22 @@ public class ServiceManager extends Manager<ServiceProvider> {
                 .build();
 
         super.providers.add(new ServiceProvider(service, instance));
+    }
+
+    public final void addRepository(Class<? extends Model> service, Repository<? extends Model> repository) {
+        Preconditions.checkNotNull(repository, "Repository cannot be NULL!");
+
+        if (this.isRegistered(service))
+            throw SimplifiedException.of(RegisteredServiceException.class)
+                .withMessage(RegisteredServiceException.getMessage(service))
+                .build();
+
+        if (!service.isAssignableFrom(repository.getType()))
+            throw SimplifiedException.of(InvalidServiceException.class)
+                .withMessage(InvalidServiceException.getMessage(service, repository))
+                .build();
+
+        super.providers.add(new ServiceProvider(service, repository));
     }
 
     /**
