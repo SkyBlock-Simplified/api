@@ -25,7 +25,7 @@ public abstract class Manager<P extends Provider> {
         Preconditions.checkNotNull(service, "Service cannot be NULL!");
 
         for (P provider : this.providers) {
-            if (provider.getService().isAssignableFrom(service))
+            if (service.isAssignableFrom(provider.getService()))
                 return true;
         }
 
@@ -44,7 +44,7 @@ public abstract class Manager<P extends Provider> {
     public <T> Provider getProvider(Class<T> service) throws UnknownServiceException {
         if (this.isRegistered(service)) {
             for (Provider provider : this.providers) {
-                if (provider.getService().isAssignableFrom(service))
+                if (service.isAssignableFrom(provider.getService()))
                     return provider;
             }
         }
