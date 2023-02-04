@@ -16,14 +16,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@SuppressWarnings({ "unchecked", "unused" })
 public interface SearchQuery<E, T extends List<E>> {
 
-    Stream<E> stream() throws DataException;
+    @NotNull Stream<E> stream() throws DataException;
 
-    T findAll() throws DataException;
+    @NotNull T findAll() throws DataException;
 
-    T toList(@NotNull Stream<E> stream) throws DataException;
+    @NotNull T toList(@NotNull Stream<E> stream) throws DataException;
 
     default <S> Stream<E> compare(SearchFunction.Match match, TriFunction<Function<E, S>, E, S, Boolean> compare, Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
         Stream<E> itemsCopy = this.stream();

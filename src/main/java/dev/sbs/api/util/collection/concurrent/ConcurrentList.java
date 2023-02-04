@@ -61,7 +61,7 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 	}
 
 	@Override
-	public ConcurrentList<E> findAll() throws DataException {
+	public @NotNull ConcurrentList<E> findAll() throws DataException {
 		return new ConcurrentList<>(this);
 	}
 
@@ -96,7 +96,7 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 	}
 
 	@Override
-	public final ConcurrentList<E> toList(@NotNull Stream<E> stream) throws DataException {
+	public final @NotNull ConcurrentList<E> toList(@NotNull Stream<E> stream) throws DataException {
 		return stream.collect(Concurrent.toList());
 	}
 

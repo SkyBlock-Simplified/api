@@ -138,7 +138,7 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 	}
 
 	@Override
-	public Stream<E> stream() {
+	public @NotNull Stream<E> stream() {
 		return this.ref.stream();
 	}
 

@@ -53,7 +53,7 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	}
 
 	@Override
-	public ConcurrentLinkedList<E> findAll() throws DataException {
+	public @NotNull ConcurrentLinkedList<E> findAll() throws DataException {
 		return new ConcurrentLinkedList<>(this);
 	}
 
@@ -88,7 +88,7 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	}
 
 	@Override
-	public final ConcurrentLinkedList<E> toList(@NotNull Stream<E> stream) throws DataException {
+	public final @NotNull ConcurrentLinkedList<E> toList(@NotNull Stream<E> stream) throws DataException {
 		return stream.collect(Concurrent.toLinkedList());
 	}
 
