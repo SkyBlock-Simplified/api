@@ -28,7 +28,6 @@ public class SqlRepositoryTest {
             SimplifiedApi.connectDatabase(testConfig);
             //testConfig.setLoggingLevel(Level.DEBUG);
 
-
             System.out.println("QUERYING RARITIES #1");
             // Retrieve object from the database
             //Session session = SimplifiedApi.getSqlSession().getSessionFactory().openSession();

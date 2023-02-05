@@ -6,7 +6,6 @@ import dev.sbs.api.util.SerializedPath;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.Range;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.StringUtil;
@@ -24,7 +23,8 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class CrimsonIsle {
 
-    private ConcurrentLinkedMap<Integer, String> last_minibosses_killed = Concurrent.newLinkedMap();
+    @SerializedName("last_minibosses_killed")
+    private ConcurrentList<String> lastMinibossesKilled = Concurrent.newList();
     private ConcurrentMap<String, Integer> dojo = Concurrent.newMap();
     private Abiphone abiphone;
 
@@ -62,10 +62,6 @@ public class CrimsonIsle {
         );
     }
 
-    public ConcurrentList<String> getLastMinibossesKilled() {
-        return Concurrent.newUnmodifiableList(this.last_minibosses_killed.values());
-    }
-
     public static class Abiphone {
 
         @SerializedPath("operator_chip.repaired_index")
@@ -73,14 +69,10 @@ public class CrimsonIsle {
         @SerializedName("trio_contact_addons")
         @Getter private int trioContactAddons;
         @SerializedName("active_contacts")
-        private ConcurrentMap<Integer, String> activeContacts = Concurrent.newMap();
+        private ConcurrentList<String> collectedContacts = Concurrent.newList();
         private ConcurrentMap<String, Integer> games = Concurrent.newMap();
         @SerializedName("contact_data")
         @Getter private ConcurrentMap<String, Contact> contacts = Concurrent.newMap();
-
-        public ConcurrentList<String> getCollectedContacts() {
-            return Concurrent.newUnmodifiableList(this.activeContacts.values());
-        }
 
         public static class Contact {
 

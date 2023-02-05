@@ -13,7 +13,7 @@ import feign.RequestLine;
 
 import java.util.UUID;
 
-public interface HypixelSkyBlockData extends HypixelRequestInterface {
+public interface HypixelSkyBlockRequest extends HypixelRequestInterface {
 
     @RequestLine("GET /skyblock/news")
     SkyBlockNewsResponse getNews();
