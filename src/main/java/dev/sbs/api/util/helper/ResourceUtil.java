@@ -66,9 +66,7 @@ public class ResourceUtil {
     }
 
     public static InputStream getResource(String resourcePath) {
-        resourcePath = RegexUtil.replaceFirst(resourcePath, "^resources/", "");
-        final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
-        return inputStream == null ? ResourceUtil.class.getResourceAsStream(resourcePath) : inputStream;
+        return ClassUtil.getClassLoader(ResourceUtil.class).getResourceAsStream(RegexUtil.replaceFirst(resourcePath, "^resources/", ""));
     }
 
     public static List<String> getResourceFiles(String resourcePath) {
