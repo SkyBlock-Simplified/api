@@ -2,6 +2,7 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary.BestiaryModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilyModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_type_levels.BestiaryTypeLevelModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -19,27 +20,28 @@ import java.util.stream.IntStream;
 
 public class BestiaryData {
 
-    @Getter private final ConcurrentList<Family> families;
+    @Getter private final ConcurrentList<Bestiary> bestiaries;
     @Getter private final boolean migrated;
 
     BestiaryData(ConcurrentMap<String, Object> bestiaryMap) {
         this.migrated = (boolean) bestiaryMap.removeOrGet("migrated_stats", false);
 
-        this.families = SimplifiedApi.getRepositoryOf(BestiaryModel.class)
+        this.bestiaries = Concurrent.newUnmodifiableList(
+            SimplifiedApi.getRepositoryOf(BestiaryModel.class)
             .findAll()
             .stream()
             .map(bestiaryModel -> {
                 Pattern bestiaryPattern = buildPattern(bestiaryModel);
 
-                ConcurrentMap<String, Double> familyMap = bestiaryMap.stream()
+                ConcurrentMap<String, Double> groupMap = bestiaryMap.stream()
                     .filter(entry -> bestiaryPattern.matcher(entry.getKey()).matches())
                     .collect(Concurrent.toMap());
 
-                Double familyKills = familyMap.removeOrGet(FormatUtil.format("kills_family_{0}", bestiaryModel.getKey().toLowerCase()), 0.0);
-                Double familyDeaths = familyMap.removeOrGet(FormatUtil.format("deaths_family_{0}", bestiaryModel.getKey().toLowerCase()), 0.0);
-                ConcurrentMap<Integer, Family.Data> levelData = Concurrent.newMap();
+                Double familyKills = groupMap.removeOrGet(FormatUtil.format("kills_family_{0}", bestiaryModel.getKey().toLowerCase()), 0.0);
+                Double familyDeaths = groupMap.removeOrGet(FormatUtil.format("deaths_family_{0}", bestiaryModel.getKey().toLowerCase()), 0.0);
+                ConcurrentMap<Integer, Bestiary.Data> levelData = Concurrent.newMap();
 
-                familyMap.forEach((key, value) -> {
+                groupMap.forEach((key, value) -> {
                     Matcher matcher = bestiaryPattern.matcher(key);
 
                     if (matcher.matches()) {
@@ -47,7 +49,7 @@ public class BestiaryData {
                         int level = Integer.parseInt(matcher.group(2));
 
                         if (!levelData.containsKey(level))
-                            levelData.put(level, new Family.Data());
+                            levelData.put(level, new Bestiary.Data());
 
                         if (isKills)
                             levelData.get(level).setKills(value.intValue());
@@ -56,22 +58,31 @@ public class BestiaryData {
                     }
                 });
 
-                return new Family(
+                return new Bestiary(
                     bestiaryModel,
                     familyKills.intValue(),
                     familyDeaths.intValue(),
                     levelData
                 );
             })
-            .collect(Concurrent.toList());
+            .collect(Concurrent.toList())
+        );
     }
 
-    public Family getFamily(@NotNull String bestiaryKey) {
-        return this.getFamilies().findFirstOrNull(family -> family.getType().getKey(), bestiaryKey);
+    public ConcurrentList<Bestiary> getBestiaries(@NotNull String bestiaryFamilyKey) {
+        return this.getBestiaries().findAll(bestiaryModel -> bestiaryModel.getType().getFamily().getKey(), bestiaryFamilyKey.toUpperCase());
     }
 
-    public Family getFamily(@NotNull BestiaryModel bestiaryModel) {
-        return this.getFamilies().findFirstOrNull(Family::getType, bestiaryModel);
+    public ConcurrentList<Bestiary> getBestiaries(@NotNull BestiaryFamilyModel bestiaryFamilyModel) {
+        return this.getBestiaries().findAll(bestiaryModel -> bestiaryModel.getType().getFamily(), bestiaryFamilyModel);
+    }
+
+    public Bestiary getBestiary(@NotNull String bestiaryKey) {
+        return this.getBestiaries().findFirstOrNull(bestiary -> bestiary.getType().getKey(), bestiaryKey.toUpperCase());
+    }
+
+    public Bestiary getBestiary(@NotNull BestiaryModel bestiaryModel) {
+        return this.getBestiaries().findFirstOrNull(Bestiary::getType, bestiaryModel);
     }
 
     public int getMilestone() {
@@ -79,9 +90,9 @@ public class BestiaryData {
     }
 
     public int getUnlocked() {
-        return this.getFamilies()
+        return this.getBestiaries()
             .stream()
-            .mapToInt(Family::getLevel)
+            .mapToInt(Bestiary::getLevel)
             .sum();
     }
 
@@ -90,7 +101,7 @@ public class BestiaryData {
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Family {
+    public static class Bestiary {
 
         @Getter private final BestiaryModel type;
         @Getter private final int kills;
