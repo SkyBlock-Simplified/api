@@ -71,6 +71,11 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
     private Integer ordinal;
 
     @Getter
+    @Setter
+    @Column(name = "max_level", nullable = false)
+    private Integer maxLevel;
+
+    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -89,6 +94,7 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
             .append(this.getType(), that.getType())
             .append(this.getFamily(), that.getFamily())
             .append(this.getOrdinal(), that.getOrdinal())
+            .append(this.getMaxLevel(), that.getMaxLevel())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -102,6 +108,7 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
             .append(this.getType())
             .append(this.getFamily())
             .append(this.getOrdinal())
+            .append(this.getMaxLevel())
             .append(this.getUpdatedAt())
             .build();
     }

@@ -5,6 +5,7 @@ import dev.sbs.api.TestConfig;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelSkyBlockRequest;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.BestiaryData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Collection;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Dungeon;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
@@ -148,6 +149,7 @@ public class SkyBlockIslandTest {
             int exp1 = member.getLeveling().getExperience();
             int explevel = member.getLeveling().getLevel();
 
+            BestiaryData bestiaryData = member.getBestiary();
 
             assert exp1 > 0;
             // Player Stats

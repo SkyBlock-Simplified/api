@@ -267,6 +267,7 @@ public class SkyBlockIsland {
         @SerializedPath("forge.forge_processes.forge_1")
         private ConcurrentMap<Integer, ForgeItem> forge_items = Concurrent.newMap();
         private ConcurrentMap<String, Object> trophy_fish = Concurrent.newMap();
+        private ConcurrentMap<String, Object> bestiary = Concurrent.newMap();
 
         // Filtered Data
         private AccessoryBag accessoryBag;
@@ -286,6 +287,10 @@ public class SkyBlockIsland {
                 this.backpack_contents,
                 this.backpack_icons
             );
+        }
+
+        public BestiaryData getBestiary() {
+            return new BestiaryData(this.bestiary);
         }
 
         public Collection getCollection(SkillModel type) {

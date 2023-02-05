@@ -14,4 +14,8 @@ public interface BestiaryModel extends Model {
 
     BestiaryFamilyModel getFamily();
 
+    Integer getOrdinal();
+
+    Integer getMaxLevel();
+
 }
