@@ -2,6 +2,7 @@ package dev.sbs.api.util.helper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -816,9 +817,16 @@ public class ClassUtil {
      * @throws ClassNotFoundException if the class is not found
      */
     public static Class<?> getClass(String className, boolean initialize) throws ClassNotFoundException {
+        return getClass(getClassLoader(), className, initialize);
+    }
+
+    public static ClassLoader getClassLoader() {
+        return getClassLoader(ClassUtil.class);
+    }
+
+    public static ClassLoader getClassLoader(@NotNull Class<?> tClass) {
         ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
-        ClassLoader loader = contextCL == null ? ClassUtil.class.getClassLoader() : contextCL;
-        return getClass(loader, className, initialize );
+        return contextCL == null ? tClass.getClassLoader() : contextCL;
     }
 
     // Public method
@@ -844,35 +852,31 @@ public class ClassUtil {
      * @throws NoSuchMethodException if the method is not found in the given class
      *  or if the metothod doen't conform with the requirements
      */
-    public static Method getPublicMethod(Class<?> cls, String methodName, Class<?>... parameterTypes)
-            throws SecurityException, NoSuchMethodException {
-
+    public static Method getPublicMethod(Class<?> cls, String methodName, Class<?>... parameterTypes) throws SecurityException, NoSuchMethodException {
         Method declaredMethod = cls.getMethod(methodName, parameterTypes);
-        if (Modifier.isPublic(declaredMethod.getDeclaringClass().getModifiers())) {
+        if (Modifier.isPublic(declaredMethod.getDeclaringClass().getModifiers()))
             return declaredMethod;
-        }
 
         List<Class<?>> candidateClasses = new ArrayList<>();
         candidateClasses.addAll(getAllInterfaces(cls));
         candidateClasses.addAll(getAllSuperclasses(cls));
 
         for (Class<?> candidateClass : candidateClasses) {
-            if (!Modifier.isPublic(candidateClass.getModifiers())) {
+            if (!Modifier.isPublic(candidateClass.getModifiers()))
                 continue;
-            }
+
             Method candidateMethod;
             try {
                 candidateMethod = candidateClass.getMethod(methodName, parameterTypes);
             } catch (NoSuchMethodException ex) {
                 continue;
             }
-            if (Modifier.isPublic(candidateMethod.getDeclaringClass().getModifiers())) {
+
+            if (Modifier.isPublic(candidateMethod.getDeclaringClass().getModifiers()))
                 return candidateMethod;
-            }
         }
 
-        throw new NoSuchMethodException("Can't find a public method for " +
-                methodName + " " + ArrayUtil.toString(parameterTypes));
+        throw new NoSuchMethodException("Can't find a public method for " + methodName + " " + ArrayUtil.toString(parameterTypes));
     }
 
     // ----------------------------------------------------------------------
