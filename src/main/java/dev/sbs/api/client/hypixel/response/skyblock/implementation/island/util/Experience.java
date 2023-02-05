@@ -73,9 +73,7 @@ public abstract class Experience {
                 return experience;
             else if (rawLevel >= this.getMaxLevel())
                 return experience - experienceTiers.get(experienceTiers.size() - 1);
-        } catch (Exception ex) {
-            String stop = "here"; // TODO: ???
-        }
+        } catch (Exception ignore) { }
 
         return experience - experienceTiers.get(rawLevel - 1);
     }
