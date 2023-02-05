@@ -281,6 +281,7 @@ public class SkyBlockIsland {
         private AutoPet autopet;
         private Trapper trapper_quest;
         private TrophyFish trophyFish;
+        private BestiaryData bestiaryData;
 
         public Backpacks getBackpacks() {
             return new Backpacks(
@@ -290,7 +291,10 @@ public class SkyBlockIsland {
         }
 
         public BestiaryData getBestiary() {
-            return new BestiaryData(this.bestiary);
+            if (Objects.isNull(this.bestiaryData))
+                this.bestiaryData = new BestiaryData(this.bestiary);
+
+            return this.bestiaryData;
         }
 
         public Collection getCollection(SkillModel type) {

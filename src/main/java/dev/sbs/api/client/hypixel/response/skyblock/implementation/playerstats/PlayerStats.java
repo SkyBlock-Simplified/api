@@ -90,6 +90,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         // --- Populate Default Expression Variables ---
         member.getPetData().getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
         this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
+        this.expressionVariables.put("SKYBLOCK_LEVEL", (double) member.getLeveling().getLevel());
+        this.expressionVariables.put("BESTIARY_MILESTONE", (double) member.getBestiary().getMilestone());
         this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(Banking::getBalance).orElse(0.0));
         SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
 
