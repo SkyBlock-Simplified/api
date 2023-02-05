@@ -28,7 +28,7 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
     public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
         // Pick up the down stream type adapter to avoid infinite recursion
         final TypeAdapter<T> delegateAdapter = gson.getDelegateAdapter(this, typeToken);
-        // Collect @JsonPathExpression-annotated fields
+        // Collect @SerializedPath annotated fields
         final Collection<FieldInfo> fieldInfos = FieldInfo.of(typeToken.getRawType());
         // If no such fields found, then just return the delegated type adapter
         // Otherwise wrap the type adapter in order to make some annotation processing

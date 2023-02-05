@@ -147,7 +147,7 @@ public class Dungeons {
             @SerializedPath("rewards.rolled_rng_meter_randomly")
             @Getter private boolean rolledRngMeterRandomly;
             @SerializedPath("rewards.rewards")
-            @Getter private ConcurrentMap<Integer, String> rewards = Concurrent.newMap();
+            @Getter private ConcurrentList<String> items = Concurrent.newList();
 
             public enum Type {
 
