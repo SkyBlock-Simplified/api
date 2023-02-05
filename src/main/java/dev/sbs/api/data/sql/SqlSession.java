@@ -32,7 +32,7 @@ public final class SqlSession {
 
     private final @NotNull ServiceManager serviceManager = new ServiceManager();
     @Getter private final @NotNull SqlConfig config;
-    @Getter private @NotNull ConcurrentList<Class<? extends SqlModel>> models;
+    @Getter private @NotNull ConcurrentList<Class<SqlModel>> models;
     private StandardServiceRegistry serviceRegistry;
     @Getter private SessionFactory sessionFactory;
     @Getter private boolean active;
@@ -40,7 +40,7 @@ public final class SqlSession {
     @Getter private long initializationTime;
     @Getter private long startupTime;
 
-    public SqlSession(@NotNull SqlConfig config, @NotNull ConcurrentList<Class<? extends SqlModel>> models) {
+    public SqlSession(@NotNull SqlConfig config, @NotNull ConcurrentList<Class<SqlModel>> models) {
         this.config = config;
         this.models = models;
     }
@@ -94,7 +94,6 @@ public final class SqlSession {
                 .build();
     }
 
-    @SuppressWarnings("unchecked")
     public void initialize() {
         if (!this.isActive()) {
             long startTime = System.currentTimeMillis();
@@ -141,7 +140,6 @@ public final class SqlSession {
             // Register SqlModel Classes
             MetadataSources sources = new MetadataSources(this.serviceRegistry);
             this.models.stream()
-                .map(tClass -> (Class<SqlModel>) tClass)
                 .map(config::addDatabaseModel)
                 .map(this::buildCacheConfiguration) // Build Entity Cache
                 .forEach(sources::addAnnotatedClass);
