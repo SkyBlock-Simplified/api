@@ -23,6 +23,8 @@ public final class HypixelConfig extends YamlConfig {
     public void setAntiSniperApiKey(@Nullable String antiSniperApiKey) {
         if (StringUtil.isNotEmpty(antiSniperApiKey))
             this.setAntiSniperApiKey(StringUtil.toUUID(antiSniperApiKey));
+        else
+            this.setAntiSniperApiKey(Optional.empty());
     }
 
     public void setAntiSniperApiKey(@Nullable UUID antiSniperApiKey) {
@@ -36,6 +38,8 @@ public final class HypixelConfig extends YamlConfig {
     public void setHypixelApiKey(@Nullable String hypixelApiKey) {
         if (StringUtil.isNotEmpty(hypixelApiKey))
             this.setHypixelApiKey(StringUtil.toUUID(hypixelApiKey));
+        else
+            this.setHypixelApiKey(Optional.empty());
     }
 
     public void setHypixelApiKey(@Nullable UUID hypixelApiKey) {
