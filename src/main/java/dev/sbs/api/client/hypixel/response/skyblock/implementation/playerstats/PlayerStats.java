@@ -110,8 +110,6 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         //  Optimizer Request: Missing API Data
         //     Defused Traps:      +6 Intelligence
         //     Account Upgrades:   +5 Magic Find
-        //  Add: Now in API
-        //     Bestiary:           +84 Health
 
         // --- Load Damage Multiplier ---
         this.damageMultiplier = SimplifiedApi.getRepositoryOf(SkillModel.class)
@@ -146,7 +144,8 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         this.loadMiningCore(member);
         this.loadCenturyCakes(member);
         this.loadEssencePerks(member);
-        this.loadFairySouls(member);
+        this.loadLevels(member);
+        this.loadBestiary(member);
         this.loadMelodyHarp(member);
         this.loadJacobsPerks(member);
 
@@ -577,6 +576,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         }
     }
 
+    private void loadBestiary(SkyBlockIsland.Member member) {
+        SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+            .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.BESTIARY).get(healthStatModel), member.getBestiary().getMilestone() * 2.0));
+    }
+
     private void loadCenturyCakes(SkyBlockIsland.Member member) {
         member.getCenturyCakes()
             .stream()
@@ -610,20 +614,16 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             .ifPresent(essencePerkModel -> this.addBonus(this.stats.get(Type.ESSENCE).get(essencePerkModel.getStat()), entry.getValue() * essencePerkModel.getLevelBonus())));
     }
 
-    private void loadFairySouls(SkyBlockIsland.Member member) {
-        // TODO: Removed in preparation of skyblock levels
-        /*SimplifiedApi.getRepositoryOf(FairyExchangeModel.class)
-            .stream()
-            .filter(fairyExchangeModel -> fairyExchangeModel.getExchange() <= member.getFairyExchanges())
-            .flatMap(fairyExchangeModel -> fairyExchangeModel.getEffects().entrySet().stream())
-            .forEach(entry -> SimplifiedApi.getRepositoryOf(StatModel.class)
-                .findFirst(StatModel::getKey, entry.getKey())
-                .ifPresent(statModel -> this.addBase(this.stats.get(Type.FAIRY_SOULS).get(statModel), entry.getValue())));*/
-    }
-
     private void loadJacobsPerks(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "FARMING_FORTUNE")
             .ifPresent(farmingFortuneStatModel -> this.addBase(this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel), member.getJacobsFarming().getPerk(JacobsFarming.Perk.DOUBLE_DROPS) * 2.0));
+    }
+
+    private void loadLevels(SkyBlockIsland.Member member) {
+        SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+            .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.SKYBLOCK_LEVELS).get(healthStatModel), member.getLeveling().getLevel() * 5.0));
+        SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "STRENGTH")
+            .ifPresent(strengthStatModel -> this.addBase(this.stats.get(Type.SKYBLOCK_LEVELS).get(strengthStatModel), member.getLeveling().getLevel() / 5.0));
     }
 
     private void loadMelodyHarp(SkyBlockIsland.Member member) {
@@ -741,10 +741,11 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         ACTIVE_PET(true),
         ACTIVE_POTIONS(true),
         BASE_STATS(true),
+        BESTIARY(true),
         CENTURY_CAKES(true),
         DUNGEONS(true),
         ESSENCE(true),
-        FAIRY_SOULS(true),
+        SKYBLOCK_LEVELS(true),
         JACOBS_FARMING(true),
         MELODYS_HARP(true),
         MINING_CORE(true),
