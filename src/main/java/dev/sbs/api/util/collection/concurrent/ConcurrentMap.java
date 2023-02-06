@@ -43,4 +43,8 @@ public class ConcurrentMap<K, V> extends AtomicMap<K, V, AbstractMap<K, V>> {
         super(new HashMap<>(), Arrays.stream(pairs).collect(Concurrent.toMap()));
     }
 
+    public ConcurrentMap<K, V> toUnmodifiableMap() {
+        return Concurrent.newUnmodifiableMap(this);
+    }
+
 }

@@ -41,4 +41,8 @@ public class ConcurrentSet<E> extends AtomicSet<E, HashSet<E>> {
 		super(new HashSet<>(collection));
 	}
 
+	public ConcurrentSet<E> toUnmodifiableSet() {
+		return Concurrent.newUnmodifiableSet(this);
+	}
+
 }

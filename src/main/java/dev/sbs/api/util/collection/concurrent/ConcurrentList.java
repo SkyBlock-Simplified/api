@@ -100,4 +100,8 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 		return stream.collect(Concurrent.toList());
 	}
 
+	public @NotNull ConcurrentList<E> toUnmodifiableList() {
+		return Concurrent.newUnmodifiableList(this);
+	}
+
 }
