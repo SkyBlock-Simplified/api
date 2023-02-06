@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,13 +25,13 @@ public class AccessoryBag {
     @Getter private final int purchasedBagUpgrades;
     @Getter private final Tuning tuning;
     private final String selectedPower;
-    private final ConcurrentMap<Integer, String> unlockedPowers;
+    private final ConcurrentList<String> unlockedPowers;
 
     AccessoryBag(NbtContent contents, ConcurrentMap<String, Object> accessoryMap) {
         this.contents = contents;
-        this.purchasedBagUpgrades = (int) accessoryMap.getOrDefault("bag_upgrades_purchased", 0);
+        this.purchasedBagUpgrades = ((Number) accessoryMap.getOrDefault("bag_upgrades_purchased", 0)).intValue();
         this.selectedPower = (String) accessoryMap.getOrDefault("selected_power", "");
-        this.unlockedPowers = Concurrent.newMap((Map<Integer, String>) accessoryMap.getOrDefault("unlocked_powers", Concurrent.newMap()));
+        this.unlockedPowers = Concurrent.newList((List<String>) accessoryMap.getOrDefault("unlocked_powers", Concurrent.newList()));
 
         if (accessoryMap.containsKey("tuning")) {
             Map<String, Object> tuningMap = (Map<String, Object>) accessoryMap.get("tuning");
@@ -45,11 +46,7 @@ public class AccessoryBag {
     }
 
     public ConcurrentList<AccessoryPowerModel> getUnlockedPowers() {
-        return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class)
-            .findAll()
-            .stream()
-            .filter(accessoryPowerModel -> this.unlockedPowers.containsValue(accessoryPowerModel.getKey().toLowerCase()))
-            .collect(Concurrent.toList());
+        return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).matchAll(accessoryPowerModel -> this.unlockedPowers.contains(accessoryPowerModel.getKey().toLowerCase()));
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -60,7 +57,7 @@ public class AccessoryBag {
         @Getter private final int highestUnlockedSlot;
 
         private Tuning(ConcurrentMap<String, Object> tuningMap) {
-            this.highestUnlockedSlot = (int) tuningMap.removeOrGet("highest_unlocked_slot", 0);
+            this.highestUnlockedSlot = ((Number) tuningMap.removeOrGet("highest_unlocked_slot", 0)).intValue();
             ConcurrentList<ConcurrentMap<StatModel, Integer>> tuningSlots = Concurrent.newList();
 
             for (int i = 0; i <= 5; i++) {
