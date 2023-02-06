@@ -5,54 +5,48 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockEmojisResponse {
 
-    private ConcurrentMap<String, ConcurrentMap<String, Emoji>> emojis = Concurrent.newMap();
+    @Getter private final ConcurrentMap<String, ConcurrentMap<Boolean, Emoji>> items;
 
-    public Optional<Emoji> getEmoji(String itemId) {
-        return this.getEmoji(itemId, false);
+    public Optional<Emoji> getEmoji(@NotNull String id) {
+        return this.getEmoji(id, false);
     }
 
-    public Optional<Emoji> getEmoji(String itemId, boolean enchanted) {
-        return Optional.ofNullable(this.emojis.getOrDefault(itemId, null)).map(itemMap -> {
-            Emoji normalEmoji = itemMap.get("normal");
-
-            if (enchanted) {
-                Emoji enchantedEmoji = itemMap.get("enchanted");
-                return enchantedEmoji.isEnchanted() ? enchantedEmoji : normalEmoji;
-            }
-
-            return normalEmoji;
-        });
+    public Optional<Emoji> getEmoji(@NotNull String id, boolean enchanted) {
+        return Optional.ofNullable(this.items.getOrDefault(id, null)).map(itemMap -> itemMap.get(enchanted));
     }
 
-    public Optional<Emoji> getPetEmoji(String petId) {
-        return this.getEmoji(petId + "_PET");
-    }
-
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Emoji {
 
+        @Getter private long id;
         @Getter private String name;
-        private String id;
-        @SerializedName("formatted")
-        @Getter private String format;
         @Getter private boolean animated;
-        @Getter private boolean enchanted;
 
-        public long getId() {
-            return Long.parseLong(this.id);
+        Emoji(String name, Emoji emoji) {
+            this.id = emoji.getId();
+            this.name = name;
+            this.animated = emoji.isAnimated();
+        }
+
+        public String getFormat() {
+            return FormatUtil.format("<:{0}:{1}>", this.getName(), this.getId());
         }
 
     }
@@ -62,22 +56,20 @@ public class SkyBlockEmojisResponse {
         @Override
         public SkyBlockEmojisResponse deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
             Gson gson = SimplifiedApi.getGson();
-            SkyBlockEmojisResponse skyBlockEmojisResponse = new SkyBlockEmojisResponse();
 
-            jsonElement.getAsJsonObject()
-                .entrySet()
-                .forEach(entry -> {
-                    skyBlockEmojisResponse.emojis.put(entry.getKey(), Concurrent.newMap());
-
-                    entry.getValue()
-                        .getAsJsonObject()
-                        .entrySet()
-                        .forEach(subEntry -> skyBlockEmojisResponse.emojis.get(entry.getKey())
-                            .put(subEntry.getKey(), gson.fromJson(subEntry.getValue(), Emoji.class))
-                        );
-                });
-
-            return skyBlockEmojisResponse;
+            return new SkyBlockEmojisResponse(Concurrent.newUnmodifiableMap(
+                jsonElement.getAsJsonObject()
+                    .entrySet()
+                    .stream()
+                    .map(entry -> Pair.of(
+                        entry.getKey(),
+                        Concurrent.newMap(
+                            Pair.of(false, gson.fromJson(entry.getValue().getAsJsonObject().get("normal"), Emoji.class)),
+                            Pair.of(true, gson.fromJson(entry.getValue().getAsJsonObject().get("enchanted"), Emoji.class))
+                        )
+                    ))
+                    .collect(Concurrent.toMap())
+            ));
         }
 
     }

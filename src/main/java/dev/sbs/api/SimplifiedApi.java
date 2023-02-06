@@ -26,6 +26,8 @@ import dev.sbs.api.client.sbs.SbsApiBuilder;
 import dev.sbs.api.client.sbs.request.MojangRequest;
 import dev.sbs.api.client.sbs.request.SkyBlockRequest;
 import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
+import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
+import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
@@ -85,6 +87,8 @@ public final class SimplifiedApi {
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
             .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
+            .registerTypeAdapter(SkyBlockImagesResponse.class, new SkyBlockImagesResponse.Deserializer())
+            .registerTypeAdapter(SkyBlockItemsResponse.class, new SkyBlockItemsResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .setPrettyPrinting()
             .create();
