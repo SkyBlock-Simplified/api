@@ -129,7 +129,11 @@ public final class SimplifiedApi {
         if (!serviceManager.isRegistered(SqlSession.class)) {
             // Collect SqlModels
             ConcurrentList<Class<SqlModel>> sqlModels = Graph.builder(SqlModel.class)
-                .withValues(Reflection.getResources().getSubtypesOf(SqlModel.class))
+                .withValues(
+                    Reflection.getResources()
+                        .filterPackage(SqlModel.class)
+                        .getSubtypesOf(SqlModel.class)
+                )
                 .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
                     .map(Field::getType)
                     .filter(SqlModel.class::isAssignableFrom)
