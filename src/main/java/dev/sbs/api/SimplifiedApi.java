@@ -43,7 +43,6 @@ import dev.sbs.api.util.HypixelConfig;
 import dev.sbs.api.util.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.sort.Graph;
 import feign.gson.DoubleToIntMapTypeAdapter;
@@ -130,14 +129,7 @@ public final class SimplifiedApi {
         if (!serviceManager.isRegistered(SqlSession.class)) {
             // Collect SqlModels
             ConcurrentList<Class<SqlModel>> sqlModels = Graph.builder(SqlModel.class)
-                .withValues(
-                    Reflection.getClassesFromPackage("dev.sbs.api.data.model")
-                        .stream()
-                        .filter(SqlModel.class::isAssignableFrom)
-                        .filter(clazz -> !clazz.isInterface())
-                        .map(clazz -> (Class<SqlModel>) clazz)
-                        .collect(Concurrent.toList())
-                )
+                .withValues(Reflection.getResources().getSubtypesOf(SqlModel.class))
                 .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
                     .map(Field::getType)
                     .filter(SqlModel.class::isAssignableFrom)
