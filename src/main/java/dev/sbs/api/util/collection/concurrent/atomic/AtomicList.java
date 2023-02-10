@@ -5,15 +5,7 @@ import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Function;
 
 public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<E, T> implements List<E> {
@@ -42,12 +34,12 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 		}
 	}
 
-	public final E getFirst() {
-		return this.get(0);
+	public final Optional<E> getFirst() {
+		return Optional.ofNullable(this.size() > 0 ? this.get(0) : null);
 	}
 
-	public final E getLast() {
-		return this.get(this.size() - 1);
+	public final Optional<E> getLast() {
+		return Optional.ofNullable(this.size() > 0 ? this.get(this.size() - 1) : null);
 	}
 
 	public final E getOrDefault(int index, E defaultValue) {
