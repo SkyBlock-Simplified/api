@@ -23,6 +23,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -42,7 +43,12 @@ public class StreamUtil {
         return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}!", key)); };
     }
 
-    public static <T> Stream<T> flattenOptional(Optional<T> optional) {
+    public static <T> Predicate<T> distinctByKey(@NotNull Function<? super T, ?> keyExtractor) {
+        ConcurrentSet<Object> seen = Concurrent.newSet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    public static <T> Stream<T> flattenOptional(@NotNull Optional<T> optional) {
         return Stream.ofNullable(optional.orElse(null));
     }
 
@@ -68,7 +74,7 @@ public class StreamUtil {
      * <p>The order of the resulting stream is defined if and only if the order of the original stream
      * was defined.
      */
-    public static <T, R> Stream<R> mapWithIndex(Stream<T> stream, TriFunction<? super T, Long, Long, ? extends R> function) {
+    public static <T, R> Stream<R> mapWithIndex(@NotNull Stream<T> stream, @NotNull TriFunction<? super T, Long, Long, ? extends R> function) {
         Objects.requireNonNull(stream);
         Objects.requireNonNull(function);
         boolean isParallel = stream.isParallel();
@@ -134,23 +140,23 @@ public class StreamUtil {
         return StreamSupport.stream(new Splitr(fromSpliterator, 0), isParallel).onClose(stream::close);
     }
 
-    public static <T> Stream<T> modifyStream(Stream<T> stream, TriFunction<T, Long, Long, T> modFunction) {
+    public static <T> Stream<T> modifyStream(@NotNull Stream<T> stream, @NotNull TriFunction<T, Long, Long, T> modFunction) {
         return mapWithIndex(stream, (value, index, size) -> modFunction.apply(value, index, size));
     }
 
-    public static Stream<String> appendEach(Stream<String> stringStream, String entryValue) {
+    public static Stream<String> appendEach(@NotNull Stream<String> stringStream, @NotNull String entryValue) {
         return appendEach(stringStream, entryValue, entryValue);
     }
 
-    public static Stream<String> appendEach(Stream<String> stringStream, String entryValue, String lastEntry) {
+    public static Stream<String> appendEach(@NotNull Stream<String> stringStream, @NotNull String entryValue, @NotNull String lastEntry) {
         return modifyStream(stringStream, (value, index, size) -> value + (index < size - 1 ? entryValue : lastEntry));
     }
 
-    public static Stream<String> prependEach(Stream<String> stringStream, String entryValue) {
+    public static Stream<String> prependEach(@NotNull Stream<String> stringStream, @NotNull String entryValue) {
         return prependEach(stringStream, entryValue, entryValue);
     }
 
-    public static Stream<String> prependEach(Stream<String> stringStream, String entryValue, String lastEntry) {
+    public static Stream<String> prependEach(@NotNull Stream<String> stringStream, @NotNull String entryValue, @NotNull String lastEntry) {
         return modifyStream(stringStream, (value, index, size) -> (index < size - 1 ? entryValue : lastEntry) + value);
     }
 
