@@ -484,8 +484,11 @@ public class SkyBlockIsland {
         }
 
         public double getSkillAverage() {
-            ConcurrentList<Skill> skills = this.getSkills(false);
-            return skills.stream().mapToDouble(Skill::getLevel).sum() / skills.size();
+            return this.getSkills(false)
+                .stream()
+                .mapToDouble(Skill::getLevel)
+                .average()
+                .orElse(0.0);
         }
 
         public double getSkillExperience() {
