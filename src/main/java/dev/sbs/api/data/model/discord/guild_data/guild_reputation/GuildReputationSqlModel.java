@@ -43,8 +43,8 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "reported_discord_id", nullable = false)
-    private Long reportedDiscordId;
+    @Column(name = "receiver_discord_id", nullable = false)
+    private Long receiverDiscordId;
 
     @Getter
     @Setter
@@ -62,11 +62,6 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
     private String reason;
 
     @Getter
-    @Setter
-    @Column(name = "positive")
-    private boolean positive;
-
-    @Getter
     @CreationTimestamp
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;
@@ -82,10 +77,10 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
         if (!(o instanceof GuildReputationSqlModel)) return false;
         GuildReputationSqlModel that = (GuildReputationSqlModel) o;
 
-        return new EqualsBuilder().append(this.isPositive(), that.isPositive())
+        return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getType(), that.getType())
-            .append(this.getReportedDiscordId(), that.getReportedDiscordId())
+            .append(this.getReceiverDiscordId(), that.getReceiverDiscordId())
             .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
             .append(this.getAssigneeDiscordId(), that.getAssigneeDiscordId())
             .append(this.getReason(), that.getReason())
@@ -98,11 +93,10 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder().append(this.getId())
             .append(this.getType())
-            .append(this.getReportedDiscordId())
+            .append(this.getReceiverDiscordId())
             .append(this.getSubmitterDiscordId())
             .append(this.getAssigneeDiscordId())
             .append(this.getReason())
-            .append(this.isPositive())
             .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
             .build();

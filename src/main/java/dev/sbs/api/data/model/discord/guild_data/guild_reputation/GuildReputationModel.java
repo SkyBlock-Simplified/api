@@ -9,15 +9,13 @@ public interface GuildReputationModel extends Model {
 
     GuildReputationTypeModel getType();
 
-    Long getReportedDiscordId();
+    Long getReceiverDiscordId();
 
     Long getSubmitterDiscordId();
 
     Long getAssigneeDiscordId();
 
     String getReason();
-
-    boolean isPositive();
 
     Instant getSubmittedAt();
 
