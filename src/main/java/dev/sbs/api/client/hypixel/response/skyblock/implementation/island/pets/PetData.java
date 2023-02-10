@@ -1,7 +1,9 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets;
 
-import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.data.model.skyblock.pet_data.pet_scores.PetScoreModel;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.helper.StreamUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +29,21 @@ public class PetData {
     }
 
     public int getPetScore() {
-        int petScore = 1;
-        ConcurrentList<String> noDuplicatePets = Concurrent.newList();
+        return this.getPets()
+            .sorted(Pet::getRarity)
+            .stream()
+            .filter(StreamUtil.distinctByKey(Pet::getName))
+            .mapToInt(pet -> pet.getRarityOrdinal() + 1)
+            .sum();
+    }
 
-        for (Pet pet : this.getPets()) {
-            if (noDuplicatePets.contains(pet.getName()))
-                continue;
-
-            petScore += pet.getRarity().getOrdinal() + 1;
-            noDuplicatePets.add(pet.getName());
-        }
-
-        return petScore;
+    public int getPetScoreMagicFind() {
+        return SimplifiedApi.getRepositoryOf(PetScoreModel.class)
+            .matchAll(petScoreModel -> petScoreModel.getBreakpoint() <= this.getPetScore())
+            .getFirst()
+            .map(PetScoreModel::getId)
+            .orElse(0L)
+            .intValue();
     }
 
 }
