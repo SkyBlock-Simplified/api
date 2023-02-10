@@ -53,7 +53,7 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "assignee_discord_id", nullable = false)
+    @Column(name = "assignee_discord_id")
     private Long assigneeDiscordId;
 
     @Getter
