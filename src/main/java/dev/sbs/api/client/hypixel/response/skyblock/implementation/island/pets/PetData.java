@@ -40,7 +40,7 @@ public class PetData {
     public int getPetScoreMagicFind() {
         return SimplifiedApi.getRepositoryOf(PetScoreModel.class)
             .matchAll(petScoreModel -> petScoreModel.getBreakpoint() <= this.getPetScore())
-            .getFirst()
+            .getLast()
             .map(PetScoreModel::getId)
             .orElse(0L)
             .intValue();
