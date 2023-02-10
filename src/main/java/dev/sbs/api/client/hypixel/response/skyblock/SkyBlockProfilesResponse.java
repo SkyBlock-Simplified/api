@@ -32,7 +32,13 @@ public class SkyBlockProfilesResponse {
     public SkyBlockIsland getLastPlayed() {
         return this.getIslands()
             .stream()
-            .max(Comparator.comparing(SearchFunction.combine(SkyBlockIsland::getLastSave, SkyBlockDate.RealTime::getRealTime)))
+            .filter(skyBlockIsland -> skyBlockIsland.getLastSave().isPresent())
+            .max(Comparator.comparing(
+                SearchFunction.combine(
+                    SearchFunction.combine(SkyBlockIsland::getLastSave, Optional::get),
+                    SkyBlockDate::getRealTime
+                )
+            ))
             .orElse(this.getIslands().get(0));
     }
 

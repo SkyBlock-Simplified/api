@@ -11,13 +11,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Mining {
 
     private ConcurrentMap<String, Object> nodes = Concurrent.newMap();
     private ConcurrentMap<String, Boolean> toggles = Concurrent.newMap();
     @SerializedName("last_reset")
-    @Getter private SkyBlockDate.RealTime lastReset = new SkyBlockDate.RealTime(0);
+    private long lastReset;
     @Getter private double experience;
     @SerializedName("received_free_tier")
     @Getter private boolean receivedFreeTier;
@@ -30,7 +32,7 @@ public class Mining {
     @SerializedName("selected_pickaxe_ability")
     @Getter private String selectedPickaxeAbility;
     @SerializedName("greater_mines_last_access")
-    @Getter private SkyBlockDate.RealTime lastAccessToGreaterMines = new SkyBlockDate.RealTime(0);
+    private long lastAccessToGreaterMines;
     @Getter private ConcurrentMap<Crystal.Type, Crystal> crystals = Concurrent.newMap();
 
     // Powder
@@ -71,6 +73,14 @@ public class Mining {
 
     public Crystal getCrystal(Crystal.Type type) {
         return this.crystals.get(type);
+    }
+
+    public Optional<SkyBlockDate> getLastAccessToGreaterMines() {
+        return Optional.ofNullable(this.lastAccessToGreaterMines > 0 ? new SkyBlockDate.RealTime(this.lastAccessToGreaterMines) : null);
+    }
+
+    public Optional<SkyBlockDate> getLastReset() {
+        return Optional.ofNullable(this.lastReset > 0 ? new SkyBlockDate.RealTime(this.lastReset) : null);
     }
 
     public ConcurrentMap<String, Double> getNodes() {

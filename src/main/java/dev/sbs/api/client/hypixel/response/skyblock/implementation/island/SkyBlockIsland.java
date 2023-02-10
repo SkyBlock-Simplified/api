@@ -55,7 +55,7 @@ public class SkyBlockIsland {
     @SerializedName("profile_id")
     @Getter private UUID islandId;
     @SerializedName("last_save")
-    @Getter private SkyBlockDate.RealTime lastSave; // Real Time
+    private long lastSave;
     @SerializedName("community_upgrades")
     private CommunityUpgrades communityUpgrades;
     private Banking banking;
@@ -83,6 +83,10 @@ public class SkyBlockIsland {
 
     public Optional<CommunityUpgrades> getCommunityUpgrades() {
         return Optional.ofNullable(communityUpgrades);
+    }
+
+    public Optional<SkyBlockDate> getLastSave() {
+        return Optional.ofNullable(this.lastSave > 0 ? new SkyBlockDate.RealTime(this.lastSave) : null);
     }
 
     public Optional<String> getGameMode() {
