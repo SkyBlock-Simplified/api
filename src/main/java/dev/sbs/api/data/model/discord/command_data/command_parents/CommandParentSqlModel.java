@@ -1,7 +1,6 @@
-package dev.sbs.api.data.model.discord.command_categories;
+package dev.sbs.api.data.model.discord.command_data.command_parents;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -15,17 +14,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_command_categories"
+    name = "discord_command_parents"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
+public class CommandParentSqlModel implements CommandParentModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,19 +42,13 @@ public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Getter
     @Setter
-    @Column(name = "long_description")
-    private String longDescription;
-
-    @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
-    private EmojiSqlModel emoji;
+    @Column(name = "prefix", nullable = false)
+    private boolean prefix;
 
     @Getter
     @UpdateTimestamp
@@ -69,15 +60,14 @@ public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CommandCategorySqlModel that = (CommandCategorySqlModel) o;
+        CommandParentSqlModel that = (CommandParentSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
-            .append(this.getLongDescription(), that.getLongDescription())
-            .append(this.getEmoji(), that.getEmoji())
+            .append(this.isPrefix(), that.isPrefix())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -89,8 +79,7 @@ public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())
-            .append(this.getLongDescription())
-            .append(this.getEmoji())
+            .append(this.isPrefix())
             .append(this.getUpdatedAt())
             .build();
     }

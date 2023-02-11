@@ -1,6 +1,7 @@
-package dev.sbs.api.data.model.discord.command_groups;
+package dev.sbs.api.data.model.discord.command_data.command_categories;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -14,31 +15,28 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Table(
-    name = "discord_command_groups"
+    name = "discord_command_categories"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
+public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
 
     @Getter
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
     @Getter
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Id
+    @Column(name = "key", nullable = false)
     private String key;
-
-    @Getter
-    @Setter
-    @Column(name = "group", nullable = false, unique = true)
-    private String group;
 
     @Getter
     @Setter
@@ -52,8 +50,14 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "required")
-    private boolean required;
+    @Column(name = "long_description")
+    private String longDescription;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
+    private EmojiSqlModel emoji;
 
     @Getter
     @UpdateTimestamp
@@ -65,15 +69,15 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CommandGroupSqlModel that = (CommandGroupSqlModel) o;
+        CommandCategorySqlModel that = (CommandCategorySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isRequired(), that.isRequired())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
-            .append(this.getGroup(), that.getGroup())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
+            .append(this.getLongDescription(), that.getLongDescription())
+            .append(this.getEmoji(), that.getEmoji())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -83,10 +87,10 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getKey())
-            .append(this.getGroup())
             .append(this.getName())
             .append(this.getDescription())
-            .append(this.isRequired())
+            .append(this.getLongDescription())
+            .append(this.getEmoji())
             .append(this.getUpdatedAt())
             .build();
     }

@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.discord.command_categories;
+package dev.sbs.api.data.model.discord.command_data.command_categories;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
