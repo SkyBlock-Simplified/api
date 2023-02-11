@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.discord.sbs_legacy_donors;
+package dev.sbs.api.data.model.discord.sbs_data.sbs_legacy_donors;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;

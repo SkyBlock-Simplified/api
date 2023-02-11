@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.discord.sbs_developers;
+package dev.sbs.api.data.model.discord.sbs_data.sbs_developers;
 
 import dev.sbs.api.data.model.Model;
 
