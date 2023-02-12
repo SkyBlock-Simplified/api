@@ -1,6 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class SkyBlockFireSaleResponse {
 
     @Getter private boolean success;
-    @Getter private ConcurrentList<Sale> sales;
+    @Getter private ConcurrentList<Sale> sales = Concurrent.newList();
 
     public static class Sale {
 
