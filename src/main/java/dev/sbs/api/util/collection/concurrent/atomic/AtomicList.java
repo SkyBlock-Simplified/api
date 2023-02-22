@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<E, T> implements List<E> {
 
-	protected AtomicList(T type) {
+	protected AtomicList(@NotNull T type) {
 		super(type);
 	}
 
