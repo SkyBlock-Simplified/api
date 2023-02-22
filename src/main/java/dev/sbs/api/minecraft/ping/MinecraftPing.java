@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.minecraft.text.MinecraftTextObject;
+import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.util.helper.DataUtil;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -123,10 +123,10 @@ public class MinecraftPing {
             JsonObject descriptionJsonObject = jsonObject.get("description").getAsJsonObject();
 
             if (descriptionJsonObject.has("extra")) {
-                MinecraftTextObject textObject = MinecraftTextObject.fromJson(descriptionJsonObject.get("extra").getAsJsonObject());
+                TextSegment textSegment = TextSegment.fromJson(descriptionJsonObject.get("extra").getAsJsonObject());
 
-                if (textObject != null)
-                    descriptionJsonObject.addProperty("text", textObject.toLegacy());
+                if (textSegment != null)
+                    descriptionJsonObject.addProperty("text", textSegment.toLegacy());
 
                 jsonObject.add("description", descriptionJsonObject);
             }

@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
+import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
@@ -39,7 +39,7 @@ public class HypixelGuildResponse {
         @Getter private int coinsEver;
         @Getter private Instant created;
         @Getter private boolean publiclyListed;
-        private MinecraftChatFormatting tagColor;
+        private ChatFormat tagColor;
         @SerializedName("exp")
         @Getter private long experience;
         @Getter private ConcurrentList<Member> members;
@@ -65,7 +65,7 @@ public class HypixelGuildResponse {
             return Optional.ofNullable(this.description);
         }
 
-        public Optional<MinecraftChatFormatting> getTagColor() {
+        public Optional<ChatFormat> getTagColor() {
             return Optional.ofNullable(this.tagColor);
         }
 
