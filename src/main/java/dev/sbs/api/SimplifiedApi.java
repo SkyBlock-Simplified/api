@@ -37,8 +37,9 @@ import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.manager.builder.BuilderManager;
 import dev.sbs.api.manager.service.ServiceManager;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
-import dev.sbs.api.minecraft.text.MinecraftTextBuilder;
-import dev.sbs.api.minecraft.text.MinecraftTextObject;
+import dev.sbs.api.minecraft.text.segment.ColorSegment;
+import dev.sbs.api.minecraft.text.segment.LineSegment;
+import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.HypixelConfig;
@@ -107,7 +108,9 @@ public final class SimplifiedApi {
         builderManager.add(HypixelSkyBlockRequest.class, HypixelApiBuilder.class);
         builderManager.add(NickRequest.class, AntiSniperApiBuilder.class);
         builderManager.add(String.class, StringBuilder.class);
-        builderManager.add(MinecraftTextObject.class, MinecraftTextBuilder.class);
+        builderManager.add(LineSegment.class, LineSegment.Builder.class);
+        builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
+        builderManager.add(TextSegment.class, TextSegment.Builder.class);
 
         // Create Api Builders
         SbsApiBuilder sbsApiBuilder = new SbsApiBuilder();
