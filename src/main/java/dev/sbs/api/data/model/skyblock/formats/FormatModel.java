@@ -1,7 +1,7 @@
 package dev.sbs.api.data.model.skyblock.formats;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
+import dev.sbs.api.minecraft.text.ChatFormat;
 
 import java.awt.*;
 
@@ -15,8 +15,8 @@ public interface FormatModel extends Model {
 
     boolean isFormat();
 
-    default MinecraftChatFormatting getChatFormatting() {
-        return MinecraftChatFormatting.of(this.getKey());
+    default ChatFormat getChatFormatting() {
+        return ChatFormat.of(this.getKey());
     }
 
 }
