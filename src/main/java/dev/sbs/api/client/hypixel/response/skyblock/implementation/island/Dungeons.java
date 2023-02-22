@@ -5,7 +5,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonModel;
-import dev.sbs.api.minecraft.text.MinecraftChatFormatting;
+import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.SerializedPath;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -105,7 +105,7 @@ public class Dungeons {
 
                 private static final Pattern DISPLAY_PATTERN = Pattern.compile(FormatUtil.format(
                     "^{0}([0-9a-f])(.*?){0}[0-9a-f]: {0}[0-9a-f](.*?){0}[0-9a-f] \\({0}[0-9a-f]([0-9]+){0}[0-9a-f]\\)",
-                    MinecraftChatFormatting.SECTION_SYMBOL
+                    ChatFormat.SECTION_SYMBOL
                 ));
 
                 @SerializedName("player_uuid")
