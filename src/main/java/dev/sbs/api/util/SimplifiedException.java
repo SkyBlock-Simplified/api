@@ -32,6 +32,12 @@ public abstract class SimplifiedException extends RuntimeException {
         return new ExceptionBuilder<>(eClass);
     }
 
+    /**
+     * Wraps a native Java exception in {@link WrappedException} to escape nested try-catch clauses.
+     *
+     * @param throwable The thrown exception.
+     * @return A wrapped runtime exception.
+     */
     public static ExceptionBuilder<WrappedException> wrapNative(Throwable throwable) {
         return of(WrappedException.class).withCause(throwable).withMessage(throwable.getMessage());
     }
