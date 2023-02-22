@@ -5,60 +5,59 @@ import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public enum MinecraftChatFormatting {
+public enum ChatFormat {
 
-    BLACK('0', 0x000000),
-    DARK_BLUE('1', 0x0000AA),
-    DARK_GREEN('2', 0x00AA00),
-    DARK_AQUA('3', 0x00AAAA),
-    DARK_RED('4', 0xAA0000),
-    DARK_PURPLE('5', 0xAA00AA),
-    GOLD('6', 0xFFAA00),
-    GRAY('7', 0xAAAAAA),
-    DARK_GRAY('8', 0x555555),
-    BLUE('9', 0x5555FF),
-    GREEN('a', 0x55FF55),
-    AQUA('b', 0x55FFFF),
-    RED('c', 0xFF5555),
-    LIGHT_PURPLE('d', 0xFF55FF),
-    YELLOW('e', 0xFFFF55),
-    WHITE('f', 0xFFFFFF),
-    OBFUSCATED('k', true),
-    BOLD('l', true),
-    STRIKETHROUGH('m', true),
-    UNDERLINE('n', true),
-    ITALIC('o', true),
-    RESET('r');
+    BLACK('0', 0x000000, 0x000000),
+    DARK_BLUE('1', 0x0000AA, 0x00002A),
+    DARK_GREEN('2', 0x00AA00, 0x002A00),
+    DARK_AQUA('3', 0x00AAAA, 0x002A2A),
+    DARK_RED('4', 0xAA0000, 0x2A0000),
+    DARK_PURPLE('5', 0xAA00AA, 0x2A002A),
+    GOLD('6', 0xFFAA00, 0x2A2A00),
+    GRAY('7', 0xAAAAAA, 0x2A2A2A),
+    DARK_GRAY('8', 0x555555, 0x151515),
+    BLUE('9', 0x5555FF, 0x15153F),
+    GREEN('a', 0x55FF55, 0x153F15),
+    AQUA('b', 0x55FFFF, 0x153F3F),
+    RED('c', 0xFF5555, 0x3F1515),
+    LIGHT_PURPLE('d', 0xFF55FF, 0x3F153F),
+    YELLOW('e', 0xFFFF55, 0x3F3F15),
+    WHITE('f', 0xFFFFFF, 0x3F3F3F),
+    OBFUSCATED('k', true, 0xFFFFFF), // Unknown BRGB
+    BOLD('l', true, 0xFFFF55),
+    STRIKETHROUGH('m', true, 0xFFFFFF), // Unknown BRGB
+    UNDERLINE('n', true, 0xFFFFFF), // Unknown BRGB
+    ITALIC('o', true, 0x5555FF),
+    RESET('r', false, 0x000000);
 
     public static final char SECTION_SYMBOL = '\u00a7';
-    @Getter
-    private final char code;
-    @Getter
-    private final boolean isFormat;
-    private final String toString;
-    private final Color color;
+    @Getter private final char code;
+    @Getter private final boolean isFormat;
+    private final @NotNull String toString;
+    private final @Nullable Color color;
+    @Getter private final @NotNull Color backgroundColor;
 
-    MinecraftChatFormatting(char code) {
-        this(code, -1);
+    ChatFormat(char code, int rgb, int brgb) {
+        this(code, false, rgb, brgb);
     }
 
-    MinecraftChatFormatting(char code, int rgb) {
-        this(code, false, rgb);
+    ChatFormat(char code, boolean isFormat, int brgb) {
+        this(code, isFormat, -1, brgb);
     }
 
-    MinecraftChatFormatting(char code, boolean isFormat) {
-        this(code, isFormat, -1);
-    }
-
-    MinecraftChatFormatting(char code, boolean isFormat, int rgb) {
+    ChatFormat(char code, boolean isFormat, int rgb, int brgb) {
         this.code = code;
         this.isFormat = isFormat;
         this.toString = new String(new char[]{ SECTION_SYMBOL, code });
         this.color = (this.isColor() ? new Color(rgb) : null);
+        this.backgroundColor = new Color(brgb);
     }
 
     /**
@@ -67,8 +66,8 @@ public enum MinecraftChatFormatting {
      * @param name The name to search for.
      * @return The mapped format, or null if none exists.
      */
-    public static MinecraftChatFormatting of(String name) {
-        for (MinecraftChatFormatting color : values()) {
+    public static ChatFormat of(String name) {
+        for (ChatFormat color : values()) {
             if (color.name().equals(name))
                 return color;
         }
@@ -82,8 +81,8 @@ public enum MinecraftChatFormatting {
      * @param code The code to search for.
      * @return The mapped format, or null if none exists.
      */
-    public static MinecraftChatFormatting of(char code) {
-        for (MinecraftChatFormatting color : values()) {
+    public static ChatFormat of(char code) {
+        for (ChatFormat color : values()) {
             if (color.code == code)
                 return color;
         }
@@ -101,6 +100,9 @@ public enum MinecraftChatFormatting {
     }
 
     public Color getColor(int alpha) {
+        if (Objects.isNull(this.color))
+            throw new UnsupportedOperationException("Formats are not colors!");
+
         return new Color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), alpha);
     }
 
@@ -116,11 +118,11 @@ public enum MinecraftChatFormatting {
         return of(code) != null;
     }
 
-    public MinecraftChatFormatting getNextFormat() {
+    public ChatFormat getNextFormat() {
         return this.getNextFormat(ordinal());
     }
 
-    private MinecraftChatFormatting getNextFormat(int ordinal) {
+    private ChatFormat getNextFormat(int ordinal) {
         int nextColor = ordinal + 1;
 
         if (nextColor > values().length - 1)

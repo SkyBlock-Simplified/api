@@ -2,34 +2,13 @@ package dev.sbs.api.minecraft.text.event;
 
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public final class ClickEvent {
 
-    public enum Action {
-
-        OPEN_URL,
-        RUN_COMMAND,
-        SUGGEST_COMMAND,
-
-        // For Books
-        CHANGE_PAGE;
-
-        @Override
-        public String toString() {
-            return this.name().toLowerCase();
-        }
-
-    }
-
-    @Getter
-    private final Action action;
-    @Getter
-    private final String value;
-
-    public ClickEvent(Action action, String value) {
-        this.action = action;
-        this.value = value;
-    }
+    @Getter private final Action action;
+    @Getter private final String value;
 
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
@@ -48,6 +27,22 @@ public final class ClickEvent {
         String action = object.getAsJsonPrimitive("action").getAsString();
         String value = object.getAsJsonPrimitive("value").getAsString();
         return new ClickEvent(Action.valueOf(action), value);
+    }
+
+    public enum Action {
+
+        OPEN_URL,
+        RUN_COMMAND,
+        SUGGEST_COMMAND,
+
+        // For Books
+        CHANGE_PAGE;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+
     }
 
 }
