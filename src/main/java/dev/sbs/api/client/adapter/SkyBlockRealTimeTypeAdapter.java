@@ -13,8 +13,7 @@ public class SkyBlockRealTimeTypeAdapter extends TypeAdapter<SkyBlockDate.RealTi
 
     @Override
     public SkyBlockDate.RealTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-        long milliseconds = json.getAsLong();
-        return milliseconds != 0L ? new SkyBlockDate.RealTime(milliseconds) : null;
+        return new SkyBlockDate.RealTime(json.getAsLong());
     }
 
     @Override

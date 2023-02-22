@@ -65,8 +65,6 @@ public class SkyBlockDate extends CustomDate {
 
     public SkyBlockDate(long milliseconds, boolean isRealTime) {
         super(isRealTime ? milliseconds : milliseconds + Launch.SKYBLOCK);
-        if (isRealTime) Preconditions.checkArgument(milliseconds > Launch.SKYBLOCK, "Milliseconds must be greater than launch date.");
-        if (!isRealTime) Preconditions.checkArgument((milliseconds + Launch.SKYBLOCK) > Launch.SKYBLOCK, "Milliseconds must be greater than zero.");
     }
 
     public SkyBlockDate append(int year) {
