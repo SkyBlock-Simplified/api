@@ -53,12 +53,12 @@ public class Experimentation {
 
     public static class Table {
 
-        @Getter private final SkyBlockDate.RealTime lastAttempt;
-        @Getter private final SkyBlockDate.RealTime lastClaimed;
+        @Getter private final @NotNull SkyBlockDate.RealTime lastAttempt;
+        @Getter private final @NotNull SkyBlockDate.RealTime lastClaimed;
         @Getter private final int bonusClicks;
-        @Getter private final ConcurrentMap<Integer, Integer> attempts;
-        @Getter private final ConcurrentMap<Integer, Integer> claims;
-        @Getter private final ConcurrentMap<Integer, Integer> bestScore;
+        @Getter private final @NotNull ConcurrentMap<Integer, Integer> attempts;
+        @Getter private final @NotNull ConcurrentMap<Integer, Integer> claims;
+        @Getter private final @NotNull ConcurrentMap<Integer, Integer> bestScore;
 
         private Table(@NotNull ConcurrentMap<String, Long> tableData) {
             this.lastAttempt = new SkyBlockDate.RealTime(tableData.removeOrGet("last_attempt", 0L));
