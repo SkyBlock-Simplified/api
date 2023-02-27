@@ -1,96 +1,87 @@
 package dev.sbs.api.util.concurrent;
 
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class ConcurrentTest {
 
-    @Test
-    public void getConcurrentModificationException_ok() {
-        ArrayList<Double> randomNumbers = new ArrayList<>();
-        long addStart = System.currentTimeMillis();
-        int total = 100000;
-        new Random().doubles(total, 1, 100000).forEach(randomNumbers::add);
-        long addEnd = System.currentTimeMillis();
-        long addDuration = addEnd - addStart;
-        System.out.println("Took " + addDuration + "ms to add " + total + " numbers");
-
-        for (double number : randomNumbers)
-            randomNumbers.remove(number); // THROWS java.util.ConcurrentModificationException
-
-        long removeEnd = System.currentTimeMillis();
-        long removeDuration = removeEnd - addEnd;
-
-        System.out.println("Took " + removeDuration + "ms to remove " + total + " numbers concurrently");
-        assert randomNumbers.size() == 0;
-    }
+    private static int HOW_MANY = 1_000_000;
+    private static int NUM_THREADS = 16;
 
     @Test
-    public void getNoConcurrentModificationException_ok() {
-        ConcurrentSet<Double> randomNumbers = new ConcurrentSet<>();
-        long addStart = System.currentTimeMillis();
-        int total = 100000;
-        new Random().doubles(total, 1, 100000).forEach(randomNumbers::add);
-        long addEnd = System.currentTimeMillis();
-        long addDuration = addEnd - addStart;
-        System.out.println("Took " + addDuration + "ms to add " + total + " numbers");
+    public void getNoCME_ok() throws Exception {
+        for (int trial = 0; trial < 5; trial++) {
+            List<Thread> threads = new ArrayList<>();
 
-        for (double number : randomNumbers)
-            randomNumbers.remove(number); // DOES NOT THROW java.util.ConcurrentModificationException
+            /*ConcurrentList<Integer> randomNumbers = new ConcurrentList<>();
+            for (int threadNum = 0; threadNum < NUM_THREADS; threadNum++) {
+                final Thread thread = new Thread(() -> {
+                    int x = 0;
 
-        long removeEnd = System.currentTimeMillis();
-        long removeDuration = removeEnd - addEnd;
+                    for (int i = 0; i < HOW_MANY; i++) {
+                        if (randomNumbers.size() >= 10_000) {
+                            randomNumbers.clear();
+                            x = 0;
+                        }
 
-        System.out.println("Took " + removeDuration + "ms to remove " + total + " numbers concurrently");
-        assert randomNumbers.size() == 0;
-    }
+                        randomNumbers.add(x++);
+                    }
+                });
+                threads.add(thread);
+                thread.start();
+            }
+            long start = System.currentTimeMillis();
+            for (Thread t : threads) t.join();
+            long end = System.currentTimeMillis();
+            System.out.println("v1: " + (end - start));
 
-    @Test
-    public void getCMETest3_ok() {
-        CopyOnWriteArrayList<Double> randomNumbers = new CopyOnWriteArrayList<>();
-        long addStart = System.currentTimeMillis();
-        int total = 100000;
-        new Random().doubles(total, 1, 100000).forEach(randomNumbers::add);
-        long addEnd = System.currentTimeMillis();
-        long addDuration = addEnd - addStart;
-        System.out.println("Took " + addDuration + "ms to add " + total + " numbers"); // 7810ms
+            ConcurrentList2<Integer> randomNumbers2 = new ConcurrentList2<>();
+            for (int threadNum = 0; threadNum < NUM_THREADS; threadNum++) {
+                final Thread thread = new Thread(() -> {
+                    int x = 0;
 
-        for (double number : randomNumbers)
-            randomNumbers.remove(number); // DOES NOT THROW java.util.ConcurrentModificationException
+                    for (int i = 0; i < HOW_MANY; i++) {
+                        if (randomNumbers2.size() >= 10_000) {
+                            randomNumbers2.clear();
+                            x = 0;
+                        }
 
-        long removeEnd = System.currentTimeMillis();
-        long removeDuration = removeEnd - addEnd;
+                        randomNumbers2.add(x++);
+                    }
+                });
+                threads.add(thread);
+                thread.start();
+            }
+            start = System.currentTimeMillis();
+            for (Thread t : threads) t.join();
+            end = System.currentTimeMillis();
+            System.out.println("v2: " + (end - start));*/
 
-        System.out.println("Took " + removeDuration + "ms to remove " + total + " numbers concurrently"); // 3743ms
-        assert randomNumbers.size() == 0;
-    }
+            /*ArrayList<Integer> randomNumbers3 = new ArrayList<>();
+            for (int threadNum = 0; threadNum < NUM_THREADS; threadNum++) {
+                final Thread thread = new Thread(() -> {
+                    int x = 0;
 
-    @Test
-    public void getCMETest5_ok() {
-        ConcurrentMap<Integer, Double> randomNumbers = Concurrent.newMap();
-        long addStart = System.currentTimeMillis();
-        int total = 100000;
-        new Random().doubles(total, 1, 100000).forEach(value -> randomNumbers.put(randomNumbers.size(), value));
-        long addEnd = System.currentTimeMillis();
-        long addDuration = addEnd - addStart;
-        System.out.println("Took " + addDuration + "ms to add " + total + " numbers"); // 7810ms
+                    for (int i = 0; i < HOW_MANY; i++) {
+                        if (x == 10000)
+                            randomNumbers3.clear();
 
-        for (Map.Entry<Integer, Double> number : randomNumbers)
-            randomNumbers.remove(number.getKey()); // DOES NOT THROW java.util.ConcurrentModificationException
+                        randomNumbers3.add(x++);
+                    }
+                });
+                threads.add(thread);
+                thread.start();
+            }
+            start = System.currentTimeMillis();
+            for (Thread t : threads) t.join();
+            end = System.currentTimeMillis();
+            System.out.println("native: " + (end - start));*/
 
-        long removeEnd = System.currentTimeMillis();
-        long removeDuration = removeEnd - addEnd;
-
-        System.out.println("Took " + removeDuration + "ms to remove " + total + " numbers concurrently"); // 3743ms
-        assert randomNumbers.size() == 0;
+            System.out.println("---");
+        }
     }
 
 }

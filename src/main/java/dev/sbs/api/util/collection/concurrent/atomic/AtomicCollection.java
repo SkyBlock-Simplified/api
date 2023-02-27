@@ -11,6 +11,8 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -18,7 +20,7 @@ import java.util.stream.Stream;
 public abstract class AtomicCollection<E, T extends Collection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
 
 	protected final @NotNull T ref;
-	protected final transient @NotNull Object lock = new Object();
+	protected final transient ReadWriteLock lock2 = new ReentrantReadWriteLock();
 
 	protected AtomicCollection(@NotNull T ref) {
 		this.ref = ref;
@@ -26,8 +28,11 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 
 	@Override
 	public boolean add(@NotNull E element) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.writeLock().lock();
 			return this.ref.add(element);
+		} finally {
+			this.lock2.writeLock().unlock();
 		}
 	}
 
@@ -37,31 +42,44 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 
 	@Override
 	public boolean addAll(@NotNull Collection<? extends E> collection) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.writeLock().lock();
 			return this.ref.addAll(collection);
+		} finally {
+			this.lock2.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void clear() {
-		synchronized (this.lock) {
+		try {
+			this.lock2.writeLock().lock();
 			this.ref.clear();
+		} finally {
+			this.lock2.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public boolean contains(Object item) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.readLock().lock();
 			return this.ref.contains(item);
+		} finally {
+			this.lock2.readLock().unlock();
 		}
 	}
 
 	public final <S> boolean contains(@NotNull Function<E, S> function, S value) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.readLock().lock();
+
 			for (E element : this.ref) {
 				if (Objects.equals(function.apply(element), value))
 					return true;
 			}
+		} finally {
+			this.lock2.readLock().unlock();
 		}
 
 		return false;
@@ -69,8 +87,11 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 
 	@Override
 	public boolean containsAll(@NotNull Collection<?> collection) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.readLock().lock();
 			return this.ref.containsAll(collection);
+		} finally {
+			this.lock2.readLock().unlock();
 		}
 	}
 
@@ -84,15 +105,21 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 
 	@Override
 	public final int hashCode() {
-		synchronized (this.lock) {
+		try {
+			this.lock2.readLock().lock();
 			return this.ref.hashCode();
+		} finally {
+			this.lock2.readLock().unlock();
 		}
 	}
 
 	@Override
 	public final boolean isEmpty() {
-		synchronized (this.lock) {
+		try {
+			this.lock2.readLock().lock();
 			return this.ref.isEmpty();
+		} finally {
+			this.lock2.readLock().unlock();
 		}
 	}
 
@@ -111,24 +138,32 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 	}
 
 	@Override
-	@SuppressWarnings("all")
 	public boolean remove(Object element) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.writeLock().lock();
 			return this.ref.remove(element);
+		} finally {
+			this.lock2.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public boolean removeAll(@NotNull Collection<?> collection) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.writeLock().lock();
 			return this.ref.removeAll(collection);
+		} finally {
+			this.lock2.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public boolean retainAll(@NotNull Collection<?> collection) {
-		synchronized (this.lock) {
+		try {
+			this.lock2.writeLock().lock();
 			return this.ref.retainAll(collection);
+		} finally {
+			this.lock2.writeLock().unlock();
 		}
 	}
 

@@ -9,5 +9,4 @@ public abstract class AtomicSet<E, T extends AbstractSet<E>> extends AtomicColle
 		super(type);
 	}
 
-
 }

@@ -15,22 +15,31 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 	}
 
 	public void add(int index, @NotNull E element) {
-		synchronized (this.lock) {
-			this.ref.add(index, element);
+		try {
+			super.lock2.writeLock().lock();
+			super.ref.add(index, element);
+		} finally {
+			super.lock2.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public boolean addAll(int index, @NotNull Collection<? extends E> collection) {
-		synchronized (this.lock) {
-			return this.ref.addAll(index, collection);
+		try {
+			super.lock2.writeLock().lock();
+			return super.ref.addAll(index, collection);
+		} finally {
+			super.lock2.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public final E get(int index) {
-		synchronized (this.lock) {
-			return this.ref.get(index);
+		try {
+			super.lock2.readLock().lock();
+			return super.ref.get(index);
+		} finally {
+			super.lock2.readLock().unlock();
 		}
 	}
 
@@ -48,9 +57,7 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@Override
 	public final int indexOf(Object item) {
-		synchronized (this.lock) {
-			return this.ref.indexOf(item);
-		}
+		return this.ref.indexOf(item);
 	}
 
 	public List<E> inverse() {
@@ -60,9 +67,7 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@Override
 	public final int lastIndexOf(Object item) {
-		synchronized (this.lock) {
-			return this.ref.lastIndexOf(item);
-		}
+		return this.ref.lastIndexOf(item);
 	}
 
 	@Override @NotNull
@@ -77,8 +82,11 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@Override
 	public E remove(int index) {
-		synchronized (this.lock) {
-			return this.ref.remove(index);
+		try {
+			super.lock2.writeLock().lock();
+			return super.ref.remove(index);
+		} finally {
+			super.lock2.writeLock().unlock();
 		}
 	}
 
@@ -92,8 +100,11 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@Override
 	public E set(int index, E element) {
-		synchronized (this.lock) {
-			return this.ref.set(index, element);
+		try {
+			super.lock2.writeLock().lock();
+			return super.ref.set(index, element);
+		} finally {
+			super.lock2.writeLock().unlock();
 		}
 	}
 
@@ -141,9 +152,7 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		synchronized (this.lock) {
-			return this.ref.subList(fromIndex, toIndex);
-		}
+		return this.ref.subList(fromIndex, toIndex);
 	}
 
 	/**
