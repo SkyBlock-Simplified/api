@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.helper.StringUtil;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,14 +19,14 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ColorSegment {
 
-    protected @NotNull String text;
+    protected @Nullable String text;
     protected @NotNull Optional<ChatFormat> color = Optional.empty();
     protected boolean italic, bold, underlined, obfuscated, strikethrough;
 
-    public ColorSegment(@NotNull String text) {
+    public ColorSegment(@Nullable String text) {
         this.setText(text);
     }
 
@@ -188,7 +189,7 @@ public class ColorSegment {
         return TextSegment.fromJson(this.toJson());
     }
 
-    public static class Builder implements dev.sbs.api.util.builder.Builder<TextSegment> {
+    public static class Builder implements dev.sbs.api.util.builder.Builder<ColorSegment> {
 
         protected String text = "";
         protected Optional<ChatFormat> color = Optional.empty();
@@ -258,8 +259,15 @@ public class ColorSegment {
         }
 
         @Override
-        public TextSegment build() {
-            return null;
+        public ColorSegment build() {
+            ColorSegment colorSegment = new ColorSegment(this.text);
+            colorSegment.setColor(this.color);
+            colorSegment.setObfuscated(this.obfuscated);
+            colorSegment.setItalic(this.italic);
+            colorSegment.setBold(this.bold);
+            colorSegment.setUnderlined(this.underlined);
+            colorSegment.setStrikethrough(this.strikethrough);
+            return colorSegment;
         }
 
     }
