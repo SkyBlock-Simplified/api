@@ -234,7 +234,7 @@ public class MinecraftText {
         if (colorSegment.isStrikethrough())
             this.drawThickLine(nextBounds, this.locationX, this.locationY, -1, STRIKETHROUGH_OFFSET, true);
 
-        // Draw Underlined
+        // Draw Underlined Drop Shadow
         if (colorSegment.isUnderlined())
             this.drawThickLine(nextBounds, this.locationX - 2, this.locationY, 1, UNDERLINE_OFFSET, true);
 
