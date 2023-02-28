@@ -3,7 +3,6 @@ package dev.sbs.api.text;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.MinecraftText;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,25 +13,31 @@ public class MinecraftItemGenTest {
     public void generateFakeItem() {
         MinecraftText text = MinecraftText.builder()
             .withSegments(
-                Concurrent.newList(
-                    ColorSegment.builder()
-                        .withColor(ChatFormat.LIGHT_PURPLE)
-                        .withText("Terminator")
-                        .build()
-                )
+                ColorSegment.builder()
+                    .withColor(ChatFormat.GRAY)
+                    .withText("Sample Item")
+                    .build()
             )
             .withSegments(
                 ColorSegment.builder()
                     .withColor(ChatFormat.GRAY)
-                    .withText("Test")
+                    .withText("abc1 ABC1")
+                    .isUnderlined()
                     .build()
             )
-            .withSegments(ColorSegment.builder().withText("").build()) // Empty Line
             .withSegments(
                 ColorSegment.builder()
-                    .isBold()
-                    .withColor(ChatFormat.LIGHT_PURPLE)
-                    .withText("MYTHIC")
+                    .withColor(ChatFormat.GRAY)
+                    .withText("abc2 ABC2")
+                    .isStrikethrough()
+                    .build()
+            )
+            .withSegments(
+                ColorSegment.builder()
+                    .withColor(ChatFormat.GRAY)
+                    .withText("abc3 ABC3")
+                    .isStrikethrough()
+                    .isUnderlined()
                     .build()
             )
             .withPadding(1)

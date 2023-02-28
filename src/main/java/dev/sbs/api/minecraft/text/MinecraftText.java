@@ -34,6 +34,8 @@ public class MinecraftText {
     private static final int PIXEL_SIZE = 2;
     private static final int START_XY = PIXEL_SIZE * 5;
     private static final int Y_INCREMENT = PIXEL_SIZE * 10;
+    private static final int STRIKETHROUGH_OFFSET = -8;
+    private static final int UNDERLINE_OFFSET = 2;
     @Getter private static final @NotNull ConcurrentList<Font> minecraftFonts;
     private static final Font sansSerif;
 
@@ -100,7 +102,7 @@ public class MinecraftText {
     }
 
     /**
-     * Crops the image to fit the space taken up by the text.
+     * Crops the image to fit the space taken up by the borders.
      */
     public void cropImage() {
         this.image = this.getImage().getSubimage(
@@ -112,7 +114,7 @@ public class MinecraftText {
     }
 
     /**
-     * Resizes the image to fit support right/bottom most padding.
+     * Resizes the image to add padding.
      */
     public void addPadding() {
         if (this.getPadding() > 0) {
@@ -161,17 +163,17 @@ public class MinecraftText {
                 this.currentColor = segment.getColor().orElse(ChatFormat.GRAY);
 
                 StringBuilder subWord = new StringBuilder();
-                String displayingLine = segment.getText();
+                String segmentText = segment.getText();
 
-                // Iterate through all characters on the current line until there is a character which cannot be displayed
-                if (Objects.nonNull(displayingLine)) {
-                    for (int charIndex = 0; charIndex < displayingLine.length(); charIndex++) {
-                        char character = displayingLine.charAt(charIndex);
+                // Iterate through all characters on the current segment until there is a character which cannot be displayed
+                if (Objects.nonNull(segmentText)) {
+                    for (int charIndex = 0; charIndex < segmentText.length(); charIndex++) {
+                        char character = segmentText.charAt(charIndex);
 
                         if (!this.currentFont.canDisplay(character)) {
-                            this.drawString(subWord.toString());
+                            this.drawString(subWord.toString(), segment);
                             subWord.setLength(0);
-                            this.drawSymbol(character);
+                            this.drawSymbol(character, segment);
                             continue;
                         }
 
@@ -180,7 +182,7 @@ public class MinecraftText {
                     }
                 }
 
-                this.drawString(subWord.toString());
+                this.drawString(subWord.toString(), segment);
             });
 
             this.updatePositionAndSize(this.getLines().indexOf(line) == 0);
@@ -192,8 +194,8 @@ public class MinecraftText {
      *
      * @param symbol The symbol to draw.
      */
-    private void drawSymbol(char symbol) {
-        this.drawString(Character.toString(symbol), sansSerif);
+    private void drawSymbol(char symbol, @NotNull ColorSegment colorSegment) {
+        this.drawString(Character.toString(symbol), colorSegment, sansSerif);
     }
 
     /**
@@ -201,13 +203,40 @@ public class MinecraftText {
      *
      * @param value The value to draw.
      */
-    private void drawString(@NotNull String value) {
-        this.drawString(value, this.currentFont);
+    private void drawString(@NotNull String value, @NotNull ColorSegment colorSegment) {
+        this.drawString(value, colorSegment, this.currentFont);
     }
 
-    private void drawString(@NotNull String value, @NotNull Font font) {
+    private void drawThickLine(int width, int xPosition, int yPosition, int xOffset, int yOffset, boolean dropShadow) {
+        int xPosition1 = xPosition;
+        int xPosition2 = xPosition + width + xOffset;
+        yPosition += yOffset;
+
+        if (dropShadow) {
+            xPosition1 += 2;
+            xPosition2 += 2;
+            yPosition += 2;
+        }
+
+        this.getGraphics().setColor(dropShadow ? this.currentColor.getBackgroundColor() : this.currentColor.getColor());
+        this.getGraphics().drawLine(xPosition1, yPosition, xPosition2, yPosition);
+        this.getGraphics().drawLine(xPosition1, yPosition + 1, xPosition2, yPosition + 1);
+    }
+
+    private void drawString(@NotNull String value, @NotNull ColorSegment colorSegment, @NotNull Font font) {
         // Change Font
         this.getGraphics().setFont(font);
+
+        // Next Draw Position
+        int nextBounds = (int) font.getStringBounds(value, this.getGraphics().getFontRenderContext()).getWidth();
+
+        // Draw Strikethrough Drop Shadow
+        if (colorSegment.isStrikethrough())
+            this.drawThickLine(nextBounds, this.locationX, this.locationY, -1, STRIKETHROUGH_OFFSET, true);
+
+        // Draw Underlined
+        if (colorSegment.isUnderlined())
+            this.drawThickLine(nextBounds, this.locationX - 2, this.locationY, 1, UNDERLINE_OFFSET, true);
 
         // Draw Drop Shadow Text
         this.getGraphics().setColor(this.currentColor.getBackgroundColor());
@@ -217,8 +246,16 @@ public class MinecraftText {
         this.getGraphics().setColor(this.currentColor.getColor());
         this.getGraphics().drawString(value, this.locationX, this.locationY);
 
+        // Draw Strikethrough
+        if (colorSegment.isStrikethrough())
+            this.drawThickLine(nextBounds, this.locationX, this.locationY, -1, STRIKETHROUGH_OFFSET, false);
+
+        // Draw Underlined
+        if (colorSegment.isUnderlined())
+            this.drawThickLine(nextBounds, this.locationX - 2, this.locationY, 1, UNDERLINE_OFFSET, false);
+
         // Update Draw Pointer Location
-        this.locationX += font.getStringBounds(value, this.getGraphics().getFontRenderContext()).getWidth();
+        this.locationX += nextBounds;
 
         // Reset Font
         this.getGraphics().setFont(this.currentFont);
