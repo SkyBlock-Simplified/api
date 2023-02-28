@@ -207,22 +207,6 @@ public class MinecraftText {
         this.drawString(value, colorSegment, this.currentFont);
     }
 
-    private void drawThickLine(int width, int xPosition, int yPosition, int xOffset, int yOffset, boolean dropShadow) {
-        int xPosition1 = xPosition;
-        int xPosition2 = xPosition + width + xOffset;
-        yPosition += yOffset;
-
-        if (dropShadow) {
-            xPosition1 += 2;
-            xPosition2 += 2;
-            yPosition += 2;
-        }
-
-        this.getGraphics().setColor(dropShadow ? this.currentColor.getBackgroundColor() : this.currentColor.getColor());
-        this.getGraphics().drawLine(xPosition1, yPosition, xPosition2, yPosition);
-        this.getGraphics().drawLine(xPosition1, yPosition + 1, xPosition2, yPosition + 1);
-    }
-
     private void drawString(@NotNull String value, @NotNull ColorSegment colorSegment, @NotNull Font font) {
         // Change Font
         this.getGraphics().setFont(font);
@@ -236,11 +220,11 @@ public class MinecraftText {
 
         // Draw Underlined Drop Shadow
         if (colorSegment.isUnderlined())
-            this.drawThickLine(nextBounds, this.locationX - 2, this.locationY, 1, UNDERLINE_OFFSET, true);
+            this.drawThickLine(nextBounds, this.locationX - PIXEL_SIZE, this.locationY, 1, UNDERLINE_OFFSET, true);
 
         // Draw Drop Shadow Text
         this.getGraphics().setColor(this.currentColor.getBackgroundColor());
-        this.getGraphics().drawString(value, this.locationX + 2, this.locationY + 2);
+        this.getGraphics().drawString(value, this.locationX + PIXEL_SIZE, this.locationY + PIXEL_SIZE);
 
         // Draw Text
         this.getGraphics().setColor(this.currentColor.getColor());
@@ -252,13 +236,29 @@ public class MinecraftText {
 
         // Draw Underlined
         if (colorSegment.isUnderlined())
-            this.drawThickLine(nextBounds, this.locationX - 2, this.locationY, 1, UNDERLINE_OFFSET, false);
+            this.drawThickLine(nextBounds, this.locationX - PIXEL_SIZE, this.locationY, 1, UNDERLINE_OFFSET, false);
 
         // Update Draw Pointer Location
         this.locationX += nextBounds;
 
         // Reset Font
         this.getGraphics().setFont(this.currentFont);
+    }
+
+    private void drawThickLine(int width, int xPosition, int yPosition, int xOffset, int yOffset, boolean dropShadow) {
+        int xPosition1 = xPosition;
+        int xPosition2 = xPosition + width + xOffset;
+        yPosition += yOffset;
+
+        if (dropShadow) {
+            xPosition1 += PIXEL_SIZE;
+            xPosition2 += PIXEL_SIZE;
+            yPosition += PIXEL_SIZE;
+        }
+
+        this.getGraphics().setColor(dropShadow ? this.currentColor.getBackgroundColor() : this.currentColor.getColor());
+        this.getGraphics().drawLine(xPosition1, yPosition, xPosition2, yPosition);
+        this.getGraphics().drawLine(xPosition1, yPosition + 1, xPosition2, yPosition + 1);
     }
 
     /**
@@ -343,6 +343,10 @@ public class MinecraftText {
         public Builder withDefaultWidth(int value) {
             this.defaultWidth = Math.max(1, value);
             return this;
+        }
+
+        public Builder withEmptyLine() {
+            return this.withSegments(ColorSegment.builder().build());
         }
 
         public Builder withLines(@NotNull LineSegment... lines) {
