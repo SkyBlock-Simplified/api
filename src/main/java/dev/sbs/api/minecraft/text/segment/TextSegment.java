@@ -6,6 +6,7 @@ import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.event.ClickEvent;
 import dev.sbs.api.minecraft.text.event.HoverEvent;
 import dev.sbs.api.util.helper.StringUtil;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,13 +19,13 @@ import java.util.Optional;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class TextSegment extends ColorSegment {
 
     private Optional<ClickEvent> clickEvent = Optional.empty();
     private Optional<HoverEvent> hoverEvent = Optional.empty();
 
-    public TextSegment(@NotNull String text) {
+    public TextSegment(@Nullable String text) {
         super(text);
     }
 
