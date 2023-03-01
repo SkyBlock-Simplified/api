@@ -6,9 +6,7 @@ import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.event.ClickEvent;
 import dev.sbs.api.minecraft.text.event.HoverEvent;
 import dev.sbs.api.util.helper.StringUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
@@ -19,13 +17,12 @@ import java.util.Optional;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class TextSegment extends ColorSegment {
 
     private Optional<ClickEvent> clickEvent = Optional.empty();
     private Optional<HoverEvent> hoverEvent = Optional.empty();
 
-    public TextSegment(@Nullable String text) {
+    public TextSegment(@NotNull String text) {
         super(text);
     }
 
@@ -74,7 +71,7 @@ public final class TextSegment extends ColorSegment {
      * @return A TextObject representing the legacy text.
      */
     public static LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
-        return fromLegacyHandler(legacyText, symbolSubstitute, TextSegment::new);
+        return fromLegacyHandler(legacyText, symbolSubstitute, () -> new TextSegment(""));
     }
 
     public static class Builder implements dev.sbs.api.util.builder.Builder<TextSegment> {

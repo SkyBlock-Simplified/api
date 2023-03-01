@@ -4,9 +4,7 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.helper.StringUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
@@ -19,14 +17,13 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ColorSegment {
 
-    protected @Nullable String text;
+    protected @NotNull String text;
     protected @NotNull Optional<ChatFormat> color = Optional.empty();
     protected boolean italic, bold, underlined, obfuscated, strikethrough;
 
-    public ColorSegment(@Nullable String text) {
+    public ColorSegment(@NotNull String text) {
         this.setText(text);
     }
 
@@ -52,7 +49,7 @@ public class ColorSegment {
      * @return A TextObject representing the legacy text.
      */
     public static LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
-        return fromLegacyHandler(legacyText, symbolSubstitute, ColorSegment::new);
+        return fromLegacyHandler(legacyText, symbolSubstitute, () -> new ColorSegment(""));
     }
 
     @SuppressWarnings("all")
@@ -132,6 +129,12 @@ public class ColorSegment {
 
     public void setColor(@NotNull Optional<ChatFormat> color) {
         this.color = color;
+    }
+
+    public void setText(@NotNull String value) {
+        this.text = StringUtil.stripToEmpty(value)
+            .replaceAll("(?<!\\\\)'", "’") // Handle Unescaped Windows Apostrophe
+            .replaceAll("\\\\'", "'"); // Remove Escape Backslash
     }
 
     public JsonObject toJson() {
