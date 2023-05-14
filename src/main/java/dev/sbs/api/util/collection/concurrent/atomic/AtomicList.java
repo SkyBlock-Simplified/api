@@ -16,30 +16,30 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	public void add(int index, @NotNull E element) {
 		try {
-			super.lock2.writeLock().lock();
+			super.lock.writeLock().lock();
 			super.ref.add(index, element);
 		} finally {
-			super.lock2.writeLock().unlock();
+			super.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public boolean addAll(int index, @NotNull Collection<? extends E> collection) {
 		try {
-			super.lock2.writeLock().lock();
+			super.lock.writeLock().lock();
 			return super.ref.addAll(index, collection);
 		} finally {
-			super.lock2.writeLock().unlock();
+			super.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public final E get(int index) {
 		try {
-			super.lock2.readLock().lock();
+			super.lock.readLock().lock();
 			return super.ref.get(index);
 		} finally {
-			super.lock2.readLock().unlock();
+			super.lock.readLock().unlock();
 		}
 	}
 
@@ -83,10 +83,10 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 	@Override
 	public E remove(int index) {
 		try {
-			super.lock2.writeLock().lock();
+			super.lock.writeLock().lock();
 			return super.ref.remove(index);
 		} finally {
-			super.lock2.writeLock().unlock();
+			super.lock.writeLock().unlock();
 		}
 	}
 
@@ -101,10 +101,10 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 	@Override
 	public E set(int index, E element) {
 		try {
-			super.lock2.writeLock().lock();
+			super.lock.writeLock().lock();
 			return super.ref.set(index, element);
 		} finally {
-			super.lock2.writeLock().unlock();
+			super.lock.writeLock().unlock();
 		}
 	}
 

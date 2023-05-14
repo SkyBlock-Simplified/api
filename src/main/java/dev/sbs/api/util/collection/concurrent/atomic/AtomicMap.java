@@ -12,12 +12,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Stream;
 
 public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Iterable<Map.Entry<K, V>>, Map<K, V>, Serializable {
 
 	protected final @NotNull M ref;
-	protected final transient @NotNull Object lock = new Object();
+	protected final transient ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	/**
 	 * Create a new concurrent map.
@@ -29,22 +31,31 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 
 	@Override
 	public void clear() {
-		synchronized (this.lock) {
+		try {
+			this.lock.writeLock().lock();
 			this.ref.clear();
+		} finally {
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public final boolean containsKey(Object key) {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.containsKey(key);
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
 	@Override
 	public final boolean containsValue(Object value) {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.containsValue(value);
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
@@ -63,30 +74,37 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 
 	@Override
 	public final V get(Object key) {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.get(key);
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
 	@Override
 	public final V getOrDefault(Object key, V defaultValue) {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.getOrDefault(key, defaultValue);
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
 	@Override
 	public final int hashCode() {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.hashCode();
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
 	@Override
 	public final boolean isEmpty() {
-		synchronized (this.lock) {
-			return this.ref.isEmpty();
-		}
+		return this.size() == 0;
 	}
 
 	@Override
@@ -103,39 +121,51 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return !this.isEmpty();
 	}
 
-	public final Stream<Entry<K, V>> parallelStream() {
+	public final @NotNull Stream<Entry<K, V>> parallelStream() {
 		return this.entrySet().parallelStream();
 	}
 
 	@Override
 	public V put(K key, V value) {
-		synchronized (this.lock) {
+		try {
+			this.lock.writeLock().lock();
 			return this.ref.put(key, value);
+		} finally {
+			this.lock.writeLock().unlock();
 		}
 	}
 
-	public final V put(Map.Entry<K, V> entry) {
+	public final V put(@NotNull Entry<K, V> entry) {
 		return this.put(entry.getKey(), entry.getValue());
 	}
 
 	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
-		synchronized (this.lock) {
+		try {
+			this.lock.writeLock().lock();
 			this.ref.putAll(map);
+		} finally {
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public V putIfAbsent(K key, V value) {
-		synchronized (this.lock) {
+		try {
+			this.lock.writeLock().lock();
 			return this.ref.putIfAbsent(key, value);
+		} finally {
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public V remove(Object key) {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.remove(key);
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
@@ -145,8 +175,11 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 
 	@Override
 	public boolean remove(Object key, Object value) {
-		synchronized (this.lock) {
+		try {
+			this.lock.readLock().lock();
 			return this.ref.remove(key, value);
+		} finally {
+			this.lock.readLock().unlock();
 		}
 	}
 
@@ -155,18 +188,16 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.ref.size();
 	}
 
-	public final Stream<Entry<K, V>> stream() {
+	public final @NotNull Stream<Entry<K, V>> stream() {
 		return this.entrySet().stream();
 	}
 
 	@Override @NotNull
 	public Collection<V> values() {
-		synchronized (this.lock) {
-			return this.ref.values();
-		}
+		return this.ref.values();
 	}
 
-	protected class ConcurrentMapIterator extends ConcurrentIterator<Map.Entry<K, V>> {
+	protected class ConcurrentMapIterator extends ConcurrentIterator<Entry<K, V>> {
 
 		protected ConcurrentMapIterator(Object[] snapshot, int index) {
 			super(snapshot, index);

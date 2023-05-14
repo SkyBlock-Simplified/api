@@ -1,9 +1,12 @@
 package dev.sbs.api.util.concurrent;
 
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("all")
 public class ConcurrentTest {
@@ -16,7 +19,7 @@ public class ConcurrentTest {
         for (int trial = 0; trial < 5; trial++) {
             List<Thread> threads = new ArrayList<>();
 
-            /*ConcurrentList<Integer> randomNumbers = new ConcurrentList<>();
+            ConcurrentMap<Integer, String> randomNumbers = new ConcurrentMap<>();
             for (int threadNum = 0; threadNum < NUM_THREADS; threadNum++) {
                 final Thread thread = new Thread(() -> {
                     int x = 0;
@@ -27,7 +30,7 @@ public class ConcurrentTest {
                             x = 0;
                         }
 
-                        randomNumbers.add(x++);
+                        randomNumbers.putIfAbsent(x++, UUID.randomUUID().toString());
                     }
                 });
                 threads.add(thread);
@@ -38,7 +41,7 @@ public class ConcurrentTest {
             long end = System.currentTimeMillis();
             System.out.println("v1: " + (end - start));
 
-            ConcurrentList2<Integer> randomNumbers2 = new ConcurrentList2<>();
+            /*ConcurrentMap2<Integer, String> randomNumbers2 = new ConcurrentMap2<>();
             for (int threadNum = 0; threadNum < NUM_THREADS; threadNum++) {
                 final Thread thread = new Thread(() -> {
                     int x = 0;
@@ -49,7 +52,7 @@ public class ConcurrentTest {
                             x = 0;
                         }
 
-                        randomNumbers2.add(x++);
+                        randomNumbers2.putIfAbsent(x++, UUID.randomUUID().toString());
                     }
                 });
                 threads.add(thread);
@@ -60,14 +63,16 @@ public class ConcurrentTest {
             end = System.currentTimeMillis();
             System.out.println("v2: " + (end - start));*/
 
-            /*ArrayList<Integer> randomNumbers3 = new ArrayList<>();
+            ConcurrentList<Integer> randomNumbers3 = new ConcurrentList<>();
             for (int threadNum = 0; threadNum < NUM_THREADS; threadNum++) {
                 final Thread thread = new Thread(() -> {
                     int x = 0;
 
                     for (int i = 0; i < HOW_MANY; i++) {
-                        if (x == 10000)
+                        if (randomNumbers3.size() >= 10_000) {
                             randomNumbers3.clear();
+                            x = 0;
+                        }
 
                         randomNumbers3.add(x++);
                     }
@@ -78,7 +83,7 @@ public class ConcurrentTest {
             start = System.currentTimeMillis();
             for (Thread t : threads) t.join();
             end = System.currentTimeMillis();
-            System.out.println("native: " + (end - start));*/
+            System.out.println("v3: " + (end - start));
 
             System.out.println("---");
         }

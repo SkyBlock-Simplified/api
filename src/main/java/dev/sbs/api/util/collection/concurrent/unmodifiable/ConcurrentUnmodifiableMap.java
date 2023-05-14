@@ -144,7 +144,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
         }
 
         @Override
-        public Stream<Map.Entry<K,V>> stream() {
+        public @NotNull Stream<Map.Entry<K,V>> stream() {
             return StreamSupport.stream(spliterator(), false);
         }
 
