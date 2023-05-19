@@ -9,27 +9,21 @@ import java.util.Map;
 
 public interface ItemModel extends Model {
 
+    String getItemId();
+
     String getName();
 
     String getMaterial();
 
     Integer getDurability();
 
-    String getSkin();
-
-    String getFurniture();
+    String getDescription();
 
     RarityModel getRarity();
 
     ItemTypeModel getType();
 
-    String getItemId();
-
     String getColor();
-
-    String getGenerator();
-
-    Integer getGeneratorTier();
 
     boolean isObtainable();
 
@@ -49,10 +43,10 @@ public interface ItemModel extends Model {
         return !this.isUnstackable();
     }
 
-    boolean isInMuseum();
+    boolean isInSpecialMuseum();
 
-    default boolean isNotInMuseum() {
-        return !this.isInMuseum();
+    default boolean isNotInSpecialMuseum() {
+        return !this.isInSpecialMuseum();
     }
 
     boolean isDungeonItem();
@@ -67,9 +61,53 @@ public interface ItemModel extends Model {
         return !this.isAttributable();
     }
 
+    boolean isHiddenFromViewrecipe();
+
+    default boolean isNotHiddenFromViewRecipe() {
+        return !this.isHiddenFromViewrecipe();
+    }
+
+    boolean isSalvageableFromRecipe();
+
+    default boolean isNotSalvageableFromRecipe() {
+        return !this.isSalvageableFromRecipe();
+    }
+
+    boolean isNotReforgeable();
+
+    default boolean isReforgeable() {
+        return !this.isNotReforgeable();
+    }
+
+    boolean isRiftTransferrable();
+
+    default boolean isNotRiftTransferrable() {
+        return !this.isRiftTransferrable();
+    }
+
+    Double getMotesSellPrice();
+
     Double getNpcSellPrice();
 
     Integer getGearScore();
+
+    String getGenerator();
+
+    Integer getGeneratorTier();
+
+    Double getAbilityDamageScaling();
+
+    String getSoulbound();
+
+    String getFurniture();
+
+    String getSwordType();
+
+    String getSkin();
+
+    String getCrystal();
+
+    String getPrivateIsland();
 
     Map<String, Double> getStats();
 
@@ -89,12 +127,8 @@ public interface ItemModel extends Model {
 
     Map<String, Object> getPrestige();
 
-    String getDescription();
+    Map<String, Object> getItemSpecific();
 
-    Double getAbilityDamageScaling();
-
-    String getCrystal();
-
-    String getPrivateIsland();
+    List<Map<String, Object>> getSalvages();
 
 }
