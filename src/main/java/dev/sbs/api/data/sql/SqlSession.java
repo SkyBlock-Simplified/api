@@ -159,11 +159,11 @@ public final class SqlSession {
                 .build();
     }
 
-    public Session openSession() {
+    public @NotNull Session openSession() {
         return this.getSessionFactory().openSession();
     }
 
-    public void transaction(Consumer<Session> consumer) throws SqlException {
+    public void transaction(@NotNull Consumer<Session> consumer) throws SqlException {
         this.with(session -> {
             Transaction transaction = session.beginTransaction();
             consumer.accept(session);
@@ -171,7 +171,7 @@ public final class SqlSession {
         });
     }
 
-    public <R> R transaction(Function<Session, R> function) throws SqlException {
+    public <R> R transaction(@NotNull Function<Session, R> function) throws SqlException {
         return this.with(session -> {
             Transaction transaction = session.beginTransaction();
             R result = function.apply(session);
@@ -188,7 +188,7 @@ public final class SqlSession {
             this.getSessionFactory().close();
     }
 
-    public void with(Consumer<Session> consumer) throws SqlException {
+    public void with(@NotNull Consumer<Session> consumer) throws SqlException {
         try {
             @Cleanup Session session = this.openSession();
             consumer.accept(session);
@@ -199,7 +199,7 @@ public final class SqlSession {
         }
     }
 
-    public <R> R with(Function<Session, R> function) throws SqlException {
+    public <R> R with(@NotNull Function<Session, R> function) throws SqlException {
         try {
             @Cleanup Session session = this.openSession();
             return function.apply(session);
