@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -66,13 +67,11 @@ public enum ChatFormat {
      * @param name The name to search for.
      * @return The mapped format, or null if none exists.
      */
-    public static ChatFormat of(String name) {
-        for (ChatFormat color : values()) {
-            if (color.name().equals(name))
-                return color;
-        }
-
-        return null;
+    public static @Nullable ChatFormat of(@NotNull String name) {
+        return Arrays.stream(values())
+            .filter(format -> Objects.equals(format.name(), name))
+            .findFirst()
+            .orElse(null);
     }
 
     /**
@@ -81,13 +80,11 @@ public enum ChatFormat {
      * @param code The code to search for.
      * @return The mapped format, or null if none exists.
      */
-    public static ChatFormat of(char code) {
-        for (ChatFormat color : values()) {
-            if (color.code == code)
-                return color;
-        }
-
-        return null;
+    public static @Nullable ChatFormat of(char code) {
+        return Arrays.stream(values())
+            .filter(format -> Objects.equals(format.getCode(), code))
+            .findFirst()
+            .orElse(null);
     }
 
     public Color getColor() {
