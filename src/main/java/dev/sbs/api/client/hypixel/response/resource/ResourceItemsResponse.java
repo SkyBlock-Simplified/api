@@ -20,32 +20,55 @@ public class ResourceItemsResponse {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Item {
 
+        @Getter private String id;
+        @Getter private String name;
         @Getter private String material;
         @Getter private int durability;
-        @Getter private String skin;
-        @Getter private String name;
-        @Getter private String furniture;
-        @Getter private String tier;
-        @Getter private String id;
-        @Getter private String generator;
-        @SerializedName("generator_tier")
-        @Getter private int generatorTier;
-        @Getter private boolean glowing;
+        @Getter private String description;
+        @SerializedName("tier")
+        @Getter private String rarity;
         @SerializedName("category")
         @Getter private String itemType;
-        @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
-        @SerializedName("npc_sell_price")
-        @Getter private double npcSellPrice;
+        @Getter private String color;
+
+        @Getter private boolean glowing;
         @Getter private boolean unstackable;
         @Getter private boolean dungeonItem;
         @Getter private boolean museum;
         @SerializedName("can_have_attributes")
         @Getter private boolean attributable;
-        @Getter private String color;
-        @SerializedName("tiered_stats")
-        @Getter private ConcurrentMap<String, List<Double>> tieredStats = Concurrent.newMap();
+        @SerializedName("hidden_from_viewrecipe_command")
+        @Getter private boolean hiddenFromViewrecipe;
+        @SerializedName("salvageable_from_recipe")
+        @Getter private boolean salvageableFromRecipe;
+        @SerializedName("cannot_reforge")
+        @Getter private boolean notReforgeable;
+        @SerializedName("rift_transferrable")
+        @Getter private boolean riftTransferrable;
+
+        @SerializedName("motes_sell_price")
+        @Getter private double motesSellPrice;
+        @SerializedName("npc_sell_price")
+        @Getter private double npcSellPrice;
         @SerializedName("gear_score")
         @Getter private int gearScore;
+        @Getter private String generator;
+        @SerializedName("generator_tier")
+        @Getter private int generatorTier;
+        @SerializedName("ability_damage_scaling")
+        @Getter private double abilityDamageScaling;
+        @Getter private String soulbound;
+        @Getter private String furniture;
+        @SerializedName("sword_type")
+        @Getter private String swordType;
+        @Getter private String skin;
+        @Getter private String crystal;
+        @SerializedName("private_island")
+        @Getter private String privateIsland;
+
+        @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
+        @SerializedName("tiered_stats")
+        @Getter private ConcurrentMap<String, List<Double>> tieredStats = Concurrent.newMap();
         @Getter private ConcurrentList<ConcurrentMap<String, Object>> requirements = Concurrent.newList();
         @SerializedName("catacombs_requirements")
         @Getter private ConcurrentList<ConcurrentMap<String, Object>> catacombsRequirements;
@@ -58,32 +81,11 @@ public class ResourceItemsResponse {
         @SerializedName("dungeon_item_conversion_cost")
         @Getter private ConcurrentMap<String, Object> dungeonItemConversionCost = Concurrent.newMap();
         @Getter private ConcurrentMap<String, Object> prestige = Concurrent.newMap();
-        @Getter private String description;
-        @SerializedName("ability_damage_scaling")
-        @Getter private double abilityDamageScaling;
-        @Getter private String crystal;
-        @SerializedName("private_island")
-        @Getter private String privateIsland;
+        @SerializedName("item_specific")
+        @Getter private ConcurrentMap<String, Object> itemSpecific = Concurrent.newMap();
+        @Getter private ConcurrentList<ConcurrentMap<String, Object>> salvages = Concurrent.newList();
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ItemCatacombsRequirements {
-
-        @Getter private String type;
-        @Getter private int level;
-        @SerializedName("dungeon_type")
-        @Getter private String dungeonType;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ItemEssence {
-
-        @SerializedName("essence_type")
-        @Getter private String essenceType;
-        @Getter private ConcurrentList<Integer> costs = Concurrent.newList();
-
-    }
 
 }
