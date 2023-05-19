@@ -52,7 +52,6 @@ public class ColorSegment {
         return fromLegacyHandler(legacyText, symbolSubstitute, () -> new ColorSegment(""));
     }
 
-    @SuppressWarnings("all")
     protected static LineSegment fromLegacyHandler(@NotNull String legacyText, char symbolSubstitute, @NotNull Supplier<? extends ColorSegment> segmentSupplier) {
         LineSegment.Builder builder = LineSegment.builder();
         ColorSegment currentObject = segmentSupplier.get();
@@ -77,7 +76,7 @@ public class ColorSegment {
                         text.setLength(0); // reset the buffer
                     }
 
-                    ChatFormat color = ChatFormat.of(peek);
+                    ChatFormat color = Objects.requireNonNull(ChatFormat.of(peek));
 
                     switch (color) {
                         case OBFUSCATED:
@@ -132,7 +131,7 @@ public class ColorSegment {
     }
 
     public void setText(@NotNull String value) {
-        this.text = StringUtil.stripToEmpty(value)
+        this.text = StringUtil.defaultIfEmpty(value, "")
             .replaceAll("(?<!\\\\)'", "’") // Handle Unescaped Windows Apostrophe
             .replaceAll("\\\\'", "'"); // Remove Escape Backslash
     }
@@ -151,7 +150,7 @@ public class ColorSegment {
     }
 
     public String toLegacy() {
-        return toLegacy(ChatFormat.SECTION_SYMBOL);
+        return this.toLegacy(ChatFormat.SECTION_SYMBOL);
     }
 
     /**
