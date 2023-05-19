@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,13 @@ public final class LineSegment {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public int length() {
+        return this.getSegments()
+            .stream()
+            .mapToInt(colorSegment -> StringUtil.length(colorSegment.getText()))
+            .sum();
     }
 
     public JsonElement toJson() {
