@@ -1,6 +1,7 @@
-package dev.sbs.api.minecraft.text;
+package dev.sbs.api.minecraft.image;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.util.SimplifiedException;
@@ -26,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.UUID;
 
 public class MinecraftText {
@@ -36,13 +36,15 @@ public class MinecraftText {
     private static final int Y_INCREMENT = PIXEL_SIZE * 10;
     private static final int STRIKETHROUGH_OFFSET = -8;
     private static final int UNDERLINE_OFFSET = 2;
-    @Getter private static final @NotNull ConcurrentList<Font> minecraftFonts;
+    private static final Range<Integer> LINE_LENGTH = Range.between(38, 80);
+    private static final @NotNull ConcurrentList<Font> MINECRAFT_FONTS;
     private static final Font sansSerif;
 
     // Current Settings
     @Getter private final ConcurrentList<LineSegment> lines;
     @Getter private final int alpha;
     @Getter private final int padding;
+    @Getter private final boolean paddingFirstLine;
     @Getter(AccessLevel.PRIVATE)
     private final Graphics2D graphics;
     @Getter private BufferedImage image;
@@ -56,7 +58,7 @@ public class MinecraftText {
 
     static {
         sansSerif = new Font("SansSerif", Font.PLAIN, 20);
-        minecraftFonts = Concurrent.newUnmodifiableList(
+        MINECRAFT_FONTS = Concurrent.newUnmodifiableList(
             initFont("minecraft/1_Minecraft.otf", 15.5f),
             initFont("minecraft/3_Minecraft-Bold.otf", 20.0f),
             initFont("minecraft/2_Minecraft-Italic.otf", 20.5f),
@@ -64,14 +66,19 @@ public class MinecraftText {
         );
 
         // Register Minecraft Fonts
-        getMinecraftFonts().forEach(GraphicsEnvironment.getLocalGraphicsEnvironment()::registerFont);
+        MINECRAFT_FONTS.forEach(GraphicsEnvironment.getLocalGraphicsEnvironment()::registerFont);
     }
 
-    private MinecraftText(ConcurrentList<LineSegment> lines, ChatFormat defaultColor, int defaultWidth, int alpha, int padding) {
+    private MinecraftText(ConcurrentList<LineSegment> lines, ChatFormat defaultColor, int alpha, int padding, boolean paddingFirstLine) {
         this.alpha = alpha;
         this.padding = padding;
+        this.paddingFirstLine = paddingFirstLine;
         this.lines = lines.toUnmodifiableList();
-        this.graphics = this.initG2D(defaultWidth, this.lines.size() * Y_INCREMENT + START_XY + PIXEL_SIZE * 4);
+        int lineLength = lines.stream()
+            .mapToInt(LineSegment::length)
+            .max()
+            .orElse(LINE_LENGTH.getMaximum());
+        this.graphics = this.initG2D(LINE_LENGTH.fit(lineLength) * 25, this.lines.size() * Y_INCREMENT + START_XY + PIXEL_SIZE * 4);
         this.currentColor = defaultColor;
     }
 
@@ -158,7 +165,7 @@ public class MinecraftText {
         this.getLines().forEach(line -> {
             line.getSegments().forEach(segment -> {
                 // Change Fonts and Color
-                this.currentFont = getMinecraftFonts().get((segment.isBold() ? 1 : 0) + (segment.isItalic() ? 2 : 0));
+                this.currentFont = MINECRAFT_FONTS.get((segment.isBold() ? 1 : 0) + (segment.isItalic() ? 2 : 0));
                 this.getGraphics().setFont(this.currentFont);
                 this.currentColor = segment.getColor().orElse(ChatFormat.GRAY);
 
@@ -166,26 +173,24 @@ public class MinecraftText {
                 String segmentText = segment.getText();
 
                 // Iterate through all characters on the current segment until there is a character which cannot be displayed
-                if (Objects.nonNull(segmentText)) {
-                    for (int charIndex = 0; charIndex < segmentText.length(); charIndex++) {
-                        char character = segmentText.charAt(charIndex);
+                for (int charIndex = 0; charIndex < segmentText.length(); charIndex++) {
+                    char character = segmentText.charAt(charIndex);
 
-                        if (!this.currentFont.canDisplay(character)) {
-                            this.drawString(subWord.toString(), segment);
-                            subWord.setLength(0);
-                            this.drawSymbol(character, segment);
-                            continue;
-                        }
-
-                        // Prevent Monospace
-                        subWord.append(character);
+                    if (!this.currentFont.canDisplay(character)) {
+                        this.drawString(subWord.toString(), segment);
+                        subWord.setLength(0);
+                        this.drawSymbol(character, segment);
+                        continue;
                     }
+
+                    // Prevent Monospace
+                    subWord.append(character);
                 }
 
                 this.drawString(subWord.toString(), segment);
             });
 
-            this.updatePositionAndSize(this.getLines().indexOf(line) == 0);
+            this.updatePositionAndSize(this.getLines().indexOf(line) == 0 && this.isPaddingFirstLine());
         });
     }
 
@@ -325,10 +330,19 @@ public class MinecraftText {
     public static class Builder implements dev.sbs.api.util.builder.Builder<MinecraftText> {
 
         private ConcurrentList<LineSegment> lines = Concurrent.newList();
-        private int defaultWidth = 500;
         private ChatFormat defaultColor = ChatFormat.GRAY;
         private int alpha = 255;
         private int padding = 0;
+        private boolean paddingFirstLine = true;
+
+        public Builder isPaddingFirstLine() {
+            return this.isPaddingFirstLine(true);
+        }
+
+        public Builder isPaddingFirstLine(boolean value) {
+            this.paddingFirstLine = value;
+            return this;
+        }
 
         public Builder withAlpha(int value) {
             this.alpha = Range.between(0, 255).fit(value);
@@ -337,11 +351,6 @@ public class MinecraftText {
 
         public Builder withDefaultColor(@NotNull ChatFormat chatColor) {
             this.defaultColor = chatColor;
-            return this;
-        }
-
-        public Builder withDefaultWidth(int value) {
-            this.defaultWidth = Math.max(1, value);
             return this;
         }
 
@@ -377,9 +386,9 @@ public class MinecraftText {
             return new MinecraftText(
                 this.lines,
                 this.defaultColor,
-                this.defaultWidth,
                 this.alpha,
-                this.padding
+                this.padding,
+                this.paddingFirstLine
             );
         }
 
