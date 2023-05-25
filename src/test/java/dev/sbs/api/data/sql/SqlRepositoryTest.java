@@ -2,8 +2,8 @@ package dev.sbs.api.data.sql;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
-import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
+import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -28,7 +28,9 @@ public class SqlRepositoryTest {
             SimplifiedApi.connectDatabase(testConfig);
             //testConfig.setLoggingLevel(Level.DEBUG);
 
-            System.out.println("QUERYING RARITIES #1");
+
+
+            //System.out.println("QUERYING RARITIES #1");
             // Retrieve object from the database
             //Session session = SimplifiedApi.getSqlSession().getSessionFactory().openSession();
             //Transaction transaction = session.beginTransaction();
@@ -47,16 +49,9 @@ public class SqlRepositoryTest {
             transaction.commit();
             session.close();*/
 
-            Repository<StatModel> statRepository = SimplifiedApi.getRepositoryOf(StatModel.class);
-            System.out.println("FINDING MAGIC FIND #1");
-            StatModel mfm1 = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
-            System.out.println("FINDING MAGIC FIND #2");
-            StatModel mfm2 = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
-            System.out.println("FINDING PRISTINE #1");
-            StatModel pm1 = statRepository.findFirstOrNull(StatModel::getKey, "PRISTINE");
-            System.out.println("FINDING PRISTINE #2");
-            StatModel pm2 = statRepository.findFirstOrNull(StatModel::getKey, "PRISTINE");
-
+            SqlRepository<StatSqlModel> statRepository = (SqlRepository<StatSqlModel>) SimplifiedApi.getRepositoryOf(StatSqlModel.class);
+            StatSqlModel read = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
+            String name1 = read.getName();
 
         } catch (Exception e) {
             e.printStackTrace();
