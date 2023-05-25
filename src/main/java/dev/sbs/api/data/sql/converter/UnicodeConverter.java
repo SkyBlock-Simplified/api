@@ -2,12 +2,9 @@ package dev.sbs.api.data.sql.converter;
 
 import dev.sbs.api.util.helper.CharUtil;
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-
-import java.util.regex.Pattern;
 
 @Converter
 public class UnicodeConverter implements AttributeConverter<Character, String> {
@@ -27,7 +24,9 @@ public class UnicodeConverter implements AttributeConverter<Character, String> {
     @Override
     public String convertToDatabaseColumn(Character attr) {
         try {
-            return RegexUtil.replaceAll(StringUtil.escapeJava(attr.toString()), Pattern.compile("^\\+u"));
+            return StringUtil.escapeJava(attr.toString())
+                .toLowerCase()
+                .replaceAll("\\\\u", "");
         } catch (Exception e) {
             return "";
         }
