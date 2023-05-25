@@ -2,9 +2,9 @@ package dev.sbs.api.data.sql.converter.list;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
