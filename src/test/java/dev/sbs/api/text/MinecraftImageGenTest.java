@@ -20,19 +20,22 @@ public class MinecraftImageGenTest {
 
     @Test
     public void generateHead() {
-        String username = "CraftedFury";
+        String username = "GoldenDusk";
         MojangProfileResponse mojangProfile = new SbsApiBuilder().build(MojangRequest.class).getProfileFromUsername(username);
         String textureUrl = mojangProfile.getTextures().getSkin().getUrl();
         String base64Skin = mojangProfile.getTextures().getSkin().getData();
+        System.out.println(textureUrl);
 
         try {
-            BufferedImage urlImage = ImageIO.read(new URL(textureUrl));
+            URL url = new URL(textureUrl);
+            BufferedImage urlImage = ImageIO.read(url);
             MinecraftHead minecraftHead = new MinecraftHead(urlImage).drawHead();
-            File tempFile = minecraftHead.toFile();
-            System.out.println(tempFile.getAbsolutePath());
+            //File tempFile = minecraftHead.toFile();
+            //System.out.println(tempFile.getAbsolutePath());
 
-            BufferedImage b64Image = ImageIO.read(new ByteArrayInputStream(DataUtil.decode(base64Skin)));
-            MinecraftHead minecraftHead2 = new MinecraftHead(urlImage).drawHead();
+            byte[] data = DataUtil.decode(base64Skin);
+            BufferedImage b64Image = ImageIO.read(new ByteArrayInputStream(data));
+            MinecraftHead minecraftHead2 = new MinecraftHead(b64Image).drawHead();
             File tempFile2 = minecraftHead2.toFile();
             System.out.println(tempFile2.getAbsolutePath());
         } catch (Exception ignore) { }
