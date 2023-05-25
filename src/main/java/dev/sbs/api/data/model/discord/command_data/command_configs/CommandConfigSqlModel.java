@@ -5,16 +5,25 @@ import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCat
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
-import dev.sbs.api.data.sql.converter.UUIDConverter;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -53,7 +62,7 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Setter
     @Id
     @Column(name = "identifier", nullable = false)
-    @Convert(converter = UUIDConverter.class)
+    @JdbcTypeCode(SqlTypes.UUID)
     private UUID uniqueId;
 
     @Getter
