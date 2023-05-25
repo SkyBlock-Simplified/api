@@ -3,10 +3,19 @@ package dev.sbs.api.data.model.discord.guild_data.guild_application_requirements
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.application_requirements.ApplicationRequirementSqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guild_applications.GuildApplicationSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -20,7 +29,11 @@ import java.time.Instant;
     name = "discord_guild_application_requirements",
     indexes = {
         @Index(
-            columnList = "guild_id, application_key"
+            columnList = "guild_id, application_key, requirement_key",
+            unique = true
+        ),
+        @Index(
+            columnList = "application_key"
         ),
         @Index(
             columnList = "requirement_key"
@@ -42,22 +55,25 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
-        @JoinColumn(name = "application_key", nullable = false, referencedColumnName = "key")
-    })
+    @JoinColumn(name = "guild_id", nullable = false)
+    private GuildSqlModel guild;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "application_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     private GuildApplicationSqlModel application;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "requirement_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "requirement_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     private ApplicationRequirementSqlModel requirement;
 
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "setting_type_key", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "setting_type_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     private SettingTypeSqlModel type;
 
     @Getter
@@ -84,6 +100,7 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
+            .append(this.getGuild(), that.getGuild())
             .append(this.getApplication(), that.getApplication())
             .append(this.getRequirement(), that.getRequirement())
             .append(this.getType(), that.getType())
@@ -97,6 +114,7 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
+            .append(this.getGuild())
             .append(this.getApplication())
             .append(this.getRequirement())
             .append(this.getType())

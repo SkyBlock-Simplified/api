@@ -2,9 +2,18 @@ package dev.sbs.api.data.model.discord.guild_data.guild_application_entries;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guild_applications.GuildApplicationSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -36,10 +45,13 @@ public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id"),
-        @JoinColumn(name = "application_key", nullable = false, referencedColumnName = "key")
-    })
+    @JoinColumn(name = "guild_id", nullable = false)
+    private GuildSqlModel guild;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "application_key", nullable = false, referencedColumnName = "key")
     private GuildApplicationSqlModel application;
 
     @Getter
@@ -66,6 +78,7 @@ public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
+            .append(this.getGuild(), that.getGuild())
             .append(this.getApplication(), that.getApplication())
             .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
             .append(this.getSubmittedAt(), that.getSubmittedAt())
@@ -77,6 +90,7 @@ public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
+            .append(this.getGuild())
             .append(this.getApplication())
             .append(this.getSubmitterDiscordId())
             .append(this.getSubmittedAt())

@@ -3,6 +3,7 @@ package dev.sbs.api.data.model.discord.guild_data.guild_applications;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guild_application_types.GuildApplicationTypeSqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guild_embeds.GuildEmbedSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import jakarta.persistence.*;
@@ -51,8 +52,9 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
 
     @Getter
     @Setter
-    @Column(name = "guild_id", nullable = false)
-    private Long guildId;
+    @ManyToOne
+    @JoinColumn(name = "guild_id", nullable = false)
+    private GuildSqlModel guild;
 
     @Getter
     @Setter
@@ -109,7 +111,7 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
-            .append(this.getGuildId(), that.getGuildId())
+            .append(this.getGuild(), that.getGuild())
             .append(this.getType(), that.getType())
             .append(this.getEmbed(), that.getEmbed())
             .append(this.getNotes(), that.getNotes())
@@ -125,7 +127,7 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
             .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
-            .append(this.getGuildId())
+            .append(this.getGuild())
             .append(this.getType())
             .append(this.getEmbed())
             .append(this.isEnabled())
