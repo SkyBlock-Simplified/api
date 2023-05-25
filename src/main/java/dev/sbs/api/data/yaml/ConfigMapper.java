@@ -8,6 +8,7 @@ import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.representer.Representer;
@@ -37,7 +38,14 @@ public abstract class ConfigMapper extends YamlMap {
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setIndent(2);
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        this.yaml = new Yaml(new CustomClassLoaderConstructor(ConfigMapper.class.getClassLoader()), new Representer(), dumperOptions);
+        this.yaml = new Yaml(
+            new CustomClassLoaderConstructor(
+                ConfigMapper.class.getClassLoader(),
+                new LoaderOptions()
+                    .setProcessComments(true)
+            ),
+            new Representer(dumperOptions)
+        );
     }
 
     public void addComment(String key, String value) {
