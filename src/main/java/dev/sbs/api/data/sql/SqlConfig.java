@@ -62,7 +62,7 @@ public abstract class SqlConfig extends YamlConfig {
 
     @Getter
     @Setter
-    protected Duration databaseQueryResultsTTL = new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_QUERIES_TTL").map(NumberUtil::tryParseInt).orElse(29));
+    protected Duration databaseQueryResultsTTL = new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_QUERIES_TTL").map(NumberUtil::tryParseInt).orElse(30));
 
     @Getter
     @Setter
@@ -99,6 +99,7 @@ public abstract class SqlConfig extends YamlConfig {
         SimplifiedApi.getLog(this.getDatabaseDriver().getDriverPackage()).setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog("com.zaxxer.hikari").setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog("org.jboss.logging").setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog("ch.qos.logback").setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, "default-update-timestamps-region")).setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, "default-query-results-region")).setLevel(this.getLoggingLevel());
 
