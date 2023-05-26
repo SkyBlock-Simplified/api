@@ -61,8 +61,8 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Getter
     @Setter
     @Id
+    @JdbcTypeCode(SqlTypes.CHAR)
     @Column(name = "identifier", nullable = false)
-    @JdbcTypeCode(SqlTypes.UUID)
     private UUID uniqueId;
 
     @Getter
