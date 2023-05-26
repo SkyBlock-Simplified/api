@@ -96,6 +96,7 @@ public abstract class SqlConfig extends YamlConfig {
         // Set Logging Level
         SimplifiedApi.getLog("org.hibernate").setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog("org.ehcache").setLevel(this.getLoggingLevel());
+        SimplifiedApi.getLog(this.getDatabaseDriver().getDriverPackage()).setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog("com.zaxxer.hikari").setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog("org.jboss.logging").setLevel(this.getLoggingLevel());
         SimplifiedApi.getLog(FormatUtil.format("{0}-{1}", Ehcache.class, "default-update-timestamps-region")).setLevel(this.getLoggingLevel());

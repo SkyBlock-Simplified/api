@@ -22,8 +22,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public String getDriverClass() {
-            return "org.mariadb.jdbc.Driver";
+        public String getDriverClassName() {
+            return "Driver";
+        }
+
+        @Override
+        public String getDriverPackage() {
+            return "org.mariadb.jdbc";
         }
 
     };
@@ -46,8 +51,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public String getDriverClass() {
-            return "com.mysql.jdbc.Driver";
+        public String getDriverClassName() {
+            return "Driver";
+        }
+
+        @Override
+        public String getDriverPackage() {
+            return "com.mysql.jdbc";
         }
 
     };
@@ -70,8 +80,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public String getDriverClass() {
-            return "oracle.jdbc.driver.OracleDriver";
+        public String getDriverClassName() {
+            return "OracleDriver";
+        }
+
+        @Override
+        public String getDriverPackage() {
+            return "oracle.jdbc.driver";
         }
 
     };
@@ -94,8 +109,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public String getDriverClass() {
-            return "org.postgresql.Driver";
+        public String getDriverClassName() {
+            return "Driver";
+        }
+
+        @Override
+        public String getDriverPackage() {
+            return "org.postgresql";
         }
 
     };
@@ -118,8 +138,13 @@ public abstract class SqlDriver {
         }
 
         @Override
-        public String getDriverClass() {
-            return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+        public String getDriverClassName() {
+            return "SQLServerDriver";
+        }
+
+        @Override
+        public String getDriverPackage() {
+            return "com.microsoft.jdbc.sqlserver";
         }
 
     };
@@ -134,7 +159,13 @@ public abstract class SqlDriver {
 
     public abstract String getDialectClass();
 
-    public abstract String getDriverClass();
+    public final String getDriverClass() {
+        return FormatUtil.format("{0}.{1}", this.getDriverPackage(), this.getDriverClassName());
+    }
+
+    public abstract String getDriverClassName();
+
+    public abstract String getDriverPackage();
 
     public final boolean isDriverAvailable() {
         try {
