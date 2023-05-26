@@ -3,8 +3,9 @@ package dev.sbs.api.data.sql.converter;
 import dev.sbs.api.util.helper.CharUtil;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 @Converter
 public class UnicodeConverter implements AttributeConverter<Character, String> {

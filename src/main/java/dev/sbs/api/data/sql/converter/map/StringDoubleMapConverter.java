@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql.converter.map;
 
 import dev.sbs.api.SimplifiedApi;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import java.util.HashMap;
 import java.util.Map;
 

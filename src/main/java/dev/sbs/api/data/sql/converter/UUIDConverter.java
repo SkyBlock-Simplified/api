@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql.converter;
 
 import dev.sbs.api.util.helper.StringUtil;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import java.util.UUID;
 
 @Converter

@@ -5,14 +5,15 @@ import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.SimplifiedException;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.io.Serializable;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -66,8 +67,8 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     public T save(Session session, T model) throws SqlException {
         try {
-            session.persist(model);
-            return model;
+            Serializable serializable = session.save(model);
+            return session.get(this.getType(), serializable);
         } catch (Exception exception) {
             throw SimplifiedException.of(SqlException.class)
                 .withCause(exception)
@@ -83,7 +84,8 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     public T update(@NotNull Session session, T model) throws SqlException {
         try {
-            return session.merge(model);
+            session.update(model);
+            return model;
         } catch (NonUniqueObjectException nuoException) {
             return model;
         } catch (Exception exception) {
