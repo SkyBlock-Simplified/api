@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings("all")
 public abstract class AtomicCollection<E, T extends Collection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
@@ -123,8 +124,8 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 		}
 	}
 
-	@Override @NotNull
-	public Iterator<E> iterator() {
+	@Override
+	public @NotNull Iterator<E> iterator() {
 		return new ConcurrentCollectionIterator(this.ref.toArray(), 0);
 	}
 
@@ -190,7 +191,7 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 
 	@Override
 	public @NotNull Stream<E> stream() {
-		return this.ref.stream();
+		return StreamSupport.stream(this.spliterator(), false);
 	}
 
 	@Override @NotNull
