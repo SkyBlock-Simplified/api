@@ -81,6 +81,11 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 	}
 
 	@Override
+	public final @NotNull Iterator<E> iterator() {
+		return this.listIterator();
+	}
+
+	@Override
 	public E remove(int index) {
 		try {
 			super.lock.writeLock().lock();
