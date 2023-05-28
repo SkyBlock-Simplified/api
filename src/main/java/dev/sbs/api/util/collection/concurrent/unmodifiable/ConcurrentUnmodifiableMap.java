@@ -200,7 +200,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
 
         @Override @NotNull
         public Iterator<Map.Entry<K,V>> iterator() {
-            return new Iterator<Map.Entry<K,V>>() {
+            return new Iterator<>() {
 
                 private final Iterator<? extends Map.Entry<? extends K, ? extends V>> iterator = UnmodifiableEntrySet.this.ref.iterator();
 
@@ -208,7 +208,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
                     return this.iterator.hasNext();
                 }
 
-                public Map.Entry<K,V> next() {
+                public Map.Entry<K, V> next() {
                     return new UnmodifiableEntry<>(this.iterator.next());
                 }
 
@@ -323,9 +323,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
 
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Map.Entry)) return false;
-
-            Map.Entry<?,?> t = (Map.Entry<?,?>)o;
+            if (!(o instanceof Map.Entry<?, ?> t)) return false;
 
             return (this.entry.getKey() == null ? t.getKey() == null : this.entry.getKey().equals(t.getKey())) &&
                     (this.entry.getValue() == null ? t.getValue() == null : this.entry.getValue().equals(t.getValue()));
