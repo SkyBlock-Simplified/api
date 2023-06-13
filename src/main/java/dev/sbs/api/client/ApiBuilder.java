@@ -16,6 +16,7 @@ import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -24,7 +25,9 @@ import java.util.concurrent.TimeUnit;
 public abstract class ApiBuilder<R extends RequestInterface> implements ClassBuilder<R> {
 
     private final @NotNull String url;
-    private @NotNull ConcurrentMap<String, ConcurrentList<String>> headerCache = Concurrent.newUnmodifiableMap();
+    @Getter private @NotNull ConcurrentMap<String, ConcurrentList<String>> headerCache = Concurrent.newUnmodifiableMap();
+    @Getter private long lastRequestTime;
+    @Getter private long lastResponseTime;
 
     protected ApiBuilder(@NotNull String url) {
         this.url = url;
@@ -39,6 +42,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             .requestInterceptor(template -> {
                 ApiBuilder.this.getRequestHeaders().forEach(template::header);
                 ApiBuilder.this.getRequestQueries().forEach((key, values) -> template.query(key, values));
+                this.lastRequestTime = System.currentTimeMillis();
             })
             .responseInterceptor(context -> {
                 if (ListUtil.notEmpty(this.getResponseCacheHeaders())) {
@@ -56,6 +60,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
                     );
                 }
 
+                this.lastResponseTime = System.currentTimeMillis();
                 return context.response();
             })
             .errorDecoder(this.getErrorDecoder())
@@ -72,6 +77,10 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
 
     public ErrorDecoder getErrorDecoder() {
         return new ErrorDecoder.Default();
+    }
+
+    public final long getLatency() {
+        return this.getLastResponseTime() - this.getLastRequestTime();
     }
 
     public Map<String, String> getRequestHeaders() {
