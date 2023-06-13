@@ -14,8 +14,6 @@ import dev.sbs.api.client.adapter.NbtContentTypeAdapter;
 import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
 import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
 import dev.sbs.api.client.adapter.UUIDTypeAdapter;
-import dev.sbs.api.client.antisniper.AntiSniperApiBuilder;
-import dev.sbs.api.client.antisniper.request.NickRequest;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
@@ -106,7 +104,6 @@ public final class SimplifiedApi {
         builderManager.add(HypixelPlayerRequest.class, HypixelApiBuilder.class);
         builderManager.add(HypixelResourceRequest.class, HypixelApiBuilder.class);
         builderManager.add(HypixelSkyBlockRequest.class, HypixelApiBuilder.class);
-        builderManager.add(NickRequest.class, AntiSniperApiBuilder.class);
         builderManager.add(String.class, StringBuilder.class);
         builderManager.add(LineSegment.class, LineSegment.Builder.class);
         builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
@@ -115,7 +112,6 @@ public final class SimplifiedApi {
         // Create Api Builders
         SbsApiBuilder sbsApiBuilder = new SbsApiBuilder();
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
-        AntiSniperApiBuilder antiSniperApiBuilder = new AntiSniperApiBuilder();
 
         // Provide Client Api Implementations
         serviceManager.add(HypixelPlayerRequest.class, hypixelApiBuilder.build(HypixelPlayerRequest.class));
@@ -123,7 +119,6 @@ public final class SimplifiedApi {
         serviceManager.add(HypixelSkyBlockRequest.class, hypixelApiBuilder.build(HypixelSkyBlockRequest.class));
         serviceManager.add(MojangRequest.class, sbsApiBuilder.build(MojangRequest.class));
         serviceManager.add(SkyBlockRequest.class, sbsApiBuilder.build(SkyBlockRequest.class));
-        serviceManager.add(NickRequest.class, antiSniperApiBuilder.build(NickRequest.class));
     }
 
     /**
