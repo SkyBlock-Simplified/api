@@ -235,7 +235,7 @@ public class StreamUtil {
     }
 
     public static <E, A> Collector<E, ?, StringBuilder> toStringBuilder(boolean newLine) {
-        return new StreamCollector<>(
+        return new StreamCollector<E, StringBuilder, StringBuilder>(
             StringBuilder::new,
             newLine ? StringBuilder::appendln : StringBuilder::append,
             (left, right) -> {
