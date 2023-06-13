@@ -13,26 +13,10 @@ import java.util.UUID;
 
 public final class HypixelConfig extends YamlConfig {
 
-    @Getter private Optional<UUID> hypixelApiKey = ResourceUtil.getEnv("HYPIXEL_API_KEY").map(StringUtil::toUUID);
-    @Getter private Optional<UUID> antiSniperApiKey = ResourceUtil.getEnv("ANTISNIPER_API_KEY").map(StringUtil::toUUID);
+    @Getter private Optional<UUID> hypixelApiKey = ResourceUtil.getEnv("HYPIXEL_API_KEY").or(() -> ResourceUtil.getEnv("HYPIXEL_DEV_KEY")).map(StringUtil::toUUID);
 
     public HypixelConfig(File configDir, String fileName, String... header) {
         super(configDir, fileName, header);
-    }
-
-    public void setAntiSniperApiKey(@Nullable String antiSniperApiKey) {
-        if (StringUtil.isNotEmpty(antiSniperApiKey))
-            this.setAntiSniperApiKey(StringUtil.toUUID(antiSniperApiKey));
-        else
-            this.setAntiSniperApiKey(Optional.empty());
-    }
-
-    public void setAntiSniperApiKey(@Nullable UUID antiSniperApiKey) {
-        this.setAntiSniperApiKey(Optional.ofNullable(antiSniperApiKey));
-    }
-
-    public void setAntiSniperApiKey(@NotNull Optional<UUID> antiSniperApiKey) {
-        this.antiSniperApiKey = antiSniperApiKey;
     }
 
     public void setHypixelApiKey(@Nullable String hypixelApiKey) {
