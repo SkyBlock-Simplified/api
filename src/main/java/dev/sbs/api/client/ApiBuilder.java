@@ -5,7 +5,10 @@ import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.helper.ListUtil;
 import feign.Feign;
 import feign.Request;
 import feign.Retryer;
@@ -13,15 +16,17 @@ import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public abstract class ApiBuilder<R extends RequestInterface> implements ClassBuilder<R> {
 
-    private final String url;
+    private final @NotNull String url;
+    private @NotNull ConcurrentMap<String, ConcurrentList<String>> headerCache = Concurrent.newUnmodifiableMap();
 
-    protected ApiBuilder(String url) {
+    protected ApiBuilder(@NotNull String url) {
         this.url = url;
     }
 
@@ -32,8 +37,26 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(template -> {
-                ApiBuilder.this.getHeaders().forEach(template::header);
-                ApiBuilder.this.getQueries().forEach((key, values) -> template.query(key, values));
+                ApiBuilder.this.getRequestHeaders().forEach(template::header);
+                ApiBuilder.this.getRequestQueries().forEach((key, values) -> template.query(key, values));
+            })
+            .responseInterceptor(context -> {
+                if (ListUtil.notEmpty(this.getResponseCacheHeaders())) {
+                    this.headerCache = Concurrent.newUnmodifiableMap(
+                        context.response()
+                            .headers()
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> this.getResponseCacheHeaders()
+                                .stream()
+                                .anyMatch(key -> entry.getKey().matches(key))
+                            )
+                            .map(entry -> Pair.of(entry.getKey(), Concurrent.newUnmodifiableList(entry.getValue())))
+                            .collect(Concurrent.toMap())
+                    );
+                }
+
+                return context.response();
             })
             .errorDecoder(this.getErrorDecoder())
             .retryer(Retryer.NEVER_RETRY)
@@ -47,20 +70,24 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             .target(tClass, this.getUrl());
     }
 
-    public final String getUrl() {
-        return FormatUtil.format("https://{0}", this.url);
-    }
-
-    public Map<String, String> getHeaders() {
-        return Concurrent.newMap();
-    }
-
     public ErrorDecoder getErrorDecoder() {
         return new ErrorDecoder.Default();
     }
 
-    public ConcurrentMap<String, ConcurrentList<String>> getQueries() {
-        return Concurrent.newMap();
+    public Map<String, String> getRequestHeaders() {
+        return Concurrent.newUnmodifiableMap();
+    }
+
+    public ConcurrentMap<String, ConcurrentList<String>> getRequestQueries() {
+        return Concurrent.newUnmodifiableMap();
+    }
+
+    public ConcurrentSet<String> getResponseCacheHeaders() {
+        return Concurrent.newUnmodifiableSet();
+    }
+
+    public final String getUrl() {
+        return FormatUtil.format("https://{0}", this.url);
     }
 
 }
