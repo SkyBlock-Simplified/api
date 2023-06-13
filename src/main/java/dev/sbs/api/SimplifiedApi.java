@@ -8,6 +8,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
+import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.RequestInterface;
 import dev.sbs.api.client.adapter.InstantTypeAdapter;
 import dev.sbs.api.client.adapter.NbtContentTypeAdapter;
@@ -112,6 +113,8 @@ public final class SimplifiedApi {
         // Create Api Builders
         SbsApiBuilder sbsApiBuilder = new SbsApiBuilder();
         HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
+        serviceManager.add(SbsApiBuilder.class, sbsApiBuilder);
+        serviceManager.add(HypixelApiBuilder.class, hypixelApiBuilder);
 
         // Provide Client Api Implementations
         serviceManager.add(HypixelPlayerRequest.class, hypixelApiBuilder.build(HypixelPlayerRequest.class));
@@ -234,6 +237,10 @@ public final class SimplifiedApi {
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
+        return serviceManager.get(tClass);
+    }
+
+    public static <T extends RequestInterface, A extends ApiBuilder<T>> A getApiBuilder(Class<A> tClass) {
         return serviceManager.get(tClass);
     }
 
