@@ -61,7 +61,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
                 }
 
                 this.lastResponseTime = System.currentTimeMillis();
-                return context.response();
+                return context.decoder().decode(context.response(), context.returnType());
             })
             .errorDecoder(this.getErrorDecoder())
             .retryer(Retryer.NEVER_RETRY)
