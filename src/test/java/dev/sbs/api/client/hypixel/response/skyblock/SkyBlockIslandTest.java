@@ -14,7 +14,10 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlo
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Slayer;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.Pet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.PlayerStats;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.ObjectData;
 import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tier_upgrades.MinionTierUpgradeModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minion_tiers.MinionTierModel;
@@ -41,6 +44,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class SkyBlockIslandTest {
@@ -151,6 +155,32 @@ public class SkyBlockIslandTest {
 
             BestiaryData bestiaryData = member.getBestiary();
 
+            PlayerStats playerStats = island.getPlayerStats(member);
+            playerStats.getStats(PlayerStats.Type.ACCESSORY_POWER).stream().forEach(entry -> {
+                System.out.println(entry.getKey().getKey() + ": " + entry.getValue().getTotal() + " (" + entry.getValue().getBase() + " / " + entry.getValue().getBonus() + ")");
+            });
+
+            System.out.println("All Accessories: " + playerStats.getAccessoryBag().getAccessories().size());
+            System.out.println("Filtered Accessories: " + playerStats.getAccessoryBag().getFilteredAccessories().size());
+            System.out.println("Magic Power: " + playerStats.getAccessoryBag().getMagicalPower());
+            System.out.println("\n---\n");
+
+            playerStats.getAccessoryBag()
+                .getFilteredAccessories()
+                .sorted(ObjectData::getRarity)
+                .stream()
+                .collect(Collectors.groupingBy(accessory -> accessory.getRarity().getKey(), Collectors.counting()))
+                .forEach((rarity, count) -> System.out.println(rarity + ": " + count));
+
+            System.out.println("\n---\n");
+
+            playerStats.getAccessoryBag()
+                .getFilteredAccessories()
+                .sorted(ObjectData::getRarity)
+                .stream()
+                .map(accessory -> accessory.getAccessory().getItem().getItemId() + ": " + accessory.getRarity().getName() + " (" + accessory.getRarity().getMagicPowerMultiplier() + ")")
+                .forEach(System.out::println);
+
             assert exp1 > 0;
             // Player Stats
             //PlayerStats playerStats = island.getPlayerStats(member);
@@ -229,7 +259,9 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
 
             // collection_items, collections
-            Collection sbCollection = member.getCollection(combatSkillModel);
+            Repository<CollectionModel> collectionRepo = SimplifiedApi.getRepositoryOf(CollectionModel.class);
+            CollectionModel collectionModel = collectionRepo.findFirstOrNull(CollectionModel::getKey, combatSkillModel.getKey());
+            Collection sbCollection = member.getCollection(collectionModel);
             SackModel sbSack = SimplifiedApi.getRepositoryOf(SackModel.class).findFirstOrNull(SackModel::getKey, "MINING");
             MatcherAssert.assertThat(member.getSack(sbSack).getStored().size(), Matchers.greaterThan(0));
 
