@@ -27,7 +27,7 @@ public class SkyBlockAuction {
     @SerializedName("profile_id")
     @Getter private UUID islandId;
     @SerializedName("coop")
-    private ConcurrentList<String> coopMembers = Concurrent.newList();
+    @Getter private ConcurrentList<UUID> coopMembers = Concurrent.newList();
     @SerializedName("start")
     @Getter private SkyBlockDate.RealTime startedAt;
     @SerializedName("end")
@@ -41,15 +41,11 @@ public class SkyBlockAuction {
     @Getter private long startingBid;
     @Getter private boolean claimed;
     @SerializedName("claimed_bidders")
-    @Getter private ConcurrentList<Bid> claimedBidders = Concurrent.newList(); // TODO: Need sample data
+    @Getter private ConcurrentList<String> claimedBidders = Concurrent.newList();
     @SerializedName("highest_bid_amount")
     @Getter private long highestBid;
     @Getter private ConcurrentList<Bid> bids = Concurrent.newList();
     @Getter private boolean bin;
-
-    public ConcurrentList<UUID> getCoopMembers() {
-        return this.coopMembers.stream().map(StringUtil::toUUID).collect(Concurrent.toList());
-    }
 
     public ConcurrentList<String> getLore() {
         return Concurrent.newUnmodifiableList(StringUtil.split(this.lore, '\n'));
