@@ -8,6 +8,7 @@ import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforges.ReforgeModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
+import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
@@ -16,7 +17,6 @@ import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> {
@@ -67,27 +68,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
 
         // Load Gemstones
         CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
-        ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> gemstones = Concurrent.newMap();
-
-        if (gemTag != null && gemTag.notEmpty() && gemTag.containsKey("unlocked_slots")) {
-            gemTag.<StringTag>getList("unlocked_slots")
-                .stream()
-                .map(StringTag::getValue)
-                .forEach(key -> SimplifiedApi.getRepositoryOf(GemstoneModel.class)
-                    .findFirst(GemstoneModel::getKey, gemTag.getValue(FormatUtil.format("{0}_gem", key), StringTag.EMPTY))
-                    .ifPresent(gemstoneModel -> {
-                        // Handle New Gemstone
-                        gemstones.putIfAbsent(gemstoneModel, Concurrent.newList());
-
-                        // Add Gemstone Type
-                        SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class)
-                            .findFirst(GemstoneTypeModel::getKey, gemTag.getValue(key, StringTag.EMPTY))
-                            .ifPresent(gemstoneTypeModel -> gemstones.get(gemstoneModel).add(gemstoneTypeModel));
-                    })
-                );
-        }
-
-        this.gemstones = Concurrent.newUnmodifiableMap(gemstones);
+        this.gemstones = Concurrent.newUnmodifiableMap((gemTag != null && gemTag.notEmpty()) ? findGemstones(gemTag) : Concurrent.newMap());
 
         // Initialize Stats
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sorted(StatModel::getOrdinal);
@@ -122,6 +103,42 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
     }
 
     public abstract ObjectData<T> calculateBonus(ConcurrentMap<String, Double> expressionVariables);
+
+    private static ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> findGemstones(CompoundTag gemTag) {
+        ConcurrentList<GemstoneModel> gemstoneModels = SimplifiedApi.getRepositoryOf(GemstoneModel.class).findAll();
+        ConcurrentList<GemstoneTypeModel> gemstoneTypeModels = SimplifiedApi.getRepositoryOf(GemstoneTypeModel.class).findAll();
+        ConcurrentMap<GemstoneModel, ConcurrentList<GemstoneTypeModel>> gemstones = Concurrent.newMap();
+
+        for (Map.Entry<String, Tag<?>> entry : gemTag.entrySet()) {
+            for (GemstoneModel gemstoneModel : gemstoneModels) {
+                boolean handle = false;
+                String typeKey = null;
+
+                // Handle Specific Slots
+                if (entry.getKey().startsWith(gemstoneModel.getKey())) {
+                    handle = true;
+                    typeKey = ((StringTag) entry.getValue()).getValue();
+                }
+
+                // Handle Generic Slots
+                if (entry.getValue().getValue().equals(gemstoneModel.getKey()) && entry.getKey().endsWith("_gem")) {
+                    handle = true;
+                    typeKey = gemTag.getValue(entry.getKey().replace("_gem", ""));
+                }
+
+                if (handle) {
+                    // Populate New Gemstone
+                    gemstones.putIfAbsent(gemstoneModel, Concurrent.newList());
+
+                    // Add Gemstone Type
+                    gemstoneTypeModels.findFirst(GemstoneTypeModel::getKey, typeKey)
+                        .ifPresent(gemstoneTypeModel -> gemstones.get(gemstoneModel).add(gemstoneTypeModel));
+                }
+            }
+        }
+
+        return gemstones;
+    }
 
     protected int handleRarityUpgrades(int rarityOrdinal) {
         return rarityOrdinal;
