@@ -32,13 +32,15 @@ public class ItemData extends ObjectData<ItemData.Type> {
     @Getter private final Optional<BonusReforgeStatModel> bonusReforgeStatModel;
     @Getter private final Optional<ReforgeStatModel> reforgeStat;
     @Getter private final int hotPotatoBooks;
-    private final Boolean hasArtOfWar;
+    private final boolean hasArtOfWar;
+    private final boolean hasArtOfPeace;
     @Getter private boolean bonusCalculated;
 
     public ItemData(ItemModel itemModel, CompoundTag compoundTag) {
         super(itemModel, compoundTag);
         this.hotPotatoBooks = compoundTag.getPathOrDefault("tag.ExtraAttributes.hot_potato_count", IntTag.EMPTY).getValue();
         this.hasArtOfWar = compoundTag.containsPath("tag.ExtraAttributes.art_of_war_count");
+        this.hasArtOfPeace = compoundTag.containsPath("tag.ExtraAttributes.artOfPeaceApplied");
 
         // Load Bonus Reforge Model
         this.bonusReforgeStatModel = this.getReforge().flatMap(reforgeModel -> SimplifiedApi.getRepositoryOf(BonusReforgeStatModel.class)
@@ -71,11 +73,18 @@ public class ItemData extends ObjectData<ItemData.Type> {
             .matchAll(hotPotatoStatModel -> hotPotatoStatModel.getItemTypes().contains(itemModel.getType().getKey()))
             .forEach(hotPotatoStatModel -> this.getStats(ItemData.Type.HOT_POTATOES).get(hotPotatoStatModel.getStat()).addBonus(this.getHotPotatoBooks() * hotPotatoStatModel.getValue()));
 
+        // Save Art Of Peace Stats
+        if (this.hasArtOfPeace()) {
+            SimplifiedApi.getRepositoryOf(StatModel.class)
+                .findFirst(StatModel::getKey, "HEALTH")
+                .ifPresent(statModel -> this.getStats(Type.SUN_TZU).get(statModel).addBonus(40.0));
+        }
+
         // Save Art Of War Stats
         if (this.hasArtOfWar()) {
             SimplifiedApi.getRepositoryOf(StatModel.class)
                 .findFirst(StatModel::getKey, "STRENGTH")
-                .ifPresent(statModel -> this.getStats(ItemData.Type.ART_OF_WAR).get(statModel).addBonus(5.0));
+                .ifPresent(statModel -> this.getStats(Type.SUN_TZU).get(statModel).addBonus(5.0));
         }
 
         // Save Enchantment Stats
@@ -183,6 +192,10 @@ public class ItemData extends ObjectData<ItemData.Type> {
         return ItemData.Type.values();
     }
 
+    public final boolean hasArtOfPeace() {
+        return this.hasArtOfPeace;
+    }
+
     public final boolean hasArtOfWar() {
         return this.hasArtOfWar;
     }
@@ -204,7 +217,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public enum Type implements ObjectData.Type {
 
-        ART_OF_WAR(true),
+        SUN_TZU(true),
         ENCHANTS(true),
         GEMSTONES(true),
         HOT_POTATOES(true),
