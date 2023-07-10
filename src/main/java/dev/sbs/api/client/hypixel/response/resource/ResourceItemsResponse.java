@@ -45,9 +45,12 @@ public class ResourceItemsResponse {
         @Getter private boolean notReforgeable;
         @SerializedName("rift_transferrable")
         @Getter private boolean riftTransferrable;
+        @SerializedName("lose_motes_value_on_transfer")
+        @Getter private boolean riftLoseMotesValueOnTransfer;
+
 
         @SerializedName("motes_sell_price")
-        @Getter private double motesSellPrice;
+        @Getter private double riftMotesSellPrice;
         @SerializedName("npc_sell_price")
         @Getter private double npcSellPrice;
         @SerializedName("gear_score")
@@ -57,6 +60,7 @@ public class ResourceItemsResponse {
         @Getter private int generatorTier;
         @SerializedName("ability_damage_scaling")
         @Getter private double abilityDamageScaling;
+        @Getter private String origin;
         @Getter private String soulbound;
         @Getter private String furniture;
         @SerializedName("sword_type")

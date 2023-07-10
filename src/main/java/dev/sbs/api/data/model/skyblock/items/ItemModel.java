@@ -85,7 +85,13 @@ public interface ItemModel extends Model {
         return !this.isRiftTransferrable();
     }
 
-    Double getMotesSellPrice();
+    boolean isRiftLoseMotesValueOnTransfer();
+
+    default boolean isNotRiftLoseMotesValueOnTransfer() {
+        return !this.isRiftLoseMotesValueOnTransfer();
+    }
+
+    Double getRiftMotesSellPrice();
 
     Double getNpcSellPrice();
 
@@ -96,6 +102,8 @@ public interface ItemModel extends Model {
     Integer getGeneratorTier();
 
     Double getAbilityDamageScaling();
+
+    String getOrigin();
 
     String getSoulbound();
 

@@ -139,8 +139,13 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "motes_sell_price", nullable = false)
-    private Double motesSellPrice;
+    @Column(name = "rift_lose_motes_value_on_transfer", nullable = false)
+    private boolean riftLoseMotesValueOnTransfer;
+
+    @Getter
+    @Setter
+    @Column(name = "rift_motes_sell_price", nullable = false)
+    private Double riftMotesSellPrice;
 
     @Getter
     @Setter
@@ -169,7 +174,12 @@ public class ItemSqlModel implements ItemModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "soulbound", length = 256)
+    @Column(name = "origin", length = 10)
+    private String origin;
+
+    @Getter
+    @Setter
+    @Column(name = "soulbound", length = 10)
     private String soulbound;
 
     @Getter
@@ -286,6 +296,7 @@ public class ItemSqlModel implements ItemModel, SqlModel {
             .append(this.isSalvageableFromRecipe(), that.isSalvageableFromRecipe())
             .append(this.isNotReforgeable(), that.isNotReforgeable())
             .append(this.isRiftTransferrable(), that.isRiftTransferrable())
+            .append(this.isRiftLoseMotesValueOnTransfer(), that.isRiftLoseMotesValueOnTransfer())
             .append(this.getId(), that.getId())
             .append(this.getItemId(), that.getItemId())
             .append(this.getName(), that.getName())
@@ -295,12 +306,13 @@ public class ItemSqlModel implements ItemModel, SqlModel {
             .append(this.getRarity(), that.getRarity())
             .append(this.getType(), that.getType())
             .append(this.getColor(), that.getColor())
-            .append(this.getMotesSellPrice(), that.getMotesSellPrice())
+            .append(this.getRiftMotesSellPrice(), that.getRiftMotesSellPrice())
             .append(this.getNpcSellPrice(), that.getNpcSellPrice())
             .append(this.getGearScore(), that.getGearScore())
             .append(this.getGenerator(), that.getGenerator())
             .append(this.getGeneratorTier(), that.getGeneratorTier())
             .append(this.getAbilityDamageScaling(), that.getAbilityDamageScaling())
+            .append(this.getOrigin(), that.getOrigin())
             .append(this.getSoulbound(), that.getSoulbound())
             .append(this.getFurniture(), that.getFurniture())
             .append(this.getSwordType(), that.getSwordType())
@@ -344,12 +356,14 @@ public class ItemSqlModel implements ItemModel, SqlModel {
             .append(this.isSalvageableFromRecipe())
             .append(this.isNotReforgeable())
             .append(this.isRiftTransferrable())
-            .append(this.getMotesSellPrice())
+            .append(this.isRiftLoseMotesValueOnTransfer())
+            .append(this.getRiftMotesSellPrice())
             .append(this.getNpcSellPrice())
             .append(this.getGearScore())
             .append(this.getGenerator())
             .append(this.getGeneratorTier())
             .append(this.getAbilityDamageScaling())
+            .append(this.getOrigin())
             .append(this.getSoulbound())
             .append(this.getFurniture())
             .append(this.getSwordType())
