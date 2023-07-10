@@ -10,9 +10,12 @@ import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.ListTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
 import lombok.AccessLevel;
@@ -23,6 +26,7 @@ import java.util.Optional;
 
 public class AccessoryData extends ObjectData<AccessoryData.Type> {
 
+    private static final ConcurrentList<Integer> PULSE_CHARGES = Concurrent.newList(150_000, 1_000_000, 5_000_000);
     @Getter private final AccessoryModel accessory;
     @Getter private boolean bonusCalculated;
     @Getter private final Optional<AccessoryEnrichmentModel> enrichment;
@@ -62,28 +66,35 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
 
     @Override
     protected int handleRarityUpgrades(int rarityOrdinal) {
-        boolean upgradeRarity = false;
+        int increaseRarity = 0;
 
         if (this.getItem().getItemId().equals("POWER_ARTIFACT")) {
-            if (this.getGemstones().size() == 7) {
-                long perfects = this.getGemstones()
-                    .stream()
-                    .flatMap(entry -> entry.getValue().stream())
-                    .filter(gemstoneTypeModel -> gemstoneTypeModel.getKey().equals("PERFECT"))
-                    .count();
+            long perfects = this.getGemstones()
+                .stream()
+                .flatMap(entry -> entry.getValue().stream())
+                .filter(gemstoneTypeModel -> gemstoneTypeModel.getKey().equals("PERFECT"))
+                .count();
 
-                upgradeRarity = (perfects == 7);
-            }
+            increaseRarity = (perfects == 7) ? 1 : 0;
         }
 
         if (this.getItem().getItemId().equals("PANDORAS_BOX")) {
-            return SimplifiedApi.getRepositoryOf(RarityModel.class)
+            increaseRarity = SimplifiedApi.getRepositoryOf(RarityModel.class)
                 .findFirst(RarityModel::getKey, super.getCompoundTag().getPathOrDefault("tag.ExtraAttributes.pandora-rarity", StringTag.EMPTY).getValue())
                 .map(RarityModel::getOrdinal)
-                .orElse(rarityOrdinal);
+                .orElse(rarityOrdinal) - rarityOrdinal;
         }
 
-        return rarityOrdinal + (upgradeRarity ? 1 : 0);
+        if (this.getItem().getItemId().equals("PULSE_RING")) {
+            int thunderCharge = this.getCompoundTag().getPathOrDefault("tag.ExtraAttributes.thunder_charge", IntTag.EMPTY).getValue();
+
+            for (int i = 0; i < PULSE_CHARGES.size(); i++) {
+                if (thunderCharge >= PULSE_CHARGES.get(i))
+                    increaseRarity++;
+            }
+        }
+
+        return rarityOrdinal + increaseRarity;
     }
 
     @Override
@@ -142,7 +153,7 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
     }
 
     public final boolean isMissingEnrichment() {
-        return this.getRarity().isEnrichable() && !this.getEnrichment().isPresent();
+        return this.getRarity().isEnrichable() && this.getEnrichment().isEmpty();
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
