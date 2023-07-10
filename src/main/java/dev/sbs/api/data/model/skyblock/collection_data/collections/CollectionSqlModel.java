@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.skyblock.collection_data.collections;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.skills.SkillSqlModel;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
 import lombok.Getter;
@@ -15,8 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -35,9 +32,13 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
     @Getter
     @Setter
     @Id
-    @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false)
-    private SkillSqlModel skill;
+    @Column(name = "key", unique = true)
+    private String key;
+
+    @Getter
+    @Setter
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Getter
     @UpdateTimestamp
@@ -53,7 +54,8 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
-            .append(this.getSkill(), that.getSkill())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -62,7 +64,8 @@ public class CollectionSqlModel implements CollectionModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
-            .append(this.getSkill())
+            .append(this.getKey())
+            .append(this.getName())
             .append(this.getUpdatedAt())
             .build();
     }
