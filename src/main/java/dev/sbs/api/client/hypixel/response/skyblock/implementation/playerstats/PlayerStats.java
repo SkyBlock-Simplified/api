@@ -336,17 +336,27 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                         else if (accessoryFamilyModel.isReforgesStackable())
                             return true;
                         else {
-                            ConcurrentList<AccessoryModel> familyData = Concurrent.newList(familyAccessoryDataMap.get(accessoryFamilyModel))
-                                .sorted(AccessoryModel::getFamilyRank)
-                                .inverse(); // Sort By Highest
+                            ConcurrentList<AccessoryModel> familyData = Concurrent.newList(familyAccessoryDataMap.get(accessoryFamilyModel));
 
-                            // Ignore Lowest Accessories
-                            AccessoryModel topAccessory = familyData.remove(0);
-                            processedAccessories.addAll(familyData);
+                            if (accessoryData.getAccessory().getFamilyRank() != null) {
+                                familyData = familyData.sorted(AccessoryModel::getFamilyRank)
+                                    .inverse(); // Sort By Highest
 
-                            // Top Accessory Only
-                            if (!accessoryData.getAccessory().equals(topAccessory))
-                                return false;
+                                // Ignore Lowest Accessories
+                                AccessoryModel topAccessory = familyData.remove(0);
+                                processedAccessories.addAll(familyData);
+
+                                // Top Accessory Only
+                                if (!accessoryData.getAccessory().equals(topAccessory))
+                                    return false;
+                            } else {
+                                if (processedAccessories.contains(accessoryData.getAccessory()))
+                                    return false;
+
+                                // Ignore All Accessories
+                                processedAccessories.addAll(familyData);
+                                return true;
+                            }
                         }
                     }
 
@@ -356,6 +366,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         );
 
         this.accessoryBag = new AccessoryBag(
+            member,
             accessories,
             filteredAccessories,
             member.getAccessoryBag().getSelectedPower(),
@@ -715,6 +726,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         @Getter private final double magicalPowerMultiplier;
 
         private AccessoryBag(
+            @NotNull SkyBlockIsland.Member member,
             @NotNull ConcurrentList<AccessoryData> accessories,
             @NotNull ConcurrentList<AccessoryData> filteredAccessories,
             @NotNull Optional<AccessoryPowerModel> currentPowerModel,
@@ -726,12 +738,24 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.currentTuning = currentTuning;
 
             this.magicalPower = this.filteredAccessories.stream()
-                .mapToInt(accessoryData -> accessoryData.getRarity().getMagicPowerMultiplier())
+                .mapToInt(accessoryData -> this.handleMagicalPower(accessoryData, member))
                 .sum();
 
             this.magicalPowerMultiplier = 29.97 * Math.pow(Math.log(0.0019 * this.magicalPower + 1), 1.2);
 
             this.tuningPoints = this.magicalPower / 10;
+        }
+
+        private int handleMagicalPower(AccessoryData accessoryData, SkyBlockIsland.Member member) {
+            int magicalPower = accessoryData.getRarity().getMagicPowerMultiplier();
+
+            if (accessoryData.getItem().getItemId().equals("HEGEMONY_ARTIFACT"))
+                magicalPower *= 2;
+
+            if (accessoryData.getItem().getItemId().equals("ABICASE"))
+                magicalPower += member.getCrimsonIsle().getAbiphone().getContacts().size() / 2;
+
+            return magicalPower;
         }
 
     }
