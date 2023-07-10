@@ -32,7 +32,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.Range;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;
@@ -69,7 +68,7 @@ public class SkyBlockIsland {
         return Optional.ofNullable(this.banking);
     }
 
-    public Collection getCollection(SkillModel type) {
+    public Collection getCollection(CollectionModel type) {
         Collection collection = new Collection(type);
 
         for (Member profile : this.getMembers()) {
@@ -301,18 +300,12 @@ public class SkyBlockIsland {
             return this.bestiaryData;
         }
 
-        public Collection getCollection(SkillModel type) {
+        public Collection getCollection(CollectionModel type) {
             Collection collection = new Collection(type);
 
             // Fill Collection
             SimplifiedApi.getRepositoryOf(CollectionItemModel.class)
-                .findAll(
-                    SearchFunction.combine(
-                        SearchFunction.combine(CollectionItemModel::getCollection, CollectionModel::getSkill),
-                        SkillModel::getKey
-                    ),
-                    type.getKey()
-                )
+                .findAll(CollectionItemModel::getCollection, type)
                 .forEach(collectionItemModel -> {
                     collection.collected.put(collectionItemModel, this.collection.getOrDefault(collectionItemModel.getItem().getItemId(), 0L));
 
