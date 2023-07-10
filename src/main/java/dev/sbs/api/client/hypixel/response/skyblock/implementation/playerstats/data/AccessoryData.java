@@ -94,6 +94,11 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
             }
         }
 
+        if (this.getItem().getItemId().equals("TRAPPER_CREST")) {
+            int pelts = this.getCompoundTag().getPathOrDefault("tag.ExtraAttributes.pelts_earned", IntTag.EMPTY).getValue();
+            increaseRarity = (pelts >= 500) ? 1 : 0;
+        }
+
         return rarityOrdinal + increaseRarity;
     }
 
