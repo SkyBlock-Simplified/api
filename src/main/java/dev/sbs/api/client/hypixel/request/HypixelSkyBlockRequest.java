@@ -5,6 +5,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsEndedRespons
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockBazaarResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockFireSaleResponse;
+import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockMuseumResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockNewsResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfileResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
@@ -14,6 +15,9 @@ import feign.RequestLine;
 import java.util.UUID;
 
 public interface HypixelSkyBlockRequest extends HypixelRequestInterface {
+
+    @RequestLine("GET /skyblock/museum?profile={profile}")
+    SkyBlockMuseumResponse getMuseum();
 
     @RequestLine("GET /skyblock/news")
     SkyBlockNewsResponse getNews();
