@@ -101,7 +101,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
         SimplifiedApi.getRepositoryOf(CollectionModel.class)
             .stream()
-            .map(collectionModel -> member.getCollection(collectionModel.getSkill()))
+            .map(member::getCollection)
             .flatMap(collection -> collection.getCollected().stream())
             .forEach(collectionItemEntry -> this.expressionVariables.put(FormatUtil.format("COLLECTION_{0}", collectionItemEntry.getKey().getItem().getItemId()), (double) collectionItemEntry.getValue()));
 
