@@ -5,8 +5,8 @@ import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.request.HypixelRequestInterface;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.util.data.tuple.Pair;
 import feign.FeignException;
 import feign.codec.ErrorDecoder;
 import lombok.Getter;
@@ -24,9 +24,7 @@ public final class HypixelApiBuilder extends ApiBuilder<HypixelRequestInterface>
 
     @Override
     public Map<String, String> getRequestHeaders() {
-        ConcurrentMap<String, String> headers = Concurrent.newMap();
-        SimplifiedApi.getConfig().getHypixelApiKey().ifPresent(apiKey -> headers.put("API-Key", apiKey.toString()));
-        return headers;
+        return Concurrent.newMap(Pair.of("API-Key", SimplifiedApi.getKeyManager().get("HYPIXEL_API_KEY").toString()));
     }
 
     @Override
