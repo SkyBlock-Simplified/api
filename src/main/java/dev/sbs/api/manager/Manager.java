@@ -1,57 +1,96 @@
 package dev.sbs.api.manager;
 
-import com.google.common.base.Preconditions;
-import dev.sbs.api.manager.service.exception.UnknownServiceException;
+import dev.sbs.api.manager.exception.RegisteredReferenceException;
+import dev.sbs.api.manager.exception.UnknownReferenceException;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
- * Manager for containing providers of class instances.
+ * Manager for containing permanent key-value pairs.
  * <p>
  * This should be used in an API, and only once across all projects.
  */
-public abstract class Manager<P extends Provider> {
+public abstract class Manager<K, V> {
 
-    protected final transient ConcurrentSet<P> providers = Concurrent.newSet();
+    protected final transient @NotNull ConcurrentMap<K, V> ref = Concurrent.newMap();
+    private final transient @NotNull BiFunction<Map.Entry<K, V>, K, Boolean> keyMatcher;
 
-    /**
-     * Checks if the given service class has a registered instance.
-     *
-     * @param service class type to check.
-     * @return if class has a registered instance
-     */
-    public final boolean isRegistered(Class<?> service) {
-        Preconditions.checkNotNull(service, "Service cannot be NULL!");
-
-        for (P provider : this.providers) {
-            if (service.isAssignableFrom(provider.getService()))
-                return true;
-        }
-
-        return false;
+    protected Manager(@NotNull BiFunction<Map.Entry<K, V>, K, Boolean> entryMatcher) {
+        this.keyMatcher = entryMatcher;
     }
 
     /**
-     * Gets the builder provider for the given service class.
+     * Registers a new key-value pair.
      *
-     * @param service class type to get
-     * @param <T>     type of service
-     * @return service provider for the given class
-     * @throws UnknownServiceException When the given service class does not have a registered instance
-     * @see #isRegistered(Class)
+     * @param identifier Reference identifier.
+     * @param value Key value.
+     * @throws RegisteredReferenceException When the given reference is already registered.
      */
-    public <T> Provider getProvider(Class<T> service) throws UnknownServiceException {
-        if (this.isRegistered(service)) {
-            for (Provider provider : this.providers) {
-                if (service.isAssignableFrom(provider.getService()))
-                    return provider;
-            }
-        }
+    public final void add(@NotNull K identifier, @NotNull V value) throws RegisteredReferenceException {
+        if (this.isRegistered(identifier))
+            throw SimplifiedException.of(RegisteredReferenceException.class)
+                .withMessage(RegisteredReferenceException.getMessage(identifier))
+                .build();
 
-        throw SimplifiedException.of(UnknownServiceException.class)
-            .withMessage(UnknownServiceException.getMessage(service))
-            .build();
+        this.ref.put(identifier, value);
+    }
+
+    /**
+     * Gets the value stored for the given identifier.
+     *
+     * @param identifier Reference identifier.
+     * @throws UnknownReferenceException When the given identifier is not registered.
+     * @see #isRegistered
+     */
+    public final V get(@NotNull K identifier) throws UnknownReferenceException {
+        return this.ref.stream()
+            .filter(entry -> this.keyMatcher.apply(entry, identifier))
+            .map(Map.Entry::getValue)
+            .findFirst()
+            .orElseThrow(() -> SimplifiedException.of(UnknownReferenceException.class)
+                .withMessage(UnknownReferenceException.getMessage(identifier))
+                .build()
+            );
+    }
+
+    /**
+     * Checks if the given key has a registered instance.
+     *
+     * @param identifier Reference identifier.
+     */
+    public final boolean isRegistered(@NotNull K identifier) {
+        return this.ref.stream().anyMatch(entry -> this.keyMatcher.apply(entry, identifier));
+    }
+
+    /**
+     * Adds or updates a key-value pair.
+     *
+     * @param identifier Reference identifier.
+     * @param newValue New key value.
+     */
+    public final void replace(@NotNull K identifier, @NotNull V newValue) {
+        this.ref.put(identifier, newValue);
+    }
+
+    /**
+     * Updates an existing key-value pair.
+     *
+     * @param identifier Reference identifier.
+     * @param newValue New key value.
+     * @throws UnknownReferenceException When the given identifier is not registered.
+     */
+    public final void update(@NotNull K identifier, @NotNull V newValue) throws UnknownReferenceException {
+        if (!this.isRegistered(identifier))
+            throw SimplifiedException.of(UnknownReferenceException.class)
+                .withMessage(UnknownReferenceException.getMessage(identifier))
+                .build();
+
+        this.ref.put(identifier, newValue);
     }
 
 }
