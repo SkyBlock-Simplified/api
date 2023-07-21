@@ -33,21 +33,22 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.manager.builder.BuilderManager;
-import dev.sbs.api.manager.service.ServiceManager;
+import dev.sbs.api.manager.BuilderManager;
+import dev.sbs.api.manager.KeyManager;
+import dev.sbs.api.manager.ServiceManager;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.HypixelConfig;
 import dev.sbs.api.util.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.sort.Graph;
 import feign.gson.DoubleToIntMapTypeAdapter;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
@@ -65,21 +66,13 @@ import java.util.UUID;
  */
 public final class SimplifiedApi {
 
-    private static final ServiceManager serviceManager = new ServiceManager();
-    private static final BuilderManager builderManager = new BuilderManager();
+    @Getter private static final @NotNull KeyManager<String, UUID> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()));
+    @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager();
+    @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager();
 
     static {
-        // Load Config
-        HypixelConfig config;
-        try {
-            File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            config = new HypixelConfig(currentDir.getParentFile(), "simplified");
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
-        }
-
-        // Load Gson
-        Gson gson = new GsonBuilder()
+        // Provide Services
+        serviceManager.add(Gson.class, new GsonBuilder()
             .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
@@ -91,11 +84,7 @@ public final class SimplifiedApi {
             .registerTypeAdapter(SkyBlockItemsResponse.class, new SkyBlockItemsResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .setPrettyPrinting()
-            .create();
-
-        // Provide Services
-        serviceManager.add(HypixelConfig.class, config);
-        serviceManager.add(Gson.class, gson);
+        );
         serviceManager.add(NbtFactory.class, new NbtFactory());
         serviceManager.add(Scheduler.class, new Scheduler());
 
@@ -175,31 +164,20 @@ public final class SimplifiedApi {
                 .build();
     }
 
-    public static BuilderManager getBuilderManager() {
-        return builderManager;
-    }
-
-    /**
-     * Gets the config instance containing API keys.
-     */
-    public static HypixelConfig getConfig() {
-        return serviceManager.get(HypixelConfig.class);
-    }
-
     @SneakyThrows
-    public static File getCurrentDirectory() {
-        return new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+    public static @NotNull File getCurrentDirectory() {
+        return new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
     }
 
     public static @NotNull Gson getGson() {
         return serviceManager.get(Gson.class);
     }
 
-    public static Logger getLog(Class<?> tClass) {
+    public static @NotNull Logger getLog(Class<?> tClass) {
         return (Logger) LoggerFactory.getLogger(tClass);
     }
 
-    public static Logger getLog(String name) {
+    public static @NotNull Logger getLog(String name) {
         return (Logger) LoggerFactory.getLogger(name);
     }
 
@@ -218,7 +196,7 @@ public final class SimplifiedApi {
      * @param <T> The type of model.
      * @return The repository of type {@link T}.
      */
-    public static <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
+    public static <T extends Model> @NotNull Repository<T> getRepositoryOf(Class<T> tClass) {
         return getSqlSession().getRepositoryOf(tClass);
     }
 
@@ -256,7 +234,7 @@ public final class SimplifiedApi {
      * {@link InstanceCreator}, {@link JsonSerializer}, and a {@link JsonDeserializer} interfaces.
      */
     public static void registerGsonTypeAdapter(@NotNull Type type, @NotNull Object typeAdapter) {
-        serviceManager.replace(Gson.class, getGson().newBuilder().registerTypeAdapter(type, typeAdapter).create());
+        serviceManager.update(Gson.class, getGson().newBuilder().registerTypeAdapter(type, typeAdapter).create());
     }
 
 }
