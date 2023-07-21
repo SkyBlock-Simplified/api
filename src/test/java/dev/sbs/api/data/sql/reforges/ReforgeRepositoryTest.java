@@ -2,6 +2,7 @@ package dev.sbs.api.data.sql.reforges;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
+import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.item_types.ItemTypeModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
@@ -35,7 +36,7 @@ public class ReforgeRepositoryTest {
     }
 
     static {
-        SimplifiedApi.connectDatabase(testConfig);
+        SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
         itemTypeRepository = SimplifiedApi.getRepositoryOf(ItemTypeModel.class);
         rarityRepository = SimplifiedApi.getRepositoryOf(RarityModel.class);
         reforgeRepository = SimplifiedApi.getRepositoryOf(ReforgeModel.class);

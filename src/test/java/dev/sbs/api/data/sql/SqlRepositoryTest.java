@@ -2,6 +2,7 @@ package dev.sbs.api.data.sql;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
+import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class SqlRepositoryTest {
     public void checkRepositories_ok() {
         try {
             System.out.println("ENABLING DATABASE");
-            SimplifiedApi.connectDatabase(testConfig);
+            SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
             //testConfig.setLoggingLevel(Level.DEBUG);
 
 
@@ -57,7 +58,7 @@ public class SqlRepositoryTest {
             e.printStackTrace();
         }
 
-        SimplifiedApi.getSqlSession().shutdown();
+        SimplifiedApi.getSession().shutdown();
     }
 
 }

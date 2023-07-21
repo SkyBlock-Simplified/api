@@ -27,12 +27,15 @@ import dev.sbs.api.client.sbs.request.SkyBlockRequest;
 import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
+import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.Repository;
+import dev.sbs.api.data.exception.DataException;
+import dev.sbs.api.data.json.JsonSession;
+import dev.sbs.api.data.model.JsonModel;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.SqlSession;
-import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.manager.BuilderManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.ServiceManager;
@@ -118,49 +121,36 @@ public final class SimplifiedApi {
      *
      * @param sqlConfig Database to connect to.
      */
-    @SuppressWarnings("unchecked")
-    public static void connectDatabase(@NotNull SqlConfig sqlConfig) {
-        if (!serviceManager.isRegistered(SqlSession.class)) {
-            // Collect SqlModels
-            ConcurrentList<Class<SqlModel>> sqlModels = Graph.builder(SqlModel.class)
-                .withValues(
-                    Reflection.getResources()
-                        .filterPackage(SqlModel.class)
-                        .getSubtypesOf(SqlModel.class)
-                )
-                .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
-                    .map(Field::getType)
-                    .filter(SqlModel.class::isAssignableFrom)
-                    .map(fieldType -> (Class<SqlModel>) fieldType)
-                )
-                .build()
-                .topologicalSort();
+    public static void connectSession(@NotNull DataSession.Type sessionType, @NotNull SqlConfig sqlConfig) {
+        if (!isSessionActive()) {
+            // Create Session
+            DataSession<?> session = switch (sessionType) {
+                case SQL -> new SqlSession(sqlConfig, getModels(SqlModel.class));
+                case JSON -> new JsonSession(getModels(JsonModel.class));
+            };
+            serviceManager.replace(DataSession.class, session);
 
-            // Create SqlSession
-            SqlSession sqlSession = new SqlSession(sqlConfig, sqlModels);
-            serviceManager.add(SqlSession.class, sqlSession);
-
-            // Initialize Database
-            sqlSession.initialize();
+            // Initialize Session
+            session.initialize();
 
             // Cache Repositories
-            sqlSession.cacheRepositories();
+            session.cacheRepositories();
         } else
-            serviceManager.get(SqlSession.class).initialize(); // Reinitialize Database
+            serviceManager.get(DataSession.class).initialize(); // Reinitialize Session
     }
 
     /**
      * Disconnects from a connected database.
      */
-    public static void disconnectDatabase() {
-        if (serviceManager.isRegistered(SqlSession.class)) {
-            SqlSession sqlSession = serviceManager.get(SqlSession.class);
+    public static void disconnectSession() {
+        if (serviceManager.isRegistered(DataSession.class)) {
+            DataSession<?> dataSession = serviceManager.get(DataSession.class);
 
-            if (sqlSession.isActive())
-                sqlSession.shutdown();
+            if (dataSession.isActive())
+                dataSession.shutdown();
         } else
-            throw SimplifiedException.of(SqlException.class)
-                .withMessage("Database is not active!")
+            throw SimplifiedException.of(DataException.class)
+                .withMessage("Session is not active!")
                 .build();
     }
 
@@ -181,6 +171,23 @@ public final class SimplifiedApi {
         return (Logger) LoggerFactory.getLogger(name);
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> @NotNull ConcurrentList<Class<T>> getModels(@NotNull Class<T> clazz) {
+        return Graph.builder(clazz)
+            .withValues(
+                Reflection.getResources()
+                    .filterPackage(clazz)
+                    .getSubtypesOf(clazz)
+            )
+            .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
+                .map(Field::getType)
+                .filter(clazz::isAssignableFrom)
+                .map(fieldType -> (Class<T>) fieldType)
+            )
+            .build()
+            .topologicalSort();
+    }
+
     public static @NotNull NbtFactory getNbtFactory() {
         return serviceManager.get(NbtFactory.class);
     }
@@ -197,20 +204,19 @@ public final class SimplifiedApi {
      * @return The repository of type {@link T}.
      */
     public static <T extends Model> @NotNull Repository<T> getRepositoryOf(Class<T> tClass) {
-        return getSqlSession().getRepositoryOf(tClass);
+        return getSession().getRepositoryOf(tClass);
     }
 
     /**
-     * Gets the active {@link SqlSession}.
-     *
-     * @return SqlSession if connected to a database.
+     * Gets the active {@link DataSession}.
      */
-    public static SqlSession getSqlSession() {
-        if (serviceManager.isRegistered(SqlSession.class))
-            return serviceManager.get(SqlSession.class);
+    @SuppressWarnings("unchecked")
+    public static <T extends DataSession<?>> T getSession() {
+        if (serviceManager.isRegistered(DataSession.class))
+            return (T) serviceManager.get(DataSession.class);
         else
-            throw SimplifiedException.of(SqlException.class)
-                .withMessage("Database has not been initialized!")
+            throw SimplifiedException.of(DataException.class)
+                .withMessage("Session has not been initialized!")
                 .build();
     }
 
@@ -222,8 +228,8 @@ public final class SimplifiedApi {
         return serviceManager.get(tClass);
     }
 
-    public static boolean isDatabaseConnected() {
-        return serviceManager.isRegistered(SqlSession.class) && serviceManager.get(SqlSession.class).isActive();
+    public static boolean isSessionActive() {
+        return serviceManager.isRegistered(DataSession.class) && serviceManager.get(DataSession.class).isActive();
     }
 
     /**
