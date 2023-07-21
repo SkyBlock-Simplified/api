@@ -8,6 +8,7 @@ import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +33,15 @@ public class YamlConfig extends ConfigMapper implements Runnable {
     private transient WatchKey watchKey;
     private transient boolean reloadProcessing = false;
 
-    public YamlConfig(File configDir, String fileName, String... header) {
+    public YamlConfig(@NotNull String fileName, @NotNull String... header) {
+        this(SimplifiedApi.getCurrentDirectory(), fileName, false, header);
+    }
+
+    public YamlConfig(@NotNull File configDir, @NotNull String fileName, @NotNull String... header) {
         this(configDir, fileName, false, header);
     }
 
-    public YamlConfig(File configDir, String fileName, boolean suppressFailedConversions, String... header) {
+    public YamlConfig(@NotNull File configDir, @NotNull String fileName, boolean suppressFailedConversions, @NotNull String... header) {
         super(configDir, fileName, header);
         this.setSuppressFailedConversions(suppressFailedConversions);
         GLOBAL_CUSTOM_CONVERTERS.forEach(this::addCustomConverter);

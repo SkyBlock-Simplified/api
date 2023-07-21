@@ -71,6 +71,10 @@ public abstract class SqlConfig extends YamlConfig {
     @Getter
     protected Level loggingLevel;
 
+    public SqlConfig(@NotNull String fileName, @NotNull String... header) {
+        this(SimplifiedApi.getCurrentDirectory(), fileName, header);
+    }
+
     public SqlConfig(@NotNull File configDir, @NotNull String fileName, String... header) {
         super(configDir, fileName, header);
         this.setLoggingLevel(Level.toLevel(ResourceUtil.getEnv("DATABASE_LOGGING").orElse(""), Level.WARN));

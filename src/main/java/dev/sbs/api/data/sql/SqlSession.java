@@ -5,7 +5,7 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.manager.service.ServiceManager;
+import dev.sbs.api.manager.ServiceManager;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Cleanup;
@@ -87,7 +87,7 @@ public final class SqlSession {
     @SuppressWarnings("unchecked")
     public <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
         if (this.isActive())
-            return (Repository<T>) this.serviceManager.getProvider(tClass).getProvider();
+            return (Repository<T>) this.serviceManager.get(tClass);
         else
             throw SimplifiedException.of(SqlException.class)
                 .withMessage("Database connection is not active!")
