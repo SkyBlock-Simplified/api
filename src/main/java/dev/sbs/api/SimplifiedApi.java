@@ -10,11 +10,6 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.RequestInterface;
-import dev.sbs.api.client.adapter.InstantTypeAdapter;
-import dev.sbs.api.client.adapter.NbtContentTypeAdapter;
-import dev.sbs.api.client.adapter.SkyBlockRealTimeTypeAdapter;
-import dev.sbs.api.client.adapter.SkyBlockTimeTypeAdapter;
-import dev.sbs.api.client.adapter.UUIDTypeAdapter;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
@@ -45,17 +40,23 @@ import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.sort.Graph;
+import dev.sbs.api.util.gson.SerializedPathTypeAdaptorFactory;
+import dev.sbs.api.util.gson.adapter.ColorTypeAdapter;
+import dev.sbs.api.util.gson.adapter.InstantTypeAdapter;
+import dev.sbs.api.util.gson.adapter.NbtContentTypeAdapter;
+import dev.sbs.api.util.gson.adapter.SkyBlockDateTypeAdapter;
+import dev.sbs.api.util.gson.adapter.UUIDTypeAdapter;
 import feign.gson.DoubleToIntMapTypeAdapter;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -77,16 +78,18 @@ public final class SimplifiedApi {
         // Provide Services
         serviceManager.add(Gson.class, new GsonBuilder()
             .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            .registerTypeAdapter(Color.class, new ColorTypeAdapter())
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .registerTypeAdapter(NbtContent.class, new NbtContentTypeAdapter())
-            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockRealTimeTypeAdapter())
-            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockTimeTypeAdapter())
+            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockDateTypeAdapter.RealTime())
+            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockDateTypeAdapter.SkyBlockTime())
             .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
             .registerTypeAdapter(SkyBlockImagesResponse.class, new SkyBlockImagesResponse.Deserializer())
             .registerTypeAdapter(SkyBlockItemsResponse.class, new SkyBlockItemsResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .setPrettyPrinting()
+            .create()
         );
         serviceManager.add(NbtFactory.class, new NbtFactory());
         serviceManager.add(Scheduler.class, new Scheduler());
