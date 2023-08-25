@@ -6,12 +6,15 @@ import com.google.common.io.ByteStreams;
 import dev.sbs.api.util.CompressionType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -150,6 +153,11 @@ public class DataUtil {
 
 	public static ByteArrayDataOutput newDataOutput(int size) {
 		return ByteStreams.newDataOutput(size);
+	}
+
+	@SneakyThrows
+	public static @NotNull FileWriter newFileWriter(@NotNull String fileName) {
+		return new FileWriter(fileName);
 	}
 
 	public static int readVarInt(DataInputStream inputStream) throws IOException {

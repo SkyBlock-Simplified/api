@@ -1,9 +1,9 @@
-package dev.sbs.api.util.math.tokenizer;
+package dev.sbs.api.math.tokenizer;
 
-import dev.sbs.api.util.math.function.Functions;
-import dev.sbs.api.util.math.function.MathFunction;
-import dev.sbs.api.util.math.operator.Operator;
-import dev.sbs.api.util.math.operator.Operators;
+import dev.sbs.api.math.function.Functions;
+import dev.sbs.api.math.function.MathFunction;
+import dev.sbs.api.math.operator.Operator;
+import dev.sbs.api.math.operator.Operators;
 
 import java.util.Map;
 import java.util.Set;

@@ -3,7 +3,7 @@ package dev.sbs.api.client.sbs.response;
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.HttpStatus;
 import dev.sbs.api.client.sbs.MojangServices;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
 
 import java.net.URL;

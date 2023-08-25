@@ -7,7 +7,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
-import dev.sbs.api.util.Primitives;
+import dev.sbs.api.util.helper.PrimitiveUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -39,7 +39,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      * @param value the tag's {@code long[]} value.
      */
     public LongArrayTag(String name, long[] value) {
-        this(name, Primitives.wrap(value));
+        this(name, PrimitiveUtil.wrap(value));
     }
 
     /**

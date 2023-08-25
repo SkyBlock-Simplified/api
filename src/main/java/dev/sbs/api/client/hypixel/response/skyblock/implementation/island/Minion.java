@@ -1,8 +1,8 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
-import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.data.model.skyblock.minion_data.minions.MinionModel;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 

@@ -7,7 +7,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ByteTag;
-import dev.sbs.api.util.Primitives;
+import dev.sbs.api.util.helper.PrimitiveUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -39,7 +39,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
      * @param value the tag's {@code byte[]} value.
      */
     public ByteArrayTag(String name, byte[] value) {
-        this(name, Primitives.wrap(value));
+        this(name, PrimitiveUtil.wrap(value));
     }
 
     /**
@@ -110,7 +110,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     public ByteArrayTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
         byte[] tmp = new byte[input.readInt()];
         input.readFully(tmp);
-        this.setValue(Primitives.wrap(tmp));
+        this.setValue(PrimitiveUtil.wrap(tmp));
         return this;
     }
 
@@ -167,7 +167,7 @@ public class ByteArrayTag extends ArrayTag<Byte> {
     @Override
     public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
         output.writeInt(this.size());
-        output.write(Primitives.unwrap(this.getValue()));
+        output.write(PrimitiveUtil.unwrap(this.getValue()));
     }
 
 }

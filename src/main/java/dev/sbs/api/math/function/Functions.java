@@ -1,4 +1,4 @@
-package dev.sbs.api.util.math.function;
+package dev.sbs.api.math.function;
 
 import dev.sbs.api.util.helper.ArrayUtil;
 

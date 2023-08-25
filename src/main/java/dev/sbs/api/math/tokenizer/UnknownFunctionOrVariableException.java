@@ -1,4 +1,4 @@
-package dev.sbs.api.util.math.tokenizer;
+package dev.sbs.api.math.tokenizer;
 
 /**
  * This exception is being thrown whenever {@link Tokenizer} finds unknown function or variable.

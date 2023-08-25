@@ -9,9 +9,9 @@ import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.util.CompressionType;
-import dev.sbs.api.util.Primitives;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.util.helper.PrimitiveUtil;
 import lombok.Cleanup;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,7 +79,7 @@ public class NbtFactory {
      * @throws NbtException if any I/O error occurs.
      */
     public CompoundTag fromByteArray(Byte[] bytes) throws NbtException {
-        return this.fromByteArray(Primitives.unwrap(bytes));
+        return this.fromByteArray(PrimitiveUtil.unwrap(bytes));
     }
 
     /**

@@ -1,4 +1,4 @@
-package dev.sbs.api.util.math;
+package dev.sbs.api.math;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
-package dev.sbs.api.util;
+package dev.sbs.api.util.helper;
 
-import dev.sbs.api.util.helper.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +15,7 @@ import java.util.Set;
  */
 @SuppressWarnings("all")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Primitives {
+public class PrimitiveUtil {
 
     /** A map from primitive types to their corresponding wrapper types. */
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;

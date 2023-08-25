@@ -1,9 +1,9 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.model.skyblock.trophy_fishes.TrophyFishModel;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

@@ -1,9 +1,9 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;

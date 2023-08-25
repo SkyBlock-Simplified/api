@@ -1,4 +1,4 @@
-package dev.sbs.api.util.math.tokenizer;
+package dev.sbs.api.math.tokenizer;
 
 /**
  * represents a setVariable used in an expression

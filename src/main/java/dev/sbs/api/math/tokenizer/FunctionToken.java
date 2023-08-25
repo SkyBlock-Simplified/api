@@ -1,6 +1,6 @@
-package dev.sbs.api.util.math.tokenizer;
+package dev.sbs.api.math.tokenizer;
 
-import dev.sbs.api.util.math.function.MathFunction;
+import dev.sbs.api.math.function.MathFunction;
 import lombok.Getter;
 
 public class FunctionToken extends Token {

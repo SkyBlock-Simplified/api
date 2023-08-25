@@ -1,15 +1,15 @@
-package dev.sbs.api.util.math;
+package dev.sbs.api.math;
 
+import dev.sbs.api.math.function.Functions;
+import dev.sbs.api.math.function.MathFunction;
+import dev.sbs.api.math.operator.Operator;
+import dev.sbs.api.math.operator.Operators;
+import dev.sbs.api.math.tokenizer.FunctionToken;
+import dev.sbs.api.math.tokenizer.NumberToken;
+import dev.sbs.api.math.tokenizer.OperatorToken;
+import dev.sbs.api.math.tokenizer.Token;
+import dev.sbs.api.math.tokenizer.VariableToken;
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.math.function.Functions;
-import dev.sbs.api.util.math.function.MathFunction;
-import dev.sbs.api.util.math.operator.Operator;
-import dev.sbs.api.util.math.operator.Operators;
-import dev.sbs.api.util.math.tokenizer.FunctionToken;
-import dev.sbs.api.util.math.tokenizer.NumberToken;
-import dev.sbs.api.util.math.tokenizer.OperatorToken;
-import dev.sbs.api.util.math.tokenizer.Token;
-import dev.sbs.api.util.math.tokenizer.VariableToken;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,10 +1,10 @@
-package dev.sbs.api.util.math;
+package dev.sbs.api.math;
 
+import dev.sbs.api.math.function.Functions;
+import dev.sbs.api.math.function.MathFunction;
+import dev.sbs.api.math.operator.Operator;
+import dev.sbs.api.math.shuntingyard.ShuntingYard;
 import dev.sbs.api.util.helper.FormatUtil;
-import dev.sbs.api.util.math.function.Functions;
-import dev.sbs.api.util.math.function.MathFunction;
-import dev.sbs.api.util.math.operator.Operator;
-import dev.sbs.api.util.math.shuntingyard.ShuntingYard;
 
 import java.util.Collections;
 import java.util.HashMap;

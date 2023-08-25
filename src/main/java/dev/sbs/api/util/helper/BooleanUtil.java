@@ -1,6 +1,5 @@
 package dev.sbs.api.util.helper;
 
-import dev.sbs.api.util.Primitives;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -944,7 +943,7 @@ public final class BooleanUtil {
             throw new IllegalArgumentException("Array is empty");
         }
         try {
-            final boolean[] primitive = Primitives.unwrap(array);
+            final boolean[] primitive = PrimitiveUtil.unwrap(array);
             return and(primitive) ? Boolean.TRUE : Boolean.FALSE;
         } catch (final NullPointerException ex) {
             throw new IllegalArgumentException("The array must not contain any null elements");
@@ -1010,7 +1009,7 @@ public final class BooleanUtil {
             throw new IllegalArgumentException("Array is empty");
         }
         try {
-            final boolean[] primitive = Primitives.unwrap(array);
+            final boolean[] primitive = PrimitiveUtil.unwrap(array);
             return or(primitive) ? Boolean.TRUE : Boolean.FALSE;
         } catch (final NullPointerException ex) {
             throw new IllegalArgumentException("The array must not contain any null elements");
@@ -1072,7 +1071,7 @@ public final class BooleanUtil {
             throw new IllegalArgumentException("Array is empty");
         }
         try {
-            final boolean[] primitive = Primitives.unwrap(array);
+            final boolean[] primitive = PrimitiveUtil.unwrap(array);
             return xor(primitive) ? Boolean.TRUE : Boolean.FALSE;
         } catch (final NullPointerException ex) {
             throw new IllegalArgumentException("The array must not contain any null elements");

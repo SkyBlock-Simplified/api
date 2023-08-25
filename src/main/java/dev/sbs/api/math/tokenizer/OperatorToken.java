@@ -1,6 +1,6 @@
-package dev.sbs.api.util.math.tokenizer;
+package dev.sbs.api.math.tokenizer;
 
-import dev.sbs.api.util.math.operator.Operator;
+import dev.sbs.api.math.operator.Operator;
 import lombok.Getter;
 
 /**

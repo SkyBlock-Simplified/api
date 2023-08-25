@@ -1,4 +1,4 @@
-package dev.sbs.api.util.math.operator;
+package dev.sbs.api.math.operator;
 
 public abstract class Operators {
 

@@ -1,11 +1,11 @@
-package dev.sbs.api.util.math.shuntingyard;
+package dev.sbs.api.math.shuntingyard;
 
-import dev.sbs.api.util.math.function.MathFunction;
-import dev.sbs.api.util.math.operator.Operator;
-import dev.sbs.api.util.math.tokenizer.FunctionToken;
-import dev.sbs.api.util.math.tokenizer.OperatorToken;
-import dev.sbs.api.util.math.tokenizer.Token;
-import dev.sbs.api.util.math.tokenizer.Tokenizer;
+import dev.sbs.api.math.function.MathFunction;
+import dev.sbs.api.math.operator.Operator;
+import dev.sbs.api.math.tokenizer.FunctionToken;
+import dev.sbs.api.math.tokenizer.OperatorToken;
+import dev.sbs.api.math.tokenizer.Token;
+import dev.sbs.api.math.tokenizer.Tokenizer;
 
 import java.util.ArrayList;
 import java.util.List;

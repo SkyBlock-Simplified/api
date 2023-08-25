@@ -7,7 +7,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
-import dev.sbs.api.util.Primitives;
+import dev.sbs.api.util.helper.PrimitiveUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -39,7 +39,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      * @param value the tag's {@code int[]} value.
      */
     public IntArrayTag(String name, int[] value) {
-        this(name, Primitives.wrap(value));
+        this(name, PrimitiveUtil.wrap(value));
     }
 
     /**

@@ -2,8 +2,6 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.model.BuffEffectsModel;
 import dev.sbs.api.data.model.skyblock.gemstone_data.gemstone_stats.GemstoneStatModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforge_stats.ReforgeStatModel;
@@ -12,6 +10,8 @@ import dev.sbs.api.math.Expression;
 import dev.sbs.api.math.ExpressionBuilder;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;

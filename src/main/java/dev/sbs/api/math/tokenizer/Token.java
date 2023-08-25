@@ -1,4 +1,4 @@
-package dev.sbs.api.util.math.tokenizer;
+package dev.sbs.api.math.tokenizer;
 
 /**
  * Abstract class for tokens used by exp4j to tokenize expressions

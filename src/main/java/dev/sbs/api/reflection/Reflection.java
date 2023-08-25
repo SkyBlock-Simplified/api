@@ -5,12 +5,12 @@ import dev.sbs.api.reflection.accessor.FieldAccessor;
 import dev.sbs.api.reflection.accessor.MethodAccessor;
 import dev.sbs.api.reflection.accessor.ResourceAccessor;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.Primitives;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.ClassUtil;
 import dev.sbs.api.util.helper.FormatUtil;
+import dev.sbs.api.util.helper.PrimitiveUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.helper.SystemUtil;
 import lombok.Getter;
@@ -74,7 +74,7 @@ public class Reflection<T> {
      * @param clazz The class to reflect.
      */
     private Reflection(@NotNull Class<T> type) {
-        this.type = Primitives.wrap(type);
+        this.type = PrimitiveUtil.wrap(type);
     }
 
     public static <T> Reflection<T> of(@NotNull Class<T> clazz) {
@@ -138,7 +138,7 @@ public class Reflection<T> {
      * @throws ReflectionException When the class or field cannot be located.
      */
     public final FieldAccessor getField(Class<?> type) throws ReflectionException {
-        Class<?> utype = (type.isPrimitive() ? Primitives.wrap(type) : Primitives.unwrap(type));
+        Class<?> utype = (type.isPrimitive() ? PrimitiveUtil.wrap(type) : PrimitiveUtil.unwrap(type));
 
         if (FIELD_CACHE_CLASS.containsKey(this.getName())) {
             Map<Class<?>, FieldAccessor> fields = FIELD_CACHE_CLASS.get(this.getName());
@@ -260,7 +260,7 @@ public class Reflection<T> {
      * @throws ReflectionException When the class or method cannot be located.
      */
     public final MethodAccessor getMethod(Class<?> type, Class<?>... paramTypes) throws ReflectionException {
-        Class<?> utype = (type.isPrimitive() ? Primitives.wrap(type) : Primitives.unwrap(type));
+        Class<?> utype = (type.isPrimitive() ? PrimitiveUtil.wrap(type) : PrimitiveUtil.unwrap(type));
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
         if (METHOD_CACHE_CLASS.containsKey(this.getName())) {
@@ -763,7 +763,7 @@ public class Reflection<T> {
         Class<?>[] newTypes = new Class<?>[types != null ? types.length : 0];
 
         for (int i = 0; i < newTypes.length; i++)
-            newTypes[i] = (types[i] != null ? Primitives.unwrap(types[i]) : null);
+            newTypes[i] = (types[i] != null ? PrimitiveUtil.unwrap(types[i]) : null);
 
         return newTypes;
     }
@@ -778,7 +778,7 @@ public class Reflection<T> {
         Class<?>[] newTypes = new Class<?>[objects != null ? objects.length : 0];
 
         for (int i = 0; i < newTypes.length; i++)
-            newTypes[i] = (objects[i] != null ? Primitives.unwrap(objects[i].getClass()) : null);
+            newTypes[i] = (objects[i] != null ? PrimitiveUtil.unwrap(objects[i].getClass()) : null);
 
         return newTypes;
     }

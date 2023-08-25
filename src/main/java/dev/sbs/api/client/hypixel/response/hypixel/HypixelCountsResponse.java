@@ -1,6 +1,6 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
 
 import java.util.Optional;
