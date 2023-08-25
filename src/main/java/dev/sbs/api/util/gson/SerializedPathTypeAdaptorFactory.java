@@ -1,4 +1,4 @@
-package dev.sbs.api.util;
+package dev.sbs.api.util.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

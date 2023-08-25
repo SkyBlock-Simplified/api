@@ -1,4 +1,4 @@
-package dev.sbs.api.util;
+package dev.sbs.api.util.gson;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
