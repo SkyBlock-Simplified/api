@@ -1,12 +1,12 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary.BestiaryModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilyModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_type_levels.BestiaryTypeLevelModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;

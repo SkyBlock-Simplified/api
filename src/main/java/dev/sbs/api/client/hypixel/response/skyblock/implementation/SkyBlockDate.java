@@ -1,10 +1,10 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.builder.EqualsBuilder;
 import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.date.CustomDate;
 import lombok.AccessLevel;
@@ -56,7 +56,7 @@ public class SkyBlockDate extends CustomDate {
     }
 
     public SkyBlockDate(int year, int month, int day, int hour, int minute) {
-        this((Length.YEAR_MS * (year - 1)) + (Length.MONTH_MS * month) + (Length.DAY_MS * (day - 1)) + (Length.HOUR_MS * hour) + (long) (Length.MINUTE_MS * (minute - 1)), false);
+        this((Length.YEAR_MS * (year - 1)) + (Length.MONTH_MS * (month - 1)) + (Length.DAY_MS * (day - 1)) + (Length.HOUR_MS * hour) + (long) (Length.MINUTE_MS * minute), false);
     }
 
     public SkyBlockDate(long milliseconds) {
@@ -98,8 +98,7 @@ public class SkyBlockDate extends CustomDate {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkyBlockDate)) return false;
-        SkyBlockDate that = (SkyBlockDate) o;
+        if (!(o instanceof SkyBlockDate that)) return false;
 
         return new EqualsBuilder()
             .append(this.getYear(), that.getYear())
@@ -135,7 +134,7 @@ public class SkyBlockDate extends CustomDate {
 
     public static Pair<SkyBlockDate, String> getNextSpecialMayor() {
         SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
-        SkyBlockDate nextSpecialMayor = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS);
+        SkyBlockDate nextSpecialMayor = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS_START);
         int iterations = 0;
 
         while (nextSpecialMayor.getYear() < currentDate.getYear()) {
@@ -168,7 +167,7 @@ public class SkyBlockDate extends CustomDate {
     @Override
     public int getDay() {
         long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        remainder = remainder - (this.getMonth() * SkyBlockDate.Length.MONTH_MS);
+        remainder -= ((this.getMonth() - 1) * SkyBlockDate.Length.MONTH_MS);
         return (int) (remainder / SkyBlockDate.Length.DAY_MS) + 1;
     }
 
@@ -178,8 +177,8 @@ public class SkyBlockDate extends CustomDate {
     @Override
     public int getHour() {
         long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        remainder = remainder - (this.getMonth() * SkyBlockDate.Length.MONTH_MS);
-        remainder = remainder - ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
+        remainder -= ((this.getMonth() - 1) * SkyBlockDate.Length.MONTH_MS);
+        remainder -= ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
         return (int) (remainder / SkyBlockDate.Length.HOUR_MS);
     }
 
@@ -189,10 +188,10 @@ public class SkyBlockDate extends CustomDate {
     @Override
     public int getMinute() {
         long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        remainder = remainder - (this.getMonth() * SkyBlockDate.Length.MONTH_MS);
-        remainder = remainder - ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
-        remainder = remainder - (this.getHour() * Length.HOUR_MS);
-        return (int) (remainder / Length.MINUTE_MS) + 1;
+        remainder -= ((this.getMonth() - 1) * SkyBlockDate.Length.MONTH_MS);
+        remainder -= ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
+        remainder -= (this.getHour() * Length.HOUR_MS);
+        return (int) (remainder / Length.MINUTE_MS);
     }
 
     /**
@@ -201,7 +200,7 @@ public class SkyBlockDate extends CustomDate {
     @Override
     public int getMonth() {
         long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        return (int) (remainder / SkyBlockDate.Length.MONTH_MS);
+        return (int) (remainder / SkyBlockDate.Length.MONTH_MS) + 1;
     }
 
     /**
@@ -210,7 +209,7 @@ public class SkyBlockDate extends CustomDate {
      * @return season of the year
      */
     public Season getSeason() {
-        return Season.values()[this.getMonth()];
+        return Season.values()[this.getMonth() - 1];
     }
 
     @Override
@@ -292,12 +291,22 @@ public class SkyBlockDate extends CustomDate {
         /**
          * The time Mayors launched in RealTime.
          */
-        public static final long MAYOR_ELECTIONS = new SkyBlockDate(88, Season.LATE_SUMMER, 27, 0).getRealTime();
+        public static final long MAYOR_ELECTIONS_START = new SkyBlockDate(88, Season.LATE_SUMMER, 27, 0).getRealTime();
+
+        /**
+         * The time Mayors end in RealTime.
+         */
+        public static final long MAYOR_ELECTIONS_END = new SkyBlockDate(88, Season.LATE_SPRING, 27, 0).getRealTime();
 
         /**
          * The time Special Mayors launched in RealTime.
          */
-        public static final long SPECIAL_ELECTIONS = new SkyBlockDate(96, Season.LATE_SUMMER, 27, 0).getRealTime();
+        public static final long SPECIAL_ELECTIONS_START = new SkyBlockDate(96, Season.LATE_SUMMER, 27, 0).getRealTime();
+
+        /**
+         * The time Special Mayors end in RealTime.
+         */
+        public static final long SPECIAL_ELECTIONS_END = new SkyBlockDate(96, Season.LATE_SPRING, 27, 0).getRealTime();
 
     }
 

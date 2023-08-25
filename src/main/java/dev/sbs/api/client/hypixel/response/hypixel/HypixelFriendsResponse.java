@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 

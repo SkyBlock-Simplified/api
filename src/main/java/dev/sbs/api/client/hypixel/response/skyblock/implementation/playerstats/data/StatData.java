@@ -1,10 +1,10 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import lombok.Getter;
 

@@ -4,8 +4,8 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.request.HypixelRequestInterface;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.data.tuple.Pair;
 import feign.FeignException;
 import feign.codec.ErrorDecoder;
@@ -23,12 +23,12 @@ public final class HypixelApiBuilder extends ApiBuilder<HypixelRequestInterface>
     }
 
     @Override
-    public Map<String, String> getRequestHeaders() {
+    protected Map<String, String> getRequestHeaders() {
         return Concurrent.newMap(Pair.of("API-Key", SimplifiedApi.getKeyManager().get("HYPIXEL_API_KEY").toString()));
     }
 
     @Override
-    public ConcurrentSet<String> getResponseCacheHeaders() {
+    protected ConcurrentSet<String> getResponseCacheHeaders() {
         return Concurrent.newUnmodifiableSet(
             "RateLimit-Limit",
             "RateLimit-Remaining",
@@ -37,7 +37,7 @@ public final class HypixelApiBuilder extends ApiBuilder<HypixelRequestInterface>
     }
 
     @Override
-    public ErrorDecoder getErrorDecoder() {
+    protected ErrorDecoder getErrorDecoder() {
         return (methodKey, response) -> {
             throw new HypixelApiException(FeignException.errorStatus(methodKey, response));
         };

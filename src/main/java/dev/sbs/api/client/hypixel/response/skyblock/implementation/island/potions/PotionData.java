@@ -1,6 +1,6 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.potions;
 
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

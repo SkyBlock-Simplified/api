@@ -13,7 +13,7 @@ public final class SbsApiBuilder extends ApiBuilder<SbsRequestInterface> {
     }
 
     @Override
-    public ErrorDecoder getErrorDecoder() {
+    protected ErrorDecoder getErrorDecoder() {
         return (methodKey, response) -> {
             throw new SbsApiException(FeignException.errorStatus(methodKey, response));
         };

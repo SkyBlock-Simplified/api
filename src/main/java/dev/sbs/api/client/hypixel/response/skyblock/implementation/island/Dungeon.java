@@ -5,13 +5,13 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Weighted;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_floors.DungeonFloorModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.NumberUtil;
 import lombok.AccessLevel;
@@ -99,50 +99,44 @@ public class Dungeon extends Experience implements Weighted {
     }
 
     public ConcurrentMap<DungeonFloorModel, Double> getMostDamage(DungeonClassModel dungeonClassModel) {
-        switch (dungeonClassModel.getKey()) {
-            case "HEALER":
-                return this.getMostDamageHealer()
-                    .stream()
-                    .map(entry -> Pair.of(
-                        SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
-                        entry.getValue()
-                    ))
-                    .collect(Concurrent.toMap());
-            case "MAGE":
-                return this.getMostDamageMage()
-                    .stream()
-                    .map(entry -> Pair.of(
-                        SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
-                        entry.getValue()
-                    ))
-                    .collect(Concurrent.toMap());
-            case "BERSERK":
-                return this.getMostDamageBerserk()
-                    .stream()
-                    .map(entry -> Pair.of(
-                        SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
-                        entry.getValue()
-                    ))
-                    .collect(Concurrent.toMap());
-            case "ARCHER":
-                return this.getMostDamageArcher()
-                    .stream()
-                    .map(entry -> Pair.of(
-                        SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
-                        entry.getValue()
-                    ))
-                    .collect(Concurrent.toMap());
-            case "TANK":
-                return this.getMostDamageTank()
-                    .stream()
-                    .map(entry -> Pair.of(
-                        SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
-                        entry.getValue()
-                    ))
-                    .collect(Concurrent.toMap());
-            default:
-                return null;
-        }
+        return switch (dungeonClassModel.getKey()) {
+            case "HEALER" -> this.getMostDamageHealer()
+                .stream()
+                .map(entry -> Pair.of(
+                    SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                    entry.getValue()
+                ))
+                .collect(Concurrent.toMap());
+            case "MAGE" -> this.getMostDamageMage()
+                .stream()
+                .map(entry -> Pair.of(
+                    SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                    entry.getValue()
+                ))
+                .collect(Concurrent.toMap());
+            case "BERSERK" -> this.getMostDamageBerserk()
+                .stream()
+                .map(entry -> Pair.of(
+                    SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                    entry.getValue()
+                ))
+                .collect(Concurrent.toMap());
+            case "ARCHER" -> this.getMostDamageArcher()
+                .stream()
+                .map(entry -> Pair.of(
+                    SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                    entry.getValue()
+                ))
+                .collect(Concurrent.toMap());
+            case "TANK" -> this.getMostDamageTank()
+                .stream()
+                .map(entry -> Pair.of(
+                    SimplifiedApi.getRepositoryOf(DungeonFloorModel.class).findFirstOrNull(DungeonFloorModel::getFloor, entry.getKey()),
+                    entry.getValue()
+                ))
+                .collect(Concurrent.toMap());
+            default -> null;
+        };
     }
 
     public double getMostDamage(DungeonClassModel dungeonClassModel, DungeonFloorModel dungeonFloorModel) {

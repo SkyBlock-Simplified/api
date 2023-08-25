@@ -10,6 +10,12 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.d
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.ObjectData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.PlayerDataHelper;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.StatData;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.collection.search.function.SearchFunction;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessories.AccessoryModel;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_families.AccessoryFamilyModel;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
@@ -40,12 +46,6 @@ import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.FormatUtil;
@@ -737,12 +737,17 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
             this.currentPower = currentPowerModel;
             this.currentTuning = currentTuning;
 
-            this.magicalPower = this.filteredAccessories.stream()
+            int highestMagicalPower = member.getAccessoryBag().getHighestMagicalPower();
+            int currentMagicalPower = this.filteredAccessories.stream()
                 .mapToInt(accessoryData -> this.handleMagicalPower(accessoryData, member))
                 .sum();
 
-            this.magicalPowerMultiplier = 29.97 * Math.pow(Math.log(0.0019 * this.magicalPower + 1), 1.2);
+            // Rift Prism
+            if ((highestMagicalPower - currentMagicalPower) >= 11)
+                currentMagicalPower += 11;
 
+            this.magicalPower = currentMagicalPower;
+            this.magicalPowerMultiplier = 29.97 * Math.pow(Math.log(0.0019 * this.magicalPower + 1), 1.2);
             this.tuningPoints = this.magicalPower / 10;
         }
 

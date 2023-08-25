@@ -1,4 +1,4 @@
-package dev.sbs.api.client.adapter;
+package dev.sbs.api.util.gson.adapter;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -10,15 +10,15 @@ import dev.sbs.api.util.helper.StringUtil;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
-public class UUIDTypeAdapter extends TypeAdapter<UUID> {
+public class UUIDTypeAdapter implements TypeAdapter<UUID> {
 
     @Override
-    public UUID deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public UUID deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return StringUtil.toUUID(json.getAsString());
     }
 
     @Override
-    public JsonElement serialize(UUID src, Type srcType, JsonSerializationContext context) {
+    public JsonElement serialize(UUID src, Type typeOfSrc, JsonSerializationContext context) {
         return new JsonPrimitive(src.toString());
     }
 

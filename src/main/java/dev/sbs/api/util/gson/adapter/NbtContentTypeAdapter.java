@@ -1,4 +1,4 @@
-package dev.sbs.api.client.adapter;
+package dev.sbs.api.util.gson.adapter;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -10,7 +10,7 @@ import dev.sbs.api.reflection.Reflection;
 
 import java.lang.reflect.Type;
 
-public class NbtContentTypeAdapter extends TypeAdapter<NbtContent> {
+public class NbtContentTypeAdapter implements TypeAdapter<NbtContent> {
 
     @Override
     public NbtContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

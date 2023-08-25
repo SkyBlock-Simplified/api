@@ -2,12 +2,12 @@ package dev.sbs.api.client.hypixel.response.hypixel;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
@@ -53,7 +53,7 @@ public class HypixelPlayerResponse {
         private String playerName;
         @Getter private ConcurrentList<String> knownAliases;
         @Getter private SocialMedia socialMedia;
-        private ConcurrentList<Object> achievementsOneTime;
+        private ConcurrentList<Object> achievementsOneTime = Concurrent.newList();
         private transient ConcurrentList<String> achievementsOneTimeFixed;
         @Getter private String currentClickEffect;
         @Getter private String currentGadget;
@@ -65,10 +65,10 @@ public class HypixelPlayerResponse {
         @Getter private Instant claimedCenturyCake;
         @SerializedName("scorpius_bribe_120")
         @Getter private Instant scorpiusBribe120;
-        @Getter private ConcurrentMap<String, Long> voting;
-        @Getter private ConcurrentMap<String, Integer> petConsumables;
-        @Getter private ConcurrentMap<String, Integer> achievements;
-        @Getter private ConcurrentMap<String, Instant> achievementRewardsNew;
+        @Getter private ConcurrentMap<String, Long> voting = Concurrent.newMap();
+        @Getter private ConcurrentMap<String, Integer> petConsumables = Concurrent.newMap();
+        @Getter private ConcurrentMap<String, Integer> achievements = Concurrent.newMap();
+        @Getter private ConcurrentMap<String, Instant> achievementRewardsNew = Concurrent.newMap();
 
         // Rank
         private String packageRank;

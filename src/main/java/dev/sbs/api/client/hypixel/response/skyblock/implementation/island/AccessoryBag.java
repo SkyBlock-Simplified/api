@@ -2,11 +2,11 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
@@ -24,6 +24,7 @@ public class AccessoryBag {
     @Getter private final NbtContent contents;
     @Getter private final int purchasedBagUpgrades;
     @Getter private final Tuning tuning;
+    @Getter private final int highestMagicalPower;
     private final String selectedPower;
     private final ConcurrentList<String> unlockedPowers;
 
@@ -32,6 +33,7 @@ public class AccessoryBag {
         this.purchasedBagUpgrades = ((Number) accessoryMap.getOrDefault("bag_upgrades_purchased", 0)).intValue();
         this.selectedPower = (String) accessoryMap.getOrDefault("selected_power", "");
         this.unlockedPowers = Concurrent.newList((List<String>) accessoryMap.getOrDefault("unlocked_powers", Concurrent.newList()));
+        this.highestMagicalPower = ((Number) accessoryMap.getOrDefault("highest_magical_power", 0)).intValue();
 
         if (accessoryMap.containsKey("tuning")) {
             Map<String, Object> tuningMap = (Map<String, Object>) accessoryMap.get("tuning");
