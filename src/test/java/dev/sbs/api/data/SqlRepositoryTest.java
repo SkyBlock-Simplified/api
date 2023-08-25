@@ -1,10 +1,10 @@
-package dev.sbs.api.data.sql;
+package dev.sbs.api.data;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
-import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
+import dev.sbs.api.data.sql.SqlRepository;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class SqlRepositoryTest {
     @Test
     public void checkRepositories_ok() {
         try {
-            System.out.println("ENABLING DATABASE");
+            System.out.println("Connecting to database...");
             SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
             //testConfig.setLoggingLevel(Level.DEBUG);
 

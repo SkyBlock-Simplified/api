@@ -1,8 +1,8 @@
-package dev.sbs.api.data.sql;
+package dev.sbs.api.data;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
-import dev.sbs.api.data.DataSession;
+import dev.sbs.api.data.sql.SqlSession;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;

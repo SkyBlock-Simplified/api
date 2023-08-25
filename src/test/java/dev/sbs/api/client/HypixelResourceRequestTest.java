@@ -1,6 +1,7 @@
-package dev.sbs.api.client.hypixel.request;
+package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
 import dev.sbs.api.client.hypixel.response.resource.ResourceCollectionsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;

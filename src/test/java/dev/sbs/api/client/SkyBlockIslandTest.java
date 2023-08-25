@@ -1,10 +1,11 @@
-package dev.sbs.api.client.hypixel.response.skyblock;
+package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.TestConfig;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelSkyBlockRequest;
+import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.BestiaryData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Collection;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Dungeon;
