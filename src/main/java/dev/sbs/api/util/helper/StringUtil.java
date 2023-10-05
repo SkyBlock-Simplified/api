@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.Normalizer;
@@ -501,7 +500,7 @@ public class StringUtil {
      * @see #capitalizeFully(String)
      */
     public static String capitalize(final String str) {
-        return capitalize(str, null);
+        return capitalize(str, (Character) null);
     }
 
     /**
@@ -584,7 +583,7 @@ public class StringUtil {
      * @return capitalized String, {@code null} if null String input
      */
     public static String capitalizeFully(final String str) {
-        return capitalizeFully(str,null);
+        return capitalizeFully(str, (Character) null);
     }
 
     /**
@@ -639,7 +638,7 @@ public class StringUtil {
      * @see #capitalize(String)
      */
     public static String uncapitalize(final String str) {
-        return uncapitalize(str, null);
+        return uncapitalize(str, (Character) null);
     }
 
     /**
@@ -1442,7 +1441,7 @@ public class StringUtil {
         if (valid == null || cs == null) {
             return false;
         }
-        if (cs.length() == 0) {
+        if (cs.isEmpty()) {
             return true;
         }
         if (valid.length == 0) {
@@ -2038,11 +2037,11 @@ public class StringUtil {
     public static <T extends CharSequence> T firstNonEmpty(final T... values) {
         if (values != null) {
             for (final T val : values) {
-                if (isNotEmpty(val)) {
+                if (isNotEmpty(val))
                     return val;
-                }
             }
         }
+
         return null;
     }
 
@@ -2064,11 +2063,10 @@ public class StringUtil {
      * @param string input string
      * @param charset The {@link Charset} name to encode the {@code String}. If null, then use the default Charset.
      * @return The empty byte[] if {@code string} is null, the result of {@link String#getBytes(String)} otherwise.
-     * @throws UnsupportedEncodingException Thrown when the named charset is not supported.
      * @see String#getBytes(String)
      */
-    public static byte[] getBytes(final String string, final String charset) throws UnsupportedEncodingException {
-        return string == null ? ArrayUtil.EMPTY_BYTE_ARRAY : string.getBytes(toCharset(charset).name());
+    public static byte[] getBytes(final String string, final String charset) {
+        return string == null ? ArrayUtil.EMPTY_BYTE_ARRAY : string.getBytes(toCharset(charset));
     }
 
     /**
@@ -2830,7 +2828,7 @@ public class StringUtil {
         if (startPos > endLimit) {
             return INDEX_NOT_FOUND;
         }
-        if (searchStr.length() == 0) {
+        if (searchStr.isEmpty()) {
             return startPos;
         }
         for (int i = startPos; i < endLimit; i++) {
@@ -3252,7 +3250,7 @@ public class StringUtil {
      * @return {@code true} if the CharSequence is empty or null
      */
     public static boolean isEmpty(final CharSequence cs) {
-        return cs == null || cs.length() == 0;
+        return cs == null || cs.isEmpty();
     }
 
     /**
@@ -4565,7 +4563,7 @@ public class StringUtil {
             startPos = len1;
         }
 
-        if (startPos < 0 || len2 < 0 || len2 > len1) {
+        if (startPos < 0 || len2 > len1) {
             return -1;
         }
 
@@ -4851,7 +4849,7 @@ public class StringUtil {
         if (startPos < 0) {
             return INDEX_NOT_FOUND;
         }
-        if (searchStr.length() == 0) {
+        if (searchStr.isEmpty()) {
             return startPos;
         }
 
@@ -5394,7 +5392,7 @@ public class StringUtil {
         if (str == null || searchStr == null || ordinal <= 0) {
             return INDEX_NOT_FOUND;
         }
-        if (searchStr.length() == 0) {
+        if (searchStr.isEmpty()) {
             return lastIndex ? str.length() : 0;
         }
         int found = 0;
@@ -6291,7 +6289,7 @@ public class StringUtil {
             final Set<String> searchSet = new HashSet<>(Arrays.asList(searchList));
             final Set<String> replacementSet = new HashSet<>(Arrays.asList(replacementList));
             searchSet.retainAll(replacementSet);
-            if (searchSet.size() > 0) {
+            if (!searchSet.isEmpty()) {
                 throw new IllegalStateException("Aborting to protect against StackOverflowError - " +
                         "output of one loop is the input of another");
             }
@@ -8384,7 +8382,7 @@ public class StringUtil {
         if (str == null) {
             return null;
         }
-        if (str.length() == 0) {
+        if (str.isEmpty()) {
             return ArrayUtil.EMPTY_INT_ARRAY;
         }
 
@@ -9291,49 +9289,45 @@ public class StringUtil {
     /**
      *   => "?" items  are additions to Java string escapes
      *                 but normal in Java regexes
-     *
+     * <br>
      *   => "!" items  are also additions to Java regex escapes
-     *
+     * <br><br>
      * Standard singletons: ?\a ?\e \f \n \r \t
-     *
+     * <br>
      *      NB: \b is unsupported as backspace so it can pass-through
      *          to the regex translator untouched; I refuse to make anyone
      *          doublebackslash it as doublebackslashing is a Java idiocy
      *          I desperately wish would die out.  There are plenty of
      *          other ways to write it:
-     *
+     * <br>
      *              \cH, \12, \012, \x08 \x{8}, \u0008, \U00000008
-     *
-     * Octal escapes: \0 \0N \0NN \N \NN \NNN
+     * <br><br>
+     * Octal escapes: \0 \0N \0NN \N \NN \NNN <br>
      *    Can range up to !\777 not \377
-     *
-     *      TODO: add !\o{NNNNN}
+     * <br>
+     *      TO-DO: add !\o{NNNNN}
      *          last Unicode is 4177777
      *          maxint is 37777777777
-     *
-     * Control chars: ?\cX
+     * <br><br>
+     * Control chars: ?\cX<br>
      *      Means: ord(X) ^ ord('@')
-     *
-     * Old hex escapes: \xXX
+     * <br><br>
+     * Old hex escapes: \xXX<br>
      *      unbraced must be 2 xdigits
-     *
-     * Perl hex escapes: !\x{XXX} braced may be 1-8 xdigits
+     * <br><br>
+     * Perl hex escapes: !\x{XXX} braced may be 1-8 xdigits<br>
      *       NB: proper Unicode never needs more than 6, as highest
      *           valid codepoint is 0x10FFFF, not maxint 0xFFFFFFFF
-     *
-     * Lame Java escape: \[IDIOT JAVA PREPROCESSOR]uXXXX must be
+     * <br><br>
+     * Lame Java escape: \[JAVA PREPROCESSOR]uXXXX must be
      *                   exactly 4 xdigits;
-     *
-     *       I can't write XXXX in this comment where it belongs
-     *       because the damned Java Preprocessor can't mind its
-     *       own business.  Idiots!
-     *
+     * <br><br>
      * Lame Python escape: !\UXXXXXXXX must be exactly 8 xdigits
-     *
-     * TODO: Perl translation escapes: \Q \U \L \E \[IDIOT JAVA PREPROCESSOR]u \l
+     * <br><br>
+     * TO-DO: Perl translation escapes: \Q \U \L \E \[JAVA PREPROCESSOR]u \l<br>
      *       These are not so important to cover if you're passing the
      *       result to Pattern.compile(), since it handles them for you
-     *       further downstream.  Hm, what about \[IDIOT JAVA PREPROCESSOR]u?
+     *       further downstream.  Hm, what about \[JAVA PREPROCESSOR]u?
      *
      */
     public static @NotNull String unescapeUnicode(@NotNull String value) {
@@ -9350,7 +9344,7 @@ public class StringUtil {
         for (int i = 0; i < value.length(); i++) {
             int cp = value.codePointAt(i);
             if (value.codePointAt(i) > Character.MAX_VALUE) {
-                i++; /****WE HATES UTF-16! WE HATES IT FOREVERSES!!!****/
+                i++; // WE HATES UTF-16! WE HATES IT FOREVERSES!!!
             }
 
             if (!saw_backslash) {
@@ -9413,7 +9407,7 @@ public class StringUtil {
 
                 case '8':
                 case '9': throw new IllegalArgumentException("illegal octal digit");
-                    /* NOTREACHED */
+                    // NOT REACHED
 
                     /*
                      * may be 0 to 2 octal digits following this one
@@ -9459,7 +9453,7 @@ public class StringUtil {
                         newstr.append('\0');
                         break; /* switch */
                     }
-                    int codePoint = 0;
+                    int codePoint;
                     try {
                         codePoint = Integer.parseInt(
                             value.substring(i, i+digits), 8);
@@ -9513,7 +9507,7 @@ public class StringUtil {
 
                     }
                     if (j == 0) { throw new IllegalArgumentException("empty braces in \\x{} escape"); }
-                    int codePoint = 0;
+                    int codePoint;
                     try {
                         codePoint = Integer.parseInt(value.substring(i, i+j), 16);
                     } catch (NumberFormatException nfe) {
@@ -9537,7 +9531,7 @@ public class StringUtil {
                             throw new IllegalArgumentException("illegal non-ASCII hex digit in \\u escape");
                         }
                     }
-                    int codePoint = 0;
+                    int codePoint;
                     try {
                         codePoint = Integer.parseInt( value.substring(i, i+j), 16);
                     } catch (NumberFormatException nfe) {
@@ -9560,7 +9554,7 @@ public class StringUtil {
                             throw new IllegalArgumentException("illegal non-ASCII hex digit in \\U escape");
                         }
                     }
-                    int codePoint = 0;
+                    int codePoint;
                     try {
                         codePoint = Integer.parseInt(value.substring(i, i+j), 16);
                     } catch (NumberFormatException nfe) {
