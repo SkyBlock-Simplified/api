@@ -41,7 +41,7 @@ public interface SearchQuery<E, T extends List<E>> {
                 itemsCopy = itemsCopy.filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()));
         } else
             throw SimplifiedException.of(DataException.class)
-                .withMessage("Invalid match type ''{0}''.", match)
+                .withMessage("Invalid match type '%s'.", match)
                 .build();
 
         return itemsCopy;
@@ -64,7 +64,7 @@ public interface SearchQuery<E, T extends List<E>> {
                 itemsCopy = itemsCopy.filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()));
         } else
             throw SimplifiedException.of(DataException.class)
-                .withMessage("Invalid match type ''{0}''.", match)
+                .withMessage("Invalid match type '%s'.", match)
                 .build();
 
         return itemsCopy;

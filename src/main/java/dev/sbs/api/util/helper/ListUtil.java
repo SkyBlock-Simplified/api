@@ -51,7 +51,7 @@ public class ListUtil {
 	 * @throws IllegalArgumentException If the given array is null or contains a null element.
 	 */
 	public static <T> void noNullElements(@NotNull T[] array) throws IllegalArgumentException {
-		noNullElements(array, "The validated array is NULL!", "The validated array contains NULL element at index {0}!");
+		noNullElements(array, "The validated array is NULL!", "The validated array contains NULL element at index %s!");
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class ListUtil {
 	 * @throws IllegalArgumentException If the given collection is null or contains a null element.
 	 */
 	public static <T> void noNullElements(@NotNull Collection<? extends T> collection) throws IllegalArgumentException {
-		noNullElements(collection, "The validated collection is NULL!", "The validated collection contains NULL element at index {0}!");
+		noNullElements(collection, "The validated collection is NULL!", "The validated collection contains NULL element at index %s!");
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ListUtil {
 
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] == null)
-				throw new IllegalArgumentException(FormatUtil.format(elementMessage, i));
+				throw new IllegalArgumentException(String.format(elementMessage, i));
 		}
 	}
 
@@ -111,7 +111,7 @@ public class ListUtil {
 			i++;
 
 			if (obj == null)
-				throw new IllegalArgumentException(FormatUtil.format(elementMessage, i));
+				throw new IllegalArgumentException(String.format(elementMessage, i));
 		}
 	}
 

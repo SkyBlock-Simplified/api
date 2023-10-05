@@ -1,7 +1,6 @@
 package dev.sbs.api.util.data.tuple;
 
 import dev.sbs.api.util.builder.hash.CompareToBuilder;
-import dev.sbs.api.util.helper.FormatUtil;
 
 import java.util.Map;
 import java.util.Objects;
@@ -155,7 +154,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      */
     @Override
     public String toString() {
-        return this.toString("({0},{1})");
+        return this.toString("(%s,%s)");
     }
 
     /**
@@ -170,7 +169,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @return the formatted string, not null
      */
     public String toString(String format) {
-        return FormatUtil.format(format, getLeft(), getRight());
+        return String.format(format, getLeft(), getRight());
     }
 
 }

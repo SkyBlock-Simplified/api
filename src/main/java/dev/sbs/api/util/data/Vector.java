@@ -2,7 +2,6 @@ package dev.sbs.api.util.data;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import lombok.Getter;
 
@@ -276,7 +275,7 @@ public class Vector implements Cloneable {
 	}
 
 	public final String toString() {
-		return FormatUtil.format("'{'{0},{1},{2}'}'", this.getX(), this.getY(), this.getZ());
+		return String.format("'{'%s,%s,%s'}'", this.getX(), this.getY(), this.getZ());
 	}
 
 	public final Vector zero() {

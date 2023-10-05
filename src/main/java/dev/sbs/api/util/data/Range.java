@@ -1,7 +1,6 @@
 package dev.sbs.api.util.data;
 
 import com.google.common.base.Preconditions;
-import dev.sbs.api.util.helper.FormatUtil;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -488,15 +487,15 @@ public final class Range<T> implements Serializable {
      *
      * <p>This uses {@link java.util.Formattable} to perform the formatting. Three variables may
      * be used to embed the minimum, maximum and comparator.
-     * Use {@code {0}} for the minimum element, {@code {1}} for the maximum element
-     * and {@code {2}} for the comparator.
+     * Use {@code %1$s} for the minimum element, {@code %2$s} for the maximum element
+     * and {@code %3$s} for the comparator.
      * The default format used by {@code toString()} is {@code [%1$s..%2$s]}.</p>
      *
      * @param format the format string, optionally containing {@code %1$s}, {@code %2$s} and  {@code %3$s}, not null
      * @return the formatted string, not null
      */
     public String toString(final String format) {
-        return FormatUtil.format(format, minimum, maximum, comparator);
+        return String.format(format, minimum, maximum, comparator);
     }
 
 }

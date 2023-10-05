@@ -40,7 +40,7 @@ public class StreamUtil {
     }
 
     private static <T> BinaryOperator<T> throwingMerger() {
-        return (key, value) -> { throw new IllegalStateException(FormatUtil.format("Duplicate key {0}!", key)); };
+        return (key, value) -> { throw new IllegalStateException(String.format("Duplicate key %s!", key)); };
     }
 
     public static <T> Predicate<T> distinctByKey(@NotNull Function<? super T, ?> keyExtractor) {

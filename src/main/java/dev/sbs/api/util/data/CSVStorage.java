@@ -3,7 +3,6 @@ package dev.sbs.api.util.data;
 import com.google.common.base.Preconditions;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
 import dev.sbs.api.util.helper.StringUtil;
 
@@ -29,7 +28,7 @@ public abstract class CSVStorage {
 		try {
 			this.reload();
 		} catch (IOException ioex) {
-			throw new IllegalStateException(FormatUtil.format("Unable to load ''{0}''!", this.getLocalFile().getName()), ioex);
+			throw new IllegalStateException(String.format("Unable to load '%s'!", this.getLocalFile().getName()), ioex);
 		}
 	}
 

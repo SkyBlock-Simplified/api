@@ -7,7 +7,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Triple;
 import dev.sbs.api.util.helper.ArrayUtil;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +82,7 @@ public abstract class SimplifiedException extends RuntimeException {
         }
 
         public ExceptionBuilder<T> withMessage(String message, Object... objects) {
-            this.message = ArrayUtil.isEmpty(objects) ? message : FormatUtil.format(message, objects);
+            this.message = ArrayUtil.isEmpty(objects) ? message : String.format(message, objects);
             return this;
         }
 
