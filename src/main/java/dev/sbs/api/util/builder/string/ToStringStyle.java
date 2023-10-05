@@ -1,4 +1,4 @@
-package dev.sbs.api.util.builder.tostring;
+package dev.sbs.api.util.builder.string;
 
 import dev.sbs.api.util.helper.ClassUtil;
 import dev.sbs.api.util.helper.SystemUtil;

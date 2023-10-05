@@ -1,4 +1,4 @@
-package dev.sbs.api.util.builder.tostring;
+package dev.sbs.api.util.builder.string;
 
 /**
  * <p>Works with {@link ToStringBuilder} to create a <code>toString</code>.</p>
