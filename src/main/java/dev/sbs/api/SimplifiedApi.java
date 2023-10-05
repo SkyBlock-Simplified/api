@@ -1,6 +1,5 @@
 package dev.sbs.api;
 
-import ch.qos.logback.classic.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
@@ -22,15 +21,9 @@ import dev.sbs.api.client.sbs.request.SkyBlockRequest;
 import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
-import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.exception.DataException;
-import dev.sbs.api.data.json.JsonSession;
-import dev.sbs.api.data.model.JsonModel;
+import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.sql.SqlConfig;
-import dev.sbs.api.data.sql.SqlSession;
 import dev.sbs.api.manager.BuilderManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.ServiceManager;
@@ -38,12 +31,8 @@ import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
-import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.sort.Graph;
 import dev.sbs.api.util.gson.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.util.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.util.gson.adapter.InstantTypeAdapter;
@@ -51,23 +40,23 @@ import dev.sbs.api.util.gson.adapter.NbtContentTypeAdapter;
 import dev.sbs.api.util.gson.adapter.SkyBlockDateTypeAdapter;
 import dev.sbs.api.util.gson.adapter.UUIDTypeAdapter;
 import feign.gson.DoubleToIntMapTypeAdapter;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * The Official SkyBlock Simplified Api.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SimplifiedApi {
 
     @Getter private static final @NotNull KeyManager<String, UUID> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()));
@@ -93,6 +82,7 @@ public final class SimplifiedApi {
         );
         serviceManager.add(NbtFactory.class, new NbtFactory());
         serviceManager.add(Scheduler.class, new Scheduler());
+        serviceManager.add(SessionManager.class, new SessionManager());
 
         // Provide Builders
         builderManager.add(MojangRequest.class, SbsApiBuilder.class);
@@ -119,44 +109,6 @@ public final class SimplifiedApi {
         serviceManager.add(SkyBlockRequest.class, sbsApiBuilder.build(SkyBlockRequest.class));
     }
 
-    /**
-     * Connects to a database as defined in the provided {@link SqlConfig}.
-     *
-     * @param sqlConfig Database to connect to.
-     */
-    public static void connectSession(@NotNull DataSession.Type sessionType, @NotNull SqlConfig sqlConfig) {
-        if (!isSessionActive()) {
-            // Create Session
-            DataSession<?> session = switch (sessionType) {
-                case SQL -> new SqlSession(sqlConfig, getModels(SqlModel.class));
-                case JSON -> new JsonSession(getModels(JsonModel.class));
-            };
-            serviceManager.replace(DataSession.class, session);
-
-            // Initialize Session
-            session.initialize();
-
-            // Cache Repositories
-            session.cacheRepositories();
-        } else
-            serviceManager.get(DataSession.class).initialize(); // Reinitialize Session
-    }
-
-    /**
-     * Disconnects from a connected database.
-     */
-    public static void disconnectSession() {
-        if (serviceManager.isRegistered(DataSession.class)) {
-            DataSession<?> dataSession = serviceManager.get(DataSession.class);
-
-            if (dataSession.isActive())
-                dataSession.shutdown();
-        } else
-            throw SimplifiedException.of(DataException.class)
-                .withMessage("Session is not active!")
-                .build();
-    }
-
     @SneakyThrows
     public static @NotNull File getCurrentDirectory() {
         return new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
@@ -164,31 +116,6 @@ public final class SimplifiedApi {
 
     public static @NotNull Gson getGson() {
         return serviceManager.get(Gson.class);
-    }
-
-    public static @NotNull Logger getLog(Class<?> tClass) {
-        return (Logger) LoggerFactory.getLogger(tClass);
-    }
-
-    public static @NotNull Logger getLog(String name) {
-        return (Logger) LoggerFactory.getLogger(name);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> @NotNull ConcurrentList<Class<T>> getModels(@NotNull Class<T> clazz) {
-        return Graph.builder(clazz)
-            .withValues(
-                Reflection.getResources()
-                    .filterPackage(clazz)
-                    .getSubtypesOf(clazz)
-            )
-            .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
-                .map(Field::getType)
-                .filter(clazz::isAssignableFrom)
-                .map(fieldType -> (Class<T>) fieldType)
-            )
-            .build()
-            .topologicalSort();
     }
 
     public static @NotNull NbtFactory getNbtFactory() {
@@ -199,6 +126,10 @@ public final class SimplifiedApi {
         return serviceManager.get(Scheduler.class);
     }
 
+    public static <T extends RequestInterface, A extends ApiBuilder<T>> A getApiBuilder(Class<A> tClass) {
+        return serviceManager.get(tClass);
+    }
+
     /**
      * Gets the {@link Repository<T>} caching all items of type {@link T}.
      *
@@ -207,32 +138,15 @@ public final class SimplifiedApi {
      * @return The repository of type {@link T}.
      */
     public static <T extends Model> @NotNull Repository<T> getRepositoryOf(Class<T> tClass) {
-        return getSession().getRepositoryOf(tClass);
+        return getSessionManager().getRepositoryOf(tClass);
     }
 
-    /**
-     * Gets the active {@link DataSession}.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends DataSession<?>> T getSession() {
-        if (serviceManager.isRegistered(DataSession.class))
-            return (T) serviceManager.get(DataSession.class);
-        else
-            throw SimplifiedException.of(DataException.class)
-                .withMessage("Session has not been initialized!")
-                .build();
+    public static SessionManager getSessionManager() {
+        return serviceManager.get(SessionManager.class);
     }
 
     public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
         return serviceManager.get(tClass);
-    }
-
-    public static <T extends RequestInterface, A extends ApiBuilder<T>> A getApiBuilder(Class<A> tClass) {
-        return serviceManager.get(tClass);
-    }
-
-    public static boolean isSessionActive() {
-        return serviceManager.isRegistered(DataSession.class) && serviceManager.get(DataSession.class).isActive();
     }
 
     /**

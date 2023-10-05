@@ -1,6 +1,5 @@
 package dev.sbs.api.data.sql;
 
-import ch.qos.logback.classic.Level;
 import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
@@ -8,6 +7,7 @@ import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Cleanup;
 import lombok.Getter;
+import org.apache.logging.log4j.Level;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
