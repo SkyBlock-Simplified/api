@@ -5,8 +5,8 @@ import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCat
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

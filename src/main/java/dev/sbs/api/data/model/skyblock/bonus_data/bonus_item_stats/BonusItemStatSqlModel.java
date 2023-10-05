@@ -5,8 +5,8 @@ import dev.sbs.api.data.model.discord.optimizer_mob_types.OptimizerMobTypeSqlMod
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

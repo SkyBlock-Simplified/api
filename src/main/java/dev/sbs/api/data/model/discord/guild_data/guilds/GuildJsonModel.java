@@ -2,8 +2,8 @@ package dev.sbs.api.data.model.discord.guild_data.guilds;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.data.model.JsonModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import lombok.Getter;
 import lombok.Setter;

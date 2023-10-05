@@ -2,8 +2,8 @@ package dev.sbs.api.data.model.skyblock.pet_data.pet_levels;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

@@ -1,6 +1,7 @@
-package dev.sbs.api.util.builder;
+package dev.sbs.api.util.builder.hash;
 
-import dev.sbs.api.util.builder.tostring.ReflectionToStringBuilder;
+import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.ArrayUtil;
 
@@ -84,8 +85,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      * The original implementation (2.4 and before) used the System.indentityHashCode()
      * method - however this is not guaranteed to generate unique ids (e.g. LANG-459)
      *
-     * We now use the IDKey helper class (adapted from org.apache.axis.utils.IDKey)
-     * to disambiguate the duplicate ids.
+     * We now use the IDKey helper class to disambiguate the duplicate ids.
      */
 
     /**

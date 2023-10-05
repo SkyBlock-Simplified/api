@@ -5,8 +5,8 @@ import dev.sbs.api.data.model.skyblock.accessory_data.accessory_families.Accesso
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
