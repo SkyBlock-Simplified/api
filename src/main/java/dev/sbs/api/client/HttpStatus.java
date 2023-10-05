@@ -2,7 +2,6 @@ package dev.sbs.api.client;
 
 import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.helper.WordUtil;
 import lombok.Getter;
 
 public enum HttpStatus {
@@ -115,7 +114,7 @@ public enum HttpStatus {
 
     HttpStatus(int code, String message, HttpState state) {
         this.code = code;
-        message = StringUtil.isEmpty(message) ? WordUtil.capitalizeFully(this.name().replace("_", " ")) : message;
+        message = StringUtil.isEmpty(message) ? StringUtil.capitalizeFully(this.name().replace("_", " ")) : message;
 
         if (state != null)
             message = FormatUtil.format("{0}: {1}", state.getTitle(), message);

@@ -1,7 +1,5 @@
 package dev.sbs.api.util.data.mutable;
 
-import dev.sbs.api.util.helper.BooleanUtil;
-
 import java.io.Serializable;
 
 /**
@@ -163,7 +161,7 @@ public class MutableBoolean implements Mutable<Boolean>, Serializable, Comparabl
      */
     @Override
     public int compareTo(final MutableBoolean other) {
-        return BooleanUtil.compare(this.value, other.value);
+        return (this.value == other.value) ? 0 : (this.value ? 1 : -1);
     }
 
     //-----------------------------------------------------------------------

@@ -9,7 +9,6 @@ import dev.sbs.api.util.data.Range;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.gson.SerializedPath;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.helper.WordUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -184,7 +183,7 @@ public class CrimsonIsle {
             }
 
             public String getName() {
-                return WordUtil.capitalizeFully(this.name());
+                return StringUtil.capitalizeFully(this.name());
             }
 
             public static Optional<Tier> of(String name) {

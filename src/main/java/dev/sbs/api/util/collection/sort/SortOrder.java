@@ -1,6 +1,6 @@
 package dev.sbs.api.util.collection.sort;
 
-import dev.sbs.api.util.helper.WordUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public enum SortOrder {
     @Getter private final @NotNull String shortName;
 
     public String getName() {
-        return WordUtil.capitalizeFully(this.name());
+        return StringUtil.capitalizeFully(this.name());
     }
 
 }

@@ -1,8 +1,8 @@
 package dev.sbs.api.reflection.info;
 
 import dev.sbs.api.reflection.accessor.ResourceAccessor;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import lombok.Getter;

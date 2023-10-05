@@ -2,7 +2,7 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.objec
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.util.helper.WordUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class BasicObjective {
         COMPLETE;
 
         public String getName() {
-            return WordUtil.capitalizeFully(this.name());
+            return StringUtil.capitalizeFully(this.name());
         }
 
     }

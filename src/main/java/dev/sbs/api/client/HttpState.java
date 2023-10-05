@@ -1,7 +1,6 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.helper.WordUtil;
 import lombok.Getter;
 
 public enum HttpState {
@@ -24,7 +23,7 @@ public enum HttpState {
     }
 
     HttpState(String title) {
-        this.title = StringUtil.isEmpty(title) ? WordUtil.capitalizeFully(this.name().replace("_", " ")) : title;
+        this.title = StringUtil.isEmpty(title) ? StringUtil.capitalizeFully(this.name().replace("_", " ")) : title;
     }
 
 }

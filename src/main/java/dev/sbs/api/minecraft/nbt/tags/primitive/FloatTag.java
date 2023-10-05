@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;

@@ -12,7 +12,6 @@ import java.io.Writer;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -147,39 +146,6 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
             pos += n;
             return n;
         }
-    }
-
-    /**
-     * Inner class to allow StrBuilder to operate as a tokenizer.
-     */
-    class StringBuilderTokenizer extends StringTokenizer {
-
-        /**
-         * Default constructor.
-         */
-        StringBuilderTokenizer() {
-            super();
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public String getContent() {
-            final String str = super.getContent();
-            if (str == null) {
-                return StringBuilder.this.toString();
-            }
-            return str;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        protected List<String> tokenize(final char[] chars, final int offset, final int count) {
-            if (chars == null) {
-                return super.tokenize(StringBuilder.this.getBuffer(), 0, StringBuilder.this.size());
-            }
-            return super.tokenize(chars, offset, count);
-        }
-
     }
 
     /**
@@ -1500,45 +1466,6 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
      */
     public Reader asReader() {
         return new StringBuilderReader();
-    }
-
-    /**
-     * Creates a tokenizer that can tokenize the contents of this builder.
-     * <p>
-     * This method allows the contents of this builder to be tokenized. The tokenizer will be setup by default to
-     * tokenize on space, tab, newline and form feed (as per StringTokenizer). These values can be changed on the
-     * tokenizer class, before retrieving the tokens.
-     * </p>
-     * <p>
-     * The returned tokenizer is linked to this builder. You may intermix calls to the builder and tokenizer within
-     * certain limits, however there is no synchronization. Once the tokenizer has been used once, it must be
-     * {@link StringTokenizer#reset() reset} to pickup the latest changes in the builder. For example:
-     * </p>
-     *
-     * <pre>
-     * StrBuilder b = new StrBuilder();
-     * b.append("a b ");
-     * StrTokenizer t = b.asTokenizer();
-     * String[] tokens1 = t.getTokenArray(); // returns a,b
-     * b.append("c d ");
-     * String[] tokens2 = t.getTokenArray(); // returns a,b (c and d ignored)
-     * t.reset(); // reset causes builder changes to be picked up
-     * String[] tokens3 = t.getTokenArray(); // returns a,b,c,d
-     * </pre>
-     *
-     * <p>
-     * In addition to simply intermixing appends and tokenization, you can also call the set methods on the tokenizer to
-     * alter how it tokenizes. Just remember to call reset when you want to pickup builder changes.
-     * </p>
-     * <p>
-     * Calling {@link StringTokenizer#reset(String)} or {@link StringTokenizer#reset(char[])} with a non-null value will
-     * break the link with the builder.
-     * </p>
-     *
-     * @return a tokenizer that is linked to this builder
-     */
-    public StringTokenizer asTokenizer() {
-        return new StringBuilderTokenizer();
     }
 
     /**

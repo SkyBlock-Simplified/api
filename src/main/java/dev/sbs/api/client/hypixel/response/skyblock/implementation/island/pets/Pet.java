@@ -10,7 +10,7 @@ import dev.sbs.api.data.model.skyblock.pet_data.pets.PetModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.WordUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,7 +75,7 @@ public class Pet extends Experience {
     }
 
     public String getPrettyName() {
-        return WordUtil.capitalizeFully(this.getName().replace("_", " "));
+        return StringUtil.capitalizeFully(this.getName().replace("_", " "));
     }
 
     public RarityModel getRarity() {

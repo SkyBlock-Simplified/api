@@ -1,6 +1,6 @@
 package dev.sbs.api.util.data.tuple;
 
-import dev.sbs.api.util.builder.CompareToBuilder;
+import dev.sbs.api.util.builder.hash.CompareToBuilder;
 import dev.sbs.api.util.helper.FormatUtil;
 
 import java.util.Map;

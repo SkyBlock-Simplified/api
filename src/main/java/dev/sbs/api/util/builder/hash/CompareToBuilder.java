@@ -1,7 +1,7 @@
-package dev.sbs.api.util.builder;
+package dev.sbs.api.util.builder.hash;
 
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
-import dev.sbs.api.util.builder.tostring.ReflectionToStringBuilder;
+import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.helper.ArrayUtil;
 
 import java.lang.reflect.AccessibleObject;
