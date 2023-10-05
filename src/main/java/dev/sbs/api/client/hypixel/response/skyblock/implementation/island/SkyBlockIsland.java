@@ -35,7 +35,6 @@ import dev.sbs.api.util.data.Range;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.gson.SerializedPath;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 
 import java.text.DecimalFormat;
@@ -310,10 +309,10 @@ public class SkyBlockIsland {
                     collection.collected.put(collectionItemModel, this.collection.getOrDefault(collectionItemModel.getItem().getItemId(), 0L));
 
                     this.unlocked_coll_tiers.stream()
-                        .filter(tier -> tier.matches(FormatUtil.format("^{0}_[\\d]+$", collectionItemModel.getItem().getItemId())))
+                        .filter(tier -> tier.matches(String.format("^%s_[\\d]+$", collectionItemModel.getItem().getItemId())))
                         .forEach(tier -> {
                             int current = collection.unlocked.getOrDefault(collectionItemModel, 0);
-                            int unlocked = Math.max(current, Integer.parseInt(tier.replace(FormatUtil.format("{0}_", collectionItemModel.getItem().getItemId()), "")));
+                            int unlocked = Math.max(current, Integer.parseInt(tier.replace(String.format("%s_", collectionItemModel.getItem().getItemId()), "")));
                             collection.unlocked.put(collectionItemModel, unlocked);
                         });
                 });
@@ -433,7 +432,7 @@ public class SkyBlockIsland {
         public Skill getSkill(SkillModel skillModel) {
             return new Skill(
                 skillModel,
-                (double) Reflection.of(Member.class).getValue(FormatUtil.format("experience_skill_{0}", skillModel.getKey().toLowerCase()), this),
+                (double) Reflection.of(Member.class).getValue(String.format("experience_skill_%s", skillModel.getKey().toLowerCase()), this),
                 skillModel.getKey().equals("FARMING") ? 10 - this.getJacobsFarming().getPerks().getOrDefault(JacobsFarming.Perk.FARMING_LEVEL_CAP, 0) : 0
             );
         }

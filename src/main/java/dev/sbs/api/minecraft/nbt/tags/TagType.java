@@ -14,7 +14,6 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -128,7 +127,7 @@ public enum TagType {
                 return tagType;
         }
 
-        throw new IllegalArgumentException(FormatUtil.format("Tag with id ''{0}'' does not exist!", id));
+        throw new IllegalArgumentException(String.format("Tag with id '%s' does not exist.", id));
     }
 
     public static TagType getByType(Class<?> tClass) {
@@ -137,7 +136,7 @@ public enum TagType {
                 return tagType;
         }
 
-        throw new IllegalArgumentException(FormatUtil.format("Tag with type ''{0}'' does not exist!", tClass.getSimpleName()));
+        throw new IllegalArgumentException(String.format("Tag with type '%s' does not exist.", tClass.getSimpleName()));
     }
 
     public static void registerAllTypes(TagTypeRegistry registry) {

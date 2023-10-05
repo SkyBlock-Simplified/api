@@ -4,7 +4,6 @@ import dev.sbs.api.math.function.Functions;
 import dev.sbs.api.math.function.MathFunction;
 import dev.sbs.api.math.operator.Operator;
 import dev.sbs.api.math.shuntingyard.ShuntingYard;
-import dev.sbs.api.util.helper.FormatUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -132,7 +131,7 @@ public class ExpressionBuilder {
 
         for (char ch : name.toCharArray()) {
             if (!Operator.isAllowedOperatorChar(ch))
-                throw new IllegalArgumentException(FormatUtil.format("The operator symbol ''{0}'' is invalid", name));
+                throw new IllegalArgumentException(String.format("The operator symbol '%s' is invalid", name));
         }
     }
 
@@ -180,7 +179,7 @@ public class ExpressionBuilder {
         /* Check if there are duplicate vars/functions */
         for (String var : variableNames) {
             if (Functions.getBuiltinFunction(var) != null || userFunctions.containsKey(var))
-                throw new IllegalArgumentException(FormatUtil.format("A variable can not have the same name as a function [{0}]", var));
+                throw new IllegalArgumentException(String.format("A variable can not have the same name as a function [%s].", var));
 
         }
 

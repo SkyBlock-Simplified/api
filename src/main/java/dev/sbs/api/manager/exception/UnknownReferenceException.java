@@ -4,7 +4,6 @@ import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Triple;
-import dev.sbs.api.util.helper.FormatUtil;
 
 public final class UnknownReferenceException extends SimplifiedException {
 
@@ -13,7 +12,7 @@ public final class UnknownReferenceException extends SimplifiedException {
     }
 
     public static String getMessage(Object identifier) {
-        return FormatUtil.format("Reference ''{0}'' has not been registered!", identifier);
+        return String.format("Reference '%s' has not been registered!", identifier);
     }
 
 }

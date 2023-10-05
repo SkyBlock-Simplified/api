@@ -11,7 +11,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.gson.SerializedPath;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,9 +30,9 @@ public class Dungeons {
     @SerializedPath("dungeon_journal.journal_entries")
     @Getter private ConcurrentMap<String, ConcurrentList<Integer>> journalEntries;
     @SerializedName("player_classes")
-    private ConcurrentMap<String, Dungeon.Class> playerClasses;
+    private ConcurrentMap<String, Dungeon.Class> playerClasses = Concurrent.newMap();
     @SerializedName("dungeon_types")
-    private ConcurrentMap<String, Dungeon> types;
+    private ConcurrentMap<String, Dungeon> types = Concurrent.newMap();
     @SerializedName("daily_runs")
     @Getter private DailyRuns dailyRuns;
     @Getter private Treasures treasures;
@@ -57,7 +56,7 @@ public class Dungeons {
     }
 
     public Dungeon getDungeon(@NotNull DungeonModel dungeonModel, boolean masterMode) {
-        Dungeon dungeon = this.types.getOrDefault(FormatUtil.format("{0}{1}", (masterMode ? "master_" : ""), dungeonModel.getKey().toLowerCase()), new Dungeon());
+        Dungeon dungeon = this.types.getOrDefault(String.format("%s%s", (masterMode ? "master_" : ""), dungeonModel.getKey().toLowerCase()), new Dungeon());
         dungeon.type = dungeonModel;
         dungeon.masterMode = masterMode;
         return dungeon;
@@ -71,20 +70,21 @@ public class Dungeons {
         return SimplifiedApi.getRepositoryOf(DungeonClassModel.class).findFirst(DungeonClassModel::getKey, this.selectedClass.toUpperCase());
     }
 
+    @Getter
     public static class DailyRuns {
 
         @SerializedName("current_day_stamp")
-        @Getter private int currentDayStamp;
-
+        private int currentDayStamp;
         @SerializedName("completed_runs_count")
-        @Getter private int completedRuns;
+        private int completedRuns;
 
     }
 
+    @Getter
     public static class Treasures {
 
-        @Getter private ConcurrentList<Run> runs = Concurrent.newList();
-        @Getter private ConcurrentList<Chest> chests = Concurrent.newList();
+        private ConcurrentList<Run> runs = Concurrent.newList();
+        private ConcurrentList<Chest> chests = Concurrent.newList();
 
         public static class Run {
 
@@ -101,19 +101,20 @@ public class Dungeons {
                 return SimplifiedApi.getRepositoryOf(DungeonModel.class).findFirstOrNull(DungeonModel::getKey, this.dungeon_type.toUpperCase());
             }
 
+            @Getter
             public static class Participant {
 
-                private static final Pattern DISPLAY_PATTERN = Pattern.compile(FormatUtil.format(
-                    "^{0}([0-9a-f])(.*?){0}[0-9a-f]: {0}[0-9a-f](.*?){0}[0-9a-f] \\({0}[0-9a-f]([0-9]+){0}[0-9a-f]\\)",
+                private static final Pattern DISPLAY_PATTERN = Pattern.compile(String.format(
+                    "^%s([0-9a-f])(.*?)%<s[0-9a-f]: %<s[0-9a-f](.*?)%<s[0-9a-f] \\(%<s[0-9a-f]([0-9]+)%<s[0-9a-f]\\)",
                     ChatFormat.SECTION_SYMBOL
                 ));
 
                 @SerializedName("player_uuid")
-                @Getter private UUID playerId;
+                private UUID playerId;
                 @SerializedName("display_name")
-                @Getter private String displayName;
+                private String displayName;
                 @SerializedName("class_milestone")
-                @Getter private int milestone;
+                private int milestone;
 
                 public int getClassLevel() {
                     return Integer.parseInt(DISPLAY_PATTERN.matcher(this.getDisplayName()).group(4));
@@ -131,23 +132,24 @@ public class Dungeons {
 
         }
 
+        @Getter
         public static class Chest {
 
             @SerializedName("run_id")
-            @Getter private UUID runId;
+            private UUID runId;
             @SerializedName("chest_id")
-            @Getter private UUID chestId;
+            private UUID chestId;
             @SerializedName("treasure_type")
-            @Getter private Type type;
-            @Getter private int quality;
+            private Type type;
+            private int quality;
             @SerializedName("shiny_eligible")
-            @Getter private boolean shinyEligible;
-            @Getter private boolean paid;
-            @Getter private int rerolls;
+            private boolean shinyEligible;
+            private boolean paid;
+            private int rerolls;
             @SerializedPath("rewards.rolled_rng_meter_randomly")
-            @Getter private boolean rolledRngMeterRandomly;
+            private boolean rolledRngMeterRandomly;
             @SerializedPath("rewards.rewards")
-            @Getter private ConcurrentList<String> items = Concurrent.newList();
+            private ConcurrentList<String> items = Concurrent.newList();
 
             public enum Type {
 

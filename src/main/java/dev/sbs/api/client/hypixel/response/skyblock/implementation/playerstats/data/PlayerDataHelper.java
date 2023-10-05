@@ -16,7 +16,6 @@ import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.mutable.MutableDouble;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.data.tuple.Triple;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 
 import java.util.Arrays;
@@ -47,7 +46,7 @@ public class PlayerDataHelper {
 
                 if (statModel.getKey().equals(filterKey) || filterKey.endsWith("ALL")) {
                     String valueString = String.valueOf(buffValue);
-                    valueString = valueString.replace("PET_ALL", FormatUtil.format("PET_", statModel.getKey()));
+                    valueString = valueString.replace("PET_ALL", String.format("PET_%s", statModel.getKey()));
 
                     if (compoundTag != null) {
                         Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
@@ -60,7 +59,7 @@ public class PlayerDataHelper {
                     }
 
                     if (copy) {
-                        Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} * ({1})", currentTotal, valueString))
+                        Expression expression = new ExpressionBuilder(String.format("%s * (%s)", currentTotal, valueString))
                             .variables(variables.keySet())
                             .build()
                             .setVariables(variables)
@@ -131,7 +130,7 @@ public class PlayerDataHelper {
                                     }
                                 }
 
-                                Expression expression = new ExpressionBuilder(FormatUtil.format("{0,number,#} {1} ({2})", currentTotal, (multiply ? "*" : "+"), valueString))
+                                Expression expression = new ExpressionBuilder(String.format("%s %s (%s)", currentTotal, (multiply ? "*" : "+"), valueString))
                                     .variables(variables.keySet())
                                     .build()
                                     .setVariables(variables)

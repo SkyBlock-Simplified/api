@@ -9,7 +9,6 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,11 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockEmojisResponse {
 
-    @Getter private final ConcurrentMap<String, ConcurrentMap<Boolean, Emoji>> items;
+    private final ConcurrentMap<String, ConcurrentMap<Boolean, Emoji>> items;
 
     public Optional<Emoji> getEmoji(@NotNull String id) {
         return this.getEmoji(id, false);
@@ -32,12 +32,13 @@ public class SkyBlockEmojisResponse {
         return Optional.ofNullable(this.items.getOrDefault(id, null)).map(itemMap -> itemMap.get(enchanted));
     }
 
+    @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Emoji {
 
-        @Getter private long id;
-        @Getter private String name;
-        @Getter private boolean animated;
+        private long id;
+        private String name;
+        private boolean animated;
 
         Emoji(String name, Emoji emoji) {
             this.id = emoji.getId();
@@ -46,7 +47,7 @@ public class SkyBlockEmojisResponse {
         }
 
         public String getFormat() {
-            return FormatUtil.format("<:{0}:{1}>", this.getName(), this.getId());
+            return String.format("<:%s:%s>", this.getName(), this.getId());
         }
 
     }

@@ -1,6 +1,5 @@
 package dev.sbs.api.math.function;
 
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 
 /**
@@ -43,7 +42,7 @@ public abstract class MathFunction {
      */
     public MathFunction(String name, int minArguments, int maxArguments) {
         if (minArguments < 0 || minArguments > maxArguments)
-            throw new IllegalArgumentException(FormatUtil.format("The number of function arguments can not be less than 0 or more than ''{0}'' for ''{1}''", maxArguments, name));
+            throw new IllegalArgumentException(String.format("The number of function arguments can not be less than 0 or more than '%s' for '%s'.", maxArguments, name));
 
         if (!isValidFunctionName(name))
             throw new IllegalArgumentException("The function name '" + name + "' is invalid");

@@ -48,7 +48,6 @@ import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StreamUtil;
 import lombok.AccessLevel;
@@ -93,17 +92,17 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
         this.expressionVariables.put("SKYBLOCK_LEVEL", (double) member.getLeveling().getLevel());
         this.expressionVariables.put("BESTIARY_MILESTONE", (double) member.getBestiary().getMilestone());
         this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(Banking::getBalance).orElse(0.0));
-        SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(FormatUtil.format("SKILL_LEVEL_{0}", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
+        SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(String.format("SKILL_LEVEL_%s", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
             .stream()
-            .forEach(dungeonModel -> this.expressionVariables.put(FormatUtil.format("DUNGEON_LEVEL_{0}", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).getLevel()));
+            .forEach(dungeonModel -> this.expressionVariables.put(String.format("DUNGEON_LEVEL_%s", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).getLevel()));
 
         SimplifiedApi.getRepositoryOf(CollectionModel.class)
             .stream()
             .map(member::getCollection)
             .flatMap(collection -> collection.getCollected().stream())
-            .forEach(collectionItemEntry -> this.expressionVariables.put(FormatUtil.format("COLLECTION_{0}", collectionItemEntry.getKey().getItem().getItemId()), (double) collectionItemEntry.getValue()));
+            .forEach(collectionItemEntry -> this.expressionVariables.put(String.format("COLLECTION_%s", collectionItemEntry.getKey().getItem().getItemId()), (double) collectionItemEntry.getValue()));
 
         // TODO
         //  Optimizer Request: No API Data
@@ -220,7 +219,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     public ConcurrentMap<String, Double> getExpressionVariables() {
         ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap(this.expressionVariables);
-        this.getAllStats().forEach((statModel, statData) -> expressionVariables.put(FormatUtil.format("STAT_{0}", statModel.getKey()), statData.getTotal()));
+        this.getAllStats().forEach((statModel, statData) -> expressionVariables.put(String.format("STAT_%s", statModel.getKey()), statData.getTotal()));
         return expressionVariables;
     }
 
@@ -402,7 +401,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
                 .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel())));
 
             // Save Pet Stats to Expression Variables
-            this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.expressionVariables.put(FormatUtil.format("STAT_PET_{0}", statModel.getKey()), statData.getTotal()));
+            this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.expressionVariables.put(String.format("STAT_PET_%s", statModel.getKey()), statData.getTotal()));
 
             // Load Rarity Filtered Ability Stats
             SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
@@ -430,7 +429,7 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
                         // Store Bonus Pet Ability
                         String statKey = (petAbilityStatModel.getStat() == null ? "" : "_" + petAbilityStatModel.getStat().getKey());
-                        this.expressionVariables.put(FormatUtil.format("PET_ABILITY_{0}{1}", petAbilityStatPair.getKey().getKey(), statKey), abilityValue);
+                        this.expressionVariables.put(String.format("PET_ABILITY_%s%s", petAbilityStatPair.getKey().getKey(), statKey), abilityValue);
                     });
                 });
 

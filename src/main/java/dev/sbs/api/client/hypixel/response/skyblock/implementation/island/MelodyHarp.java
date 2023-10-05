@@ -5,18 +5,18 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 public class MelodyHarp {
 
-    @Getter private final boolean talismanClaimed;
-    @Getter private final String selectedSong;
-    @Getter private final SkyBlockDate.RealTime selectedSongTimestamp;
-    @Getter private final ConcurrentMap<String, Song> songs;
+    private final boolean talismanClaimed;
+    private final String selectedSong;
+    private final SkyBlockDate.RealTime selectedSongTimestamp;
+    private final ConcurrentMap<String, Song> songs;
 
     MelodyHarp(ConcurrentMap<String, Object> harpQuest) {
         this.talismanClaimed = (boolean) harpQuest.removeOrGet("claimed_talisman", false);
@@ -29,7 +29,7 @@ public class MelodyHarp {
             if (harpValue instanceof Number) {
                 String songKey = harpKey.replace("song_", "");
                 String songName = songKey.replaceAll("_((best|perfect)_)?completions?", "");
-                String category = songKey.replace(FormatUtil.format("{0}_", songName), "");
+                String category = songKey.replace(String.format("%s_", songName), "");
 
                 if (!songMap.containsKey(songName))
                     songMap.put(songName, Concurrent.newMap());

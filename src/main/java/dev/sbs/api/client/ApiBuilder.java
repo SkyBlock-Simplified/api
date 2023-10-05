@@ -7,7 +7,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import feign.Feign;
 import feign.Request;
@@ -96,7 +95,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
     }
 
     public final String getUrl() {
-        return FormatUtil.format("https://{0}", this.url);
+        return String.format("https://%s", this.url);
     }
 
 }

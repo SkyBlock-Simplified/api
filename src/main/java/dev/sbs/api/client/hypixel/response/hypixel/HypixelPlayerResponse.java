@@ -8,7 +8,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -17,18 +16,11 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
 public class HypixelPlayerResponse {
 
     private boolean success;
     private Player player;
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
 
     public static class Player {
 
@@ -150,6 +142,7 @@ public class HypixelPlayerResponse {
 
     }
 
+    @Getter
     public enum Rank {
 
         OWNER(ChatFormat.RED),
@@ -167,11 +160,8 @@ public class HypixelPlayerResponse {
         PIG(ChatFormat.LIGHT_PURPLE, "PIG", 3),
         NONE(ChatFormat.GRAY);
 
-        @Getter
         private final ChatFormat format;
-        @Getter
         private final String name;
-        @Getter
         private final int plusCount;
 
         Rank(ChatFormat format) {
@@ -201,15 +191,12 @@ public class HypixelPlayerResponse {
 
     }
 
+    @Getter
     public static class RankInfo {
 
-        @Getter
         private final Rank rank;
-        @Getter
         private final ChatFormat rankFormat;
-        @Getter
         private final ChatFormat plusFormat;
-        @Getter
         private final String pluses;
 
         RankInfo(Rank rank, ChatFormat rankFormat, ChatFormat plusFormat) {
@@ -224,9 +211,9 @@ public class HypixelPlayerResponse {
 
         @Override
         public String toString() {
-            String sfPluses = FormatUtil.format("{0}{1}", this.getPlusFormat(), this.getPluses());
-            String sfRank = FormatUtil.format("{0}", this.getRankFormat(), this.getRank().getName());
-            return FormatUtil.format("{0}[{1}{2}{3}]", ChatFormat.WHITE.toString(), sfRank, sfPluses, ChatFormat.WHITE.toString());
+            String sfPluses = String.format("%s%s", this.getPlusFormat(), this.getPluses());
+            String sfRank = String.format("%s%s", this.getRankFormat(), this.getRank().getName());
+            return String.format("%s[%s%s%s]", ChatFormat.WHITE, sfRank, sfPluses, ChatFormat.WHITE);
         }
 
     }
@@ -234,8 +221,7 @@ public class HypixelPlayerResponse {
     public static class SocialMedia {
 
         private boolean prompt;
-        @Getter
-        private ConcurrentMap<Service, String> links;
+        @Getter private ConcurrentMap<Service, String> links = Concurrent.newMap();
 
         public enum Service {
 
@@ -250,34 +236,27 @@ public class HypixelPlayerResponse {
 
     }
 
+    @Getter
     public static class Stats {
 
         @SerializedName("SkyBlock")
-        @Getter
         private SkyBlock skyBlock;
 
         public static class SkyBlock {
 
-            private ConcurrentMap<String, Profile> profiles;
+            private ConcurrentMap<String, Profile> profiles = Concurrent.newMap();
 
             public Optional<ConcurrentSet<Profile>> getProfiles() {
                 return this.profiles == null ? Optional.empty() : Optional.of(Concurrent.newSet(this.profiles.values()));
             }
 
+            @Getter
             public static class Profile {
 
                 @SerializedName("profile_id")
-                private String profileId;
+                private UUID uniqueId;
                 @SerializedName("cute_name")
                 private String cuteName;
-
-                public String getCuteName() {
-                    return this.cuteName;
-                }
-
-                public UUID getUniqueId() {
-                    return StringUtil.toUUID(this.profileId);
-                }
 
             }
 

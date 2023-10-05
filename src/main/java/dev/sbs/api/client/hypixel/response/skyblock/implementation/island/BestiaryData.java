@@ -7,7 +7,6 @@ import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_type_levels.Bestia
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+@Getter
 public class BestiaryData {
 
-    @Getter private final ConcurrentList<Bestiary> bestiaries;
-    @Getter private final boolean migrated;
+    private final ConcurrentList<Bestiary> bestiaries;
+    private final boolean migrated;
 
     BestiaryData(ConcurrentMap<String, Object> bestiaryMap) {
         this.migrated = (boolean) bestiaryMap.removeOrGet("migrated_stats", false);
@@ -37,8 +37,8 @@ public class BestiaryData {
                     .filter(entry -> bestiaryPattern.matcher(entry.getKey()).matches())
                     .collect(Concurrent.toMap());
 
-                Double familyKills = groupMap.removeOrGet(FormatUtil.format("kills_family_{0}", bestiaryModel.getKey().toLowerCase()), 0.0);
-                Double familyDeaths = groupMap.removeOrGet(FormatUtil.format("deaths_family_{0}", bestiaryModel.getKey().toLowerCase()), 0.0);
+                Double familyKills = groupMap.removeOrGet(String.format("kills_family_%s", bestiaryModel.getKey().toLowerCase()), 0.0);
+                Double familyDeaths = groupMap.removeOrGet(String.format("deaths_family_%s", bestiaryModel.getKey().toLowerCase()), 0.0);
                 ConcurrentMap<Integer, Bestiary.Data> levelData = Concurrent.newMap();
 
                 groupMap.forEach((key, value) -> {
@@ -97,16 +97,17 @@ public class BestiaryData {
     }
 
     private static Pattern buildPattern(BestiaryModel bestiaryModel) {
-        return Pattern.compile(FormatUtil.format("^(kills|deaths)(?:_family)?_{0}(?:_([\\d]+))?$", bestiaryModel.getKey().toLowerCase()));
+        return Pattern.compile(String.format("^(kills|deaths)(?:_family)?_%s(?:_([\\d]+))?$", bestiaryModel.getKey().toLowerCase()));
     }
 
+    @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Bestiary {
 
-        @Getter private final BestiaryModel type;
-        @Getter private final int kills;
-        @Getter private final int deaths;
-        @Getter private final ConcurrentMap<Integer, Data> levelData;
+        private final BestiaryModel type;
+        private final int kills;
+        private final int deaths;
+        private final ConcurrentMap<Integer, Data> levelData;
 
         public ConcurrentList<Integer> getLevelTiers() {
             return SimplifiedApi.getRepositoryOf(BestiaryTypeLevelModel.class)

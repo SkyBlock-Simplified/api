@@ -8,7 +8,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,19 +50,20 @@ public class AccessoryBag {
         return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).matchAll(accessoryPowerModel -> this.unlockedPowers.contains(accessoryPowerModel.getKey().toLowerCase()));
     }
 
+    @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Tuning {
 
-        @Getter private final ConcurrentMap<StatModel, Integer> current;
-        @Getter private final ConcurrentList<ConcurrentMap<StatModel, Integer>> slots;
-        @Getter private final int highestUnlockedSlot;
+        private final ConcurrentMap<StatModel, Integer> current;
+        private final ConcurrentList<ConcurrentMap<StatModel, Integer>> slots;
+        private final int highestUnlockedSlot;
 
         private Tuning(ConcurrentMap<String, Object> tuningMap) {
             this.highestUnlockedSlot = ((Number) tuningMap.removeOrGet("highest_unlocked_slot", 0)).intValue();
             ConcurrentList<ConcurrentMap<StatModel, Integer>> tuningSlots = Concurrent.newList();
 
             for (int i = 0; i <= 5; i++) {
-                String slotName = FormatUtil.format("slot_{0}", i);
+                String slotName = String.format("slot_%s", i);
 
                 if (tuningMap.containsKey(slotName)) {
                     tuningSlots.add(

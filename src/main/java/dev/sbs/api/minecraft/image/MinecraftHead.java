@@ -1,7 +1,6 @@
 package dev.sbs.api.minecraft.image;
 
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.SystemUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -215,7 +214,7 @@ public class MinecraftHead {
 
     public File toFile() {
         try {
-            File tempFile = new File(SystemUtil.getJavaIoTmpDir(), FormatUtil.format("minecrafttext/{0}.png", UUID.randomUUID()));
+            File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;
         } catch (IOException ioex) {

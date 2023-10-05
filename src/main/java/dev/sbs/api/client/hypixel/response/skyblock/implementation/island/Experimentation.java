@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,14 +50,15 @@ public class Experimentation {
         return this.ultrasequencer;
     }
 
+    @Getter
     public static class Table {
 
-        @Getter private final @NotNull SkyBlockDate.RealTime lastAttempt;
-        @Getter private final @NotNull SkyBlockDate.RealTime lastClaimed;
-        @Getter private final int bonusClicks;
-        @Getter private final @NotNull ConcurrentMap<Integer, Integer> attempts;
-        @Getter private final @NotNull ConcurrentMap<Integer, Integer> claims;
-        @Getter private final @NotNull ConcurrentMap<Integer, Integer> bestScore;
+        private final @NotNull SkyBlockDate.RealTime lastAttempt;
+        private final @NotNull SkyBlockDate.RealTime lastClaimed;
+        private final int bonusClicks;
+        private final @NotNull ConcurrentMap<Integer, Integer> attempts;
+        private final @NotNull ConcurrentMap<Integer, Integer> claims;
+        private final @NotNull ConcurrentMap<Integer, Integer> bestScore;
 
         private Table(@NotNull ConcurrentMap<String, Long> tableData) {
             this.lastAttempt = new SkyBlockDate.RealTime(tableData.removeOrGet("last_attempt", 0L));
@@ -72,7 +72,7 @@ public class Experimentation {
                     filteredData.put(key, Concurrent.newMap());
 
                 String actual = key.substring(0, key.lastIndexOf("_"));
-                filteredData.get(key).put(Integer.parseInt(key.replace(FormatUtil.format("{0}_", actual), "")), value.intValue());
+                filteredData.get(key).put(Integer.parseInt(key.replace(String.format("%s_", actual), "")), value.intValue());
             });
 
             this.attempts = filteredData.removeOrGet("attempts", Concurrent.newMap());

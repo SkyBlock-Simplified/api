@@ -9,7 +9,6 @@ import dev.sbs.api.math.tokenizer.NumberToken;
 import dev.sbs.api.math.tokenizer.OperatorToken;
 import dev.sbs.api.math.tokenizer.Token;
 import dev.sbs.api.math.tokenizer.VariableToken;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,7 +75,7 @@ public class Expression {
 
     private void checkVariableName(String name) {
         if (this.userFunctionNames.contains(name) || Functions.getBuiltinFunction(name) != null)
-            throw new IllegalArgumentException(FormatUtil.format("The variable name ''{0}'' is invalid. Since there exists a function with the same name", name));
+            throw new IllegalArgumentException(String.format("The variable name '%s' is invalid. Since there exists a function with the same name", name));
 
     }
 
@@ -113,7 +112,7 @@ public class Expression {
                     final String var = ((VariableToken) t).getName();
 
                     if (!variables.containsKey(var))
-                        errors.add(FormatUtil.format("The setVariable ''{0}'' has not been set", var));
+                        errors.add(String.format("The setVariable '%s' has not been set", var));
 
                 }
             }
@@ -137,7 +136,7 @@ public class Expression {
                     final int argsNum = ((FunctionToken) token).getArgumentCount();
 
                     if (func.getMinArguments() > argsNum || func.getMaxArguments() < argsNum)
-                        errors.add(FormatUtil.format("Not enough arguments for ''{0}''", func.getName()));
+                        errors.add(String.format("Not enough arguments for '%s'", func.getName()));
 
                     if (argsNum > 1)
                         count -= argsNum - 1;
@@ -189,14 +188,14 @@ public class Expression {
                     if (this.variableProvider != null)
                         value = variableProvider.getVariable(name);
                     else
-                        throw new IllegalArgumentException(FormatUtil.format("No value has been set for the setVariable ''{0}''", name));
+                        throw new IllegalArgumentException(String.format("No value has been set for the setVariable '%s'", name));
                 }
 
                 output.push(value);
             } else if (token.getType() == Token.TOKEN_OPERATOR) {
                 OperatorToken op = (OperatorToken) token;
                 if (output.size() < op.getOperator().getNumOperands())
-                    throw new IllegalArgumentException(FormatUtil.format("Invalid number of operands available for ''{0}'' operator", op.getOperator().getSymbol()));
+                    throw new IllegalArgumentException(String.format("Invalid number of operands available for '%s' operator", op.getOperator().getSymbol()));
 
                 if (op.getOperator().getNumOperands() == 2) {
                     /* pop the operands and push the result of the operation */
@@ -213,7 +212,7 @@ public class Expression {
                 final int numArguments = func.getArgumentCount();
 
                 if (numArguments < func.getFunction().getMinArguments() || numArguments > func.getFunction().getMaxArguments() || output.isEmpty())
-                    throw new IllegalArgumentException(FormatUtil.format("Invalid number of arguments available for ''{0}'' function", func.getFunction().getName()));
+                    throw new IllegalArgumentException(String.format("Invalid number of arguments available for '%s' function", func.getFunction().getName()));
 
                 /* collect the arguments from the stack */
                 double[] args = new double[numArguments];

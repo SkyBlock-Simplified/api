@@ -10,7 +10,6 @@ import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -221,7 +220,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(nextTypeId);
 
             if (tagClass == null)
-                throw new IOException(FormatUtil.format("Tag type with ID {0} not present in tag type registry.", nextTypeId));
+                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", nextTypeId));
 
             try {
                 nextTag = registry.instantiate(tagClass);
@@ -298,7 +297,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
 
             if (childTag == null) {
                 if (!createNew)
-                    throw new IllegalArgumentException(FormatUtil.format("Cannot find ''{0}'' in ''{1}''.", entry, path));
+                    throw new IllegalArgumentException(String.format("Cannot find '%s' in '%s'.", entry, path));
 
                 current.put(entry, childTag = new CompoundTag());
             }
@@ -467,7 +466,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(nextTypeId);
 
             if (tagClass == null)
-                throw new IOException(FormatUtil.format("Tag type with ID {0} not present in tag type registry.", nextTypeId));
+                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", nextTypeId));
 
             try {
                 nextTag = registry.instantiate(tagClass);
@@ -597,7 +596,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
             }
 
             sb.append(SnbtUtil.escape(tag.getName()));
-            sb.append(FormatUtil.format(":{0}", config.isPrettyPrint() ? " " : ""));
+            sb.append(String.format(":%s", config.isPrettyPrint() ? " " : ""));
             sb.append(tag.toSnbt(depth + 1, registry, config));
 
             if (first)

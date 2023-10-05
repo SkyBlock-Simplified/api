@@ -12,7 +12,6 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -217,7 +216,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(listTypeId);
 
             if (tagClass == null)
-                throw new IOException(FormatUtil.format("Tag type with ID {0} not present in tag type registry.", listTypeId));
+                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", listTypeId));
 
             try {
                 nextTag = (E) registry.instantiate(tagClass);
@@ -319,7 +318,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(tagType);
 
             if (tagClass == null)
-                throw new IOException(FormatUtil.format("Tag type with ID {0} not present in tag type registry.", tagType));
+                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", tagType));
 
             try {
                 next = (E) registry.instantiate(tagClass);

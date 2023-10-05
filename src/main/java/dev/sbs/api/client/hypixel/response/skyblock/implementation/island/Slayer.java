@@ -10,7 +10,6 @@ import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,7 +49,7 @@ public class Slayer extends Experience implements Weighted {
         }
 
         for (int i = 0; i < 5; i++)
-            kills.put(i + 1, (int) slayerRef.getValue(FormatUtil.format("boss_kills_tier_{0}", i), this));
+            kills.put(i + 1, (int) slayerRef.getValue(String.format("boss_kills_tier_%s", i), this));
 
         this.claimed = Concurrent.newUnmodifiableMap(claimed);
         this.claimedSpecial = Concurrent.newUnmodifiableMap(claimedSpecial);

@@ -6,7 +6,6 @@ import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.helper.FormatUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -37,10 +36,10 @@ public class TagTypeRegistry {
      */
     public void registerClassType(byte id, @NotNull Class<?> tClass) throws TagTypeRegistryException {
         if (id == 0)
-            throw new TagTypeRegistryException(FormatUtil.format("Cannot register class type ''{0}'' with ID {1}. That ID is reserved.", tClass.getSimpleName(), id));
+            throw new TagTypeRegistryException(String.format("Cannot register class type '%s' with ID %s. That ID is reserved.", tClass.getSimpleName(), id));
 
         if (this.typeRegistry.containsKey(id))
-            throw new TagTypeRegistryException(FormatUtil.format("Cannot register class type ''{0}'' with ID {1}. That ID is already registered by the class type ''{2}''.", tClass, id, this.typeRegistry.get(id).getSimpleName()));
+            throw new TagTypeRegistryException(String.format("Cannot register class type '%s' with ID %s. That ID is already registered by the class type '%s'.", tClass, id, this.typeRegistry.get(id).getSimpleName()));
 
         if (this.typeRegistry.containsValue(tClass)) {
             byte existing = 0;
@@ -49,7 +48,7 @@ public class TagTypeRegistry {
                     existing = entry.getKey();
             }
 
-            throw new TagTypeRegistryException(FormatUtil.format("Class type ''{0}'' already registered under ID {1}" + existing, tClass.getSimpleName(), existing));
+            throw new TagTypeRegistryException(String.format("Class type '%s' already registered under ID %s." + existing, tClass.getSimpleName(), existing));
         }
 
         this.typeRegistry.put(id, tClass);
@@ -64,10 +63,10 @@ public class TagTypeRegistry {
      */
     public void registerTagType(byte id, @NotNull Class<? extends Tag<?>> tagClass) throws TagTypeRegistryException {
         if (id == 0)
-            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is reserved.", tagClass.getSimpleName(), id));
+            throw new TagTypeRegistryException(String.format("Cannot register NBT tag type '%s' with ID %s. That ID is reserved.", tagClass.getSimpleName(), id));
 
         if (this.tagRegistry.containsKey(id))
-            throw new TagTypeRegistryException(FormatUtil.format("Cannot register NBT tag type ''{0}'' with ID {1}. That ID is already registered by the tag type ''{2}''.", tagClass, id, this.tagRegistry.get(id).getSimpleName()));
+            throw new TagTypeRegistryException(String.format("Cannot register NBT tag type '%s' with ID %s. That ID is already registered by the tag type '%s'.", tagClass, id, this.tagRegistry.get(id).getSimpleName()));
 
         if (this.tagRegistry.containsValue(tagClass)) {
             byte existing = 0;
@@ -76,7 +75,7 @@ public class TagTypeRegistry {
                     existing = entry.getKey();
             }
 
-            throw new TagTypeRegistryException(FormatUtil.format("NBT tag type ''{0}'' already registered under ID {1}" + existing, tagClass.getSimpleName(), existing));
+            throw new TagTypeRegistryException(String.format("NBT tag type '%s' already registered under ID %s." + existing, tagClass.getSimpleName(), existing));
         }
 
         this.tagRegistry.put(id, tagClass);
@@ -164,7 +163,7 @@ public class TagTypeRegistry {
                 return null;
             }
         } catch (ReflectionException e) {
-            throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", tagClass.getSimpleName()), e);
+            throw new TagTypeRegistryException(String.format("Instance of tag type class '%s' could not be created.", tagClass.getSimpleName()), e);
         }
     }
 
@@ -194,7 +193,7 @@ public class TagTypeRegistry {
             tag.setRegistry(this);
             return tag;
         } catch (ReflectionException e) {
-            throw new TagTypeRegistryException(FormatUtil.format("Instance of tag type class ''{0}'' could not be created.", tagClass.getSimpleName()), e);
+            throw new TagTypeRegistryException(String.format("Instance of tag type class '%s' could not be created.", tagClass.getSimpleName()), e);
         }
     }
 

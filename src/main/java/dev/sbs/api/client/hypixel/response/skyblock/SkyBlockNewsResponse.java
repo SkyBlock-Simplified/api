@@ -2,7 +2,6 @@ package dev.sbs.api.client.hypixel.response.skyblock;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.FormatUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,7 @@ public class SkyBlockNewsResponse {
             try {
                 return new URL(this.link);
             } catch (MalformedURLException muex) {
-                throw new IllegalArgumentException(FormatUtil.format("Unable to create URL ''{0}''!", this.link));
+                throw new IllegalArgumentException(String.format("Unable to create URL '%s'!", this.link));
             }
         }
 

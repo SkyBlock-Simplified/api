@@ -8,7 +8,6 @@ import dev.sbs.api.minecraft.nbt.io.NbtWriter;
 import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.util.CompressionType;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.helper.DataUtil;
 import dev.sbs.api.util.helper.PrimitiveUtil;
@@ -242,28 +241,26 @@ public class NbtFactory {
      * @throws NbtException if any I/O error occurs.
      */
     public void toFile(@NotNull CompoundTag compound, @NotNull File file) throws NbtException {
-        this.toFile(compound, file, CompressionType.NONE);
+        this.toFile(compound, file, DataUtil.CompressionType.NONE);
     }
 
     /**
-     * Writes the given root {@link CompoundTag} to a {@link File} using a certain {@link CompressionType}.
+     * Writes the given root {@link CompoundTag} to a {@link File} using a certain {@link DataUtil.CompressionType}.
      *
      * @param compound    the NBT structure to write, contained within a {@link CompoundTag}.
      * @param file        the file to write to.
      * @param compression the compression to be applied.
      * @throws NbtException if any I/O error occurs.
      */
-    public void toFile(@NotNull CompoundTag compound, @NotNull File file, @NotNull CompressionType compression) throws NbtException {
+    public void toFile(@NotNull CompoundTag compound, @NotNull File file, @NotNull DataUtil.CompressionType compression) throws NbtException {
         try {
             @Cleanup OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
 
-            switch (compression) {
-                case GZIP:
-                    outputStream = new GZIPOutputStream(outputStream);
-                    break;
-                case ZLIB:
-                    outputStream = new DeflaterOutputStream(outputStream);
-            }
+            outputStream = switch (compression) {
+                case GZIP -> new GZIPOutputStream(outputStream);
+                case ZLIB -> new DeflaterOutputStream(outputStream);
+                default -> outputStream;
+            };
 
             this.toStream(compound, new DataOutputStream(outputStream));
         } catch (IOException ioException) {

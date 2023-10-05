@@ -1,7 +1,6 @@
 package dev.sbs.api.minecraft.text;
 
 import com.google.common.base.Preconditions;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
@@ -141,7 +140,7 @@ public enum ChatFormat {
     }
 
     public static String translateAlternateColorCodes(char altColorChar, String value) {
-        Pattern replaceAltColor = Pattern.compile(FormatUtil.format("(?<!{0}){0}([0-9a-fk-orA-FK-OR])", altColorChar));
+        Pattern replaceAltColor = Pattern.compile(String.format("(?<!%s)%<s([0-9a-fk-orA-FK-OR])", altColorChar));
         return RegexUtil.replaceColor(value, replaceAltColor);
     }
 

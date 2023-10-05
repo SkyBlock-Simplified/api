@@ -8,7 +8,6 @@ import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.data.Range;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
 import dev.sbs.api.util.helper.SystemUtil;
 import lombok.AccessLevel;
@@ -310,7 +309,7 @@ public class MinecraftText {
 
     public File toFile() {
         try {
-            File tempFile = new File(SystemUtil.getJavaIoTmpDir(), FormatUtil.format("minecrafttext/{0}.png", UUID.randomUUID()));
+            File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;
         } catch (IOException ioex) {

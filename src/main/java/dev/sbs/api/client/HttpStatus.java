@@ -1,6 +1,5 @@
 package dev.sbs.api.client;
 
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
@@ -117,7 +116,7 @@ public enum HttpStatus {
         message = StringUtil.isEmpty(message) ? StringUtil.capitalizeFully(this.name().replace("_", " ")) : message;
 
         if (state != null)
-            message = FormatUtil.format("{0}: {1}", state.getTitle(), message);
+            message = String.format("%s: %s", state.getTitle(), message);
         else {
             if (this.getCode() >= 500)
                 state = HttpState.SERVER_ERROR;
