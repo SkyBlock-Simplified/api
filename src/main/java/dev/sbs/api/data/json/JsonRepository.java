@@ -10,7 +10,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.stream.Stream;
 
 public class JsonRepository<T extends JsonModel> extends Repository<T> {
@@ -32,30 +31,9 @@ public class JsonRepository<T extends JsonModel> extends Repository<T> {
     public final @NotNull Stream<T> stream() throws DataException {
         try {
             // TODO: Load json files into this.cache
+            return null;
         } catch (Exception exception) {
             throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
-        }
-    }
-
-    public T save(T model) throws DataException {
-        try {
-            Serializable serializable = session.save(model);
-            return session.get(this.getType(), serializable);
-        } catch (Exception exception) {
-            throw SimplifiedException.of(DataException.class)
-                .withCause(exception)
-                .build();
-        }
-    }
-
-    public T update(T model) throws DataException {
-        try {
-            session.update(model);
-            return model;
-        } catch (Exception exception) {
-            throw SimplifiedException.of(DataException.class)
                 .withCause(exception)
                 .build();
         }

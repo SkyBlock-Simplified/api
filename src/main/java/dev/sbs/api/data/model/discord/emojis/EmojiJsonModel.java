@@ -4,16 +4,14 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.JsonModel;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildJsonModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -26,24 +24,18 @@ public class EmojiJsonModel implements EmojiModel, JsonModel {
     private Long id;
 
     @Getter
-    @Setter
     @SerializedName("emoji_id")
     private @NotNull Long emojiId;
 
     @Getter
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
     @SerializedName("guild_id")
     private @NotNull Long guildId;
 
     @Getter
-    @Setter
-    private @NotNull String key;
+    private String key;
 
     @Getter
-    @Setter
-    private @NotNull String name;
+    private String name;
 
     @Getter
     @Setter
@@ -91,10 +83,6 @@ public class EmojiJsonModel implements EmojiModel, JsonModel {
             .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
             .build();
-    }
-
-    public void setGuild(GuildJsonModel guildJsonModel) {
-        this.guildId = guildJsonModel.getGuildId();
     }
 
 }

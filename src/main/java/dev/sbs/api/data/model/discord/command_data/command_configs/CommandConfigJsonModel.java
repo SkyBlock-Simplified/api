@@ -3,14 +3,13 @@ package dev.sbs.api.data.model.discord.command_data.command_configs;
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.JsonModel;
-import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCategoryJsonModel;
-import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupJsonModel;
-import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentJsonModel;
-import dev.sbs.api.data.model.discord.emojis.EmojiJsonModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCategoryModel;
+import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupModel;
+import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentModel;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,6 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
     private Long id;
 
     @Getter
-    @Setter
     @SerializedName("identifier")
     private UUID uniqueId;
 
@@ -41,44 +39,35 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
     private @Nullable String groupKey;
 
     @Getter
-    @Setter
-    private @NotNull String name;
+    private String name;
 
     @Getter
-    @Setter
-    private @NotNull String description;
+    private String description;
 
     @Getter
-    @Setter
     @SerializedName("long_description")
     private @Nullable String longDescription;
 
     @Getter
-    @Setter
     @SerializedName("emoji_key")
     private @Nullable String emojiKey;
 
     @Getter
-    @Setter
     @SerializedName("category_key")
     private @Nullable String categoryKey;
 
     @Getter
-    @Setter
     @SerializedName("developer_only")
     private boolean developerOnly;
 
     @Getter
-    @Setter
     private boolean enabled;
 
     @Getter
-    @Setter
     @SerializedName("inherit_permissions")
     private boolean inheritingPermissions;
 
     @Getter
-    @Setter
     @Column(name = "status")
     private String status;
 
@@ -119,23 +108,23 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
     }
 
     @Override
-    public CommandCategoryJsonModel getCategory() {
-        return SimplifiedApi.getRepositoryOf(CommandCategoryJsonModel.class).findFirstOrNull(CommandCategoryJsonModel::getKey, this.categoryKey);
+    public CommandCategoryModel getCategory() {
+        return SimplifiedApi.getRepositoryOf(CommandCategoryModel.class).findFirstOrNull(CommandCategoryModel::getKey, this.getCategoryKey());
     }
 
     @Override
-    public EmojiJsonModel getEmoji() {
-        return SimplifiedApi.getRepositoryOf(EmojiJsonModel.class).findFirstOrNull(EmojiJsonModel::getKey, this.emojiKey);
+    public EmojiModel getEmoji() {
+        return SimplifiedApi.getRepositoryOf(EmojiModel.class).findFirstOrNull(EmojiModel::getKey, this.getEmojiKey());
     }
 
     @Override
-    public CommandGroupJsonModel getGroup() {
-        return SimplifiedApi.getRepositoryOf(CommandGroupJsonModel.class).findFirstOrNull(CommandGroupJsonModel::getKey, this.groupKey);
+    public CommandGroupModel getGroup() {
+        return SimplifiedApi.getRepositoryOf(CommandGroupModel.class).findFirstOrNull(CommandGroupModel::getKey, this.getGroup());
     }
 
     @Override
-    public CommandParentJsonModel getParent() {
-        return SimplifiedApi.getRepositoryOf(CommandParentJsonModel.class).findFirstOrNull(CommandParentJsonModel::getKey, this.parentKey);
+    public CommandParentModel getParent() {
+        return SimplifiedApi.getRepositoryOf(CommandParentModel.class).findFirstOrNull(CommandParentModel::getKey, this.getParent());
     }
 
     @Override
@@ -157,22 +146,6 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
             .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
             .build();
-    }
-
-    public void setCategory(CommandCategoryJsonModel commandCategoryJsonModel) {
-        this.categoryKey = commandCategoryJsonModel == null ? null : commandCategoryJsonModel.getKey();
-    }
-
-    public void setEmoji(EmojiJsonModel emojiJsonModel) {
-        this.emojiKey = emojiJsonModel == null ? null : emojiJsonModel.getKey();
-    }
-
-    public void setGroup(CommandGroupJsonModel commandGroupJsonModel) {
-        this.groupKey = commandGroupJsonModel == null ? null : commandGroupJsonModel.getKey();
-    }
-
-    public void setParent(CommandParentJsonModel commandParentJsonModel) {
-        this.parentKey = commandParentJsonModel == null ? null : commandParentJsonModel.getKey();
     }
 
 }

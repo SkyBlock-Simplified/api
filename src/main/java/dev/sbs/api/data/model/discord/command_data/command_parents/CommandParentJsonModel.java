@@ -2,10 +2,9 @@ package dev.sbs.api.data.model.discord.command_data.command_parents;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.data.model.JsonModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Table;
@@ -20,19 +19,15 @@ public class CommandParentJsonModel implements CommandParentModel, JsonModel {
     private Long id;
 
     @Getter
-    @Setter
     private String key;
 
     @Getter
-    @Setter
     private String name;
 
     @Getter
-    @Setter
     private String description;
 
     @Getter
-    @Setter
     private boolean prefix;
 
     @Getter

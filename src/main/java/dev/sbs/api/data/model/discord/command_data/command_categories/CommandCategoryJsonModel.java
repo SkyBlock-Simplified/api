@@ -1,16 +1,16 @@
 package dev.sbs.api.data.model.discord.command_data.command_categories;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.JsonModel;
-import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
-import dev.sbs.api.util.builder.EqualsBuilder;
-import dev.sbs.api.util.builder.hashcode.HashCodeBuilder;
+import dev.sbs.api.data.model.discord.emojis.EmojiModel;
+import dev.sbs.api.util.builder.hash.EqualsBuilder;
+import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.SneakyThrows;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -23,26 +23,21 @@ public class CommandCategoryJsonModel implements CommandCategoryModel, JsonModel
     private Long id;
 
     @Getter
-    @Setter
     private String key;
 
     @Getter
-    @Setter
     private String name;
 
     @Getter
-    @Setter
     private String description;
 
     @Getter
-    @Setter
     @SerializedName("long_description")
     private String longDescription;
 
     @Getter
-    @Setter
-    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
-    private EmojiSqlModel emoji;
+    @SerializedName("emoji_key")
+    private String emojiKey;
 
     @Getter
     @UpdateTimestamp
@@ -78,6 +73,11 @@ public class CommandCategoryJsonModel implements CommandCategoryModel, JsonModel
             .append(this.getEmoji())
             .append(this.getUpdatedAt())
             .build();
+    }
+
+    @SneakyThrows
+    public EmojiModel getEmoji() {
+        return SimplifiedApi.getRepositoryOf(EmojiModel.class).findFirstOrNull(EmojiModel::getKey, this.getEmojiKey());
     }
 
 }

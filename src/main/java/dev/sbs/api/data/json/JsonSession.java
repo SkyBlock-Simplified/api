@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class JsonSession extends DataSession<JsonModel> {
 
-    public JsonSession(@NotNull ConcurrentList<Class<JsonModel>> models) {
+    public JsonSession(@NotNull JsonConfig jsonConfig, @NotNull ConcurrentList<Class<JsonModel>> models) {
         super(models);
     }
 
