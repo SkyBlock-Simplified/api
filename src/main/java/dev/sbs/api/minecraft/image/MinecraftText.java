@@ -1,6 +1,5 @@
 package dev.sbs.api.minecraft.image;
 
-import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
@@ -15,6 +14,7 @@ import dev.sbs.api.util.helper.SystemUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -280,7 +280,10 @@ public class MinecraftText {
                 return Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(size);
             }
         } catch (IOException | FontFormatException ex) {
-            SimplifiedApi.getLog(MinecraftText.class).error(FormatUtil.format("Unable to load font from file ''{0}''!", path), ex);
+            LogManager.getLogger(MinecraftText.class)
+                .atError()
+                .withThrowable(ex)
+                .log("Unable to load font from file '{}'!", path);
         }
 
         return null;

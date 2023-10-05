@@ -175,21 +175,4 @@ public abstract class ConfigMapper extends YamlMap {
         }
     }
 
-	/*private class NullRepresenter extends Representer {
-
-		public NullRepresenter() {
-			this.nullRepresenter = new RepresentNull();
-		}
-
-		private class RepresentNull implements Represent {
-
-			@Override
-			public Node representData(Object data) {
-				return representScalar(Tag.NULL, "");
-			}
-
-		}
-
-	}*/
-
 }

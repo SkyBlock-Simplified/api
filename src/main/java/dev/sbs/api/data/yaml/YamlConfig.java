@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 public class YamlConfig extends ConfigMapper implements Runnable {
 
-    protected static final transient ConcurrentSet<Class<? extends YamlConverter>> GLOBAL_CUSTOM_CONVERTERS = Concurrent.newSet();
+    protected static final ConcurrentSet<Class<? extends YamlConverter>> GLOBAL_CUSTOM_CONVERTERS = Concurrent.newSet();
 
     private transient boolean suppressFailedConversions = false;
     private transient int taskId = -1;

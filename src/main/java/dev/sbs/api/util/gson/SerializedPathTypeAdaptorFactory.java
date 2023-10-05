@@ -37,12 +37,13 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
             : new JsonPathTypeAdapter<>(gson, delegateAdapter, gson.getAdapter(JsonElement.class), fieldInfos);
     }
 
+    @Getter
     private static final class JsonPathTypeAdapter<T> extends TypeAdapter<T> {
 
-        @Getter private final Gson gson;
-        @Getter private final TypeAdapter<T> delegateAdapter;
-        @Getter private final TypeAdapter<JsonElement> jsonElementTypeAdapter;
-        @Getter private final Collection<FieldInfo> fieldInfos;
+        private final Gson gson;
+        private final TypeAdapter<T> delegateAdapter;
+        private final TypeAdapter<JsonElement> jsonElementTypeAdapter;
+        private final Collection<FieldInfo> fieldInfos;
 
         private JsonPathTypeAdapter(Gson gson, TypeAdapter<T> delegateAdapter, TypeAdapter<JsonElement> jsonElementTypeAdapter, Collection<FieldInfo> fieldInfos) {
             this.gson = gson;
@@ -81,9 +82,9 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
                         }
 
                         // Ignore empty objects/arrays
-                        if (innerJsonElement.isJsonObject() && innerJsonElement.getAsJsonObject().size() == 0)
+                        if (innerJsonElement.isJsonObject() && innerJsonElement.getAsJsonObject().isEmpty())
                             skip = true;
-                        else if (innerJsonObject.isJsonArray() && innerJsonElement.getAsJsonArray().size() == 0)
+                        else if (innerJsonObject.isJsonArray() && innerJsonElement.getAsJsonArray().isEmpty())
                             skip = true;
                     }
 
@@ -105,11 +106,12 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
 
     }
 
+    @Getter
     private static final class FieldInfo {
 
-        @Getter private final Field field;
-        @Getter private final String jsonPath;
-        @Getter private final ConcurrentList<String> jsonPathList;
+        private final Field field;
+        private final String jsonPath;
+        private final ConcurrentList<String> jsonPathList;
 
         private FieldInfo(Field field, String jsonPath) {
             this.field = field;
