@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * <p>
@@ -380,7 +379,6 @@ public class SystemUtil {
      * </p>
      */
     public static final String JAVA_SPECIFICATION_VERSION = getSystemProperty("java.specification.version");
-    private static final Optional<JavaVersion> JAVA_SPECIFICATION_VERSION_AS_ENUM = JavaVersion.get(JAVA_SPECIFICATION_VERSION);
 
     /**
      * <p>
@@ -1137,25 +1135,6 @@ public class SystemUtil {
      */
     public static boolean isJavaAwtHeadless() {
         return JAVA_AWT_HEADLESS != null && JAVA_AWT_HEADLESS.equals(Boolean.TRUE.toString());
-    }
-
-    /**
-     * <p>
-     * Is the Java version at least the requested version.
-     * </p>
-     * <p>
-     * Example input:
-     * </p>
-     * <ul>
-     * <li>{@code 1.2f} to test for Java 1.2</li>
-     * <li>{@code 1.31f} to test for Java 1.3.1</li>
-     * </ul>
-     *
-     * @param requiredVersion the required version, for example 1.31f
-     * @return {@code true} if the actual version is equal or greater than the required version
-     */
-    public static boolean isJavaVersionAtLeast(JavaVersion requiredVersion) {
-        return JAVA_SPECIFICATION_VERSION_AS_ENUM.isPresent() && JAVA_SPECIFICATION_VERSION_AS_ENUM.get().atLeast(requiredVersion);
     }
 
     /**

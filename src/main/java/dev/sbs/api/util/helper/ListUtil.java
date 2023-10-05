@@ -5,7 +5,9 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,7 +26,7 @@ public class ListUtil {
 	 * @param array to check
 	 * @return true if empty or null, otherwise false
 	 */
-	public static <T> boolean isEmpty(T[] array) {
+	public static <T> boolean isEmpty(@Nullable T[] array) {
 		return array == null || array.length == 0;
 	}
 
@@ -34,7 +36,7 @@ public class ListUtil {
 	 * @param iterable to check
 	 * @return true if empty or null, otherwise false
 	 */
-	public static <T> boolean isEmpty(Iterable<T> iterable) {
+	public static <T> boolean isEmpty(@Nullable Iterable<T> iterable) {
 		if (iterable instanceof Collection)
 			return ((Collection<?>) iterable).isEmpty();
 
@@ -48,7 +50,7 @@ public class ListUtil {
 	 * @param <T> The type of elements.
 	 * @throws IllegalArgumentException If the given array is null or contains a null element.
 	 */
-	public static <T> void noNullElements(T[] array) throws IllegalArgumentException {
+	public static <T> void noNullElements(@NotNull T[] array) throws IllegalArgumentException {
 		noNullElements(array, "The validated array is NULL!", "The validated array contains NULL element at index {0}!");
 	}
 
@@ -59,7 +61,7 @@ public class ListUtil {
 	 * @param <T> The type of elements.
 	 * @throws IllegalArgumentException If the given collection is null or contains a null element.
 	 */
-	public static <T> void noNullElements(Collection<? extends T> collection) throws IllegalArgumentException {
+	public static <T> void noNullElements(@NotNull Collection<? extends T> collection) throws IllegalArgumentException {
 		noNullElements(collection, "The validated collection is NULL!", "The validated collection contains NULL element at index {0}!");
 	}
 
@@ -71,7 +73,7 @@ public class ListUtil {
 	 * @param message The custom message to display if an IllegalArgumentException is thrown.
 	 * @throws IllegalArgumentException If the given array is null or contains a null element.
 	 */
-	public static <T> void noNullElements(T[] array, String message) throws IllegalArgumentException {
+	public static <T> void noNullElements(@NotNull T[] array, String message) throws IllegalArgumentException {
 		noNullElements(array, message, message);
 	}
 
@@ -83,11 +85,11 @@ public class ListUtil {
 	 * @param message The custom message to display if an IllegalArgumentException is thrown.
 	 * @throws IllegalArgumentException If the given collection is null or contains a null element.
 	 */
-	public static <T> void noNullElements(Collection<? extends T> collection, String message) throws IllegalArgumentException {
+	public static <T> void noNullElements(@NotNull Collection<? extends T> collection, String message) throws IllegalArgumentException {
 		noNullElements(collection, message, message);
 	}
 
-	private static <T> void noNullElements(T[] array, String message, String elementMessage) throws IllegalArgumentException {
+	private static <T> void noNullElements(@Nullable T[] array, String message, String elementMessage) throws IllegalArgumentException {
 		if (array == null)
 			throw new IllegalArgumentException(message);
 
@@ -97,7 +99,7 @@ public class ListUtil {
 		}
 	}
 
-	private static <T> void noNullElements(Collection<? extends T> collection, String message, String elementMessage) throws IllegalArgumentException {
+	private static <T> void noNullElements(@Nullable Collection<? extends T> collection, String message, String elementMessage) throws IllegalArgumentException {
 		if (collection == null)
 			throw new IllegalArgumentException(message);
 
@@ -119,7 +121,7 @@ public class ListUtil {
 	 * @param array to check
 	 * @return true if not empty or null, otherwise false
 	 */
-	public static <T> boolean notEmpty(T[] array) {
+	public static <T> boolean notEmpty(@Nullable T[] array) {
 		return !isEmpty(array);
 	}
 
@@ -129,7 +131,7 @@ public class ListUtil {
 	 * @param iterable to check
 	 * @return true if not empty or null, otherwise false
 	 */
-	public static <T> boolean notEmpty(Iterable<T> iterable) {
+	public static <T> boolean notEmpty(@Nullable Iterable<T> iterable) {
 		return !isEmpty(iterable);
 	}
 
@@ -139,7 +141,7 @@ public class ListUtil {
 	 * @param array Array to retrieve size of.
 	 * @return Number of elements in this array.
 	 */
-	public static <T> int sizeOf(T[] array) {
+	public static <T> int sizeOf(@NotNull T[] array) {
 		return array.length;
 	}
 
@@ -149,7 +151,7 @@ public class ListUtil {
 	 * @param collection Collection to retrieve size of.
 	 * @return Number of elements in this collection.
 	 */
-	public static <T> int sizeOf(Collection<? extends T> collection) {
+	public static <T> int sizeOf(@NotNull Collection<? extends T> collection) {
 		return collection.size();
 	}
 
@@ -161,7 +163,7 @@ public class ListUtil {
 	 * @return The converted array of the passed collection.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] toArray(Iterable<? extends T> iterable, Class<T> type) {
+	public static <T> T[] toArray(@NotNull Iterable<? extends T> iterable, @NotNull Class<T> type) {
 		try {
 			return Iterables.toArray(iterable, type);
 		} catch (NullPointerException npe) {

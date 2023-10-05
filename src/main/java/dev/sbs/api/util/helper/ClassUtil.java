@@ -7,12 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-
 
 /**
  * <p>Operates on classes without using reflection.</p>
@@ -48,70 +45,6 @@ public class ClassUtil {
      */
     public static final String INNER_CLASS_SEPARATOR = String.valueOf(INNER_CLASS_SEPARATOR_CHAR);
 
-    /**
-     * Maps primitive {@code Class}es to their corresponding wrapper {@code Class}.
-     */
-    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<>();
-    static {
-         primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
-         primitiveWrapperMap.put(Byte.TYPE, Byte.class);
-         primitiveWrapperMap.put(Character.TYPE, Character.class);
-         primitiveWrapperMap.put(Short.TYPE, Short.class);
-         primitiveWrapperMap.put(Integer.TYPE, Integer.class);
-         primitiveWrapperMap.put(Long.TYPE, Long.class);
-         primitiveWrapperMap.put(Double.TYPE, Double.class);
-         primitiveWrapperMap.put(Float.TYPE, Float.class);
-         primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
-    }
-
-    /**
-     * Maps wrapper {@code Class}es to their corresponding primitive types.
-     */
-    private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<>();
-    static {
-        for (Class<?> primitiveClass : primitiveWrapperMap.keySet()) {
-            Class<?> wrapperClass = primitiveWrapperMap.get(primitiveClass);
-            if (!primitiveClass.equals(wrapperClass)) {
-                wrapperPrimitiveMap.put(wrapperClass, primitiveClass);
-            }
-        }
-    }
-
-    /**
-     * Maps a primitive class name to its corresponding abbreviation used in array class names.
-     */
-    private static final Map<String, String> abbreviationMap = new HashMap<>();
-
-    /**
-     * Maps an abbreviation used in array class names to corresponding primitive class name.
-     */
-    private static final Map<String, String> reverseAbbreviationMap = new HashMap<>();
-
-    /**
-     * Add primitive type abbreviation to maps of abbreviations.
-     *
-     * @param primitive Canonical name of primitive type
-     * @param abbreviation Corresponding abbreviation of primitive type
-     */
-    private static void addAbbreviation(String primitive, String abbreviation) {
-        abbreviationMap.put(primitive, abbreviation);
-        reverseAbbreviationMap.put(abbreviation, primitive);
-    }
-
-    /*
-     * Feed abbreviation maps
-     */
-    static {
-        addAbbreviation("int", "I");
-        addAbbreviation("boolean", "Z");
-        addAbbreviation("float", "F");
-        addAbbreviation("long", "J");
-        addAbbreviation("short", "S");
-        addAbbreviation("byte", "B");
-        addAbbreviation("double", "D");
-        addAbbreviation("char", "C");
-    }
-
     // Short class name
     // ----------------------------------------------------------------------
     /**
@@ -122,9 +55,9 @@ public class ClassUtil {
      * @return the class name of the object without the package name, or the null value
      */
     public static String getShortClassName(Object object, String valueIfNull) {
-        if (object == null) {
+        if (object == null)
             return valueIfNull;
-        }
+
         return getShortClassName(object.getClass());
     }
 
@@ -139,9 +72,9 @@ public class ClassUtil {
      * @return the class name without the package name or an empty string
      */
     public static String getShortClassName(Class<?> cls) {
-        if (cls == null) {
+        if (cls == null)
             return StringUtil.EMPTY;
-        }
+
         return getShortClassName(cls.getName());
     }
 
@@ -158,12 +91,11 @@ public class ClassUtil {
      * @return the class name of the class without the package name or an empty string
      */
     public static String getShortClassName(String className) {
-        if (className == null) {
+        if (className == null)
             return StringUtil.EMPTY;
-        }
-        if (className.length() == 0) {
+
+        if (className.length() == 0)
             return StringUtil.EMPTY;
-        }
 
         StringBuilder arrayPrefix = new StringBuilder();
 
@@ -173,23 +105,22 @@ public class ClassUtil {
                 className = className.substring(1);
                 arrayPrefix.append("[]");
             }
+
             // Strip Object type encoding
-            if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {
+            if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';')
                 className = className.substring(1, className.length() - 1);
-            }
         }
 
-        if (reverseAbbreviationMap.containsKey(className)) {
-            className = reverseAbbreviationMap.get(className);
-        }
+        if (PrimitiveUtil.getReverseAbbreviationMap().containsKey(className))
+            className = PrimitiveUtil.getReverseAbbreviationMap().get(className);
 
         int lastDotIdx = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
-        int innerIdx = className.indexOf(
-                INNER_CLASS_SEPARATOR_CHAR, lastDotIdx == -1 ? 0 : lastDotIdx + 1);
+        int innerIdx = className.indexOf(INNER_CLASS_SEPARATOR_CHAR, lastDotIdx == -1 ? 0 : lastDotIdx + 1);
         String out = className.substring(lastDotIdx + 1);
-        if (innerIdx != -1) {
+
+        if (innerIdx != -1)
             out = out.replace(INNER_CLASS_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
-        }
+
         return out + arrayPrefix;
     }
 
@@ -201,9 +132,9 @@ public class ClassUtil {
      * @see Class#getSimpleName()
      */
     public static String getSimpleName(Class<?> cls) {
-        if (cls == null) {
+        if (cls == null)
             return StringUtil.EMPTY;
-        }
+
         return cls.getSimpleName();
     }
 
@@ -216,9 +147,9 @@ public class ClassUtil {
      * @see Class#getSimpleName()
      */
     public static String getSimpleName(Object object, String valueIfNull) {
-        if (object == null) {
+        if (object == null)
             return valueIfNull;
-        }
+
         return getSimpleName(object.getClass());
     }
 
@@ -232,9 +163,9 @@ public class ClassUtil {
      * @return the package name of the object, or the null value
      */
     public static String getPackageName(Object object, String valueIfNull) {
-        if (object == null) {
+        if (object == null)
             return valueIfNull;
-        }
+
         return getPackageName(object.getClass());
     }
 
@@ -245,9 +176,9 @@ public class ClassUtil {
      * @return the package name or an empty string
      */
     public static String getPackageName(Class<?> cls) {
-        if (cls == null) {
+        if (cls == null)
             return StringUtil.EMPTY;
-        }
+
         return getPackageName(cls.getName());
     }
 
@@ -261,23 +192,21 @@ public class ClassUtil {
      * @return the package name or an empty string
      */
     public static String getPackageName(String className) {
-        if (className == null || className.length() == 0) {
+        if (className == null || className.length() == 0)
             return StringUtil.EMPTY;
-        }
 
         // Strip array encoding
-        while (className.charAt(0) == '[') {
+        while (className.charAt(0) == '[')
             className = className.substring(1);
-        }
+
         // Strip Object type encoding
-        if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {
+        if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';')
             className = className.substring(1);
-        }
 
         int i = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
-        if (i == -1) {
+        if (i == -1)
             return StringUtil.EMPTY;
-        }
+
         return className.substring(0, i);
     }
 
@@ -291,15 +220,17 @@ public class ClassUtil {
      *  {@code null} if null input
      */
     public static List<Class<?>> getAllSuperclasses(Class<?> cls) {
-        if (cls == null) {
+        if (cls == null)
             return null;
-        }
+
         List<Class<?>> classes = new ArrayList<>();
         Class<?> superclass = cls.getSuperclass();
+
         while (superclass != null) {
             classes.add(superclass);
             superclass = superclass.getSuperclass();
         }
+
         return classes;
     }
 
@@ -317,9 +248,8 @@ public class ClassUtil {
      *  {@code null} if null input
      */
     public static List<Class<?>> getAllInterfaces(Class<?> cls) {
-        if (cls == null) {
+        if (cls == null)
             return null;
-        }
 
         LinkedHashSet<Class<?>> interfacesFound = new LinkedHashSet<>();
         getAllInterfaces(cls, interfacesFound);
@@ -338,9 +268,8 @@ public class ClassUtil {
             Class<?>[] interfaces = cls.getInterfaces();
 
             for (Class<?> i : interfaces) {
-                if (interfacesFound.add(i)) {
+                if (interfacesFound.add(i))
                     getAllInterfaces(i, interfacesFound);
-                }
             }
 
             cls = cls.getSuperclass();
@@ -362,10 +291,11 @@ public class ClassUtil {
      * @throws ClassCastException if classNames contains a non String entry
      */
     public static List<Class<?>> convertClassNamesToClasses(List<String> classNames) {
-        if (classNames == null) {
+        if (classNames == null)
             return null;
-        }
+
         List<Class<?>> classes = new ArrayList<>(classNames.size());
+
         for (String className : classNames) {
             try {
                 classes.add(Class.forName(className));
@@ -373,6 +303,7 @@ public class ClassUtil {
                 classes.add(null);
             }
         }
+
         return classes;
     }
 
@@ -389,17 +320,18 @@ public class ClassUtil {
      * @throws ClassCastException if {@code classes} contains a non-{@code Class} entry
      */
     public static List<String> convertClassesToClassNames(List<Class<?>> classes) {
-        if (classes == null) {
+        if (classes == null)
             return null;
-        }
+
         List<String> classNames = new ArrayList<>(classes.size());
+
         for (Class<?> cls : classes) {
-            if (cls == null) {
+            if (cls == null)
                 classNames.add(null);
-            } else {
+            else
                 classNames.add(cls.getName());
-            }
         }
+
         return classNames;
     }
 
@@ -442,7 +374,7 @@ public class ClassUtil {
      * @return {@code true} if assignment possible
      */
     public static boolean isAssignable(Class<?>[] classArray, Class<?>... toClassArray) {
-        return isAssignable(classArray, toClassArray, SystemUtil.isJavaVersionAtLeast(JavaVersion.JAVA_1_5));
+        return isAssignable(classArray, toClassArray, true);
     }
 
     /**
@@ -478,20 +410,20 @@ public class ClassUtil {
      * @return {@code true} if assignment possible
      */
     public static boolean isAssignable(Class<?>[] classArray, Class<?>[] toClassArray, boolean autoboxing) {
-        if (!ArrayUtil.isSameLength(classArray, toClassArray)) {
+        if (!ArrayUtil.isSameLength(classArray, toClassArray))
             return false;
-        }
-        if (classArray == null) {
+
+        if (classArray == null)
             classArray = ArrayUtil.EMPTY_CLASS_ARRAY;
-        }
-        if (toClassArray == null) {
+
+        if (toClassArray == null)
             toClassArray = ArrayUtil.EMPTY_CLASS_ARRAY;
-        }
+
         for (int i = 0; i < classArray.length; i++) {
-            if (!isAssignable(classArray[i], toClassArray[i], autoboxing)) {
+            if (!isAssignable(classArray[i], toClassArray[i], autoboxing))
                 return false;
-            }
         }
+
         return true;
     }
 
@@ -527,7 +459,7 @@ public class ClassUtil {
      * @return {@code true} if assignment possible
      */
     public static boolean isAssignable(Class<?> cls, Class<?> toClass) {
-        return isAssignable(cls, toClass, SystemUtil.isJavaVersionAtLeast(JavaVersion.JAVA_1_5));
+        return isAssignable(cls, toClass, true);
     }
 
     /**
@@ -558,164 +490,71 @@ public class ClassUtil {
      * @return {@code true} if assignment possible
      */
     public static boolean isAssignable(Class<?> cls, Class<?> toClass, boolean autoboxing) {
-        if (toClass == null) {
+        if (toClass == null)
             return false;
-        }
+
         // have to check for null, as isAssignableFrom doesn't
-        if (cls == null) {
+        if (cls == null)
             return !(toClass.isPrimitive());
-        }
+
         //autoboxing:
         if (autoboxing) {
             if (cls.isPrimitive() && !toClass.isPrimitive()) {
-                cls = primitiveToWrapper(cls);
-                if (cls == null) {
+                cls = PrimitiveUtil.wrap(cls);
+
+                if (cls == null)
                     return false;
-                }
             }
+
             if (toClass.isPrimitive() && !cls.isPrimitive()) {
-                cls = wrapperToPrimitive(cls);
-                if (cls == null) {
+                cls = PrimitiveUtil.unwrap(cls);
+
+                if (cls == null)
                     return false;
-                }
             }
         }
-        if (cls.equals(toClass)) {
+
+        if (cls.equals(toClass))
             return true;
-        }
+
         if (cls.isPrimitive()) {
-            if (!toClass.isPrimitive()) {
+            if (!toClass.isPrimitive())
                 return false;
-            }
+
             if (Integer.TYPE.equals(cls)) {
                 return Long.TYPE.equals(toClass)
                     || Float.TYPE.equals(toClass)
                     || Double.TYPE.equals(toClass);
             }
+
             if (Long.TYPE.equals(cls)) {
                 return Float.TYPE.equals(toClass)
                     || Double.TYPE.equals(toClass);
             }
-            if (Boolean.TYPE.equals(cls)) {
+
+            if (Boolean.TYPE.equals(cls))
                 return false;
-            }
-            if (Double.TYPE.equals(cls)) {
+
+            if (Double.TYPE.equals(cls))
                 return false;
-            }
-            if (Float.TYPE.equals(cls)) {
+
+            if (Float.TYPE.equals(cls))
                 return Double.TYPE.equals(toClass);
-            }
-            if (Character.TYPE.equals(cls)) {
-                return Integer.TYPE.equals(toClass) || Long.TYPE.equals(toClass)
-                    || Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
-            }
-            if (Short.TYPE.equals(cls)) {
-                return Integer.TYPE.equals(toClass)  || Long.TYPE.equals(toClass)
-                    || Float.TYPE.equals(toClass)  || Double.TYPE.equals(toClass);
-            }
-            if (Byte.TYPE.equals(cls)) {
-                return Short.TYPE.equals(toClass)
-                    || Integer.TYPE.equals(toClass)
-                    || Long.TYPE.equals(toClass)
-                    || Float.TYPE.equals(toClass)
-                    || Double.TYPE.equals(toClass);
-            }
+
+            if (Character.TYPE.equals(cls))
+                return Integer.TYPE.equals(toClass) || Long.TYPE.equals(toClass) || Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
+
+            if (Short.TYPE.equals(cls))
+                return Integer.TYPE.equals(toClass)  || Long.TYPE.equals(toClass) || Float.TYPE.equals(toClass)  || Double.TYPE.equals(toClass);
+
+            if (Byte.TYPE.equals(cls))
+                return Short.TYPE.equals(toClass) || Integer.TYPE.equals(toClass) || Long.TYPE.equals(toClass) || Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
+
             // should never get here
             return false;
         }
+
         return toClass.isAssignableFrom(cls);
-    }
-
-    /**
-     * <p>Converts the specified primitive Class object to its corresponding
-     * wrapper Class object.</p>
-     *
-     * <p>NOTE: From v2.2, this method handles {@code Void.TYPE},
-     * returning {@code Void.TYPE}.</p>
-     *
-     * @param cls  the class to convert, may be null
-     * @return the wrapper class for {@code cls} or {@code cls} if
-     * {@code cls} is not a primitive. {@code null} if null input.StringUtil
-     */
-    public static Class<?> primitiveToWrapper(Class<?> cls) {
-        Class<?> convertedClass = cls;
-        if (cls != null && cls.isPrimitive()) {
-            convertedClass = primitiveWrapperMap.get(cls);
-        }
-        return convertedClass;
-    }
-
-    /**
-     * <p>Converts the specified array of primitive Class objects to an array of
-     * its corresponding wrapper Class objects.</p>
-     *
-     * @param classes  the class array to convert, may be null or empty
-     * @return an array which contains for each given class, the wrapper class or
-     * the original class if class is not a primitive. {@code null} if null input.
-     * Empty array if an empty array passed in.StringUtil
-     */
-    public static Class<?>[] primitivesToWrappers(Class<?>... classes) {
-        if (classes == null) {
-            return null;
-        }
-
-        if (classes.length == 0) {
-            return classes;
-        }
-
-        Class<?>[] convertedClasses = new Class[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            convertedClasses[i] = primitiveToWrapper(classes[i]);
-        }
-        return convertedClasses;
-    }
-
-    /**
-     * <p>Converts the specified wrapper class to its corresponding primitive
-     * class.</p>
-     *
-     * <p>This method is the counter part of {@code primitiveToWrapper()}.
-     * If the passed in class is a wrapper class for a primitive type, this
-     * primitive type will be returned (e.g. {@code Integer.TYPE} for
-     * {@code Integer.class}). For other classes, or if the parameter is
-     * <b>null</b>, the return value is <b>null</b>.</p>
-     *
-     * @param cls the class to convert, may be <b>null</b>
-     * @return the corresponding primitive type if {@code cls} is a
-     * wrapper class, <b>null</b> otherwise
-     * @see #primitiveToWrapper(Class)StringUtil
-     */
-    public static Class<?> wrapperToPrimitive(Class<?> cls) {
-        return wrapperPrimitiveMap.get(cls);
-    }
-
-    /**
-     * <p>Converts the specified array of wrapper Class objects to an array of
-     * its corresponding primitive Class objects.</p>
-     *
-     * <p>This method invokes {@code wrapperToPrimitive()} for each element
-     * of the passed in array.</p>
-     *
-     * @param classes  the class array to convert, may be null or empty
-     * @return an array which contains for each given class, the primitive class or
-     * <b>null</b> if the original class is not a wrapper class. {@code null} if null input.
-     * Empty array if an empty array passed in.
-     * @see #wrapperToPrimitive(Class)StringUtil
-     */
-    public static Class<?>[] wrappersToPrimitives(Class<?>... classes) {
-        if (classes == null) {
-            return null;
-        }
-
-        if (classes.length == 0) {
-            return classes;
-        }
-
-        Class<?>[] convertedClasses = new Class[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            convertedClasses[i] = wrapperToPrimitive(classes[i]);
-        }
-        return convertedClasses;
     }
 
     // Inner class
@@ -749,8 +588,8 @@ public class ClassUtil {
             ClassLoader classLoader, String className, boolean initialize) throws ClassNotFoundException {
         try {
             Class<?> clazz;
-            if (abbreviationMap.containsKey(className)) {
-                String clsName = "[" + abbreviationMap.get(className);
+            if (PrimitiveUtil.getReverseAbbreviationMap().containsKey(className)) {
+                String clsName = "[" + PrimitiveUtil.getReverseAbbreviationMap().get(className);
                 clazz = Class.forName(clsName, initialize, classLoader).getComponentType();
             } else {
                 clazz = Class.forName(toCanonicalName(className), initialize, classLoader);
@@ -837,10 +676,10 @@ public class ClassUtil {
      * from an anonymous inner class. This means that the Method is invokable and
      * doesn't fall foul of Java bug
      * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4071957">4071957</a>).
-     *
-     *  <code><pre>Set set = Collections.unmodifiableSet(...);
-     *  Method method = ClassUtils.getPublicMethod(set.getClass(), "isEmpty",  new Class[0]);
-     *  Object result = method.invoke(set, new Object[]);</pre></code>
+     * <code><pre>
+     * Set set = Collections.unmodifiableSet(...);
+     * Method method = ClassUtils.getPublicMethod(set.getClass(), "isEmpty",  new Class[0]);
+     * Object result = method.invoke(set, new Object[]);</pre></code>
      * </p>
      *
      * @param cls  the class to check, not null
@@ -848,9 +687,9 @@ public class ClassUtil {
      * @param parameterTypes  the list of parameters
      * @return the method
      * @throws NullPointerException if the class is null
-     * @throws SecurityException if a a security violation occured
+     * @throws SecurityException if a security violation occured
      * @throws NoSuchMethodException if the method is not found in the given class
-     *  or if the metothod doen't conform with the requirements
+     *  or if the metothod doesn't conform with the requirements
      */
     public static Method getPublicMethod(Class<?> cls, String methodName, Class<?>... parameterTypes) throws SecurityException, NoSuchMethodException {
         Method declaredMethod = cls.getMethod(methodName, parameterTypes);
@@ -896,7 +735,7 @@ public class ClassUtil {
                 className = className.substring(0, className.length() - 2);
                 classNameBuffer.append("[");
             }
-            String abbreviation = abbreviationMap.get(className);
+            String abbreviation = PrimitiveUtil.getReverseAbbreviationMap().get(className);
             if (abbreviation != null) {
                 classNameBuffer.append(abbreviation);
             } else {
@@ -1029,17 +868,19 @@ public class ClassUtil {
      */
     private static String getCanonicalName(String className) {
         className = StringUtil.deleteWhitespace(className);
-        if (className == null) {
+
+        if (className == null)
             return null;
-        } else {
+        else {
             int dim = 0;
             while (className.startsWith("[")) {
                 dim++;
                 className = className.substring(1);
             }
-            if (dim < 1) {
+
+            if (dim < 1)
                 return className;
-            } else {
+            else {
                 if (className.startsWith("L")) {
                     className = className.substring(
                         1,
@@ -1047,15 +888,10 @@ public class ClassUtil {
                             ? className.length() - 1
                             : className.length());
                 } else {
-                    if (className.length() > 0) {
-                        className = reverseAbbreviationMap.get(className.substring(0, 1));
-                    }
+                    if (className.length() > 0)
+                        className = PrimitiveUtil.getReverseAbbreviationMap().get(className.substring(0, 1));
                 }
-                StringBuilder canonicalClassNameBuffer = new StringBuilder(className);
-                for (int i = 0; i < dim; i++) {
-                    canonicalClassNameBuffer.append("[]");
-                }
-                return canonicalClassNameBuffer.toString();
+                return className + "[]".repeat(dim);
             }
         }
     }

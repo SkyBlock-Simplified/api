@@ -1,13 +1,14 @@
 package dev.sbs.api.util.helper;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Contains static utility methods pertaining to primitive types and their corresponding wrapper
@@ -17,11 +18,38 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PrimitiveUtil {
 
-    /** A map from primitive types to their corresponding wrapper types. */
-    private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;
+    /**
+     * Returns an immutable map of all nine primitive types (including {@code void}). Note that a
+     * simpler way to test whether a {@code Class} instance is a member of this set is to call {@link
+     * Class#isPrimitive}.
+     */
+    @Getter private static final Map<Class<?>, Class<?>> primitiveToWrapperTypes;
 
-    /** A map from wrapper types to their corresponding primitive types. */
-    private static final Map<Class<?>, Class<?>> WRAPPER_TO_PRIMITIVE_TYPE;
+    /**
+     * Returns an immutable set of all nine primitive-wrapper types (including {@link Void}).
+     */
+    @Getter private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypes;
+
+    /**
+     * Maps a primitive class name to its corresponding abbreviation used in array class names.
+     */
+    @Getter private static final Map<String, String> abbreviationMap = new HashMap<>();
+
+    /**
+     * Maps an abbreviation used in array class names to corresponding primitive class name.
+     */
+    @Getter private static final Map<String, String> reverseAbbreviationMap = new HashMap<>();
+
+    /**
+     * Add primitive type abbreviation to maps of abbreviations.
+     *
+     * @param primitive Canonical name of primitive type
+     * @param abbreviation Corresponding abbreviation of primitive type
+     */
+    private static void addAbbreviation(String primitive, String abbreviation) {
+        abbreviationMap.put(primitive, abbreviation);
+        reverseAbbreviationMap.put(abbreviation, primitive);
+    }
 
     static {
         Map<Class<?>, Class<?>> primToWrap = new LinkedHashMap<>(16);
@@ -37,8 +65,19 @@ public class PrimitiveUtil {
         add(primToWrap, wrapToPrim, short.class, Short.class);
         add(primToWrap, wrapToPrim, void.class, Void.class);
 
-        PRIMITIVE_TO_WRAPPER_TYPE = Collections.unmodifiableMap(primToWrap);
-        WRAPPER_TO_PRIMITIVE_TYPE = Collections.unmodifiableMap(wrapToPrim);
+        Class<Void> x = Void.class;
+
+        primitiveToWrapperTypes = Collections.unmodifiableMap(primToWrap);
+        wrapperToPrimitiveTypes = Collections.unmodifiableMap(wrapToPrim);
+
+        addAbbreviation("int", "I");
+        addAbbreviation("boolean", "Z");
+        addAbbreviation("float", "F");
+        addAbbreviation("long", "J");
+        addAbbreviation("short", "S");
+        addAbbreviation("byte", "B");
+        addAbbreviation("double", "D");
+        addAbbreviation("char", "C");
     }
 
     private static void add(
@@ -51,31 +90,13 @@ public class PrimitiveUtil {
     }
 
     /**
-     * Returns an immutable set of all nine primitive types (including {@code void}). Note that a
-     * simpler way to test whether a {@code Class} instance is a member of this set is to call {@link
-     * Class#isPrimitive}.
-     *
-     */
-    public static Set<Class<?>> allPrimitiveTypes() {
-        return PRIMITIVE_TO_WRAPPER_TYPE.keySet();
-    }
-
-    /**
-     * Returns an immutable set of all nine primitive-wrapper types (including {@link Void}).
-     *
-     */
-    public static Set<Class<?>> allWrapperTypes() {
-        return WRAPPER_TO_PRIMITIVE_TYPE.keySet();
-    }
-
-    /**
      * Returns {@code true} if {@code type} is one of the nine primitive-wrapper types, such as {@link
      * Integer}.
      *
      * @see Class#isPrimitive
      */
     public static boolean isWrapperType(@NotNull Class<?> type) {
-        return WRAPPER_TO_PRIMITIVE_TYPE.containsKey(type);
+        return wrapperToPrimitiveTypes.containsKey(type);
     }
 
     /**
@@ -89,7 +110,7 @@ public class PrimitiveUtil {
      * </pre>
      */
     public static <T> Class<T> wrap(@NotNull Class<T> type) {
-        Class<T> wrapped = (Class<T>) PRIMITIVE_TO_WRAPPER_TYPE.get(type);
+        Class<T> wrapped = (Class<T>) primitiveToWrapperTypes.get(type);
         return (wrapped == null) ? type : wrapped;
     }
 
@@ -104,7 +125,7 @@ public class PrimitiveUtil {
      * </pre>
      */
     public static <T> Class<T> unwrap(@NotNull Class<T> type) {
-        Class<T> unwrapped = (Class<T>) WRAPPER_TO_PRIMITIVE_TYPE.get(type);
+        Class<T> unwrapped = (Class<T>) wrapperToPrimitiveTypes.get(type);
         return (unwrapped == null) ? type : unwrapped;
     }
 

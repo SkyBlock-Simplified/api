@@ -3,16 +3,23 @@ package dev.sbs.api.util.helper;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.commons.text.translate.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.Normalizer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -104,6 +111,7 @@ import java.util.regex.Pattern;
 public class StringUtil {
 
     private static final int STRING_BUILDER_SIZE = 256;
+    private static final int TO_STRING_LIMIT = 16;
 
     /**
      * A String for a space character.
@@ -471,45 +479,274 @@ public class StringUtil {
     }
 
     /**
-     * <p>Capitalizes a String changing the first character to title case as
-     * per {@link Character#toTitleCase(int)}. No other characters are changed.</p>
+     * <p>Capitalizes all the whitespace separated words in a String.
+     * Only the first character of each word is changed. To convert the
+     * rest of each word to lowercase at the same time,
+     * use {@link #capitalizeFully(String)}.</p>
      *
-     * <p>For a word based algorithm, see {@link WordUtil#capitalize(String)}.
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
+     * A {@code null} input String returns {@code null}.
+     * Capitalization uses the Unicode title case, normally equivalent to
+     * upper case.</p>
+     *
+     * <pre>
+     * WordUtils.capitalize(null)        = null
+     * WordUtils.capitalize("")          = ""
+     * WordUtils.capitalize("i am FINE") = "I Am FINE"
+     * </pre>
+     *
+     * @param str  the String to capitalize, may be null
+     * @return capitalized String, {@code null} if null String input
+     * @see #uncapitalize(String)
+     * @see #capitalizeFully(String)
+     */
+    public static String capitalize(final String str) {
+        return capitalize(str, null);
+    }
+
+    /**
+     * <p>Capitalizes all the delimiter separated words in a String.
+     * Only the first character of each word is changed. To convert the
+     * rest of each word to lowercase at the same time,
+     * use {@link #capitalizeFully(String, char[])}.</p>
+     *
+     * <p>The delimiters represent a set of characters understood to separate words.
+     * The first string character and the first non-delimiter character after a
+     * delimiter will be capitalized.</p>
+     *
+     * <p>A {@code null} input String returns {@code null}.
+     * Capitalization uses the Unicode title case, normally equivalent to
+     * upper case.</p>
+     *
+     * <pre>
+     * WordUtils.capitalize(null, *)            = null
+     * WordUtils.capitalize("", *)              = ""
+     * WordUtils.capitalize(*, new char[0])     = *
+     * WordUtils.capitalize("i am fine", null)  = "I Am Fine"
+     * WordUtils.capitalize("i aM.fine", {'.'}) = "I aM.Fine"
+     * WordUtils.capitalize("i am fine", new char[]{}) = "I am fine"
+     * </pre>
+     *
+     * @param str  the String to capitalize, may be null
+     * @param delimiters  set of characters to determine capitalization, null means whitespace
+     * @return capitalized String, {@code null} if null String input
+     * @see #uncapitalize(String)
+     * @see #capitalizeFully(String)
+     */
+    public static String capitalize(final String str, final char... delimiters) {
+        if (StringUtil.isEmpty(str)) {
+            return str;
+        }
+        final Set<Integer> delimiterSet = generateDelimiterSet(delimiters);
+        final int strLen = str.length();
+        final int[] newCodePoints = new int[strLen];
+        int outOffset = 0;
+
+        boolean capitalizeNext = true;
+        for (int index = 0; index < strLen;) {
+            final int codePoint = str.codePointAt(index);
+
+            if (delimiterSet.contains(codePoint)) {
+                capitalizeNext = true;
+                newCodePoints[outOffset++] = codePoint;
+                index += Character.charCount(codePoint);
+            } else if (capitalizeNext) {
+                final int titleCaseCodePoint = Character.toTitleCase(codePoint);
+                newCodePoints[outOffset++] = titleCaseCodePoint;
+                index += Character.charCount(titleCaseCodePoint);
+                capitalizeNext = false;
+            } else {
+                newCodePoints[outOffset++] = codePoint;
+                index += Character.charCount(codePoint);
+            }
+        }
+        return new String(newCodePoints, 0, outOffset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Converts all the whitespace separated words in a String into capitalized words,
+     * that is each word is made up of a titlecase character and then a series of
+     * lowercase characters.</p>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
+     * A {@code null} input String returns {@code null}.
+     * Capitalization uses the Unicode title case, normally equivalent to
+     * upper case.</p>
+     *
+     * <pre>
+     * WordUtils.capitalizeFully(null)        = null
+     * WordUtils.capitalizeFully("")          = ""
+     * WordUtils.capitalizeFully("i am FINE") = "I Am Fine"
+     * </pre>
+     *
+     * @param str  the String to capitalize, may be null
+     * @return capitalized String, {@code null} if null String input
+     */
+    public static String capitalizeFully(final String str) {
+        return capitalizeFully(str,null);
+    }
+
+    /**
+     * <p>Converts all the delimiter separated words in a String into capitalized words,
+     * that is each word is made up of a titlecase character and then a series of
+     * lowercase characters.</p>
+     *
+     * <p>The delimiters represent a set of characters understood to separate words.
+     * The first string character and the first non-delimiter character after a
+     * delimiter will be capitalized.</p>
+     *
+     * <p>A {@code null} input String returns {@code null}.
+     * Capitalization uses the Unicode title case, normally equivalent to
+     * upper case.</p>
+     *
+     * <pre>
+     * WordUtils.capitalizeFully(null, *)            = null
+     * WordUtils.capitalizeFully("", *)              = ""
+     * WordUtils.capitalizeFully(*, null)            = *
+     * WordUtils.capitalizeFully(*, new char[0])     = *
+     * WordUtils.capitalizeFully("i aM.fine", {'.'}) = "I am.Fine"
+     * </pre>
+     *
+     * @param str  the String to capitalize, may be null
+     * @param delimiters  set of characters to determine capitalization, null means whitespace
+     * @return capitalized String, {@code null} if null String input
+     */
+    public static String capitalizeFully(String str, final char... delimiters) {
+        if (StringUtil.isEmpty(str)) {
+            return str;
+        }
+        str = str.toLowerCase();
+        return capitalize(str, delimiters);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Uncapitalizes all the whitespace separated words in a String.
+     * Only the first character of each word is changed.</p>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtil.capitalize(null)  = null
-     * StringUtil.capitalize("")    = ""
-     * StringUtil.capitalize("cat") = "Cat"
-     * StringUtil.capitalize("cAt") = "CAt"
-     * StringUtil.capitalize("'cat'") = "'cat'"
+     * WordUtils.uncapitalize(null)        = null
+     * WordUtils.uncapitalize("")          = ""
+     * WordUtils.uncapitalize("I Am FINE") = "i am fINE"
      * </pre>
      *
-     * @param str the String to capitalize, may be null
-     * @return the capitalized String, {@code null} if null String input
-     * @see StringUtil#capitalize(String)
-     * @see #uncapitalize(String)
+     * @param str  the String to uncapitalize, may be null
+     * @return uncapitalized String, {@code null} if null String input
+     * @see #capitalize(String)
      */
-    public static String capitalize(final String str) {
-        final int strLen = length(str);
-        if (strLen == 0) {
+    public static String uncapitalize(final String str) {
+        return uncapitalize(str, null);
+    }
+
+    /**
+     * <p>Uncapitalizes all the whitespace separated words in a String.
+     * Only the first character of each word is changed.</p>
+     *
+     * <p>The delimiters represent a set of characters understood to separate words.
+     * The first string character and the first non-delimiter character after a
+     * delimiter will be uncapitalized.</p>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
+     * A {@code null} input String returns {@code null}.</p>
+     *
+     * <pre>
+     * WordUtils.uncapitalize(null, *)            = null
+     * WordUtils.uncapitalize("", *)              = ""
+     * WordUtils.uncapitalize(*, null)            = *
+     * WordUtils.uncapitalize(*, new char[0])     = *
+     * WordUtils.uncapitalize("I AM.FINE", {'.'}) = "i AM.fINE"
+     * WordUtils.uncapitalize("I am fine", new char[]{}) = "i am fine"
+     * </pre>
+     *
+     * @param str  the String to uncapitalize, may be null
+     * @param delimiters  set of characters to determine uncapitalization, null means whitespace
+     * @return uncapitalized String, {@code null} if null String input
+     * @see #capitalize(String)
+     */
+    public static String uncapitalize(final String str, final char... delimiters) {
+        if (StringUtil.isEmpty(str)) {
             return str;
         }
-
-        final int firstCodepoint = str.codePointAt(0);
-        final int newCodePoint = Character.toTitleCase(firstCodepoint);
-        if (firstCodepoint == newCodePoint) {
-            // already capitalized
-            return str;
-        }
-
-        final int[] newCodePoints = new int[strLen]; // cannot be longer than the char array
+        final Set<Integer> delimiterSet = generateDelimiterSet(delimiters);
+        final int strLen = str.length();
+        final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
-        newCodePoints[outOffset++] = newCodePoint; // copy the first codepoint
-        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
-            final int codepoint = str.codePointAt(inOffset);
-            newCodePoints[outOffset++] = codepoint; // copy the remaining ones
-            inOffset += Character.charCount(codepoint);
+
+        boolean uncapitalizeNext = true;
+        for (int index = 0; index < strLen;) {
+            final int codePoint = str.codePointAt(index);
+
+            if (delimiterSet.contains(codePoint)) {
+                uncapitalizeNext = true;
+                newCodePoints[outOffset++] = codePoint;
+                index += Character.charCount(codePoint);
+            } else if (uncapitalizeNext) {
+                final int titleCaseCodePoint = Character.toLowerCase(codePoint);
+                newCodePoints[outOffset++] = titleCaseCodePoint;
+                index += Character.charCount(titleCaseCodePoint);
+                uncapitalizeNext = false;
+            } else {
+                newCodePoints[outOffset++] = codePoint;
+                index += Character.charCount(codePoint);
+            }
+        }
+        return new String(newCodePoints, 0, outOffset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Swaps the case of a String using a word based algorithm.</p>
+     *
+     * <ul>
+     *  <li>Upper case character converts to Lower case</li>
+     *  <li>Title case character converts to Lower case</li>
+     *  <li>Lower case character after Whitespace or at start converts to Title case</li>
+     *  <li>Other Lower case character converts to Upper case</li>
+     * </ul>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
+     * A {@code null} input String returns {@code null}.</p>
+     *
+     * <pre>
+     * StringUtil.swapCase(null)                 = null
+     * StringUtil.swapCase("")                   = ""
+     * StringUtil.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
+     * </pre>
+     *
+     * @param str  the String to swap case, may be null
+     * @return The changed String, {@code null} if null String input
+     */
+    public static String swapCase(final String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        final int strLen = str.length();
+        final int[] newCodePoints = new int[strLen];
+        int outOffset = 0;
+        boolean whitespace = true;
+        for (int index = 0; index < strLen;) {
+            final int oldCodepoint = str.codePointAt(index);
+            final int newCodePoint;
+            if (Character.isUpperCase(oldCodepoint) || Character.isTitleCase(oldCodepoint)) {
+                newCodePoint = Character.toLowerCase(oldCodepoint);
+                whitespace = false;
+            } else if (Character.isLowerCase(oldCodepoint)) {
+                if (whitespace) {
+                    newCodePoint = Character.toTitleCase(oldCodepoint);
+                    whitespace = false;
+                } else {
+                    newCodePoint = Character.toUpperCase(oldCodepoint);
+                }
+            } else {
+                whitespace = Character.isWhitespace(oldCodepoint);
+                newCodePoint = oldCodepoint;
+            }
+            newCodePoints[outOffset++] = newCodePoint;
+            index += Character.charCount(newCodePoint);
         }
         return new String(newCodePoints, 0, outOffset);
     }
@@ -910,7 +1147,7 @@ public class StringUtil {
         if (seq == null || searchSeq == null) {
             return false;
         }
-        return CharSequenceUtil.indexOf(seq, searchSeq, 0) >= 0;
+        return indexOf(seq, searchSeq, 0) >= 0;
     }
 
     /**
@@ -935,7 +1172,7 @@ public class StringUtil {
         if (isEmpty(seq)) {
             return false;
         }
-        return CharSequenceUtil.indexOf(seq, searchChar, 0) >= 0;
+        return indexOf(seq, searchChar, 0) >= 0;
     }
 
     /**
@@ -1024,7 +1261,7 @@ public class StringUtil {
         if (searchChars == null) {
             return false;
         }
-        return containsAny(cs, CharSequenceUtil.toCharArray(searchChars));
+        return containsAny(cs, toCharArray(searchChars));
     }
 
     /**
@@ -1093,7 +1330,7 @@ public class StringUtil {
         final int len = searchStr.length();
         final int max = str.length() - len;
         for (int i = 0; i <= max; i++) {
-            if (CharSequenceUtil.regionMatches(str, true, i, searchStr, 0, len)) {
+            if (regionMatches(str, true, i, searchStr, 0, len)) {
                 return true;
             }
         }
@@ -1334,7 +1571,7 @@ public class StringUtil {
         }
         int count = 0;
         int idx = 0;
-        while ((idx = CharSequenceUtil.indexOf(str, sub, idx)) != INDEX_NOT_FOUND) {
+        while ((idx = indexOf(str, sub, idx)) != INDEX_NOT_FOUND) {
             count++;
             idx += sub.length();
         }
@@ -1544,7 +1781,7 @@ public class StringUtil {
             return false;
         }
         final int strOffset = str.length() - suffix.length();
-        return CharSequenceUtil.regionMatches(str, ignoreCase, strOffset, suffix, 0, suffix.length());
+        return regionMatches(str, ignoreCase, strOffset, suffix, 0, suffix.length());
     }
 
     /**
@@ -1736,7 +1973,7 @@ public class StringUtil {
         if (cs1.length() != cs2.length()) {
             return false;
         }
-        return CharSequenceUtil.regionMatches(cs1, true, 0, cs2, 0, cs1.length());
+        return regionMatches(cs1, true, 0, cs2, 0, cs1.length());
     }
 
     /**
@@ -2003,7 +2240,7 @@ public class StringUtil {
         if (seq == null || searchSeq == null) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.indexOf(seq, searchSeq, 0);
+        return indexOf(seq, searchSeq, 0);
     }
 
     /**
@@ -2041,7 +2278,15 @@ public class StringUtil {
         if (seq == null || searchSeq == null) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.indexOf(seq, searchSeq, startPos);
+
+        if (seq instanceof String) {
+            return ((String) seq).indexOf(searchSeq.toString(), startPos);
+        } else if (seq instanceof java.lang.StringBuilder) {
+            return ((java.lang.StringBuilder) seq).indexOf(searchSeq.toString(), startPos);
+        } else if (seq instanceof StringBuffer) {
+            return ((StringBuffer) seq).indexOf(searchSeq.toString(), startPos);
+        }
+        return seq.toString().indexOf(searchSeq.toString(), startPos);
     }
 
     /**
@@ -2082,7 +2327,7 @@ public class StringUtil {
         if (isEmpty(seq)) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.indexOf(seq, searchChar, 0);
+        return indexOf(seq, searchChar, 0);
     }
 
     /**
@@ -2135,11 +2380,37 @@ public class StringUtil {
      * @return the first index of the search character (always &ge; startPos),
      *  -1 if no match or {@code null} string inputisEmptyisEmpty
      */
-    public static int indexOf(final CharSequence seq, final int searchChar, final int startPos) {
+    public static int indexOf(final CharSequence seq, final int searchChar, int startPos) {
         if (isEmpty(seq)) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.indexOf(seq, searchChar, startPos);
+
+        if (seq instanceof String) {
+            return ((String) seq).indexOf(searchChar, startPos);
+        }
+        final int sz = seq.length();
+        if (startPos < 0) {
+            startPos = 0;
+        }
+        if (searchChar < Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+            for (int i = startPos; i < sz; i++) {
+                if (seq.charAt(i) == searchChar) {
+                    return i;
+                }
+            }
+        }
+        //supplementary characters (LANG1300)
+        if (searchChar <= Character.MAX_CODE_POINT) {
+            final char[] chars = Character.toChars(searchChar);
+            for (int i = startPos; i < sz - 1; i++) {
+                final char high = seq.charAt(i);
+                final char low = seq.charAt(i + 1);
+                if (high == chars[0] && low == chars[1]) {
+                    return i;
+                }
+            }
+        }
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2228,7 +2499,7 @@ public class StringUtil {
             if (search == null) {
                 continue;
             }
-            tmp = CharSequenceUtil.indexOf(str, search, 0);
+            tmp = indexOf(str, search, 0);
             if (tmp == INDEX_NOT_FOUND) {
                 continue;
             }
@@ -2346,10 +2617,10 @@ public class StringUtil {
         final int strLen = seq.length();
         for (int i = 0; i < strLen; i++) {
             final char ch = seq.charAt(i);
-            final boolean chFound = CharSequenceUtil.indexOf(searchChars, ch, 0) >= 0;
+            final boolean chFound = indexOf(searchChars, ch, 0) >= 0;
             if (i + 1 < strLen && Character.isHighSurrogate(ch)) {
                 final char ch2 = seq.charAt(i + 1);
-                if (chFound && CharSequenceUtil.indexOf(searchChars, ch2, 0) < 0) {
+                if (chFound && indexOf(searchChars, ch2, 0) < 0) {
                     return i;
                 }
             } else {
@@ -2563,7 +2834,7 @@ public class StringUtil {
             return startPos;
         }
         for (int i = startPos; i < endLimit; i++) {
-            if (CharSequenceUtil.regionMatches(str, true, i, searchStr, 0, searchStr.length())) {
+            if (regionMatches(str, true, i, searchStr, 0, searchStr.length())) {
                 return i;
             }
         }
@@ -4236,7 +4507,7 @@ public class StringUtil {
         if (seq == null || searchSeq == null) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.lastIndexOf(seq, searchSeq, seq.length());
+        return lastIndexOf(seq, searchSeq, seq.length());
     }
 
     /**
@@ -4272,11 +4543,81 @@ public class StringUtil {
      * @return the last index of the search CharSequence (always &le; startPos),
      *  -1 if no match or {@code null} string inputisEmpty
      */
-    public static int lastIndexOf(final CharSequence seq, final CharSequence searchSeq, final int startPos) {
+    public static int lastIndexOf(final CharSequence seq, final CharSequence searchSeq, int startPos) {
         if (seq == null || searchSeq == null) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.lastIndexOf(seq, searchSeq, startPos);
+
+        if (searchSeq instanceof String) {
+            if (seq instanceof String) {
+                return ((String) seq).lastIndexOf((String) searchSeq, startPos);
+            } else if (seq instanceof java.lang.StringBuilder) {
+                return ((java.lang.StringBuilder) seq).lastIndexOf((String) searchSeq, startPos);
+            } else if (seq instanceof StringBuffer) {
+                return ((StringBuffer) seq).lastIndexOf((String) searchSeq, startPos);
+            }
+        }
+
+        final int len1 = seq.length();
+        final int len2 = searchSeq.length();
+
+        if (startPos > len1) {
+            startPos = len1;
+        }
+
+        if (startPos < 0 || len2 < 0 || len2 > len1) {
+            return -1;
+        }
+
+        if (len2 == 0) {
+            return startPos;
+        }
+
+        if (len2 <= TO_STRING_LIMIT) {
+            if (seq instanceof String) {
+                return ((String) seq).lastIndexOf(searchSeq.toString(), startPos);
+            } else if (seq instanceof java.lang.StringBuilder) {
+                return ((java.lang.StringBuilder) seq).lastIndexOf(searchSeq.toString(), startPos);
+            } else if (seq instanceof StringBuffer) {
+                return ((StringBuffer) seq).lastIndexOf(searchSeq.toString(), startPos);
+            }
+        }
+
+        if (startPos + len2 > len1) {
+            startPos = len1 - len2;
+        }
+
+        final char char0 = searchSeq.charAt(0);
+
+        int i = startPos;
+        while (true) {
+            while (seq.charAt(i) != char0) {
+                i--;
+                if (i < 0) {
+                    return -1;
+                }
+            }
+            if (checkLaterThan1(seq, searchSeq, len2, i)) {
+                return i;
+            }
+            i--;
+            if (i < 0) {
+                return -1;
+            }
+        }
+    }
+
+    private static boolean checkLaterThan1(final CharSequence cs, final CharSequence searchChar, final int len2, final int start1) {
+        for (int i = 1, j = len2 - 1; i <= j; i++, j--) {
+            if (cs.charAt(start1 + i) != searchChar.charAt(i)
+                ||
+                cs.charAt(start1 + j) != searchChar.charAt(j)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -4314,7 +4655,7 @@ public class StringUtil {
         if (isEmpty(seq)) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.lastIndexOf(seq, searchChar, seq.length());
+        return lastIndexOf(seq, searchChar, 0);
     }
 
     /**
@@ -4359,11 +4700,44 @@ public class StringUtil {
      * @return the last index of the search character (always &le; startPos),
      *  -1 if no match or {@code null} string inputisEmpty
      */
-    public static int lastIndexOf(final CharSequence seq, final int searchChar, final int startPos) {
+    public static int lastIndexOf(final CharSequence seq, final int searchChar, int startPos) {
         if (isEmpty(seq)) {
             return INDEX_NOT_FOUND;
         }
-        return CharSequenceUtil.lastIndexOf(seq, searchChar, startPos);
+        if (seq instanceof String) {
+            return ((String) seq).lastIndexOf(searchChar, startPos);
+        }
+        final int sz = seq.length();
+        if (startPos < 0) {
+            return INDEX_NOT_FOUND;
+        }
+        if (startPos >= sz) {
+            startPos = sz - 1;
+        }
+        if (searchChar < Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+            for (int i = startPos; i >= 0; --i) {
+                if (seq.charAt(i) == searchChar) {
+                    return i;
+                }
+            }
+        }
+        //supplementary characters (LANG1300)
+        //NOTE - we must do a forward traversal for this to avoid duplicating code points
+        if (searchChar <= Character.MAX_CODE_POINT) {
+            final char[] chars = Character.toChars(searchChar);
+            //make sure it's not the last index
+            if (startPos == sz - 1) {
+                return INDEX_NOT_FOUND;
+            }
+            for (int i = startPos; i >= 0; i--) {
+                final char high = seq.charAt(i);
+                final char low = seq.charAt(i + 1);
+                if (chars[0] == high && chars[1] == low) {
+                    return i;
+                }
+            }
+        }
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -4401,7 +4775,7 @@ public class StringUtil {
             if (search == null) {
                 continue;
             }
-            tmp = CharSequenceUtil.lastIndexOf(str, search, str.length());
+            tmp = lastIndexOf(str, search, str.length());
             if (tmp > ret) {
                 ret = tmp;
             }
@@ -4482,7 +4856,7 @@ public class StringUtil {
         }
 
         for (int i = startPos; i >= 0; i--) {
-            if (CharSequenceUtil.regionMatches(str, true, i, searchStr, 0, searchStr.length())) {
+            if (regionMatches(str, true, i, searchStr, 0, searchStr.length())) {
                 return i;
             }
         }
@@ -5029,9 +5403,9 @@ public class StringUtil {
         int index = lastIndex ? str.length() : INDEX_NOT_FOUND;
         do {
             if (lastIndex) {
-                index = CharSequenceUtil.lastIndexOf(str, searchStr, index - 1); // step backwards thru string
+                index = lastIndexOf(str, searchStr, index - 1); // step backwards thru string
             } else {
-                index = CharSequenceUtil.indexOf(str, searchStr, index + 1); // step forwards through string
+                index = indexOf(str, searchStr, index + 1); // step forwards through string
             }
             if (index < 0) {
                 return index;
@@ -5194,6 +5568,64 @@ public class StringUtil {
      */
     public static String prependIfMissingIgnoreCase(final String str, final CharSequence prefix, final CharSequence... prefixes) {
         return prependIfMissing(str, prefix, true, prefixes);
+    }
+
+    /**
+     * Green implementation of regionMatches.
+     *
+     * @param cs the {@code CharSequence} to be processed
+     * @param ignoreCase whether or not to be case insensitive
+     * @param thisStart the index to start on the {@code cs} CharSequence
+     * @param substring the {@code CharSequence} to be looked for
+     * @param start the index to start on the {@code substring} CharSequence
+     * @param length character length of the region
+     * @return whether the region matched
+     */
+    @SuppressWarnings("all")
+    static boolean regionMatches(final CharSequence cs, final boolean ignoreCase, final int thisStart,
+                                 final CharSequence substring, final int start, final int length)    {
+        if (cs instanceof String && substring instanceof String) {
+            return ((String) cs).regionMatches(ignoreCase, thisStart, (String) substring, start, length);
+        }
+        int index1 = thisStart;
+        int index2 = start;
+        int tmpLen = length;
+
+        // Extract these first so we detect NPEs the same as the java.lang.String version
+        final int srcLen = cs.length() - thisStart;
+        final int otherLen = substring.length() - start;
+
+        // Check for invalid parameters
+        if (thisStart < 0 || start < 0 || length < 0) {
+            return false;
+        }
+
+        // Check that the regions are long enough
+        if (srcLen < length || otherLen < length) {
+            return false;
+        }
+
+        while (tmpLen-- > 0) {
+            final char c1 = cs.charAt(index1++);
+            final char c2 = substring.charAt(index2++);
+
+            if (c1 == c2) {
+                continue;
+            }
+
+            if (!ignoreCase) {
+                return false;
+            }
+
+            // The real same check as in String.regionMatches():
+            final char u1 = Character.toUpperCase(c1);
+            final char u2 = Character.toUpperCase(c2);
+            if (u1 != u2 && Character.toLowerCase(u1) != Character.toLowerCase(u2)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -7100,7 +7532,7 @@ public class StringUtil {
         if (prefix.length() > str.length()) {
             return false;
         }
-        return CharSequenceUtil.regionMatches(str, ignoreCase, 0, prefix, 0, prefix.length());
+        return regionMatches(str, ignoreCase, 0, prefix, 0, prefix.length());
     }
 
     /**
@@ -7910,58 +8342,6 @@ public class StringUtil {
     }
 
     /**
-     * <p>Swaps the case of a String changing upper and title case to
-     * lower case, and lower case to upper case.</p>
-     *
-     * <ul>
-     *  <li>Upper case character converts to Lower case</li>
-     *  <li>Title case character converts to Lower case</li>
-     *  <li>Lower case character converts to Upper case</li>
-     * </ul>
-     *
-     * <p>For a word based algorithm, see {@link WordUtil#swapCase(String)}.
-     * A {@code null} input String returns {@code null}.</p>
-     *
-     * <pre>
-     * StringUtil.swapCase(null)                 = null
-     * StringUtil.swapCase("")                   = ""
-     * StringUtil.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
-     * </pre>
-     *
-     * <p>NOTE: This method changed in Lang version 2.0.
-     * It no longer performs a word based algorithm.
-     * If you only use ASCII, you will notice no change.
-     * That functionality is available in WordUtils.</p>
-     *
-     * @param str  the String to swap case, may be null
-     * @return the changed String, {@code null} if null String input
-     */
-    public static String swapCase(final String str) {
-        if (isEmpty(str)) {
-            return str;
-        }
-
-        final int strLen = str.length();
-        final int[] newCodePoints = new int[strLen]; // cannot be longer than the char array
-        int outOffset = 0;
-        for (int i = 0; i < strLen; ) {
-            final int oldCodepoint = str.codePointAt(i);
-            final int newCodePoint;
-            if (Character.isUpperCase(oldCodepoint) || Character.isTitleCase(oldCodepoint)) {
-                newCodePoint = Character.toLowerCase(oldCodepoint);
-            } else if (Character.isLowerCase(oldCodepoint)) {
-                newCodePoint = Character.toUpperCase(oldCodepoint);
-            } else {
-                newCodePoint = oldCodepoint;
-            }
-            newCodePoints[outOffset++] = newCodePoint;
-            i += Character.charCount(newCodePoint);
-        }
-        return new String(newCodePoints, 0, outOffset);
-    }
-
-
-    /**
      * Returns the given Charset or the default Charset if the given Charset is null.
      *
      * @param charset
@@ -7984,7 +8364,6 @@ public class StringUtil {
     public static Charset toCharset(final String charset) throws UnsupportedCharsetException {
         return charset == null ? Charset.defaultCharset() : Charset.forName(charset);
     }
-
 
     /**
      * <p>Converts a {@code CharSequence} into an array of code points.</p>
@@ -8243,50 +8622,6 @@ public class StringUtil {
             return str.substring(offset, ix);
         }
         return str.substring(offset);
-    }
-
-    /**
-     * <p>Uncapitalizes a String, changing the first character to lower case as
-     * per {@link Character#toLowerCase(int)}. No other characters are changed.</p>
-     *
-     * <p>For a word based algorithm, see {@link WordUtil#uncapitalize(String)}.
-     * A {@code null} input String returns {@code null}.</p>
-     *
-     * <pre>
-     * StringUtil.uncapitalize(null)  = null
-     * StringUtil.uncapitalize("")    = ""
-     * StringUtil.uncapitalize("cat") = "cat"
-     * StringUtil.uncapitalize("Cat") = "cat"
-     * StringUtil.uncapitalize("CAT") = "cAT"
-     * </pre>
-     *
-     * @param str the String to uncapitalize, may be null
-     * @return the uncapitalized String, {@code null} if null String input
-     * @see WordUtil#uncapitalize(String)
-     * @see #capitalize(String)
-     */
-    public static String uncapitalize(final String str) {
-        final int strLen = length(str);
-        if (strLen == 0) {
-            return str;
-        }
-
-        final int firstCodepoint = str.codePointAt(0);
-        final int newCodePoint = Character.toLowerCase(firstCodepoint);
-        if (firstCodepoint == newCodePoint) {
-            // already capitalized
-            return str;
-        }
-
-        final int[] newCodePoints = new int[strLen]; // cannot be longer than the char array
-        int outOffset = 0;
-        newCodePoints[outOffset++] = newCodePoint; // copy the first codepoint
-        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
-            final int codepoint = str.codePointAt(inOffset);
-            newCodePoints[outOffset++] = codepoint; // copy the remaining ones
-            inOffset += Character.charCount(codepoint);
-        }
-        return new String(newCodePoints, 0, outOffset);
     }
 
     /**
@@ -8597,806 +8932,691 @@ public class StringUtil {
         return builder.toString();
     }
 
-
-    /* ESCAPE TRANSLATORS */
-
+    // Wrapping
+    //--------------------------------------------------------------------------
     /**
-     * Translator object for escaping Java.
+     * <p>Wraps a single line of text, identifying words by {@code ' '}.</p>
      *
-     * While {@link #escapeJava(String)} is the expected method of use, this
-     * object allows the Java escaping functionality to be used
-     * as the foundation for a custom translator.
+     * <p>New lines will be separated by the system property line separator.
+     * Very long words, such as URLs will <i>not</i> be wrapped.</p>
+     *
+     * <p>Leading spaces on a new line are stripped.
+     * Trailing spaces are not stripped.</p>
+     *
+     * <table border="1">
+     *  <caption>Examples</caption>
+     *  <tr>
+     *   <th>input</th>
+     *   <th>wrapLength</th>
+     *   <th>result</th>
+     *  </tr>
+     *  <tr>
+     *   <td>null</td>
+     *   <td>*</td>
+     *   <td>null</td>
+     *  </tr>
+     *  <tr>
+     *   <td>""</td>
+     *   <td>*</td>
+     *   <td>""</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>"Here is one line of\ntext that is going\nto be wrapped after\n20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Click here to jump to the commons website - https://commons.apache.org"</td>
+     *   <td>20</td>
+     *   <td>"Click here to jump\nto the commons\nwebsite -\nhttps://commons.apache.org"</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Click here, https://commons.apache.org, to jump to the commons website"</td>
+     *   <td>20</td>
+     *   <td>"Click here,\nhttps://commons.apache.org,\nto jump to the\ncommons website"</td>
+     *  </tr>
+     * </table>
+     *
+     * (assuming that '\n' is the systems line separator)
+     *
+     * @param str  the String to be word wrapped, may be null
+     * @param wrapLength  the column to wrap the words at, less than 1 is treated as 1
+     * @return a line with newlines inserted, {@code null} if null input
      */
-    public static final CharSequenceTranslator ESCAPE_JAVA;
-    static {
-        final Map<CharSequence, CharSequence> escapeJavaMap = new HashMap<>();
-        escapeJavaMap.put("\"", "\\\"");
-        escapeJavaMap.put("\\", "\\\\");
-        ESCAPE_JAVA = new AggregateTranslator(
-                new LookupTranslator(Collections.unmodifiableMap(escapeJavaMap)),
-                new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE),
-                JavaUnicodeEscaper.outsideOf(32, 0x7f)
-        );
+    public static String wrap(final String str, final int wrapLength) {
+        return wrap(str, wrapLength, null, false);
     }
 
     /**
-     * Translator object for escaping EcmaScript/JavaScript.
+     * <p>Wraps a single line of text, identifying words by {@code ' '}.</p>
      *
-     * While {@link #escapeEcmaScript(String)} is the expected method of use, this
-     * object allows the EcmaScript escaping functionality to be used
-     * as the foundation for a custom translator.
+     * <p>Leading spaces on a new line are stripped.
+     * Trailing spaces are not stripped.</p>
+     *
+     * <table border="1">
+     *  <caption>Examples</caption>
+     *  <tr>
+     *   <th>input</th>
+     *   <th>wrapLength</th>
+     *   <th>newLineString</th>
+     *   <th>wrapLongWords</th>
+     *   <th>result</th>
+     *  </tr>
+     *  <tr>
+     *   <td>null</td>
+     *   <td>*</td>
+     *   <td>*</td>
+     *   <td>true/false</td>
+     *   <td>null</td>
+     *  </tr>
+     *  <tr>
+     *   <td>""</td>
+     *   <td>*</td>
+     *   <td>*</td>
+     *   <td>true/false</td>
+     *   <td>""</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>true/false</td>
+     *   <td>"Here is one line of\ntext that is going\nto be wrapped after\n20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>"&lt;br /&gt;"</td>
+     *   <td>true/false</td>
+     *   <td>"Here is one line of&lt;br /&gt;text that is going&lt;
+     *   br /&gt;to be wrapped after&lt;br /&gt;20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>null</td>
+     *   <td>true/false</td>
+     *   <td>"Here is one line of" + systemNewLine + "text that is going"
+     *   + systemNewLine + "to be wrapped after" + systemNewLine + "20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Click here to jump to the commons website - https://commons.apache.org"</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>false</td>
+     *   <td>"Click here to jump\nto the commons\nwebsite -\nhttps://commons.apache.org"</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Click here to jump to the commons website - https://commons.apache.org"</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>true</td>
+     *   <td>"Click here to jump\nto the commons\nwebsite -\nhttp://commons.apach\ne.org"</td>
+     *  </tr>
+     * </table>
+     *
+     * @param str  the String to be word wrapped, may be null
+     * @param wrapLength  the column to wrap the words at, less than 1 is treated as 1
+     * @param newLineStr  the string to insert for a new line,
+     *  {@code null} uses the system property line separator
+     * @param wrapLongWords  true if long words (such as URLs) should be wrapped
+     * @return a line with newlines inserted, {@code null} if null input
      */
-    public static final CharSequenceTranslator ESCAPE_ECMASCRIPT;
-    static {
-        final Map<CharSequence, CharSequence> escapeEcmaScriptMap = new HashMap<>();
-        escapeEcmaScriptMap.put("'", "\\'");
-        escapeEcmaScriptMap.put("\"", "\\\"");
-        escapeEcmaScriptMap.put("\\", "\\\\");
-        escapeEcmaScriptMap.put("/", "\\/");
-        ESCAPE_ECMASCRIPT = new AggregateTranslator(
-                new LookupTranslator(Collections.unmodifiableMap(escapeEcmaScriptMap)),
-                new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE),
-                JavaUnicodeEscaper.outsideOf(32, 0x7f)
-        );
+    public static String wrap(final String str,
+                              final int wrapLength,
+                              final String newLineStr,
+                              final boolean wrapLongWords) {
+        return wrap(str, wrapLength, newLineStr, wrapLongWords, " ");
     }
 
     /**
-     * Translator object for escaping Json.
+     * <p>Wraps a single line of text, identifying words by {@code wrapOn}.</p>
      *
-     * While {@link #escapeJson(String)} is the expected method of use, this
-     * object allows the Json escaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator ESCAPE_JSON;
-    static {
-        final Map<CharSequence, CharSequence> escapeJsonMap = new HashMap<>();
-        escapeJsonMap.put("\"", "\\\"");
-        escapeJsonMap.put("\\", "\\\\");
-        escapeJsonMap.put("/", "\\/");
-        ESCAPE_JSON = new AggregateTranslator(
-                new LookupTranslator(Collections.unmodifiableMap(escapeJsonMap)),
-                new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE),
-                JavaUnicodeEscaper.outsideOf(32, 0x7e)
-        );
-    }
-
-    /**
-     * Translator object for escaping XML 1.0.
+     * <p>Leading spaces on a new line are stripped.
+     * Trailing spaces are not stripped.</p>
      *
-     * While {@link #escapeXml10(String)} is the expected method of use, this
-     * object allows the XML escaping functionality to be used
-     * as the foundation for a custom translator.
+     * <table border="1">
+     *  <caption>Examples</caption>
+     *  <tr>
+     *   <th>input</th>
+     *   <th>wrapLength</th>
+     *   <th>newLineString</th>
+     *   <th>wrapLongWords</th>
+     *   <th>wrapOn</th>
+     *   <th>result</th>
+     *  </tr>
+     *  <tr>
+     *   <td>null</td>
+     *   <td>*</td>
+     *   <td>*</td>
+     *   <td>true/false</td>
+     *   <td>*</td>
+     *   <td>null</td>
+     *  </tr>
+     *  <tr>
+     *   <td>""</td>
+     *   <td>*</td>
+     *   <td>*</td>
+     *   <td>true/false</td>
+     *   <td>*</td>
+     *   <td>""</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>true/false</td>
+     *   <td>" "</td>
+     *   <td>"Here is one line of\ntext that is going\nto be wrapped after\n20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>"&lt;br /&gt;"</td>
+     *   <td>true/false</td>
+     *   <td>" "</td>
+     *   <td>"Here is one line of&lt;br /&gt;text that is going&lt;br /&gt;
+     *   to be wrapped after&lt;br /&gt;20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Here is one line of text that is going to be wrapped after 20 columns."</td>
+     *   <td>20</td>
+     *   <td>null</td>
+     *   <td>true/false</td>
+     *   <td>" "</td>
+     *   <td>"Here is one line of" + systemNewLine + "text that is going"
+     *   + systemNewLine + "to be wrapped after" + systemNewLine + "20 columns."</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Click here to jump to the commons website - https://commons.apache.org"</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>false</td>
+     *   <td>" "</td>
+     *   <td>"Click here to jump\nto the commons\nwebsite -\nhttps://commons.apache.org"</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"Click here to jump to the commons website - https://commons.apache.org"</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>true</td>
+     *   <td>" "</td>
+     *   <td>"Click here to jump\nto the commons\nwebsite -\nhttp://commons.apach\ne.org"</td>
+     *  </tr>
+     *  <tr>
+     *   <td>"flammable/inflammable"</td>
+     *   <td>20</td>
+     *   <td>"\n"</td>
+     *   <td>true</td>
+     *   <td>"/"</td>
+     *   <td>"flammable\ninflammable"</td>
+     *  </tr>
+     * </table>
+     * @param str  the String to be word wrapped, may be null
+     * @param wrapLength  the column to wrap the words at, less than 1 is treated as 1
+     * @param newLineStr  the string to insert for a new line,
+     *  {@code null} uses the system property line separator
+     * @param wrapLongWords  true if long words (such as URLs) should be wrapped
+     * @param wrapOn regex expression to be used as a breakable characters,
+     *               if blank string is provided a space character will be used
+     * @return a line with newlines inserted, {@code null} if null input
      */
-    public static final CharSequenceTranslator ESCAPE_XML10;
-    static {
-        final Map<CharSequence, CharSequence> escapeXml10Map = new HashMap<>();
-        escapeXml10Map.put("\u0000", EMPTY);
-        escapeXml10Map.put("\u0001", EMPTY);
-        escapeXml10Map.put("\u0002", EMPTY);
-        escapeXml10Map.put("\u0003", EMPTY);
-        escapeXml10Map.put("\u0004", EMPTY);
-        escapeXml10Map.put("\u0005", EMPTY);
-        escapeXml10Map.put("\u0006", EMPTY);
-        escapeXml10Map.put("\u0007", EMPTY);
-        escapeXml10Map.put("\u0008", EMPTY);
-        escapeXml10Map.put("\u000b", EMPTY);
-        escapeXml10Map.put("\u000c", EMPTY);
-        escapeXml10Map.put("\u000e", EMPTY);
-        escapeXml10Map.put("\u000f", EMPTY);
-        escapeXml10Map.put("\u0010", EMPTY);
-        escapeXml10Map.put("\u0011", EMPTY);
-        escapeXml10Map.put("\u0012", EMPTY);
-        escapeXml10Map.put("\u0013", EMPTY);
-        escapeXml10Map.put("\u0014", EMPTY);
-        escapeXml10Map.put("\u0015", EMPTY);
-        escapeXml10Map.put("\u0016", EMPTY);
-        escapeXml10Map.put("\u0017", EMPTY);
-        escapeXml10Map.put("\u0018", EMPTY);
-        escapeXml10Map.put("\u0019", EMPTY);
-        escapeXml10Map.put("\u001a", EMPTY);
-        escapeXml10Map.put("\u001b", EMPTY);
-        escapeXml10Map.put("\u001c", EMPTY);
-        escapeXml10Map.put("\u001d", EMPTY);
-        escapeXml10Map.put("\u001e", EMPTY);
-        escapeXml10Map.put("\u001f", EMPTY);
-        escapeXml10Map.put("\ufffe", EMPTY);
-        escapeXml10Map.put("\uffff", EMPTY);
-        ESCAPE_XML10 = new AggregateTranslator(
-                new LookupTranslator(EntityArrays.BASIC_ESCAPE),
-                new LookupTranslator(EntityArrays.APOS_ESCAPE),
-                new LookupTranslator(Collections.unmodifiableMap(escapeXml10Map)),
-                NumericEntityEscaper.between(0x7f, 0x84),
-                NumericEntityEscaper.between(0x86, 0x9f),
-                new UnicodeUnpairedSurrogateRemover()
-        );
-    }
+    public static String wrap(final String str,
+                              int wrapLength,
+                              String newLineStr,
+                              final boolean wrapLongWords,
+                              String wrapOn) {
+        if (str == null) {
+            return null;
+        }
+        if (newLineStr == null) {
+            newLineStr = System.lineSeparator();
+        }
+        if (wrapLength < 1) {
+            wrapLength = 1;
+        }
+        if (StringUtil.isBlank(wrapOn)) {
+            wrapOn = " ";
+        }
+        final Pattern patternToWrapOn = Pattern.compile(wrapOn);
+        final int inputLineLength = str.length();
+        int offset = 0;
+        final java.lang.StringBuilder wrappedLine = new java.lang.StringBuilder(inputLineLength + 32);
+        int matcherSize = -1;
 
-    /**
-     * Translator object for escaping XML 1.1.
-     *
-     * While {@link #escapeXml11(String)} is the expected method of use, this
-     * object allows the XML escaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator ESCAPE_XML11;
-    static {
-        final Map<CharSequence, CharSequence> escapeXml11Map = new HashMap<>();
-        escapeXml11Map.put("\u0000", EMPTY);
-        escapeXml11Map.put("\u000b", "&#11;");
-        escapeXml11Map.put("\u000c", "&#12;");
-        escapeXml11Map.put("\ufffe", EMPTY);
-        escapeXml11Map.put("\uffff", EMPTY);
-        ESCAPE_XML11 = new AggregateTranslator(
-                new LookupTranslator(EntityArrays.BASIC_ESCAPE),
-                new LookupTranslator(EntityArrays.APOS_ESCAPE),
-                new LookupTranslator(Collections.unmodifiableMap(escapeXml11Map)),
-                NumericEntityEscaper.between(0x1, 0x8),
-                NumericEntityEscaper.between(0xe, 0x1f),
-                NumericEntityEscaper.between(0x7f, 0x84),
-                NumericEntityEscaper.between(0x86, 0x9f),
-                new UnicodeUnpairedSurrogateRemover()
-        );
-    }
-
-    /**
-     * Translator object for escaping HTML version 3.0.
-     *
-     * While {@link #escapeHtml3(String)} is the expected method of use, this
-     * object allows the HTML escaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator ESCAPE_HTML3 =
-            new AggregateTranslator(
-                    new LookupTranslator(EntityArrays.BASIC_ESCAPE),
-                    new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE)
-            );
-
-    /**
-     * Translator object for escaping HTML version 4.0.
-     *
-     * While {@link #escapeHtml4(String)} is the expected method of use, this
-     * object allows the HTML escaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator ESCAPE_HTML4 =
-            new AggregateTranslator(
-                    new LookupTranslator(EntityArrays.BASIC_ESCAPE),
-                    new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE),
-                    new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE)
-            );
-
-    /**
-     * Translator object for escaping individual Comma Separated Values.
-     *
-     * While {@link #escapeCsv(String)} is the expected method of use, this
-     * object allows the CSV escaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator ESCAPE_CSV = new CsvTranslators.CsvEscaper();
-
-    /**
-     * Translator object for escaping Shell command language.
-     *
-     * @see <a href="http://pubs.opengroup.org/onlinepubs/7908799/xcu/chap2.html">Shell Command Language</a>
-     */
-    public static final CharSequenceTranslator ESCAPE_XSI;
-    static {
-        final Map<CharSequence, CharSequence> escapeXsiMap = new HashMap<>();
-        escapeXsiMap.put("|", "\\|");
-        escapeXsiMap.put("&", "\\&");
-        escapeXsiMap.put(";", "\\;");
-        escapeXsiMap.put("<", "\\<");
-        escapeXsiMap.put(">", "\\>");
-        escapeXsiMap.put("(", "\\(");
-        escapeXsiMap.put(")", "\\)");
-        escapeXsiMap.put("$", "\\$");
-        escapeXsiMap.put("`", "\\`");
-        escapeXsiMap.put("\\", "\\\\");
-        escapeXsiMap.put("\"", "\\\"");
-        escapeXsiMap.put("'", "\\'");
-        escapeXsiMap.put(" ", "\\ ");
-        escapeXsiMap.put("\t", "\\\t");
-        escapeXsiMap.put("\r\n", StringUtil.EMPTY);
-        escapeXsiMap.put("\n", StringUtil.EMPTY);
-        escapeXsiMap.put("*", "\\*");
-        escapeXsiMap.put("?", "\\?");
-        escapeXsiMap.put("[", "\\[");
-        escapeXsiMap.put("#", "\\#");
-        escapeXsiMap.put("~", "\\~");
-        escapeXsiMap.put("=", "\\=");
-        escapeXsiMap.put("%", "\\%");
-        ESCAPE_XSI = new LookupTranslator(
-                Collections.unmodifiableMap(escapeXsiMap)
-        );
-    }
-
-    /* UNESCAPE TRANSLATORS */
-
-    /**
-     * Translator object for unescaping escaped Java.
-     *
-     * While {@link #unescapeJava(String)} is the expected method of use, this
-     * object allows the Java unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_JAVA;
-    static {
-        final Map<CharSequence, CharSequence> unescapeJavaMap = new HashMap<>();
-        unescapeJavaMap.put("\\\\", "\\");
-        unescapeJavaMap.put("\\\"", "\"");
-        unescapeJavaMap.put("\\'", "'");
-        unescapeJavaMap.put("\\", EMPTY);
-        UNESCAPE_JAVA = new AggregateTranslator(
-                new OctalUnescaper(),     // .between('\1', '\377'),
-                new UnicodeUnescaper(),
-                new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_UNESCAPE),
-                new LookupTranslator(Collections.unmodifiableMap(unescapeJavaMap))
-        );
-    }
-
-    /**
-     * Translator object for unescaping escaped EcmaScript.
-     *
-     * While {@link #unescapeEcmaScript(String)} is the expected method of use, this
-     * object allows the EcmaScript unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_ECMASCRIPT = UNESCAPE_JAVA;
-
-    /**
-     * Translator object for unescaping escaped Json.
-     *
-     * While {@link #unescapeJson(String)} is the expected method of use, this
-     * object allows the Json unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_JSON = UNESCAPE_JAVA;
-
-    /**
-     * Translator object for unescaping escaped HTML 3.0.
-     *
-     * While {@link #unescapeHtml3(String)} is the expected method of use, this
-     * object allows the HTML unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_HTML3 =
-            new AggregateTranslator(
-                    new LookupTranslator(EntityArrays.BASIC_UNESCAPE),
-                    new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE),
-                    new NumericEntityUnescaper()
-            );
-
-    /**
-     * Translator object for unescaping escaped HTML 4.0.
-     *
-     * While {@link #unescapeHtml4(String)} is the expected method of use, this
-     * object allows the HTML unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_HTML4 =
-            new AggregateTranslator(
-                    new LookupTranslator(EntityArrays.BASIC_UNESCAPE),
-                    new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE),
-                    new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE),
-                    new NumericEntityUnescaper()
-            );
-
-    /**
-     * Translator object for unescaping escaped XML.
-     *
-     * While {@link #unescapeXml(String)} is the expected method of use, this
-     * object allows the XML unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_XML =
-            new AggregateTranslator(
-                    new LookupTranslator(EntityArrays.BASIC_UNESCAPE),
-                    new LookupTranslator(EntityArrays.APOS_UNESCAPE),
-                    new NumericEntityUnescaper()
-            );
-
-    /**
-     * Translator object for unescaping escaped Comma Separated Value entries.
-     *
-     * While {@link #unescapeCsv(String)} is the expected method of use, this
-     * object allows the CSV unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_CSV = new CsvTranslators.CsvUnescaper();
-
-    /**
-     * Translator object for unescaping escaped XSI Value entries.
-     *
-     * While {@link #unescapeXSI(String)}  is the expected method of use, this
-     * object allows the XSI unescaping functionality to be used
-     * as the foundation for a custom translator.
-     */
-    public static final CharSequenceTranslator UNESCAPE_XSI = new XsiUnescaper();
-
-    /**
-     * Translator object for unescaping backslash escaped entries.
-     */
-    static class XsiUnescaper extends CharSequenceTranslator {
-
-        /**
-         * Escaped backslash constant.
-         */
-        private static final char BACKSLASH = '\\';
-
-        @Override
-        public int translate(final CharSequence input, final int index, final Writer out) throws IOException {
-
-            if (index != 0) {
-                throw new IllegalStateException("XsiUnescaper should never reach the [1] index");
-            }
-
-            final String s = input.toString();
-
-            int segmentStart = 0;
-            int searchOffset = 0;
-            while (true) {
-                final int pos = s.indexOf(BACKSLASH, searchOffset);
-                if (pos == -1) {
-                    if (segmentStart < s.length()) {
-                        out.write(s.substring(segmentStart));
+        while (offset < inputLineLength) {
+            int spaceToWrapAt = -1;
+            Matcher matcher = patternToWrapOn.matcher(str.substring(offset,
+                                                                    Math.min((int) Math.min(Integer.MAX_VALUE, offset + wrapLength + 1L), inputLineLength)));
+            if (matcher.find()) {
+                if (matcher.start() == 0) {
+                    matcherSize = matcher.end();
+                    if (matcherSize != 0) {
+                        offset += matcher.end();
+                        continue;
                     }
-                    break;
+                    offset += 1;
                 }
-                if (pos > segmentStart) {
-                    out.write(s.substring(segmentStart, pos));
-                }
-                segmentStart = pos + 1;
-                searchOffset = pos + 2;
+                spaceToWrapAt = matcher.start() + offset;
             }
 
-            return Character.codePointCount(input, 0, input.length());
-        }
-    }
+            // only last line without leading spaces is left
+            if (inputLineLength - offset <= wrapLength) {
+                break;
+            }
 
-    /* Helper functions */
+            while (matcher.find()) {
+                spaceToWrapAt = matcher.start() + offset;
+            }
 
-    /**
-     * <p>Convenience wrapper for {@link StringBuilder} providing escape methods.</p>
-     *
-     * <p>Example:</p>
-     * <pre>
-     * new Builder(ESCAPE_HTML4)
-     *      .append("&lt;p&gt;")
-     *      .escape("This is paragraph 1 and special chars like &amp; get escaped.")
-     *      .append("&lt;/p&gt;&lt;p&gt;")
-     *      .escape("This is paragraph 2 &amp; more...")
-     *      .append("&lt;/p&gt;")
-     *      .toString()
-     * </pre>
-     *
-     */
-    public static final class Builder {
+            if (spaceToWrapAt >= offset) {
+                // normal case
+                wrappedLine.append(str, offset, spaceToWrapAt);
+                wrappedLine.append(newLineStr);
+                offset = spaceToWrapAt + 1;
 
-        /**
-         * StringBuilder to be used in the Builder class.
-         */
-        private final java.lang.StringBuilder sb;
+            } else {
+                // really long word or URL
+                if (wrapLongWords) {
+                    if (matcherSize == 0) {
+                        offset--;
+                    }
+                    // wrap really long word one line at a time
+                    wrappedLine.append(str, offset, wrapLength + offset);
+                    wrappedLine.append(newLineStr);
+                    offset += wrapLength;
+                    matcherSize = -1;
+                } else {
+                    // do not wrap really long word, just extend beyond limit
+                    matcher = patternToWrapOn.matcher(str.substring(offset + wrapLength));
+                    if (matcher.find()) {
+                        matcherSize = matcher.end() - matcher.start();
+                        spaceToWrapAt = matcher.start() + offset + wrapLength;
+                    }
 
-        /**
-         * CharSequenceTranslator to be used in the Builder class.
-         */
-        private final CharSequenceTranslator translator;
-
-        /**
-         * Builder constructor.
-         *
-         * @param translator a CharSequenceTranslator.
-         */
-        private Builder(final CharSequenceTranslator translator) {
-            this.sb = new java.lang.StringBuilder();
-            this.translator = translator;
-        }
-
-        /**
-         * <p>Escape {@code input} according to the given {@link CharSequenceTranslator}.</p>
-         *
-         * @param input the String to escape
-         * @return {@code this}, to enable chaining
-         */
-        public Builder escape(final String input) {
-            sb.append(translator.translate(input));
-            return this;
-        }
-
-        /**
-         * Literal append, no escaping being done.
-         *
-         * @param input the String to append
-         * @return {@code this}, to enable chaining
-         */
-        public Builder append(final String input) {
-            sb.append(input);
-            return this;
+                    if (spaceToWrapAt >= 0) {
+                        if (matcherSize == 0 && offset != 0) {
+                            offset--;
+                        }
+                        wrappedLine.append(str, offset, spaceToWrapAt);
+                        wrappedLine.append(newLineStr);
+                        offset = spaceToWrapAt + 1;
+                    } else {
+                        if (matcherSize == 0 && offset != 0) {
+                            offset--;
+                        }
+                        wrappedLine.append(str, offset, str.length());
+                        offset = inputLineLength;
+                        matcherSize = -1;
+                    }
+                }
+            }
         }
 
-        /**
-         * <p>Return the escaped string.</p>
-         *
-         * @return The escaped string
-         */
-        @Override
-        public String toString() {
-            return sb.toString();
+        if (matcherSize == 0 && offset < inputLineLength) {
+            offset--;
         }
+
+        // Whatever is left in line is short enough to just pass through
+        wrappedLine.append(str, offset, str.length());
+
+        return wrappedLine.toString();
     }
 
+    // -----------------------------------------------------------------------
     /**
-     * Get a {@link Builder}.
-     * @param translator the text translator
-     * @return {@link Builder}
-     */
-    public static Builder builder(final CharSequenceTranslator translator) {
-        return new Builder(translator);
-    }
-
-    // Java and JavaScript
-    //--------------------------------------------------------------------------
-    /**
-     * <p>Escapes the characters in a {@code String} using Java String rules.</p>
-     *
-     * <p>Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
-     *
-     * <p>So a tab becomes the characters {@code '\\'} and
-     * {@code 't'}.</p>
-     *
-     * <p>The only difference between Java strings and JavaScript strings
-     * is that in JavaScript, a single quote and forward-slash (/) are escaped.</p>
-     *
-     * <p>Example:</p>
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He didn't say, \"Stop!\"
-     * </pre>
-     *
-     * @param input  String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
-     */
-    public static String escapeJava(final String input) {
-        return ESCAPE_JAVA.translate(input);
-    }
-
-    /**
-     * <p>Escapes the characters in a {@code String} using EcmaScript String rules.</p>
-     * <p>Escapes any values it finds into their EcmaScript String form.
-     * Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
-     *
-     * <p>So a tab becomes the characters {@code '\\'} and
-     * {@code 't'}.</p>
-     *
-     * <p>The only difference between Java strings and EcmaScript strings
-     * is that in EcmaScript, a single quote and forward-slash (/) are escaped.</p>
-     *
-     * <p>Note that EcmaScript is best known by the JavaScript and ActionScript dialects.</p>
-     *
-     * <p>Example:</p>
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He didn\'t say, \"Stop!\"
-     * </pre>
-     *
-     * <b>Security Note.</b> We only provide backslash escaping in this method. For example, {@code '\"'} has the output
-     * {@code '\\\"'} which could result in potential issues in the case where the string being escaped is being used
-     * in an HTML tag like {@code <select onmouseover="..." />}. If you wish to have more rigorous string escaping, you
-     * may consider the
-     * <a href="https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API_JAVA">ESAPI Libraries</a>.
-     * Further, you can view the <a href="https://github.com/esapi">ESAPI GitHub Org</a>.
-     *
-     * @param input  String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
-     */
-    public static String escapeEcmaScript(final String input) {
-        return ESCAPE_ECMASCRIPT.translate(input);
-    }
-
-    /**
-     * <p>Escapes the characters in a {@code String} using Json String rules.</p>
-     * <p>Escapes any values it finds into their Json String form.
-     * Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
-     *
-     * <p>So a tab becomes the characters {@code '\\'} and
-     * {@code 't'}.</p>
-     *
-     * <p>The only difference between Java strings and Json strings
-     * is that in Json, forward-slash (/) is escaped.</p>
-     *
-     * <p>See http://www.ietf.org/rfc/rfc4627.txt for further details.</p>
-     *
-     * <p>Example:</p>
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He didn't say, \"Stop!\"
-     * </pre>
-     *
-     * @param input  String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
-     */
-    public static String escapeJson(final String input) {
-        return ESCAPE_JSON.translate(input);
-    }
-
-    /**
-     * <p>Unescapes any Java literals found in the {@code String}.
-     * For example, it will turn a sequence of {@code '\'} and
-     * {@code 'n'} into a newline character, unless the {@code '\'}
-     * is preceded by another {@code '\'}.</p>
-     *
-     * @param input  the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
-     */
-    public static String unescapeJava(final String input) {
-        return UNESCAPE_JAVA.translate(input);
-    }
-
-    /**
-     * <p>Unescapes any EcmaScript literals found in the {@code String}.</p>
-     *
-     * <p>For example, it will turn a sequence of {@code '\'} and {@code 'n'}
-     * into a newline character, unless the {@code '\'} is preceded by another
-     * {@code '\'}.</p>
-     *
-     * @see #unescapeJava(String)
-     * @param input  the {@code String} to unescape, may be null
-     * @return A new unescaped {@code String}, {@code null} if null string input
-     */
-    public static String unescapeEcmaScript(final String input) {
-        return UNESCAPE_ECMASCRIPT.translate(input);
-    }
-
-    /**
-     * <p>Unescapes any Json literals found in the {@code String}.</p>
-     *
-     * <p>For example, it will turn a sequence of {@code '\'} and {@code 'n'}
-     * into a newline character, unless the {@code '\'} is preceded by another
-     * {@code '\'}.</p>
-     *
-     * @see #unescapeJava(String)
-     * @param input  the {@code String} to unescape, may be null
-     * @return A new unescaped {@code String}, {@code null} if null string input
-     */
-    public static String unescapeJson(final String input) {
-        return UNESCAPE_JSON.translate(input);
-    }
-
-    // HTML and XML
-    //--------------------------------------------------------------------------
-    /**
-     * <p>Escapes the characters in a {@code String} using HTML entities.</p>
-     *
      * <p>
-     * For example:
-     * </p>
-     * <p>{@code "bread" &amp; "butter"}</p>
-     * becomes:
-     * <p>
-     * {@code &amp;quot;bread&amp;quot; &amp;amp; &amp;quot;butter&amp;quot;}.
+     * Converts an array of delimiters to a hash set of code points. Code point of space(32) is added as the default
+     * value if delimiters is null. The generated hash set provides O(1) lookup time.
      * </p>
      *
-     * <p>Supports all known HTML 4.0 entities, including funky accents.
-     * Note that the commonly used apostrophe escape character (&amp;apos;)
-     * is not a legal entity and so is not supported).</p>
-     *
-     * @param input  the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
-     *
-     * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
-     * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
-     * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
-     * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
-     * @see <a href="http://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
+     * @param delimiters set of characters to determine capitalization, null means whitespace
+     * @return Set<Integer>
      */
-    public static String escapeHtml4(final String input) {
-        return ESCAPE_HTML4.translate(input);
+    private static Set<Integer> generateDelimiterSet(final char[] delimiters) {
+        final Set<Integer> delimiterHashSet = new HashSet<>();
+        if (delimiters == null || delimiters.length == 0) {
+            if (delimiters == null)
+                delimiterHashSet.add(Character.codePointAt(new char[] {' '}, 0));
+
+            return delimiterHashSet;
+        }
+
+        for (int index = 0; index < delimiters.length; index++)
+            delimiterHashSet.add(Character.codePointAt(delimiters, index));
+
+        return delimiterHashSet;
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using HTML entities.</p>
-     * <p>Supports only the HTML 3.0 entities.</p>
+     *   => "?" items  are additions to Java string escapes
+     *                 but normal in Java regexes
      *
-     * @param input  the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
+     *   => "!" items  are also additions to Java regex escapes
+     *
+     * Standard singletons: ?\a ?\e \f \n \r \t
+     *
+     *      NB: \b is unsupported as backspace so it can pass-through
+     *          to the regex translator untouched; I refuse to make anyone
+     *          doublebackslash it as doublebackslashing is a Java idiocy
+     *          I desperately wish would die out.  There are plenty of
+     *          other ways to write it:
+     *
+     *              \cH, \12, \012, \x08 \x{8}, \u0008, \U00000008
+     *
+     * Octal escapes: \0 \0N \0NN \N \NN \NNN
+     *    Can range up to !\777 not \377
+     *
+     *      TODO: add !\o{NNNNN}
+     *          last Unicode is 4177777
+     *          maxint is 37777777777
+     *
+     * Control chars: ?\cX
+     *      Means: ord(X) ^ ord('@')
+     *
+     * Old hex escapes: \xXX
+     *      unbraced must be 2 xdigits
+     *
+     * Perl hex escapes: !\x{XXX} braced may be 1-8 xdigits
+     *       NB: proper Unicode never needs more than 6, as highest
+     *           valid codepoint is 0x10FFFF, not maxint 0xFFFFFFFF
+     *
+     * Lame Java escape: \[IDIOT JAVA PREPROCESSOR]uXXXX must be
+     *                   exactly 4 xdigits;
+     *
+     *       I can't write XXXX in this comment where it belongs
+     *       because the damned Java Preprocessor can't mind its
+     *       own business.  Idiots!
+     *
+     * Lame Python escape: !\UXXXXXXXX must be exactly 8 xdigits
+     *
+     * TODO: Perl translation escapes: \Q \U \L \E \[IDIOT JAVA PREPROCESSOR]u \l
+     *       These are not so important to cover if you're passing the
+     *       result to Pattern.compile(), since it handles them for you
+     *       further downstream.  Hm, what about \[IDIOT JAVA PREPROCESSOR]u?
+     *
      */
-    public static String escapeHtml3(final String input) {
-        return ESCAPE_HTML3.translate(input);
+    public static @NotNull String unescapeUnicode(@NotNull String value) {
+        /*
+         * In contrast to fixing Java's broken regex charclasses,
+         * this one need be no bigger, as unescaping shrinks the string
+         * here, where in the other one, it grows it.
+         */
+
+        StringBuilder newstr = new StringBuilder(value.length());
+
+        boolean saw_backslash = false;
+
+        for (int i = 0; i < value.length(); i++) {
+            int cp = value.codePointAt(i);
+            if (value.codePointAt(i) > Character.MAX_VALUE) {
+                i++; /****WE HATES UTF-16! WE HATES IT FOREVERSES!!!****/
+            }
+
+            if (!saw_backslash) {
+                if (cp == '\\') {
+                    saw_backslash = true;
+                } else {
+                    newstr.append(Character.toChars(cp));
+                }
+                continue; /* switch */
+            }
+
+            if (cp == '\\') {
+                saw_backslash = false;
+                newstr.append('\\');
+                newstr.append('\\');
+                continue; /* switch */
+            }
+
+            switch (cp) {
+
+                case 'r':  newstr.append('\r');
+                    break; /* switch */
+
+                case 'n':  newstr.append('\n');
+                    break; /* switch */
+
+                case 'f':  newstr.append('\f');
+                    break; /* switch */
+
+                /* PASS a \b THROUGH!! */
+                case 'b':  newstr.append("\\b");
+                    break; /* switch */
+
+                case 't':  newstr.append('\t');
+                    break; /* switch */
+
+                case 'a':  newstr.append('\007');
+                    break; /* switch */
+
+                case 'e':  newstr.append('\033');
+                    break; /* switch */
+
+                /*
+                 * A "control" character is what you get when you xor its
+                 * codepoint with '@'==64.  This only makes sense for ASCII,
+                 * and may not yield a "control" character after all.
+                 *
+                 * Strange but true: "\c{" is ";", "\c}" is "=", etc.
+                 */
+                case 'c':   {
+                    if (++i == value.length()) { throw new IllegalArgumentException("trailing \\c"); }
+                    cp = value.codePointAt(i);
+                    /*
+                     * don't need to grok surrogates, as next line blows them up
+                     */
+                    if (cp > 0x7f) { throw new IllegalArgumentException("expected ASCII after \\c"); }
+                    newstr.append(Character.toChars(cp ^ 64));
+                    break; /* switch */
+                }
+
+                case '8':
+                case '9': throw new IllegalArgumentException("illegal octal digit");
+                    /* NOTREACHED */
+
+                    /*
+                     * may be 0 to 2 octal digits following this one
+                     * so back up one for fallthrough to next case;
+                     * unread this digit and fall through to next case.
+                     */
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7': --i;
+                    /* FALLTHROUGH */
+
+                    /*
+                     * Can have 0, 1, or 2 octal digits following a 0
+                     * this permits larger values than octal 377, up to
+                     * octal 777.
+                     */
+                case '0': {
+                    if (i+1 == value.length()) {
+                        /* found \0 at end of string */
+                        newstr.append(Character.toChars(0));
+                        break; /* switch */
+                    }
+                    i++;
+                    int digits = 0;
+                    int j;
+                    for (j = 0; j <= 2; j++) {
+                        if (i+j == value.length()) {
+                            break; /* for */
+                        }
+                        /* safe because will unread surrogate */
+                        int ch = value.charAt(i+j);
+                        if (ch < '0' || ch > '7') {
+                            break; /* for */
+                        }
+                        digits++;
+                    }
+                    if (digits == 0) {
+                        --i;
+                        newstr.append('\0');
+                        break; /* switch */
+                    }
+                    int codePoint = 0;
+                    try {
+                        codePoint = Integer.parseInt(
+                            value.substring(i, i+digits), 8);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException("invalid octal value for \\0 escape");
+                    }
+                    newstr.append(Character.toChars(codePoint));
+                    i += digits-1;
+                    break; /* switch */
+                } /* end case '0' */
+
+                case 'x':  {
+                    if (i+2 > value.length()) {
+                        throw new IllegalArgumentException("string too short for \\x escape");
+                    }
+                    i++;
+                    boolean saw_brace = false;
+                    if (value.charAt(i) == '{') {
+                        /* ^^^^^^ ok to ignore surrogates here */
+                        i++;
+                        saw_brace = true;
+                    }
+                    int j;
+                    for (j = 0; j < 8; j++) {
+
+                        if (!saw_brace && j == 2) {
+                            break;  /* for */
+                        }
+
+                        /*
+                         * ASCII test also catches surrogates
+                         */
+                        int ch = value.charAt(i+j);
+                        if (ch > 127) {
+                            throw new IllegalArgumentException("illegal non-ASCII hex digit in \\x escape");
+                        }
+
+                        if (saw_brace && ch == '}') { break; /* for */ }
+
+                        if (! ( (ch >= '0' && ch <= '9')
+                            ||
+                            (ch >= 'a' && ch <= 'f')
+                            ||
+                            (ch >= 'A' && ch <= 'F')
+                        )
+                        )
+                        {
+                            throw new IllegalArgumentException(String.format(
+                                "illegal hex digit #%d '%c' in \\x", ch, ch));
+                        }
+
+                    }
+                    if (j == 0) { throw new IllegalArgumentException("empty braces in \\x{} escape"); }
+                    int codePoint = 0;
+                    try {
+                        codePoint = Integer.parseInt(value.substring(i, i+j), 16);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException("invalid hex value for \\x escape");
+                    }
+                    newstr.append(Character.toChars(codePoint));
+                    if (saw_brace) { j++; }
+                    i += j-1;
+                    break; /* switch */
+                }
+
+                case 'u': {
+                    if (i+4 > value.length()) {
+                        throw new IllegalArgumentException("string too short for \\u escape");
+                    }
+                    i++;
+                    int j;
+                    for (j = 0; j < 4; j++) {
+                        /* this also handles the surrogate issue */
+                        if (value.charAt(i+j) > 127) {
+                            throw new IllegalArgumentException("illegal non-ASCII hex digit in \\u escape");
+                        }
+                    }
+                    int codePoint = 0;
+                    try {
+                        codePoint = Integer.parseInt( value.substring(i, i+j), 16);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException("invalid hex value for \\u escape");
+                    }
+                    newstr.append(Character.toChars(codePoint));
+                    i += j-1;
+                    break; /* switch */
+                }
+
+                case 'U': {
+                    if (i+8 > value.length()) {
+                        throw new IllegalArgumentException("string too short for \\U escape");
+                    }
+                    i++;
+                    int j;
+                    for (j = 0; j < 8; j++) {
+                        /* this also handles the surrogate issue */
+                        if (value.charAt(i+j) > 127) {
+                            throw new IllegalArgumentException("illegal non-ASCII hex digit in \\U escape");
+                        }
+                    }
+                    int codePoint = 0;
+                    try {
+                        codePoint = Integer.parseInt(value.substring(i, i+j), 16);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException("invalid hex value for \\U escape");
+                    }
+                    newstr.append(Character.toChars(codePoint));
+                    i += j-1;
+                    break; /* switch */
+                }
+
+                default:   newstr.append('\\');
+                    newstr.append(Character.toChars(cp));
+                    /*
+                     * say(String.format(
+                     *       "DEFAULT unrecognized escape %c passed through",
+                     *       cp));
+                     */
+                    break; /* switch */
+
+            }
+            saw_backslash = false;
+        }
+
+        /* weird to leave one at the end */
+        if (saw_backslash) {
+            newstr.append('\\');
+        }
+
+        return newstr.toString();
     }
 
-    //-----------------------------------------------------------------------
+    public static @NotNull String escapeUnicode(@NotNull String value) {
+        return value.chars()
+            .mapToObj(codePoint -> String.format("\\u%04x", codePoint))
+            .reduce("", (a, b) -> a + b);
+    }
+
     /**
-     * <p>Unescapes a string containing entity escapes to a string
-     * containing the actual Unicode characters corresponding to the
-     * escapes. Supports HTML 4.0 entities.</p>
+     * Converts the given CharSequence to a char[].
      *
-     * <p>For example, the string {@code "&lt;Fran&ccedil;ais&gt;"}
-     * will become {@code "<Fran�ais>"}</p>
-     *
-     * <p>If an entity is unrecognized, it is left alone, and inserted
-     * verbatim into the result string. e.g. {@code "&gt;&zzzz;x"} will
-     * become {@code ">&zzzz;x"}.</p>
-     *
-     * @param input  the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
+     * @param source the {@code CharSequence} to be processed.
+     * @return the resulting char array, never null.
      */
-    public static String unescapeHtml4(final String input) {
-        return UNESCAPE_HTML4.translate(input);
+    public static char[] toCharArray(final CharSequence source) {
+        final int len = StringUtil.length(source);
+        if (len == 0) {
+            return ArrayUtil.EMPTY_CHAR_ARRAY;
+        }
+        if (source instanceof String) {
+            return ((String) source).toCharArray();
+        }
+        final char[] array = new char[len];
+        for (int i = 0; i < len; i++) {
+            array[i] = source.charAt(i);
+        }
+        return array;
     }
-
-    /**
-     * <p>Unescapes a string containing entity escapes to a string
-     * containing the actual Unicode characters corresponding to the
-     * escapes. Supports only HTML 3.0 entities.</p>
-     *
-     * @param input  the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
-     */
-    public static String unescapeHtml3(final String input) {
-        return UNESCAPE_HTML3.translate(input);
-    }
-
-    /**
-     * <p>Escapes the characters in a {@code String} using XML entities.</p>
-     *
-     * <p>For example: {@code "bread" & "butter"} =&gt;
-     * {@code &quot;bread&quot; &amp; &quot;butter&quot;}.
-     * </p>
-     *
-     * <p>Note that XML 1.0 is a text-only format: it cannot represent control
-     * characters or unpaired Unicode surrogate codepoints, even after escaping.
-     * {@code escapeXml10} will remove characters that do not fit in the
-     * following ranges:</p>
-     *
-     * <p>{@code #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}</p>
-     *
-     * <p>Though not strictly necessary, {@code escapeXml10} will escape
-     * characters in the following ranges:</p>
-     *
-     * <p>{@code [#x7F-#x84] | [#x86-#x9F]}</p>
-     *
-     * <p>The returned string can be inserted into a valid XML 1.0 or XML 1.1
-     * document. If you want to allow more non-text characters in an XML 1.1
-     * document, use {@link #escapeXml11(String)}.</p>
-     *
-     * @param input  the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
-     * @see #unescapeXml(java.lang.String)
-     */
-    public static String escapeXml10(final String input) {
-        return ESCAPE_XML10.translate(input);
-    }
-
-    /**
-     * <p>Escapes the characters in a {@code String} using XML entities.</p>
-     *
-     * <p>For example: {@code "bread" & "butter"} =&gt;
-     * {@code &quot;bread&quot; &amp; &quot;butter&quot;}.
-     * </p>
-     *
-     * <p>XML 1.1 can represent certain control characters, but it cannot represent
-     * the null byte or unpaired Unicode surrogate codepoints, even after escaping.
-     * {@code escapeXml11} will remove characters that do not fit in the following
-     * ranges:</p>
-     *
-     * <p>{@code [#x1-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}</p>
-     *
-     * <p>{@code escapeXml11} will escape characters in the following ranges:</p>
-     *
-     * <p>{@code [#x1-#x8] | [#xB-#xC] | [#xE-#x1F] | [#x7F-#x84] | [#x86-#x9F]}</p>
-     *
-     * <p>The returned string can be inserted into a valid XML 1.1 document. Do not
-     * use it for XML 1.0 documents.</p>
-     *
-     * @param input  the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
-     * @see #unescapeXml(java.lang.String)
-     */
-    public static String escapeXml11(final String input) {
-        return ESCAPE_XML11.translate(input);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * <p>Unescapes a string containing XML entity escapes to a string
-     * containing the actual Unicode characters corresponding to the
-     * escapes.</p>
-     *
-     * <p>Supports only the five basic XML entities (gt, lt, quot, amp, apos).
-     * Does not support DTDs or external entities.</p>
-     *
-     * <p>Note that numerical \\u Unicode codes are unescaped to their respective
-     *    Unicode characters. This may change in future releases.</p>
-     *
-     * @param input  the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
-     * @see #escapeXml10(String)
-     * @see #escapeXml11(String)
-     */
-    public static String unescapeXml(final String input) {
-        return UNESCAPE_XML.translate(input);
-    }
-
-    //-----------------------------------------------------------------------
-
-    /**
-     * <p>Returns a {@code String} value for a CSV column enclosed in double quotes,
-     * if required.</p>
-     *
-     * <p>If the value contains a comma, newline or double quote, then the
-     *    String value is returned enclosed in double quotes.</p>
-     *
-     * <p>Any double quote characters in the value are escaped with another double quote.</p>
-     *
-     * <p>If the value does not contain a comma, newline or double quote, then the
-     *    String value is returned unchanged.</p>
-     *
-     * see <a href="http://en.wikipedia.org/wiki/Comma-separated_values">Wikipedia</a> and
-     * <a href="http://tools.ietf.org/html/rfc4180">RFC 4180</a>.
-     *
-     * @param input the input CSV column String, may be null
-     * @return The input String, enclosed in double quotes if the value contains a comma,
-     * newline or double quote, {@code null} if null string input
-     */
-    public static String escapeCsv(final String input) {
-        return ESCAPE_CSV.translate(input);
-    }
-
-    /**
-     * <p>Returns a {@code String} value for an unescaped CSV column.</p>
-     *
-     * <p>If the value is enclosed in double quotes, and contains a comma, newline
-     *    or double quote, then quotes are removed.
-     * </p>
-     *
-     * <p>Any double quote escaped characters (a pair of double quotes) are unescaped
-     *    to just one double quote.</p>
-     *
-     * <p>If the value is not enclosed in double quotes, or is and does not contain a
-     *    comma, newline or double quote, then the String value is returned unchanged.</p>
-     *
-     * see <a href="http://en.wikipedia.org/wiki/Comma-separated_values">Wikipedia</a> and
-     * <a href="http://tools.ietf.org/html/rfc4180">RFC 4180</a>.
-     *
-     * @param input the input CSV column String, may be null
-     * @return The input String, with enclosing double quotes removed and embedded double
-     * quotes unescaped, {@code null} if null string input
-     */
-    public static String unescapeCsv(final String input) {
-        return UNESCAPE_CSV.translate(input);
-    }
-
-    /**
-     * <p>Escapes the characters in a {@code String} using XSI rules.</p>
-     *
-     * <p><b>Beware!</b> In most cases you don't want to escape shell commands but use multi-argument
-     * methods provided by {@link java.lang.ProcessBuilder} or {@link java.lang.Runtime#exec(String[])}
-     * instead.</p>
-     *
-     * <p>Example:</p>
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He\ didn\'t\ say,\ \"Stop!\"
-     * </pre>
-     *
-     * @see <a href="http://pubs.opengroup.org/onlinepubs/7908799/xcu/chap2.html">Shell Command Language</a>
-     * @param input  String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
-     */
-    public static String escapeXSI(final String input) {
-        return ESCAPE_XSI.translate(input);
-    }
-
-    /**
-     * <p>Unescapes the characters in a {@code String} using XSI rules.</p>
-     *
-     * @see StringUtil#escapeXSI(String)
-     * @param input  the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
-     */
-    public static String unescapeXSI(final String input) {
-        return UNESCAPE_XSI.translate(input);
-    }
-
 
 }

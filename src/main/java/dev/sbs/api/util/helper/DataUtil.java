@@ -3,7 +3,6 @@ package dev.sbs.api.util.helper;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import dev.sbs.api.util.CompressionType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -312,6 +311,28 @@ public class DataUtil {
 			out.writeByte(paramInt & 0x7F | 0x80);
 			paramInt >>>= 7;
 		}
+	}
+
+	/**
+	 * Defines the types of compression used in stream data.
+	 */
+	public enum CompressionType {
+
+		/**
+		 * No compression.
+		 */
+		NONE,
+
+		/**
+		 * GZIP compression ({@code GZIPInputStream} and {@code GZIPOutputStream}).
+		 */
+		GZIP,
+
+		/**
+		 * ZLIB compression ({@code InflaterInputStream} and {@code DeflaterOutputStream}).
+		 */
+		ZLIB
+
 	}
 
 }
