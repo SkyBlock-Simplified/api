@@ -1,14 +1,12 @@
 package dev.sbs.api.data.sql;
 
-import dev.sbs.api.util.helper.FormatUtil;
-
 public abstract class SqlDriver {
 
     public static final SqlDriver MariaDB = new SqlDriver() {
 
         @Override
         public String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema) {
-            return FormatUtil.format("jdbc:mariadb://{0}:{1,number,#}/{2}", databaseHost, databasePort, databaseSchema);
+            return String.format("jdbc:mariadb://%s:%s/%s", databaseHost, databasePort, databaseSchema);
         }
 
         @Override
@@ -37,7 +35,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema) {
-            return FormatUtil.format("jdbc:mysql://{0}:{1,number,#}/{2}", databaseHost, databasePort, databaseSchema);
+            return String.format("jdbc:mysql://%s:%s/%s", databaseHost, databasePort, databaseSchema);
         }
 
         @Override
@@ -66,7 +64,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema) {
-            return FormatUtil.format("jdbc:oracle:thin:@{0}:{1,number,#}:{2}", databaseHost, databasePort, databaseSchema);
+            return String.format("jdbc:oracle:thin:@%s:%s:%s", databaseHost, databasePort, databaseSchema);
         }
 
         @Override
@@ -95,7 +93,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema) {
-            return FormatUtil.format("jdbc:postgresql://{0}:{1,number,#}/{2}", databaseHost, databasePort, databaseSchema);
+            return String.format("jdbc:postgresql://%s:%s/%s", databaseHost, databasePort, databaseSchema);
         }
 
         @Override
@@ -124,7 +122,7 @@ public abstract class SqlDriver {
 
         @Override
         public String getConnectionUrl(String databaseHost, int databasePort, String databaseSchema) {
-            return FormatUtil.format("jdbc:microsoft:sqlserver://{0}:{1,number,#};DatabaseName={2}", databaseHost, databasePort, databaseSchema);
+            return String.format("jdbc:microsoft:sqlserver://%s:%s;DatabaseName=%s", databaseHost, databasePort, databaseSchema);
         }
 
         @Override
@@ -160,7 +158,7 @@ public abstract class SqlDriver {
     public abstract String getDialectClass();
 
     public final String getDriverClass() {
-        return FormatUtil.format("{0}.{1}", this.getDriverPackage(), this.getDriverClassName());
+        return String.format("%s.%s", this.getDriverPackage(), this.getDriverClassName());
     }
 
     public abstract String getDriverClassName();
