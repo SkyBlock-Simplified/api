@@ -16,7 +16,7 @@ public class SqlRepositoryTest {
     static {
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
+            testConfig = new TestConfig();
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
@@ -26,7 +26,7 @@ public class SqlRepositoryTest {
     public void checkRepositories_ok() {
         try {
             System.out.println("Connecting to database...");
-            SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
+            SimplifiedApi.getSessionManager().connectSql(testConfig);
             //testConfig.setLoggingLevel(Level.DEBUG);
 
 
@@ -58,7 +58,7 @@ public class SqlRepositoryTest {
             e.printStackTrace();
         }
 
-        SimplifiedApi.getSession().shutdown();
+        SimplifiedApi.getSessionManager().disconnect();
     }
 
 }

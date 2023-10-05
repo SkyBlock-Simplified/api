@@ -27,14 +27,14 @@ public class ReforgeRepositoryTest {
     static {
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
+            testConfig = new TestConfig();
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
     }
 
     static {
-        SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
+        SimplifiedApi.getSessionManager().connectSql(testConfig);
         itemTypeRepository = SimplifiedApi.getRepositoryOf(ItemTypeModel.class);
         rarityRepository = SimplifiedApi.getRepositoryOf(RarityModel.class);
         reforgeRepository = SimplifiedApi.getRepositoryOf(ReforgeModel.class);

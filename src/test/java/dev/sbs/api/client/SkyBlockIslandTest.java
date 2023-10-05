@@ -17,7 +17,6 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pets.P
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.PlayerStats;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.playerstats.data.ObjectData;
-import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
@@ -56,7 +55,7 @@ public class SkyBlockIslandTest {
     static {
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
+            testConfig = new TestConfig();
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
@@ -66,9 +65,9 @@ public class SkyBlockIslandTest {
     public void getGuildLevels_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
-            System.out.println("Database initialized in " + SimplifiedApi.getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSession().getStartupTime() + "ms");
+            SimplifiedApi.getSessionManager().connectSql(testConfig);
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
             HypixelPlayerRequest hypixelPlayerRequest = SimplifiedApi.getWebApi(HypixelPlayerRequest.class);
             HypixelSkyBlockRequest hypixelSkyBlockRequest = SimplifiedApi.getWebApi(HypixelSkyBlockRequest.class);
             String guildName = "SkyBlock Simplified";
@@ -126,7 +125,7 @@ public class SkyBlockIslandTest {
             exception.printStackTrace();
             Assertions.fail();
         } finally {
-            SimplifiedApi.disconnectSession();
+            SimplifiedApi.getSessionManager().disconnect();
         }
     }
 
@@ -134,9 +133,9 @@ public class SkyBlockIslandTest {
     public void getPlayerStats_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
-            System.out.println("Database initialized in " + SimplifiedApi.getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSession().getStartupTime() + "ms");
+            SimplifiedApi.getSessionManager().connectSql(testConfig);
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
             HypixelSkyBlockRequest hypixelSkyBlockRequest = SimplifiedApi.getWebApi(HypixelSkyBlockRequest.class);
 
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
@@ -198,7 +197,7 @@ public class SkyBlockIslandTest {
             exception.printStackTrace();
             Assertions.fail();
         } finally {
-            SimplifiedApi.disconnectSession();
+            SimplifiedApi.getSessionManager().disconnect();
         }
     }
 
@@ -206,9 +205,9 @@ public class SkyBlockIslandTest {
     public void getIsland_ok() {
         try {
             System.out.println("Database Starting... ");
-            SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
-            System.out.println("Database initialized in " + SimplifiedApi.getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSession().getStartupTime() + "ms");
+            SimplifiedApi.getSessionManager().connectSql(testConfig);
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
             HypixelSkyBlockRequest hypixelSkyBlockRequest = SimplifiedApi.getWebApi(HypixelSkyBlockRequest.class);
             ProfileModel pineappleProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE");
             ProfileModel bananaProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "BANANA");
@@ -323,7 +322,7 @@ public class SkyBlockIslandTest {
             exception.printStackTrace();
             Assertions.fail();
         } finally {
-            SimplifiedApi.getSession().shutdown();
+            SimplifiedApi.getSessionManager().disconnect();
         }
     }
 

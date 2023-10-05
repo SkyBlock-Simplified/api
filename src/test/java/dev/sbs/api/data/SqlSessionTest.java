@@ -17,7 +17,7 @@ public class SqlSessionTest {
     static {
         try {
             File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            testConfig = new TestConfig(currentDir.getParentFile(), "testsql");
+            testConfig = new TestConfig();
         } catch (Exception exception) {
             throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
         }
@@ -25,8 +25,8 @@ public class SqlSessionTest {
 
     @Test
     public void openSession_ok() {
-        SimplifiedApi.connectSession(DataSession.Type.SQL, testConfig);
-        Session session = ((SqlSession) SimplifiedApi.getSession()).openSession();
+        SimplifiedApi.getSessionManager().connectSql(testConfig);
+        Session session = ((SqlSession) SimplifiedApi.getSessionManager().getSession()).openSession();
         MatcherAssert.assertThat(session, Matchers.notNullValue());
         session.close();
     }
