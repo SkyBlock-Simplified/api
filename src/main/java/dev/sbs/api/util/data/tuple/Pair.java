@@ -1,6 +1,8 @@
 package dev.sbs.api.util.data.tuple;
 
 import dev.sbs.api.util.builder.hash.CompareToBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -33,8 +35,23 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @param right the right element, may be null
      * @return a pair formed from the two parameters, not null
      */
-    public static <L, R> Pair<L, R> of(L left, R right) {
+    public static <L, R> Pair<L, R> of(@Nullable L left, @Nullable R right) {
         return new ImmutablePair<>(left, right);
+    }
+
+    /**
+     * <p>Obtains an immutable pair of from an entry object inferring the generic types.</p>
+     *
+     * <p>This factory allows the pair to be created using inference to
+     * obtain the generic types.</p>
+     *
+     * @param <L>   the left element type
+     * @param <R>   the right element type
+     * @param entry the entry, may not be null
+     * @return a pair formed from the entry parameter, not null
+     */
+    public static <L, R> Pair<L, R> from(@NotNull Map.Entry<L, R> entry) {
+        return new ImmutablePair<>(entry.getKey(), entry.getValue());
     }
 
     /**
@@ -126,10 +143,8 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
         if (obj == this) return true;
         if (obj == null) return false;
 
-        if (obj instanceof Map.Entry<?, ?>) {
-            Map.Entry<?, ?> other = (Map.Entry<?, ?>) obj;
+        if (obj instanceof Map.Entry<?, ?> other)
             return this.getKey().equals(other.getKey()) && this.getValue().equals(other.getValue());
-        }
 
         return false;
     }
