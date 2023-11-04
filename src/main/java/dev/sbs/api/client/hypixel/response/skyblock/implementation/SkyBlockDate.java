@@ -5,6 +5,7 @@ import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.date.CustomDate;
 import lombok.AccessLevel;
@@ -133,16 +134,28 @@ public class SkyBlockDate extends CustomDate {
     }
 
     public static Pair<SkyBlockDate, String> getNextSpecialMayor() {
-        SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis());
-        SkyBlockDate nextSpecialMayor = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS_START);
+        return Pair.from(getSpecialMayors(1).iterator().next());
+    }
+
+    public static ConcurrentLinkedMap<SkyBlockDate, String> getSpecialMayors(int next) {
+        return getSpecialMayors(next, new SkyBlockDate(System.currentTimeMillis()));
+    }
+
+    public static ConcurrentLinkedMap<SkyBlockDate, String> getSpecialMayors(int next, SkyBlockDate fromDate) {
+        next = Math.max(next, 1);
+        SkyBlockDate specialMayorDate = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS_START);
+        ConcurrentLinkedMap<SkyBlockDate, String> specialMayors = Concurrent.newLinkedMap(next);
         int iterations = 0;
 
-        while (nextSpecialMayor.getYear() < currentDate.getYear()) {
-            nextSpecialMayor = nextSpecialMayor.append(8);
+        while (specialMayors.size() < next) {
+            specialMayorDate = specialMayorDate.append(8);
             iterations++;
+
+            if (specialMayorDate.getYear() >= fromDate.getYear())
+                specialMayors.put(specialMayorDate, SPECIAL_MAYOR_CYCLE.get(iterations % 3));
         }
 
-        return Pair.of(nextSpecialMayor, SPECIAL_MAYOR_CYCLE.get(iterations % 3));
+        return specialMayors;
     }
 
     public static long getSkyBlockTime(Season season) {
