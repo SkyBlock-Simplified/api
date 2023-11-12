@@ -2,6 +2,8 @@ package dev.sbs.api.data.yaml.converter;
 
 import dev.sbs.api.data.yaml.ConfigSection;
 import dev.sbs.api.data.yaml.InternalConverter;
+import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.reflection.exception.ReflectionException;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -19,8 +21,8 @@ public class MapConverter extends YamlConverter {
 
         if (genericType != null) {
             try {
-                map = (java.util.Map<Object, Object>) ((Class<?>) genericType.getRawType()).newInstance();
-            } catch (InstantiationException e) {
+                map = (java.util.Map<Object, Object>) Reflection.of((Class<?>) genericType.getRawType()).newInstance();
+            } catch (ReflectionException e) {
                 map = new HashMap<>();
             }
 
@@ -48,10 +50,9 @@ public class MapConverter extends YamlConverter {
                         key = entry.getKey();
 
                     Class<?> clazz;
-                    if (genericType.getActualTypeArguments()[1] instanceof ParameterizedType) {
-                        ParameterizedType parameterizedType1 = (ParameterizedType) genericType.getActualTypeArguments()[1];
+                    if (genericType.getActualTypeArguments()[1] instanceof ParameterizedType parameterizedType1)
                         clazz = (Class<?>) parameterizedType1.getRawType();
-                    } else
+                    else
                         clazz = (Class<?>) genericType.getActualTypeArguments()[1];
 
                     YamlConverter converter = this.getConverter(clazz);
@@ -64,8 +65,8 @@ public class MapConverter extends YamlConverter {
             }
         } else {
             try {
-                map = (java.util.Map<Object, Object>) type.newInstance();
-            } catch (InstantiationException e) {
+                map = (java.util.Map<Object, Object>) Reflection.of(type).newInstance();
+            } catch (ReflectionException e) {
                 map = new HashMap<>();
             }
 

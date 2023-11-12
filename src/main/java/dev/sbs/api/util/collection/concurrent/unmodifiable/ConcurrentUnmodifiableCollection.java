@@ -42,7 +42,7 @@ public class ConcurrentUnmodifiableCollection<E> extends ConcurrentCollection<E>
 	}
 
 	@Override
-	public boolean add(E element) {
+	public boolean add(@NotNull E element) {
 		throw new UnsupportedOperationException();
 	}
 

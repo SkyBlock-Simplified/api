@@ -52,9 +52,8 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 		return this.storage.isEmpty();
 	}
 
-	@NotNull
 	@Override
-	public final Iterator<E> iterator() {
+	public final @NotNull Iterator<E> iterator() {
 		return this.storage.iterator();
 	}
 
@@ -98,16 +97,13 @@ public abstract class AtomicQueue<E> extends AbstractQueue<E> implements Queue<E
 		return this.storage.size();
 	}
 
-	@NotNull
 	@Override
-	public final Object[] toArray() {
+	public final @NotNull Object[] toArray() {
 		return this.storage.toArray();
 	}
 
-	@NotNull
-	@SuppressWarnings("SuspiciousToArrayCall")
 	@Override
-	public final <T> T[] toArray(@NotNull T[] array) {
+	public final @NotNull <T> T[] toArray(@NotNull T[] array) {
 		return this.storage.toArray(array);
 	}
 

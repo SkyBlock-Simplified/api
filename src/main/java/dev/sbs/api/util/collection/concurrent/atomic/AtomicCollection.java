@@ -133,6 +133,10 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 		return !this.contains(item);
 	}
 
+	public final boolean notEmpty() {
+		return !this.isEmpty();
+	}
+
 	@Override
 	public Stream<E> parallelStream() {
 		return this.ref.parallelStream();

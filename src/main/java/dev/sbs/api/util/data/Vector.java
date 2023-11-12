@@ -8,12 +8,13 @@ import lombok.Getter;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Getter
 public class Vector implements Cloneable {
 
 	private static final double EPSILON = 1.0E-6D;
-	@Getter	protected double x;
-	@Getter protected double y;
-	@Getter protected double z;
+	protected double x;
+	protected double y;
+	protected double z;
 
 	public Vector() {
 		this(0, 0, 0);
@@ -109,10 +110,9 @@ public class Vector implements Cloneable {
 
 	@Override
 	public final boolean equals(Object obj) {
-		if (!(obj instanceof Vector))
+		if (!(obj instanceof Vector other))
 			return false;
 		else {
-			Vector other = (Vector) obj;
 			return Math.abs(this.getX() - other.getX()) < 1.0E-6D && Math.abs(this.getY() - other.getY()) < 1.0E-6D && Math.abs(this.getZ() - other.getZ()) < 1.0E-6D;
 		}
 	}

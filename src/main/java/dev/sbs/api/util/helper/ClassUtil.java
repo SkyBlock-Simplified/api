@@ -94,7 +94,7 @@ public class ClassUtil {
         if (className == null)
             return StringUtil.EMPTY;
 
-        if (className.length() == 0)
+        if (className.isEmpty())
             return StringUtil.EMPTY;
 
         StringBuilder arrayPrefix = new StringBuilder();
@@ -192,7 +192,7 @@ public class ClassUtil {
      * @return the package name or an empty string
      */
     public static String getPackageName(String className) {
-        if (className == null || className.length() == 0)
+        if (className == null || className.isEmpty())
             return StringUtil.EMPTY;
 
         // Strip array encoding
@@ -888,7 +888,7 @@ public class ClassUtil {
                             ? className.length() - 1
                             : className.length());
                 } else {
-                    if (className.length() > 0)
+                    if (!className.isEmpty())
                         className = PrimitiveUtil.getReverseAbbreviationMap().get(className.substring(0, 1));
                 }
                 return className + "[]".repeat(dim);

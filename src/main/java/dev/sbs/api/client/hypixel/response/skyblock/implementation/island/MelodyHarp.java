@@ -52,12 +52,13 @@ public class MelodyHarp {
         );
     }
 
+    @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Song {
 
-        @Getter private final int bestCompletion;
-        @Getter private final int completions;
-        @Getter private final int perfectCompletions;
+        private final int bestCompletion;
+        private final int completions;
+        private final int perfectCompletions;
 
     }
 

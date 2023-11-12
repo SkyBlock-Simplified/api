@@ -24,7 +24,7 @@ public interface SearchFunction<T, R> extends Function<T, R> {
      * {@inheritDoc}
      */
     @Override
-    default <V> SearchFunction<T, V> andThen(@NotNull Function<? super R, ? extends V> after) {
+    default <V> @NotNull SearchFunction<T, V> andThen(@NotNull Function<? super R, ? extends V> after) {
         return (T t) -> after.apply(apply(t));
     }
 

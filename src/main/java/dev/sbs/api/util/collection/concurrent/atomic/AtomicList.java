@@ -156,7 +156,7 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 	}
 
 	@Override
-	public List<E> subList(int fromIndex, int toIndex) {
+	public @NotNull List<E> subList(int fromIndex, int toIndex) {
 		return this.ref.subList(fromIndex, toIndex);
 	}
 

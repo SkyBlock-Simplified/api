@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockNewsResponse {
 
-    @Getter private boolean success;
+    private boolean success;
     @SerializedName("items")
-    @Getter private ConcurrentList<Article> articles;
+    private ConcurrentList<Article> articles;
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Article {

@@ -606,7 +606,6 @@ public class ExceptionUtil {
      * @throws NullPointerException if the printStream is {@code null}
      * @since 2.0
      */
-    @SuppressWarnings("resource")
     public static void printRootCauseStackTrace(final Throwable throwable, final PrintStream printStream) {
         if (throwable == null) {
             return;
@@ -638,7 +637,6 @@ public class ExceptionUtil {
      * @throws NullPointerException if the printWriter is {@code null}
      * @since 2.0
      */
-    @SuppressWarnings("resource")
     public static void printRootCauseStackTrace(final Throwable throwable, final PrintWriter printWriter) {
         if (throwable == null) {
             return;

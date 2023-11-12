@@ -1,3 +1,5 @@
+# noinspection SqlWithoutWhereForFile
+
 -- --------------------------------------------------------
 -- Host:                         origin.netcoding.net
 -- Server version:               10.5.13-MariaDB - MariaDB Server

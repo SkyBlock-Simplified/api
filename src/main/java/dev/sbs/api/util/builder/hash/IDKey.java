@@ -41,10 +41,9 @@ public final class IDKey {
      */
     @Override
     public boolean equals(final Object other) {
-        if (!(other instanceof IDKey)) {
+        if (!(other instanceof IDKey idKey)) {
             return false;
         }
-        final IDKey idKey = (IDKey) other;
         if (id != idKey.id) {
             return false;
         }

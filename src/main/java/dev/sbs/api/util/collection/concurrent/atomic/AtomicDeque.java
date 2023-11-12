@@ -1,5 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -142,7 +144,7 @@ public abstract class AtomicDeque<E> extends AtomicQueue<E> implements Deque<E> 
 	}
 
 	@Override
-	public Iterator<E> descendingIterator() {
+	public @NotNull Iterator<E> descendingIterator() {
 		throw new UnsupportedOperationException("This is currently not implemented!");
 	}
 

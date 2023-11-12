@@ -79,56 +79,56 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 
 	@Override
 	public final @NotNull ListIterator<E> listIterator(int index) {
-		return new ListIterator<E>() {
+		return new ListIterator<>() {
 
-			private final ListIterator<? extends E> atomicIterator = ConcurrentUnmodifiableList.super.listIterator(index);
+            private final ListIterator<? extends E> atomicIterator = ConcurrentUnmodifiableList.super.listIterator(index);
 
-			@Override
-			public boolean hasNext() {
-				return atomicIterator.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return atomicIterator.hasNext();
+            }
 
-			@Override
-			public E next() {
-				return atomicIterator.next();
-			}
+            @Override
+            public E next() {
+                return atomicIterator.next();
+            }
 
-			@Override
-			public boolean hasPrevious() {
-				return atomicIterator.hasPrevious();
-			}
+            @Override
+            public boolean hasPrevious() {
+                return atomicIterator.hasPrevious();
+            }
 
-			@Override
-			public E previous() {
-				return atomicIterator.previous();
-			}
+            @Override
+            public E previous() {
+                return atomicIterator.previous();
+            }
 
-			@Override
-			public int nextIndex() {
-				return atomicIterator.nextIndex();
-			}
+            @Override
+            public int nextIndex() {
+                return atomicIterator.nextIndex();
+            }
 
-			@Override
-			public int previousIndex() {
-				return atomicIterator.previousIndex();
-			}
+            @Override
+            public int previousIndex() {
+                return atomicIterator.previousIndex();
+            }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
 
-			@Override
-			public void set(E e) {
-				throw new UnsupportedOperationException();
-			}
+            @Override
+            public void set(E e) {
+                throw new UnsupportedOperationException();
+            }
 
-			@Override
-			public void add(E e) {
-				throw new UnsupportedOperationException();
-			}
+            @Override
+            public void add(E e) {
+                throw new UnsupportedOperationException();
+            }
 
-		};
+        };
 	}
 
 	@Override

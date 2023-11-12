@@ -5,14 +5,15 @@ import lombok.Getter;
 /**
  * A class representing a Function which can be used in an expression
  */
+@Getter
 public abstract class MathFunction {
 
-    @Getter protected final int minArguments;
-    @Getter protected final int maxArguments;
+    protected final int minArguments;
+    protected final int maxArguments;
     /**
      * Get the name of the Function
      */
-    @Getter private final String name;
+    private final String name;
 
     /**
      * Create a new Function with a given name that takes a single argument
@@ -55,7 +56,7 @@ public abstract class MathFunction {
     /**
      * Get the set of characters which are allowed for use in Function names.
      *
-     * @return the set of characters allowed
+     * @return the array of characters allowed
      * @deprecated since 0.4.5 All unicode letters are allowed to be used in function names since 0.4.3. This API
      * Function can be safely ignored. Checks for function name validity can be done using Character.isLetter() et al.
      */

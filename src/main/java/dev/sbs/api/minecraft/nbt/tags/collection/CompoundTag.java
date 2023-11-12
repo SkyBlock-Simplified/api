@@ -33,10 +33,10 @@ import java.util.function.Consumer;
  * The compound tag (type ID 10) is used for storing an unordered map of any and all named tags.
  * All tags present in a compound must be given a name (key). Every valid NBT data structure is contained entirely within a "root" compound.
  */
+@Getter
 @SuppressWarnings("unchecked")
 public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String, Tag<?>>, Iterable<Map.Entry<String, Tag<?>>> {
 
-    @Getter
     private final boolean root;
 
     /**
@@ -383,7 +383,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * {@inheritDoc}
      */
     @Override
-    public Iterator<Map.Entry<String, Tag<?>>> iterator() {
+    public @NotNull Iterator<Map.Entry<String, Tag<?>>> iterator() {
         return this.getValue().entrySet().iterator();
     }
 
@@ -393,7 +393,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @return a {@code Set<>} of all names (keys) currently used within this compound.
      */
     @Override
-    public Set<String> keySet() {
+    public @NotNull Set<String> keySet() {
         return this.getValue().keySet();
     }
 
@@ -617,7 +617,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @return all {@link Tag}s contained within this compound.
      */
     @Override
-    public Collection<Tag<?>> values() {
+    public @NotNull Collection<Tag<?>> values() {
         return this.getValue().values();
     }
 

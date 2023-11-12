@@ -94,8 +94,7 @@ public class SkyBlockEventSqlModel implements SkyBlockEventModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkyBlockEventSqlModel)) return false;
-        SkyBlockEventSqlModel that = (SkyBlockEventSqlModel) o;
+        if (!(o instanceof SkyBlockEventSqlModel that)) return false;
 
         return new EqualsBuilder().append(this.isEnabled(), that.isEnabled())
             .append(this.getId(), that.getId())

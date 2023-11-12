@@ -277,18 +277,6 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
             return true;
         }
 
-        /*@Override
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Set)) return false;
-
-            Set<?> s = (Set<?>) o;
-
-            if (s.size() != this.ref.get().size()) return false;
-
-            return this.containsAll(s); // Invokes safe containsAll() above
-        }*/
-
     }
 
     /**

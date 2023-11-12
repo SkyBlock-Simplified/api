@@ -129,13 +129,14 @@ public class BestiaryData {
             );
         }
 
+        @Getter
         @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Data {
 
             @Setter(AccessLevel.PRIVATE)
-            @Getter private int kills;
+            private int kills;
             @Setter(AccessLevel.PRIVATE)
-            @Getter private int deaths;
+            private int deaths;
 
         }
 

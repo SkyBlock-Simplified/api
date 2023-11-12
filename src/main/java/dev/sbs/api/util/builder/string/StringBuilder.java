@@ -759,18 +759,17 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
      * @param array the array to append
      * @return this, to enable chaining
      */
-    @SuppressWarnings("unchecked")
     public <T> StringBuilder appendAll(final T... array) {
         /*
          * @SuppressWarnings used to hide warning about vararg usage. We cannot use @SafeVarargs, since this method is
          * not final. Using @SuppressWarnings is fine, because it isn't inherited by subclasses, so each subclass must
          * vouch for itself whether its use of 'array' is safe.
          */
-        if (array != null && array.length > 0) {
-            for (final Object element : array) {
+        if (array != null) {
+            for (final Object element : array)
                 append(element);
-            }
         }
+
         return this;
     }
 
@@ -2729,7 +2728,7 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
      * {@inheritDoc}
      */
     @Override
-    public CharSequence subSequence(final int startIndex, final int endIndex) {
+    public @NotNull CharSequence subSequence(final int startIndex, final int endIndex) {
         if (startIndex < 0) {
             throw new StringIndexOutOfBoundsException(startIndex);
         }
@@ -2802,7 +2801,7 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
      * @return The builder as a String
      */
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return new String(buffer, 0, size);
     }
 

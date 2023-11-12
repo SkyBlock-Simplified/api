@@ -18,14 +18,14 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegexUtil {
 
-    private static final transient LinkedHashMap<String, String> ORDERED_MESSAGES = new MaxSizeLinkedMap<>(100);
-    private static final transient LastCharCompare CODE_COMPARE = new LastCharCompare();
+    private static final LinkedHashMap<String, String> ORDERED_MESSAGES = new MaxSizeLinkedMap<>(100);
+    private static final LastCharCompare CODE_COMPARE = new LastCharCompare();
 
     // Minecraft Chat Formatting
-    public static final transient String SECTOR_SYMBOL = "\u00a7";
-    private static final transient String ALL_PATTERN = "[0-9A-FK-ORa-fk-or]";
-    private static final transient Pattern REPLACE_PATTERN = Pattern.compile("&&(?=" + ALL_PATTERN + ")");
-    public static final transient Pattern VANILLA_PATTERN = Pattern.compile(SECTOR_SYMBOL + "+(" + ALL_PATTERN + ")");
+    public static final String SECTOR_SYMBOL = "\u00a7";
+    private static final String ALL_PATTERN = "[0-9A-FK-ORa-fk-or]";
+    private static final Pattern REPLACE_PATTERN = Pattern.compile("&&(?=" + ALL_PATTERN + ")");
+    public static final Pattern VANILLA_PATTERN = Pattern.compile(SECTOR_SYMBOL + "+(" + ALL_PATTERN + ")");
 
     // SkyBlock
     public static final Pattern SERVER_REGEX = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{2}) (m(?:ini|ega)?[0-9]{1,3}[A-Za-z])");
@@ -34,7 +34,7 @@ public class RegexUtil {
     public static final Pattern MANA_REGEX = Pattern.compile("§aUsed §r§6(.*?)§r§a! §r§b\\(([\\d]+) Mana\\)§r");
 
     // Other
-    public static final transient Pattern URL_PATTERN = Pattern.compile("((?:https?://)?[\\w._-]{2,})\\.([a-z]{2,6}(?:/\\S+)?)");
+    public static final Pattern URL_PATTERN = Pattern.compile("((?:https?://)?[\\w._-]{2,})\\.([a-z]{2,6}(?:/\\S+)?)");
     public static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
     public static final Pattern LETTERS_NUMBERS = Pattern.compile("[^a-z A-Z:0-9/']");
 

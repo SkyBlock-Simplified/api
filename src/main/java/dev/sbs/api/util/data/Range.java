@@ -1,9 +1,11 @@
 package dev.sbs.api.util.data;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * <p>An immutable range of objects from a minimum to maximum point inclusive.</p>
@@ -111,8 +113,14 @@ public final class Range<T> implements Serializable {
     }
 
     /**
-     * The ordering scheme used in this range.
+     *  Gets the comparator being used to determine if objects are within the range.
+     *  Natural ordering uses an internal comparator implementation, thus this
+     *  method never returns null.
+     *
+     * @return the comparator being used, not null
+
      */
+    @Getter
     private final Comparator<T> comparator;
 
     /**
@@ -122,12 +130,20 @@ public final class Range<T> implements Serializable {
 
     /**
      * The maximum value in this range (inclusive).
+     *
+     * @return the maximum value in this range, not null
+
      */
+    @Getter
     private final T maximum;
 
     /**
      * The minimum value in this range (inclusive).
+     *
+     * @return the minimum value in this range, not null
+
      */
+    @Getter
     private final T minimum;
 
     /**
@@ -151,11 +167,9 @@ public final class Range<T> implements Serializable {
             throw new IllegalArgumentException("Elements in a range must not be null: element1=" +
                     element1 + ", element2=" + element2);
         }
-        if (comp == null) {
-            this.comparator = Range.ComparableComparator.INSTANCE;
-        } else {
-            this.comparator = comp;
-        }
+
+        this.comparator = Objects.requireNonNullElse(comp, ComparableComparator.INSTANCE);
+
         if (this.comparator.compare(element1, element2) < 1) {
             this.minimum = element1;
             this.maximum = element2;
@@ -241,36 +255,6 @@ public final class Range<T> implements Serializable {
             return minimum.equals(range.minimum) &&
                     maximum.equals(range.maximum);
         }
-    }
-
-    /**
-     * <p>Gets the comparator being used to determine if objects are within the range.</p>
-     *
-     * <p>Natural ordering uses an internal comparator implementation, thus this
-     * method never returns null. See {@link #isNaturalOrdering()}.</p>
-     *
-     * @return the comparator being used, not null
-     */
-    public Comparator<T> getComparator() {
-        return comparator;
-    }
-
-    /**
-     * <p>Gets the maximum value in this range.</p>
-     *
-     * @return the maximum value in this range, not null
-     */
-    public T getMaximum() {
-        return maximum;
-    }
-
-    /**
-     * <p>Gets the minimum value in this range.</p>
-     *
-     * @return the minimum value in this range, not null
-     */
-    public T getMinimum() {
-        return minimum;
     }
 
     /**

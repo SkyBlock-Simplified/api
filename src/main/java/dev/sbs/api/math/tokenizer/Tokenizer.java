@@ -204,7 +204,7 @@ public class Tokenizer {
             symbol.append(expression[offset + len++]);
         }
 
-        while (symbol.length() > 0) {
+        while (!symbol.isEmpty()) {
             Operator op = this.getOperator(symbol.toString());
             if (op == null) {
                 symbol.setLength(symbol.length() - 1);

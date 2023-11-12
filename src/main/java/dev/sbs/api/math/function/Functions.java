@@ -289,79 +289,43 @@ public class Functions {
      * @return a Function instance
      */
     public static MathFunction getBuiltinFunction(final String name) {
-
-        switch (name) {
-            case "sin":
-                return BUILT_IN_FUNCTIONS[INDEX_SIN];
-            case "cos":
-                return BUILT_IN_FUNCTIONS[INDEX_COS];
-            case "tan":
-                return BUILT_IN_FUNCTIONS[INDEX_TAN];
-            case "cot":
-                return BUILT_IN_FUNCTIONS[INDEX_COT];
-            case "asin":
-                return BUILT_IN_FUNCTIONS[INDEX_ASIN];
-            case "acos":
-                return BUILT_IN_FUNCTIONS[INDEX_ACOS];
-            case "atan":
-                return BUILT_IN_FUNCTIONS[INDEX_ATAN];
-            case "sinh":
-                return BUILT_IN_FUNCTIONS[INDEX_SINH];
-            case "cosh":
-                return BUILT_IN_FUNCTIONS[INDEX_COSH];
-            case "tanh":
-                return BUILT_IN_FUNCTIONS[INDEX_TANH];
-            case "abs":
-                return BUILT_IN_FUNCTIONS[INDEX_ABS];
-            case "log":
-                return BUILT_IN_FUNCTIONS[INDEX_LOG];
-            case "log10":
-                return BUILT_IN_FUNCTIONS[INDEX_LOG10];
-            case "log2":
-                return BUILT_IN_FUNCTIONS[INDEX_LOG2];
-            case "log1p":
-                return BUILT_IN_FUNCTIONS[INDEX_LOG1P];
-            case "ceil":
-                return BUILT_IN_FUNCTIONS[INDEX_CEIL];
-            case "floor":
-                return BUILT_IN_FUNCTIONS[INDEX_FLOOR];
-            case "sqrt":
-                return BUILT_IN_FUNCTIONS[INDEX_SQRT];
-            case "cbrt":
-                return BUILT_IN_FUNCTIONS[INDEX_CBRT];
-            case "pow":
-                return BUILT_IN_FUNCTIONS[INDEX_POW];
-            case "exp":
-                return BUILT_IN_FUNCTIONS[INDEX_EXP];
-            case "expm1":
-                return BUILT_IN_FUNCTIONS[INDEX_EXPM1];
-            case "signum":
-                return BUILT_IN_FUNCTIONS[INDEX_SGN];
-            case "csc":
-                return BUILT_IN_FUNCTIONS[INDEX_CSC];
-            case "sec":
-                return BUILT_IN_FUNCTIONS[INDEX_SEC];
-            case "csch":
-                return BUILT_IN_FUNCTIONS[INDEX_CSCH];
-            case "sech":
-                return BUILT_IN_FUNCTIONS[INDEX_SECH];
-            case "coth":
-                return BUILT_IN_FUNCTIONS[INDEX_COTH];
-            case "toradian":
-                return BUILT_IN_FUNCTIONS[INDEX_TO_RADIAN];
-            case "todegree":
-                return BUILT_IN_FUNCTIONS[INDEX_TO_DEGREE];
-            case "length":
-                return BUILT_IN_FUNCTIONS[INDEX_LENGTH];
-            case "max":
-                return BUILT_IN_FUNCTIONS[INDEX_MAX];
-            case "min":
-                return BUILT_IN_FUNCTIONS[INDEX_MIN];
-            case "round":
-                return BUILT_IN_FUNCTIONS[INDEX_ROUND];
-            default:
-                return null;
-        }
+        return switch (name) {
+            case "sin" -> BUILT_IN_FUNCTIONS[INDEX_SIN];
+            case "cos" -> BUILT_IN_FUNCTIONS[INDEX_COS];
+            case "tan" -> BUILT_IN_FUNCTIONS[INDEX_TAN];
+            case "cot" -> BUILT_IN_FUNCTIONS[INDEX_COT];
+            case "asin" -> BUILT_IN_FUNCTIONS[INDEX_ASIN];
+            case "acos" -> BUILT_IN_FUNCTIONS[INDEX_ACOS];
+            case "atan" -> BUILT_IN_FUNCTIONS[INDEX_ATAN];
+            case "sinh" -> BUILT_IN_FUNCTIONS[INDEX_SINH];
+            case "cosh" -> BUILT_IN_FUNCTIONS[INDEX_COSH];
+            case "tanh" -> BUILT_IN_FUNCTIONS[INDEX_TANH];
+            case "abs" -> BUILT_IN_FUNCTIONS[INDEX_ABS];
+            case "log" -> BUILT_IN_FUNCTIONS[INDEX_LOG];
+            case "log10" -> BUILT_IN_FUNCTIONS[INDEX_LOG10];
+            case "log2" -> BUILT_IN_FUNCTIONS[INDEX_LOG2];
+            case "log1p" -> BUILT_IN_FUNCTIONS[INDEX_LOG1P];
+            case "ceil" -> BUILT_IN_FUNCTIONS[INDEX_CEIL];
+            case "floor" -> BUILT_IN_FUNCTIONS[INDEX_FLOOR];
+            case "sqrt" -> BUILT_IN_FUNCTIONS[INDEX_SQRT];
+            case "cbrt" -> BUILT_IN_FUNCTIONS[INDEX_CBRT];
+            case "pow" -> BUILT_IN_FUNCTIONS[INDEX_POW];
+            case "exp" -> BUILT_IN_FUNCTIONS[INDEX_EXP];
+            case "expm1" -> BUILT_IN_FUNCTIONS[INDEX_EXPM1];
+            case "signum" -> BUILT_IN_FUNCTIONS[INDEX_SGN];
+            case "csc" -> BUILT_IN_FUNCTIONS[INDEX_CSC];
+            case "sec" -> BUILT_IN_FUNCTIONS[INDEX_SEC];
+            case "csch" -> BUILT_IN_FUNCTIONS[INDEX_CSCH];
+            case "sech" -> BUILT_IN_FUNCTIONS[INDEX_SECH];
+            case "coth" -> BUILT_IN_FUNCTIONS[INDEX_COTH];
+            case "toradian" -> BUILT_IN_FUNCTIONS[INDEX_TO_RADIAN];
+            case "todegree" -> BUILT_IN_FUNCTIONS[INDEX_TO_DEGREE];
+            case "length" -> BUILT_IN_FUNCTIONS[INDEX_LENGTH];
+            case "max" -> BUILT_IN_FUNCTIONS[INDEX_MAX];
+            case "min" -> BUILT_IN_FUNCTIONS[INDEX_MIN];
+            case "round" -> BUILT_IN_FUNCTIONS[INDEX_ROUND];
+            default -> null;
+        };
     }
 
 }

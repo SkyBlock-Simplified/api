@@ -29,8 +29,7 @@ abstract class ReflectionAccessor<T extends AccessibleObject> {
     @Override
     public final boolean equals(Object obj) {
         if (obj == this) return true;
-        if (!(obj instanceof ReflectionAccessor<?>)) return false;
-        ReflectionAccessor<?> other = (ReflectionAccessor<?>) obj;
+        if (!(obj instanceof ReflectionAccessor<?> other)) return false;
         return new EqualsBuilder().append(this.getType(), other.getType()).append(this.getHandle(), other.getHandle()).build();
     }
 

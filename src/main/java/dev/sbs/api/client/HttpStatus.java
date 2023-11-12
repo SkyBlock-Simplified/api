@@ -3,6 +3,7 @@ package dev.sbs.api.client;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
+@Getter
 public enum HttpStatus {
 
     CONTINUE(100),
@@ -95,9 +96,9 @@ public enum HttpStatus {
     IO_ERROR(991, "IO Error", HttpState.JAVA_ERROR),
     UNKNOWN_ERROR(999, HttpState.JAVA_ERROR);
 
-    @Getter private final int code;
-    @Getter private final String message;
-    @Getter private final HttpState state;
+    private final int code;
+    private final String message;
+    private final HttpState state;
 
     HttpStatus(int code) {
         this(code, null, null);

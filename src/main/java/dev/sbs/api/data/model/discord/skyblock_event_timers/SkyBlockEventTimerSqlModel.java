@@ -87,8 +87,7 @@ public class SkyBlockEventTimerSqlModel implements SkyBlockEventTimerModel, SqlM
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkyBlockEventTimerSqlModel)) return false;
-        SkyBlockEventTimerSqlModel that = (SkyBlockEventTimerSqlModel) o;
+        if (!(o instanceof SkyBlockEventTimerSqlModel that)) return false;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getEvent(), that.getEvent())

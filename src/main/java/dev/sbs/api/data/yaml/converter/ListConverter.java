@@ -1,6 +1,7 @@
 package dev.sbs.api.data.yaml.converter;
 
 import dev.sbs.api.data.yaml.InternalConverter;
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.helper.ListUtil;
 
 import java.lang.reflect.ParameterizedType;
@@ -19,7 +20,7 @@ public class ListConverter extends YamlConverter {
         java.util.List<Object> newList = new ArrayList<>();
 
         try {
-            newList = (java.util.List<Object>) type.newInstance();
+            newList = (java.util.List<Object>) Reflection.of(type).newInstance();
         } catch (Exception ignore) {
         }
 
