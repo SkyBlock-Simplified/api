@@ -48,6 +48,14 @@ public class CommandJsonModel implements CommandModel, JsonModel {
     private @Nullable Long guildId;
 
     @Getter
+    @SerializedName("emoji_key")
+    private @Nullable String emojiKey;
+
+    @Getter
+    @SerializedName("category_key")
+    private @Nullable String categoryKey;
+
+    @Getter
     private String description;
 
     @Getter
@@ -55,12 +63,13 @@ public class CommandJsonModel implements CommandModel, JsonModel {
     private @Nullable String longDescription;
 
     @Getter
-    @SerializedName("emoji_key")
-    private @Nullable String emojiKey;
+    private Long defaultMemberPermissions;
 
     @Getter
-    @SerializedName("category_key")
-    private @Nullable String categoryKey;
+    private boolean nsfw;
+
+    @Getter
+    private boolean privateChannelEnabled;
 
     @Getter
     @SerializedName("developer_only")

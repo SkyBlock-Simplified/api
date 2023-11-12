@@ -90,6 +90,18 @@ public class CommandSqlModel implements CommandModel, SqlModel {
 
     @Getter
     @Setter
+    @ManyToOne
+    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
+    private EmojiSqlModel emoji;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "category_key", referencedColumnName = "key")
+    private CommandCategorySqlModel category;
+
+    @Getter
+    @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -100,15 +112,18 @@ public class CommandSqlModel implements CommandModel, SqlModel {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
-    private EmojiSqlModel emoji;
+    @Column(name = "default_member_permissions", nullable = false)
+    private Long defaultMemberPermissions;
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "category_key", referencedColumnName = "key")
-    private CommandCategorySqlModel category;
+    @Column(name = "nsfw", nullable = false)
+    private boolean nsfw;
+
+    @Getter
+    @Setter
+    @Column(name = "dm_permission", nullable = false)
+    private boolean privateChannelEnabled;
 
     @Getter
     @Setter

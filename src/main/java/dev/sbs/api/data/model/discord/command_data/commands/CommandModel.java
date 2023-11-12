@@ -22,13 +22,19 @@ public interface CommandModel extends Model {
 
     GuildModel getGuild();
 
+    EmojiModel getEmoji();
+
+    CommandCategoryModel getCategory();
+
     String getDescription();
 
     String getLongDescription();
 
-    EmojiModel getEmoji();
+    Long getDefaultMemberPermissions();
 
-    CommandCategoryModel getCategory();
+    boolean isNsfw();
+
+    boolean isPrivateChannelEnabled();
 
     boolean isDeveloperOnly();
 
