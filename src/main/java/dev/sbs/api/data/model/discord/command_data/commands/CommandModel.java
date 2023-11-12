@@ -1,23 +1,26 @@
-package dev.sbs.api.data.model.discord.command_data.command_configs;
+package dev.sbs.api.data.model.discord.command_data.commands;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCategoryModel;
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildModel;
 
 import java.time.Instant;
 import java.util.UUID;
 
-public interface CommandConfigModel extends Model {
+public interface CommandModel extends Model {
 
     UUID getUniqueId();
 
-    String getName();
+    CommandParentModel getParent();
 
     CommandGroupModel getGroup();
 
-    CommandParentModel getParent();
+    String getName();
+
+    GuildModel getGuild();
 
     String getDescription();
 
@@ -30,8 +33,6 @@ public interface CommandConfigModel extends Model {
     boolean isDeveloperOnly();
 
     boolean isEnabled();
-
-    boolean isInheritingPermissions();
 
     String getStatus();
 

@@ -1,10 +1,11 @@
-package dev.sbs.api.data.model.discord.command_data.command_configs;
+package dev.sbs.api.data.model.discord.command_data.commands;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCategorySqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 @Entity
 @Table(
-    name = "discord_command_configs",
+    name = "discord_commands",
     indexes = {
         @Index(
             columnList = "name, group_key, parent_key",
@@ -50,7 +51,7 @@ import java.util.UUID;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
+public class CommandSqlModel implements CommandModel, SqlModel {
 
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,6 +81,12 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id")
+    private GuildSqlModel guild;
 
     @Getter
     @Setter
@@ -115,11 +122,6 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
 
     @Getter
     @Setter
-    @Column(name = "inherit_permissions", nullable = false)
-    private boolean inheritingPermissions;
-
-    @Getter
-    @Setter
     @Column(name = "status")
     private String status;
 
@@ -138,12 +140,11 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CommandConfigSqlModel that = (CommandConfigSqlModel) o;
+        CommandSqlModel that = (CommandSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.isDeveloperOnly(), that.isDeveloperOnly())
             .append(this.isEnabled(), that.isEnabled())
-            .append(this.isInheritingPermissions(), that.isInheritingPermissions())
             .append(this.getId(), that.getId())
             .append(this.getUniqueId(), that.getUniqueId())
             .append(this.getParent(), that.getParent())
@@ -173,7 +174,6 @@ public class CommandConfigSqlModel implements CommandConfigModel, SqlModel {
             .append(this.getCategory())
             .append(this.isDeveloperOnly())
             .append(this.isEnabled())
-            .append(this.isInheritingPermissions())
             .append(this.getStatus())
             .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())

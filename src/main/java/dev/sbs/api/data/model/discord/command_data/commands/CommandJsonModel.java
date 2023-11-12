@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.discord.command_data.command_configs;
+package dev.sbs.api.data.model.discord.command_data.commands;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
@@ -7,6 +7,7 @@ import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCat
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Table(
     name = "discord_command_configs"
 )
-public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
+public class CommandJsonModel implements CommandModel, JsonModel {
 
     @Getter
     private Long id;
@@ -42,6 +43,9 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
 
     @Getter
     private String name;
+
+    @Getter
+    private @Nullable Long guildId;
 
     @Getter
     private String description;
@@ -66,10 +70,6 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
     private boolean enabled;
 
     @Getter
-    @SerializedName("inherit_permissions")
-    private boolean inheritingPermissions;
-
-    @Getter
     @Column(name = "status")
     private String status;
 
@@ -88,12 +88,11 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CommandConfigJsonModel that = (CommandConfigJsonModel) o;
+        CommandJsonModel that = (CommandJsonModel) o;
 
         return new EqualsBuilder()
             .append(this.isDeveloperOnly(), that.isDeveloperOnly())
             .append(this.isEnabled(), that.isEnabled())
-            .append(this.isInheritingPermissions(), that.isInheritingPermissions())
             .append(this.getId(), that.getId())
             .append(this.getUniqueId(), that.getUniqueId())
             .append(this.getParent(), that.getParent())
@@ -120,13 +119,18 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
     }
 
     @Override
+    public CommandParentModel getParent() {
+        return SimplifiedApi.getRepositoryOf(CommandParentModel.class).findFirstOrNull(CommandParentModel::getKey, this.getParentKey());
+    }
+
+    @Override
     public CommandGroupModel getGroup() {
         return SimplifiedApi.getRepositoryOf(CommandGroupModel.class).findFirstOrNull(CommandGroupModel::getKey, this.getGroupKey());
     }
 
     @Override
-    public CommandParentModel getParent() {
-        return SimplifiedApi.getRepositoryOf(CommandParentModel.class).findFirstOrNull(CommandParentModel::getKey, this.getParentKey());
+    public GuildModel getGuild() {
+        return SimplifiedApi.getRepositoryOf(GuildModel.class).findFirstOrNull(GuildModel::getGuildId, this.getGuildId());
     }
 
     @Override
@@ -143,7 +147,6 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
             .append(this.getCategory())
             .append(this.isDeveloperOnly())
             .append(this.isEnabled())
-            .append(this.isInheritingPermissions())
             .append(this.getStatus())
             .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
