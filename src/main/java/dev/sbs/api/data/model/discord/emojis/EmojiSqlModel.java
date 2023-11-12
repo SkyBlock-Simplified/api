@@ -79,8 +79,7 @@ public class EmojiSqlModel implements EmojiModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EmojiSqlModel)) return false;
-        EmojiSqlModel that = (EmojiSqlModel) o;
+        if (!(o instanceof EmojiSqlModel that)) return false;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())

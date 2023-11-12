@@ -140,8 +140,7 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildEmbedSqlModel)) return false;
-        GuildEmbedSqlModel that = (GuildEmbedSqlModel) o;
+        if (!(o instanceof GuildEmbedSqlModel that)) return false;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
