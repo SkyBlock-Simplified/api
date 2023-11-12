@@ -20,12 +20,6 @@ public class RealDate extends CustomDate {
         super(realTime);
     }
 
-    protected final @NotNull Calendar getCalendar() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(this.getRealTime());
-        return calendar;
-    }
-
     /**
      * Gets the millisecond duration of {@code dateTime}. Months is unsupported, use days.
      * <p>
@@ -35,6 +29,7 @@ public class RealDate extends CustomDate {
      * @return milliseconds based on {@code time}
      */
     public static long getDateTime(@NotNull String duration) {
+        duration = StringUtil.stripToEmpty(duration);
         long durationMillis = 0;
         long component = 0;
 
@@ -75,7 +70,7 @@ public class RealDate extends CustomDate {
      */
     @Override
     public final int getDay() {
-        return this.getCalendar().get(Calendar.DAY_OF_MONTH);
+        return this.toCalendar().get(Calendar.DAY_OF_MONTH);
     }
 
     /**
@@ -83,7 +78,7 @@ public class RealDate extends CustomDate {
      */
     @Override
     public final int getHour() {
-        return this.getCalendar().get(Calendar.HOUR_OF_DAY);
+        return this.toCalendar().get(Calendar.HOUR_OF_DAY);
     }
 
     /**
@@ -91,7 +86,7 @@ public class RealDate extends CustomDate {
      */
     @Override
     public final int getMinute() {
-        return this.getCalendar().get(Calendar.MINUTE);
+        return this.toCalendar().get(Calendar.MINUTE);
     }
 
     /**
@@ -99,7 +94,7 @@ public class RealDate extends CustomDate {
      */
     @Override
     public final int getMonth() {
-        return this.getCalendar().get(Calendar.MONTH);
+        return this.toCalendar().get(Calendar.MONTH);
     }
 
     /**
@@ -107,7 +102,7 @@ public class RealDate extends CustomDate {
      */
     @Override
     public final int getSecond() {
-        return this.getCalendar().get(Calendar.SECOND);
+        return this.toCalendar().get(Calendar.SECOND);
     }
 
     /**
@@ -115,7 +110,13 @@ public class RealDate extends CustomDate {
      */
     @Override
     public final int getYear() {
-        return this.getCalendar().get(Calendar.YEAR);
+        return this.toCalendar().get(Calendar.YEAR);
+    }
+
+    protected final @NotNull Calendar toCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(this.getRealTime());
+        return calendar;
     }
 
 }
