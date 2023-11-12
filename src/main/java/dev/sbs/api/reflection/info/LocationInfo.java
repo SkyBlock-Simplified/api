@@ -62,7 +62,6 @@ public class LocationInfo {
                 return;
         } catch (SecurityException e) {
             //logger.warning("Cannot access " + file + ": " + e);
-            // TODO(emcmanus): consider whether to log other failure cases too.
             return;
         }
 
