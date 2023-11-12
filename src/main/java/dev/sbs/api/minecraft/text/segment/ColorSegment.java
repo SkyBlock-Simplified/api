@@ -69,7 +69,7 @@ public class ColorSegment {
 
                 if (ChatFormat.isValid(peek)) {
                     i += 1; // if valid
-                    if (text.length() > 0) {
+                    if (!text.isEmpty()) {
                         currentObject.setText(text.toString()); // create a new text object
                         builder.withSegments(currentObject); // append the current object.
                         currentObject = segmentSupplier.get(); // reset the current object.

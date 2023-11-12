@@ -4,7 +4,6 @@ import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.helper.FormatUtil;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import org.yaml.snakeyaml.DumperOptions;
@@ -33,7 +32,7 @@ public abstract class ConfigMapper extends YamlMap {
 
     protected ConfigMapper(File configDir, String fileName, String... header) {
         if (StringUtil.isEmpty(fileName)) throw new IllegalArgumentException("Filename cannot be null!");
-        this.configFile = new File(configDir, FormatUtil.format("{0}/{1}", "config", fileName + (fileName.endsWith(".yml") ? "" : ".yml")));
+        this.configFile = new File(configDir, String.format("config/%s%s", fileName, (fileName.endsWith(".yml") ? "" : ".yml")));
         this.header = header;
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setIndent(2);

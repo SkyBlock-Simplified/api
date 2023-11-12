@@ -38,6 +38,13 @@ public class RegexUtil {
     public static final Pattern NUMBERS_SLASHES = Pattern.compile("[^0-9 /]");
     public static final Pattern LETTERS_NUMBERS = Pattern.compile("[^a-z A-Z:0-9/']");
 
+    // https://regex101.com/r/RFixIy/1
+    //public static final transient Pattern LOG_PATTERN = Pattern.compile("\\{(\\{[\\d]+(?:,[^,}]+)*})}");
+    //public static final transient Pattern LOG_PATTERN2 = Pattern.compile("(?!.*\\{[^}]*$)\\{\\K(?:\\{[^}]*\\}|[^{}]*)+");
+    //public static final transient Pattern LOG_PATTERN3 = Pattern.compile("(?:(?<!')?\\{(?!'))((?:[^{}]*\\{[^{}]*}[^{}]*)*)(?:(?<!')}(?!')?)");
+    //public static final Pattern LOG_PATTERN4 = Pattern.compile("(?<!')?\\{(?!')((?:[^{}]*\\{[^{}]*}[^{}]*)*)(?<!')}(?!')?");
+
+
     static {
         CODE_COMPARE.addIgnoreCharacter('r');
     }
