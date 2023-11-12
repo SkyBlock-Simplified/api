@@ -7,6 +7,7 @@ import dev.sbs.api.minecraft.image.MinecraftHead;
 import dev.sbs.api.minecraft.image.MinecraftText;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
+import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.util.helper.DataUtil;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +40,28 @@ public class MinecraftImageGenTest {
             File tempFile2 = minecraftHead2.toFile();
             System.out.println(tempFile2.getAbsolutePath());
         } catch (Exception ignore) { }
+    }
+
+    @Test
+    public void generateTextLine() {
+        MinecraftText text = MinecraftText.builder()
+            .withAlpha(255)
+            .withSegments(
+                TextSegment.builder()
+                    .withColor(ChatFormat.GOLD)
+                    .withText("CraftedFury")
+                    .build(),
+                TextSegment.builder()
+                    .withColor(ChatFormat.WHITE)
+                    .withText(": Hello World!")
+                    .build()
+            )
+            .withPadding(0)
+            .build()
+            .render();
+
+        File tempFile = text.toFile();
+        System.out.println(tempFile.getAbsolutePath());
     }
 
     @Test
