@@ -97,8 +97,7 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildReportSqlModel)) return false;
-        GuildReportSqlModel that = (GuildReportSqlModel) o;
+        if (!(o instanceof GuildReportSqlModel that)) return false;
 
         return new EqualsBuilder().append(this.getId(), that.getId())
             .append(this.getType(), that.getType())

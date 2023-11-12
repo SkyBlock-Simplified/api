@@ -74,8 +74,7 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildReputationSqlModel)) return false;
-        GuildReputationSqlModel that = (GuildReputationSqlModel) o;
+        if (!(o instanceof GuildReputationSqlModel that)) return false;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())

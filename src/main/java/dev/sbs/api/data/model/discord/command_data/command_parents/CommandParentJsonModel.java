@@ -28,9 +28,6 @@ public class CommandParentJsonModel implements CommandParentModel, JsonModel {
     private String description;
 
     @Getter
-    private boolean prefix;
-
-    @Getter
     @UpdateTimestamp
     @SerializedName("updated_at")
     private Instant updatedAt;
@@ -47,7 +44,6 @@ public class CommandParentJsonModel implements CommandParentModel, JsonModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
-            .append(this.isPrefix(), that.isPrefix())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -59,7 +55,6 @@ public class CommandParentJsonModel implements CommandParentModel, JsonModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())
-            .append(this.isPrefix())
             .append(this.getUpdatedAt())
             .build();
     }

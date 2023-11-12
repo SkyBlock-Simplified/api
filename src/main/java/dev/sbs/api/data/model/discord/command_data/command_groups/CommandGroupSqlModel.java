@@ -46,11 +46,6 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
     private String description;
 
     @Getter
-    @Setter
-    @Column(name = "required", nullable = false)
-    private boolean required;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -67,7 +62,6 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
-            .append(this.isRequired(), that.isRequired())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -79,7 +73,6 @@ public class CommandGroupSqlModel implements CommandGroupModel, SqlModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())
-            .append(this.isRequired())
             .append(this.getUpdatedAt())
             .build();
     }

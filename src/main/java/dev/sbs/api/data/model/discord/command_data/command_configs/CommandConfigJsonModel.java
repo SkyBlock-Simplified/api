@@ -32,9 +32,11 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
     @SerializedName("identifier")
     private UUID uniqueId;
 
+    @Getter
     @SerializedName("parent_key")
     private @Nullable String parentKey;
 
+    @Getter
     @SerializedName("group_key")
     private @Nullable String groupKey;
 
@@ -119,12 +121,12 @@ public class CommandConfigJsonModel implements CommandConfigModel, JsonModel {
 
     @Override
     public CommandGroupModel getGroup() {
-        return SimplifiedApi.getRepositoryOf(CommandGroupModel.class).findFirstOrNull(CommandGroupModel::getKey, this.getGroup());
+        return SimplifiedApi.getRepositoryOf(CommandGroupModel.class).findFirstOrNull(CommandGroupModel::getKey, this.getGroupKey());
     }
 
     @Override
     public CommandParentModel getParent() {
-        return SimplifiedApi.getRepositoryOf(CommandParentModel.class).findFirstOrNull(CommandParentModel::getKey, this.getParent());
+        return SimplifiedApi.getRepositoryOf(CommandParentModel.class).findFirstOrNull(CommandParentModel::getKey, this.getParentKey());
     }
 
     @Override

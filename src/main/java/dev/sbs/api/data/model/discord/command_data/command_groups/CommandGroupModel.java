@@ -10,6 +10,4 @@ public interface CommandGroupModel extends Model {
 
     String getDescription();
 
-    boolean isRequired();
-
 }

@@ -29,9 +29,6 @@ public class CommandGroupJsonModel implements CommandGroupModel, JsonModel {
     private String description;
 
     @Getter
-    private boolean required;
-
-    @Getter
     @UpdateTimestamp
     @SerializedName("updated_at")
     private @NotNull Instant updatedAt;
@@ -48,7 +45,6 @@ public class CommandGroupJsonModel implements CommandGroupModel, JsonModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
-            .append(this.isRequired(), that.isRequired())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -60,7 +56,6 @@ public class CommandGroupJsonModel implements CommandGroupModel, JsonModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())
-            .append(this.isRequired())
             .append(this.getUpdatedAt())
             .build();
     }

@@ -10,10 +10,4 @@ public interface CommandParentModel extends Model {
 
     String getDescription();
 
-    boolean isPrefix();
-
-    default boolean notPrefix() {
-        return !this.isPrefix();
-    }
-
 }

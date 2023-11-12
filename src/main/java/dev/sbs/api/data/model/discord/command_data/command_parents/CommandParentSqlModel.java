@@ -46,11 +46,6 @@ public class CommandParentSqlModel implements CommandParentModel, SqlModel {
     private String description;
 
     @Getter
-    @Setter
-    @Column(name = "prefix", nullable = false)
-    private boolean prefix;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -67,7 +62,6 @@ public class CommandParentSqlModel implements CommandParentModel, SqlModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
-            .append(this.isPrefix(), that.isPrefix())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .build();
     }
@@ -79,7 +73,6 @@ public class CommandParentSqlModel implements CommandParentModel, SqlModel {
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())
-            .append(this.isPrefix())
             .append(this.getUpdatedAt())
             .build();
     }

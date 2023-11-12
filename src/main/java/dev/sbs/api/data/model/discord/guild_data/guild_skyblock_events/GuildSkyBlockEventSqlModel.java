@@ -82,8 +82,7 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildSkyBlockEventSqlModel)) return false;
-        GuildSkyBlockEventSqlModel that = (GuildSkyBlockEventSqlModel) o;
+        if (!(o instanceof GuildSkyBlockEventSqlModel that)) return false;
 
         return new EqualsBuilder().append(this.isEnabled(), that.isEnabled())
             .append(this.getId(), that.getId())
