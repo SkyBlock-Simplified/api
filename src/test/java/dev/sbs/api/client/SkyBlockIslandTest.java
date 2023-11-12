@@ -157,9 +157,12 @@ public class SkyBlockIslandTest {
             BestiaryData bestiaryData = member.getBestiary();
 
             PlayerStats playerStats = island.getPlayerStats(member);
-            playerStats.getStats(PlayerStats.Type.ACCESSORY_POWER).stream().forEach(entry -> {
-                System.out.println(entry.getKey().getKey() + ": " + entry.getValue().getTotal() + " (" + entry.getValue().getBase() + " / " + entry.getValue().getBonus() + ")");
-            });
+            playerStats.getStats(PlayerStats.Type.ACCESSORY_POWER)
+                .stream()
+                .forEach(entry -> System.out.println(
+                    entry.getKey().getKey() + ": " +
+                        entry.getValue().getTotal() + " (" + entry.getValue().getBase() + " / " + entry.getValue().getBonus() + ")")
+                );
 
             System.out.println("All Accessories: " + playerStats.getAccessoryBag().getAccessories().size());
             System.out.println("Filtered Accessories: " + playerStats.getAccessoryBag().getFilteredAccessories().size());
