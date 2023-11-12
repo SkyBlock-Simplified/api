@@ -14,7 +14,7 @@ import java.util.Date;
 
 public abstract class CustomDate {
 
-    private static final DateTimeFormatter DEFAULT_DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final @NotNull DateTimeFormatter DEFAULT_DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     /**
      * Get RealTime in milliseconds.

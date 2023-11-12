@@ -8,11 +8,11 @@ import java.util.Calendar;
 
 public class RealDate extends CustomDate {
 
-    public RealDate(String duration) {
+    public RealDate(@NotNull String duration) {
         this(System.currentTimeMillis() + getDateTime(duration));
     }
 
-    public RealDate(Instant instant) {
+    public RealDate(@NotNull Instant instant) {
         this(instant.toEpochMilli());
     }
 
@@ -20,7 +20,7 @@ public class RealDate extends CustomDate {
         super(realTime);
     }
 
-    protected final Calendar getCalendar() {
+    protected final @NotNull Calendar getCalendar() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(this.getRealTime());
         return calendar;
