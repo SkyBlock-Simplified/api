@@ -4,19 +4,12 @@ import dev.sbs.api.util.builder.string.StringBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2043,6 +2036,10 @@ public class StringUtil {
         }
 
         return null;
+    }
+
+    public static Optional<String> formatNullable(@Nullable String format, @NotNull Object... objects) {
+        return Optional.ofNullable(Objects.isNull(format) ? null : String.format(format, objects));
     }
 
     /**

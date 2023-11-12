@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 public class PrimitiveConverter extends YamlConverter {
 
-    private static final transient HashSet<String> types = new HashSet<>();
+    private static final HashSet<String> types = new HashSet<>();
 
     static {
         types.addAll(Arrays.asList("boolean", "character", "byte", "short", "integer", "long", "float", "double", "string"));

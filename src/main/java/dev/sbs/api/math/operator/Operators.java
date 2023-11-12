@@ -71,31 +71,25 @@ public abstract class Operators {
     }
 
     public static Operator getBuiltinOperator(final char symbol, final int numArguments) {
-        switch (symbol) {
-            case '+':
+        return switch (symbol) {
+            case '+' -> {
                 if (numArguments != 1) {
-                    return BUILT_IN_OPERATORS[INDEX_ADDITION];
+                    yield BUILT_IN_OPERATORS[INDEX_ADDITION];
                 }
-
-                return BUILT_IN_OPERATORS[INDEX_UNARY_PLUS];
-            case '-':
+                yield BUILT_IN_OPERATORS[INDEX_UNARY_PLUS];
+            }
+            case '-' -> {
                 if (numArguments != 1) {
-                    return BUILT_IN_OPERATORS[INDEX_SUBTRACTION];
+                    yield BUILT_IN_OPERATORS[INDEX_SUBTRACTION];
                 }
-
-                return BUILT_IN_OPERATORS[INDEX_UNARY_MINUS];
-            case '*':
-                return BUILT_IN_OPERATORS[INDEX_MULTIPLICATION];
-            case '÷':
-            case '/':
-                return BUILT_IN_OPERATORS[INDEX_DIVISION];
-            case '^':
-                return BUILT_IN_OPERATORS[INDEX_POWER];
-            case '%':
-                return BUILT_IN_OPERATORS[INDEX_MODULO];
-            default:
-                return null;
-        }
+                yield BUILT_IN_OPERATORS[INDEX_UNARY_MINUS];
+            }
+            case '*' -> BUILT_IN_OPERATORS[INDEX_MULTIPLICATION];
+            case '÷', '/' -> BUILT_IN_OPERATORS[INDEX_DIVISION];
+            case '^' -> BUILT_IN_OPERATORS[INDEX_POWER];
+            case '%' -> BUILT_IN_OPERATORS[INDEX_MODULO];
+            default -> null;
+        };
     }
 
 }

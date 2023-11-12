@@ -200,15 +200,10 @@ public class NumberUtil {
     public static String ordinal(int value) {
         String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
 
-        switch (value % 100) {
-            case 11:
-            case 12:
-            case 13:
-                return value + "th";
-            default:
-                return value + sufixes[value % 10];
-
-        }
+        return switch (value % 100) {
+            case 11, 12, 13 -> value + "th";
+            default -> value + sufixes[value % 10];
+        };
     }
 
     /**
