@@ -34,7 +34,7 @@ public abstract class Experience {
     }
 
     public final int getRawLevel(double experience) {
-        ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
+        ConcurrentList<Double> experienceTiers = this.getExperienceTiers(); // TODO: Takes 432ms
 
         return IntStream.range(0, experienceTiers.size())
             .filter(index -> experienceTiers.get(index) > experience)
