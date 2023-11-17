@@ -555,14 +555,14 @@ public class PlayerStats extends StatData<PlayerStats.Type> {
 
     private void loadArmor(SkyBlockIsland.Member member) {
         if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
+            ConcurrentList<ItemModel> items = SimplifiedApi.getRepositoryOf(ItemModel.class).findAll();
             ConcurrentList<Pair<CompoundTag, Optional<ItemModel>>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
                 .getNbtData()
                 .<CompoundTag>getList("i")
                 .stream()
                 .map(itemTag -> Pair.of(
                     itemTag,
-                    SimplifiedApi.getRepositoryOf(ItemModel.class)
-                        .findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
+                    items.findFirst(ItemModel::getItemId, itemTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue())
                 ))
                 .collect(Concurrent.toList())
                 .inverse();
