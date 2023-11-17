@@ -1,5 +1,7 @@
 package dev.sbs.api.util.helper;
 
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,8 +21,8 @@ import java.util.Scanner;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceUtil {
 
-    public static Map<String, String> getEnvironmentVariables() {
-        Map<String, String> env = new HashMap<>();
+    public static ConcurrentMap<String, String> getEnvironmentVariables() {
+        ConcurrentMap<String, String> env = Concurrent.newMap();
 
         // Load src/main/resources/.env
         InputStream file = getResource("../.env");
@@ -40,8 +41,8 @@ public class ResourceUtil {
 
             try {
                 file.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         }
 
