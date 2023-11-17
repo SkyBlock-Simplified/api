@@ -14,7 +14,7 @@ import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
-import feign.okhttp.OkHttpClient;
+import feign.httpclient.ApacheHttpClient;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,12 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
     @Override
     public final <T extends R> T build(Class<T> tClass) {
         return Feign.builder()
-            .client(new OkHttpClient())
+            /*.client(new ApacheHttpClient(HttpClientBuilder.create().setDefaultRequestConfig(
+                RequestConfig.copy(RequestConfig.DEFAULT)
+                    .setLocalAddress(InetAddress.getByAddress(new byte[] { }))
+                    .build()
+            ).build()))*/
+            .client(new ApacheHttpClient())
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(template -> {
