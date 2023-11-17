@@ -2,6 +2,7 @@ package dev.sbs.api.data.sql;
 
 import dev.sbs.api.data.DataConfig;
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.yaml.annotation.Secure;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.ResourceUtil;
 import lombok.Getter;
@@ -16,19 +17,30 @@ import org.jetbrains.annotations.NotNull;
 import javax.cache.expiry.Duration;
 import java.util.concurrent.TimeUnit;
 
+@Getter
 public class SqlConfig extends DataConfig<SqlModel> {
 
-    @Getter @Setter protected String databaseHost = ResourceUtil.getEnv("DATABASE_HOST").orElse("");
-    @Getter @Setter protected Integer databasePort = ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt).orElse(0);
-    @Getter @Setter protected String databaseSchema = ResourceUtil.getEnv("DATABASE_SCHEMA").orElse("");
-    @Getter @Setter protected String databaseUser = ResourceUtil.getEnv("DATABASE_USER").orElse("");
-    @Getter @Setter protected String databasePassword = ResourceUtil.getEnv("DATABASE_PASSWORD").orElse("");
-    @Getter @Setter protected boolean databaseCachingQueries = ResourceUtil.getEnv("DATABASE_CACHING_QUERIES").map(Boolean::parseBoolean).orElse(true);
-    @Getter @Setter protected CacheConcurrencyStrategy databaseCachingConcurrencyStrategy = ResourceUtil.getEnv("DATABASE_CACHING_CONCURRENCY_STRATEGY").map(CacheConcurrencyStrategy::parse).orElse(CacheConcurrencyStrategy.READ_WRITE);
-    @Getter @Setter protected MissingCacheStrategy databaseCachingMissingStrategy = ResourceUtil.getEnv("DATABASE_CACHING_MISSING_STRATEGY").map(String::toLowerCase).map(MissingCacheStrategy::interpretSetting).orElse(MissingCacheStrategy.CREATE_WARN);
-    @Getter protected final Duration databaseUpdateTimestampsTTL = Duration.ETERNAL;
-    @Getter @Setter protected Duration databaseQueryResultsTTL = new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_QUERIES_TTL").map(NumberUtil::tryParseInt).orElse(30));
-    @Getter @Setter protected SqlDriver databaseDriver = SqlDriver.MariaDB;
+    @Setter @Secure
+    protected String databaseHost = ResourceUtil.getEnv("DATABASE_HOST").orElse("");
+    @Setter @Secure
+    protected Integer databasePort = ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt).orElse(0);
+    @Setter @Secure
+    protected String databaseSchema = ResourceUtil.getEnv("DATABASE_SCHEMA").orElse("");
+    @Setter @Secure
+    protected String databaseUser = ResourceUtil.getEnv("DATABASE_USER").orElse("");
+    @Setter @Secure
+    protected String databasePassword = ResourceUtil.getEnv("DATABASE_PASSWORD").orElse("");
+    @Setter
+    protected boolean databaseCachingQueries = ResourceUtil.getEnv("DATABASE_CACHING_QUERIES").map(Boolean::parseBoolean).orElse(true);
+    @Setter
+    protected CacheConcurrencyStrategy databaseCachingConcurrencyStrategy = ResourceUtil.getEnv("DATABASE_CACHING_CONCURRENCY_STRATEGY").map(CacheConcurrencyStrategy::parse).orElse(CacheConcurrencyStrategy.READ_WRITE);
+    @Setter
+    protected MissingCacheStrategy databaseCachingMissingStrategy = ResourceUtil.getEnv("DATABASE_CACHING_MISSING_STRATEGY").map(String::toLowerCase).map(MissingCacheStrategy::interpretSetting).orElse(MissingCacheStrategy.CREATE_WARN);
+    protected final Duration databaseUpdateTimestampsTTL = Duration.ETERNAL;
+    @Setter
+    protected Duration databaseQueryResultsTTL = new Duration(TimeUnit.SECONDS, ResourceUtil.getEnv("DATABASE_QUERIES_TTL").map(NumberUtil::tryParseInt).orElse(30));
+    @Setter
+    protected SqlDriver databaseDriver = SqlDriver.MariaDB;
 
     public SqlConfig() {
         this.setLoggingLevel(Level.toLevel(ResourceUtil.getEnv("DATABASE_LOGGING").orElse(""), Level.WARN));
