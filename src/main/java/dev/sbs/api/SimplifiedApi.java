@@ -33,12 +33,13 @@ import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.gson.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.util.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.util.gson.adapter.InstantTypeAdapter;
 import dev.sbs.api.util.gson.adapter.NbtContentTypeAdapter;
 import dev.sbs.api.util.gson.adapter.SkyBlockDateTypeAdapter;
 import dev.sbs.api.util.gson.adapter.UUIDTypeAdapter;
+import dev.sbs.api.util.gson.factory.OptionalTypeAdapterFactory;
+import dev.sbs.api.util.gson.factory.SerializedPathTypeAdaptorFactory;
 import feign.gson.DoubleToIntMapTypeAdapter;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -77,6 +78,7 @@ public final class SimplifiedApi {
             .registerTypeAdapter(SkyBlockImagesResponse.class, new SkyBlockImagesResponse.Deserializer())
             .registerTypeAdapter(SkyBlockItemsResponse.class, new SkyBlockItemsResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
+            .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
             .setPrettyPrinting()
             .create()
         );
