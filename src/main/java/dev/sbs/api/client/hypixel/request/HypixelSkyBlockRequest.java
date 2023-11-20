@@ -23,10 +23,10 @@ public interface HypixelSkyBlockRequest extends HypixelRequestInterface {
     SkyBlockNewsResponse getNews();
 
     @Deprecated
-    @RequestLine("GET /skyblock/profile?profile={profile}")
+    @RequestLine("GET /v2/skyblock/profile?profile={profile}")
     SkyBlockProfileResponse getProfile(@Param("profile") UUID uniqueId);
 
-    @RequestLine("GET /skyblock/profiles?uuid={uuid}")
+    @RequestLine("GET /v2/skyblock/profiles?uuid={uuid}")
     SkyBlockProfilesResponse getProfiles(@Param("uuid") UUID uniqueId);
 
     @RequestLine("GET /skyblock/bazaar")
