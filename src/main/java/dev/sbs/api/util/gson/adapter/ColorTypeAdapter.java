@@ -1,29 +1,27 @@
 package dev.sbs.api.util.gson.adapter;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import java.awt.*;
-import java.lang.reflect.Type;
+import java.io.IOException;
 
-public class ColorTypeAdapter implements TypeAdapter<Color> {
+public class ColorTypeAdapter extends TypeAdapter<Color> {
 
     @Override
-    public Color deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return new Color(json.getAsInt(), true);
+    public void write(JsonWriter out, Color value) throws IOException {
+        int rgba = (value.getRed() << 24) |
+            (value.getGreen() << 16) |
+            (value.getBlue() << 8) |
+            value.getAlpha();
+
+        out.value(rgba);
     }
 
     @Override
-    public JsonElement serialize(Color src, Type typeOfSrc, JsonSerializationContext context) {
-        int rgba = (src.getRed() << 24) |
-            (src.getGreen() << 16) |
-            (src.getBlue() << 8) |
-            src.getAlpha();
-
-        return new JsonPrimitive(rgba);
+    public Color read(JsonReader in) throws IOException {
+        return new Color(in.nextInt(), true);
     }
 
 }

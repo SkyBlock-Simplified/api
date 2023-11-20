@@ -1,4 +1,4 @@
-package dev.sbs.api.util.gson;
+package dev.sbs.api.util.gson.factory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -10,10 +10,12 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.gson.SerializedPath;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,19 +40,14 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
     }
 
     @Getter
-    private static final class JsonPathTypeAdapter<T> extends TypeAdapter<T> {
+    @RequiredArgsConstructor
+    private static class JsonPathTypeAdapter<T> extends TypeAdapter<T> {
 
         private final Gson gson;
         private final TypeAdapter<T> delegateAdapter;
         private final TypeAdapter<JsonElement> jsonElementTypeAdapter;
         private final Collection<FieldInfo> fieldInfos;
 
-        private JsonPathTypeAdapter(Gson gson, TypeAdapter<T> delegateAdapter, TypeAdapter<JsonElement> jsonElementTypeAdapter, Collection<FieldInfo> fieldInfos) {
-            this.gson = gson;
-            this.delegateAdapter = delegateAdapter;
-            this.jsonElementTypeAdapter = jsonElementTypeAdapter;
-            this.fieldInfos = fieldInfos;
-        }
 
         @Override
         public void write(final JsonWriter out, final T value) throws IOException {

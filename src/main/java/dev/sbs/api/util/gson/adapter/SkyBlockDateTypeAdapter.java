@@ -1,43 +1,41 @@
 package dev.sbs.api.util.gson.adapter;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 public class SkyBlockDateTypeAdapter {
 
-    public static class RealTime implements TypeAdapter<SkyBlockDate.RealTime> {
+    public static class RealTime extends TypeAdapter<SkyBlockDate.RealTime> {
 
         @Override
-        public SkyBlockDate.RealTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return new SkyBlockDate.RealTime(json.getAsLong());
+        public void write(JsonWriter out, SkyBlockDate.RealTime value) throws IOException {
+            out.value(value.getRealTime());
         }
 
         @Override
-        public JsonElement serialize(SkyBlockDate.RealTime src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.getRealTime());
+        public SkyBlockDate.RealTime read(JsonReader in) throws IOException {
+            return new SkyBlockDate.RealTime(in.nextLong());
         }
 
     }
 
-    public static class SkyBlockTime implements TypeAdapter<SkyBlockDate.SkyBlockTime> {
+    public static class SkyBlockTime extends TypeAdapter<SkyBlockDate.SkyBlockTime> {
 
         @Override
-        public SkyBlockDate.SkyBlockTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return new SkyBlockDate.SkyBlockTime(json.getAsLong());
+        public void write(JsonWriter out, SkyBlockDate.SkyBlockTime value) throws IOException {
+            out.value(value.getRealTime());
         }
 
         @Override
-        public JsonElement serialize(SkyBlockDate.SkyBlockTime src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.getSkyBlockTime());
+        public SkyBlockDate.SkyBlockTime read(JsonReader in) throws IOException {
+            return new SkyBlockDate.SkyBlockTime(in.nextLong());
         }
 
     }
