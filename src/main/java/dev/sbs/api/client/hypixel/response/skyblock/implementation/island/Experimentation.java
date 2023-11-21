@@ -12,40 +12,42 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Experimentation {
 
     @SerializedName("claims_resets")
     @Getter private int resetClaims;
     @SerializedName("claims_resets_timestamp")
-    @Getter private SkyBlockDate.RealTime resetClaimsTimestamp;
+    @Getter private Optional<SkyBlockDate.RealTime> resetClaimsTimestamp = Optional.empty();
+    @SerializedName("serums_drank")
+    @Getter private int serumsDrank;
 
-    private ConcurrentMap<String, Long> pairings = Concurrent.newMap();
+    private @NotNull ConcurrentMap<String, Long> pairings = Concurrent.newMap();
     private transient Optional<Table> superpairs;
 
-    private ConcurrentMap<String, Long> simon = Concurrent.newMap();
+    private @NotNull ConcurrentMap<String, Long> simon = Concurrent.newMap();
     private transient Optional<Table> chronomatron;
 
-    private ConcurrentMap<String, Long> numbers = Concurrent.newMap();
+    private @NotNull ConcurrentMap<String, Long> numbers = Concurrent.newMap();
     private transient Optional<Table> ultrasequencer;
 
-    public Optional<Table> getSuperpairs() {
+    public @NotNull Optional<Table> getSuperpairs() {
         if (Objects.isNull(this.superpairs))
-            this.superpairs = Optional.ofNullable(Objects.nonNull(this.pairings) ? new Table(this.pairings) : null);
+            this.superpairs = Optional.of(new Table(this.pairings));
 
         return this.superpairs;
     }
 
-    public Optional<Table> getChronomatron() {
+    public @NotNull Optional<Table> getChronomatron() {
         if (Objects.isNull(this.chronomatron))
-            this.chronomatron = Optional.ofNullable(Objects.nonNull(this.simon) ? new Table(this.simon) : null);
+            this.chronomatron = Optional.of(new Table(this.simon));
 
         return this.chronomatron;
     }
 
-    public Optional<Table> getUltrasequencer() {
+    public @NotNull Optional<Table> getUltrasequencer() {
         if (Objects.isNull(this.ultrasequencer))
-            this.ultrasequencer = Optional.ofNullable(Objects.nonNull(this.numbers) ? new Table(this.numbers) : null);
+            this.ultrasequencer = Optional.of(new Table(this.numbers));
 
         return this.ultrasequencer;
     }

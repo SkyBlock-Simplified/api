@@ -8,6 +8,7 @@ import dev.sbs.api.util.helper.DataUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NbtContent {
@@ -20,7 +21,7 @@ public class NbtContent {
         return DataUtil.decode(this.getRawData().toCharArray());
     }
 
-    public CompoundTag getNbtData() throws NbtException {
+    public @NotNull CompoundTag getNbtData() throws NbtException {
         return SimplifiedApi.getNbtFactory().fromBase64(this.getRawData());
     }
 

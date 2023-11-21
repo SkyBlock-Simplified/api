@@ -1,40 +1,38 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util;
 
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.IntStream;
 
-public abstract class Experience {
+public interface Experience {
 
-    public int getStartingLevel() {
+    default int getStartingLevel() {
         return 0;
     }
 
-    public abstract double getExperience();
+    double getExperience();
 
-    public abstract ConcurrentList<Double> getExperienceTiers();
+    @NotNull ConcurrentList<Double> getExperienceTiers();
 
-    public int getLevelSubtractor() {
+    default int getLevelSubtractor() {
         return 0;
     }
 
-    public final int getLevel() {
+    default int getLevel() {
         return this.getLevel(this.getExperience());
     }
 
-    public final int getLevel(double experience) {
+    default int getLevel(double experience) {
         return Math.min(this.getRawLevel(experience), this.getMaxLevel() - this.getLevelSubtractor());
     }
 
-    public final int getRawLevel() {
+    default int getRawLevel() {
         return this.getRawLevel(this.getExperience());
     }
 
-    public final int getRawLevel(double experience) {
-        ConcurrentList<Double> experienceTiers = this.getExperienceTiers(); // TODO: Takes 432ms
+    default int getRawLevel(double experience) {
+        ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
 
         return IntStream.range(0, experienceTiers.size())
             .filter(index -> experienceTiers.get(index) > experience)
@@ -42,13 +40,13 @@ public abstract class Experience {
             .orElseGet(this::getMaxLevel);
     }
 
-    public abstract int getMaxLevel();
+    int getMaxLevel();
 
-    public final double getNextExperience() {
+    default double getNextExperience() {
         return this.getNextExperience(this.getExperience());
     }
 
-    public final double getNextExperience(double experience) {
+    default double getNextExperience(double experience) {
         ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
         int rawLevel = this.getRawLevel(experience);
 
@@ -60,11 +58,11 @@ public abstract class Experience {
             return experienceTiers.get(rawLevel) - experienceTiers.get(rawLevel - 1);
     }
 
-    public final double getProgressExperience() {
+    default double getProgressExperience() {
         return this.getProgressExperience(this.getExperience());
     }
 
-    public final double getProgressExperience(double experience) {
+    default double getProgressExperience(double experience) {
         ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
         int rawLevel = this.getRawLevel(experience);
 
@@ -78,47 +76,35 @@ public abstract class Experience {
         return experience - experienceTiers.get(rawLevel - 1);
     }
 
-    public final double getMissingExperience() {
+    default double getMissingExperience() {
         return this.getMissingExperience(this.getExperience());
     }
 
-    public final double getMissingExperience(double experience) {
+    default double getMissingExperience(double experience) {
         ConcurrentList<Double> experienceTiers = this.getExperienceTiers();
         int rawLevel = this.getRawLevel(experience);
         return rawLevel >= this.getMaxLevel() ? 0 : (experienceTiers.get(rawLevel) - experience);
     }
 
-    public final double getProgressPercentage() {
+    default double getProgressPercentage() {
         return this.getProgressPercentage(this.getExperience());
     }
 
-    public final double getProgressPercentage(double experience) {
+    default double getProgressPercentage(double experience) {
         double progressExperience = this.getProgressExperience(experience);
         double nextExperience = this.getNextExperience(experience);
         return nextExperience == 0 ? 100.0 : (progressExperience / nextExperience) * 100.0;
     }
 
-    public final double getTotalExperience() {
+    default double getTotalExperience() {
         return this.getExperienceTiers()
             .stream()
             .mapToDouble(Double::doubleValue)
             .sum();
     }
 
-    public final double getTotalProgressPercentage() {
+    default double getTotalProgressPercentage() {
         return (this.getExperience() / this.getTotalExperience()) * 100.0;
-    }
-
-    @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Weight {
-
-        @Getter private final double value;
-        @Getter private final double overflow;
-
-        public final double getTotal() {
-            return this.getValue() + this.getOverflow();
-        }
-
     }
 
 }

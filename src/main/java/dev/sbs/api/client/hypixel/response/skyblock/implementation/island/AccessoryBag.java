@@ -1,85 +1,59 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 
-import dev.sbs.api.SimplifiedApi;
+import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
-import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
-import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-@SuppressWarnings("unchecked")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccessoryBag {
 
-    @Getter private final NbtContent contents;
-    @Getter private final int purchasedBagUpgrades;
-    @Getter private final Tuning tuning;
-    @Getter private final int highestMagicalPower;
-    private final String selectedPower;
-    private final ConcurrentList<String> unlockedPowers;
+    private transient NbtContent contents;
+    private Tuning tuning;
+    @SerializedName("selected_power")
+    private String selectedPower;
+    @SerializedName("bag_upgrades_purchased")
+    private int bagUpgradesPurchased;
+    @SerializedName("unlocked_powers")
+    private @NotNull ConcurrentList<String> unlockedPowers = Concurrent.newList();
+    @SerializedName("highest_magical_power")
+    private int highestMagicalPower;
 
-    AccessoryBag(NbtContent contents, ConcurrentMap<String, Object> accessoryMap) {
-        this.contents = contents;
-        this.purchasedBagUpgrades = ((Number) accessoryMap.getOrDefault("bag_upgrades_purchased", 0)).intValue();
-        this.selectedPower = (String) accessoryMap.getOrDefault("selected_power", "");
-        this.unlockedPowers = Concurrent.newList((List<String>) accessoryMap.getOrDefault("unlocked_powers", Concurrent.newList()));
-        this.highestMagicalPower = ((Number) accessoryMap.getOrDefault("highest_magical_power", 0)).intValue();
-
-        if (accessoryMap.containsKey("tuning")) {
-            Map<String, Object> tuningMap = (Map<String, Object>) accessoryMap.get("tuning");
-            ConcurrentMap<String, Object> tuningCMap = Concurrent.newMap(tuningMap);
-            this.tuning = new Tuning(tuningCMap);
-        } else
-            this.tuning = new Tuning(Concurrent.newMap());
-    }
-
-    public Optional<AccessoryPowerModel> getSelectedPower() {
-        return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).findFirst(AccessoryPowerModel::getKey, selectedPower.toUpperCase());
-    }
-
-    public ConcurrentList<AccessoryPowerModel> getUnlockedPowers() {
-        return SimplifiedApi.getRepositoryOf(AccessoryPowerModel.class).matchAll(accessoryPowerModel -> this.unlockedPowers.contains(accessoryPowerModel.getKey().toLowerCase()));
-    }
-
-    @Getter
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Tuning {
 
-        private final ConcurrentMap<StatModel, Integer> current;
-        private final ConcurrentList<ConcurrentMap<StatModel, Integer>> slots;
-        private final int highestUnlockedSlot;
+        @SerializedName("highest_unlocked_slot")
+        @Getter private int highestUnlockedSlot;
+        @SerializedName("slot_0")
+        @Getter private @NotNull ConcurrentMap<String, Integer> current = Concurrent.newMap();
+        private @NotNull ConcurrentMap<String, Integer> slot_1 = Concurrent.newMap();
+        private @NotNull ConcurrentMap<String, Integer> slot_2 = Concurrent.newMap();
+        private @NotNull ConcurrentMap<String, Integer> slot_3 = Concurrent.newMap();
+        private @NotNull ConcurrentMap<String, Integer> slot_4 = Concurrent.newMap();
 
-        private Tuning(ConcurrentMap<String, Object> tuningMap) {
-            this.highestUnlockedSlot = ((Number) tuningMap.removeOrGet("highest_unlocked_slot", 0)).intValue();
-            ConcurrentList<ConcurrentMap<StatModel, Integer>> tuningSlots = Concurrent.newList();
+        public @NotNull ConcurrentMap<String, Integer> getSlot(int index) {
+            return switch (index) {
+                case 1 -> this.slot_1;
+                case 2 -> this.slot_2;
+                case 3 -> this.slot_3;
+                case 4 -> this.slot_4;
+                default -> this.current;
+            };
+        }
 
-            for (int i = 0; i <= 5; i++) {
-                String slotName = String.format("slot_%s", i);
-
-                if (tuningMap.containsKey(slotName)) {
-                    tuningSlots.add(
-                        ((Map<String, Double>) tuningMap.get(slotName)).entrySet()
-                            .stream()
-                            .map(entry -> Pair.of(
-                                SimplifiedApi.getRepositoryOf(StatModel.class).findFirstOrNull(StatModel::getKey, entry.getKey().toUpperCase()),
-                                entry.getValue()
-                            ))
-                            .collect(Concurrent.toMap())
-                    );
-                }
-            }
-
-            this.current = ListUtil.notEmpty(tuningSlots) ? tuningSlots.removeFirst() : Concurrent.newMap();
-            this.slots = tuningSlots;
+        public @NotNull ConcurrentList<ConcurrentMap<String, Integer>> getSlots() {
+            return Concurrent.newUnmodifiableList(
+                this.slot_1,
+                this.slot_2,
+                this.slot_3,
+                this.slot_4
+            );
         }
 
     }
