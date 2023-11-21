@@ -8,7 +8,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import dev.sbs.api.client.ApiBuilder;
-import dev.sbs.api.client.RequestInterface;
+import dev.sbs.api.client.Request;
 import dev.sbs.api.client.hypixel.HypixelApiBuilder;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
@@ -128,7 +128,7 @@ public final class SimplifiedApi {
         return serviceManager.get(Scheduler.class);
     }
 
-    public static <T extends RequestInterface, A extends ApiBuilder<T>> A getApiBuilder(Class<A> tClass) {
+    public static <T extends Request, A extends ApiBuilder<T>> A getApiBuilder(Class<A> tClass) {
         return serviceManager.get(tClass);
     }
 
@@ -147,7 +147,7 @@ public final class SimplifiedApi {
         return serviceManager.get(SessionManager.class);
     }
 
-    public static <T extends RequestInterface> T getWebApi(Class<T> tClass) {
+    public static <T extends Request> T getWebApi(Class<T> tClass) {
         return serviceManager.get(tClass);
     }
 
