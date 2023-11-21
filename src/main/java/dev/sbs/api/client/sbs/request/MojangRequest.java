@@ -7,7 +7,7 @@ import feign.RequestLine;
 
 import java.util.UUID;
 
-public interface MojangRequest extends SbsRequestInterface {
+public interface MojangRequest extends SbsRequest {
 
     @RequestLine("GET /mojang/user/{username}")
     MojangProfileResponse getProfileFromUsername(@Param("username") String username);

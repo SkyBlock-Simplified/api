@@ -9,7 +9,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.ListUtil;
 import feign.Feign;
-import feign.Request;
 import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
@@ -21,22 +20,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public abstract class ApiBuilder<R extends RequestInterface> implements ClassBuilder<R> {
+@Getter
+public abstract class ApiBuilder<R extends Request> implements ClassBuilder<R> {
 
     private final @NotNull String url;
-    @Getter private @NotNull ConcurrentMap<String, ConcurrentList<String>> headerCache = Concurrent.newUnmodifiableMap();
-    @Getter private long lastRequestTime;
-    @Getter private long lastResponseTime;
+    private @NotNull ConcurrentMap<String, ConcurrentList<String>> headerCache = Concurrent.newUnmodifiableMap();
+    private long lastRequestTime;
+    private long lastResponseTime;
 
     protected ApiBuilder(@NotNull String url) {
-        this.url = url;
+        this.url = String.format("https://%s", url.replaceFirst("^https?://", ""));
     }
 
     @Override
-    public final <T extends R> T build(Class<T> tClass) {
+    public final <T extends R> @NotNull T build(@NotNull Class<T> tClass) {
         return Feign.builder()
             /*.client(new ApacheHttpClient(HttpClientBuilder.create().setDefaultRequestConfig(
-                RequestConfig.copy(RequestConfig.DEFAULT)
+            RequestConfig.copy(RequestConfig.DEFAULT)
                     .setLocalAddress(InetAddress.getByAddress(new byte[] { }))
                     .build()
             ).build()))*/
@@ -69,7 +69,7 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
             })
             .errorDecoder(this.getErrorDecoder())
             .retryer(Retryer.NEVER_RETRY)
-            .options(new Request.Options(
+            .options(new feign.Request.Options(
                 5,
                 TimeUnit.SECONDS,
                 10,
@@ -97,10 +97,6 @@ public abstract class ApiBuilder<R extends RequestInterface> implements ClassBui
 
     protected ConcurrentSet<String> getResponseCacheHeaders() {
         return Concurrent.newUnmodifiableSet();
-    }
-
-    public final String getUrl() {
-        return String.format("https://%s", this.url);
     }
 
 }

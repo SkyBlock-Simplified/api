@@ -2,11 +2,11 @@ package dev.sbs.api.client.sbs;
 
 import dev.sbs.api.client.ApiBuilder;
 import dev.sbs.api.client.sbs.exception.SbsApiException;
-import dev.sbs.api.client.sbs.request.SbsRequestInterface;
+import dev.sbs.api.client.sbs.request.SbsRequest;
 import feign.FeignException;
 import feign.codec.ErrorDecoder;
 
-public final class SbsApiBuilder extends ApiBuilder<SbsRequestInterface> {
+public final class SbsApiBuilder extends ApiBuilder<SbsRequest> {
 
     public SbsApiBuilder() {
         super("api.sbs.dev");

@@ -6,7 +6,7 @@ import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
 import feign.RequestLine;
 
-public interface SkyBlockRequest extends SbsRequestInterface {
+public interface SkyBlockRequest extends SbsRequest {
 
     @RequestLine("GET /skyblock/emojis.json")
     SkyBlockEmojisResponse getEmojis();
