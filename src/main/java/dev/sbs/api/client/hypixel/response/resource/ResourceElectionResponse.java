@@ -2,57 +2,58 @@ package dev.sbs.api.client.hypixel.response.resource;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+import java.time.Instant;
+
+@Getter
 public class ResourceElectionResponse {
 
-    @Getter private boolean success;
-    @Getter private long lastUpdated;
-    @Getter private Mayor mayor;
+    private boolean success;
+    private Instant lastUpdated;
+    private Mayor mayor;
 
     public Election getElection() {
         return this.getMayor().election;
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Mayor extends MayorData {
+    @Getter
+    public static class Mayor extends CandidateData {
 
         private Election election;
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Candidate extends MayorData {
+    @Getter
+    public static class Candidate extends CandidateData {
 
-        @Getter private int votes;
-
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class MayorData {
-
-        @Getter private String key;
-        @Getter private String name;
-        @Getter private final ConcurrentList<Perk> perks = Concurrent.newList();
+        private int votes;
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    private static class CandidateData {
+
+        private String key;
+        private String name;
+        private @NotNull ConcurrentList<Perk> perks = Concurrent.newList();
+
+    }
+
+    @Getter
     public static class Perk {
 
-        @Getter private String name;
-        @Getter private String description;
+        private String name;
+        private String description;
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class Election {
 
-        @Getter private int year;
-        @Getter private final ConcurrentList<Candidate> candidates = Concurrent.newList();
+        private int year;
+        private @NotNull ConcurrentList<Candidate> candidates = Concurrent.newList();
 
     }
 

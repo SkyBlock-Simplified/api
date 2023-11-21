@@ -5,19 +5,20 @@ import dev.sbs.api.client.hypixel.response.resource.ResourceElectionResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;
 import feign.RequestLine;
+import org.jetbrains.annotations.NotNull;
 
-public interface HypixelResourceRequest extends HypixelRequestInterface {
+public interface HypixelResourceRequest extends HypixelRequest {
 
     @RequestLine("GET /resources/skyblock/skills")
-    ResourceSkillsResponse getSkills();
+    @NotNull ResourceSkillsResponse getSkills();
 
     @RequestLine("GET /resources/skyblock/collections")
-    ResourceCollectionsResponse getCollections();
+    @NotNull ResourceCollectionsResponse getCollections();
 
     @RequestLine("GET /resources/skyblock/items")
-    ResourceItemsResponse getItems();
+    @NotNull ResourceItemsResponse getItems();
 
     @RequestLine("GET /resources/skyblock/election")
-    ResourceElectionResponse getElection();
+    @NotNull ResourceElectionResponse getElection();
 
 }

@@ -4,19 +4,17 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockAucti
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("all")
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class SkyBlockAuctionsResponse {
 
-    @Getter private boolean success;
-    @Getter private int page;
-    @Getter private int totalPages;
-    @Getter private int totalAuctions;
-    @Getter private SkyBlockDate.RealTime lastUpdated;
-    @Getter private ConcurrentList<SkyBlockAuction> auctions = Concurrent.newList();
+    private boolean success;
+    private int page;
+    private int totalPages;
+    private int totalAuctions;
+    private SkyBlockDate.RealTime lastUpdated;
+    private @NotNull ConcurrentList<SkyBlockAuction> auctions = Concurrent.newList();
 
 }

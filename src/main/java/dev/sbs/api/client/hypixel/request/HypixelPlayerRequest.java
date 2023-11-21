@@ -1,7 +1,6 @@
 package dev.sbs.api.client.hypixel.request;
 
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelCountsResponse;
-import dev.sbs.api.client.hypixel.response.hypixel.HypixelFriendsResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelGuildResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelPlayerResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelPunishmentStatsResponse;
@@ -11,13 +10,10 @@ import feign.RequestLine;
 
 import java.util.UUID;
 
-public interface HypixelPlayerRequest extends HypixelRequestInterface {
+public interface HypixelPlayerRequest extends HypixelRequest {
 
     @RequestLine("GET /counts")
     HypixelCountsResponse getCounts();
-
-    @RequestLine("GET /friends?uuid={uuid}")
-    HypixelFriendsResponse getFriends(@Param("uuid") UUID uniqueId);
 
     @RequestLine("GET /guild?id={id}")
     HypixelGuildResponse getGuild(@Param("id") String guildId);

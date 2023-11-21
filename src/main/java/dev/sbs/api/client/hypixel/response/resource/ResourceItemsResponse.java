@@ -7,87 +7,90 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceItemsResponse {
 
-    @Getter private boolean success;
-    @Getter private long lastUpdated;
-    @Getter private ConcurrentList<Item> items = Concurrent.newList();
+    private boolean success;
+    private long lastUpdated;
+    private @NotNull ConcurrentList<Item> items = Concurrent.newList();
 
+    @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Item {
 
-        @Getter private String id;
-        @Getter private String name;
-        @Getter private String material;
-        @Getter private int durability;
-        @Getter private String description;
+        private String id;
+        private String name;
+        private String material;
+        private int durability;
+        private String description;
         @SerializedName("tier")
-        @Getter private String rarity;
+        private String rarity;
         @SerializedName("category")
-        @Getter private String itemType;
-        @Getter private String color;
+        private String itemType;
+        private String color;
 
-        @Getter private boolean glowing;
-        @Getter private boolean unstackable;
-        @Getter private boolean dungeonItem;
-        @Getter private boolean museum;
+        private boolean glowing;
+        private boolean unstackable;
+        private boolean dungeonItem;
+        private boolean museum;
         @SerializedName("can_have_attributes")
-        @Getter private boolean attributable;
+        private boolean attributable;
         @SerializedName("hidden_from_viewrecipe_command")
-        @Getter private boolean hiddenFromViewrecipe;
+        private boolean hiddenFromViewrecipe;
         @SerializedName("salvageable_from_recipe")
-        @Getter private boolean salvageableFromRecipe;
+        private boolean salvageableFromRecipe;
         @SerializedName("cannot_reforge")
-        @Getter private boolean notReforgeable;
+        private boolean notReforgeable;
         @SerializedName("rift_transferrable")
-        @Getter private boolean riftTransferrable;
+        private boolean riftTransferrable;
         @SerializedName("lose_motes_value_on_transfer")
-        @Getter private boolean riftLoseMotesValueOnTransfer;
+        private boolean riftLoseMotesValueOnTransfer;
 
 
         @SerializedName("motes_sell_price")
-        @Getter private double riftMotesSellPrice;
+        private double riftMotesSellPrice;
         @SerializedName("npc_sell_price")
-        @Getter private double npcSellPrice;
+        private double npcSellPrice;
         @SerializedName("gear_score")
-        @Getter private int gearScore;
-        @Getter private String generator;
+        private int gearScore;
+        private String generator;
         @SerializedName("generator_tier")
-        @Getter private int generatorTier;
+        private int generatorTier;
         @SerializedName("ability_damage_scaling")
-        @Getter private double abilityDamageScaling;
-        @Getter private String origin;
-        @Getter private String soulbound;
-        @Getter private String furniture;
+        private double abilityDamageScaling;
+        private String origin;
+        private String soulbound;
+        private String furniture;
         @SerializedName("sword_type")
-        @Getter private String swordType;
-        @Getter private String skin;
-        @Getter private String crystal;
+        private String swordType;
+        private String skin;
+        private String crystal;
         @SerializedName("private_island")
-        @Getter private String privateIsland;
+        private String privateIsland;
 
-        @Getter private ConcurrentMap<String, Double> stats = Concurrent.newMap();
+        private ConcurrentMap<String, Double> stats = Concurrent.newMap();
         @SerializedName("tiered_stats")
-        @Getter private ConcurrentMap<String, List<Double>> tieredStats = Concurrent.newMap();
-        @Getter private ConcurrentList<ConcurrentMap<String, Object>> requirements = Concurrent.newList();
+        private ConcurrentMap<String, List<Double>> tieredStats = Concurrent.newMap();
+        private ConcurrentList<ConcurrentMap<String, Object>> requirements = Concurrent.newList();
         @SerializedName("catacombs_requirements")
-        @Getter private ConcurrentList<ConcurrentMap<String, Object>> catacombsRequirements;
+        private ConcurrentList<ConcurrentMap<String, Object>> catacombsRequirements;
         //@Getter private ConcurrentList<ItemCatacombsRequirements> catacombsRequirements;
         @SerializedName("upgrade_costs")
-        @Getter private ConcurrentList<ConcurrentList<ConcurrentMap<String, Object>>> upgradeCosts = Concurrent.newList();
+        private ConcurrentList<ConcurrentList<ConcurrentMap<String, Object>>> upgradeCosts = Concurrent.newList();
         @SerializedName("gemstone_slots")
-        @Getter private ConcurrentList<ConcurrentMap<String, Object>> gemstoneSlots = Concurrent.newList();
-        @Getter private ConcurrentMap<String, Double> enchantments = Concurrent.newMap();
+        private ConcurrentList<ConcurrentMap<String, Object>> gemstoneSlots = Concurrent.newList();
+        private ConcurrentMap<String, Double> enchantments = Concurrent.newMap();
         @SerializedName("dungeon_item_conversion_cost")
-        @Getter private ConcurrentMap<String, Object> dungeonItemConversionCost = Concurrent.newMap();
-        @Getter private ConcurrentMap<String, Object> prestige = Concurrent.newMap();
+        private ConcurrentMap<String, Object> dungeonItemConversionCost = Concurrent.newMap();
+        private ConcurrentMap<String, Object> prestige = Concurrent.newMap();
         @SerializedName("item_specific")
-        @Getter private ConcurrentMap<String, Object> itemSpecific = Concurrent.newMap();
-        @Getter private ConcurrentList<ConcurrentMap<String, Object>> salvages = Concurrent.newList();
+        private ConcurrentMap<String, Object> itemSpecific = Concurrent.newMap();
+        private ConcurrentList<ConcurrentMap<String, Object>> salvages = Concurrent.newList();
 
     }
 

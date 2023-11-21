@@ -5,37 +5,36 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.N
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class SkyBlockMuseum {
 
-    @Getter private long value;
-    @Getter private boolean appraisal;
-    @Getter private ConcurrentMap<String, Item> items = Concurrent.newMap();
+    private long value;
+    private boolean appraisal;
+    private @NotNull ConcurrentMap<String, Item> items = Concurrent.newMap();
     @SerializedName("special")
-    @Getter private ConcurrentList<Item> specialItems = Concurrent.newList();
+    private @NotNull ConcurrentList<Item> specialItems = Concurrent.newList();
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class Item {
 
         @SerializedName("donated_time")
-        @Getter private SkyBlockDate.RealTime donated;
-        @Getter private boolean borrowing;
+        private SkyBlockDate.RealTime donated;
+        private boolean borrowing;
         @SerializedName("featured_slot")
-        private String featuredSlot;
-        @Getter private NbtContent items;
-
-        public Optional<String> getFeaturedSlot() {
-            return Optional.ofNullable(this.featuredSlot);
-        }
+        private Optional<String> featuredSlot = Optional.empty();
+        private NbtContent items;
 
         public boolean isFeatured() {
-            return this.featuredSlot != null;
+            return this.featuredSlot.isPresent();
+        }
+
+        public boolean notFeatured() {
+            return !this.isFeatured();
         }
 
     }

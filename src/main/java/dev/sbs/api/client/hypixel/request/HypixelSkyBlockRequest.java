@@ -7,50 +7,46 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockBazaarResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockFireSaleResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockMuseumResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockNewsResponse;
-import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfileResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
 import feign.Param;
 import feign.RequestLine;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface HypixelSkyBlockRequest extends HypixelRequestInterface {
+public interface HypixelSkyBlockRequest extends HypixelRequest {
 
     @RequestLine("GET /skyblock/museum?profile={profile}")
-    SkyBlockMuseumResponse getMuseum();
+    @NotNull SkyBlockMuseumResponse getMuseum();
 
     @RequestLine("GET /skyblock/news")
-    SkyBlockNewsResponse getNews();
-
-    @Deprecated
-    @RequestLine("GET /v2/skyblock/profile?profile={profile}")
-    SkyBlockProfileResponse getProfile(@Param("profile") UUID uniqueId);
+    @NotNull SkyBlockNewsResponse getNews();
 
     @RequestLine("GET /v2/skyblock/profiles?uuid={uuid}")
-    SkyBlockProfilesResponse getProfiles(@Param("uuid") UUID uniqueId);
+    @NotNull SkyBlockProfilesResponse getProfiles(@Param("uuid") UUID uniqueId);
 
     @RequestLine("GET /skyblock/bazaar")
-    SkyBlockBazaarResponse getBazaar();
+    @NotNull SkyBlockBazaarResponse getBazaar();
 
     @RequestLine("GET /skyblock/auction?uuid={uuid}")
-    SkyBlockAuctionResponse getAuction(@Param("uuid") UUID auctionId);
+    @NotNull SkyBlockAuctionResponse getAuction(@Param("uuid") UUID auctionId);
 
     @RequestLine("GET /skyblock/auction?profile={profile}")
-    SkyBlockAuctionResponse getAuctionByIsland(@Param("profile") UUID islandId);
+    @NotNull SkyBlockAuctionResponse getAuctionByIsland(@Param("profile") UUID islandId);
 
     @RequestLine("GET /skyblock/auction?player={player}")
-    SkyBlockAuctionResponse getAuctionByPlayer(@Param("player") UUID playerId);
+    @NotNull SkyBlockAuctionResponse getAuctionByPlayer(@Param("player") UUID playerId);
 
     @RequestLine("GET /skyblock/auctions")
-    SkyBlockAuctionsResponse getAuctions();
+    @NotNull SkyBlockAuctionsResponse getAuctions();
 
     @RequestLine("GET /skyblock/auctions?page={page}")
-    SkyBlockAuctionsResponse getAuctions(@Param("page") Integer page);
+    @NotNull SkyBlockAuctionsResponse getAuctions(@Param("page") Integer page);
 
     @RequestLine("GET /skyblock/auctions_ended")
-    SkyBlockAuctionsEndedResponse getEndedAuctions();
+    @NotNull SkyBlockAuctionsEndedResponse getEndedAuctions();
 
     @RequestLine("GET /skyblock/firesales")
-    SkyBlockFireSaleResponse getFireSales();
+    @NotNull SkyBlockFireSaleResponse getFireSales();
 
 }

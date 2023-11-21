@@ -3,35 +3,34 @@ package dev.sbs.api.client.hypixel.response.resource;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class ResourceSkillsResponse {
 
-    @Getter private boolean success;
-    @Getter private long lastUpdated;
-    @Getter private String version;
-    @Getter private ConcurrentMap<String, Skill> collections = Concurrent.newMap();
-    @Getter private ConcurrentMap<String, Skill> skills = Concurrent.newMap();
+    private boolean success;
+    private long lastUpdated;
+    private String version;
+    private @NotNull ConcurrentMap<String, Skill> collections = Concurrent.newMap();
+    private @NotNull ConcurrentMap<String, Skill> skills = Concurrent.newMap();
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class Skill {
 
-        @Getter private String name;
-        @Getter private String description;
-        @Getter private int maxLevel;
-        @Getter private ConcurrentList<SkillLevel> levels = Concurrent.newList();
+        private String name;
+        private String description;
+        private int maxLevel;
+        private @NotNull ConcurrentList<SkillLevel> levels = Concurrent.newList();
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class SkillLevel {
 
-        @Getter private int level;
-        @Getter private double totalExpRequired;
-        @Getter private ConcurrentList<String> unlocks = Concurrent.newList();
+        private int level;
+        private double totalExpRequired;
+        private @NotNull ConcurrentList<String> unlocks = Concurrent.newList();
 
     }
 

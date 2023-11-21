@@ -1,54 +1,42 @@
 package dev.sbs.api.client.hypixel.response.resource;
 
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class ResourceCollectionsResponse {
 
-    @Getter
     private boolean success;
-    @Getter
     private long lastUpdated;
-    @Getter
     private String version;
-    @Getter
-    ConcurrentMap<String, Collection> collections;
+    private @NotNull ConcurrentMap<String, Collection> collections = Concurrent.newMap();
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class Collection {
 
-        @Getter
         private String name;
-        @Getter
-        private ConcurrentMap<String, CollectionItem> items;
+        private @NotNull ConcurrentMap<String, CollectionItem> items = Concurrent.newMap();
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class CollectionItem {
 
-        @Getter
         private String name;
-        @Getter
         private int maxTiers;
-        @Getter
-        private ConcurrentList<CollectionTier> tiers;
+        private @NotNull ConcurrentList<CollectionTier> tiers = Concurrent.newList();
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class CollectionTier {
 
-        @Getter
         private int tier;
-        @Getter
         private double amountRequired;
-        @Getter
-        private ConcurrentList<String> unlocks;
+        private @NotNull ConcurrentList<String> unlocks = Concurrent.newList();
 
     }
 

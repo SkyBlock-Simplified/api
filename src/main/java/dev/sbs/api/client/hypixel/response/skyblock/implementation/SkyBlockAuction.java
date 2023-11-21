@@ -1,76 +1,88 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.hypixel.response.Rarity;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
-import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-@SuppressWarnings("all")
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class SkyBlockAuction {
 
     @SerializedName("item_bytes")
-    @Getter NbtContent itemNbt;
+    private NbtContent itemNbt;
     @SerializedName("uuid")
-    @Getter private UUID auctionId;
+    private UUID auctionId;
     @SerializedName("auctioneer")
-    @Getter private UUID auctioneerId;
+    private UUID auctioneerId;
     @SerializedName("profile_id")
-    @Getter private UUID islandId;
+    private UUID islandId;
     @SerializedName("coop")
-    @Getter private ConcurrentList<UUID> coopMembers = Concurrent.newList();
+    private ConcurrentList<UUID> coopMembers = Concurrent.newList();
     @SerializedName("start")
-    @Getter private SkyBlockDate.RealTime startedAt;
+    private SkyBlockDate.RealTime startedAt;
     @SerializedName("end")
-    @Getter private SkyBlockDate.RealTime endsAt;
+    private SkyBlockDate.RealTime endsAt;
+    @Getter(AccessLevel.NONE)
     @SerializedName("item_lore")
     private String lore;
-    @Getter private String extra;
+    private String extra;
     @SerializedName("tier")
-    private String rarity;
+    private Rarity rarity;
     @SerializedName("starting_big")
-    @Getter private long startingBid;
-    @Getter private boolean claimed;
+    private long startingBid;
+    private boolean claimed;
     @SerializedName("claimed_bidders")
-    @Getter private ConcurrentList<String> claimedBidders = Concurrent.newList();
+    private ConcurrentList<String> claimedBidders = Concurrent.newList();
     @SerializedName("highest_bid_amount")
-    @Getter private long highestBid;
-    @Getter private ConcurrentList<Bid> bids = Concurrent.newList();
-    @Getter private boolean bin;
+    private long highestBid;
+    private @NotNull ConcurrentList<Bid> bids = Concurrent.newList();
+    private boolean bin;
 
-    public ConcurrentList<String> getLore() {
+    public @NotNull ConcurrentList<String> getLore() {
         return Concurrent.newUnmodifiableList(StringUtil.split(this.lore, '\n'));
     }
 
-    @SneakyThrows
-    public RarityModel getRarity() {
-        return SimplifiedApi.getRepositoryOf(RarityModel.class).findFirstOrNull(RarityModel::getKey, this.rarity);
-    }
-
-    public boolean isUnclaimed() {
+    public boolean notClaimed() {
         return !this.isClaimed();
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
     public static class Bid {
 
         @SerializedName("auction_id")
-        @Getter UUID auctionId;
+        private UUID auctionId;
         @SerializedName("bidder")
-        @Getter private UUID bidderId;
+        private UUID bidderId;
         @SerializedName("profile_id")
-        @Getter private UUID islandId;
-        @Getter private long amount;
-        @Getter private SkyBlockDate.RealTime timestamp;
+        private UUID islandId;
+        private long amount;
+        private SkyBlockDate.RealTime timestamp;
+
+    }
+
+    @Getter
+    public static class Ended {
+
+        @SerializedName("auction_id")
+        private UUID auctionId;
+        @SerializedName("seller")
+        private UUID sellerId;
+        @SerializedName("seller_profile")
+        private UUID sellerIslandId;
+        @SerializedName("buyer")
+        private UUID buyerId;
+        private SkyBlockDate.RealTime timestamp;
+        private long price;
+        private boolean bin;
+        @SerializedName("item_bytes")
+        private NbtContent itemNbt;
 
     }
 

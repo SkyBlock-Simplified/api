@@ -6,12 +6,13 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("all")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockAuctionResponse {
 
-    @Getter private boolean success;
-    @Getter private ConcurrentList<SkyBlockAuction> auctions = Concurrent.newList();
+    private boolean success;
+    private @NotNull ConcurrentList<SkyBlockAuction> auctions = Concurrent.newList();
 
 }

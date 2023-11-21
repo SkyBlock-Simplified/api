@@ -1,27 +1,15 @@
 package dev.sbs.api.client.hypixel.response.skyblock;
 
-import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockFireSale;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class SkyBlockFireSaleResponse {
 
-    @Getter private boolean success;
-    @Getter private ConcurrentList<Sale> sales = Concurrent.newList();
-
-    public static class Sale {
-
-        @SerializedName("item_id")
-        @Getter private String itemId;
-        @Getter private long start;
-        @Getter private long end;
-        @Getter private int amount;
-        @Getter private int price;
-
-    }
+    private boolean success;
+    private @NotNull ConcurrentList<SkyBlockFireSale> sales = Concurrent.newList();
 
 }
