@@ -20,6 +20,26 @@ public class EnhancedDungeon extends Dungeon implements Experience, Weighted {
 
     EnhancedDungeon(@NotNull Dungeon dungeon) {
         // Re-initialize Fields
+        super.type = dungeon.getType();
+        super.experience = dungeon.experience;
+        super.highestCompletedTier = dungeon.highestCompletedTier;
+        super.bestRuns = dungeon.bestRuns;
+        super.timesPlayed = dungeon.timesPlayed;
+        super.completions = dungeon.completions;
+        super.milestoneCompletions = dungeon.milestoneCompletions;
+        super.bestScore = dungeon.bestScore;
+        super.watcherKills = dungeon.watcherKills;
+        super.mobsKilled = dungeon.mobsKilled;
+        super.mostMobsKilled = dungeon.mostMobsKilled;
+        super.mostHealing = dungeon.mostHealing;
+        super.mostDamageHealer = dungeon.mostDamageHealer;
+        super.mostDamageMage = dungeon.mostDamageMage;
+        super.mostDamageBerserk = dungeon.mostDamageBerserk;
+        super.mostDamageArcher = dungeon.mostDamageArcher;
+        super.mostDamageTank = dungeon.mostDamageTank;
+        super.fastestTime = dungeon.fastestTime;
+        super.fastestSTierTime = dungeon.fastestSTierTime;
+        super.fastestSPlusTierTime = dungeon.fastestSPlusTierTime;
 
         this.typeModel = this.getType().getModel();
         this.experienceTiers = SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)

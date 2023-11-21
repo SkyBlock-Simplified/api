@@ -24,58 +24,58 @@ import java.util.Arrays;
 import java.util.UUID;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Dungeon {
 
-    @NotNull Type type;
-    double experience;
+    protected @NotNull Type type;
+    protected double experience;
     @SerializedName("highest_tier_completed")
-    private int highestCompletedTier;
+    protected int highestCompletedTier;
     @SerializedName("best_runs")
-    private @NotNull ConcurrentMap<Integer, ConcurrentList<BestRun>> bestRuns = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, ConcurrentList<BestRun>> bestRuns = Concurrent.newMap();
 
     @SerializedName("times_played")
-    private @NotNull ConcurrentMap<Integer, Integer> timesPlayed = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> timesPlayed = Concurrent.newMap();
     @SerializedName("tier_completions")
-    private @NotNull ConcurrentMap<Integer, Integer> completions = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> completions = Concurrent.newMap();
     @SerializedName("milestone_completions")
-    private @NotNull ConcurrentMap<Integer, Integer> milestoneCompletions = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> milestoneCompletions = Concurrent.newMap();
 
     @SerializedName("best_score")
-    private @NotNull ConcurrentMap<Integer, Integer> bestScore = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> bestScore = Concurrent.newMap();
     @SerializedName("watcher_kills")
-    private @NotNull ConcurrentMap<Integer, Integer> watcherKills = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> watcherKills = Concurrent.newMap();
     @SerializedName("mobs_killed")
-    private @NotNull ConcurrentMap<Integer, Integer> mobsKilled = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> mobsKilled = Concurrent.newMap();
     @SerializedName("most_mobs_killed")
-    private @NotNull ConcurrentMap<Integer, Integer> mostMobsKilled = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> mostMobsKilled = Concurrent.newMap();
     @SerializedName("most_healing")
-    private @NotNull ConcurrentMap<Integer, Double> mostHealing = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Double> mostHealing = Concurrent.newMap();
 
     // Class Damage
     @Getter(AccessLevel.NONE)
     @SerializedName("most_damage_healer")
-    private @NotNull ConcurrentMap<Integer, Double> mostDamageHealer = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Double> mostDamageHealer = Concurrent.newMap();
     @Getter(AccessLevel.NONE)
     @SerializedName("most_damage_mage")
-    private @NotNull ConcurrentMap<Integer, Double> mostDamageMage = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Double> mostDamageMage = Concurrent.newMap();
     @Getter(AccessLevel.NONE)
     @SerializedName("most_damage_berserk")
-    private @NotNull ConcurrentMap<Integer, Double> mostDamageBerserk = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Double> mostDamageBerserk = Concurrent.newMap();
     @Getter(AccessLevel.NONE)
     @SerializedName("most_damage_archer")
-    private @NotNull ConcurrentMap<Integer, Double> mostDamageArcher = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Double> mostDamageArcher = Concurrent.newMap();
     @Getter(AccessLevel.NONE)
     @SerializedName("most_damage_tank")
-    private @NotNull ConcurrentMap<Integer, Double> mostDamageTank = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Double> mostDamageTank = Concurrent.newMap();
 
     // Fastest Times
     @SerializedName("fastest_time")
-    private @NotNull ConcurrentMap<Integer, Integer> fastestTime = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> fastestTime = Concurrent.newMap();
     @SerializedName("fastest_time_s")
-    private @NotNull ConcurrentMap<Integer, Integer> fastestSTierTime = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> fastestSTierTime = Concurrent.newMap();
     @SerializedName("fastest_time_s_plus")
-    private @NotNull ConcurrentMap<Integer, Integer> fastestSPlusTierTime = Concurrent.newMap();
+    protected @NotNull ConcurrentMap<Integer, Integer> fastestSPlusTierTime = Concurrent.newMap();
 
     /**
      * Wraps this class in a {@link Experience} and {@link Weight} class.
