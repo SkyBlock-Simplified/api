@@ -7,13 +7,10 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.NumberUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Quests {
 
     @SerializedName("harp_quest")
@@ -35,7 +32,7 @@ public class Quests {
         private final boolean talismanClaimed;
         private final String selectedSong;
         private final SkyBlockDate.RealTime selectedSongTimestamp;
-        private final ConcurrentMap<String, dev.sbs.api.client.hypixel.response.skyblock.implementation.island.MelodyHarp.Song> songs;
+        private final ConcurrentMap<String, Song> songs;
 
         MelodyHarp(@NotNull ConcurrentMap<String, Object> harpQuest) {
             this.talismanClaimed = (boolean) harpQuest.removeOrGet("claimed_talisman", false);
@@ -72,7 +69,7 @@ public class Quests {
         }
 
         @Getter
-        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+        @RequiredArgsConstructor
         public static class Song {
 
             private final int bestCompletion;
@@ -84,7 +81,6 @@ public class Quests {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Trapper {
 
         @SerializedName("last_task_time")
