@@ -10,12 +10,70 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public interface PairStream<K, V> {
+
+    /**
+     * Performs a <a href="package-summary.html#MutableReduction">mutable
+     * reduction</a> operation on the elements of this stream using a
+     * {@code Collector}.  A {@code Collector}
+     * encapsulates the functions used as arguments to
+     * {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, allowing for reuse of
+     * collection strategies and composition of collect operations such as
+     * multiple-level grouping or partitioning.
+     *
+     * <p>If the stream is parallel, and the {@code Collector}
+     * is {@link Collector.Characteristics#CONCURRENT concurrent}, and
+     * either the stream is unordered or the collector is
+     * {@link Collector.Characteristics#UNORDERED unordered},
+     * then a concurrent reduction will be performed (see {@link Collector} for
+     * details on concurrent reduction.)
+     *
+     * <p>This is a <a href="package-summary.html#StreamOps">terminal
+     * operation</a>.
+     *
+     * <p>When executed in parallel, multiple intermediate results may be
+     * instantiated, populated, and merged so as to maintain isolation of
+     * mutable data structures.  Therefore, even when executed in parallel
+     * with non-thread-safe data structures (such as {@code ArrayList}), no
+     * additional synchronization is needed for a parallel reduction.
+     *
+     * @apiNote
+     * The following will accumulate strings into a List:
+     * <pre>{@code
+     *     List<String> asList = stringStream.collect(Collectors.toList());
+     * }</pre>
+     *
+     * <p>The following will classify {@code Person} objects by city:
+     * <pre>{@code
+     *     Map<String, List<Person>> peopleByCity
+     *         = personStream.collect(Collectors.groupingBy(Person::getCity));
+     * }</pre>
+     *
+     * <p>The following will classify {@code Person} objects by state and city,
+     * cascading two {@code Collector}s together:
+     * <pre>{@code
+     *     Map<String, Map<String, List<Person>>> peopleByStateAndCity
+     *         = personStream.collect(Collectors.groupingBy(Person::getState,
+     *                                                      Collectors.groupingBy(Person::getCity)));
+     * }</pre>
+     *
+     * @param <R> the type of the result
+     * @param <A> the intermediate accumulation type of the {@code Collector}
+     * @param collector the {@code Collector} describing the reduction
+     * @return the result of the reduction
+     * @see Stream#collect(Supplier, BiConsumer, BiConsumer)
+     * @see Collectors
+     */
+    default <R, A> R collect(@NotNull Collector<? super Map.Entry<K, V>, A, R> collector) {
+        return this.entries().collect(collector);
+    }
 
     static <K, V> @NotNull PairStream<K, V> of(@NotNull Map<K, V> map) {
         return of(map.entrySet().stream());
@@ -167,15 +225,15 @@ public interface PairStream<K, V> {
         return this.entries().collect(Concurrent.toMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
     }
 
-    default @NotNull ConcurrentMap<K, V> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper) {
+    default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, V2> valueMapper) {
         return this.entries().collect(Concurrent.toMap(keyMapper, valueMapper));
     }
 
-    default @NotNull ConcurrentMap<K, V> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper, BinaryOperator<V> mergeFunction) {
+    default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction) {
         return this.entries().collect(Concurrent.toMap(keyMapper, valueMapper, mergeFunction));
     }
 
-    default @NotNull ConcurrentMap<K, V> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper, BinaryOperator<V> mergeFunction, Supplier<ConcurrentMap<K, V>> mapSupplier) {
+    default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction, Supplier<ConcurrentMap<K2, V2>> mapSupplier) {
         return this.entries().collect(Concurrent.toMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
     }
 
@@ -187,15 +245,15 @@ public interface PairStream<K, V> {
         return this.entries().collect(Concurrent.toLinkedMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
     }
 
-    default @NotNull ConcurrentLinkedMap<K, V> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper) {
+    default <K2, V2> @NotNull ConcurrentLinkedMap<K2, V2> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper) {
         return this.entries().collect(Concurrent.toLinkedMap(keyMapper, valueMapper));
     }
 
-    default @NotNull ConcurrentLinkedMap<K, V> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper, BinaryOperator<V> mergeFunction) {
+    default <K2, V2> @NotNull ConcurrentLinkedMap<K2, V2> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction) {
         return this.entries().collect(Concurrent.toLinkedMap(keyMapper, valueMapper, mergeFunction));
     }
 
-    default @NotNull ConcurrentLinkedMap<K, V> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper, BinaryOperator<V> mergeFunction, Supplier<ConcurrentLinkedMap<K, V>> mapSupplier) {
+    default <K2, V2> @NotNull ConcurrentLinkedMap<K2, V2> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction, Supplier<ConcurrentLinkedMap<K2, V2>> mapSupplier) {
         return this.entries().collect(Concurrent.toLinkedMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
     }
 
@@ -207,15 +265,15 @@ public interface PairStream<K, V> {
         return this.entries().collect(Concurrent.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
     }
 
-    default @NotNull ConcurrentMap<K, V> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper) {
+    default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper) {
         return this.entries().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper));
     }
 
-    default @NotNull ConcurrentMap<K, V> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper, BinaryOperator<V> mergeFunction) {
+    default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction) {
         return this.entries().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper, mergeFunction));
     }
 
-    default @NotNull ConcurrentMap<K, V> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K> keyMapper, Function<? super Map.Entry<K, V>, ? extends V> valueMapper, BinaryOperator<V> mergeFunction, Supplier<ConcurrentMap<K, V>> mapSupplier) {
+    default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction, Supplier<ConcurrentMap<K2, V2>> mapSupplier) {
         return this.entries().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
     }
 
