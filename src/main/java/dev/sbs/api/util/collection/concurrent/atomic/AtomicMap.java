@@ -2,6 +2,7 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
 import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.helper.stream.PairStream;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -121,6 +122,10 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return !this.isEmpty();
 	}
 
+	public final @NotNull PairStream<K, V> pairStream() {
+		return PairStream.of(this);
+	}
+
 	public final @NotNull Stream<Entry<K, V>> parallelStream() {
 		return this.entrySet().parallelStream();
 	}
@@ -192,8 +197,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.entrySet().stream();
 	}
 
-	@Override @NotNull
-	public Collection<V> values() {
+	@Override
+	public @NotNull Collection<V> values() {
 		return this.ref.values();
 	}
 
