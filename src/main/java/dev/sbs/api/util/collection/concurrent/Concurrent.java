@@ -238,6 +238,10 @@ public final class Concurrent {
 		return StreamUtil.toConcurrentLinkedMap(keyMapper, valueMapper, mergeFunction, mapSupplier);
 	}
 
+	public static <E, A extends ConcurrentList<E>> @NotNull Collector<E, ?, A> toUnmodifiableList() {
+		return StreamUtil.toConcurrentUnmodifiableList();
+	}
+
 	public static <K, V, T extends Map.Entry<K, V>> @NotNull Collector<T, ?, ConcurrentUnmodifiableMap<K, V>> toUnmodifiableMap() {
 		return StreamUtil.toConcurrentUnmodifiableMap();
 	}
@@ -256,6 +260,10 @@ public final class Concurrent {
 
 	public static <K, V, T, R extends ConcurrentMap<K, V>> @NotNull Collector<T, ?, ConcurrentUnmodifiableMap<K, V>> toUnmodifiableMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper, BinaryOperator<V> mergeFunction, Supplier<R> mapSupplier) {
 		return StreamUtil.toConcurrentUnmodifiableMap(keyMapper, valueMapper, mergeFunction, mapSupplier);
+	}
+
+	public static <E, A extends ConcurrentSet<E>> @NotNull Collector<E, ?, A> toUnmodifiableSet() {
+		return StreamUtil.toConcurrentUnmodifiableSet();
 	}
 
 	public static <E> @NotNull Collector<E, ?, ConcurrentSet<E>> toSet() {

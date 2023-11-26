@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent;
 
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class ConcurrentMap<K, V> extends AtomicMap<K, V, AbstractMap<K, V>> {
         super(new HashMap<>(), Arrays.stream(pairs).collect(Concurrent.toMap()));
     }
 
-    public ConcurrentMap<K, V> toUnmodifiableMap() {
+    public @NotNull ConcurrentMap<K, V> toUnmodifiableMap() {
         return Concurrent.newUnmodifiableMap(this);
     }
 

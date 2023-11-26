@@ -168,6 +168,17 @@ public class StreamUtil {
         return new StreamCollector<>(ConcurrentList::new, ConcurrentList::addAll, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <E, A extends ConcurrentList<E>> @NotNull Collector<E, ?, A> toConcurrentUnmodifiableList() {
+        return new StreamCollector<>(
+            ConcurrentList::new,
+            ConcurrentList::addAll,
+            (left, right) -> { left.addAll(right); return left; },
+            list -> (A) list.toUnmodifiableList(),
+            CHARACTERISTICS
+        );
+    }
+
     public static <K, V, T extends Map.Entry<K, V>> @NotNull Collector<T, ?, ConcurrentMap<K, V>> toConcurrentMap() {
         return toConcurrentMap(throwingMerger());
     }
@@ -254,7 +265,18 @@ public class StreamUtil {
     }
 
     public static <E> @NotNull Collector<E, ?, ConcurrentSet<E>> toConcurrentSet() {
-        return new StreamCollector<>(ConcurrentSet::new, ConcurrentSet::add, (left, right) -> { left.addAll(right); return left; }, UN_CHARACTERISTICS);
+        return new StreamCollector<>(ConcurrentSet::new, ConcurrentSet::addAll, (left, right) -> { left.addAll(right); return left; }, UN_CHARACTERISTICS);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E, A extends ConcurrentSet<E>> @NotNull Collector<E, ?, A> toConcurrentUnmodifiableSet() {
+        return new StreamCollector<>(
+            ConcurrentSet::new,
+            ConcurrentSet::addAll,
+            (left, right) -> { left.addAll(right); return left; },
+            list -> (A) list.toUnmodifiableSet(),
+            UN_CHARACTERISTICS
+        );
     }
 
     public static <E> @NotNull Collector<E, ?, StringBuilder> toStringBuilder() {

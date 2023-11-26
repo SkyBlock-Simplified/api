@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent;
 
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicSet;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class ConcurrentSet<E> extends AtomicSet<E, HashSet<E>> {
 		super(new HashSet<>(collection));
 	}
 
-	public ConcurrentSet<E> toUnmodifiableSet() {
+	public @NotNull ConcurrentSet<E> toUnmodifiableSet() {
 		return Concurrent.newUnmodifiableSet(this);
 	}
 
