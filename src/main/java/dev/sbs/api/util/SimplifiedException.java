@@ -10,16 +10,18 @@ import dev.sbs.api.util.helper.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
 
-@SuppressWarnings("all")
+@Getter
 public abstract class SimplifiedException extends RuntimeException {
 
-    @Getter private final ConcurrentList<Triple<String, String, Boolean>> fields;
-    @Getter private final ConcurrentMap<String, Object> data;
+    private final @NotNull ConcurrentList<Triple<String, String, Boolean>> fields;
+    private final @NotNull ConcurrentMap<String, Object> data;
 
     protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
         super(message, cause, enableSuppression, writableStackTrace);
@@ -27,7 +29,7 @@ public abstract class SimplifiedException extends RuntimeException {
         this.data = Concurrent.newUnmodifiableMap(data);
     }
 
-    public static <T extends SimplifiedException> ExceptionBuilder<T> of(Class<T> eClass) {
+    public static <T extends SimplifiedException> @NotNull ExceptionBuilder<T> of(@NotNull Class<T> eClass) {
         return new ExceptionBuilder<>(eClass);
     }
 
@@ -37,7 +39,8 @@ public abstract class SimplifiedException extends RuntimeException {
      * @param throwable The thrown exception.
      * @return A wrapped runtime exception.
      */
-    public static ExceptionBuilder<WrappedException> wrapNative(Throwable throwable) {
+    @SuppressWarnings("all")
+    public static @NotNull ExceptionBuilder<WrappedException> wrapNative(Throwable throwable) {
         return of(WrappedException.class).withCause(throwable).withMessage(throwable.getMessage());
     }
 
@@ -76,12 +79,12 @@ public abstract class SimplifiedException extends RuntimeException {
             return this;
         }
 
-        public ExceptionBuilder<T> withCause(Throwable cause) {
+        public ExceptionBuilder<T> withCause(@Nullable Throwable cause) {
             this.cause = cause;
             return this;
         }
 
-        public ExceptionBuilder<T> withMessage(String message, Object... objects) {
+        public ExceptionBuilder<T> withMessage(@PrintFormat String message, Object... objects) {
             this.message = ArrayUtil.isEmpty(objects) ? message : String.format(message, objects);
             return this;
         }
@@ -105,7 +108,7 @@ public abstract class SimplifiedException extends RuntimeException {
         }
 
         @Override
-        public T build() {
+        public @NotNull T build() {
             return Reflection.of(this.eClass).newInstance(this.message, this.cause, this.enableSuppression, this.writableStackTrace, this.fields, this.data);
         }
 
