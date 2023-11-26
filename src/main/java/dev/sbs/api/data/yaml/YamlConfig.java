@@ -1,18 +1,17 @@
 package dev.sbs.api.data.yaml;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.data.yaml.annotation.Comment;
-import dev.sbs.api.data.yaml.annotation.Comments;
+import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.util.helper.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.FileSystems;
@@ -84,8 +83,12 @@ public class YamlConfig extends ConfigMapper implements Runnable {
             if (doSkip(field)) continue;
             String path = this.getPathMode(field);
 
-            if (field.isAnnotationPresent(dev.sbs.api.data.yaml.annotation.Path.class))
-                path = field.getAnnotation(dev.sbs.api.data.yaml.annotation.Path.class).value();
+            if (field.isAnnotationPresent(Flag.class)) {
+                Flag flag = field.getAnnotation(Flag.class);
+
+                if (StringUtil.isNotEmpty(flag.path()))
+                    path = flag.path();
+            }
 
             if (Modifier.isPrivate(field.getModifiers()))
                 field.setAccessible(true);
@@ -122,20 +125,19 @@ public class YamlConfig extends ConfigMapper implements Runnable {
             String path = this.getPathMode(field);
             ArrayList<String> comments = new ArrayList<>();
 
-            for (Annotation annotation : field.getAnnotations()) {
-                if (annotation instanceof Comment)
-                    comments.add(((Comment) annotation).value());
+            if (field.isAnnotationPresent(Flag.class)) {
+                Flag flag = field.getAnnotation(Flag.class);
 
-                if (annotation instanceof Comments)
-                    comments.addAll(Arrays.asList(((Comments) annotation).value()));
+                if (StringUtil.isNotEmpty(flag.comment()))
+                    comments.addAll(Arrays.asList(StringUtil.split(flag.comment(), '\n')));
+
+                if (StringUtil.isNotEmpty(flag.path()))
+                    path = flag.path();
             }
-
-            if (field.isAnnotationPresent(dev.sbs.api.data.yaml.annotation.Path.class))
-                path = field.getAnnotation(dev.sbs.api.data.yaml.annotation.Path.class).value();
 
             if (!comments.isEmpty()) {
                 for (String comment : comments)
-                    addComment(path, comment);
+                    this.addComment(path, comment);
             }
 
             if (Modifier.isPrivate(field.getModifiers()))

@@ -1,11 +1,10 @@
 package dev.sbs.api.data.yaml;
 
-import dev.sbs.api.data.yaml.annotation.ConfigMode;
 import dev.sbs.api.data.yaml.annotation.Flag;
-import dev.sbs.api.data.yaml.annotation.Path;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.helper.StringUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -25,7 +24,7 @@ public abstract class YamlMap {
 
     static boolean doSkip(Field field) {
         return Modifier.isTransient(field.getModifiers()) || Modifier.isFinal(field.getModifiers()) ||
-            Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class) && !field.getAnnotation(Flag.class).preserveStatic();
+            (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class) && !field.getAnnotation(Flag.class).preserveStatic());
     }
 
     public final void addCustomConverter(Class<? extends YamlConverter> converter) {
@@ -39,8 +38,8 @@ public abstract class YamlMap {
     protected final String getPathMode(Field field) {
         String path = field.getName();
 
-        if (this.getClass().isAnnotationPresent(ConfigMode.class)) {
-            switch (this.getClass().getAnnotation(ConfigMode.class).value()) {
+        if (this.getClass().isAnnotationPresent(Flag.class)) {
+            switch (this.getClass().getAnnotation(Flag.class).mode()) {
                 case FIELD_IS_KEY:
                     path = path.replace("_", ".");
                     break;
@@ -66,8 +65,12 @@ public abstract class YamlMap {
             if (doSkip(field)) continue;
             String path = this.getPathMode(field);
 
-            if (field.isAnnotationPresent(Path.class))
-                path = field.getAnnotation(Path.class).value();
+            if (field.isAnnotationPresent(Flag.class)) {
+                Flag flag = field.getAnnotation(Flag.class);
+
+                if (StringUtil.isNotEmpty(flag.path()))
+                    path = flag.path();
+            }
 
             if (Modifier.isPrivate(field.getModifiers()))
                 field.setAccessible(true);
@@ -89,8 +92,12 @@ public abstract class YamlMap {
             if (doSkip(field)) continue;
             String path = this.getPathMode(field);
 
-            if (field.isAnnotationPresent(Path.class))
-                path = field.getAnnotation(Path.class).value();
+            if (field.isAnnotationPresent(Flag.class)) {
+                Flag flag = field.getAnnotation(Flag.class);
+
+                if (StringUtil.isNotEmpty(flag.path()))
+                    path = flag.path();
+            }
 
             if (Modifier.isPrivate(field.getModifiers()))
                 field.setAccessible(true);
