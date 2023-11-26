@@ -3,6 +3,7 @@ package dev.sbs.api.util.builder.hash;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.helper.ArrayUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -968,7 +969,7 @@ public class CompareToBuilder implements Builder<Integer> {
      * @return final comparison result
      */
     @Override
-    public Integer build() {
+    public @NotNull Integer build() {
         return this.toComparison();
     }
 }
