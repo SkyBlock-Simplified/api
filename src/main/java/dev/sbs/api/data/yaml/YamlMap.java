@@ -1,8 +1,8 @@
 package dev.sbs.api.data.yaml;
 
 import dev.sbs.api.data.yaml.annotation.ConfigMode;
+import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.annotation.Path;
-import dev.sbs.api.data.yaml.annotation.PreserveStatic;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
@@ -25,7 +25,7 @@ public abstract class YamlMap {
 
     static boolean doSkip(Field field) {
         return Modifier.isTransient(field.getModifiers()) || Modifier.isFinal(field.getModifiers()) ||
-            Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(PreserveStatic.class) && !field.getAnnotation(PreserveStatic.class).value();
+            Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class) && !field.getAnnotation(Flag.class).preserveStatic();
     }
 
     public final void addCustomConverter(Class<? extends YamlConverter> converter) {
