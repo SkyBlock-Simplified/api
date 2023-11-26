@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DungeonData {
 
     @SerializedName("dungeon_types")
@@ -33,8 +32,8 @@ public class DungeonData {
     @SerializedName("selected_dungeon_class")
     @Getter private @NotNull Dungeon.Class.Type selectedClass;
     @SerializedName("daily_runs")
-    @Getter private DailyRuns dailyRuns;
-    @Getter private Treasures treasures;
+    @Getter private DailyRuns dailyRuns = new DailyRuns();
+    @Getter private Treasures treasures = new Treasures();
     private transient boolean initialized;
 
     public @NotNull ConcurrentList<Dungeon.Class> getClasses() {

@@ -16,8 +16,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class JacobsFarming {
+public class JacobsContest {
 
     @SerializedName("medals_inv")
     private @NotNull ConcurrentMap<Medal, Integer> medals = Concurrent.newMap();

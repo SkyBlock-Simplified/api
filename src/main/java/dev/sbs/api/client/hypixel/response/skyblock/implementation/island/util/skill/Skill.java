@@ -2,7 +2,7 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsContest;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.weight.Weight;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
@@ -24,8 +24,8 @@ public class Skill {
      * <br><br>
      * Requires an active database session.
      */
-    public @NotNull EnhancedSkill asEnhanced(@NotNull JacobsFarming jacobsFarming) {
-        return new EnhancedSkill(this, jacobsFarming);
+    public @NotNull EnhancedSkill asEnhanced(@NotNull JacobsContest jacobsContest) {
+        return new EnhancedSkill(this, jacobsContest);
     }
 
     @Getter

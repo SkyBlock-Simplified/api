@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Potion {
 
     private String effect;

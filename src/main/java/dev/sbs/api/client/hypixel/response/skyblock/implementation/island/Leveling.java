@@ -4,14 +4,11 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Leveling {
 
     private int experience;

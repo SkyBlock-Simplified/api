@@ -4,15 +4,11 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Experimentation {
 
     @SerializedName("claims_resets")
@@ -21,6 +17,7 @@ public class Experimentation {
     @Getter private Optional<SkyBlockDate.RealTime> resetClaimsTimestamp = Optional.empty();
     @SerializedName("serums_drank")
     @Getter private int serumsDrank;
+    private boolean initialized;
 
     private @NotNull ConcurrentMap<String, Long> pairings = Concurrent.newMap();
     private transient Optional<Table> superpairs;
@@ -32,24 +29,31 @@ public class Experimentation {
     private transient Optional<Table> ultrasequencer;
 
     public @NotNull Optional<Table> getSuperpairs() {
-        if (Objects.isNull(this.superpairs))
-            this.superpairs = Optional.of(new Table(this.pairings));
+        if (!this.initialized)
+            this.initialize();
 
         return this.superpairs;
     }
 
     public @NotNull Optional<Table> getChronomatron() {
-        if (Objects.isNull(this.chronomatron))
-            this.chronomatron = Optional.of(new Table(this.simon));
+        if (!this.initialized)
+            this.initialize();
 
         return this.chronomatron;
     }
 
     public @NotNull Optional<Table> getUltrasequencer() {
-        if (Objects.isNull(this.ultrasequencer))
-            this.ultrasequencer = Optional.of(new Table(this.numbers));
+        if (!this.initialized)
+            this.initialize();
 
         return this.ultrasequencer;
+    }
+
+    private void initialize() {
+        this.superpairs = Optional.of(new Table(this.pairings));
+        this.chronomatron = Optional.of(new Table(this.simon));
+        this.ultrasequencer = Optional.of(new Table(this.numbers));
+        this.initialized = true;
     }
 
     @Getter

@@ -8,13 +8,11 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 @Getter
-@NoArgsConstructor
 public class PlayerData {
 
     @SerializedName("active_effects")
@@ -64,7 +62,6 @@ public class PlayerData {
     }
 
     @Getter
-    @NoArgsConstructor
     public static class CenturyCake {
 
         private int stat; // This is in ordinal order in stat menu

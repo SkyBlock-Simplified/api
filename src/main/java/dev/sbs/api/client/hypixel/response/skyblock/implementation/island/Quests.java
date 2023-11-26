@@ -17,7 +17,7 @@ public class Quests {
     private @NotNull ConcurrentMap<String, Object> melodyHarpMap = Concurrent.newMap();
     private MelodyHarp melodyHarp;
     @SerializedName("trapper_quest")
-    @Getter private Trapper trapper;
+    @Getter private Trapper trapper = new Trapper();
 
     public @NotNull MelodyHarp getMelodyHarp() {
         if (this.melodyHarp == null)

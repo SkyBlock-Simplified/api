@@ -7,15 +7,14 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccessoryBag {
 
-    private transient NbtContent contents;
-    private Tuning tuning;
+    private transient NbtContent contents = new NbtContent();
+    private Tuning tuning = new Tuning();
     @SerializedName("selected_power")
     private String selectedPower;
     @SerializedName("bag_upgrades_purchased")
@@ -24,8 +23,17 @@ public class AccessoryBag {
     private @NotNull ConcurrentList<String> unlockedPowers = Concurrent.newList();
     @SerializedName("highest_magical_power")
     private int highestMagicalPower;
+    @Accessors(fluent = true)
+    private transient boolean hasConsumedPrism;
+    @Getter(AccessLevel.NONE)
+    transient boolean initialized;
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    void initialize(@NotNull SkyBlockIsland.Member member) {
+        this.contents = member.getInventory().getBags().getAccessories();
+        this.hasConsumedPrism = member.getRift().getAccess().hasConsumedPrism();
+        this.initialized = true;
+    }
+
     public static class Tuning {
 
         @SerializedName("highest_unlocked_slot")

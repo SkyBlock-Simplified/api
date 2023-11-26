@@ -18,12 +18,12 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 @Getter
-public class BestiaryData {
+public class BestiaryData_old {
 
     private final ConcurrentList<Bestiary> bestiaries;
     private final boolean migrated;
 
-    BestiaryData(ConcurrentMap<String, Object> bestiaryMap) {
+    BestiaryData_old(ConcurrentMap<String, Object> bestiaryMap) {
         this.migrated = (boolean) bestiaryMap.removeOrGet("migrated_stats", false);
 
         this.bestiaries = Concurrent.newUnmodifiableList(

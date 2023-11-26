@@ -14,64 +14,62 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Getter
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Rift {
 
     // Boundaries
     @SerializedName("village_plaza")
-    private VillagePlaza villagePlaza;
+    private VillagePlaza villagePlaza = new VillagePlaza();
     @SerializedName("wither_cage")
-    private WitherCage witherCage;
+    private WitherCage witherCage = new WitherCage();
     @SerializedName("black_lagoon")
-    private BlackLagoon blackLagoon;
+    private BlackLagoon blackLagoon = new BlackLagoon();
     @SerializedName("dead_cats")
-    private DeadCats deadCats;
+    private DeadCats deadCats = new DeadCats();
     @SerializedName("wizard_tower")
-    private WizardTower wizardTower;
+    private WizardTower wizardTower = new WizardTower();
     @SerializedName("west_village")
-    private WestVillage westVillage;
-    private Enigma enigma;
+    private WestVillage westVillage = new WestVillage();
+    private Enigma enigma = new Enigma();
     @SerializedName("wyld_woods")
-    private WyldWoods wyldWoods;
-    private Gallery gallery;
-    private Castle castle;
-    private Access access;
+    private WyldWoods wyldWoods = new WyldWoods();
+    private Gallery gallery = new Gallery();
+    private Castle castle = new Castle();
+    private Access access = new Access();
     @SerializedName("slayer_quest")
-    private SlayerQuest slayerQuest;
-    private Dreadfarm dreadfarm;
+    private SlayerQuest slayerQuest = new SlayerQuest();
+    private Dreadfarm dreadfarm = new Dreadfarm();
 
     @SerializedName("lifetime_purchased_boundaries")
     private @NotNull ConcurrentList<String> lifetimePurchasedBoundaries = Concurrent.newList();
 
     // Inventories
     @SerializedPath("inventory.inv_contents")
-    private NbtContent inventory;
+    private NbtContent inventory = new NbtContent();
     @SerializedPath("inventory.inv_armor")
-    private NbtContent armor;
+    private NbtContent armor = new NbtContent();
     @SerializedPath("inventory.ender_chest_contents")
-    private NbtContent enderChest;
+    private NbtContent enderChest = new NbtContent();
     @SerializedPath("inventory.equipment_contents")
-    private NbtContent equipment;
+    private NbtContent equipment = new NbtContent();
 
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class VillagePlaza {
 
         @Accessors(fluent = true)
         @SerializedName("got_scammed")
-        private boolean gotScammed;
-        private Murder murder;
+        private boolean hasGotScammed;
+        private Murder murder = new Murder();
         @SerializedName("barry_center")
-        private BarryCenter barryCenter;
-        private Cowboy cowboy;
-        private Lonely lonely;
-        private Seraphine seraphine;
+        private BarryCenter barryCenter = new BarryCenter();
+        private Cowboy cowboy = new Cowboy();
+        private Lonely lonely = new Lonely();
+        private Seraphine seraphine = new Seraphine();
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Murder {
 
             @SerializedName("step_index")
@@ -82,7 +80,6 @@ public class Rift {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class BarryCenter {
 
             @SerializedName("first_talk_to_barry")
@@ -94,7 +91,6 @@ public class Rift {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Cowboy {
 
             private int stage;
@@ -108,7 +104,6 @@ public class Rift {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Lonely {
 
             @SerializedName("seconds_sitting")
@@ -117,7 +112,6 @@ public class Rift {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Seraphine {
 
             @SerializedName("step_index")
@@ -128,7 +122,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class WitherCage {
 
         @SerializedName("killed_eyes")
@@ -137,7 +130,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BlackLagoon {
 
         @Accessors(fluent = true)
@@ -155,7 +147,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class DeadCats {
 
         @Accessors(fluent = true)
@@ -169,12 +160,11 @@ public class Rift {
         @Accessors(fluent = true)
         @SerializedName("unlocked_pet")
         private boolean hasUnlockedPet;
-        private Pet montezuma;
+        private Optional<Pet> montezuma = Optional.empty();
 
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class WizardTower {
 
         @SerializedName("wizard_quest_step")
@@ -185,15 +175,14 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class WestVillage {
 
         @SerializedName("crazy_kloon")
-        private CrazyKloon crazyKloon;
-        private Mirrorverse mirrorverse;
+        private CrazyKloon crazyKloon = new CrazyKloon();
+        private Mirrorverse mirrorverse = new Mirrorverse();
         @SerializedName("kat_house")
-        private KatHouse katHouse;
-        private Glyphs glyphs;
+        private KatHouse katHouse = new KatHouse();
+        private Glyphs glyphs = new Glyphs();
 
         @Getter
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -260,7 +249,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Enigma {
 
         @Accessors(fluent = true)
@@ -274,7 +262,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class WyldWoods {
 
         @SerializedName("talked_threebrothers")
@@ -296,7 +283,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Gallery {
 
         @SerializedName("elise_step")
@@ -317,7 +303,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Castle {
 
         @Accessors(fluent = true)
@@ -331,18 +316,17 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Access {
 
         @SerializedName("last_free")
         private long lastFree;
+        @Accessors(fluent = true)
         @SerializedName("consumed_prism")
-        private boolean consumedPrism;
+        private boolean hasConsumedPrism;
 
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SlayerQuest extends Slayer.Quest {
 
         @SerializedName("combat_xp")
@@ -364,7 +348,6 @@ public class Rift {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Dreadfarm {
 
         @SerializedName("shania_stage")

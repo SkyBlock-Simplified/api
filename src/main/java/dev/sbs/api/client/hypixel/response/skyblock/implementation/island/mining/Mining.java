@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Mining {
 
     private @NotNull ConcurrentMap<String, Object> nodes = Concurrent.newMap();
@@ -29,7 +28,7 @@ public class Mining {
     @SerializedName("greater_mines_last_access")
     private @NotNull Optional<SkyBlockDate.RealTime> lastAccessToGreaterMines = Optional.empty();
     @SerializedName("current_daily_effect")
-    private String currentSkymallEffect;
+    private Optional<String> currentSkymallEffect = Optional.empty();
     @SerializedName("current_daily_effect_last_changed")
     private int skymallEffectLastChanged;
 
@@ -41,7 +40,7 @@ public class Mining {
     @SerializedName("retroactive_tier2_token")
     private boolean retroactiveTier2Token;
     @SerializedName("selected_pickaxe_ability")
-    private String selectedPickaxeAbility;
+    private Optional<String> selectedPickaxeAbility = Optional.empty();
     private @NotNull ConcurrentMap<Crystal.Type, Crystal> crystals = Concurrent.newMap();
 
     // Powder

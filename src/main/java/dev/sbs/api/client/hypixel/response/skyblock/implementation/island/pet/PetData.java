@@ -2,16 +2,13 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.StreamUtil;
-import lombok.AccessLevel;
+import dev.sbs.api.util.helper.stream.StreamUtil;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PetData {
 
     private final static @NotNull ConcurrentList<Integer> magicFindPetScore = Concurrent.newList(10, 25, 50, 75, 100, 130, 175, 225, 275, 325, 375, 450, 500);

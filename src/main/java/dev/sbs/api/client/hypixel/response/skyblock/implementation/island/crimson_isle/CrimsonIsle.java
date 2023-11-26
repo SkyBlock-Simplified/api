@@ -19,29 +19,32 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Getter
 public class CrimsonIsle {
 
     private @NotNull ConcurrentMap<String, Integer> dojo = Concurrent.newMap();
-    @Getter private Abiphone abiphone;
-    @Getter private Matriarch matriarch;
+    private Abiphone abiphone = new Abiphone();
+    private Matriarch matriarch = new Matriarch();
     @SerializedName("last_minibosses_killed")
-    @Getter private @NotNull ConcurrentList<String> lastMinibossesKilled = Concurrent.newList();
+    private @NotNull ConcurrentList<String> lastMinibossesKilled = Concurrent.newList();
 
     // Factions
     @SerializedName("selected_faction")
-    @Getter private Faction selectedFaction = Faction.NONE;
+    private Faction selectedFaction = Faction.NONE;
     @SerializedName("mages_reputation")
-    @Getter private int mageReputation;
+    private int mageReputation;
     @SerializedName("barbarians_reputation")
-    @Getter private int barbarianReputation;
+    private int barbarianReputation;
 
     // Kuudra
+    @Getter(AccessLevel.NONE)
     private @NotNull ConcurrentMap<String, Integer> kuudra_completed_tiers = Concurrent.newMap();
+    @Getter(AccessLevel.NONE)
     @SerializedPath("kuudra_party_finder.search_settings")
-    private Kuudra.SearchSettings kuudra_search_settings;
+    private Kuudra.SearchSettings kuudra_search_settings = new Kuudra.SearchSettings();
+    @Getter(AccessLevel.NONE)
     @SerializedPath("kuudra_party_finder.group_builder")
-    private Kuudra.GroupBuilder kuudra_group_builder;
+    private Kuudra.GroupBuilder kuudra_group_builder = new Kuudra.GroupBuilder();
 
     public @NotNull Dojo getDojo() {
         return new Dojo(this.dojo);
@@ -101,7 +104,6 @@ public class CrimsonIsle {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Matriarch {
 
         @SerializedName("pearls_collected")
@@ -131,9 +133,11 @@ public class CrimsonIsle {
             return this.getPoints().getOrDefault(type, 0);
         }
 
-        @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+        @Getter
+        @RequiredArgsConstructor
         public enum Type {
 
+            UNKNOWN(""),
             FORCE("mob_kb"),
             STAMINA("wall_jump"),
             MASTERY("archer"),
@@ -142,12 +146,13 @@ public class CrimsonIsle {
             CONTROL("fireball"),
             TENACITY("lock_head");
 
-            @Getter private final String internalName;
+            private final @NotNull String internalName;
 
-            public static Optional<Type> of(String name) {
+            public static @NotNull Type of(@NotNull String name) {
                 return Arrays.stream(values())
                     .filter(type -> type.name().equalsIgnoreCase(name) || type.getInternalName().equalsIgnoreCase(name))
-                    .findFirst();
+                    .findFirst()
+                    .orElse(UNKNOWN);
             }
 
         }
@@ -166,18 +171,16 @@ public class CrimsonIsle {
             this.searchSettings = (kuudraSearchSettings != null ? kuudraSearchSettings : new SearchSettings());
             this.groupBuilder = (kuudraGroupBuilder != null ? kuudraGroupBuilder : new GroupBuilder());
 
-            this.completedTiers = Concurrent.newUnmodifiableMap(
-                kuudraCompletedTiers.stream()
-                    .filter(entry -> !entry.getKey().startsWith("highest_"))
-                    .map(entry -> Pair.of(Tier.of(entry.getKey()), entry.getValue()))
-                    .collect(Concurrent.toMap())
-            );
+            this.completedTiers = kuudraCompletedTiers.stream()
+                .filter(entry -> !entry.getKey().startsWith("highest_"))
+                .map(entry -> Pair.of(Tier.of(entry.getKey()), entry.getValue()))
+                .collect(Concurrent.toUnmodifiableMap());
 
             this.highestWave = Concurrent.newUnmodifiableMap(
                 kuudraCompletedTiers.stream()
                     .filter(entry -> entry.getKey().startsWith("highest_"))
                     .map(entry -> Pair.of(Tier.of(entry.getKey()), entry.getValue()))
-                    .collect(Concurrent.toMap())
+                    .collect(Concurrent.toUnmodifiableMap())
             );
         }
 
@@ -185,6 +188,7 @@ public class CrimsonIsle {
         @RequiredArgsConstructor
         public enum Tier {
 
+            UNKNOWN,
             BASIC("NONE"),
             HOT,
             BURNING,
@@ -201,21 +205,22 @@ public class CrimsonIsle {
                 return StringUtil.capitalizeFully(this.name());
             }
 
-            public static Optional<Tier> of(String name) {
+            public static @NotNull Tier of(String name) {
                 return Arrays.stream(values())
                     .filter(tier -> tier.name().equalsIgnoreCase(name) || tier.getInternalName().equalsIgnoreCase(name))
-                    .findFirst();
+                    .findFirst()
+                    .orElse(UNKNOWN);
             }
 
         }
 
-        @SuppressWarnings("all")
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        @Getter
         public static class SearchSettings {
 
-            @Getter private Tier tier = Tier.BASIC;
-            @Getter private String search = "";
-            @Getter private Sort sort = Sort.RECENTLY_CREATED;
+            private Tier tier = Tier.BASIC;
+            private Optional<String> search = Optional.empty();
+            private Sort sort = Sort.RECENTLY_CREATED;
+            @Getter(AccessLevel.NONE)
             private Optional<String> combat_level = Optional.empty();
 
             public @NotNull Range<Integer> getCombatLevel() {
@@ -235,11 +240,10 @@ public class CrimsonIsle {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class GroupBuilder {
 
-            private Tier tier;
-            private String note;
+            private Tier tier = Tier.BASIC;
+            private Optional<String> note = Optional.empty();
             @SerializedName("combat_level_required")
             private int requiredCombatLevel;
 

@@ -12,9 +12,7 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.NumberUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -22,7 +20,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Slayer {
 
     @SerializedName("slayer_quest")
@@ -54,7 +51,6 @@ public class Slayer {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Quest {
 
         private Type type;
@@ -106,7 +102,6 @@ public class Slayer {
 
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Boss {
 
         private final static Reflection<Boss> slayerRef = Reflection.of(Boss.class);

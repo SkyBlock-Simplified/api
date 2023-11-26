@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.skill;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsFarming;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsContest;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.weight.Weight;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.weight.Weighted;
@@ -20,10 +20,10 @@ public class EnhancedSkill extends Skill implements Experience, Weighted {
     private final int levelSubtractor;
     private final @NotNull ConcurrentList<Double> experienceTiers;
 
-    EnhancedSkill(@NotNull Skill skill, @NotNull JacobsFarming jacobsFarming) {
+    EnhancedSkill(@NotNull Skill skill, @NotNull JacobsContest jacobsContest) {
         super(skill.getType(), skill.getExperience());
         this.typeModel = this.getType().getModel();
-        this.levelSubtractor = this.getType() == Type.FARMING ? 10 - jacobsFarming.getFarmingLevelCap() : 0;
+        this.levelSubtractor = this.getType() == Type.FARMING ? 10 - jacobsContest.getFarmingLevelCap() : 0;
 
         this.experienceTiers = SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
             .stream()

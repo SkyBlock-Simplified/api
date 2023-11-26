@@ -13,22 +13,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayerStats {
 
-    private Races races;
-    private Mythos mythos;
-    private Auctions auctions;
+    private Races races = new Races();
+    private Mythos mythos = new Mythos();
+    private Auctions auctions = new Auctions();
     @SerializedName("end_island")
-    private EndIsland endIsland;
-    private Winter winter;
+    private EndIsland endIsland = new EndIsland();
+    private Winter winter = new Winter();
     @SerializedName("sea_creature_kills")
     private int seaCreatureKills;
     @SerializedName("items_fished")
-    private ItemsFished itemsFished;
-    private Gifts gifts;
+    private ItemsFished itemsFished = new ItemsFished();
+    private Gifts gifts = new Gifts();
     @SerializedName("shredder_rod")
-    private ShredderRod shredderRod;
+    private ShredderRod shredderRod = new ShredderRod();
 
     private @NotNull ConcurrentMap<String, Integer> kills = Concurrent.newMap();
     private @NotNull ConcurrentMap<String, Integer> deaths = Concurrent.newMap();
@@ -61,7 +60,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Mythos {
 
         private int kills;
@@ -88,7 +86,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Auctions {
 
         // Total
@@ -121,18 +118,16 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class EndIsland {
 
         @SerializedName("dragon_fight")
-        private DragonFight dragonFight;
+        private DragonFight dragonFight = new DragonFight();
         @SerializedName("summoning_eyes_collected")
         private int summoningEyesCollected;
         @SerializedName("special_zealot_loot_collected")
         private int specialZealotLootCollected;
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PRIVATE)
         public static class DragonFight {
 
             @SerializedName("highest_rank")
@@ -175,7 +170,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Winter {
 
         @SerializedName("most_damage_dealt")
@@ -190,7 +184,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ItemsFished {
 
         @SerializedName("trophy_fish")
@@ -204,7 +197,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Gifts {
 
         @SerializedName("total_received")
@@ -215,7 +207,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class PetStats {
 
         @SerializedPath("milestone.sea_creatures_killed")
@@ -228,7 +219,6 @@ public class PlayerStats {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ShredderRod {
 
         private int fished;
