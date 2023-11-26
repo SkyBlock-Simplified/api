@@ -1,6 +1,7 @@
 package dev.sbs.api.util.builder.string;
 
 import dev.sbs.api.util.builder.Builder;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>Assists in implementing {@link Object#toString()} methods.</p>
@@ -1049,7 +1050,7 @@ public class ToStringBuilder implements Builder<String> {
      * @see #toString()
      */
     @Override
-    public String build() {
+    public @NotNull String build() {
         return this.toString();
     }
 

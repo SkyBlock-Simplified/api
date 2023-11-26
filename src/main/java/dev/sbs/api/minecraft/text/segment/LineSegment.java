@@ -49,7 +49,7 @@ public final class LineSegment {
         }
 
         @Override
-        public LineSegment build() {
+        public @NotNull LineSegment build() {
             return new LineSegment(
                 this.segments.toUnmodifiableList()
             );

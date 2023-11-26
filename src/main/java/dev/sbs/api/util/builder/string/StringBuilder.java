@@ -1498,7 +1498,7 @@ public class StringBuilder implements Builder<String>, CharSequence, Appendable,
      * @see #toString()
      */
     @Override
-    public String build() {
+    public @NotNull String build() {
         return toString();
     }
 

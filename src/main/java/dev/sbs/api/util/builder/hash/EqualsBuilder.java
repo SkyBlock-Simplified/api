@@ -4,6 +4,7 @@ import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.helper.ArrayUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -853,7 +854,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      *         are equal, <code>false</code> otherwise.
      */
     @Override
-    public Boolean build() {
+    public @NotNull Boolean build() {
         return isEquals();
     }
 

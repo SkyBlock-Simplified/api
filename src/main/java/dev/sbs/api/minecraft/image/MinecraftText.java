@@ -384,7 +384,7 @@ public class MinecraftText {
         }
 
         @Override
-        public MinecraftText build() {
+        public @NotNull MinecraftText build() {
             return new MinecraftText(
                 this.lines,
                 this.defaultColor,

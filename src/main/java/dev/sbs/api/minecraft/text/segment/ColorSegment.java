@@ -261,7 +261,7 @@ public class ColorSegment {
         }
 
         @Override
-        public ColorSegment build() {
+        public @NotNull ColorSegment build() {
             ColorSegment colorSegment = new ColorSegment(this.text);
             colorSegment.setColor(this.color);
             colorSegment.setObfuscated(this.obfuscated);

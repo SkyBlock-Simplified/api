@@ -164,7 +164,7 @@ public final class TextSegment extends ColorSegment {
         }
 
         @Override
-        public TextSegment build() {
+        public @NotNull TextSegment build() {
             TextSegment textSegment = new TextSegment(this.text);
             textSegment.setClickEvent(this.clickEvent);
             textSegment.setHoverEvent(hoverEvent);

@@ -1,5 +1,7 @@
 package dev.sbs.api.util.builder;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * <p>
  * The Builder interface is designed to designate a class as a <em>builder</em>
@@ -65,8 +67,9 @@ public interface Builder<T> extends CoreBuilder {
      * Returns a reference to the object being constructed or result being
      * calculated by the builder.
      *
+     * @see Use {@link dev.sbs.api.reflection.Reflection#}
      * @return the object constructed or result calculated by the builder.
      */
-    T build();
+    @NotNull T build();
 
 }

@@ -1,6 +1,6 @@
 package dev.sbs.api.data.yaml;
 
-import dev.sbs.api.data.yaml.annotation.PreserveStatic;
+import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.converter.ArrayConverter;
 import dev.sbs.api.data.yaml.converter.ConfigConverter;
 import dev.sbs.api.data.yaml.converter.EnumConverter;
@@ -69,8 +69,8 @@ public class InternalConverter {
             converter = this.getConverter(obj.getClass());
 
             if (converter != null) {
-                if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(PreserveStatic.class)) {
-                    if (!field.getAnnotation(PreserveStatic.class).value())
+                if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class)) {
+                    if (!field.getAnnotation(Flag.class).preserveStatic())
                         return;
                 }
 
@@ -81,8 +81,8 @@ public class InternalConverter {
 
         converter = this.getConverter(field.getType());
         if (converter != null) {
-            if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(PreserveStatic.class)) {
-                if (!field.getAnnotation(PreserveStatic.class).value())
+            if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class)) {
+                if (!field.getAnnotation(Flag.class).preserveStatic())
                     return;
             }
 
@@ -90,8 +90,8 @@ public class InternalConverter {
             return;
         }
 
-        if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(PreserveStatic.class)) {
-            if (!field.getAnnotation(PreserveStatic.class).value())
+        if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class)) {
+            if (!field.getAnnotation(Flag.class).preserveStatic())
                 return;
         }
 

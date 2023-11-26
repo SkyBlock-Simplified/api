@@ -114,7 +114,7 @@ public class Graph<T> {
         }
 
         @Override
-        public Graph<T> build() {
+        public @NotNull Graph<T> build() {
             // Handle Edge Function
             this.edgeFunction.ifPresent(edgeFunction -> this.values.forEach(value -> edgeFunction.apply(value)
                 .forEach(edge -> this.withEdge(value, edge))
@@ -129,12 +129,13 @@ public class Graph<T> {
 
     }
 
+    @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     static class Node<T> {
 
-        @Getter private final @NotNull T value;
+        private final @NotNull T value;
         @Setter(AccessLevel.PRIVATE)
-        @Getter private boolean visited;
+        private boolean visited;
 
         public boolean notVisited() {
             return !this.isVisited();
