@@ -10,8 +10,10 @@ public abstract class ConcurrentIterator<E> implements Iterator<E> {
 
 	/** Snapshot of the array */
 	protected Object[] snapshot;
+
 	/** Index of element to be returned by subsequent call to next. */
 	protected int cursor;
+
 	/** Index of last element to be returned. */
 	protected int last = -1;
 
