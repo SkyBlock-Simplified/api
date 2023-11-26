@@ -7,12 +7,14 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.Pair;
 import dev.sbs.api.util.gson.SerializedPath;
+import dev.sbs.api.util.helper.NumberUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -86,7 +88,7 @@ public class Mining {
     public @NotNull ConcurrentMap<String, Double> getNodes() {
         return this.nodes.stream()
             .filter(entry -> !(entry.getValue() instanceof Boolean))
-            .collect(Concurrent.toMap());
+            .collect(Concurrent.toMap(Map.Entry::getKey, entry -> NumberUtil.createDouble(entry.getValue().toString())));
     }
 
     public @NotNull ConcurrentMap<String, Boolean> getToggles() {
