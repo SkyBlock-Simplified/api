@@ -4,7 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 public @interface BuildFlag {
 
     /**
-     * Sets whether this field is nullable.
+     * Sets whether this field must contain be non-empty.
      * <br><br>
-     * Checks null, {@link Optional#isEmpty()}, {@link List#isEmpty()}, {@link Map#isEmpty()}, etc.
+     * Checks null, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
      */
     boolean required() default false;
 
