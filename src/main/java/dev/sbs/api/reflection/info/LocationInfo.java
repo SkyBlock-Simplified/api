@@ -20,8 +20,8 @@ import java.util.jar.JarFile;
  */
 public class LocationInfo {
 
-    @Getter private final File file;
-    private final ClassLoader classloader;
+    @Getter private final @NotNull File file;
+    private final @NotNull ClassLoader classloader;
 
     public LocationInfo(@NotNull File home, @NotNull ClassLoader classloader) {
         this.file = home;
@@ -31,7 +31,7 @@ public class LocationInfo {
     /**
      * Scans this location and returns all scanned resources.
      */
-    public ConcurrentSet<ResourceInfo> scanResources() {
+    public @NotNull ConcurrentSet<ResourceInfo> scanResources() {
         return scanResources(Concurrent.newSet());
     }
 
@@ -49,14 +49,14 @@ public class LocationInfo {
      * <p>Note that when you call {@code location.scanResources(scannedFiles)}, the location will
      * always be scanned even if {@code scannedFiles} already contains it.
      */
-    public ConcurrentSet<ResourceInfo> scanResources(ConcurrentSet<File> scannedFiles) {
+    public @NotNull ConcurrentSet<ResourceInfo> scanResources(ConcurrentSet<File> scannedFiles) {
         ConcurrentSet<ResourceInfo> builder = Concurrent.newSet();
         scannedFiles.add(this.getFile());
         scan(this.getFile(), scannedFiles, builder);
         return builder.toUnmodifiableSet();
     }
 
-    private void scan(File file, ConcurrentSet<File> scannedUris, ConcurrentSet<ResourceInfo> builder) {
+    private void scan(@NotNull File file, @NotNull ConcurrentSet<File> scannedUris, @NotNull ConcurrentSet<ResourceInfo> builder) {
         try {
             if (!file.exists())
                 return;
@@ -71,7 +71,7 @@ public class LocationInfo {
             scanJar(file, scannedUris, builder);
     }
 
-    private void scanJar(File file, ConcurrentSet<File> scannedUris, ConcurrentSet<ResourceInfo> builder) {
+    private void scanJar(@NotNull File file, @NotNull ConcurrentSet<File> scannedUris, @NotNull ConcurrentSet<ResourceInfo> builder) {
         JarFile jarFile;
 
         try {
@@ -98,7 +98,7 @@ public class LocationInfo {
         }
     }
 
-    private void scanJarFile(JarFile file, ConcurrentSet<ResourceInfo> builder) {
+    private void scanJarFile(@NotNull JarFile file, @NotNull ConcurrentSet<ResourceInfo> builder) {
         Enumeration<JarEntry> entries = file.entries();
 
         while (entries.hasMoreElements()) {
@@ -111,7 +111,7 @@ public class LocationInfo {
         }
     }
 
-    private void scanDirectory(File directory, ConcurrentSet<ResourceInfo> builder) {
+    private void scanDirectory(@NotNull File directory, @NotNull ConcurrentSet<ResourceInfo> builder) {
         try {
             ConcurrentSet<File> currentPath = Concurrent.newSet();
             currentPath.add(directory.getCanonicalFile());
@@ -130,7 +130,7 @@ public class LocationInfo {
      * @param currentPath   canonical files already visited in the current directory tree path, for
      *                      cycle elimination
      */
-    private void scanDirectory(File directory, String packagePrefix, ConcurrentSet<File> currentPath, ConcurrentSet<ResourceInfo> builder) throws IOException {
+    private void scanDirectory(@NotNull File directory, @NotNull String packagePrefix, @NotNull ConcurrentSet<File> currentPath, @NotNull ConcurrentSet<ResourceInfo> builder) throws IOException {
         File[] files = directory.listFiles();
 
         if (files == null) {
@@ -178,7 +178,7 @@ public class LocationInfo {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.getFile().toString();
     }
 

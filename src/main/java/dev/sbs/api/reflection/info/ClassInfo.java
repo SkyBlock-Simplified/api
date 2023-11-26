@@ -3,12 +3,14 @@ package dev.sbs.api.reflection.info;
 import com.google.common.base.CharMatcher;
 import dev.sbs.api.reflection.Reflection;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
+@Getter
 public class ClassInfo extends ResourceInfo {
 
-    @Getter private final String name;
+    private final @NotNull String name;
 
     public ClassInfo(File file, String resourceName, ClassLoader loader) {
         super(file, resourceName, loader);
@@ -75,9 +77,9 @@ public class ClassInfo extends ResourceInfo {
      * @throws LinkageError when there were errors in loading classes that this class depends on.
      *                      For example, {@link NoClassDefFoundError}.
      */
-    public Class<?> load() {
+    public @NotNull Class<?> load() {
         try {
-            return this.loader.loadClass(this.getName());
+            return this.getLoader().loadClass(this.getName());
         } catch (ClassNotFoundException e) {
             // Shouldn't happen, since the class name is read from the class path.
             throw new IllegalStateException(e);
@@ -85,7 +87,7 @@ public class ClassInfo extends ResourceInfo {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.getName();
     }
 
