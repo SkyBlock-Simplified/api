@@ -11,7 +11,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Getter
 @Accessors(fluent = true)
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class StreamCollector<T, A, R> implements Collector<T, A, R> {
 
     @SuppressWarnings("unchecked")
-    public static <I, R> Function<I, R> castingIdentity() {
+    private static <I, R> Function<I, R> castingIdentity() {
         return i -> (R) i;
     }
 
@@ -31,7 +30,6 @@ public class StreamCollector<T, A, R> implements Collector<T, A, R> {
 
     public StreamCollector(@NotNull Supplier<A> supplier, @NotNull BiConsumer<A, T> accumulator, @NotNull BinaryOperator<A> combiner, @NotNull Set<Characteristics> characteristics) {
         this(supplier, accumulator, combiner, castingIdentity(), characteristics);
-        Collectors.toUnmodifiableMap()
     }
 
 }
