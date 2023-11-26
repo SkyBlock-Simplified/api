@@ -1,11 +1,11 @@
 package dev.sbs.api.data;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.TestConfig;
 import dev.sbs.api.data.model.skyblock.item_types.ItemTypeModel;
 import dev.sbs.api.data.model.skyblock.rarities.RarityModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforge_stats.ReforgeStatModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforges.ReforgeModel;
+import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.tuple.Pair;
@@ -13,7 +13,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.List;
 
 public class ReforgeRepositoryTest {
@@ -22,19 +21,9 @@ public class ReforgeRepositoryTest {
     private static final Repository<RarityModel> rarityRepository;
     private static final Repository<ReforgeModel> reforgeRepository;
     private static final Repository<ReforgeStatModel> reforgeStatRepository;
-    private static final TestConfig testConfig;
 
     static {
-        try {
-            File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            testConfig = new TestConfig();
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
-        }
-    }
-
-    static {
-        SimplifiedApi.getSessionManager().connectSql(testConfig);
+        SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
         itemTypeRepository = SimplifiedApi.getRepositoryOf(ItemTypeModel.class);
         rarityRepository = SimplifiedApi.getRepositoryOf(RarityModel.class);
         reforgeRepository = SimplifiedApi.getRepositoryOf(ReforgeModel.class);

@@ -33,14 +33,26 @@ public class YamlConfig extends ConfigMapper implements Runnable {
     private transient boolean reloadProcessing = false;
 
     public YamlConfig(@NotNull String fileName, @NotNull String... header) {
+        this(fileName, Arrays.asList(header));
+    }
+
+    public YamlConfig(@NotNull String fileName, @NotNull Iterable<String> header) {
         this(fileName, SimplifiedApi.getCurrentDirectory(), header);
     }
 
     public YamlConfig(@NotNull String fileName, @NotNull File configDir, @NotNull String... header) {
+        this(fileName, configDir, Arrays.asList(header));
+    }
+
+    public YamlConfig(@NotNull String fileName, @NotNull File configDir, @NotNull Iterable<String> header) {
         this(fileName, configDir, false, header);
     }
 
     public YamlConfig(@NotNull String fileName, @NotNull File configDir, boolean suppressFailedConversions, @NotNull String... header) {
+        this(fileName, configDir, suppressFailedConversions, Arrays.asList(header));
+    }
+
+    public YamlConfig(@NotNull String fileName, @NotNull File configDir, boolean suppressFailedConversions, @NotNull Iterable<String> header) {
         super(configDir, fileName, header);
         this.setSuppressFailedConversions(suppressFailedConversions);
         GLOBAL_CUSTOM_CONVERTERS.forEach(this::addCustomConverter);

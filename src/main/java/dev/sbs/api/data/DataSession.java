@@ -5,23 +5,30 @@ import dev.sbs.api.data.model.Model;
 import dev.sbs.api.manager.ServiceManager;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class DataSession<M extends Model> {
+@Getter
+public abstract class DataSession<T extends Model> {
 
+    @Getter(AccessLevel.NONE)
     protected final @NotNull ServiceManager serviceManager = new ServiceManager();
-    @Getter protected final @NotNull ConcurrentList<Class<M>> models;
-    @Getter protected boolean active;
-    @Getter protected boolean cached = false;
-    @Getter protected long initializationTime;
-    @Getter protected long startupTime;
+    protected final @NotNull ConcurrentList<Class<T>> models;
+    protected boolean active;
+    protected boolean cached = false;
+    protected long initializationTime;
+    protected long startupTime;
 
-    protected DataSession(@NotNull ConcurrentList<Class<M>> models) {
+    protected DataSession(@NotNull ConcurrentList<Class<T>> models) {
         this.models = models;
     }
 
-    protected abstract void addRepository(@NotNull Class<? extends M> model);
+    protected abstract void addRepository(@NotNull Class<? extends T> model);
+
+    public final <M extends T, S extends DataSession<M>> @NotNull S asType(@NotNull Class<S> sessionType) {
+        return sessionType.cast(this);
+    }
 
     protected abstract void build();
 
@@ -31,7 +38,7 @@ public abstract class DataSession<M extends Model> {
             long startTime = System.currentTimeMillis();
 
             // Provide SqlRepositories
-            for (Class<? extends M> model : this.getModels())
+            for (Class<? extends T> model : this.getModels())
                 this.addRepository(model);
 
             this.startupTime = System.currentTimeMillis() - startTime;
@@ -42,16 +49,16 @@ public abstract class DataSession<M extends Model> {
     }
 
     /**
-     * Gets the {@link Repository <T>} caching all items of type {@link T}.
+     * Gets the {@link Repository <M>} caching all items of type {@link M}.
      *
      * @param tClass The {@link Model} class to find.
-     * @param <T> The type of model.
-     * @return The repository of type {@link T}.
+     * @param <M> The type of model.
+     * @return The repository of type {@link M}.
      */
     @SuppressWarnings("unchecked")
-    public final <T extends Model> Repository<T> getRepositoryOf(Class<T> tClass) {
+    public final <M extends T> Repository<M> getRepositoryOf(Class<M> tClass) {
         if (this.isActive())
-            return (Repository<T>) this.serviceManager.get(tClass);
+            return (Repository<M>) this.serviceManager.get(tClass);
         else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Session connection is not active!")

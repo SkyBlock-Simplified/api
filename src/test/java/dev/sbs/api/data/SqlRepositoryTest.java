@@ -1,32 +1,19 @@
 package dev.sbs.api.data;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.TestConfig;
 import dev.sbs.api.data.model.skyblock.stats.StatModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
+import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.SqlRepository;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-
 public class SqlRepositoryTest {
-
-    private static final TestConfig testConfig;
-
-    static {
-        try {
-            File currentDir = new File(SimplifiedApi.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            testConfig = new TestConfig();
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("Unable to retrieve current directory", exception); // Should never get here
-        }
-    }
 
     @Test
     public void checkRepositories_ok() {
         try {
             System.out.println("Connecting to database...");
-            SimplifiedApi.getSessionManager().connectSql(testConfig);
+            SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
             //testConfig.setLoggingLevel(Level.DEBUG);
 
 

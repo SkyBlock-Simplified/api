@@ -4,10 +4,11 @@ import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Cleanup;
 import lombok.Getter;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.ehcache.core.Ehcache;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -32,8 +33,8 @@ public final class SqlSession extends DataSession<SqlModel> {
     private StandardServiceRegistry serviceRegistry;
     @Getter private SessionFactory sessionFactory;
 
-    public SqlSession(@NotNull SqlConfig config, @NotNull ConcurrentList<Class<SqlModel>> models) {
-        super(models);
+    public SqlSession(@NotNull SqlConfig config) {
+        super(config.getModels());
         this.config = config;
     }
 
@@ -64,18 +65,18 @@ public final class SqlSession extends DataSession<SqlModel> {
         StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
         Properties properties = new Properties() {{
             // Connection
-            put("hibernate.dialect", config.getDatabaseDriver().getDialectClass());
-            put("hibernate.connection.driver_class", config.getDatabaseDriver().getDriverClass());
-            put("hibernate.connection.url", config.getDatabaseDriver().getConnectionUrl(config.getDatabaseHost(), config.getDatabasePort(), config.getDatabaseSchema()));
-            put("hibernate.connection.username", config.getDatabaseUser());
-            put("hibernate.connection.password", config.getDatabasePassword());
+            put("hibernate.dialect", config.getDriver().getDialectClass());
+            put("hibernate.connection.driver_class", config.getDriver().getDriverClass());
+            put("hibernate.connection.url", config.getDriver().getConnectionUrl(config.getHost(), config.getPort(), config.getSchema()));
+            put("hibernate.connection.username", config.getUser());
+            put("hibernate.connection.password", config.getPassword());
             put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
 
             // Settings
             put("hibernate.generate_statistics", true);
             put("hibernate.globally_quoted_identifiers", true);
-            put("hibernate.show_sql", config.isLoggingLevel(Level.DEBUG));
-            put("hibernate.format_sql", config.isLoggingLevel(Level.TRACE)); // Log Spam
+            put("hibernate.show_sql", config.isLogLevel(Level.DEBUG));
+            put("hibernate.format_sql", config.isLogLevel(Level.TRACE)); // Log Spam
             put("hibernate.use_sql_comments", true);
 
             // Batching
@@ -87,11 +88,11 @@ public final class SqlSession extends DataSession<SqlModel> {
             // Caching
             put("hibernate.cache.region.factory_class", "jcache");
             put("hibernate.cache.provider_class", "org.ehcache.jsr107.EhcacheCachingProvider");
-            put("hibernate.cache.use_structured_entries", config.isLoggingLevel(Level.DEBUG));
+            put("hibernate.cache.use_structured_entries", config.isLogLevel(Level.DEBUG));
             put("hibernate.cache.use_reference_entries", true);
-            put("hibernate.cache.use_query_cache", config.isDatabaseCachingQueries());
-            put("hibernate.cache.default_cache_concurrency_strategy", config.getDatabaseCachingConcurrencyStrategy().toAccessType().getExternalName());
-            put("hibernate.javax.cache.missing_cache_strategy", config.getDatabaseCachingMissingStrategy().getExternalRepresentation());
+            put("hibernate.cache.use_query_cache", config.isCachingQueries());
+            put("hibernate.cache.default_cache_concurrency_strategy", config.getCacheConcurrencyStrategy().toAccessType().getExternalName());
+            put("hibernate.javax.cache.missing_cache_strategy", config.getMissingCacheStrategy().getExternalRepresentation());
 
             // Hikari
             put("hikari.maximumPoolSize", 20);
@@ -102,13 +103,15 @@ public final class SqlSession extends DataSession<SqlModel> {
         // Register SqlModel Classes
         MetadataSources sources = new MetadataSources(this.serviceRegistry);
         this.models.stream()
-            .map(config::addDatabaseModel)
             .map(this::buildCacheConfiguration) // Build Entity Cache
-            .forEach(sources::addAnnotatedClass);
+            .forEach(modelType -> {
+                sources.addAnnotatedClass(modelType);
+                Configurator.setLevel(String.format("%s-%s", Ehcache.class, modelType.getName()), this.config.getLogLevel());
+            });
 
         // Build Query Caches
-        this.buildCacheConfiguration("default-update-timestamps-region", SqlConfig::getDatabaseUpdateTimestampsTTL);
-        this.buildCacheConfiguration("default-query-results-region", SqlConfig::getDatabaseQueryResultsTTL);
+        this.buildCacheConfiguration("default-update-timestamps-region", sqlConfig -> Duration.ETERNAL);
+        this.buildCacheConfiguration("default-query-results-region", SqlConfig::getQueryResultsTTL);
 
         // Build Session Factory
         Metadata metadata = sources.getMetadataBuilder().build();

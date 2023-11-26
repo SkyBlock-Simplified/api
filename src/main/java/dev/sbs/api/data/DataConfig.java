@@ -1,41 +1,54 @@
 package dev.sbs.api.data;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import lombok.AccessLevel;
+import dev.sbs.api.util.collection.sort.Graph;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.ehcache.core.Ehcache;
 import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
+@Getter
 public abstract class DataConfig<T extends Model> {
 
-    protected final transient ConcurrentList<Class<T>> models = Concurrent.newList();
-    @Getter protected @NotNull Level loggingLevel = Level.WARN;
+    private final @NotNull ConcurrentList<Class<T>> models = this.loadModels();
+    protected @NotNull Level logLevel = Level.WARN;
 
-    protected Class<T> addDatabaseModel(@NotNull Class<T> model) {
-        this.models.add(model);
-        Configurator.setLevel(String.format("%s-%s", Ehcache.class, model.getName()), this.getLoggingLevel());
-        return model;
+    protected abstract @NotNull DataSession<T> createSession();
+
+    public final boolean isLogLevel(@NotNull Level level) {
+        return level.intLevel() >= this.getLogLevel().intLevel();
     }
 
-    public final @NotNull ConcurrentList<Class<? extends T>> getModels() {
-        return Concurrent.newUnmodifiableList(this.models);
+    private @NotNull ConcurrentList<Class<T>> loadModels() {
+        return loadModels(Reflection.getSuperClass(this));
     }
 
-    public final boolean isLoggingLevel(@NotNull Level level) {
-        return level.intLevel() >= this.loggingLevel.intLevel();
+    @SuppressWarnings("unchecked")
+    protected static <T> @NotNull ConcurrentList<Class<T>> loadModels(@NotNull Class<T> modelType) {
+        return Graph.builder(modelType)
+            .withValues(
+                Reflection.getResources()
+                    .filterPackage(modelType)
+                    .getSubtypesOf(modelType)
+            )
+            .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
+                .map(Field::getType)
+                .filter(modelType::isAssignableFrom)
+                .map(fieldType -> (Class<T>) fieldType)
+            )
+            .build()
+            .topologicalSort();
     }
 
-    public final void setLoggingLevel(@NotNull Level level) {
-        this.loggingLevel = level;
-        this.onLoggingLevelChange(level);
+    public final void setLogLevel(@NotNull Level level) {
+        this.logLevel = level;
+        this.onLogLevelChange(level);
     }
 
-    protected void onLoggingLevelChange(@NotNull Level level) { }
+    protected void onLogLevelChange(@NotNull Level level) { }
 
 }

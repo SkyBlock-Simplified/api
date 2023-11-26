@@ -26,14 +26,16 @@ public abstract class ConfigMapper extends YamlMap {
 
     private final transient Yaml yaml;
     private final transient ConcurrentLinkedMap<String, ConcurrentList<String>> comments = Concurrent.newLinkedMap();
-    private final transient String[] header;
+    private final transient ConcurrentList<String> header;
     transient File configFile;
     transient ConfigSection root;
 
-    protected ConfigMapper(File configDir, String fileName, String... header) {
+    protected ConfigMapper(File configDir, String fileName, Iterable<String> header) {
         if (StringUtil.isEmpty(fileName)) throw new IllegalArgumentException("Filename cannot be null!");
         this.configFile = new File(configDir, String.format("config/%s%s", fileName, (fileName.endsWith(".yml") ? "" : ".yml")));
-        this.header = header;
+        ConcurrentList<String> headerList = Concurrent.newList();
+        header.forEach(headerList::add);
+        this.header = headerList.toUnmodifiableList();
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setIndent(2);
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
