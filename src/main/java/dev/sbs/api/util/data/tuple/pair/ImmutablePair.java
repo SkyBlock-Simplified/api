@@ -1,4 +1,4 @@
-package dev.sbs.api.util.data.tuple;
+package dev.sbs.api.util.data.tuple.pair;
 
 /**
  * <p>An immutable pair consisting of two {@code Object} elements.</p>
@@ -19,6 +19,7 @@ public final class ImmutablePair<L, R> extends Pair<L, R> {
      * Left object
      */
     public final L left;
+
     /**
      * Right object
      */

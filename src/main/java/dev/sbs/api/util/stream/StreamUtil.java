@@ -1,4 +1,4 @@
-package dev.sbs.api.util.helper.stream;
+package dev.sbs.api.util.stream;
 
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
@@ -9,7 +9,9 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
-import dev.sbs.api.util.collection.search.function.TriFunction;
+import dev.sbs.api.util.data.tuple.triple.Triple;
+import dev.sbs.api.util.stream.triple.TriFunction;
+import dev.sbs.api.util.stream.triple.TripleStream;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +52,33 @@ public class StreamUtil {
     }
 
     /**
+     * Zips the specified spliterator with its indices.
+     */
+    public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Spliterator<T> spliterator, boolean parallel) {
+        return TripleStream.of(mapWithIndex(spliterator, parallel, Triple::of));
+    }
+
+    /**
+     * Zips the specified stream with its indices.
+     */
+    public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Stream<T> stream) {
+        return TripleStream.of(mapWithIndex(stream, Triple::of));
+    }
+
+    public static <T> Stream<Triple<T, Long, Long>> indexedStream(@NotNull Stream<T> stream) {
+        return indexedStream(stream.spliterator(), stream.isParallel()).onClose(stream::close);
+    }
+
+    public static <T> Stream<Triple<T, Long, Long>> indexedStream(@NotNull Spliterator<T> spliterator, boolean parallel) {
+        return mapWithIndex(spliterator, parallel, Triple::of);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T, R> @NotNull Stream<R> mapWithIndex(@NotNull Stream<T> stream, @NotNull TriFunction<? super T, Long, Long, ? extends R> function) {
+        return (Stream<R>) mapWithIndex(stream.spliterator(), stream.isParallel(), function).onClose(stream::close);
+    }
+
+    /**
      * Returns a stream consisting of the results of applying the given function to the elements of
      * {@code stream} and their indices in the stream. For example,
      *
@@ -71,69 +100,64 @@ public class StreamUtil {
      * <p>The order of the resulting stream is defined if and only if the order of the original stream
      * was defined.
      */
-    public static <T, R> @NotNull Stream<R> mapWithIndex(@NotNull Stream<T> stream, @NotNull TriFunction<? super T, Long, Long, ? extends R> function) {
-        boolean isParallel = stream.isParallel();
-        Spliterator<T> fromSpliterator = stream.spliterator();
-        long size = fromSpliterator.estimateSize();
+    public static <T, R> @NotNull Stream<R> mapWithIndex(@NotNull Spliterator<T> spliterator, boolean parallel, @NotNull TriFunction<? super T, Long, Long, ? extends R> function) {
+        long size = spliterator.estimateSize();
 
-        if (!fromSpliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
-            Iterator<T> fromIterator = Spliterators.iterator(fromSpliterator);
-
+        if (!spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
             return StreamSupport.stream(
-                    new Spliterators.AbstractSpliterator<R>(
-                        fromSpliterator.estimateSize(),
-                        fromSpliterator.characteristics() & (Spliterator.ORDERED | Spliterator.SIZED)) {
-                        long index = 0;
+                new Spliterators.AbstractSpliterator<>(size, spliterator.characteristics() & (Spliterator.ORDERED | Spliterator.SIZED)) {
+                    private Iterator<T> fromIterator = Spliterators.iterator(spliterator);
+                    private long index = 0;
 
-                        @Override
-                        public boolean tryAdvance(Consumer<? super R> action) {
-                            if (fromIterator.hasNext()) {
-                                action.accept(function.apply(fromIterator.next(), index++, size));
-                                return true;
-                            }
-                            return false;
+                    @Override
+                    public boolean tryAdvance(Consumer<? super R> action) {
+                        if (this.fromIterator.hasNext()) {
+                            action.accept(function.apply(this.fromIterator.next(), this.index++, size));
+                            return true;
                         }
-                    },
-                    isParallel
-                )
-                .onClose(stream::close);
-        }
 
-        class Splitr extends MapWithIndexSpliterator<Spliterator<T>, R, Splitr> implements Consumer<T> {
-
-            private @Nullable T holder;
-
-            Splitr(Spliterator<T> splitr, long index) {
-                super(splitr, index);
-            }
-
-            @Override
-            public void accept(@NotNull T t) {
-                this.holder = t;
-            }
-
-            @Override
-            public boolean tryAdvance(Consumer<? super R> action) {
-                if (fromSpliterator.tryAdvance(this)) {
-                    try {
-                        // The cast is safe because tryAdvance puts a T into `holder`.
-                        action.accept(function.apply(holder, index++, size));
-                        return true;
-                    } finally {
-                        holder = null;
+                        return false;
                     }
+                },
+                parallel
+            );
+        } else {
+            class Splitr extends MapWithIndexSpliterator<Spliterator<T>, R, Splitr> implements Consumer<T> {
+
+                private @Nullable T holder;
+
+                Splitr(Spliterator<T> splitr, long index) {
+                    super(splitr, index);
                 }
-                return false;
+
+                @Override
+                public void accept(@NotNull T t) {
+                    this.holder = t;
+                }
+
+                @Override
+                public boolean tryAdvance(Consumer<? super R> action) {
+                    if (fromSpliterator.tryAdvance(this)) {
+                        try {
+                            // The cast is safe because tryAdvance puts a T into `holder`.
+                            action.accept(function.apply(this.holder, this.index++, size));
+                            return true;
+                        } finally {
+                            holder = null;
+                        }
+                    }
+                    return false;
+                }
+
+                @Override
+                Splitr createSplit(Spliterator<T> from, long i) {
+                    return new Splitr(from, i);
+                }
+
             }
 
-            @Override
-            Splitr createSplit(Spliterator<T> from, long i) {
-                return new Splitr(from, i);
-            }
-
+            return StreamSupport.stream(new Splitr(spliterator, 0), parallel);
         }
-
-        return StreamSupport.stream(new Splitr(fromSpliterator, 0), isParallel).onClose(stream::close);
     }
 
     public static <T> @NotNull Stream<T> modifyStream(@NotNull Stream<T> stream, @NotNull TriFunction<T, Long, Long, T> modFunction) {

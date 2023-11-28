@@ -1,4 +1,4 @@
-package dev.sbs.api.util.helper.stream;
+package dev.sbs.api.util.stream;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import java.util.Spliterator;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-abstract class MapWithIndexSpliterator<F extends Spliterator<?>, R extends Object, S extends MapWithIndexSpliterator<F, R, S>> implements Spliterator<R> {
+abstract class MapWithIndexSpliterator<F extends Spliterator<?>, R, S extends MapWithIndexSpliterator<F, R, S>> implements Spliterator<R> {
 
     protected final F fromSpliterator;
     protected long index;

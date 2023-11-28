@@ -1,4 +1,4 @@
-package dev.sbs.api.util.data.tuple;
+package dev.sbs.api.util.data.tuple.pair;
 
 /**
  * <p>A mutable pair consisting of two {@code Object} elements.</p>

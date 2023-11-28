@@ -1,6 +1,8 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.stream.StreamUtil;
+import dev.sbs.api.util.stream.triple.TripleStream;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -112,6 +114,14 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 		} finally {
 			this.lock.readLock().unlock();
 		}
+	}
+
+	public final @NotNull TripleStream<E, Long, Long> indexedStream() {
+		return this.indexedStream(false);
+	}
+
+	public final @NotNull TripleStream<E, Long, Long> indexedStream(boolean parallel) {
+		return StreamUtil.zipWithIndex(this.spliterator(), parallel);
 	}
 
 	@Override

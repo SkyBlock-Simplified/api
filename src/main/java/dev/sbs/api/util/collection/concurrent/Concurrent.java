@@ -7,7 +7,7 @@ import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiabl
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableList;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableSet;
-import dev.sbs.api.util.helper.stream.StreamUtil;
+import dev.sbs.api.util.stream.StreamUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

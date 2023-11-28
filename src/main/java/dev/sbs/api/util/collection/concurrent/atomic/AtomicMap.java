@@ -2,7 +2,7 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
 import dev.sbs.api.util.helper.NumberUtil;
-import dev.sbs.api.util.helper.stream.PairStream;
+import dev.sbs.api.util.stream.PairStream;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
