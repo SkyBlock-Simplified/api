@@ -270,4 +270,16 @@ public final class Concurrent {
 		return StreamUtil.toConcurrentSet();
 	}
 
+	public static <K, V, T> @NotNull Collector<T, ?, ConcurrentMap<K, V>> toWeakMap() {
+		return StreamUtil.toWeakConcurrentMap();
+	}
+
+	public static <K, V, T> @NotNull Collector<T, ?, ConcurrentLinkedMap<K, V>> toWeakLinkedMap() {
+		return StreamUtil.toWeakConcurrentLinkedMap();
+	}
+
+	public static <K, V, T> @NotNull Collector<T, ?, ConcurrentUnmodifiableMap<K, V>> toWeakUnmodifiableMap() {
+		return StreamUtil.toWeakConcurrentUnmodifiableMap();
+	}
+
 }
