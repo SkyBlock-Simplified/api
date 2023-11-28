@@ -52,17 +52,17 @@ public class StreamUtil {
     }
 
     /**
+     * Zips the specified stream with its indices.
+     */
+    public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Stream<T> stream) {
+        return zipWithIndex(stream.spliterator(), stream.isParallel());
+    }
+
+    /**
      * Zips the specified spliterator with its indices.
      */
     public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Spliterator<T> spliterator, boolean parallel) {
         return TripleStream.of(mapWithIndex(spliterator, parallel, Triple::of));
-    }
-
-    /**
-     * Zips the specified stream with its indices.
-     */
-    public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Stream<T> stream) {
-        return TripleStream.of(mapWithIndex(stream, Triple::of));
     }
 
     public static <T> Stream<Triple<T, Long, Long>> indexedStream(@NotNull Stream<T> stream) {
