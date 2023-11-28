@@ -32,10 +32,10 @@ public final class OptionalTypeAdapterFactory implements TypeAdapterFactory {
         return new OptionalTypeAdapter(adapter);
     }
 
+    @Getter
     @RequiredArgsConstructor
     private static class OptionalTypeAdapter<T> extends TypeAdapter<Optional<T>> {
 
-        @Getter
         private final @NotNull TypeAdapter<T> adapter;
 
         @Override

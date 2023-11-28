@@ -9,7 +9,7 @@ import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.util.builder.string.StringBuilder;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

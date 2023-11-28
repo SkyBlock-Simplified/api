@@ -2,7 +2,7 @@ package dev.sbs.api.util.builder.hash;
 
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 

@@ -3,7 +3,7 @@ package dev.sbs.api.manager.exception;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.Triple;
+import dev.sbs.api.util.data.tuple.triple.Triple;
 
 public final class RegisteredReferenceException extends SimplifiedException {
 

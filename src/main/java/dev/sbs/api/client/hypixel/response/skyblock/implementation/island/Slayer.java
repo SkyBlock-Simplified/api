@@ -121,6 +121,7 @@ public class Slayer {
         protected ConcurrentMap<Integer, Boolean> claimedSpecial;
         protected ConcurrentMap<Integer, Integer> kills;
 
+        @SuppressWarnings("all")
         protected void initialize() {
             ConcurrentMap<Integer, Boolean> claimed = Concurrent.newMap();
             ConcurrentMap<Integer, Boolean> claimedSpecial = Concurrent.newMap();

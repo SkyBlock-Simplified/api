@@ -3,7 +3,7 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

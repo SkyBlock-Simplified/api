@@ -3,6 +3,7 @@ package dev.sbs.api.util.helper;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -2038,7 +2039,7 @@ public class StringUtil {
         return null;
     }
 
-    public static Optional<String> formatNullable(@Nullable String format, @NotNull Object... objects) {
+    public static Optional<String> formatNullable(@PrintFormat @Nullable String format, @NotNull Object... objects) {
         return Optional.ofNullable(Objects.isNull(format) ? null : String.format(format, objects));
     }
 

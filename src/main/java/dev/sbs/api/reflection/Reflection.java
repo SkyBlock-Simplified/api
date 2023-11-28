@@ -11,7 +11,7 @@ import dev.sbs.api.util.builder.annotation.BuildFlag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ClassUtil;
 import dev.sbs.api.util.helper.PrimitiveUtil;
 import dev.sbs.api.util.helper.StringUtil;
@@ -824,13 +824,15 @@ public class Reflection<T> {
                     if (value == null)
                         invalid = true;
                     else {
-                        if (value instanceof CharSequence)
+                        Class<?> fieldType = field.getField().getType();
+
+                        if (CharSequence.class.isAssignableFrom(fieldType))
                             invalid = StringUtil.isEmpty((CharSequence) value);
-                        else if (value instanceof Optional<?>)
+                        else if (Optional.class.isAssignableFrom(fieldType))
                             invalid = ((Optional<?>) value).isEmpty();
-                        else if (value instanceof Collection<?>)
+                        else if (Collection.class.isAssignableFrom(fieldType))
                             invalid = ((Collection<?>) value).isEmpty();
-                        else if (value instanceof Map<?, ?>)
+                        else if (Map.class.isAssignableFrom(fieldType))
                             invalid = ((Map<?, ?>) value).isEmpty();
                     }
 
@@ -848,8 +850,18 @@ public class Reflection<T> {
                     if (value == null)
                         invalid = true;
                     else {
-                        if (value instanceof CharSequence sequence)
+                        Class<?> fieldType = field.getField().getType();
+
+                        if (CharSequence.class.isAssignableFrom(fieldType)) {
+                            CharSequence sequence = (CharSequence) value;
                             invalid = StringUtil.isEmpty(sequence) || !Pattern.compile(flag.pattern()).matcher(sequence).matches();
+                        } else if (value instanceof Optional<?>) {
+                            Optional<?> optional = (Optional<?>) value;
+                            final ParameterizedType parameterizedType = (ParameterizedType) field.getType().getGenericSuperclass();
+                            final Type actualType = parameterizedType.getActualTypeArguments()[0];
+
+                            String test = "here";
+                        }
                     }
 
                     if (invalid) {
@@ -858,6 +870,9 @@ public class Reflection<T> {
                             .build();
                     }
                 }
+
+                // Length Limit
+                // TODO
             });
     }
 

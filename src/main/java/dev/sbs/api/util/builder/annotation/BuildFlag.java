@@ -8,8 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -27,5 +29,12 @@ public @interface BuildFlag {
      */
     @Language("RegExp")
     @NotNull String pattern() default "";
+
+    /**
+     * Limits field maximum length.
+     * <br><br>if it's a {@link CharSequence}.
+     * Checks {@link CharSequence}, {@link String}, {@link List}, {@link Set}, etc.
+     */
+    int limit() default -1;
 
 }

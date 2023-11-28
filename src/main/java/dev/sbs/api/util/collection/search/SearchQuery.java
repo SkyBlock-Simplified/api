@@ -3,10 +3,9 @@ package dev.sbs.api.util.collection.search;
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
-import dev.sbs.api.util.collection.search.function.TriFunction;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ListUtil;
+import dev.sbs.api.util.stream.triple.TriFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

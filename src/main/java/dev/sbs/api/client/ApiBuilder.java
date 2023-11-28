@@ -6,7 +6,7 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ListUtil;
 import feign.Feign;
 import feign.Retryer;
@@ -50,18 +50,16 @@ public abstract class ApiBuilder<R extends Request> implements ClassBuilder<R> {
             })
             .responseInterceptor(context -> {
                 if (ListUtil.notEmpty(this.getResponseCacheHeaders())) {
-                    this.headerCache = Concurrent.newUnmodifiableMap(
-                        context.response()
-                            .headers()
-                            .entrySet()
+                    this.headerCache = context.response()
+                        .headers()
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> this.getResponseCacheHeaders()
                             .stream()
-                            .filter(entry -> this.getResponseCacheHeaders()
-                                .stream()
-                                .anyMatch(key -> entry.getKey().matches(key))
-                            )
-                            .map(entry -> Pair.of(entry.getKey(), Concurrent.newUnmodifiableList(entry.getValue())))
-                            .collect(Concurrent.toMap())
-                    );
+                            .anyMatch(key -> entry.getKey().matches(key))
+                        )
+                        .map(entry -> Pair.of(entry.getKey(), Concurrent.newList(entry.getValue())))
+                        .collect(Concurrent.toUnmodifiableMap());
                 }
 
                 this.lastResponseTime = System.currentTimeMillis();
