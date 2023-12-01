@@ -262,6 +262,7 @@ public class SkyBlockDate extends CustomDate {
     /**
      * The season of the year, matches up with current month of the year.
      */
+    @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum Season {
 
@@ -278,7 +279,6 @@ public class SkyBlockDate extends CustomDate {
         WINTER("Winter"),
         LATE_WINTER("Late Winter");
 
-        @Getter
         private final String name;
 
     }
