@@ -1,7 +1,10 @@
 package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilyModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_brackets.BestiaryBracketModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_categories.BestiaryCategoryModel;
+
+import java.util.List;
 
 public interface BestiaryModel extends Model {
 
@@ -9,10 +12,14 @@ public interface BestiaryModel extends Model {
 
     String getName();
 
-    Integer getLevel();
+    BestiaryBracketModel getBracket();
 
-    BestiaryFamilyModel getFamily();
+    BestiaryCategoryModel getCategory();
 
     Integer getOrdinal();
+
+    String getInternalName();
+
+    List<Integer> getLevels();
 
 }
