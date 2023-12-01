@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+@NoArgsConstructor
 public class DungeonData {
 
     @SerializedName("dungeon_types")

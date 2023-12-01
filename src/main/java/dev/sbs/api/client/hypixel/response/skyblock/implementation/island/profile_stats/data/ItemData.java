@@ -214,6 +214,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
             .build();
     }
 
+    @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public enum Type implements ObjectData.Type {
 
@@ -224,7 +225,6 @@ public class ItemData extends ObjectData<ItemData.Type> {
         REFORGES(false),
         STATS(true);
 
-        @Getter
         private final boolean optimizerConstant;
 
     }

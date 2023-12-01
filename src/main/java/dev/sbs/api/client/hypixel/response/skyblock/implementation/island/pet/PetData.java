@@ -2,7 +2,7 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.stream.StreamUtil;
+import dev.sbs.api.util.stream.StreamUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

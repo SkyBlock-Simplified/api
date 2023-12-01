@@ -14,8 +14,8 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.data.mutable.MutableDouble;
-import dev.sbs.api.util.data.tuple.Pair;
-import dev.sbs.api.util.data.tuple.Triple;
+import dev.sbs.api.util.data.tuple.pair.Pair;
+import dev.sbs.api.util.data.tuple.triple.Triple;
 import dev.sbs.api.util.helper.NumberUtil;
 
 import java.util.Arrays;

@@ -16,7 +16,7 @@ public class TrophyFish {
     private final @NotNull ConcurrentMap<Type, ConcurrentMap<Tier, Integer>> fish;
     private final int totalCaught;
 
-    private TrophyFish(@NotNull ConcurrentMap<String, Object> trophy_fish) {
+    public TrophyFish(@NotNull ConcurrentMap<String, Object> trophy_fish) {
         this.totalCaught = (int) trophy_fish.removeOrGet("total_caught", 0);
 
         this.fish = Arrays.stream(Type.values())

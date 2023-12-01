@@ -1,24 +1,30 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.bestiary;
 
-import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.gson.SerializedPath;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.Accessors;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Bestiary {
 
-    @SerializedName("migrated_stats")
-    private boolean migratedStats;
-    @Accessors(fluent = true)
-    @SerializedName("migrated")
-    private boolean hasMigrated;
     private @NotNull ConcurrentMap<String, Integer> kills = Concurrent.newMap();
     private @NotNull ConcurrentMap<String, Integer> deaths = Concurrent.newMap();
     @SerializedPath("milestone.last_claimed_milestone")
     private int lastClaimedMilestone;
+
+    /**
+     * Wraps this class with database information.
+     * <br><br>
+     * Requires an active database session.
+     */
+    public @NotNull EnhancedBestiary asEnhanced() {
+        return new EnhancedBestiary(this);
+    }
 
 }

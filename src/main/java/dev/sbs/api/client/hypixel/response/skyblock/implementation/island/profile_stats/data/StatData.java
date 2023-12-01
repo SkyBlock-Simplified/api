@@ -10,9 +10,10 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+@Getter
 public abstract class StatData<T extends ObjectData.Type> {
 
-    @Getter protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
+    protected final ConcurrentMap<T, ConcurrentLinkedMap<StatModel, Data>> stats = Concurrent.newMap();
 
     public final Data getAllData(StatModel statModel) {
         Data statData = new Data();

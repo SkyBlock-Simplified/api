@@ -1,37 +1,51 @@
-package dev.sbs.api.client.hypixel.response.skyblock.implementation.island;
+package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.accessories;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccessoryBag {
 
-    private transient NbtContent contents = new NbtContent();
     private Tuning tuning = new Tuning();
     @SerializedName("selected_power")
-    private String selectedPower;
+    private Optional<String> selectedPower = Optional.empty();
     @SerializedName("bag_upgrades_purchased")
     private int bagUpgradesPurchased;
     @SerializedName("unlocked_powers")
     private @NotNull ConcurrentList<String> unlockedPowers = Concurrent.newList();
     @SerializedName("highest_magical_power")
     private int highestMagicalPower;
+    private transient NbtContent contents = new NbtContent();
     @Accessors(fluent = true)
     private transient boolean hasConsumedPrism;
-    @Getter(AccessLevel.NONE)
-    transient boolean initialized;
+    private transient int abiphoneContacts;
 
-    void initialize(@NotNull SkyBlockIsland.Member member) {
+    /**
+     * Wraps this class with database information.
+     * <br><br>
+     * Requires an active database session.
+     */
+    public @NotNull EnhancedAccessoryBag asEnhanced() {
+        return new EnhancedAccessoryBag(this);
+    }
+
+    protected void initialize(@NotNull SkyBlockIsland.Member member) {
         this.contents = member.getInventory().getBags().getAccessories();
         this.hasConsumedPrism = member.getRift().getAccess().hasConsumedPrism();
-        this.initialized = true;
+        this.abiphoneContacts = member.getCrimsonIsle().getAbiphone().getContacts().size();
     }
 
     public static class Tuning {

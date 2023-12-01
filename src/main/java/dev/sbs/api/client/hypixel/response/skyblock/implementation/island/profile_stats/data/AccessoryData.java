@@ -18,18 +18,18 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.search.SearchFunction;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+@Getter
 public class AccessoryData extends ObjectData<AccessoryData.Type> {
 
     private static final ConcurrentList<Integer> PULSE_CHARGES = Concurrent.newList(150_000, 1_000_000, 5_000_000);
-    @Getter private final AccessoryModel accessory;
-    @Getter private boolean bonusCalculated;
-    @Getter private final Optional<AccessoryEnrichmentModel> enrichment;
+    private final AccessoryModel accessory;
+    private boolean bonusCalculated;
+    private final Optional<AccessoryEnrichmentModel> enrichment;
 
     public AccessoryData(AccessoryModel accessory, CompoundTag compoundTag) {
         super(accessory.getItem(), compoundTag);
@@ -161,7 +161,8 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         return this.getRarity().isEnrichable() && this.getEnrichment().isEmpty();
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    @RequiredArgsConstructor
     public enum Type implements ObjectData.Type {
 
         CAKE_BAG(true),
@@ -169,7 +170,7 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         STATS(true),
         ENRICHMENTS(true);
 
-        @Getter private final boolean optimizerConstant;
+        private final boolean optimizerConstant;
 
     }
 

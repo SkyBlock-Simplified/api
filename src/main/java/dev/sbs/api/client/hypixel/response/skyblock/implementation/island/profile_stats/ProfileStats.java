@@ -2,19 +2,24 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profi
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Slayer;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.accessories.EnhancedAccessoryBag;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.account.Banking;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.dungeon.Dungeon;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet.EnhancedPet;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet.Pet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.AccessoryData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.Data;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.ItemData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.ObjectData;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.PlayerDataHelper;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.StatData;
-import dev.sbs.api.data.model.skyblock.accessory_data.accessories.AccessoryModel;
-import dev.sbs.api.data.model.skyblock.accessory_data.accessory_families.AccessoryFamilyModel;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.skill.Skill;
 import dev.sbs.api.data.model.skyblock.accessory_data.accessory_powers.AccessoryPowerModel;
 import dev.sbs.api.data.model.skyblock.bonus_data.bonus_armor_sets.BonusArmorSetModel;
 import dev.sbs.api.data.model.skyblock.bonus_data.bonus_pet_ability_stats.BonusPetAbilityStatModel;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
+import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_classes.DungeonClassModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonModel;
 import dev.sbs.api.data.model.skyblock.enchantment_data.enchantment_stats.EnchantmentStatModel;
@@ -28,6 +33,7 @@ import dev.sbs.api.data.model.skyblock.pet_data.pet_ability_stats.PetAbilityStat
 import dev.sbs.api.data.model.skyblock.pet_data.pet_items.PetItemModel;
 import dev.sbs.api.data.model.skyblock.pet_data.pet_scores.PetScoreModel;
 import dev.sbs.api.data.model.skyblock.pet_data.pet_stats.PetStatModel;
+import dev.sbs.api.data.model.skyblock.pet_data.pets.PetModel;
 import dev.sbs.api.data.model.skyblock.potion_data.potion_brew_buffs.PotionBrewBuffModel;
 import dev.sbs.api.data.model.skyblock.potion_data.potion_brews.PotionBrewModel;
 import dev.sbs.api.data.model.skyblock.potion_data.potion_tiers.PotionTierModel;
@@ -42,39 +48,36 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.collection.search.function.SearchFunction;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
-import dev.sbs.api.util.data.tuple.Pair;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ListUtil;
-import dev.sbs.api.util.helper.StreamUtil;
-import lombok.AccessLevel;
+import dev.sbs.api.util.stream.StreamUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
 public class ProfileStats extends StatData<ProfileStats.Type> {
 
     @Getter private final double damageMultiplier;
-    @Getter private AccessoryBag accessoryBag;
+    @Getter private final EnhancedAccessoryBag accessoryBag;
+    @Getter private final Optional<EnhancedPet> activePet;
     @Getter private final ConcurrentList<Optional<ItemData>> armor = Concurrent.newList();
     @Getter private final ConcurrentList<BonusPetAbilityStatModel> bonusPetAbilityStatModels = Concurrent.newList();
     @Getter private Optional<BonusArmorSetModel> bonusArmorSetModel = Optional.empty();
     @Getter private boolean bonusCalculated;
     private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
-    public ProfileStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member) {
+    public ProfileStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.EnhancedMember member) {
         this(skyBlockIsland, member, true);
     }
 
-    public ProfileStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.Member member, boolean calculateBonusStats) {
+    public ProfileStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.EnhancedMember member, boolean calculateBonusStats) {
         // --- Initialize ---
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class)
             .findAll()
@@ -84,18 +87,45 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             statModels.forEach(statModel -> this.stats.get(type).put(statModel, new Data()));
         });
         statModels.forEach(statModel -> this.addBase(this.stats.get(Type.BASE_STATS).get(statModel), statModel.getBaseValue()));
+        this.activePet = member.getPetData().getActivePet().map(Pet::asEnhanced);
+        this.accessoryBag = member.getAccessoryBag().asEnhanced();
 
         // --- Populate Default Expression Variables ---
-        member.getPetData().getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.getLevel()));
+        member.getPetData().getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.asEnhanced().getLevel()));
+        // TODO: Loading enhanced pet data, why am I not caching it???
         this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
         this.expressionVariables.put("SKYBLOCK_LEVEL", (double) member.getLeveling().getLevel());
-        this.expressionVariables.put("BESTIARY_MILESTONE", (double) member.getBestiary().getMilestone());
+        this.expressionVariables.put("BESTIARY_MILESTONE", (double) member.getBestiary().asEnhanced().getMilestone());
         this.expressionVariables.put("BANK", skyBlockIsland.getBanking().map(Banking::getBalance).orElse(0.0));
-        SimplifiedApi.getRepositoryOf(SkillModel.class).findAll().forEach(skillModel -> this.expressionVariables.put(String.format("SKILL_LEVEL_%s", skillModel.getKey()), (double) member.getSkill(skillModel).getLevel()));
+        SimplifiedApi.getRepositoryOf(SkillModel.class)
+            .findAll()
+            .forEach(skillModel -> this.expressionVariables.put(
+                String.format("SKILL_LEVEL_%s", skillModel.getKey()),
+                (double) member.getPlayerData()
+                    .getSkill(Skill.Type.of(skillModel.getKey()))
+                    .asEnhanced(member.getJacobsContest())
+                    .getLevel()
+            ));
 
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
             .stream()
-            .forEach(dungeonModel -> this.expressionVariables.put(String.format("DUNGEON_LEVEL_%s", dungeonModel.getKey()), (double) member.getDungeons().getDungeon(dungeonModel).getLevel()));
+            .forEach(dungeonModel -> this.expressionVariables.put(
+                String.format("DUNGEON_LEVEL_%s", dungeonModel.getKey()),
+                (double) member.getDungeonData()
+                    .getDungeon(Dungeon.Type.of(dungeonModel.getKey()))
+                    .asEnhanced()
+                    .getLevel()
+            ));
+
+        SimplifiedApi.getRepositoryOf(DungeonClassModel.class)
+            .stream()
+            .forEach(dungeonClassModel -> this.expressionVariables.put(
+                String.format("DUNGEON_CLASS_LEVEL_%s", dungeonClassModel.getKey()),
+                (double) member.getDungeonData()
+                    .getClass(Dungeon.Class.Type.of(dungeonClassModel.getKey()))
+                    .asEnhanced()
+                    .getLevel()
+            ));
 
         SimplifiedApi.getRepositoryOf(CollectionModel.class)
             .stream()
@@ -115,7 +145,10 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         this.damageMultiplier = SimplifiedApi.getRepositoryOf(SkillModel.class)
             .findFirst(SkillModel::getKey, "COMBAT")
             .map(skillModel -> {
-                int skillLevel = member.getSkill(skillModel).getLevel();
+                int skillLevel = member.getPlayerData()
+                    .getSkill(Skill.Type.of(skillModel.getKey()))
+                    .asEnhanced(member.getJacobsContest())
+                    .getLevel();
 
                 if (skillLevel > 0) {
                     return SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
@@ -137,7 +170,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         this.loadSlayers(member);
         this.loadDungeons(member);
         this.loadArmor(member);
-        this.loadAccessories(member);
+        this.loadAccessories();
         this.loadActivePet(member);
         this.loadActivePotions(member);
         this.loadPetScore(member);
@@ -278,102 +311,10 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         return ProfileStats.Type.values();
     }
 
-    private void loadAccessories(SkyBlockIsland.Member member) {
-        // --- Load Accessories ---
-        ConcurrentMap<CompoundTag, AccessoryModel> tagAccessoryModels = Concurrent.newMap();
-        ConcurrentList<AccessoryData> accessories = Concurrent.newList();
-        ConcurrentList<AccessoryData> filteredAccessories = Concurrent.newList();
-
-        // Load From Accessory Bag
-        if (member.hasStorage(SkyBlockIsland.Storage.ACCESSORIES)) {
-            member.getStorage(SkyBlockIsland.Storage.ACCESSORIES)
-                .getNbtData()
-                .<CompoundTag>getList("i")
-                .stream()
-                .filter(CompoundTag::notEmpty)
-                .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
-                    .findFirst(
-                        SearchFunction.combine(AccessoryModel::getItem, ItemModel::getItemId),
-                        compoundTag.getPathOrDefault("tag.ExtraAttributes.id", StringTag.EMPTY).getValue()
-                    )
-                    .ifPresent(accessoryModel -> tagAccessoryModels.put(compoundTag, accessoryModel))
-                );
-        }
-
-        // Create Accessory Data
-        accessories.addAll(
-            tagAccessoryModels.stream()
-                .map(entry -> new AccessoryData(entry.getValue(), entry.getKey()))
-                .collect(Concurrent.toList())
-        );
-
-        // Store Families
-        ConcurrentMap<AccessoryFamilyModel, ConcurrentSet<AccessoryModel>> familyAccessoryDataMap = Concurrent.newMap();
-        accessories.stream()
-            .filter(accessoryData -> Objects.nonNull(accessoryData.getAccessory().getFamily()))
-            .forEach(accessoryData -> {
-                // New Accessory Family
-                if (!familyAccessoryDataMap.containsKey(accessoryData.getAccessory().getFamily()))
-                    familyAccessoryDataMap.put(accessoryData.getAccessory().getFamily(), Concurrent.newSet());
-
-                // Store Accessory
-                familyAccessoryDataMap.get(accessoryData.getAccessory().getFamily()).add(accessoryData.getAccessory());
-            });
-
-        // Store Non-Stackable Families
-        ConcurrentSet<AccessoryModel> processedAccessories = Concurrent.newSet();
-        filteredAccessories.addAll(
-            accessories.stream()
-                .filter(accessoryData -> {
-                    AccessoryFamilyModel accessoryFamilyModel = accessoryData.getAccessory().getFamily();
-
-                    // Handle Families
-                    if (Objects.nonNull(accessoryFamilyModel)) {
-                        if (accessoryFamilyModel.isStatsStackable())
-                            return true;
-                        else if (accessoryFamilyModel.isReforgesStackable())
-                            return true;
-                        else {
-                            ConcurrentList<AccessoryModel> familyData = Concurrent.newList(familyAccessoryDataMap.get(accessoryFamilyModel));
-
-                            if (accessoryData.getAccessory().getFamilyRank() != null) {
-                                familyData = familyData.sorted(AccessoryModel::getFamilyRank)
-                                    .inverse(); // Sort By Highest
-
-                                // Ignore Lowest Accessories
-                                AccessoryModel topAccessory = familyData.remove(0);
-                                processedAccessories.addAll(familyData);
-
-                                // Top Accessory Only
-                                if (!accessoryData.getAccessory().equals(topAccessory))
-                                    return false;
-                            } else {
-                                if (processedAccessories.contains(accessoryData.getAccessory()))
-                                    return false;
-
-                                // Ignore All Accessories
-                                processedAccessories.addAll(familyData);
-                                return true;
-                            }
-                        }
-                    }
-
-                    return processedAccessories.add(accessoryData.getAccessory());
-                })
-                .collect(Concurrent.toList())
-        );
-
-        this.accessoryBag = new AccessoryBag(
-            member,
-            accessories,
-            filteredAccessories,
-            member.getAccessoryBag().getSelectedPower(),
-            member.getAccessoryBag().getTuning().getCurrent()
-        );
-
+    private void loadAccessories() {
         // Accessory Power Effects
-        member.getAccessoryBag()
-            .getSelectedPower()
+        this.getAccessoryBag()
+            .getSelectedPowerType()
             .ifPresent(accessoryPowerModel -> accessoryPowerModel.getEffects()
                 .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
                     .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), this.accessoryBag.getMagicalPowerMultiplier() * value))
@@ -381,8 +322,8 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             );
 
         // Accessory Power Unique Effects
-        member.getAccessoryBag()
-            .getSelectedPower()
+        this.getAccessoryBag()
+            .getSelectedPowerType()
             .ifPresent(accessoryPowerModel -> accessoryPowerModel.getUniqueEffects()
                 .forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
                     .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACCESSORY_POWER).get(statModel), value))
@@ -391,102 +332,105 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     }
 
     private void loadActivePet(SkyBlockIsland.Member member) {
-        member.getPetData().getActivePet().ifPresent(petInfo -> {
-            // Load Rarity Filtered Pet Stats
-            SimplifiedApi.getRepositoryOf(PetStatModel.class)
-                .findAll(PetStatModel::getPet, petInfo.getPet())
+        if (member.getPetData().getActivePet().isEmpty())
+            return;
+
+        Pet activePet = member.getPetData().getActivePet().get();
+        EnhancedPet enhancedActivePet = activePet.asEnhanced();
+
+        if (enhancedActivePet.getTypeModel().isEmpty())
+            return;
+
+        PetModel petModel = enhancedActivePet.getTypeModel().get();
+
+        // Load Rarity Filtered Pet Stats
+        SimplifiedApi.getRepositoryOf(PetStatModel.class)
+            .findAll(PetStatModel::getPet, petModel)
+            .stream()
+            .filter(petStatModel -> petStatModel.getRarities().contains(activePet.getRarityOrdinal()))
+            .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * enhancedActivePet.getLevel())));
+
+        // Save Pet Stats to Expression Variables
+        this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.expressionVariables.put(String.format("STAT_PET_%s", statModel.getKey()), statData.getTotal()));
+
+        // Load Rarity Filtered Ability Stats
+        SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
+            .findAll(PetAbilityModel::getPet, petModel)
+            .stream()
+            .map(petAbilityModel -> Pair.of(petAbilityModel, SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
+                .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
                 .stream()
-                .filter(petStatModel -> petStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
-                .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * petInfo.getLevel())));
+                .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(activePet.getRarityOrdinal()))
+                .collect(Concurrent.toList())
+            ))
+            .filter(petAbilityStatPair -> ListUtil.notEmpty(petAbilityStatPair.getRight()))
+            .forEach(petAbilityStatPair -> {
+                // Load Bonus Pet Ability Stats
+                SimplifiedApi.getRepositoryOf(BonusPetAbilityStatModel.class)
+                    .findFirst(BonusPetAbilityStatModel::getPetAbility, petAbilityStatPair.getKey())
+                    .ifPresent(this.bonusPetAbilityStatModels::add);
 
-            // Save Pet Stats to Expression Variables
-            this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.expressionVariables.put(String.format("STAT_PET_%s", statModel.getKey()), statData.getTotal()));
+                petAbilityStatPair.getValue().forEach(petAbilityStatModel -> {
+                    double abilityValue = petAbilityStatModel.getBaseValue() + (petAbilityStatModel.getLevelBonus() * enhancedActivePet.getLevel());
 
-            // Load Rarity Filtered Ability Stats
-            SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
-                .findAll(PetAbilityModel::getPet, petInfo.getPet())
-                .stream()
-                .map(petAbilityModel -> Pair.of(petAbilityModel, SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
-                    .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
-                    .stream()
-                    .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(petInfo.getRarity().getOrdinal()))
-                    .collect(Concurrent.toList())
-                ))
-                .filter(petAbilityStatPair -> ListUtil.notEmpty(petAbilityStatPair.getRight()))
-                .forEach(petAbilityStatPair -> {
-                    // Load Bonus Pet Ability Stats
-                    SimplifiedApi.getRepositoryOf(BonusPetAbilityStatModel.class)
-                        .findFirst(BonusPetAbilityStatModel::getPetAbility, petAbilityStatPair.getKey())
-                        .ifPresent(this.bonusPetAbilityStatModels::add);
+                    // Save Ability Stat
+                    if (petAbilityStatModel.getStat() != null)
+                        this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petAbilityStatModel.getStat()), abilityValue);
 
-                    petAbilityStatPair.getValue().forEach(petAbilityStatModel -> {
-                        double abilityValue = petAbilityStatModel.getBaseValue() + (petAbilityStatModel.getLevelBonus() * petInfo.getLevel());
-
-                        // Save Ability Stat
-                        if (petAbilityStatModel.getStat() != null)
-                            this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petAbilityStatModel.getStat()), abilityValue);
-
-                        // Store Bonus Pet Ability
-                        String statKey = (petAbilityStatModel.getStat() == null ? "" : "_" + petAbilityStatModel.getStat().getKey());
-                        this.expressionVariables.put(String.format("PET_ABILITY_%s%s", petAbilityStatPair.getKey().getKey(), statKey), abilityValue);
-                    });
+                    // Store Bonus Pet Ability
+                    String statKey = (petAbilityStatModel.getStat() == null ? "" : "_" + petAbilityStatModel.getStat().getKey());
+                    this.expressionVariables.put(String.format("PET_ABILITY_%s%s", petAbilityStatPair.getKey().getKey(), statKey), abilityValue);
                 });
+            });
 
-            // Handle Static Pet Item Bonuses
-            petInfo.getHeldItem()
-                .flatMap(itemModel -> SimplifiedApi.getRepositoryOf(PetItemModel.class)
-                    .findFirst(PetItemModel::getItem, itemModel)
+        // Handle Static Pet Item Bonuses
+        enhancedActivePet.getHeldPetItemModel()
+            .filter(PetItemModel::notPercentage)
+            .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(statModel), petItemModel.getEffect(key)))
+            ));
+
+        // Handle Static Pet Stat Bonuses
+        ConcurrentMap<String, Double> petExpressionVariables = this.getExpressionVariables();
+        this.getBonusPetAbilityStatModels()
+            .stream()
+            .filter(BonusPetAbilityStatModel::notPercentage)
+            .filter(BonusPetAbilityStatModel::noRequiredItem)
+            .filter(BonusPetAbilityStatModel::noRequiredMobType)
+            .forEach(bonusPetAbilityStatModel -> this.stats.get(Type.ACTIVE_PET)
+                .forEach((statModel, statData) -> this.setBonus(
+                    statData,
+                    PlayerDataHelper.handleBonusEffects(
+                        statModel,
+                        statData.getBonus(),
+                        null,
+                        petExpressionVariables,
+                        bonusPetAbilityStatModel
+                    ))
                 )
-                .filter(PetItemModel::notPercentage)
-                .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                    .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(statModel), petItemModel.getEffect(key)))
-                ));
+            );
 
-            // Handle Static Pet Stat Bonuses
-            ConcurrentMap<String, Double> petExpressionVariables = this.getExpressionVariables();
-            this.getBonusPetAbilityStatModels()
-                .stream()
-                .filter(BonusPetAbilityStatModel::notPercentage)
-                .filter(BonusPetAbilityStatModel::noRequiredItem)
-                .filter(BonusPetAbilityStatModel::noRequiredMobType)
-                .forEach(bonusPetAbilityStatModel -> this.stats.get(Type.ACTIVE_PET)
-                    .forEach((statModel, statData) -> this.setBonus(
+        // Handle Percentage Pet Item Bonuses
+        enhancedActivePet.getHeldPetItemModel()
+            .filter(PetItemModel::isPercentage)
+            .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
+                .ifPresent(statModel -> {
+                    double statMultiplier = 1 + (petItemModel.getEffect(key, 0.0) / 100.0);
+                    Data statData = this.stats.get(Type.ACTIVE_PET).get(statModel);
+
+                    this.setBonus(
                         statData,
-                        PlayerDataHelper.handleBonusEffects(
-                            statModel,
-                            statData.getBonus(),
-                            null,
-                            petExpressionVariables,
-                            bonusPetAbilityStatModel
-                        ))
-                    )
-                );
-
-            // Handle Percentage Pet Item Bonuses
-            petInfo.getHeldItem()
-                .flatMap(itemModel -> SimplifiedApi.getRepositoryOf(PetItemModel.class)
-                    .findFirst(PetItemModel::getItem, itemModel)
-                )
-                .filter(PetItemModel::isPercentage)
-                .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
-                    .ifPresent(statModel -> {
-                        double statMultiplier = 1 + (petItemModel.getEffect(key, 0.0) / 100.0);
-                        Data statData = this.stats.get(Type.ACTIVE_PET).get(statModel);
-
-                        this.setBonus(
-                            statData,
-                            statData.getBonus() * statMultiplier
-                        );
-                    })
-                ));
-        });
+                        statData.getBonus() * statMultiplier
+                    );
+                })
+            ));
     }
 
     private void loadActivePotions(SkyBlockIsland.Member member) {
-        member.getPotionData()
-            .getActive()
+        member.getPlayerData()
+            .getActivePotions()
             .stream()
-            .filter(potion -> !member.getPotionData().getDisabled().contains(potion.getEffect()))
+            .filter(potion -> !member.getPlayerData().getDisabledPotions().contains(potion.getEffect()))
             .forEach(potion -> {
                 ConcurrentMap<StatModel, Double> potionStatEffects = Concurrent.newMap();
                 ConcurrentMap<String, Double> potionBuffEffects = Concurrent.newMap();
@@ -553,9 +497,9 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     }
 
     private void loadArmor(SkyBlockIsland.Member member) {
-        if (member.hasStorage(SkyBlockIsland.Storage.ARMOR)) {
+        if (member.getInventory().getArmor() != null) {
             ConcurrentList<ItemModel> items = SimplifiedApi.getRepositoryOf(ItemModel.class).findAll();
-            ConcurrentList<Pair<CompoundTag, Optional<ItemModel>>> armorItemModels = member.getStorage(SkyBlockIsland.Storage.ARMOR)
+            ConcurrentList<Pair<CompoundTag, Optional<ItemModel>>> armorItemModels = member.getInventory().getArmor()
                 .getNbtData()
                 .<CompoundTag>getList("i")
                 .stream()
@@ -589,11 +533,12 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
 
     private void loadBestiary(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
-            .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.BESTIARY).get(healthStatModel), member.getBestiary().getMilestone() * 2.0));
+            .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.BESTIARY).get(healthStatModel), member.getBestiary().asEnhanced().getMilestone() * 2.0));
     }
 
     private void loadCenturyCakes(SkyBlockIsland.Member member) {
-        member.getCenturyCakes()
+        member.getPlayerData()
+            .getCenturyCakes()
             .stream()
             .filter(centuryCake -> centuryCake.getExpiresAt().getRealTime() > System.currentTimeMillis())
             .forEach(centuryCake -> this.addBonus(this.stats.get(Type.CENTURY_CAKES).get(centuryCake.getStat()), centuryCake.getAmount()));
@@ -603,7 +548,10 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
             .stream()
             .forEach(dungeonModel -> {
-                int dungeonLevel = member.getDungeons().getDungeon(dungeonModel).getLevel();
+                int dungeonLevel = member.getDungeonData()
+                    .getDungeon(Dungeon.Type.of(dungeonModel.getKey()))
+                    .asEnhanced()
+                    .getLevel();
 
                 if (dungeonLevel > 0) {
                     SimplifiedApi.getRepositoryOf(DungeonLevelModel.class)
@@ -619,15 +567,18 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     }
 
     private void loadEssencePerks(SkyBlockIsland.Member member) {
-        member.getEssence().getPerks().forEach(entry -> SimplifiedApi.getRepositoryOf(EssencePerkModel.class)
-            .findFirst(EssencePerkModel::getKey, entry.getKey().toUpperCase())
-            .filter(EssencePerkModel::isPermanent)
-            .ifPresent(essencePerkModel -> this.addBonus(this.stats.get(Type.ESSENCE).get(essencePerkModel.getStat()), entry.getValue() * essencePerkModel.getLevelBonus())));
+        member.getPlayerData()
+            .getEssencePerks()
+            .forEach(entry -> SimplifiedApi.getRepositoryOf(EssencePerkModel.class)
+                .findFirst(EssencePerkModel::getKey, entry.getKey().toUpperCase())
+                .filter(EssencePerkModel::isPermanent)
+                .ifPresent(essencePerkModel -> this.addBonus(this.stats.get(Type.ESSENCE).get(essencePerkModel.getStat()), entry.getValue() * essencePerkModel.getLevelBonus()))
+            );
     }
 
     private void loadJacobsPerks(SkyBlockIsland.Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "FARMING_FORTUNE")
-            .ifPresent(farmingFortuneStatModel -> this.addBase(this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel), member.getJacobsFarming().getDoubleDrops() * 4.0));
+            .ifPresent(farmingFortuneStatModel -> this.addBase(this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel), member.getJacobsContest().getDoubleDrops() * 4.0));
     }
 
     private void loadLevels(SkyBlockIsland.Member member) {
@@ -638,14 +589,15 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     }
 
     private void loadMelodyHarp(SkyBlockIsland.Member member) {
-        member.getMelodyHarp()
+        member.getQuests().ifPresent(quests -> quests.getMelodyHarp()
             .getSongs()
             .forEach((songName, songData) -> SimplifiedApi.getRepositoryOf(MelodySongModel.class)
                 .findFirst(MelodySongModel::getKey, songName.toUpperCase())
                 .ifPresent(melodySongModel -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "INTELLIGENCE")
                     .ifPresent(statModel -> this.addBonus(this.stats.get(Type.MELODYS_HARP).get(statModel), melodySongModel.getReward()))
                 )
-            );
+            )
+        );
     }
 
     private void loadMiningCore(SkyBlockIsland.Member member) {
@@ -675,7 +627,10 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         SimplifiedApi.getRepositoryOf(SkillModel.class)
             .stream()
             .forEach(skillModel -> {
-                int skillLevel = member.getSkill(skillModel).getLevel();
+                int skillLevel = member.getPlayerData()
+                    .getSkill(Skill.Type.of(skillModel.getKey()))
+                    .asEnhanced(member.getJacobsContest())
+                    .getLevel();
 
                 if (skillLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
@@ -696,7 +651,10 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         SimplifiedApi.getRepositoryOf(SlayerModel.class)
             .stream()
             .forEach(slayerModel -> {
-                int slayerLevel = member.getSlayer(slayerModel).getLevel();
+                int slayerLevel = member.getSlayer()
+                    .getBoss(Slayer.Type.of(slayerModel.getKey()))
+                    .asEnhanced()
+                    .getLevel();
 
                 if (slayerLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SlayerLevelModel.class)
@@ -713,15 +671,16 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             });
     }
 
+    @Getter
     public static class AccessoryBag {
 
-        @Getter private final @NotNull ConcurrentList<AccessoryData> accessories;
-        @Getter private final @NotNull ConcurrentList<AccessoryData> filteredAccessories;
-        @Getter private final @NotNull Optional<AccessoryPowerModel> currentPower;
-        @Getter private final @NotNull ConcurrentMap<StatModel, Integer> currentTuning;
-        @Getter private final int magicalPower;
-        @Getter private final int tuningPoints;
-        @Getter private final double magicalPowerMultiplier;
+        private final @NotNull ConcurrentList<AccessoryData> accessories;
+        private final @NotNull ConcurrentList<AccessoryData> filteredAccessories;
+        private final @NotNull Optional<AccessoryPowerModel> currentPower;
+        private final @NotNull ConcurrentMap<StatModel, Integer> currentTuning;
+        private final int magicalPower;
+        private final int tuningPoints;
+        private final double magicalPowerMultiplier;
 
         private AccessoryBag(
             @NotNull SkyBlockIsland.Member member,
@@ -735,13 +694,12 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             this.currentPower = currentPowerModel;
             this.currentTuning = currentTuning;
 
-            int highestMagicalPower = member.getAccessoryBag().getHighestMagicalPower();
             int currentMagicalPower = this.filteredAccessories.stream()
                 .mapToInt(accessoryData -> this.handleMagicalPower(accessoryData, member))
                 .sum();
 
             // Rift Prism
-            if ((highestMagicalPower - currentMagicalPower) >= 11)
+            if (member.getRift().getAccess().hasConsumedPrism())
                 currentMagicalPower += 11;
 
             this.magicalPower = currentMagicalPower;
@@ -763,7 +721,8 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
 
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    @RequiredArgsConstructor
     public enum Type implements ObjectData.Type {
 
         ACCESSORY_POWER(false),
@@ -782,7 +741,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         SKILLS(true),
         SLAYERS(true);
 
-        @Getter
         private final boolean optimizerConstant;
 
     }
