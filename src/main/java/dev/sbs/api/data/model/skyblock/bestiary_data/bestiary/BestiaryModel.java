@@ -18,7 +18,7 @@ public interface BestiaryModel extends Model {
 
     Integer getOrdinal();
 
-    String getInternalName();
+    String getInternalPattern();
 
     List<Integer> getLevels();
 

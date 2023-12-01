@@ -62,8 +62,8 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
     private Integer ordinal;
 
     @Setter
-    @Column(name = "internal_name", nullable = false)
-    private String internalName;
+    @Column(name = "internal_pattern", nullable = false)
+    private String internalPattern;
 
     @Setter
     @Convert(converter = IntegerListConverter.class)
@@ -92,7 +92,7 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
             .append(this.getBracket(), that.getBracket())
             .append(this.getCategory(), that.getCategory())
             .append(this.getOrdinal(), that.getOrdinal())
-            .append(this.getInternalName(), that.getInternalName())
+            .append(this.getInternalPattern(), that.getInternalPattern())
             .append(this.getLevels(), that.getLevels())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .append(this.getSubmittedAt(), that.getSubmittedAt())
@@ -108,7 +108,7 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
             .append(this.getBracket())
             .append(this.getCategory())
             .append(this.getOrdinal())
-            .append(this.getInternalName())
+            .append(this.getInternalPattern())
             .append(this.getLevels())
             .append(this.getUpdatedAt())
             .append(this.getSubmittedAt())
