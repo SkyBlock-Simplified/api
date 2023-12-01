@@ -119,7 +119,7 @@ public class PlayerDataHelper {
                         if (NumberUtil.isCreatable(valueString))
                             value.set(value.get() * (double) buffValue);
                         else {
-                            if (!multiply || statModel.isMultipliable()) {
+                            if (!multiply || statModel.isMultiplicable()) {
                                 if (compoundTag != null) {
                                     Matcher nbtMatcher = nbtVariablePattern.matcher(valueString);
 
