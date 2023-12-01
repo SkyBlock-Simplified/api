@@ -3,21 +3,21 @@ package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.besti
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary.BestiaryModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_brackets.BestiaryBracketModel;
-import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilyModel;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import lombok.AccessLevel;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.util.data.tuple.pair.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Getter
 public class EnhancedBestiary extends Bestiary {
 
-    private final @NotNull ConcurrentList<Mob> mobs;
+    private final @NotNull ConcurrentList<Family> families;
 
     EnhancedBestiary(@NotNull Bestiary bestiary) {
         // Re-initialize Fields
@@ -27,17 +27,13 @@ public class EnhancedBestiary extends Bestiary {
             bestiary.getLastClaimedMilestone()
         );
 
-        this.mobs = SimplifiedApi.getRepositoryOf(BestiaryFamilyModel.class)
+        this.families = SimplifiedApi.getRepositoryOf(BestiaryModel.class)
             .stream()
-            .flatMap(familyModel -> SimplifiedApi.getRepositoryOf(BestiaryModel.class)
-                .findAll(BestiaryModel::getFamily, familyModel)
-                .stream()
-                .map(bestiaryModel -> new Mob(
-                    bestiaryModel,
-                    this.getKills().getOrDefault(buildPattern(bestiaryModel), 0),
-                    this.getDeaths().getOrDefault(buildPattern(bestiaryModel), 0)
-                ))
-            )
+            .map(bestiaryModel -> new Family(
+                bestiaryModel,
+                this.getKills(),
+                this.getDeaths()
+            ))
             .collect(Concurrent.toUnmodifiableList());
     }
 
@@ -46,30 +42,42 @@ public class EnhancedBestiary extends Bestiary {
     }
 
     public int getUnlocked() {
-        return this.getMobs()
+        return this.getFamilies()
             .stream()
-            .mapToInt(Mob::getLevel)
+            .mapToInt(Family::getLevel)
             .sum();
     }
 
-    private static @NotNull String buildPattern(@NotNull BestiaryModel bestiaryModel) {
-        return String.format("%s_%s", bestiaryModel.getKey().toLowerCase(), bestiaryModel.getLevel());
-    }
-
     @Getter
-    @Setter(AccessLevel.PRIVATE)
     @RequiredArgsConstructor
-    public static class Mob {
+    public static class Family {
 
         private final @NotNull BestiaryModel type;
-        private final int kills;
-        private final int deaths;
+        private final @NotNull ConcurrentList<Mob> mobs;
         private final @NotNull ConcurrentList<Integer> tiers;
 
-        public Mob(@NotNull BestiaryModel type, int kills, int deaths) {
+        public Family(@NotNull BestiaryModel type, @NotNull ConcurrentMap<String, Integer> kills, @NotNull ConcurrentMap<String, Integer> deaths) {
             this.type = type;
-            this.kills = kills;
-            this.deaths = deaths;
+            ConcurrentMap<String, Integer> patterns = buildPatterns(type);
+
+            this.mobs = Stream.concat(
+                    kills.pairStream()
+                        .filterKey(patterns::containsKey)
+                        .map(Pair::of),
+                    deaths.pairStream()
+                        .filterKey(patterns::containsKey)
+                        .map(Pair::of)
+                )
+                .distinct()
+                .map(entry -> new Mob(
+                    type.getInternalPattern(),
+                    entry.getKey(),
+                    entry.getValue(),
+                    kills.getOrDefault(entry.getKey(), 0),
+                    deaths.getOrDefault(entry.getKey(), 0)
+                ))
+                .collect(Concurrent.toUnmodifiableList());
+
             this.tiers = SimplifiedApi.getRepositoryOf(BestiaryBracketModel.class)
                 .findAll(BestiaryBracketModel::getBracket, this.getBracket().getBracket())
                 .stream()
@@ -77,19 +85,27 @@ public class EnhancedBestiary extends Bestiary {
                 .collect(Concurrent.toUnmodifiableList());
         }
 
-        public @NotNull BestiaryBracketModel getBracket() {
-            return this.getFamily().getBracket();
+        private static @NotNull ConcurrentMap<String, Integer> buildPatterns(@NotNull BestiaryModel type) {
+            return type.getLevels()
+                .stream()
+                .map(level -> Pair.of(String.format("^%s_%s$", type.getInternalPattern().toLowerCase(), level), level))
+                .collect(Concurrent.toMap());
         }
 
-        public @NotNull BestiaryFamilyModel getFamily() {
-            return this.getType().getFamily();
+        public @NotNull BestiaryBracketModel getBracket() {
+            return this.getType().getBracket();
         }
 
         public int getLevel() {
+            int totalKills = this.getMobs()
+                .stream()
+                .mapToInt(Mob::getKills)
+                .sum();
+
             return Math.min(
                 this.getMaxLevel(),
                 IntStream.range(0, this.getTiers().size())
-                    .filter(index -> this.getTiers().get(index) > this.getKills())
+                    .filter(index -> this.getTiers().get(index) > totalKills)
                     .findFirst()
                     .orElse(0)
             );
@@ -98,6 +114,18 @@ public class EnhancedBestiary extends Bestiary {
         public int getMaxLevel() {
             return this.getBracket().getTier();
         }
+
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class Mob {
+
+        private final @NotNull String internalPattern;
+        private final @NotNull String matchedName;
+        private final int level;
+        private final int kills;
+        private final int deaths;
 
     }
 
