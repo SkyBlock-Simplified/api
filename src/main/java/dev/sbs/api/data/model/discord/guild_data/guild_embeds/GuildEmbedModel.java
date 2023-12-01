@@ -44,6 +44,4 @@ public interface GuildEmbedModel extends Model {
 
     Long getEditorDiscordId();
 
-    Instant getSubmittedAt();
-
 }

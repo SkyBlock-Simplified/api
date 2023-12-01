@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_enchantment_stats",
@@ -32,54 +33,49 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "enchantment_key", nullable = false)
     private EnchantmentSqlModel enchantment;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 
-    @Getter
     @Setter
-    @Column(name = "buff_key", length = 256)
+    @Column(name = "buff_key")
     private String buffKey;
 
-    @Getter
     @Setter
     @Column(name = "levels", nullable = false)
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> levels;
 
-    @Getter
     @Setter
     @Column(name = "base_value", nullable = false)
     private Double baseValue;
 
-    @Getter
     @Setter
     @Column(name = "level_bonus", nullable = false)
     private Double levelBonus;
 
-    @Getter
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -98,6 +94,7 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
             .append(this.getBaseValue(), that.getBaseValue())
             .append(this.getLevelBonus(), that.getLevelBonus())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -113,6 +110,7 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
             .append(this.getLevelBonus())
             .append(this.isPercentage())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

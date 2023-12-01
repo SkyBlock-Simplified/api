@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_hotm_perk_stats",
@@ -35,28 +36,28 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HotmPerkStatSqlModel implements HotmPerkStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "perk_key", nullable = false)
     private HotmPerkSqlModel perk;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "stat_key", nullable = false)
     private StatSqlModel stat;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -70,6 +71,7 @@ public class HotmPerkStatSqlModel implements HotmPerkStatModel, SqlModel {
             .append(this.getPerk(), that.getPerk())
             .append(this.getStat(), that.getStat())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -80,6 +82,7 @@ public class HotmPerkStatSqlModel implements HotmPerkStatModel, SqlModel {
             .append(this.getPerk())
             .append(this.getStat())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bonus_enchantment_stats"
@@ -31,34 +33,33 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BonusEnchantmentStatSqlModel implements BonusEnchantmentStatModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "enchantment_key", nullable = false)
+    @JoinColumn(name = "enchantment_key", nullable = false, unique = true)
     private EnchantmentSqlModel enchantment;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -70,7 +71,10 @@ public class BonusEnchantmentStatSqlModel implements BonusEnchantmentStatModel, 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -79,7 +83,10 @@ public class BonusEnchantmentStatSqlModel implements BonusEnchantmentStatModel, 
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getEnchantment())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

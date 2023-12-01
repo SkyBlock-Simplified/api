@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_shop_bit_enchanted_books"
@@ -27,27 +28,27 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "enchantment_key", nullable = false)
+    @JoinColumn(name = "enchantment_key", nullable = false, unique = true)
     private EnchantmentSqlModel enchantment;
 
-    @Getter
     @Setter
     @Column(name = "bit_cost", nullable = false)
     private Integer bitCost;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -61,6 +62,7 @@ public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, 
             .append(this.getEnchantment(), that.getEnchantment())
             .append(this.getBitCost(), that.getBitCost())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -71,6 +73,7 @@ public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, 
             .append(this.getEnchantment())
             .append(this.getBitCost())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

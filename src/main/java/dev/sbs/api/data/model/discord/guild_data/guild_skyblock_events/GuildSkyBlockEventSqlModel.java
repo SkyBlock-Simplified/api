@@ -10,12 +10,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "discord_guild_skyblock_events",
@@ -35,56 +37,55 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "event_key", nullable = false)
     private SkyBlockEventSqlModel event;
 
-    @Getter
     @Setter
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
-    @Getter
     @Setter
     @Column(name = "mention_roles", nullable = false)
     @Convert(converter = LongListConverter.class)
     private List<Long> mentionRoles;
 
-    @Getter
     @Setter
     @Column(name = "webhook_url")
     private String webhookUrl;
 
-    @Getter
     @Setter
     @Column(name = "channel_id")
     private Long channelId;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildSkyBlockEventSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder().append(this.isEnabled(), that.isEnabled())
+        GuildSkyBlockEventSqlModel that = (GuildSkyBlockEventSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isEnabled(), that.isEnabled())
             .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getEvent(), that.getEvent())
@@ -92,12 +93,14 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
             .append(this.getWebhookUrl(), that.getWebhookUrl())
             .append(this.getChannelId(), that.getChannelId())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getGuild())
             .append(this.getEvent())
             .append(this.isEnabled())
@@ -105,6 +108,7 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
             .append(this.getWebhookUrl())
             .append(this.getChannelId())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

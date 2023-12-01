@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_potion_tiers",
@@ -35,60 +36,54 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "potion_key", nullable = false)
     private PotionSqlModel potion;
 
-    @Getter
     @Setter
     @Column(name = "tier", nullable = false)
     private Integer tier;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "ingredient_item_id")
     private ItemSqlModel ingredientItem;
 
-    @Getter
     @Setter
     @Column(name = "base_item_id")
     private String baseItem;
 
-    @Getter
     @Setter
     @Column(name = "exp_yield", nullable = false)
     private Integer experienceYield;
 
-    @Getter
     @Setter
     @Column(name = "sell_price", nullable = false)
     private Double sellPrice;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -105,7 +100,10 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
             .append(this.getBaseItem(), that.getBaseItem())
             .append(this.getExperienceYield(), that.getExperienceYield())
             .append(this.getSellPrice(), that.getSellPrice())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -119,7 +117,10 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
             .append(this.getBaseItem())
             .append(this.getExperienceYield())
             .append(this.getSellPrice())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

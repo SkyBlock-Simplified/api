@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_reforges"
@@ -30,38 +31,36 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_id", unique = true)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @Column(name = "item_types", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> itemTypes;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -77,6 +76,7 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
             .append(this.getItem(), that.getItem())
             .append(this.getItemTypes(), that.getItemTypes())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -89,6 +89,7 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
             .append(this.getItem())
             .append(this.getItemTypes())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

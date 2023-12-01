@@ -18,6 +18,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bonus_pet_ability_stats",
@@ -37,51 +38,47 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "ability_key", nullable = false)
     private PetAbilitySqlModel petAbility;
 
-    @Getter
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "required_item_id", referencedColumnName = "item_id")
     private ItemSqlModel requiredItem;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "required_mob_type_key", referencedColumnName = "key")
     private OptimizerMobTypeSqlModel requiredMobType;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -99,6 +96,7 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
             .append(this.getEffects(), that.getEffects())
             .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -113,6 +111,7 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
             .append(this.getEffects())
             .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

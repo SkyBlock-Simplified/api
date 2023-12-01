@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_pet_items"
@@ -31,49 +32,45 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false, unique = true)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
 
-    @Getter
     @Setter
     @Column(name = "rarity_boost", nullable = false)
     private boolean rarityBoost;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -84,12 +81,14 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.isPercentage(), that.isPercentage())
+            .append(this.isRarityBoost(), that.isRarityBoost())
             .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getDescription(), that.getDescription())
             .append(this.getEffects(), that.getEffects())
             .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -100,9 +99,11 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
             .append(this.getItem())
             .append(this.getDescription())
             .append(this.isPercentage())
+            .append(this.isRarityBoost())
             .append(this.getEffects())
             .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

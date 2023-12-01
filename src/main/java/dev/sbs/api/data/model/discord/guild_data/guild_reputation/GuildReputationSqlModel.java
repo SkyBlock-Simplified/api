@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_guild_reputation",
@@ -26,13 +27,11 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -41,40 +40,36 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
     })
     private GuildReputationTypeSqlModel type;
 
-    @Getter
     @Setter
     @Column(name = "receiver_discord_id", nullable = false)
     private Long receiverDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "submitter_discord_id", nullable = false)
     private Long submitterDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "assignee_discord_id")
     private Long assigneeDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "reason")
     private String reason;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildReputationSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GuildReputationSqlModel that = (GuildReputationSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
@@ -83,21 +78,22 @@ public class GuildReputationSqlModel implements GuildReputationModel, SqlModel {
             .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
             .append(this.getAssigneeDiscordId(), that.getAssigneeDiscordId())
             .append(this.getReason(), that.getReason())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getType())
             .append(this.getReceiverDiscordId())
             .append(this.getSubmitterDiscordId())
             .append(this.getAssigneeDiscordId())
             .append(this.getReason())
-            .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

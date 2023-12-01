@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_enchantments",
@@ -27,48 +28,44 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "family_key", nullable = false)
     private EnchantmentFamilySqlModel family;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "mob_types", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> mobTypes;
 
-    @Getter
     @Setter
     @Column(name = "required_level", nullable = false)
     private Integer requiredLevel;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -86,6 +83,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
             .append(this.getMobTypes(), that.getMobTypes())
             .append(this.getRequiredLevel(), that.getRequiredLevel())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -100,6 +98,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
             .append(this.getMobTypes())
             .append(this.getRequiredLevel())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

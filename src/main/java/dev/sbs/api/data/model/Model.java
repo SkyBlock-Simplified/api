@@ -9,4 +9,6 @@ public interface Model extends Serializable {
 
     Instant getUpdatedAt();
 
+    Instant getSubmittedAt();
+
 }

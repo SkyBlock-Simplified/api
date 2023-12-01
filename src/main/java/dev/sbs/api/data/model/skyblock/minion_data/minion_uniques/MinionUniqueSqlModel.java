@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_minion_uniques"
@@ -24,26 +25,26 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionUniqueSqlModel implements MinionUniqueModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "placeable", nullable = false, unique = true)
     private Integer placeable;
 
-    @Getter
     @Setter
     @Column(name = "unique_crafts", nullable = false)
     private Integer uniqueCrafts;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -57,6 +58,7 @@ public class MinionUniqueSqlModel implements MinionUniqueModel, SqlModel {
             .append(this.getPlaceable(), that.getPlaceable())
             .append(this.getUniqueCrafts(), that.getUniqueCrafts())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -67,6 +69,7 @@ public class MinionUniqueSqlModel implements MinionUniqueModel, SqlModel {
             .append(this.getPlaceable())
             .append(this.getUniqueCrafts())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

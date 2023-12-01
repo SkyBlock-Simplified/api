@@ -10,12 +10,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bonus_armor_sets",
@@ -37,62 +39,56 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "helmet_item_id", nullable = false)
     private ItemSqlModel helmetItem;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "chestplate_item_id", nullable = false)
     private ItemSqlModel chestplateItem;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "leggings_item_id", nullable = false)
     private ItemSqlModel leggingsItem;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "boots_item_id", nullable = false)
     private ItemSqlModel bootsItem;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -109,7 +105,10 @@ public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
             .append(this.getChestplateItem(), that.getChestplateItem())
             .append(this.getLeggingsItem(), that.getLeggingsItem())
             .append(this.getBootsItem(), that.getBootsItem())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -123,7 +122,10 @@ public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
             .append(this.getChestplateItem())
             .append(this.getLeggingsItem())
             .append(this.getBootsItem())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_trophy_fishes",
@@ -37,38 +38,36 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "rarity_key", nullable = false)
     private RaritySqlModel rarity;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -84,6 +83,7 @@ public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
             .append(this.getRarity(), that.getRarity())
             .append(this.getLocationArea(), that.getLocationArea())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -96,6 +96,7 @@ public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
             .append(this.getRarity())
             .append(this.getLocationArea())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

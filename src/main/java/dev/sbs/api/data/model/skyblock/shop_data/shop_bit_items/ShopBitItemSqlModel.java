@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_shop_bit_items",
@@ -34,33 +35,32 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ShopBitItemSqlModel implements ShopBitItemModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false, unique = true)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "bit_type_key", nullable = false)
     private ShopBitTypeSqlModel type;
 
-    @Getter
     @Setter
     @Column(name = "bit_cost", nullable = false)
     private Integer bitCost;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -75,6 +75,7 @@ public class ShopBitItemSqlModel implements ShopBitItemModel, SqlModel {
             .append(this.getType(), that.getType())
             .append(this.getBitCost(), that.getBitCost())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -86,6 +87,7 @@ public class ShopBitItemSqlModel implements ShopBitItemModel, SqlModel {
             .append(this.getType())
             .append(this.getBitCost())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

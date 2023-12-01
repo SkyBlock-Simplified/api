@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_hot_potato_stats",
@@ -31,38 +32,36 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "group_key", nullable = false)
     private String groupKey;
 
-    @Getter
     @Setter
     @Column(name = "item_types", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> itemTypes;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "stat_key", nullable = false)
     private StatSqlModel stat;
 
-    @Getter
     @Setter
     @Column(name = "value", nullable = false)
     private Integer value;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -78,6 +77,7 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
             .append(this.getStat(), that.getStat())
             .append(this.getValue(), that.getValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -90,6 +90,7 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
             .append(this.getStat())
             .append(this.getValue())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

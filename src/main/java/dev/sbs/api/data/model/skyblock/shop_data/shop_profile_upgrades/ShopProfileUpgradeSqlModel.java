@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_shop_profile_upgrades"
@@ -24,31 +25,30 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ShopProfileUpgradeSqlModel implements ShopProfileUpgradeModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @Column(name = "max_level", nullable = false)
     private Integer maxLevel;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -63,6 +63,7 @@ public class ShopProfileUpgradeSqlModel implements ShopProfileUpgradeModel, SqlM
             .append(this.getName(), that.getName())
             .append(this.getMaxLevel(), that.getMaxLevel())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -74,6 +75,7 @@ public class ShopProfileUpgradeSqlModel implements ShopProfileUpgradeModel, SqlM
             .append(this.getName())
             .append(this.getMaxLevel())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

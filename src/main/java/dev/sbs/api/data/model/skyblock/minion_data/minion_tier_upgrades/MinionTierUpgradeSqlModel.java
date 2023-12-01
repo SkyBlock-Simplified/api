@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_minion_tier_upgrades",
@@ -41,38 +42,36 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "minion_tier", nullable = false)
     private MinionTierSqlModel minionTier;
 
-    @Getter
     @Setter
     @Column(name = "coin_cost", nullable = false)
     private Double coinCost;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_cost")
     private ItemSqlModel itemCost;
 
-    @Getter
     @Setter
     @Column(name = "item_quantity", nullable = false)
     private Integer itemQuantity;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -88,6 +87,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
             .append(this.getItemCost(), that.getItemCost())
             .append(this.getItemQuantity(), that.getItemQuantity())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -100,6 +100,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
             .append(this.getItemCost())
             .append(this.getItemQuantity())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

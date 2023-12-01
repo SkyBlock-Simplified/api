@@ -1,7 +1,8 @@
 package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.skyblock.location_data.locations.LocationModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_brackets.BestiaryBracketModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_categories.BestiaryCategoryModel;
 
 public interface BestiaryFamilyModel extends Model {
 
@@ -9,6 +10,10 @@ public interface BestiaryFamilyModel extends Model {
 
     String getName();
 
-    LocationModel getLocation();
+    BestiaryBracketModel getBracket();
+
+    BestiaryCategoryModel getCategory();
+
+    Integer getOrdinal();
 
 }

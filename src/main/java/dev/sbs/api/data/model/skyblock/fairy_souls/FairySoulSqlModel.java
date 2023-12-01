@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_fairy_souls",
@@ -41,48 +42,44 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FairySoulSqlModel implements FairySoulModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "x", nullable = false)
     private Double x;
 
-    @Getter
     @Setter
     @Column(name = "y", nullable = false)
     private Double y;
 
-    @Getter
     @Setter
     @Column(name = "z", nullable = false)
     private Double z;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "location_key")
     private LocationSqlModel location;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
-    @Getter
     @Setter
     @Column(name = "walkable", nullable = false)
     private boolean walkable;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -100,6 +97,7 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
             .append(this.getLocation(), that.getLocation())
             .append(this.getLocationArea(), that.getLocationArea())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -114,6 +112,7 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
             .append(this.getLocationArea())
             .append(this.isWalkable())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

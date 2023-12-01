@@ -2,13 +2,11 @@ package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilySqlModel;
-import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_types.BestiaryTypeSqlModel;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -22,95 +20,52 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bestiary",
     indexes = {
         @Index(
-            columnList = "bestiary_type_key"
-        ),
-        @Index(
-            columnList = "bestiary_family_key"
+            columnList = "family_key, ordinal",
+            unique = true
         )
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BestiarySqlModel implements BestiaryModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "bestiary_type_key", nullable = false)
-    private BestiaryTypeSqlModel type;
+    @Column(name = "level", nullable = false)
+    private Integer level;
 
-    @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "bestiary_family_key")
+    @JoinColumn(name = "family_key", nullable = false)
     private BestiaryFamilySqlModel family;
 
-    @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
     private Integer ordinal;
 
-    @Getter
-    @Setter
-    @Column(name = "max_level", nullable = false)
-    private Integer maxLevel;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BestiarySqlModel that = (BestiarySqlModel) o;
-
-        return new EqualsBuilder()
-            .append(this.getId(), that.getId())
-            .append(this.getKey(), that.getKey())
-            .append(this.getName(), that.getName())
-            .append(this.getType(), that.getType())
-            .append(this.getFamily(), that.getFamily())
-            .append(this.getOrdinal(), that.getOrdinal())
-            .append(this.getMaxLevel(), that.getMaxLevel())
-            .append(this.getUpdatedAt(), that.getUpdatedAt())
-            .build();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-            .append(this.getId())
-            .append(this.getKey())
-            .append(this.getName())
-            .append(this.getType())
-            .append(this.getFamily())
-            .append(this.getOrdinal())
-            .append(this.getMaxLevel())
-            .append(this.getUpdatedAt())
-            .build();
-    }
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
 }

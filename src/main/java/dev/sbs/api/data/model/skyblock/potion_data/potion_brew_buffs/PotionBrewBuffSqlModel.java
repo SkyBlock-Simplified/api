@@ -13,6 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_potion_brew_buffs",
@@ -29,14 +30,11 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -45,26 +43,25 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
     })
     private PotionBrewSqlModel potionBrew;
 
-
-    @Getter
     @Setter
-    @Column(name = "buff_key", nullable = false, length = 256)
+    @Column(name = "buff_key", nullable = false)
     private String buffKey;
 
-    @Getter
     @Setter
-    @Column(name = "buff_value", nullable = false, length = 256)
+    @Column(name = "buff_value", nullable = false)
     private Double buffValue;
 
-    @Getter
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -80,6 +77,7 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
             .append(this.getBuffKey(), that.getBuffKey())
             .append(this.getBuffValue(), that.getBuffValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -92,6 +90,7 @@ public class PotionBrewBuffSqlModel implements PotionBrewBuffModel, SqlModel {
             .append(this.getBuffValue())
             .append(this.isPercentage())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

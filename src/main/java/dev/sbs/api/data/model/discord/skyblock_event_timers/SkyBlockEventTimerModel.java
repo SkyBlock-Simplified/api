@@ -4,8 +4,6 @@ import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.skyblock_events.SkyBlockEventModel;
 import dev.sbs.api.data.model.skyblock.seasons.SeasonModel;
 
-import java.time.Instant;
-
 public interface SkyBlockEventTimerModel extends Model {
 
     SkyBlockEventModel getEvent();
@@ -17,7 +15,5 @@ public interface SkyBlockEventTimerModel extends Model {
     SeasonModel getEnd();
 
     Integer getEndDay();
-
-    Instant getSubmittedAt();
 
 }

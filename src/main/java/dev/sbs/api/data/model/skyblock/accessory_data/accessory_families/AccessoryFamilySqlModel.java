@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_accessory_families"
@@ -24,36 +26,34 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @Column(name = "reforges_stackable")
     private boolean reforgesStackable;
 
-    @Getter
     @Setter
     @Column(name = "stats_stackable")
     private boolean statsStackable;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -69,6 +69,7 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -81,6 +82,7 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
             .append(this.isReforgesStackable())
             .append(this.isStatsStackable())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

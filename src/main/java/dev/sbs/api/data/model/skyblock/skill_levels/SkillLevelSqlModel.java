@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_skill_levels",
@@ -30,50 +31,46 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "skill_key", nullable = false)
     private SkillSqlModel skill;
 
-    @Getter
     @Setter
     @Column(name = "level", nullable = false)
     private Integer level;
 
-    @Getter
     @Setter
     @Column(name = "total_exp_required", nullable = false)
     private Double totalExpRequired;
 
-    @Getter
     @Setter
     @Column(name = "unlocks", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> unlocks;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -91,6 +88,7 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
             .append(this.getEffects(), that.getEffects())
             .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -105,6 +103,7 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
             .append(this.getEffects())
             .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -1,7 +1,6 @@
-package dev.sbs.api.data.model.discord.guild_data.guild_application_entries;
+package dev.sbs.api.data.model.discord.guild_data.application_data.guild_application_types;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.guild_data.guild_applications.GuildApplicationSqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
@@ -18,71 +17,67 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
-    name = "discord_guild_application_entries",
+    name = "discord_guild_application_types",
     indexes = {
         @Index(
-            columnList = "guild_id, application_key, submitter_discord_id",
+            columnList = "guild_id, key",
             unique = true
         )
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel, SqlModel {
+public class GuildApplicationTypeSqlModel implements GuildApplicationTypeModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
+    @Column(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
-    @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "application_key", nullable = false, referencedColumnName = "key")
-    private GuildApplicationSqlModel application;
+    @Column(name = "key", nullable = false)
+    private String key;
 
-    @Getter
     @Setter
-    @Column(name = "submitter_discord_id", nullable = false)
-    private Long submitterDiscordId;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
+    @Setter
+    @Column(name = "description")
+    private String description;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GuildApplicationEntrySqlModel that = (GuildApplicationEntrySqlModel) o;
+        GuildApplicationTypeSqlModel that = (GuildApplicationTypeSqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
-            .append(this.getApplication(), that.getApplication())
-            .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
+            .append(this.getKey(), that.getKey())
+            .append(this.getName(), that.getName())
+            .append(this.getDescription(), that.getDescription())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -91,10 +86,11 @@ public class GuildApplicationEntrySqlModel implements GuildApplicationEntryModel
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getGuild())
-            .append(this.getApplication())
-            .append(this.getSubmitterDiscordId())
-            .append(this.getSubmittedAt())
+            .append(this.getKey())
+            .append(this.getName())
+            .append(this.getDescription())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

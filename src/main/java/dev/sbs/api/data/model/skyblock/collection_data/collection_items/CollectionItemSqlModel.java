@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_collection_items",
@@ -34,38 +35,36 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "collection_key", nullable = false)
     private CollectionSqlModel collection;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @Column(name = "max_tiers", nullable = false)
     private Integer maxTiers;
 
-    @Getter
     @Setter
     @Column(name = "farming_event", nullable = false)
     private boolean farmingEvent;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -81,6 +80,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
             .append(this.getItem(), that.getItem())
             .append(this.getMaxTiers(), that.getMaxTiers())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -93,6 +93,7 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
             .append(this.getMaxTiers())
             .append(this.isFarmingEvent())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

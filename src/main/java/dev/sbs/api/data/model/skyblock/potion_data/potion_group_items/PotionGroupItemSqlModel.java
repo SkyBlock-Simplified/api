@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_potion_group_items",
@@ -30,19 +31,16 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "potion_group_key", nullable = false)
     private PotionGroupSqlModel potionGroup;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -51,10 +49,13 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
     })
     private PotionTierSqlModel potionTier;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -68,6 +69,7 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
             .append(this.getPotionGroup(), that.getPotionGroup())
             .append(this.getPotionTier(), that.getPotionTier())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -78,6 +80,7 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
             .append(this.getPotionGroup())
             .append(this.getPotionTier())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

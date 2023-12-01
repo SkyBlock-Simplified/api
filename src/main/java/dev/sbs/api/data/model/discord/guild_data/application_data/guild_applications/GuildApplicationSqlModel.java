@@ -1,7 +1,7 @@
-package dev.sbs.api.data.model.discord.guild_data.guild_applications;
+package dev.sbs.api.data.model.discord.guild_data.application_data.guild_applications;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.guild_data.guild_application_types.GuildApplicationTypeSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.application_data.guild_application_types.GuildApplicationTypeSqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guild_embeds.GuildEmbedSqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
@@ -10,11 +10,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_guild_applications",
@@ -34,29 +36,24 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "key", nullable = false)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -65,7 +62,6 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
     })
     private GuildApplicationTypeSqlModel type;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -74,30 +70,29 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
     })
     private GuildEmbedSqlModel embed;
 
-    @Getter
     @Setter
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
-    @Getter
     @Setter
     @Column(name = "notes")
     private String notes;
 
-    @Getter
     @Setter
     @Column(name = "live_at")
     private Instant liveAt;
 
-    @Getter
     @Setter
     @Column(name = "close_at")
     private Instant closeAt;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -118,6 +113,7 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
             .append(this.getLiveAt(), that.getLiveAt())
             .append(this.getCloseAt(), that.getCloseAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -135,6 +131,7 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
             .append(this.getLiveAt())
             .append(this.getCloseAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

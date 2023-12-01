@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_emojis",
@@ -34,61 +35,56 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EmojiSqlModel implements EmojiModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "emoji_id", nullable = false, unique = true)
     private Long emojiId;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
-    @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 256, unique = true)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @Column(name = "animated", nullable = false)
     private boolean animated;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at")
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EmojiSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EmojiSqlModel that = (EmojiSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isAnimated(), that.isAnimated())
             .append(this.getId(), that.getId())
+            .append(this.getEmojiId(), that.getEmojiId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
-            .append(this.getEmojiId(), that.getEmojiId())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -96,12 +92,13 @@ public class EmojiSqlModel implements EmojiModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
+            .append(this.getEmojiId())
             .append(this.getGuild())
             .append(this.getKey())
             .append(this.getName())
-            .append(this.getEmojiId())
-            .append(this.getSubmittedAt())
+            .append(this.isAnimated())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import java.awt.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_formats"
@@ -27,37 +28,35 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FormatSqlModel implements FormatModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "code", nullable = false, length = 1)
     private char code;
 
-    @Getter
     @Setter
     @Column(name = "rgb", length = 1)
     @Convert(converter = ColorConverter.class)
     private Color rgb;
 
-    @Getter
     @Setter
     @Column(name = "format", nullable = false)
     private boolean format;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -73,6 +72,7 @@ public class FormatSqlModel implements FormatModel, SqlModel {
             .append(this.getKey(), that.getKey())
             .append(this.getRgb(), that.getRgb())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -85,6 +85,7 @@ public class FormatSqlModel implements FormatModel, SqlModel {
             .append(this.getRgb())
             .append(this.isFormat())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

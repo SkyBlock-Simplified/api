@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_craftingtable_recipe_slots",
@@ -39,33 +40,32 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "recipe_key", nullable = false)
     private CraftingTableRecipeSqlModel recipe;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "slot_key", nullable = false)
     private CraftingTableSlotSqlModel slot;
 
-    @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
     private Integer ordinal;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -80,6 +80,7 @@ public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotM
             .append(this.getSlot(), that.getSlot())
             .append(this.getOrdinal(), that.getOrdinal())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -91,6 +92,7 @@ public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotM
             .append(this.getSlot())
             .append(this.getOrdinal())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

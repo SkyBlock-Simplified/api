@@ -1,65 +1,71 @@
 package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.skyblock.location_data.locations.LocationSqlModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_brackets.BestiaryBracketSqlModel;
+import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_categories.BestiaryCategorySqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bestiary_families",
     indexes = {
         @Index(
-            columnList = "location_key"
+            columnList = "category_key, ordinal",
+            unique = true
         )
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BestiaryFamilySqlModel implements BestiaryFamilyModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key")
-    private LocationSqlModel location;
+    @JoinColumns({
+        @JoinColumn(name = "bracket", nullable = false, referencedColumnName = "bracket"),
+        @JoinColumn(name = "max_tier", nullable = false, referencedColumnName = "tier")
+    })
+    private BestiaryBracketSqlModel bracket;
 
-    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "category_key", nullable = false)
+    private BestiaryCategorySqlModel category;
+
+    @Setter
+    @Column(name = "ordinal", nullable = false)
+    private Integer ordinal;
+
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -72,8 +78,11 @@ public class BestiaryFamilySqlModel implements BestiaryFamilyModel, SqlModel {
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
-            .append(this.getLocation(), that.getLocation())
+            .append(this.getBracket(), that.getBracket())
+            .append(this.getCategory(), that.getCategory())
+            .append(this.getOrdinal(), that.getOrdinal())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -83,8 +92,11 @@ public class BestiaryFamilySqlModel implements BestiaryFamilyModel, SqlModel {
             .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
-            .append(this.getLocation())
+            .append(this.getBracket())
+            .append(this.getCategory())
+            .append(this.getOrdinal())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_sbs_legacy_donors"
@@ -24,26 +26,26 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "discord_id", nullable = false)
+    @Column(name = "discord_id", nullable = false, unique = true)
     private Long discordId;
 
-    @Getter
     @Setter
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -57,6 +59,7 @@ public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
             .append(this.getDiscordId(), that.getDiscordId())
             .append(this.getAmount(), that.getAmount())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -67,6 +70,7 @@ public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
             .append(this.getDiscordId())
             .append(this.getAmount())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

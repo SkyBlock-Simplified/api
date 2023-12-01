@@ -1,8 +1,8 @@
-package dev.sbs.api.data.model.discord.guild_data.guild_application_requirements;
+package dev.sbs.api.data.model.discord.guild_data.application_data.guild_application_requirements;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.application_requirements.ApplicationRequirementSqlModel;
-import dev.sbs.api.data.model.discord.guild_data.guild_applications.GuildApplicationSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.application_data.guild_applications.GuildApplicationSqlModel;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.data.model.discord.setting_types.SettingTypeSqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_guild_application_requirements",
@@ -46,50 +48,46 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildApplicationRequirementSqlModel implements GuildApplicationRequirementModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "application_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     private GuildApplicationSqlModel application;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "requirement_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     private ApplicationRequirementSqlModel requirement;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "setting_type_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
     private SettingTypeSqlModel type;
 
-    @Getter
     @Setter
     @Column(name = "value", nullable = false)
     private String value;
 
-    @Getter
     @Setter
     @Column(name = "description")
     private String description;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -107,6 +105,7 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
             .append(this.getValue(), that.getValue())
             .append(this.getDescription(), that.getDescription())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -121,6 +120,7 @@ public class GuildApplicationRequirementSqlModel implements GuildApplicationRequ
             .append(this.getValue())
             .append(this.getDescription())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

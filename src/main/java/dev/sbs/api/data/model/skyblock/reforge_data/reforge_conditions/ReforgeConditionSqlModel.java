@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_reforge_conditions",
@@ -38,28 +39,28 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeConditionSqlModel implements ReforgeConditionModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "reforge_key", nullable = false)
     private ReforgeSqlModel reforge;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_id")
     private ItemSqlModel item;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -73,6 +74,7 @@ public class ReforgeConditionSqlModel implements ReforgeConditionModel, SqlModel
             .append(this.getReforge(), that.getReforge())
             .append(this.getItem(), that.getItem())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -83,6 +85,7 @@ public class ReforgeConditionSqlModel implements ReforgeConditionModel, SqlModel
             .append(this.getReforge())
             .append(this.getItem())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

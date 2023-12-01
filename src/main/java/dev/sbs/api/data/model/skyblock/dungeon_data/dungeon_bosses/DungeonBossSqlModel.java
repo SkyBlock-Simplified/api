@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_dungeon_bosses",
@@ -33,37 +34,35 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key", referencedColumnName = "key")
     private EmojiSqlModel emoji;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -79,6 +78,7 @@ public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
             .append(this.getDescription(), that.getDescription())
             .append(this.getEmoji(), that.getEmoji())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -91,6 +91,7 @@ public class DungeonBossSqlModel implements DungeonBossModel, SqlModel {
             .append(this.getDescription())
             .append(this.getEmoji())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

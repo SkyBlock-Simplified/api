@@ -7,7 +7,6 @@ import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParent
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildModel;
 
-import java.time.Instant;
 import java.util.UUID;
 
 public interface CommandModel extends Model {
@@ -41,7 +40,5 @@ public interface CommandModel extends Model {
     boolean isEnabled();
 
     String getStatus();
-
-    Instant getSubmittedAt();
 
 }

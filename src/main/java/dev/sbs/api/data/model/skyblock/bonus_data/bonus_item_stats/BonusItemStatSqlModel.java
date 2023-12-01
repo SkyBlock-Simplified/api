@@ -11,12 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bonus_item_stats",
@@ -30,55 +32,50 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @Column(name = "stats", nullable = false)
     private boolean forStats;
 
-    @Getter
     @Setter
     @Column(name = "reforges", nullable = false)
     private boolean forReforges;
 
-    @Getter
     @Setter
     @Column(name = "gems", nullable = false)
     private boolean forGems;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "required_mob_type_key", referencedColumnName = "key")
     private OptimizerMobTypeSqlModel requiredMobType;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -93,7 +90,11 @@ public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
             .append(this.isForGems(), that.isForGems())
             .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
+            .append(this.getRequiredMobType(), that.getRequiredMobType())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -105,7 +106,11 @@ public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
             .append(this.isForStats())
             .append(this.isForReforges())
             .append(this.isForGems())
+            .append(this.getRequiredMobType())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

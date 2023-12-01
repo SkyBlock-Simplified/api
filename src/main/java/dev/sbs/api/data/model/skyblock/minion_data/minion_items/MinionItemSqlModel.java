@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_minion_items",
@@ -41,39 +42,37 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionItemSqlModel implements MinionItemModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "collection_item_id")
     private CollectionItemSqlModel collectionItem;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @Column(name = "average_yield", nullable = false)
     private Double averageYield;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -89,6 +88,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
             .append(this.getItem(), that.getItem())
             .append(this.getAverageYield(), that.getAverageYield())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -101,6 +101,7 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
             .append(this.getItem())
             .append(this.getAverageYield())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

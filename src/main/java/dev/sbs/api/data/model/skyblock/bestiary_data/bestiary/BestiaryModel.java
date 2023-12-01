@@ -2,7 +2,6 @@ package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_families.BestiaryFamilyModel;
-import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_types.BestiaryTypeModel;
 
 public interface BestiaryModel extends Model {
 
@@ -10,12 +9,10 @@ public interface BestiaryModel extends Model {
 
     String getName();
 
-    BestiaryTypeModel getType();
+    Integer getLevel();
 
     BestiaryFamilyModel getFamily();
 
     Integer getOrdinal();
-
-    Integer getMaxLevel();
 
 }

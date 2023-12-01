@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_reforge_stats",
@@ -29,34 +30,33 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "key", nullable = false)
     private ReforgeSqlModel reforge;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
-    @Getter
     @Setter
     @Column(name = "effects")
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -69,7 +69,9 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
             .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
             .append(this.getRarity(), that.getRarity())
+            .append(this.getEffects(), that.getEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -79,7 +81,9 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
             .append(this.getId())
             .append(this.getReforge())
             .append(this.getRarity())
+            .append(this.getEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_shop_bit_item_craftables",
@@ -34,38 +35,36 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "bit_item_id", nullable = false)
     private ShopBitItemSqlModel bitItem;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false, unique = true)
     private ItemSqlModel craftableItem;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "expression", nullable = false)
     private String expression;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -81,6 +80,7 @@ public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, 
             .append(this.getDescription(), that.getDescription())
             .append(this.getExpression(), that.getExpression())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -93,6 +93,7 @@ public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, 
             .append(this.getDescription())
             .append(this.getExpression())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

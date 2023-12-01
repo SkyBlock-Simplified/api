@@ -1,4 +1,4 @@
-package dev.sbs.api.data.model.discord.guild_data.guild_application_types;
+package dev.sbs.api.data.model.discord.guild_data.application_data.guild_application_types;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildModel;

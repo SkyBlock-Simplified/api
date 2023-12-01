@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bonus_reforge_stats"
@@ -31,34 +32,33 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "reforge_key", nullable = false)
+    @JoinColumn(name = "reforge_key", nullable = false, unique = true)
     private ReforgeSqlModel reforge;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringObjectMapConverter.class)
     private Map<String, Object> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -70,7 +70,10 @@ public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -79,7 +82,10 @@ public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel
         return new HashCodeBuilder()
             .append(this.getId())
             .append(this.getReforge())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

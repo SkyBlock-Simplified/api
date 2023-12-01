@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.awt.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_guild_embeds",
@@ -29,120 +30,102 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
-    @Getter
     @Setter
     @Column(name = "key", nullable = false)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Getter
     @Setter
     @Column(name = "color", nullable = false)
     @Convert(converter = ColorConverter.class)
     private Color color;
 
-    @Getter
     @Setter
     @Column(name = "url")
     private String url;
 
-    @Getter
     @Setter
     @Column(name = "description")
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "author_name")
     private String authorName;
 
-    @Getter
     @Setter
     @Column(name = "author_url")
     private String authorUrl;
 
-    @Getter
     @Setter
     @Column(name = "author_icon_url")
     private String authorIconUrl;
 
-    @Getter
     @Setter
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Getter
     @Setter
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @Getter
     @Setter
     @Column(name = "video_url")
     private String videoUrl;
 
-    @Getter
     @Setter
     @Column(name = "timestamp")
     private Instant timestamp;
 
-    @Getter
     @Setter
     @Column(name = "footer_text")
     private String footerText;
 
-    @Getter
     @Setter
     @Column(name = "footer_icon_url")
     private String footerIconUrl;
 
-    @Getter
     @Setter
     @Column(name = "notes")
     private String notes;
 
-    @Getter
     @Setter
     @Column(name = "submitter_discord_id")
     private Long submitterDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "editor_discord_id")
     private Long editorDiscordId;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildEmbedSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        GuildEmbedSqlModel that = (GuildEmbedSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getTitle(), that.getTitle())
@@ -161,14 +144,15 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
             .append(this.getNotes(), that.getNotes())
             .append(this.getSubmitterDiscordId(), that.getSubmitterDiscordId())
             .append(this.getEditorDiscordId(), that.getEditorDiscordId())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getGuild())
             .append(this.getKey())
             .append(this.getTitle())
@@ -187,8 +171,8 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
             .append(this.getNotes())
             .append(this.getSubmitterDiscordId())
             .append(this.getEditorDiscordId())
-            .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

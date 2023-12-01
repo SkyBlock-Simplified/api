@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_npcs",
@@ -41,53 +42,48 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class NpcSqlModel implements NpcModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "x")
     private Double x;
 
-    @Getter
     @Setter
     @Column(name = "y")
     private Double y;
 
-    @Getter
     @Setter
     @Column(name = "z")
     private Double z;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "location_key")
     private LocationSqlModel location;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "location_area_key")
     private LocationAreaSqlModel locationArea;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -106,6 +102,7 @@ public class NpcSqlModel implements NpcModel, SqlModel {
             .append(this.getLocation(), that.getLocation())
             .append(this.getLocationArea(), that.getLocationArea())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -121,6 +118,7 @@ public class NpcSqlModel implements NpcModel, SqlModel {
             .append(this.getLocation())
             .append(this.getLocationArea())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

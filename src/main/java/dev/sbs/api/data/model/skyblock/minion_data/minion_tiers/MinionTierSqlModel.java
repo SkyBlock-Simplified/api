@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_minion_tiers",
@@ -34,33 +35,32 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MinionTierSqlModel implements MinionTierModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "minion_key", nullable = false)
     private MinionSqlModel minion;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "tier", nullable = false)
+    @JoinColumn(name = "tier", nullable = false, unique = true)
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @Column(name = "speed", nullable = false)
     private Integer speed;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -75,6 +75,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
             .append(this.getItem(), that.getItem())
             .append(this.getSpeed(), that.getSpeed())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -86,6 +87,7 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
             .append(this.getItem())
             .append(this.getSpeed())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

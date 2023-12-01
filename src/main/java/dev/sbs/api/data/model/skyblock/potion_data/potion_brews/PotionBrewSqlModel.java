@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_potion_brews",
@@ -41,53 +42,48 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Getter
     @Setter
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "source_npc_key")
     private NpcSqlModel npc;
 
-    @Getter
     @Setter
     @Column(name = "coin_cost", nullable = false)
     private Integer coinCost;
 
-    @Getter
     @Setter
     @Column(name = "amplified", nullable = false)
     private Integer amplified;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -106,6 +102,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
             .append(this.getCoinCost(), that.getCoinCost())
             .append(this.getAmplified(), that.getAmplified())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -121,6 +118,7 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
             .append(this.getCoinCost())
             .append(this.getAmplified())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

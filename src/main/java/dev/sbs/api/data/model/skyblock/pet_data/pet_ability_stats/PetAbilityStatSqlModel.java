@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_pet_ability_stats",
@@ -31,49 +32,45 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "ability_key", nullable = false)
     private PetAbilitySqlModel ability;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "stat_key")
     private StatSqlModel stat;
 
-    @Getter
     @Setter
     @Column(name = "rarities", nullable = false)
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> rarities;
 
-    @Getter
     @Setter
     @Column(name = "base_value", nullable = false)
     private Double baseValue;
 
-    @Getter
     @Setter
     @Column(name = "level_bonus", nullable = false)
     private Double levelBonus;
 
-    @Getter
     @Setter
     @Column(name = "round", nullable = false)
     private boolean roundingNeeded;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -91,6 +88,7 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
             .append(this.getBaseValue(), that.getBaseValue())
             .append(this.getLevelBonus(), that.getLevelBonus())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -105,6 +103,7 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
             .append(this.getLevelBonus())
             .append(this.isRoundingNeeded())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

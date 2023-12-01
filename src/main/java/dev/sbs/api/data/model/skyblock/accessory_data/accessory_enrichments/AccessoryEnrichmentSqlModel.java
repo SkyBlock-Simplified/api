@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_accessory_enrichments"
@@ -27,27 +29,27 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", nullable = false, unique = true)
     private StatSqlModel stat;
 
-    @Getter
     @Setter
     @Column(name = "value", nullable = false)
     private Double value;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -61,6 +63,7 @@ public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, Sq
             .append(this.getStat(), that.getStat())
             .append(this.getValue(), that.getValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -71,6 +74,7 @@ public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, Sq
             .append(this.getStat())
             .append(this.getValue())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

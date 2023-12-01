@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_pet_levels",
@@ -37,32 +38,31 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PetLevelSqlModel implements PetLevelModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "rarity_key")
     private RaritySqlModel rarity;
 
-    @Getter
     @Setter
     @Column(name = "level", nullable = false)
     private Integer level;
 
-    @Getter
     @Setter
     @Column(name = "value", nullable = false)
     private Double value;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -73,8 +73,11 @@ public class PetLevelSqlModel implements PetLevelModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
+            .append(this.getRarity(), that.getRarity())
+            .append(this.getLevel(), that.getLevel())
             .append(this.getValue(), that.getValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -82,8 +85,11 @@ public class PetLevelSqlModel implements PetLevelModel, SqlModel {
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.getId())
+            .append(this.getRarity())
+            .append(this.getLevel())
             .append(this.getValue())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

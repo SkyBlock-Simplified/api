@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_gemstone_stats",
@@ -42,39 +43,37 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "gemstone_key", nullable = false)
     private GemstoneSqlModel gemstone;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "type_key", nullable = false)
     private GemstoneTypeSqlModel type;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "rarity_key", nullable = false)
     private RaritySqlModel rarity;
 
-    @Getter
     @Setter
     @Column(name = "value", nullable = false)
     private Double value;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -90,6 +89,7 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
             .append(this.getRarity(), that.getRarity())
             .append(this.getValue(), that.getValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -102,6 +102,7 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
             .append(this.getRarity())
             .append(this.getValue())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

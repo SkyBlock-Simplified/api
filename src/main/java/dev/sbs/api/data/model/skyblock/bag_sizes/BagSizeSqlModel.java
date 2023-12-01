@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_bag_sizes",
@@ -34,32 +36,31 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BagSizeSqlModel implements BagSizeModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "bag_key", nullable = false)
     private BagSqlModel bag;
 
-    @Getter
     @Setter
-    @Column(name = "collection_tier", nullable = false, length = 256)
+    @Column(name = "collection_tier", nullable = false)
     private Integer collectionTier;
 
-    @Getter
     @Setter
     @Column(name = "slot_count", nullable = false)
     private Integer slotCount;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -74,6 +75,7 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
             .append(this.getCollectionTier(), that.getCollectionTier())
             .append(this.getSlotCount(), that.getSlotCount())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -85,6 +87,7 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
             .append(this.getCollectionTier())
             .append(this.getSlotCount())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

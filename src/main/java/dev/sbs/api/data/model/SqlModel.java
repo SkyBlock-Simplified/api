@@ -6,6 +6,10 @@ import dev.sbs.api.data.sql.SqlRepository;
 @SuppressWarnings("all")
 public interface SqlModel extends Model {
 
+    default <T> T delete() {
+        return (T) ((SqlRepository) SimplifiedApi.getRepositoryOf(this.getClass())).delete(this);
+    }
+
     default <T> T save() {
         return (T) ((SqlRepository) SimplifiedApi.getRepositoryOf(this.getClass())).save(this);
     }

@@ -19,6 +19,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_rarities",
@@ -31,46 +32,42 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RaritySqlModel implements RarityModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
     private Integer ordinal;
 
-    @Getter
     @Setter
     @Column(name = "enrichable", nullable = false)
     private boolean enrichable;
 
-    @Getter
     @Setter
     @Column(name = "mp_multiplier")
     private Integer magicPowerMultiplier;
 
-    @Getter
     @Setter
-    @Column(name = "emoji_key", length = 256)
+    @Column(name = "emoji_key")
     private EmojiSqlModel emoji;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -86,7 +83,9 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getName(), that.getName())
             .append(this.getOrdinal(), that.getOrdinal())
             .append(this.getMagicPowerMultiplier(), that.getMagicPowerMultiplier())
+            .append(this.getEmoji(), that.getEmoji())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -99,7 +98,9 @@ public class RaritySqlModel implements RarityModel, SqlModel {
             .append(this.getOrdinal())
             .append(this.isEnrichable())
             .append(this.getMagicPowerMultiplier())
+            .append(this.getEmoji())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

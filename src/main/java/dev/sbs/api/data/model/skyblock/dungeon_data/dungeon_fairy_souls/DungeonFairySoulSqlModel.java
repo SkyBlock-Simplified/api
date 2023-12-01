@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_dungeon_fairy_souls"
@@ -24,36 +25,34 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Column(name = "room", nullable = false, length = 256)
+    @Column(name = "room", nullable = false)
     private String room;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "where", nullable = false)
     private String where;
 
-    @Getter
     @Setter
     @Column(name = "walkable", nullable = false)
     private boolean walkable;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -69,6 +68,7 @@ public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel
             .append(this.getDescription(), that.getDescription())
             .append(this.getWhere(), that.getWhere())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -81,6 +81,7 @@ public class DungeonFairySoulSqlModel implements DungeonFairySoulModel, SqlModel
             .append(this.getWhere())
             .append(this.isWalkable())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

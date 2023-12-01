@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_guild_levels"
@@ -24,26 +25,26 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildLevelSqlModel implements GuildLevelModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "level", nullable = false, unique = true)
     private Integer level;
 
-    @Getter
     @Setter
     @Column(name = "total_exp_required", nullable = false)
     private Double totalExpRequired;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -57,6 +58,7 @@ public class GuildLevelSqlModel implements GuildLevelModel, SqlModel {
             .append(this.getLevel(), that.getLevel())
             .append(this.getTotalExpRequired(), that.getTotalExpRequired())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -67,6 +69,7 @@ public class GuildLevelSqlModel implements GuildLevelModel, SqlModel {
             .append(this.getLevel())
             .append(this.getTotalExpRequired())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

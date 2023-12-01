@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_dungeon_floors",
@@ -42,39 +43,37 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "dungeon_key", nullable = false)
     private DungeonSqlModel dungeon;
 
-    @Getter
     @Setter
     @Column(name = "floor", nullable = false)
     private Integer floor;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "floor_size_key")
     private DungeonFloorSizeSqlModel floorSize;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "floor_boss_key")
     private DungeonBossSqlModel floorBoss;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -90,6 +89,7 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
             .append(this.getFloorSize(), that.getFloorSize())
             .append(this.getFloorBoss(), that.getFloorBoss())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -102,6 +102,7 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
             .append(this.getFloorSize())
             .append(this.getFloorBoss())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

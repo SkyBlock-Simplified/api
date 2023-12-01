@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_dungeon_levels"
@@ -27,43 +28,40 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
     @Column(name = "level", nullable = false)
     private Integer level;
 
-    @Getter
     @Setter
     @Column(name = "total_exp_required", nullable = false)
     private Double totalExpRequired;
 
-    @Getter
     @Setter
     @Column(name = "stat_multiplier", nullable = false)
     private Integer statMultiplier;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -77,7 +75,10 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
             .append(this.getLevel(), that.getLevel())
             .append(this.getTotalExpRequired(), that.getTotalExpRequired())
             .append(this.getStatMultiplier(), that.getStatMultiplier())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -88,7 +89,10 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
             .append(this.getLevel())
             .append(this.getTotalExpRequired())
             .append(this.getStatMultiplier())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

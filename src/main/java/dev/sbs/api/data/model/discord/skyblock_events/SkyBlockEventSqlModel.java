@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_skyblock_events",
@@ -34,69 +35,61 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkyBlockEventSqlModel implements SkyBlockEventModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key")
     private EmojiSqlModel botEmoji;
 
-    @Getter
     @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
-    @Getter
     @Setter
     @Column(name = "status")
     private String status;
 
-    @Getter
     @Setter
     @Column(name = "interval_expression")
     private String intervalExpression;
 
-    @Getter
     @Setter
     @Column(name = "thirdparty_json_url")
     private String thirdPartyJsonUrl;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkyBlockEventSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder().append(this.isEnabled(), that.isEnabled())
+        SkyBlockEventSqlModel that = (SkyBlockEventSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.isEnabled(), that.isEnabled())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
@@ -105,14 +98,15 @@ public class SkyBlockEventSqlModel implements SkyBlockEventModel, SqlModel {
             .append(this.getStatus(), that.getStatus())
             .append(this.getIntervalExpression(), that.getIntervalExpression())
             .append(this.getThirdPartyJsonUrl(), that.getThirdPartyJsonUrl())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getBotEmoji())
@@ -121,8 +115,8 @@ public class SkyBlockEventSqlModel implements SkyBlockEventModel, SqlModel {
             .append(this.getStatus())
             .append(this.getIntervalExpression())
             .append(this.getThirdPartyJsonUrl())
-            .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

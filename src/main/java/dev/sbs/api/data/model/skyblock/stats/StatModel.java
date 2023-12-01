@@ -13,7 +13,7 @@ public interface StatModel extends Model {
 
     FormatModel getFormat();
 
-    boolean isMultipliable();
+    boolean isMultiplicable();
 
     boolean isTunable();
 

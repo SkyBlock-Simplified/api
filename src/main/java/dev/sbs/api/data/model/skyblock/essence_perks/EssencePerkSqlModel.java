@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_essence_perks",
@@ -37,37 +38,35 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EssencePerkSqlModel implements EssencePerkModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false)
     private String key;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "stat_key", nullable = false)
     private StatSqlModel stat;
 
-    @Getter
     @Setter
     @Column(name = "level_bonus", nullable = false)
     private Integer levelBonus;
 
-    @Getter
     @Setter
     @Column(name = "permanent", nullable = false)
     private boolean permanent;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -83,6 +82,7 @@ public class EssencePerkSqlModel implements EssencePerkModel, SqlModel {
             .append(this.getStat(), that.getStat())
             .append(this.getLevelBonus(), that.getLevelBonus())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -95,6 +95,7 @@ public class EssencePerkSqlModel implements EssencePerkModel, SqlModel {
             .append(this.getLevelBonus())
             .append(this.isPermanent())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "discord_skyblock_event_timers",
@@ -41,75 +42,71 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkyBlockEventTimerSqlModel implements SkyBlockEventTimerModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Getter
     @Setter
-    @Column(name = "event_key", nullable = false)
+    @Column(name = "event_key", nullable = false, unique = true)
     private SkyBlockEventSqlModel event;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "start_season_key", nullable = false)
     private SeasonSqlModel start;
 
-    @Getter
     @Setter
     @Column(name = "start_season_day", nullable = false)
     private Integer startDay;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "end_season_key", nullable = false)
     private SeasonSqlModel end;
 
-    @Getter
     @Setter
     @Column(name = "end_season_day", nullable = false)
     private Integer endDay;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkyBlockEventTimerSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        SkyBlockEventTimerSqlModel that = (SkyBlockEventTimerSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getEvent(), that.getEvent())
             .append(this.getStart(), that.getStart())
             .append(this.getStartDay(), that.getStartDay())
             .append(this.getEnd(), that.getEnd())
             .append(this.getEndDay(), that.getEndDay())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getEvent())
             .append(this.getStart())
             .append(this.getStartDay())
             .append(this.getEnd())
             .append(this.getEndDay())
-            .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

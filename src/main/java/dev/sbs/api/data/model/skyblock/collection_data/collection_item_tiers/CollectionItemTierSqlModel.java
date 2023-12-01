@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_collection_item_tiers",
@@ -28,38 +29,36 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "collection_item_id", nullable = false)
     private CollectionItemSqlModel collectionItem;
 
-    @Getter
     @Setter
     @Column(name = "tier", nullable = false)
     private Integer tier;
 
-    @Getter
     @Setter
     @Column(name = "amount_required", nullable = false)
     private Double amountRequired;
 
-    @Getter
     @Setter
     @Column(name = "unlocks", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> unlocks;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -75,6 +74,7 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
             .append(this.getAmountRequired(), that.getAmountRequired())
             .append(this.getUnlocks(), that.getUnlocks())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -87,6 +87,7 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
             .append(this.getAmountRequired())
             .append(this.getUnlocks())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

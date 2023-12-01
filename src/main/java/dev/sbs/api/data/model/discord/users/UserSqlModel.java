@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(
     name = "discord_users"
@@ -32,55 +33,50 @@ import java.util.UUID;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserSqlModel implements UserModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @Column(name = "discord_ids", nullable = false)
     @Convert(converter = LongListConverter.class)
     private List<Long> discordIds;
 
-    @Getter
     @Setter
     @Column(name = "mojang_uuids", nullable = false)
     @Convert(converter = UUIDListConverter.class)
     private List<UUID> mojangUniqueIds;
 
-    @Getter
     @Setter
     @Column(name = "notes", nullable = false)
     @Convert(converter = LongStringMapConverter.class)
     private Map<Long, String> notes;
 
-    @Getter
     @Setter
     @Column(name = "guild_interaction_blacklisted", nullable = false)
     @Convert(converter = LongListConverter.class)
     private List<Long> guildInteractionBlacklisted;
 
-    @Getter
+    @Setter
+    @Column(name = "is_developer", nullable = false)
+    private boolean developer;
+
     @Setter
     @Column(name = "developer_protected", nullable = false)
     private boolean developerProtected;
 
-    @Getter
     @Setter
     @Column(name = "developer_interaction_enabled", nullable = false)
     private boolean botInteractionEnabled;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -90,6 +86,7 @@ public class UserSqlModel implements UserModel, SqlModel {
         UserSqlModel that = (UserSqlModel) o;
 
         return new EqualsBuilder()
+            .append(this.isDeveloper(), that.isDeveloper())
             .append(this.isDeveloperProtected(), that.isDeveloperProtected())
             .append(this.isBotInteractionEnabled(), that.isBotInteractionEnabled())
             .append(this.getId(), that.getId())
@@ -97,8 +94,8 @@ public class UserSqlModel implements UserModel, SqlModel {
             .append(this.getMojangUniqueIds(), that.getMojangUniqueIds())
             .append(this.getNotes(), that.getNotes())
             .append(this.getGuildInteractionBlacklisted(), that.getGuildInteractionBlacklisted())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -110,10 +107,11 @@ public class UserSqlModel implements UserModel, SqlModel {
             .append(this.getMojangUniqueIds())
             .append(this.getNotes())
             .append(this.getGuildInteractionBlacklisted())
+            .append(this.isDeveloper())
             .append(this.isDeveloperProtected())
             .append(this.isBotInteractionEnabled())
-            .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

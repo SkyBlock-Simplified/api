@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
     name = "discord_guild_reports",
@@ -28,13 +29,11 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class GuildReportSqlModel implements GuildReportModel, SqlModel {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -43,63 +42,56 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
     })
     private GuildReportTypeSqlModel type;
 
-    @Getter
     @Setter
     @Column(name = "reported_discord_id")
     private Long reportedDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "reported_mojang_uuid")
     private String reportedMojangUniqueId;
 
-    @Getter
     @Setter
     @Column(name = "submitter_discord_id", nullable = false)
     private Long submitterDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "assignee_discord_id")
     private Long assigneeDiscordId;
 
-    @Getter
     @Setter
     @Column(name = "reason")
     private String reason;
 
-    @Getter
     @Setter
     @Column(name = "proof")
     private String proof;
 
-    @Getter
     @Setter
     @Column(name = "media_links", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> mediaLinks;
 
-    @Getter
     @Setter
     @Column(name = "notes")
     private String notes;
 
-    @Getter
-    @CreationTimestamp
-    @Column(name = "submitted_at", nullable = false)
-    private Instant submittedAt;
-
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GuildReportSqlModel that)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder().append(this.getId(), that.getId())
+        GuildReportSqlModel that = (GuildReportSqlModel) o;
+
+        return new EqualsBuilder()
+            .append(this.getId(), that.getId())
             .append(this.getType(), that.getType())
             .append(this.getReportedDiscordId(), that.getReportedDiscordId())
             .append(this.getReportedMojangUniqueId(), that.getReportedMojangUniqueId())
@@ -109,14 +101,15 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
             .append(this.getProof(), that.getProof())
             .append(this.getMediaLinks(), that.getMediaLinks())
             .append(this.getNotes(), that.getNotes())
-            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.getId())
+        return new HashCodeBuilder()
+            .append(this.getId())
             .append(this.getType())
             .append(this.getReportedDiscordId())
             .append(this.getReportedMojangUniqueId())
@@ -126,8 +119,8 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
             .append(this.getProof())
             .append(this.getMediaLinks())
             .append(this.getNotes())
-            .append(this.getSubmittedAt())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

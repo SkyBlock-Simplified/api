@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_skills",
@@ -37,63 +38,56 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SkillSqlModel implements SkillModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
-    @Column(name = "description", nullable = false, length = 256)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter
     @Setter
     @Column(name = "max_level", nullable = false)
     private Integer maxLevel;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "item_id")
     private ItemSqlModel item;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "emoji_key", referencedColumnName = "key")
     private EmojiSqlModel emoji;
 
-    @Getter
     @Setter
     @Column(name = "cosmetic", nullable = false)
     private boolean cosmetic;
 
-    @Getter
     @Setter
     @Column(name = "weight_exponent", nullable = false)
     private Double weightExponent;
 
-    @Getter
     @Setter
     @Column(name = "weight_divider", nullable = false)
     private Double weightDivider;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -114,6 +108,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
             .append(this.getWeightExponent(), that.getWeightExponent())
             .append(this.getWeightDivider(), that.getWeightDivider())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -131,6 +126,7 @@ public class SkillSqlModel implements SkillModel, SqlModel {
             .append(this.getWeightExponent())
             .append(this.getWeightDivider())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

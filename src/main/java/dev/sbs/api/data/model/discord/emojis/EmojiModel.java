@@ -3,8 +3,6 @@ package dev.sbs.api.data.model.discord.emojis;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.guild_data.guilds.GuildModel;
 
-import java.time.Instant;
-
 public interface EmojiModel extends Model {
 
     Long getEmojiId();
@@ -16,8 +14,6 @@ public interface EmojiModel extends Model {
     String getName();
 
     boolean isAnimated();
-
-    Instant getSubmittedAt();
 
     default String getUrl() {
         return String.format("https://cdn.discordapp.com/emojis/%s.webp", this.getEmojiId());

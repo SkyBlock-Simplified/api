@@ -3,7 +3,6 @@ package dev.sbs.api.data.model.discord.guild_data.guild_reports;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.discord.guild_data.guild_report_types.GuildReportTypeModel;
 
-import java.time.Instant;
 import java.util.List;
 
 public interface GuildReportModel extends Model {
@@ -25,7 +24,5 @@ public interface GuildReportModel extends Model {
     List<String> getMediaLinks();
 
     String getNotes();
-
-    Instant getSubmittedAt();
 
 }

@@ -1,12 +1,14 @@
-package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_types;
+package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_categories;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.model.skyblock.location_data.locations.LocationSqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
@@ -14,49 +16,70 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
-    name = "skyblock_bestiary_types"
+    name = "skyblock_bestiary_categories",
+    indexes = {
+        @Index(
+            columnList = "location_key"
+        )
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class BestiaryTypeSqlModel implements BestiaryTypeModel, SqlModel {
+public class BestiaryCategorySqlModel implements BestiaryCategoryModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "location_key")
+    private LocationSqlModel location;
+
+    @Setter
+    @Column(name = "name", nullable = false, unique = true)
+    private Integer ordinal;
+
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BestiaryTypeSqlModel that = (BestiaryTypeSqlModel) o;
+        BestiaryCategorySqlModel that = (BestiaryCategorySqlModel) o;
 
         return new EqualsBuilder()
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
+            .append(this.getLocation(), that.getLocation())
+            .append(this.getOrdinal(), that.getOrdinal())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -66,7 +89,10 @@ public class BestiaryTypeSqlModel implements BestiaryTypeModel, SqlModel {
             .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
+            .append(this.getLocation())
+            .append(this.getOrdinal())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

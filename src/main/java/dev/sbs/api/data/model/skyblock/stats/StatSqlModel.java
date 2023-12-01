@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_stats",
@@ -26,68 +27,60 @@ import java.time.Instant;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class StatSqlModel implements StatModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @Column(name = "symbol_code", length = 4)
     @Convert(converter = UnicodeConverter.class)
     private char symbol;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "format_key")
     private FormatSqlModel format;
 
-    @Getter
     @Setter
     @Column(name = "multipliable")
-    private boolean multipliable;
+    private boolean multiplicable;
 
-    @Getter
     @Setter
     @Column(name = "tunable", nullable = false)
     private boolean tunable;
 
-    @Getter
     @Setter
     @Column(name = "tuning_bonus", nullable = false)
     private Double tuningBonus;
 
-    @Getter
     @Setter
     @Column(name = "ordinal", nullable = false)
     private Integer ordinal;
 
-    @Getter
     @Setter
     @Column(name = "base_value", nullable = false)
     private Integer baseValue;
 
-    @Getter
     @Setter
     @Column(name = "max_value", nullable = false)
     private Integer maxValue;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -98,7 +91,7 @@ public class StatSqlModel implements StatModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.getSymbol(), that.getSymbol())
-            .append(this.isMultipliable(), that.isMultipliable())
+            .append(this.isMultiplicable(), that.isMultiplicable())
             .append(this.isTunable(), that.isTunable())
             .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
@@ -109,6 +102,7 @@ public class StatSqlModel implements StatModel, SqlModel {
             .append(this.getBaseValue(), that.getBaseValue())
             .append(this.getMaxValue(), that.getMaxValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -120,13 +114,14 @@ public class StatSqlModel implements StatModel, SqlModel {
             .append(this.getName())
             .append(this.getSymbol())
             .append(this.getFormat())
-            .append(this.isMultipliable())
+            .append(this.isMultiplicable())
             .append(this.isTunable())
             .append(this.getTuningBonus())
             .append(this.getOrdinal())
             .append(this.getBaseValue())
             .append(this.getMaxValue())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 

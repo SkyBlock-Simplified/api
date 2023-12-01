@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Map;
 
+@Getter
 @Entity
 @Table(
     name = "skyblock_potion_mixins",
@@ -27,49 +28,45 @@ import java.util.Map;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
 
-    @Getter
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Getter
     @Setter
-    @Id
-    @Column(name = "key", nullable = false, length = 256)
+    @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Getter
     @Setter
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "slayer_key", nullable = false)
     private SlayerSqlModel slayerRequirement;
 
-    @Getter
     @Setter
     @Column(name = "slayer_level", nullable = false)
     private Integer slayerLevelRequirement;
 
-    @Getter
     @Setter
     @Column(name = "effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> effects;
 
-    @Getter
     @Setter
     @Column(name = "buff_effects", nullable = false)
     @Convert(converter = StringDoubleMapConverter.class)
     private Map<String, Double> buffEffects;
 
-    @Getter
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @UpdateTimestamp
+    @Column(name = "submitted_at", nullable = false)
+    private Instant submittedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -84,7 +81,10 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
             .append(this.getName(), that.getName())
             .append(this.getSlayerRequirement(), that.getSlayerRequirement())
             .append(this.getSlayerLevelRequirement(), that.getSlayerLevelRequirement())
+            .append(this.getEffects(), that.getEffects())
+            .append(this.getBuffEffects(), that.getBuffEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
+            .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
     }
 
@@ -96,7 +96,10 @@ public class PotionMixinSqlModel implements PotionMixinModel, SqlModel {
             .append(this.getName())
             .append(this.getSlayerRequirement())
             .append(this.getSlayerLevelRequirement())
+            .append(this.getEffects())
+            .append(this.getBuffEffects())
             .append(this.getUpdatedAt())
+            .append(this.getSubmittedAt())
             .build();
     }
 
