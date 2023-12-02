@@ -13,16 +13,18 @@ import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Type;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockImagesResponse {
 
-    @Getter private final ConcurrentMap<String, Image> items;
+    private final ConcurrentMap<String, Image> items;
 
+    @Getter
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Image {
 
-        @Getter private final String normal;
-        @Getter private final String enchanted;
+        private final String normal;
+        private final String enchanted;
 
     }
 

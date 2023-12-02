@@ -15,10 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SkyBlockItemsResponse {
 
-    @Getter private final ConcurrentMap<String, String> items;
+    private final ConcurrentMap<String, String> items;
 
     public Optional<String> getItemId(@NotNull String itemId) {
         return Optional.ofNullable(this.getItems().get(itemId));
@@ -36,13 +37,13 @@ public class SkyBlockItemsResponse {
 
         @Override
         public SkyBlockItemsResponse deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
-            return new SkyBlockItemsResponse(Concurrent.newUnmodifiableMap(
+            return new SkyBlockItemsResponse(
                 jsonElement.getAsJsonObject()
                     .entrySet()
                     .stream()
                     .map(entry -> Pair.of(entry.getKey(), entry.getValue().getAsString()))
-                    .collect(Concurrent.toMap())
-            ));
+                    .collect(Concurrent.toUnmodifiableMap())
+            );
         }
 
     }
