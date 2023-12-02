@@ -20,7 +20,7 @@ public abstract class DataConfig<T extends Model> {
     protected abstract @NotNull DataSession<T> createSession();
 
     public final boolean isLogLevel(@NotNull Level level) {
-        return level.intLevel() >= this.getLogLevel().intLevel();
+        return this.getLogLevel().intLevel() >= level.intLevel();
     }
 
     private @NotNull ConcurrentList<Class<T>> loadModels() {
