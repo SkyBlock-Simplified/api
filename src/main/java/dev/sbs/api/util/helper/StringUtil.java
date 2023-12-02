@@ -2039,8 +2039,8 @@ public class StringUtil {
         return null;
     }
 
-    public static Optional<String> formatNullable(@PrintFormat @Nullable String format, @NotNull Object... objects) {
-        return Optional.ofNullable(Objects.isNull(format) ? null : String.format(format, objects));
+    public static Optional<String> formatNullable(@PrintFormat @Nullable String format, @Nullable Object... args) {
+        return Optional.ofNullable(Objects.isNull(format) ? null : String.format(format, args));
     }
 
     /**
