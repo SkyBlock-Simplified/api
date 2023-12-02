@@ -2,6 +2,7 @@ package dev.sbs.api.manager;
 
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.Model;
+import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
@@ -19,7 +20,11 @@ import org.jetbrains.annotations.NotNull;
 public class ServiceManager extends Manager<Class<?>, Object> {
 
     public ServiceManager() {
-        super((entry, service) -> service.isAssignableFrom(entry.getKey()));
+        this(Mode.NORMAL);
+    }
+
+    public ServiceManager(@NotNull Mode mode) {
+        super((entry, service) -> service.isAssignableFrom(entry.getKey()), mode);
     }
 
     /**
@@ -89,14 +94,15 @@ public class ServiceManager extends Manager<Class<?>, Object> {
     }
 
     /**
-     * Registers or updates an instance for the given service class.
+     * Removes an instance for the given service class.
      *
      * @param service Service class.
-     * @param instance Instance of service.
      * @param <T> Type of service.
+     * @throws UnknownReferenceException When the given service class is not registered.
+     * @throws InsufficientModeException When the mode isn't {@link Mode#ALL}.
      */
-    public final <T> void replace(@NotNull Class<T> service, @NotNull T instance) {
-        super.replace(service, instance);
+    public final <T> void remove(@NotNull Class<T> service) throws InsufficientModeException, UnknownReferenceException {
+        super.remove(service);
     }
 
     /**
@@ -106,13 +112,9 @@ public class ServiceManager extends Manager<Class<?>, Object> {
      * @param instance Instance of service.
      * @param <T> Type of service.
      * @throws UnknownReferenceException When the given service class is not registered.
+     * @throws InsufficientModeException When the mode isn't {@link Mode#UPDATE} or higher.
      */
     public final <T> void update(@NotNull Class<T> service, @NotNull T instance) throws UnknownReferenceException {
-        if (!this.isRegistered(service))
-            throw SimplifiedException.of(UnknownReferenceException.class)
-                .withMessage(UnknownReferenceException.getMessage(service))
-                .build();
-
         super.update(service, instance);
     }
 

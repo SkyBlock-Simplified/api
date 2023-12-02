@@ -1,5 +1,6 @@
 package dev.sbs.api.manager;
 
+import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
@@ -19,7 +20,11 @@ import org.jetbrains.annotations.NotNull;
 public class BuilderManager extends Manager<Class<?>, Class<? extends CoreBuilder>> {
 
     public BuilderManager() {
-        super((entry, service) -> service.isAssignableFrom(entry.getKey()));
+        this(Mode.NORMAL);
+    }
+
+    public BuilderManager(@NotNull Mode mode) {
+        super((entry, service) -> service.isAssignableFrom(entry.getKey()), mode);
     }
 
     /**
@@ -84,15 +89,15 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends CoreBuilde
     }
 
     /**
-     * Registers or updates an instance for the given service class.
+     * Removes an instance for the given service class.
      *
      * @param service Service class.
-     * @param builder Builder class.
      * @param <T> Type of service.
-     * @param <B> Type of builder.
+     * @throws UnknownReferenceException When the given service class is not registered.
+     * @throws InsufficientModeException When the mode isn't {@link Mode#ALL}.
      */
-    public final <T, B extends CoreBuilder> void replace(@NotNull Class<T> service, @NotNull Class<B> builder) {
-        super.replace(service, builder);
+    public final <T> void remove(@NotNull Class<T> service) throws InsufficientModeException, UnknownReferenceException {
+        super.remove(service);
     }
 
     /**
@@ -103,13 +108,9 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends CoreBuilde
      * @param <T> Type of service.
      * @param <B> Type of builder.
      * @throws UnknownReferenceException When the given service class is not registered.
+     * @throws InsufficientModeException When the mode isn't {@link Mode#UPDATE} or higher.
      */
-    public final <T, B extends CoreBuilder> void update(@NotNull Class<T> service, @NotNull Class<B> builder) throws UnknownReferenceException {
-        if (!this.isRegistered(service))
-            throw SimplifiedException.of(UnknownReferenceException.class)
-                .withMessage(UnknownReferenceException.getMessage(service))
-                .build();
-
+    public final <T, B extends CoreBuilder> void update(@NotNull Class<T> service, @NotNull Class<B> builder) throws InsufficientModeException, UnknownReferenceException {
         super.update(service, builder);
     }
 

@@ -13,7 +13,11 @@ import java.util.function.BiFunction;
 public class KeyManager<K, V> extends Manager<K, V> {
 
     public KeyManager(@NotNull BiFunction<Map.Entry<K, V>, K, Boolean> keyMatcher) {
-        super(keyMatcher);
+        this(keyMatcher, Mode.NORMAL);
+    }
+
+    public KeyManager(@NotNull BiFunction<Map.Entry<K, V>, K, Boolean> keyMatcher, @NotNull Mode mode) {
+        super(keyMatcher, mode);
     }
 
 }
