@@ -10,6 +10,7 @@ import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.annotation.BuildFlag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ClassUtil;
@@ -36,6 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Allows for cached access to hidden fields, methods and classes.
@@ -235,6 +237,9 @@ public class Reflection<T> {
      */
     public final @NotNull ConcurrentSet<FieldAccessor> getFields() throws ReflectionException {
         ConcurrentSet<FieldAccessor> fieldAccessors = Concurrent.newSet();
+
+        if (!FIELD_CACHE_CLASS.containsKey(this.getName()))
+            FIELD_CACHE_CLASS.put(this.getName(), Concurrent.newMap());
 
         for (Field field : this.getType().getDeclaredFields()) {
             field.setAccessible(true);
@@ -807,6 +812,8 @@ public class Reflection<T> {
     }
 
     public static <T extends Builder<?>> void validateFlags(@NotNull T builder) {
+        ConcurrentMap<String, ConcurrentMap<FieldAccessor, Boolean>> invalidRequired = Concurrent.newMap();
+
         Reflection.of(builder.getClass())
             .getFields()
             .stream()
@@ -836,31 +843,34 @@ public class Reflection<T> {
                             invalid = ((Map<?, ?>) value).isEmpty();
                     }
 
-                    if (invalid) {
-                        throw SimplifiedException.of(ReflectionException.class)
-                            .withMessage("Field '%s' is required and is null/empty!", field.getType().getSimpleName())
-                            .build();
-                    }
+                    String invalidKey = Optional.ofNullable(StringUtil.stripToNull(flag.requireGroup())).orElse("_DEFAULT_");
+
+                    if (!invalidRequired.containsKey(invalidKey))
+                        invalidRequired.put(invalidKey, Concurrent.newMap());
+
+                    invalidRequired.get(invalidKey).put(field, invalid);
                 }
 
                 // Pattern
                 if (StringUtil.isNotEmpty(flag.pattern())) {
                     Object value = field.get(builder);
 
-                    if (value == null)
-                        invalid = true;
-                    else {
+                    if (value != null) {
                         Class<?> fieldType = field.getField().getType();
 
                         if (CharSequence.class.isAssignableFrom(fieldType)) {
                             CharSequence sequence = (CharSequence) value;
                             invalid = StringUtil.isEmpty(sequence) || !Pattern.compile(flag.pattern()).matcher(sequence).matches();
-                        } else if (value instanceof Optional<?>) {
-                            Optional<?> optional = (Optional<?>) value;
-                            final ParameterizedType parameterizedType = (ParameterizedType) field.getType().getGenericSuperclass();
-                            final Type actualType = parameterizedType.getActualTypeArguments()[0];
+                        } else if (value instanceof Optional<?> optional) {
+                            invalid = optional.map(String::valueOf)
+                                .map(str -> !str.matches(flag.pattern()))
+                                .orElse(false);
 
-                            String test = "here";
+                            if (optional.isPresent()) {
+                                value = optional.get();
+
+                                invalid = !String.valueOf(value).matches(flag.pattern());
+                            }
                         }
                     }
 
@@ -872,7 +882,63 @@ public class Reflection<T> {
                 }
 
                 // Length Limit
-                // TODO
+                if (flag.limit() >= 0) {
+                    Object value = field.get(builder);
+
+                    if (value != null) {
+                        Class<?> fieldType = field.getField().getType();
+
+                        if (CharSequence.class.isAssignableFrom(fieldType)) {
+                            CharSequence sequence = (CharSequence) value;
+                            invalid = StringUtil.length(sequence) < flag.limit();
+                        } else if (value instanceof Optional<?> optional) {
+                            final ParameterizedType parameterizedType = (ParameterizedType) field.getField().getGenericType();
+                            final Type actualType = parameterizedType.getActualTypeArguments()[0];
+
+                            if (String.class.isAssignableFrom((Class<?>) actualType)) {
+                                invalid = optional.map(String::valueOf)
+                                    .map(StringUtil::length)
+                                    .map(length -> length < flag.limit())
+                                    .orElse(false);
+                            }
+                        }
+                    }
+
+                    if (invalid) {
+                        throw SimplifiedException.of(ReflectionException.class)
+                            .withMessage("Field '%s' does not have length of '%s' or higher!", field.getType().getSimpleName(), flag.limit())
+                            .build();
+                    }
+                }
+            });
+
+        // Handle Invalid Required
+        invalidRequired.get("_DEFAULT_")
+            .pairStream()
+            .filterValue(Boolean::booleanValue)
+            .findFirst()
+            .ifPresentOrElse(pair -> {
+                throw SimplifiedException.of(ReflectionException.class)
+                    .withMessage("Field '%s' is required and is null/empty!", pair.getLeft().getField().getName())
+                    .build();
+            }, () -> {
+                invalidRequired.pairStream()
+                    .filterKey(key -> !key.equals("_DEFAULT_"))
+                    .filter((key, fields) -> fields.pairStream().allMatch((field, invalid) -> invalid))
+                    .findFirst()
+                    .ifPresent(invalidGroup -> {
+                        throw SimplifiedException.of(ReflectionException.class)
+                            .withMessage(
+                                "Field group '%s' is required and [%s] is null/empty!",
+                                invalidGroup.getKey(),
+                                invalidGroup.getValue()
+                                    .pairStream()
+                                    .filterValue(Boolean::booleanValue)
+                                    .map((field, invalid) -> field.getField().getName())
+                                    .collect(Collectors.joining(","))
+                            )
+                            .build();
+                    });
             });
     }
 

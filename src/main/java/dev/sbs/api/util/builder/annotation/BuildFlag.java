@@ -25,6 +25,13 @@ public @interface BuildFlag {
     boolean required() default false;
 
     /**
+     * Match only one required field in the same group.
+     * <br><br>
+     * Checks null, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
+     */
+    @NotNull String requireGroup() default "";
+
+    /**
      * Should field match a specific RegExp pattern.
      */
     @Language("RegExp")
