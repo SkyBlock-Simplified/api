@@ -2,27 +2,26 @@ package dev.sbs.api.data;
 
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.Model;
+import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class DataSession<T extends Model> {
 
     @Getter(AccessLevel.NONE)
-    protected final @NotNull ServiceManager serviceManager = new ServiceManager();
+    protected final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.ALL);
     protected final @NotNull ConcurrentList<Class<T>> models;
     protected boolean active;
     protected boolean cached = false;
     protected long initializationTime;
     protected long startupTime;
-
-    protected DataSession(@NotNull ConcurrentList<Class<T>> models) {
-        this.models = models;
-    }
 
     protected abstract void addRepository(@NotNull Class<? extends T> model);
 
