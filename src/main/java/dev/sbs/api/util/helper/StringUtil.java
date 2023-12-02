@@ -577,7 +577,7 @@ public class StringUtil {
      * @return capitalized String, {@code null} if null String input
      */
     public static String capitalizeFully(final String str) {
-        return capitalizeFully(str, (Character) null);
+        return capitalizeFully(str, null);
     }
 
     /**
