@@ -58,7 +58,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
         return builder()
             .withDriver(SqlDriver.MariaDB)
             .withHost(ResourceUtil.getEnv("DATABASE_HOST"))
-            .withPort(ResourceUtil.getEnv("DATABASE_HOST").map(NumberUtil::tryParseInt))
+            .withPort(ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt))
             .withSchema(ResourceUtil.getEnv("DATABASE_SCHEMA"))
             .withUser(ResourceUtil.getEnv("DATABASE_USER"))
             .withPassword(ResourceUtil.getEnv("DATABASE_PASSWORD"))
