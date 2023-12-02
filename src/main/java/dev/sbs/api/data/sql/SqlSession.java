@@ -40,18 +40,18 @@ public final class SqlSession extends DataSession<SqlModel> {
 
     @Override
     protected void addRepository(@NotNull Class<? extends SqlModel> model) {
-        this.serviceManager.add(model, new SqlRepository<>(this, model));
+        this.serviceManager.addRepository(model, new SqlRepository<>(this, model));
     }
 
-    private Class<SqlModel> buildCacheConfiguration(Class<SqlModel> tClass) {
+    private Class<SqlModel> buildCacheConfiguration(@NotNull Class<SqlModel> tClass) {
         this.buildCacheConfiguration(tClass.getName(), __ -> Duration.ETERNAL);
         return tClass;
     }
 
-    private void buildCacheConfiguration(String cacheName, Function<SqlConfig, Duration> function) {
+    private void buildCacheConfiguration(@NotNull String cacheName, @NotNull Function<SqlConfig, Duration> function) {
         // Build Configuration
         MutableConfiguration<Object, Object> cacheConfiguration = new MutableConfiguration<>()
-            .setStoreByValue(false)
+            .setStoreByValue(false) // IdentityCopier = false
             .setExpiryPolicyFactory(ModifiedExpiryPolicy.factoryOf(function.apply(this.getConfig())));
 
         // Set Configuration
@@ -61,8 +61,7 @@ public final class SqlSession extends DataSession<SqlModel> {
 
     @Override
     protected void build() {
-        // Build Service Registry
-        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+        // Build Properties
         Properties properties = new Properties() {{
             // Connection
             put("hibernate.dialect", config.getDriver().getDialectClass());
@@ -97,8 +96,17 @@ public final class SqlSession extends DataSession<SqlModel> {
             // Hikari
             put("hikari.maximumPoolSize", 20);
         }};
-        registryBuilder.applySettings(properties);
-        this.serviceRegistry = registryBuilder.build();
+
+        /*BootstrapServiceRegistry bootstrapRegistry = new BootstrapServiceRegistryBuilder()
+            .applyIntegrator(new MyEventListenerIntegrator()) // Integrator
+            // EventListenerRegistry eventListenerRegistry = (SessionFactoryServiceRegistry) serviceRegistry.getService(EventListenerRegistry.class)
+            // eventListenerRegistry.getEventListenerGroup(EventType.REFRESH).appendListener(new RefreshEventListener())
+            .build();*/
+
+        // Build Service Registry
+        this.serviceRegistry = new StandardServiceRegistryBuilder(/*bootstrapRegistry*/)
+            .applySettings(properties)
+            .build();
 
         // Register SqlModel Classes
         MetadataSources sources = new MetadataSources(this.serviceRegistry);
@@ -143,6 +151,7 @@ public final class SqlSession extends DataSession<SqlModel> {
     public void shutdown() {
         super.shutdown();
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
+        super.serviceManager.clear();
 
         if (this.getSessionFactory() != null)
             this.getSessionFactory().close();
