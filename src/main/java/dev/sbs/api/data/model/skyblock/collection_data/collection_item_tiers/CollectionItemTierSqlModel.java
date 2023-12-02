@@ -11,7 +11,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
@@ -30,17 +37,14 @@ import java.util.List;
 public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_item_id", nullable = false)
+    @JoinColumn(name = "collection_item_id", referencedColumnName = "item_id")
     private CollectionItemSqlModel collectionItem;
 
+    @Id
     @Setter
-    @Column(name = "tier", nullable = false)
+    @Column(name = "tier")
     private Integer tier;
 
     @Setter
@@ -68,7 +72,6 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
         CollectionItemTierSqlModel that = (CollectionItemTierSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getCollectionItem(), that.getCollectionItem())
             .append(this.getTier(), that.getTier())
             .append(this.getAmountRequired(), that.getAmountRequired())
@@ -81,7 +84,6 @@ public class CollectionItemTierSqlModel implements CollectionItemTierModel, SqlM
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getCollectionItem())
             .append(this.getTier())
             .append(this.getAmountRequired())

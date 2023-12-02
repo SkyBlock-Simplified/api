@@ -45,7 +45,7 @@ public class BonusPetAbilityStatSqlModel implements BonusPetAbilityStatModel, Sq
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "ability_key", nullable = false)
+    @JoinColumn(name = "ability_key", referencedColumnName = "key", nullable = false)
     private PetAbilitySqlModel petAbility;
 
     @Setter

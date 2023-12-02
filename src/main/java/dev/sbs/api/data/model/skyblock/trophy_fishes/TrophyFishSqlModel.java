@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -39,12 +37,8 @@ import java.time.Instant;
 public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -53,12 +47,12 @@ public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key", nullable = false)
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key", nullable = false)
     private RaritySqlModel rarity;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_area_key")
+    @JoinColumn(name = "location_area_key", referencedColumnName = "key")
     private LocationAreaSqlModel locationArea;
 
     @UpdateTimestamp
@@ -77,7 +71,6 @@ public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
         TrophyFishSqlModel that = (TrophyFishSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getRarity(), that.getRarity())
@@ -90,7 +83,6 @@ public class TrophyFishSqlModel implements TrophyFishModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getRarity())

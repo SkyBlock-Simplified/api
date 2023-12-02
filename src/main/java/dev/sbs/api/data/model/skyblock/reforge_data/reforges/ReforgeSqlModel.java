@@ -14,8 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,12 +30,8 @@ import java.util.List;
 public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -46,7 +40,7 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", unique = true)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id", unique = true)
     private ItemSqlModel item;
 
     @Setter
@@ -70,7 +64,6 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
         ReforgeSqlModel that = (ReforgeSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getItem(), that.getItem())
@@ -83,7 +76,6 @@ public class ReforgeSqlModel implements ReforgeModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getItem())

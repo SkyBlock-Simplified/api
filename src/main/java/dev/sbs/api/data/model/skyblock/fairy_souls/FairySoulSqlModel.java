@@ -61,12 +61,12 @@ public class FairySoulSqlModel implements FairySoulModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key")
+    @JoinColumn(name = "location_key", referencedColumnName = "key")
     private LocationSqlModel location;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_area_key")
+    @JoinColumn(name = "location_area_key", referencedColumnName = "key")
     private LocationAreaSqlModel locationArea;
 
     @Setter

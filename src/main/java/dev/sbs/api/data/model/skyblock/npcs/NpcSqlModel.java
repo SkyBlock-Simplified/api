@@ -48,6 +48,10 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     private Long id;
 
     @Setter
+    @Column(name = "key")
+    private String key;
+
+    @Setter
     @Column(name = "x")
     private Double x;
 
@@ -60,21 +64,17 @@ public class NpcSqlModel implements NpcModel, SqlModel {
     private Double z;
 
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
-    private String key;
-
-    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key")
+    @JoinColumn(name = "location_key", referencedColumnName = "key")
     private LocationSqlModel location;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_area_key")
+    @JoinColumn(name = "location_area_key", referencedColumnName = "key")
     private LocationAreaSqlModel locationArea;
 
     @UpdateTimestamp

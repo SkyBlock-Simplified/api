@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -35,12 +33,8 @@ import java.time.Instant;
 public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -49,7 +43,7 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key", nullable = false)
+    @JoinColumn(name = "location_key", referencedColumnName = "key", nullable = false)
     private LocationSqlModel location;
 
     @UpdateTimestamp
@@ -68,7 +62,6 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
         LocationAreaSqlModel that = (LocationAreaSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getLocation(), that.getLocation())
@@ -80,7 +73,6 @@ public class LocationAreaSqlModel implements LocationAreaModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getLocation())

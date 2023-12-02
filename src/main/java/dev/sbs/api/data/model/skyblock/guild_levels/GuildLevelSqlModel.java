@@ -11,8 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -26,10 +24,6 @@ import java.time.Instant;
 public class GuildLevelSqlModel implements GuildLevelModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @Column(name = "level", nullable = false, unique = true)
     private Integer level;
@@ -54,7 +48,6 @@ public class GuildLevelSqlModel implements GuildLevelModel, SqlModel {
         GuildLevelSqlModel that = (GuildLevelSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getLevel(), that.getLevel())
             .append(this.getTotalExpRequired(), that.getTotalExpRequired())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -65,7 +58,6 @@ public class GuildLevelSqlModel implements GuildLevelModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getLevel())
             .append(this.getTotalExpRequired())
             .append(this.getUpdatedAt())

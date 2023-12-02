@@ -39,7 +39,7 @@ public class BonusItemStatSqlModel implements BonusItemStatModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id", nullable = false)
     private ItemSqlModel item;
 
     @Setter

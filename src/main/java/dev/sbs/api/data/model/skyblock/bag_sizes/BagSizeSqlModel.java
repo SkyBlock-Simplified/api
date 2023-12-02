@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -37,17 +35,14 @@ import java.time.Instant;
 public class BagSizeSqlModel implements BagSizeModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "bag_key", nullable = false)
+    @JoinColumn(name = "bag_key", referencedColumnName = "key")
     private BagSqlModel bag;
 
+    @Id
     @Setter
-    @Column(name = "collection_tier", nullable = false)
+    @Column(name = "collection_tier")
     private Integer collectionTier;
 
     @Setter
@@ -70,7 +65,6 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
         BagSizeSqlModel that = (BagSizeSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getBag(), that.getBag())
             .append(this.getCollectionTier(), that.getCollectionTier())
             .append(this.getSlotCount(), that.getSlotCount())
@@ -82,7 +76,6 @@ public class BagSizeSqlModel implements BagSizeModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getBag())
             .append(this.getCollectionTier())
             .append(this.getSlotCount())

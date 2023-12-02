@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -40,18 +38,15 @@ import java.time.Instant;
 public class ReforgeConditionSqlModel implements ReforgeConditionModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "reforge_key", nullable = false)
+    @JoinColumn(name = "reforge_key", referencedColumnName = "key")
     private ReforgeSqlModel reforge;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @UpdateTimestamp
@@ -70,7 +65,6 @@ public class ReforgeConditionSqlModel implements ReforgeConditionModel, SqlModel
         ReforgeConditionSqlModel that = (ReforgeConditionSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
             .append(this.getItem(), that.getItem())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -81,7 +75,6 @@ public class ReforgeConditionSqlModel implements ReforgeConditionModel, SqlModel
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getReforge())
             .append(this.getItem())
             .append(this.getUpdatedAt())

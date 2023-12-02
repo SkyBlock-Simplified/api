@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -35,12 +33,8 @@ import java.time.Instant;
 public class GemstoneSqlModel implements GemstoneModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -49,7 +43,7 @@ public class GemstoneSqlModel implements GemstoneModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", referencedColumnName = "key", nullable = false)
     private StatSqlModel stat;
 
     @UpdateTimestamp
@@ -68,7 +62,6 @@ public class GemstoneSqlModel implements GemstoneModel, SqlModel {
         GemstoneSqlModel that = (GemstoneSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getStat(), that.getStat())
@@ -80,7 +73,6 @@ public class GemstoneSqlModel implements GemstoneModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getStat())

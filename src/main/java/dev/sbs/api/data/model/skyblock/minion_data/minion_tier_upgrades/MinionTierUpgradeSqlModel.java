@@ -49,7 +49,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion_tier", nullable = false)
+    @JoinColumn(name = "minion_tier", referencedColumnName = "tier", nullable = false)
     private MinionTierSqlModel minionTier;
 
     @Setter
@@ -58,7 +58,7 @@ public class MinionTierUpgradeSqlModel implements MinionTierUpgradeModel, SqlMod
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_cost")
+    @JoinColumn(name = "item_cost", referencedColumnName = "item_id")
     private ItemSqlModel itemCost;
 
     @Setter

@@ -11,7 +11,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
@@ -33,23 +40,20 @@ import java.util.List;
 public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "group_key", nullable = false)
+    @Column(name = "group_key")
     private String groupKey;
 
-    @Setter
-    @Column(name = "item_types", nullable = false)
-    @Convert(converter = StringListConverter.class)
-    private List<String> itemTypes;
-
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", referencedColumnName = "key")
     private StatSqlModel stat;
+
+    @Setter
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "item_types", nullable = false)
+    private List<String> itemTypes;
 
     @Setter
     @Column(name = "value", nullable = false)
@@ -71,7 +75,6 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
         HotPotatoStatSqlModel that = (HotPotatoStatSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getGroupKey(), that.getGroupKey())
             .append(this.getItemTypes(), that.getItemTypes())
             .append(this.getStat(), that.getStat())
@@ -84,7 +87,6 @@ public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getGroupKey())
             .append(this.getItemTypes())
             .append(this.getStat())

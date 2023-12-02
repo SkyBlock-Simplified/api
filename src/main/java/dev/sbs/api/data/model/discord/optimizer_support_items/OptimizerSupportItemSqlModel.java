@@ -15,8 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,13 +31,9 @@ import java.util.Map;
 public class OptimizerSupportItemSqlModel implements OptimizerSupportItemModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @Setter
@@ -63,7 +57,6 @@ public class OptimizerSupportItemSqlModel implements OptimizerSupportItemModel, 
         OptimizerSupportItemSqlModel that = (OptimizerSupportItemSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getEffects(), that.getEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -74,7 +67,6 @@ public class OptimizerSupportItemSqlModel implements OptimizerSupportItemModel, 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getItem())
             .append(this.getEffects())
             .append(this.getUpdatedAt())

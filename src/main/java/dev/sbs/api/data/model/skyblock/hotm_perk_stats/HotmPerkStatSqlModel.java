@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -37,18 +35,15 @@ import java.time.Instant;
 public class HotmPerkStatSqlModel implements HotmPerkStatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "perk_key", nullable = false)
+    @JoinColumn(name = "perk_key", referencedColumnName = "key")
     private HotmPerkSqlModel perk;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", referencedColumnName = "key")
     private StatSqlModel stat;
 
     @UpdateTimestamp
@@ -67,7 +62,6 @@ public class HotmPerkStatSqlModel implements HotmPerkStatModel, SqlModel {
         HotmPerkStatSqlModel that = (HotmPerkStatSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getPerk(), that.getPerk())
             .append(this.getStat(), that.getStat())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -78,7 +72,6 @@ public class HotmPerkStatSqlModel implements HotmPerkStatModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getPerk())
             .append(this.getStat())
             .append(this.getUpdatedAt())

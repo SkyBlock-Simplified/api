@@ -14,8 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -43,24 +41,21 @@ import java.time.Instant;
 public class MinionItemSqlModel implements MinionItemModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion_key", nullable = false)
+    @JoinColumn(name = "minion_key", referencedColumnName = "key")
     private MinionSqlModel minion;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_item_id")
-    private CollectionItemSqlModel collectionItem;
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
+    private ItemSqlModel item;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
-    private ItemSqlModel item;
+    @JoinColumn(name = "collection_item_id", referencedColumnName = "item_id")
+    private CollectionItemSqlModel collectionItem;
 
     @Setter
     @Column(name = "average_yield", nullable = false)
@@ -82,7 +77,6 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
         MinionItemSqlModel that = (MinionItemSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getMinion(), that.getMinion())
             .append(this.getCollectionItem(), that.getCollectionItem())
             .append(this.getItem(), that.getItem())
@@ -95,7 +89,6 @@ public class MinionItemSqlModel implements MinionItemModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getMinion())
             .append(this.getCollectionItem())
             .append(this.getItem())

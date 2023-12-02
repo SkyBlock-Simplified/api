@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,13 +27,9 @@ import java.time.Instant;
 public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "enchantment_key", nullable = false, unique = true)
+    @JoinColumn(name = "enchantment_key", referencedColumnName = "key")
     private EnchantmentSqlModel enchantment;
 
     @Setter
@@ -58,7 +52,6 @@ public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, 
         ShopBitEnchantedBookSqlModel that = (ShopBitEnchantedBookSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
             .append(this.getBitCost(), that.getBitCost())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -69,7 +62,6 @@ public class ShopBitEnchantedBookSqlModel implements ShopBitEnchantedBookModel, 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getEnchantment())
             .append(this.getBitCost())
             .append(this.getUpdatedAt())

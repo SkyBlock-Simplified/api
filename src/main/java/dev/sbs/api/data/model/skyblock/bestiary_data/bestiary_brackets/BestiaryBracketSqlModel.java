@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
@@ -37,16 +35,13 @@ import java.time.Instant;
 public class BestiaryBracketSqlModel implements BestiaryBracketModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "bracket", nullable = false)
+    @Column(name = "bracket")
     private Integer bracket;
 
+    @Id
     @Setter
-    @Column(name = "tier", nullable = false)
+    @Column(name = "tier")
     private Integer tier;
 
     @Setter
@@ -69,7 +64,6 @@ public class BestiaryBracketSqlModel implements BestiaryBracketModel, SqlModel {
         BestiaryBracketSqlModel that = (BestiaryBracketSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getBracket(), that.getBracket())
             .append(this.getTier(), that.getTier())
             .append(this.getTotalKillsRequired(), that.getTotalKillsRequired())
@@ -81,7 +75,6 @@ public class BestiaryBracketSqlModel implements BestiaryBracketModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getBracket())
             .append(this.getTier())
             .append(this.getTotalKillsRequired())

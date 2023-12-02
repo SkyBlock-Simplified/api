@@ -12,7 +12,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
@@ -37,22 +44,19 @@ import java.util.Map;
 public class PotionTierSqlModel implements PotionTierModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "potion_key", nullable = false)
+    @JoinColumn(name = "potion_key", referencedColumnName = "key")
     private PotionSqlModel potion;
 
+    @Id
     @Setter
-    @Column(name = "tier", nullable = false)
+    @Column(name = "tier")
     private Integer tier;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "ingredient_item_id")
+    @JoinColumn(name = "ingredient_item_id", referencedColumnName = "item_id")
     private ItemSqlModel ingredientItem;
 
     @Setter
@@ -93,7 +97,6 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
         PotionTierSqlModel that = (PotionTierSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getPotion(), that.getPotion())
             .append(this.getTier(), that.getTier())
             .append(this.getIngredientItem(), that.getIngredientItem())
@@ -110,7 +113,6 @@ public class PotionTierSqlModel implements PotionTierModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getPotion())
             .append(this.getTier())
             .append(this.getIngredientItem())

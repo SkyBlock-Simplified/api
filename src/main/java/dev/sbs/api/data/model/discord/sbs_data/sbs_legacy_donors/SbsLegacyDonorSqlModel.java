@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -27,10 +25,6 @@ import java.time.Instant;
 public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Long id;
-
     @Setter
     @Column(name = "discord_id", nullable = false, unique = true)
     private Long discordId;
@@ -55,7 +49,6 @@ public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
         SbsLegacyDonorSqlModel that = (SbsLegacyDonorSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getDiscordId(), that.getDiscordId())
             .append(this.getAmount(), that.getAmount())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -66,7 +59,6 @@ public class SbsLegacyDonorSqlModel implements SbsLegacyDonorModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getDiscordId())
             .append(this.getAmount())
             .append(this.getUpdatedAt())

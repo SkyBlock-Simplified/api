@@ -39,12 +39,12 @@ public class PetAbilityStatSqlModel implements PetAbilityStatModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "ability_key", nullable = false)
+    @JoinColumn(name = "ability_key", referencedColumnName = "key", nullable = false)
     private PetAbilitySqlModel ability;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key")
+    @JoinColumn(name = "stat_key", referencedColumnName = "key")
     private StatSqlModel stat;
 
     @Setter

@@ -11,8 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -26,10 +24,6 @@ import java.time.Instant;
 public class PotionSqlModel implements PotionModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @Column(name = "key", nullable = false, unique = true)
     private String key;
@@ -63,7 +57,6 @@ public class PotionSqlModel implements PotionModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.isBuff(), that.isBuff())
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
@@ -75,7 +68,6 @@ public class PotionSqlModel implements PotionModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())

@@ -5,8 +5,6 @@ import java.time.Instant;
 
 public interface Model extends Serializable {
 
-    Long getId();
-
     Instant getUpdatedAt();
 
     Instant getSubmittedAt();

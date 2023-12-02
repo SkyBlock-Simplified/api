@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -29,12 +27,8 @@ import java.util.Map;
 public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "level", nullable = false)
+    @Column(name = "level")
     private Integer level;
 
     @Setter
@@ -71,7 +65,6 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
         DungeonLevelSqlModel that = (DungeonLevelSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getLevel(), that.getLevel())
             .append(this.getTotalExpRequired(), that.getTotalExpRequired())
             .append(this.getStatMultiplier(), that.getStatMultiplier())
@@ -85,7 +78,6 @@ public class DungeonLevelSqlModel implements DungeonLevelModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getLevel())
             .append(this.getTotalExpRequired())
             .append(this.getStatMultiplier())

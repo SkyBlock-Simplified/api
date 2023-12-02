@@ -11,7 +11,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
@@ -29,12 +36,8 @@ import java.util.List;
 public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -43,7 +46,7 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "family_key", nullable = false)
+    @JoinColumn(name = "family_key", referencedColumnName = "key", nullable = false)
     private EnchantmentFamilySqlModel family;
 
     @Setter
@@ -75,7 +78,6 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
         EnchantmentSqlModel that = (EnchantmentSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getFamily(), that.getFamily())
@@ -90,7 +92,6 @@ public class EnchantmentSqlModel implements EnchantmentModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getFamily())

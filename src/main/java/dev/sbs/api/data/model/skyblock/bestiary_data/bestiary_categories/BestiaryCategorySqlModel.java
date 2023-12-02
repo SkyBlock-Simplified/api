@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -36,12 +34,8 @@ import java.time.Instant;
 public class BestiaryCategorySqlModel implements BestiaryCategoryModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -50,11 +44,11 @@ public class BestiaryCategorySqlModel implements BestiaryCategoryModel, SqlModel
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "location_key")
+    @JoinColumn(name = "location_key", referencedColumnName = "key")
     private LocationSqlModel location;
 
     @Setter
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "ordinal", nullable = false, unique = true)
     private Integer ordinal;
 
     @UpdateTimestamp
@@ -73,7 +67,6 @@ public class BestiaryCategorySqlModel implements BestiaryCategoryModel, SqlModel
         BestiaryCategorySqlModel that = (BestiaryCategorySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getLocation(), that.getLocation())
@@ -86,7 +79,6 @@ public class BestiaryCategorySqlModel implements BestiaryCategoryModel, SqlModel
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getLocation())

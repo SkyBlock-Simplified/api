@@ -15,8 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -47,12 +45,8 @@ import java.time.Instant;
 public class PetSqlModel implements PetModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -61,17 +55,17 @@ public class PetSqlModel implements PetModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "lowest_rarity_key")
+    @JoinColumn(name = "lowest_rarity_key", referencedColumnName = "key")
     private RaritySqlModel lowestRarity;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "skill_key")
+    @JoinColumn(name = "skill_key", referencedColumnName = "key")
     private SkillSqlModel skill;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_type_key")
+    @JoinColumn(name = "pet_type_key", referencedColumnName = "key")
     private PetTypeSqlModel petType;
 
     @Setter
@@ -80,7 +74,7 @@ public class PetSqlModel implements PetModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "emoji_key")
+    @JoinColumn(name = "emoji_key", referencedColumnName = "key")
     private EmojiSqlModel emoji;
 
     @Setter
@@ -103,7 +97,6 @@ public class PetSqlModel implements PetModel, SqlModel {
         PetSqlModel that = (PetSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getLowestRarity(), that.getLowestRarity())
@@ -120,7 +113,6 @@ public class PetSqlModel implements PetModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getLowestRarity())

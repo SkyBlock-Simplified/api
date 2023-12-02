@@ -18,8 +18,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -38,16 +36,16 @@ import java.util.UUID;
             unique = true
         ),
         @Index(
-            columnList = "group_key"
-        ),
-        @Index(
-            columnList = "parent_key"
-        ),
-        @Index(
             columnList = "emoji_key"
         ),
         @Index(
             columnList = "category_key"
+        ),
+        @Index(
+            columnList = "group_key"
+        ),
+        @Index(
+            columnList = "parent_key"
         ),
         @Index(
             columnList = "guild_id"
@@ -58,13 +56,9 @@ import java.util.UUID;
 public class CommandSqlModel implements CommandModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @Type(type = "uuid-char")
-    @Column(name = "identifier", nullable = false)
+    @Column(name = "identifier")
     private UUID uniqueId;
 
     @Setter
@@ -148,7 +142,6 @@ public class CommandSqlModel implements CommandModel, SqlModel {
             .append(this.isPrivateChannelEnabled(), that.isPrivateChannelEnabled())
             .append(this.isDeveloperOnly(), that.isDeveloperOnly())
             .append(this.isEnabled(), that.isEnabled())
-            .append(this.getId(), that.getId())
             .append(this.getUniqueId(), that.getUniqueId())
             .append(this.getParent(), that.getParent())
             .append(this.getGroup(), that.getGroup())
@@ -168,7 +161,6 @@ public class CommandSqlModel implements CommandModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getUniqueId())
             .append(this.getParent())
             .append(this.getGroup())

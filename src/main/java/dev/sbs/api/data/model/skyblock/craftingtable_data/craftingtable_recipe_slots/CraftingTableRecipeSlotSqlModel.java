@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -41,18 +39,15 @@ import java.time.Instant;
 public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "recipe_key", nullable = false)
+    @JoinColumn(name = "recipe_key", referencedColumnName = "key")
     private CraftingTableRecipeSqlModel recipe;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "slot_key", nullable = false)
+    @JoinColumn(name = "slot_key", referencedColumnName = "key")
     private CraftingTableSlotSqlModel slot;
 
     @Setter
@@ -75,7 +70,6 @@ public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotM
         CraftingTableRecipeSlotSqlModel that = (CraftingTableRecipeSlotSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getRecipe(), that.getRecipe())
             .append(this.getSlot(), that.getSlot())
             .append(this.getOrdinal(), that.getOrdinal())
@@ -87,7 +81,6 @@ public class CraftingTableRecipeSlotSqlModel implements CraftingTableRecipeSlotM
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getRecipe())
             .append(this.getSlot())
             .append(this.getOrdinal())

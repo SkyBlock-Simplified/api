@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -27,12 +25,8 @@ import java.time.Instant;
 public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -65,7 +59,6 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
         return new EqualsBuilder()
             .append(this.isReforgesStackable(), that.isReforgesStackable())
             .append(this.isStatsStackable(), that.isStatsStackable())
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -76,7 +69,6 @@ public class AccessoryFamilySqlModel implements AccessoryFamilyModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.isReforgesStackable())

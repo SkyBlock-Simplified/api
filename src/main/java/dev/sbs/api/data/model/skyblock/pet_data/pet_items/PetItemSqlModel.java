@@ -15,8 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,13 +31,9 @@ import java.util.Map;
 public class PetItemSqlModel implements PetItemModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id", nullable = false, unique = true)
     private ItemSqlModel item;
 
     @Setter
@@ -49,10 +43,6 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
     @Setter
     @Column(name = "percentage", nullable = false)
     private boolean percentage;
-
-    @Setter
-    @Column(name = "rarity_boost", nullable = false)
-    private boolean rarityBoost;
 
     @Setter
     @Column(name = "effects", nullable = false)
@@ -81,8 +71,6 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.isPercentage(), that.isPercentage())
-            .append(this.isRarityBoost(), that.isRarityBoost())
-            .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getDescription(), that.getDescription())
             .append(this.getEffects(), that.getEffects())
@@ -95,11 +83,9 @@ public class PetItemSqlModel implements PetItemModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getItem())
             .append(this.getDescription())
             .append(this.isPercentage())
-            .append(this.isRarityBoost())
             .append(this.getEffects())
             .append(this.getBuffEffects())
             .append(this.getUpdatedAt())

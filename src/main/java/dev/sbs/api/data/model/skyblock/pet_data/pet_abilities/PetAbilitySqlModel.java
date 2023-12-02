@@ -10,8 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -25,10 +23,6 @@ import java.time.Instant;
     name = "skyblock_pet_abilities",
     indexes = {
         @Index(
-            columnList = "pet_key, key",
-            unique = true
-        ),
-        @Index(
             columnList = "pet_key, ordinal",
             unique = true
         )
@@ -38,10 +32,6 @@ import java.time.Instant;
 public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @Column(name = "key", nullable = false)
     private String key;
@@ -52,7 +42,7 @@ public class PetAbilitySqlModel implements PetAbilityModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "pet_key", nullable = false)
+    @JoinColumn(name = "pet_key", referencedColumnName = "key", nullable = false)
     private PetSqlModel pet;
 
     @Setter

@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -37,22 +35,19 @@ import java.time.Instant;
 public class GuildReputationTypeSqlModel implements GuildReputationTypeModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
-    private GuildSqlModel guild;
-
-    @Setter
-    @Column(name = "key", nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Id
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id")
+    private GuildSqlModel guild;
 
     @Setter
     @Column(name = "description")
@@ -79,7 +74,6 @@ public class GuildReputationTypeSqlModel implements GuildReputationTypeModel, Sq
 
         return new EqualsBuilder()
             .append(this.isEnabled(), that.isEnabled())
-            .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
@@ -92,7 +86,6 @@ public class GuildReputationTypeSqlModel implements GuildReputationTypeModel, Sq
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getGuild())
             .append(this.getKey())
             .append(this.getName())

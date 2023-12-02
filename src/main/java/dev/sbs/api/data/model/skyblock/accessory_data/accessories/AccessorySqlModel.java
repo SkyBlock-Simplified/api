@@ -14,7 +14,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
@@ -39,13 +46,9 @@ import java.util.Map;
 public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @Setter
@@ -54,12 +57,12 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key", nullable = false)
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key", nullable = false)
     private RaritySqlModel rarity;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "family_key")
+    @JoinColumn(name = "family_key", referencedColumnName = "key")
     private AccessoryFamilySqlModel family;
 
     @Setter
@@ -87,7 +90,6 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
         AccessorySqlModel that = (AccessorySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getItem(), that.getItem())
             .append(this.getName(), that.getName())
             .append(this.getRarity(), that.getRarity())
@@ -102,7 +104,6 @@ public class AccessorySqlModel implements AccessoryModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getItem())
             .append(this.getName())
             .append(this.getRarity())

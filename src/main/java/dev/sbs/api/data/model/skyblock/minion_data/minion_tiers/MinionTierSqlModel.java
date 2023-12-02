@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -28,6 +26,10 @@ import java.time.Instant;
     name = "skyblock_minion_tiers",
     indexes = {
         @Index(
+            columnList = "tier, minion_key",
+            unique = true
+        ),
+        @Index(
             columnList = "minion_key"
         )
     }
@@ -36,19 +38,15 @@ import java.time.Instant;
 public class MinionTierSqlModel implements MinionTierModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "minion_key", nullable = false)
-    private MinionSqlModel minion;
-
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "tier", nullable = false, unique = true)
+    @JoinColumn(name = "tier", referencedColumnName = "item_id")
     private ItemSqlModel item;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "minion_key", referencedColumnName = "key")
+    private MinionSqlModel minion;
 
     @Setter
     @Column(name = "speed", nullable = false)
@@ -70,7 +68,6 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
         MinionTierSqlModel that = (MinionTierSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getMinion(), that.getMinion())
             .append(this.getItem(), that.getItem())
             .append(this.getSpeed(), that.getSpeed())
@@ -82,7 +79,6 @@ public class MinionTierSqlModel implements MinionTierModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getMinion())
             .append(this.getItem())
             .append(this.getSpeed())

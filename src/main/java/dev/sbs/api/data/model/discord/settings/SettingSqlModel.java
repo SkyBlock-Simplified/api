@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -36,10 +34,6 @@ import java.time.Instant;
 public class SettingSqlModel implements SettingModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Long id;
-
     @Setter
     @Column(name = "key", nullable = false, unique = true)
     private String key;
@@ -50,7 +44,7 @@ public class SettingSqlModel implements SettingModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "type_key", nullable = false)
+    @JoinColumn(name = "type_key", referencedColumnName = "key", nullable = false)
     private SettingTypeSqlModel type;
 
     @Setter
@@ -73,7 +67,6 @@ public class SettingSqlModel implements SettingModel, SqlModel {
         SettingSqlModel that = (SettingSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getType(), that.getType())
@@ -86,7 +79,6 @@ public class SettingSqlModel implements SettingModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getType())

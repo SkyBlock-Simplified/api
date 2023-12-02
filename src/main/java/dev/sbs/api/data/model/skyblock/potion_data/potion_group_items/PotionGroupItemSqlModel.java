@@ -38,7 +38,7 @@ public class PotionGroupItemSqlModel implements PotionGroupItemModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "potion_group_key", nullable = false)
+    @JoinColumn(name = "potion_group_key", referencedColumnName = "key", nullable = false)
     private PotionGroupSqlModel potionGroup;
 
     @Setter

@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.awt.*;
@@ -29,12 +27,8 @@ import java.time.Instant;
 public class FormatSqlModel implements FormatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -42,8 +36,8 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     private char code;
 
     @Setter
-    @Column(name = "rgb", length = 1)
     @Convert(converter = ColorConverter.class)
+    @Column(name = "rgb", length = 1)
     private Color rgb;
 
     @Setter
@@ -68,7 +62,6 @@ public class FormatSqlModel implements FormatModel, SqlModel {
         return new EqualsBuilder()
             .append(this.getCode(), that.getCode())
             .append(this.isFormat(), that.isFormat())
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getRgb(), that.getRgb())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -79,7 +72,6 @@ public class FormatSqlModel implements FormatModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getCode())
             .append(this.getRgb())

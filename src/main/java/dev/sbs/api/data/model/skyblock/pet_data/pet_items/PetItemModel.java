@@ -11,14 +11,8 @@ public interface PetItemModel extends BuffEffectsModel<Object, Double> {
 
     boolean isPercentage();
 
-    boolean isRarityBoost();
-
     default boolean notPercentage() {
         return !this.isPercentage();
-    }
-
-    default boolean notRarityBoost() {
-        return !this.isRarityBoost();
     }
 
 }

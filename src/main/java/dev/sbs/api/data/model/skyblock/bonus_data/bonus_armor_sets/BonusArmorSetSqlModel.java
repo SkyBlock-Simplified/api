@@ -13,7 +13,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
@@ -40,12 +47,8 @@ import java.util.Map;
 public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -54,22 +57,22 @@ public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "helmet_item_id", nullable = false)
+    @JoinColumn(name = "helmet_item_id", referencedColumnName = "item_id", nullable = false)
     private ItemSqlModel helmetItem;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "chestplate_item_id", nullable = false)
+    @JoinColumn(name = "chestplate_item_id", referencedColumnName = "item_id", nullable = false)
     private ItemSqlModel chestplateItem;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "leggings_item_id", nullable = false)
+    @JoinColumn(name = "leggings_item_id", referencedColumnName = "item_id", nullable = false)
     private ItemSqlModel leggingsItem;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "boots_item_id", nullable = false)
+    @JoinColumn(name = "boots_item_id", referencedColumnName = "item_id", nullable = false)
     private ItemSqlModel bootsItem;
 
     @Setter
@@ -98,7 +101,6 @@ public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
         BonusArmorSetSqlModel that = (BonusArmorSetSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getHelmetItem(), that.getHelmetItem())
@@ -115,7 +117,6 @@ public class BonusArmorSetSqlModel implements BonusArmorSetModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getHelmetItem())

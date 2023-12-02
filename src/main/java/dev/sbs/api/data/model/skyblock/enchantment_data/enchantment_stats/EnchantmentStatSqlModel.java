@@ -40,12 +40,12 @@ public class EnchantmentStatSqlModel implements EnchantmentStatModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "enchantment_key", nullable = false)
+    @JoinColumn(name = "enchantment_key", referencedColumnName = "key", nullable = false)
     private EnchantmentSqlModel enchantment;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key")
+    @JoinColumn(name = "stat_key", referencedColumnName = "key")
     private StatSqlModel stat;
 
     @Setter

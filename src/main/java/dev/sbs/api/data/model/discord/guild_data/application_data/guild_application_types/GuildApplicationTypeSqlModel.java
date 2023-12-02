@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
@@ -35,21 +33,18 @@ import java.time.Instant;
 public class GuildApplicationTypeSqlModel implements GuildApplicationTypeModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "guild_id", nullable = false)
-    private GuildSqlModel guild;
-
-    @Setter
-    @Column(name = "key", nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Id
+    @Setter
+    @Column(name = "guild_id")
+    private GuildSqlModel guild;
 
     @Setter
     @Column(name = "description")
@@ -71,7 +66,6 @@ public class GuildApplicationTypeSqlModel implements GuildApplicationTypeModel, 
         GuildApplicationTypeSqlModel that = (GuildApplicationTypeSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
@@ -84,7 +78,6 @@ public class GuildApplicationTypeSqlModel implements GuildApplicationTypeModel, 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getGuild())
             .append(this.getKey())
             .append(this.getName())

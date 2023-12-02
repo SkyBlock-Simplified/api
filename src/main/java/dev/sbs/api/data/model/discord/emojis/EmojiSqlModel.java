@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -36,9 +34,13 @@ import java.time.Instant;
 public class EmojiSqlModel implements EmojiModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Long id;
+    @Setter
+    @Column(name = "key")
+    private String key;
+
+    @Setter
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Setter
     @Column(name = "emoji_id", nullable = false, unique = true)
@@ -46,16 +48,8 @@ public class EmojiSqlModel implements EmojiModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id", nullable = false)
     private GuildSqlModel guild;
-
-    @Setter
-    @Column(name = "key", nullable = false, unique = true)
-    private String key;
-
-    @Setter
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Setter
     @Column(name = "animated", nullable = false)
@@ -78,7 +72,6 @@ public class EmojiSqlModel implements EmojiModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.isAnimated(), that.isAnimated())
-            .append(this.getId(), that.getId())
             .append(this.getEmojiId(), that.getEmojiId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
@@ -91,7 +84,6 @@ public class EmojiSqlModel implements EmojiModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getEmojiId())
             .append(this.getGuild())
             .append(this.getKey())

@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -39,17 +37,14 @@ import java.time.Instant;
 public class PetLevelSqlModel implements PetLevelModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key")
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
     private RaritySqlModel rarity;
 
+    @Id
     @Setter
-    @Column(name = "level", nullable = false)
+    @Column(name = "level")
     private Integer level;
 
     @Setter
@@ -72,7 +67,6 @@ public class PetLevelSqlModel implements PetLevelModel, SqlModel {
         PetLevelSqlModel that = (PetLevelSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getRarity(), that.getRarity())
             .append(this.getLevel(), that.getLevel())
             .append(this.getValue(), that.getValue())
@@ -84,7 +78,6 @@ public class PetLevelSqlModel implements PetLevelModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getRarity())
             .append(this.getLevel())
             .append(this.getValue())

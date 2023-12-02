@@ -13,7 +13,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Getter
@@ -26,7 +33,7 @@ import java.time.Instant;
             unique = true
         ),
         @Index(
-            columnList = "guild_id, application_type_key"
+            columnList = "guild_id, type_key"
         ),
         @Index(
             columnList = "guild_id, embed_key"
@@ -37,36 +44,33 @@ import java.time.Instant;
 public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id", nullable = false)
     private GuildSqlModel guild;
 
     @Setter
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id", insertable = false, updatable = false),
-        @JoinColumn(name = "application_type_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
+        @JoinColumn(name = "guild_id", referencedColumnName = "guild_id", nullable = false, updatable = false, insertable = false),
+        @JoinColumn(name = "type_key", referencedColumnName = "key", nullable = false, updatable = false, insertable = false)
     })
     private GuildApplicationTypeSqlModel type;
 
     @Setter
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "guild_id", nullable = false, referencedColumnName = "guild_id", insertable = false, updatable = false),
-        @JoinColumn(name = "embed_key", nullable = false, referencedColumnName = "key", insertable = false, updatable = false)
+        @JoinColumn(name = "guild_id", referencedColumnName = "guild_id", nullable = false, updatable = false, insertable = false),
+        @JoinColumn(name = "embed_key", referencedColumnName = "key", nullable = false, updatable = false, insertable = false)
     })
     private GuildEmbedSqlModel embed;
 
@@ -103,7 +107,6 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
 
         return new EqualsBuilder()
             .append(this.isEnabled(), that.isEnabled())
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getGuild(), that.getGuild())
@@ -120,7 +123,6 @@ public class GuildApplicationSqlModel implements GuildApplicationModel, SqlModel
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getGuild())

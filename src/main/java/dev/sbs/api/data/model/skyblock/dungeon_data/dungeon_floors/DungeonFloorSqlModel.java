@@ -14,8 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -44,27 +42,24 @@ import java.time.Instant;
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "dungeon_key", nullable = false)
+    @JoinColumn(name = "dungeon_key", referencedColumnName = "key")
     private DungeonSqlModel dungeon;
 
+    @Id
     @Setter
-    @Column(name = "floor", nullable = false)
+    @Column(name = "floor")
     private Integer floor;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "floor_size_key")
+    @JoinColumn(name = "floor_size_key", referencedColumnName = "key")
     private DungeonFloorSizeSqlModel floorSize;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "floor_boss_key")
+    @JoinColumn(name = "floor_boss_key", referencedColumnName = "key")
     private DungeonBossSqlModel floorBoss;
 
     @UpdateTimestamp
@@ -83,7 +78,6 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
         DungeonFloorSqlModel that = (DungeonFloorSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getDungeon(), that.getDungeon())
             .append(this.getFloor(), that.getFloor())
             .append(this.getFloorSize(), that.getFloorSize())
@@ -96,7 +90,6 @@ public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getDungeon())
             .append(this.getFloor())
             .append(this.getFloorSize())

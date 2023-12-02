@@ -14,8 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -43,17 +41,13 @@ import java.time.Instant;
 public class SkyBlockEventTimerSqlModel implements SkyBlockEventTimerModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Long id;
-
     @Setter
-    @Column(name = "event_key", nullable = false, unique = true)
+    @Column(name = "event_key")
     private SkyBlockEventSqlModel event;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "start_season_key", nullable = false)
+    @JoinColumn(name = "start_season_key", referencedColumnName = "key", nullable = false)
     private SeasonSqlModel start;
 
     @Setter
@@ -62,7 +56,7 @@ public class SkyBlockEventTimerSqlModel implements SkyBlockEventTimerModel, SqlM
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "end_season_key", nullable = false)
+    @JoinColumn(name = "end_season_key", referencedColumnName = "key", nullable = false)
     private SeasonSqlModel end;
 
     @Setter
@@ -85,7 +79,6 @@ public class SkyBlockEventTimerSqlModel implements SkyBlockEventTimerModel, SqlM
         SkyBlockEventTimerSqlModel that = (SkyBlockEventTimerSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getEvent(), that.getEvent())
             .append(this.getStart(), that.getStart())
             .append(this.getStartDay(), that.getStartDay())
@@ -99,7 +92,6 @@ public class SkyBlockEventTimerSqlModel implements SkyBlockEventTimerModel, SqlM
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getEvent())
             .append(this.getStart())
             .append(this.getStartDay())

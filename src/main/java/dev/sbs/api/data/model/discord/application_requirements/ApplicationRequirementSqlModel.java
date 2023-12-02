@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -27,12 +25,8 @@ import java.time.Instant;
 public class ApplicationRequirementSqlModel implements ApplicationRequirementModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", unique = true, nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -63,7 +57,6 @@ public class ApplicationRequirementSqlModel implements ApplicationRequirementMod
         ApplicationRequirementSqlModel that = (ApplicationRequirementSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
@@ -76,7 +69,6 @@ public class ApplicationRequirementSqlModel implements ApplicationRequirementMod
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())

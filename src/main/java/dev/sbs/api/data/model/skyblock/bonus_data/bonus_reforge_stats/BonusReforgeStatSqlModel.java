@@ -15,8 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,13 +31,9 @@ import java.util.Map;
 public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "reforge_key", nullable = false, unique = true)
+    @JoinColumn(name = "reforge_key", referencedColumnName = "key", nullable = false, unique = true)
     private ReforgeSqlModel reforge;
 
     @Setter
@@ -68,7 +62,6 @@ public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel
         BonusReforgeStatSqlModel that = (BonusReforgeStatSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
             .append(this.getEffects(), that.getEffects())
             .append(this.getBuffEffects(), that.getBuffEffects())
@@ -80,7 +73,6 @@ public class BonusReforgeStatSqlModel implements BonusReforgeStatModel, SqlModel
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getReforge())
             .append(this.getEffects())
             .append(this.getBuffEffects())

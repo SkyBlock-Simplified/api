@@ -16,8 +16,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,13 +32,9 @@ import java.util.Map;
 public class BonusEnchantmentStatSqlModel implements BonusEnchantmentStatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "enchantment_key", nullable = false, unique = true)
+    @JoinColumn(name = "enchantment_key", referencedColumnName = "key")
     private EnchantmentSqlModel enchantment;
 
     @Setter
@@ -69,7 +63,6 @@ public class BonusEnchantmentStatSqlModel implements BonusEnchantmentStatModel, 
         BonusEnchantmentStatSqlModel that = (BonusEnchantmentStatSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getEnchantment(), that.getEnchantment())
             .append(this.getEffects(), that.getEffects())
             .append(this.getBuffEffects(), that.getBuffEffects())
@@ -81,7 +74,6 @@ public class BonusEnchantmentStatSqlModel implements BonusEnchantmentStatModel, 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getEnchantment())
             .append(this.getEffects())
             .append(this.getBuffEffects())

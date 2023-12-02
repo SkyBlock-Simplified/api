@@ -12,7 +12,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
@@ -30,10 +38,6 @@ import java.util.List;
 public class GuildReportSqlModel implements GuildReportModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
     @JoinColumns({
@@ -91,7 +95,6 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
         GuildReportSqlModel that = (GuildReportSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getType(), that.getType())
             .append(this.getReportedDiscordId(), that.getReportedDiscordId())
             .append(this.getReportedMojangUniqueId(), that.getReportedMojangUniqueId())
@@ -109,7 +112,6 @@ public class GuildReportSqlModel implements GuildReportModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getType())
             .append(this.getReportedDiscordId())
             .append(this.getReportedMojangUniqueId())

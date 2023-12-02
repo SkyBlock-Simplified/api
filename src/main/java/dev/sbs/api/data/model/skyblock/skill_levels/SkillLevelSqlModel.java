@@ -12,7 +12,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +39,14 @@ import java.util.Map;
 public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "skill_key", nullable = false)
+    @JoinColumn(name = "skill_key", referencedColumnName = "key")
     private SkillSqlModel skill;
 
+    @Id
     @Setter
-    @Column(name = "level", nullable = false)
+    @Column(name = "level")
     private Integer level;
 
     @Setter
@@ -80,7 +84,6 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
         SkillLevelSqlModel that = (SkillLevelSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getSkill(), that.getSkill())
             .append(this.getLevel(), that.getLevel())
             .append(this.getTotalExpRequired(), that.getTotalExpRequired())
@@ -95,7 +98,6 @@ public class SkillLevelSqlModel implements SkillLevelModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getSkill())
             .append(this.getLevel())
             .append(this.getTotalExpRequired())

@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -36,19 +34,15 @@ import java.time.Instant;
 public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_key", nullable = false)
-    private CollectionSqlModel collection;
-
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "collection_key", referencedColumnName = "key", nullable = false)
+    private CollectionSqlModel collection;
 
     @Setter
     @Column(name = "max_tiers", nullable = false)
@@ -75,7 +69,6 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.isFarmingEvent(), that.isFarmingEvent())
-            .append(this.getId(), that.getId())
             .append(this.getCollection(), that.getCollection())
             .append(this.getItem(), that.getItem())
             .append(this.getMaxTiers(), that.getMaxTiers())
@@ -87,7 +80,6 @@ public class CollectionItemSqlModel implements CollectionItemModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getCollection())
             .append(this.getItem())
             .append(this.getMaxTiers())

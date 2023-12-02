@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -43,21 +41,22 @@ import java.time.Instant;
 public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Id
+    @Setter
+    @Column(name = "amplified")
+    private Integer amplified;
+
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key")
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
     private RaritySqlModel rarity;
 
     @Setter
@@ -66,16 +65,12 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "source_npc_key")
+    @JoinColumn(name = "source_npc_key", referencedColumnName = "key")
     private NpcSqlModel npc;
 
     @Setter
     @Column(name = "coin_cost", nullable = false)
     private Integer coinCost;
-
-    @Setter
-    @Column(name = "amplified", nullable = false)
-    private Integer amplified;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
@@ -93,7 +88,6 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
         PotionBrewSqlModel that = (PotionBrewSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getRarity(), that.getRarity())
@@ -109,7 +103,6 @@ public class PotionBrewSqlModel implements PotionBrewModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getRarity())

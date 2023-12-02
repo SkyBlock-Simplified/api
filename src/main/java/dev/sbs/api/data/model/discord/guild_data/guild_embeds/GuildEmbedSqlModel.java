@@ -12,7 +12,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.awt.*;
 import java.time.Instant;
 
@@ -31,18 +38,15 @@ import java.time.Instant;
 public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Setter
+    @Column(name = "key")
+    private String key;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id")
     private GuildSqlModel guild;
-
-    @Setter
-    @Column(name = "key", nullable = false)
-    private String key;
 
     @Setter
     @Column(name = "title", nullable = false)
@@ -125,7 +129,6 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
         GuildEmbedSqlModel that = (GuildEmbedSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getKey(), that.getKey())
             .append(this.getTitle(), that.getTitle())
@@ -152,7 +155,6 @@ public class GuildEmbedSqlModel implements GuildEmbedModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getGuild())
             .append(this.getKey())
             .append(this.getTitle())

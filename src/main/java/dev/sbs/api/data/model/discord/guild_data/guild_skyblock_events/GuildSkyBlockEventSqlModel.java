@@ -13,7 +13,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
@@ -38,18 +45,15 @@ import java.util.List;
 public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "guild_id", nullable = false)
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id")
     private GuildSqlModel guild;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "event_key", nullable = false)
+    @JoinColumn(name = "event_key", referencedColumnName = "key")
     private SkyBlockEventSqlModel event;
 
     @Setter
@@ -86,7 +90,6 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
 
         return new EqualsBuilder()
             .append(this.isEnabled(), that.isEnabled())
-            .append(this.getId(), that.getId())
             .append(this.getGuild(), that.getGuild())
             .append(this.getEvent(), that.getEvent())
             .append(this.getMentionRoles(), that.getMentionRoles())
@@ -100,7 +103,6 @@ public class GuildSkyBlockEventSqlModel implements GuildSkyBlockEventModel, SqlM
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getGuild())
             .append(this.getEvent())
             .append(this.isEnabled())

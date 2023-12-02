@@ -12,7 +12,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
 
@@ -22,7 +29,7 @@ import java.util.Map;
     name = "skyblock_reforge_stats",
     indexes = {
         @Index(
-            columnList = "key, rarity_key",
+            columnList = "reforge_key, rarity_key",
             unique = true
         )
     }
@@ -31,18 +38,15 @@ import java.util.Map;
 public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "key", nullable = false)
+    @JoinColumn(name = "reforge_key", referencedColumnName = "key")
     private ReforgeSqlModel reforge;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key")
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
     private RaritySqlModel rarity;
 
     @Setter
@@ -66,7 +70,6 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
         ReforgeStatSqlModel that = (ReforgeStatSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getReforge(), that.getReforge())
             .append(this.getRarity(), that.getRarity())
             .append(this.getEffects(), that.getEffects())
@@ -78,7 +81,6 @@ public class ReforgeStatSqlModel implements ReforgeStatModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getReforge())
             .append(this.getRarity())
             .append(this.getEffects())

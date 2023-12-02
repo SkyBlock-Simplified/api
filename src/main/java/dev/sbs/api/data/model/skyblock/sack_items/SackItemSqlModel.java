@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -40,18 +38,15 @@ import java.time.Instant;
 public class SackItemSqlModel implements SackItemModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "sack_key", nullable = false)
+    @JoinColumn(name = "sack_key", referencedColumnName = "key")
     private SackSqlModel sack;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel item;
 
     @UpdateTimestamp
@@ -70,7 +65,6 @@ public class SackItemSqlModel implements SackItemModel, SqlModel {
         SackItemSqlModel that = (SackItemSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getSack(), that.getSack())
             .append(this.getItem(), that.getItem())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -81,7 +75,6 @@ public class SackItemSqlModel implements SackItemModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getSack())
             .append(this.getItem())
             .append(this.getUpdatedAt())

@@ -1,34 +1,43 @@
-package dev.sbs.api.data.model.skyblock.rarities;
+package dev.sbs.api.data.model.discord.guild_data.guild_tickets;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guild_embeds.GuildEmbedSqlModel;
+import dev.sbs.api.data.model.discord.guild_data.guilds.GuildSqlModel;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
 @Getter
 @Entity
 @Table(
-    name = "skyblock_rarities",
+    name = "discord_guild_tickets",
     indexes = {
         @Index(
-            columnList = "emoji_key"
+            columnList = "guild_id, key",
+            unique = true
+        ),
+        @Index(
+            columnList = "guild_id, embed_key"
         )
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class RaritySqlModel implements RarityModel, SqlModel {
+public class GuildTicketSqlModel implements GuildTicketModel, SqlModel {
 
     @Id
     @Setter
@@ -39,27 +48,33 @@ public class RaritySqlModel implements RarityModel, SqlModel {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Id
     @Setter
-    @Column(name = "ordinal", nullable = false)
-    private Integer ordinal;
+    @ManyToOne
+    @JoinColumn(name = "guild_id", referencedColumnName = "guild_id", insertable = false, updatable = false)
+    private GuildSqlModel guild;
 
     @Setter
-    @Column(name = "enrichable", nullable = false)
-    private boolean enrichable;
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name = "guild_id", referencedColumnName = "guild_id", nullable = false),
+        @JoinColumn(name = "embed_key", referencedColumnName = "key", nullable = false)
+    })
+    private GuildEmbedSqlModel embed;
 
     @Setter
-    @Column(name = "mp_multiplier")
-    private Integer magicPowerMultiplier;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
 
     @Setter
-    @Column(name = "emoji_key")
-    private EmojiSqlModel emoji;
+    @Column(name = "notes")
+    private String notes;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @UpdateTimestamp
+    @CreationTimestamp
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;
 
@@ -68,15 +83,15 @@ public class RaritySqlModel implements RarityModel, SqlModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RaritySqlModel that = (RaritySqlModel) o;
+        GuildTicketSqlModel that = (GuildTicketSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.isEnrichable(), that.isEnrichable())
+            .append(this.isEnabled(), that.isEnabled())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
-            .append(this.getOrdinal(), that.getOrdinal())
-            .append(this.getMagicPowerMultiplier(), that.getMagicPowerMultiplier())
-            .append(this.getEmoji(), that.getEmoji())
+            .append(this.getGuild(), that.getGuild())
+            .append(this.getEmbed(), that.getEmbed())
+            .append(this.getNotes(), that.getNotes())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
             .append(this.getSubmittedAt(), that.getSubmittedAt())
             .build();
@@ -87,10 +102,10 @@ public class RaritySqlModel implements RarityModel, SqlModel {
         return new HashCodeBuilder()
             .append(this.getKey())
             .append(this.getName())
-            .append(this.getOrdinal())
-            .append(this.isEnrichable())
-            .append(this.getMagicPowerMultiplier())
-            .append(this.getEmoji())
+            .append(this.getGuild())
+            .append(this.getEmbed())
+            .append(this.isEnabled())
+            .append(this.getNotes())
             .append(this.getUpdatedAt())
             .append(this.getSubmittedAt())
             .build();

@@ -13,7 +13,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
@@ -32,12 +40,8 @@ import java.util.List;
 public class BestiarySqlModel implements BestiaryModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -47,14 +51,14 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
     @Setter
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "bracket", nullable = false, referencedColumnName = "bracket"),
-        @JoinColumn(name = "max_tier", nullable = false, referencedColumnName = "tier")
+        @JoinColumn(name = "bracket", referencedColumnName = "bracket", nullable = false),
+        @JoinColumn(name = "max_tier", referencedColumnName = "tier", nullable = false)
     })
     private BestiaryBracketSqlModel bracket;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "category_key", nullable = false)
+    @JoinColumn(name = "category_key", referencedColumnName = "key", nullable = false)
     private BestiaryCategorySqlModel category;
 
     @Setter
@@ -86,7 +90,6 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
         BestiarySqlModel that = (BestiarySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getBracket(), that.getBracket())
@@ -102,7 +105,6 @@ public class BestiarySqlModel implements BestiaryModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getBracket())

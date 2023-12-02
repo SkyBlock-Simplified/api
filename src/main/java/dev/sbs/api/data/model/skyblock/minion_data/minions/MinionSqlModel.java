@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -35,12 +33,8 @@ import java.time.Instant;
 public class MinionSqlModel implements MinionModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -49,7 +43,7 @@ public class MinionSqlModel implements MinionModel, SqlModel {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "collection_key")
+    @JoinColumn(name = "collection_key", referencedColumnName = "key")
     private CollectionSqlModel collection;
 
     @UpdateTimestamp
@@ -68,7 +62,6 @@ public class MinionSqlModel implements MinionModel, SqlModel {
         MinionSqlModel that = (MinionSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getCollection(), that.getCollection())
@@ -80,7 +73,6 @@ public class MinionSqlModel implements MinionModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getCollection())

@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,12 +28,8 @@ import java.time.Instant;
 public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
@@ -71,7 +65,6 @@ public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
         CommandCategorySqlModel that = (CommandCategorySqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getName(), that.getName())
             .append(this.getDescription(), that.getDescription())
@@ -85,7 +78,6 @@ public class CommandCategorySqlModel implements CommandCategoryModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getName())
             .append(this.getDescription())

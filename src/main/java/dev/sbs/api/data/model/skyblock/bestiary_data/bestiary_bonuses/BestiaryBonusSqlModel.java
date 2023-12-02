@@ -14,10 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Map;
@@ -25,24 +22,14 @@ import java.util.Map;
 @Getter
 @Entity
 @Table(
-    name = "skyblock_bestiary_bonuses",
-    indexes = {
-        @Index(
-            columnList = "bestiary_type_key, level",
-            unique = true
-        )
-    }
+    name = "skyblock_bestiary_bonuses"
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class BestiaryBonusSqlModel implements BestiaryBonusModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "level", nullable = false, unique = true)
+    @Column(name = "level")
     private Integer level;
 
     @Setter
@@ -66,7 +53,6 @@ public class BestiaryBonusSqlModel implements BestiaryBonusModel, SqlModel {
         BestiaryBonusSqlModel that = (BestiaryBonusSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getLevel(), that.getLevel())
             .append(this.getEffects(), that.getEffects())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -77,7 +63,6 @@ public class BestiaryBonusSqlModel implements BestiaryBonusModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getLevel())
             .append(this.getEffects())
             .append(this.getUpdatedAt())

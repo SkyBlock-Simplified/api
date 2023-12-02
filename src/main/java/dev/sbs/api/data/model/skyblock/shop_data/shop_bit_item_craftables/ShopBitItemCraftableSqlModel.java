@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -36,19 +34,15 @@ import java.time.Instant;
 public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "bit_item_id", nullable = false)
-    private ShopBitItemSqlModel bitItem;
-
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private ItemSqlModel craftableItem;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "bit_item_id", referencedColumnName = "item_id", nullable = false)
+    private ShopBitItemSqlModel bitItem;
 
     @Setter
     @Column(name = "description", nullable = false)
@@ -74,7 +68,6 @@ public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, 
         ShopBitItemCraftableSqlModel that = (ShopBitItemCraftableSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getBitItem(), that.getBitItem())
             .append(this.getCraftableItem(), that.getCraftableItem())
             .append(this.getDescription(), that.getDescription())
@@ -87,7 +80,6 @@ public class ShopBitItemCraftableSqlModel implements ShopBitItemCraftableModel, 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getBitItem())
             .append(this.getCraftableItem())
             .append(this.getDescription())

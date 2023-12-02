@@ -12,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -39,17 +37,13 @@ import java.time.Instant;
 public class EssencePerkSqlModel implements EssencePerkModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
-    @Column(name = "key", nullable = false)
+    @Column(name = "key")
     private String key;
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false)
+    @JoinColumn(name = "stat_key", referencedColumnName = "key", nullable = false)
     private StatSqlModel stat;
 
     @Setter
@@ -77,7 +71,6 @@ public class EssencePerkSqlModel implements EssencePerkModel, SqlModel {
 
         return new EqualsBuilder()
             .append(this.isPermanent(), that.isPermanent())
-            .append(this.getId(), that.getId())
             .append(this.getKey(), that.getKey())
             .append(this.getStat(), that.getStat())
             .append(this.getLevelBonus(), that.getLevelBonus())
@@ -89,7 +82,6 @@ public class EssencePerkSqlModel implements EssencePerkModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getKey())
             .append(this.getStat())
             .append(this.getLevelBonus())

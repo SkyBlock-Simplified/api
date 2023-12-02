@@ -14,8 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -44,23 +42,21 @@ import java.time.Instant;
 public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "gemstone_key", nullable = false)
+    @JoinColumn(name = "gemstone_key", referencedColumnName = "key")
     private GemstoneSqlModel gemstone;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "type_key", nullable = false)
+    @JoinColumn(name = "type_key", referencedColumnName = "key")
     private GemstoneTypeSqlModel type;
 
+    @Id
     @Setter
     @ManyToOne
-    @JoinColumn(name = "rarity_key", nullable = false)
+    @JoinColumn(name = "rarity_key", referencedColumnName = "key")
     private RaritySqlModel rarity;
 
     @Setter
@@ -83,7 +79,6 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
         GemstoneStatSqlModel that = (GemstoneStatSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getGemstone(), that.getGemstone())
             .append(this.getType(), that.getType())
             .append(this.getRarity(), that.getRarity())
@@ -96,7 +91,6 @@ public class GemstoneStatSqlModel implements GemstoneStatModel, SqlModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getGemstone())
             .append(this.getType())
             .append(this.getRarity())

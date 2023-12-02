@@ -13,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,13 +28,9 @@ import java.time.Instant;
 public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, SqlModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Setter
     @ManyToOne
-    @JoinColumn(name = "stat_key", nullable = false, unique = true)
+    @JoinColumn(name = "stat_key", referencedColumnName = "key")
     private StatSqlModel stat;
 
     @Setter
@@ -59,7 +53,6 @@ public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, Sq
         AccessoryEnrichmentSqlModel that = (AccessoryEnrichmentSqlModel) o;
 
         return new EqualsBuilder()
-            .append(this.getId(), that.getId())
             .append(this.getStat(), that.getStat())
             .append(this.getValue(), that.getValue())
             .append(this.getUpdatedAt(), that.getUpdatedAt())
@@ -70,7 +63,6 @@ public class AccessoryEnrichmentSqlModel implements AccessoryEnrichmentModel, Sq
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getId())
             .append(this.getStat())
             .append(this.getValue())
             .append(this.getUpdatedAt())
