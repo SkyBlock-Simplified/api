@@ -5,6 +5,8 @@ import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Getter;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
@@ -15,7 +17,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class SqlRepository<T extends SqlModel> extends Repository<T> {
 
@@ -36,22 +37,23 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
     }
 
     @Override
-    public final @NotNull Stream<T> stream() throws DataException {
-        return this.sqlSession.with((Function<Session, Stream<T>>) this::stream);
+    public final @NotNull ConcurrentList<T> findAll() throws DataException {
+        return this.sqlSession.with((Function<Session, ? extends ConcurrentList<T>>) this::findAll);
     }
 
-    public final @NotNull Stream<T> stream(@NotNull Session session) throws DataException {
+    public final @NotNull ConcurrentList<T> findAll(@NotNull Session session) throws DataException {
         try {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getType());
             Root<T> rootEntry = criteriaQuery.from(this.getType());
-            CriteriaQuery<T> all = criteriaQuery.select(rootEntry);
+            criteriaQuery = criteriaQuery.select(rootEntry);
 
-            return session.createQuery(all)
-                .setCacheRegion(this.getType().getName())
-                .setCacheable(true)
-                .getResultList() // Dirty
-                .stream();
+            return this.cache = Concurrent.newUnmodifiableList(
+                session.createQuery(criteriaQuery)
+                    .setCacheRegion(this.getType().getName())
+                    .setCacheable(true)
+                    .getResultList() // Fastest
+            );
         } catch (Exception exception) {
             throw SimplifiedException.of(SqlException.class)
                 .withCause(exception)
@@ -59,13 +61,30 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
         }
     }
 
-    public T save(T model) throws SqlException {
+    public @NotNull T delete(@NotNull T model) throws SqlException {
+        return this.sqlSession.transaction(session -> {
+            return this.delete(session, model);
+        });
+    }
+
+    public @NotNull T delete(@NotNull Session session, @NotNull T model) throws SqlException {
+        try {
+            session.delete(model);
+            return model;
+        } catch (Exception exception) {
+            throw SimplifiedException.of(SqlException.class)
+                .withCause(exception)
+                .build();
+        }
+    }
+
+    public @NotNull T save(@NotNull T model) throws SqlException {
         return this.sqlSession.transaction(session -> {
             return this.save(session, model);
         });
     }
 
-    public T save(Session session, T model) throws SqlException {
+    public @NotNull T save(@NotNull Session session, @NotNull T model) throws SqlException {
         try {
             Serializable serializable = session.save(model);
             return session.get(this.getType(), serializable);
@@ -76,13 +95,13 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
         }
     }
 
-    public T update(T model) throws SqlException {
+    public @NotNull T update(@NotNull T model) throws SqlException {
         return this.sqlSession.transaction(session -> {
             return this.update(session, model);
         });
     }
 
-    public T update(@NotNull Session session, T model) throws SqlException {
+    public @NotNull T update(@NotNull Session session, @NotNull T model) throws SqlException {
         try {
             session.update(model);
             return model;
