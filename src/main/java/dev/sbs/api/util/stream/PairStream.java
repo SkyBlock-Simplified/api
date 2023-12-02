@@ -127,15 +127,15 @@ public interface PairStream<K, V> {
 
     // Mapping
 
-    default <R> @NotNull Stream<R> map(@NotNull BiFunction<? super K, ? super V,? extends R> mapper) {
+    default <R> @NotNull Stream<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
         return this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
-    default <R> @NotNull PairStream<R, V> mapKey(@NotNull Function<? super K,? extends R> mapper) {
+    default <R> @NotNull PairStream<R, V> mapKey(@NotNull Function<? super K, ? extends R> mapper) {
         return of(this.entries().map(entry -> Pair.of(mapper.apply(entry.getKey()), entry.getValue())));
     }
 
-    default <R> @NotNull PairStream<K, R> mapValue(@NotNull Function<? super V,? extends R> mapper) {
+    default <R> @NotNull PairStream<K, R> mapValue(@NotNull Function<? super V, ? extends R> mapper) {
         return of(this.entries().map(entry -> Pair.of(entry.getKey(), mapper.apply(entry.getValue()))));
     }
 
