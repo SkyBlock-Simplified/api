@@ -6,7 +6,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.data.tuple.triple.Triple;
-import dev.sbs.api.util.helper.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -84,8 +83,13 @@ public abstract class SimplifiedException extends RuntimeException {
             return this;
         }
 
-        public ExceptionBuilder<T> withMessage(@PrintFormat String message, Object... objects) {
-            this.message = ArrayUtil.isEmpty(objects) ? message : String.format(message, objects);
+        public ExceptionBuilder<T> withMessage(@NotNull String message) {
+            this.message = message;
+            return this;
+        }
+
+        public ExceptionBuilder<T> withMessage(@PrintFormat @NotNull String message, @NotNull Object... args) {
+            this.message = String.format(message, args);
             return this;
         }
 
