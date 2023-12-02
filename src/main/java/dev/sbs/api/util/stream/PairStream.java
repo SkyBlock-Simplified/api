@@ -79,6 +79,16 @@ public interface PairStream<K, V> {
         return of(this.entries().filter(entry -> mapper.test(entry.getKey(), entry.getValue())));
     }
 
+    // Find
+
+    default @NotNull Optional<Pair<K, V>> findAny() {
+        return this.entries().findAny().map(Pair::from);
+    }
+
+    default @NotNull Optional<Pair<K, V>> findFirst() {
+        return this.entries().findFirst().map(Pair::from);
+    }
+
     // Flatmapping
 
     default <RK, RV> @NotNull PairStream<RK, RV> flatMap(@NotNull BiFunction<? super K, ? super V, ? extends PairStream<RK, RV>> mapper) {

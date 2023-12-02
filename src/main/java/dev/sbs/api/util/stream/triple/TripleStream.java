@@ -82,6 +82,16 @@ public interface TripleStream<L, M, R> {
         return of(this.entries().filter(entry -> mapper.test(entry.getLeft(), entry.getMiddle(), entry.getRight())));
     }
 
+    // Find
+
+    default @NotNull Optional<Triple<L, M, R>> findAny() {
+        return this.entries().findAny();
+    }
+
+    default @NotNull Optional<Triple<L, M, R>> findFirst() {
+        return this.entries().findFirst();
+    }
+
     // Flatmapping
 
     default <RL, RM, RR> @NotNull TripleStream<RL, RM, RR> flatMap(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends TripleStream<RL, RM, RR>> mapper) {
