@@ -26,6 +26,7 @@ import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.manager.BuilderManager;
 import dev.sbs.api.manager.KeyManager;
+import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
@@ -60,9 +61,9 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SimplifiedApi {
 
-    @Getter private static final @NotNull KeyManager<String, UUID> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()));
-    @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager();
-    @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager();
+    @Getter private static final @NotNull KeyManager<String, UUID> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
+    @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
+    @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
 
     static {
         // Provide Services
