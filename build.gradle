@@ -39,7 +39,7 @@ shadowJar {
     relocate remoteYaml, localYaml
 }
 
-sourceSets {
+/*sourceSets {
     dev {
         java {
             srcDirs = ['src/main/java']
@@ -58,7 +58,7 @@ sourceSets {
             srcDirs = ['src/test/resources']
         }
     }
-}
+}*/
 
 configurations {
     devImplementation.extendsFrom implementation
@@ -73,20 +73,20 @@ configurations {
 }
 
 // Exclude specific packages while they are being refactored
-task devJar(type: Jar, group: 'build') {
+/*task devJar(type: Jar, group: 'build') {
     archiveAppendix.value('dev')
     archiveBaseName.value(artifactIdProp)
     archiveVersion.value(versionProp)
 
     from sourceSets.dev.java
     from sourceSets.dev.output
-}
+}*/
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-publishing {
+/*publishing {
     repositories {
         maven {
             name = 'GitHubPackages'
@@ -153,7 +153,7 @@ publishing {
             }
         }
     }
-}
+}*/
 
 flyway {
     url = 'jdbc:mariadb://' + env.get('DATABASE_HOST') + ':' + env.get('DATABASE_PORT') + '/' + env.get('DATABASE_SCHEMA')
@@ -161,9 +161,9 @@ flyway {
     password = env.get('DATABASE_PASSWORD')
 }
 
-tasks.register('devTest', Test) {
+/*tasks.register('devTest', Test) {
     useJUnitPlatform()
     group = 'verification'
     testClassesDirs = sourceSets.devTest.output.classesDirs
     classpath = sourceSets.devTest.runtimeClasspath
-}
+}*/
