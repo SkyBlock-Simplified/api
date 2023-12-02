@@ -40,6 +40,19 @@ public final class SessionManager {
     }
 
     /**
+     * Reconnects to the registered database.
+     */
+    public void reconnect() {
+        if (this.isRegistered()) {
+            // Reinitialize Session
+            this.session.get().initialize();
+
+            // Recache Repositories
+            this.session.get().cacheRepositories();
+        }
+    }
+
+    /**
      * Gets the {@link Repository<M>} caching all items of type {@link M}.
      *
      * @param tClass The {@link Model} class to find.
