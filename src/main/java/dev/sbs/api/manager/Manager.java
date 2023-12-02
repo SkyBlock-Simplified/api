@@ -42,6 +42,20 @@ public abstract class Manager<K, V> {
     }
 
     /**
+     * Removes all existing key-value pairs.
+     *
+     * @throws InsufficientModeException When the mode isn't {@link Mode#ALL}.
+     */
+    public final void clear() throws InsufficientModeException {
+        if (this.getMode().getLevel() < Mode.ALL.getLevel())
+            throw SimplifiedException.of(InsufficientModeException.class)
+                .withMessage(InsufficientModeException.getMessage(this.getMode()))
+                .build();
+
+        this.ref.clear();
+    }
+
+    /**
      * Gets the value stored for the given identifier.
      *
      * @param identifier Reference identifier.
