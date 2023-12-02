@@ -88,7 +88,7 @@ public abstract class SimplifiedException extends RuntimeException {
             return this;
         }
 
-        public ExceptionBuilder<T> withMessage(@PrintFormat @NotNull String message, @NotNull Object... args) {
+        public ExceptionBuilder<T> withMessage(@PrintFormat @NotNull String message, @Nullable Object... args) {
             this.message = String.format(message, args);
             return this;
         }
