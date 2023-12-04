@@ -22,10 +22,17 @@ public abstract class SimplifiedException extends RuntimeException {
     private final @NotNull ConcurrentList<Triple<String, String, Boolean>> fields;
     private final @NotNull ConcurrentMap<String, Object> data;
 
-    protected SimplifiedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
+    protected SimplifiedException(
+        @NotNull String message,
+        @NotNull Throwable cause,
+        boolean enableSuppression,
+        boolean writableStackTrace,
+        @NotNull ConcurrentList<Triple<String, String, Boolean>> fields,
+        @NotNull ConcurrentMap<String, Object> data
+    ) {
         super(message, cause, enableSuppression, writableStackTrace);
-        this.fields = Concurrent.newUnmodifiableList(fields);
-        this.data = Concurrent.newUnmodifiableMap(data);
+        this.fields = fields.toUnmodifiableList();
+        this.data = data.toUnmodifiableMap();
     }
 
     public static <T extends SimplifiedException> @NotNull ExceptionBuilder<T> of(@NotNull Class<T> eClass) {
@@ -38,9 +45,9 @@ public abstract class SimplifiedException extends RuntimeException {
      * @param throwable The thrown exception.
      * @return A wrapped runtime exception.
      */
-    @SuppressWarnings("all")
-    public static @NotNull ExceptionBuilder<WrappedException> wrapNative(Throwable throwable) {
-        return of(WrappedException.class).withCause(throwable).withMessage(throwable.getMessage());
+
+    public static @NotNull ExceptionBuilder<WrappedException> wrapNative(@Nullable Throwable throwable) {
+        return of(WrappedException.class).withCause(throwable).withMessage(throwable != null ? throwable.getMessage() : "");
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -120,7 +127,7 @@ public abstract class SimplifiedException extends RuntimeException {
 
     public static class WrappedException extends SimplifiedException {
 
-        private WrappedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
+        private WrappedException(String message, @NotNull Throwable cause, boolean enableSuppression, boolean writableStackTrace, @NotNull ConcurrentList<Triple<String, String, Boolean>> fields, @NotNull ConcurrentMap<String, Object> data) {
             super(message, cause, enableSuppression, writableStackTrace, fields, data);
         }
 
