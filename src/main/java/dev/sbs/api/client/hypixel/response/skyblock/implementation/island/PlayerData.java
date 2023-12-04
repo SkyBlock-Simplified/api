@@ -11,6 +11,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 @Getter
 public class PlayerData {
@@ -45,6 +46,15 @@ public class PlayerData {
     private int fishingTreasureCaught;
     @SerializedName("achievement_spawned_island_types")
     private @NotNull ConcurrentList<String> spawnedIslandTypes = Concurrent.newList();
+
+    public @NotNull ConcurrentList<Integer> getCraftedMinions(@NotNull String itemId) {
+        return this.getCraftedMinions()
+            .stream()
+            .filter(item -> item.matches(String.format("^%s_[\\d]+$", itemId)))
+            .map(item -> Integer.parseInt(item.replace(String.format("%s_", itemId), "")))
+            .collect(Concurrent.toList())
+            .sorted(Comparator.naturalOrder());
+    }
 
     public @NotNull Skill getSkill(@NotNull Skill.Type skillType) {
         return new Skill(skillType, this.experience.get(skillType));

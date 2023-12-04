@@ -21,16 +21,17 @@ public class EnhancedPet extends Pet implements Experience {
     private final @NotNull ConcurrentList<Double> experienceTiers;
 
     EnhancedPet(@NotNull Pet pet) {
-        // Re-initialize Fields
-        this.identifier = pet.getIdentifier();
-        this.uniqueId = pet.getIdentifier();
-        this.type = pet.getType();
-        this.experience = pet.getExperience();
-        this.active = pet.isActive();
-        this.baseRarity = pet.getBaseRarity();
-        this.candyUsed = pet.getCandyUsed();
-        this.heldItem = pet.getHeldItem();
-        this.skin = pet.getSkin();
+        super(
+            pet.getIdentifier(),
+            pet.getUniqueId(),
+            pet.getType(),
+            pet.getExperience(),
+            pet.isActive(),
+            pet.getBaseRarity(),
+            pet.getCandyUsed(),
+            pet.getHeldItem(),
+            pet.getSkin()
+        );
 
         this.typeModel = SimplifiedApi.getRepositoryOf(PetModel.class).findFirst(PetModel::getKey, this.getType());
         this.experienceTiers = SimplifiedApi.getRepositoryOf(PetLevelModel.class)

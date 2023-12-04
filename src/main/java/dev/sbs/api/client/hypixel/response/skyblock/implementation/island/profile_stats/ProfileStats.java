@@ -6,6 +6,8 @@ import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Slayer
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.accessories.EnhancedAccessoryBag;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.account.Banking;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.dungeon.Dungeon;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.member.EnhancedMember;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.member.Member;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet.EnhancedPet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet.Pet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.data.AccessoryData;
@@ -73,11 +75,11 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     @Getter private boolean bonusCalculated;
     private final ConcurrentMap<String, Double> expressionVariables = Concurrent.newMap();
 
-    public ProfileStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.EnhancedMember member) {
+    public ProfileStats(SkyBlockIsland skyBlockIsland, EnhancedMember member) {
         this(skyBlockIsland, member, true);
     }
 
-    public ProfileStats(SkyBlockIsland skyBlockIsland, SkyBlockIsland.EnhancedMember member, boolean calculateBonusStats) {
+    public ProfileStats(SkyBlockIsland skyBlockIsland, EnhancedMember member, boolean calculateBonusStats) {
         // --- Initialize ---
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class)
             .findAll()
@@ -331,7 +333,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             );
     }
 
-    private void loadActivePet(SkyBlockIsland.Member member) {
+    private void loadActivePet(Member member) {
         if (member.getPetData().getActivePet().isEmpty())
             return;
 
@@ -426,7 +428,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             ));
     }
 
-    private void loadActivePotions(SkyBlockIsland.Member member) {
+    private void loadActivePotions(Member member) {
         member.getPlayerData()
             .getActivePotions()
             .stream()
@@ -496,7 +498,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             });
     }
 
-    private void loadArmor(SkyBlockIsland.Member member) {
+    private void loadArmor(Member member) {
         if (member.getInventory().getArmor() != null) {
             ConcurrentList<ItemModel> items = SimplifiedApi.getRepositoryOf(ItemModel.class).findAll();
             ConcurrentList<Pair<CompoundTag, Optional<ItemModel>>> armorItemModels = member.getInventory().getArmor()
@@ -531,12 +533,12 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         }
     }
 
-    private void loadBestiary(SkyBlockIsland.Member member) {
+    private void loadBestiary(Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
             .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.BESTIARY).get(healthStatModel), member.getBestiary().asEnhanced().getMilestone() * 2.0));
     }
 
-    private void loadCenturyCakes(SkyBlockIsland.Member member) {
+    private void loadCenturyCakes(Member member) {
         member.getPlayerData()
             .getCenturyCakes()
             .stream()
@@ -544,7 +546,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             .forEach(centuryCake -> this.addBonus(this.stats.get(Type.CENTURY_CAKES).get(centuryCake.getStat()), centuryCake.getAmount()));
     }
 
-    private void loadDungeons(SkyBlockIsland.Member member) {
+    private void loadDungeons(Member member) {
         SimplifiedApi.getRepositoryOf(DungeonModel.class)
             .stream()
             .forEach(dungeonModel -> {
@@ -566,7 +568,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             });
     }
 
-    private void loadEssencePerks(SkyBlockIsland.Member member) {
+    private void loadEssencePerks(Member member) {
         member.getPlayerData()
             .getEssencePerks()
             .forEach(entry -> SimplifiedApi.getRepositoryOf(EssencePerkModel.class)
@@ -576,19 +578,19 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             );
     }
 
-    private void loadJacobsPerks(SkyBlockIsland.Member member) {
+    private void loadJacobsPerks(Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "FARMING_FORTUNE")
             .ifPresent(farmingFortuneStatModel -> this.addBase(this.stats.get(Type.JACOBS_FARMING).get(farmingFortuneStatModel), member.getJacobsContest().getDoubleDrops() * 4.0));
     }
 
-    private void loadLevels(SkyBlockIsland.Member member) {
+    private void loadLevels(Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
             .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.SKYBLOCK_LEVELS).get(healthStatModel), member.getLeveling().getLevel() * 5.0));
         SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "STRENGTH")
             .ifPresent(strengthStatModel -> this.addBase(this.stats.get(Type.SKYBLOCK_LEVELS).get(strengthStatModel), member.getLeveling().getLevel() / 5.0));
     }
 
-    private void loadMelodyHarp(SkyBlockIsland.Member member) {
+    private void loadMelodyHarp(Member member) {
         member.getQuests().ifPresent(quests -> quests.getMelodyHarp()
             .getSongs()
             .forEach((songName, songData) -> SimplifiedApi.getRepositoryOf(MelodySongModel.class)
@@ -600,7 +602,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         );
     }
 
-    private void loadMiningCore(SkyBlockIsland.Member member) {
+    private void loadMiningCore(Member member) {
         member.getMining()
             .getNodes()
             .forEach((key, level) -> SimplifiedApi.getRepositoryOf(HotmPerkModel.class)
@@ -612,7 +614,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             );
     }
 
-    private void loadPetScore(SkyBlockIsland.Member member) {
+    private void loadPetScore(Member member) {
         SimplifiedApi.getRepositoryOf(StatModel.class)
             .findFirst(StatModel::getKey, "MAGIC_FIND")
             .ifPresent(magicFindStatModel -> this.addBase(this.stats.get(Type.PET_SCORE).get(magicFindStatModel), SimplifiedApi.getRepositoryOf(PetScoreModel.class)
@@ -623,7 +625,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             );
     }
 
-    private void loadSkills(SkyBlockIsland.Member member) {
+    private void loadSkills(Member member) {
         SimplifiedApi.getRepositoryOf(SkillModel.class)
             .stream()
             .forEach(skillModel -> {
@@ -647,7 +649,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             });
     }
 
-    private void loadSlayers(SkyBlockIsland.Member member) {
+    private void loadSlayers(Member member) {
         SimplifiedApi.getRepositoryOf(SlayerModel.class)
             .stream()
             .forEach(slayerModel -> {
@@ -683,7 +685,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         private final double magicalPowerMultiplier;
 
         private AccessoryBag(
-            @NotNull SkyBlockIsland.Member member,
+            @NotNull Member member,
             @NotNull ConcurrentList<AccessoryData> accessories,
             @NotNull ConcurrentList<AccessoryData> filteredAccessories,
             @NotNull Optional<AccessoryPowerModel> currentPowerModel,
@@ -707,7 +709,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             this.tuningPoints = this.magicalPower / 10;
         }
 
-        private int handleMagicalPower(AccessoryData accessoryData, SkyBlockIsland.Member member) {
+        private int handleMagicalPower(AccessoryData accessoryData, Member member) {
             int magicalPower = accessoryData.getRarity().getMagicPowerMultiplier();
 
             if (accessoryData.getItem().getItemId().equals("HEGEMONY_ARTIFACT"))

@@ -1,7 +1,7 @@
 package dev.sbs.api.client.hypixel.response.skyblock.implementation.island.accessories;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.member.Member;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -42,7 +42,7 @@ public class AccessoryBag {
         return new EnhancedAccessoryBag(this);
     }
 
-    protected void initialize(@NotNull SkyBlockIsland.Member member) {
+    protected void initialize(@NotNull Member member) {
         this.contents = member.getInventory().getBags().getAccessories();
         this.hasConsumedPrism = member.getRift().getAccess().hasConsumedPrism();
         this.abiphoneContacts = member.getCrimsonIsle().getAbiphone().getContacts().size();

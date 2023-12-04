@@ -5,7 +5,7 @@ import dev.sbs.api.client.hypixel.response.Rarity;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.weight.Weight;
 import dev.sbs.api.util.helper.StringUtil;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pet {
 
     @SerializedName("uuid")

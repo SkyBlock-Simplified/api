@@ -4,12 +4,16 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunityUpgrades {
 
     @SerializedName("currently_upgrading")
@@ -17,26 +21,20 @@ public class CommunityUpgrades {
     @SerializedName("upgrade_states")
     private @NotNull ConcurrentList<Upgraded> upgraded = Concurrent.newList();
 
-    public enum Upgrade {
-
-        @SerializedName("minion_slots")
-        MINION_SLOTS,
-        @SerializedName("coins_allowance")
-        COINS_ALLOWANCE,
-        @SerializedName("guests_count")
-        GUESTS_COUNT,
-        @SerializedName("island_size")
-        ISLAND_SIZE,
-        @SerializedName("coop_slots")
-        COOP_SLOTS
-
+    /**
+     * Wraps this class with database access.
+     * <br><br>
+     * Requires an active database session.
+     */
+    public @NotNull EnhancedCommunityUpgrades asEnhanced() {
+        return new EnhancedCommunityUpgrades(this);
     }
 
     @Getter
     public static class Upgraded {
 
         @SerializedName("upgrade")
-        private String upgradeName;
+        private Type upgrade;
         private int tier;
         @SerializedName("started_ms")
         private SkyBlockDate.RealTime started;
@@ -55,13 +53,28 @@ public class CommunityUpgrades {
     public static class Upgrading {
 
         @SerializedName("upgrade")
-        private String upgradeName;
+        private Type upgrade;
         @SerializedName("new_tier")
         private int newTier;
         @SerializedName("start_ms")
         private SkyBlockDate.RealTime started;
         @SerializedName("who_started")
         private String startedBy;
+
+    }
+
+    public enum Type {
+
+        @SerializedName("minion_slots")
+        MINION_SLOTS,
+        @SerializedName("coins_allowance")
+        COINS_ALLOWANCE,
+        @SerializedName("guests_count")
+        GUESTS_COUNT,
+        @SerializedName("island_size")
+        ISLAND_SIZE,
+        @SerializedName("coop_slots")
+        COOP_SLOTS
 
     }
 
