@@ -5,7 +5,7 @@ import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.ListUtil;
-import dev.sbs.api.util.stream.triple.TriFunction;
+import dev.sbs.api.util.stream.triple.TriPredicate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface SearchQuery<E, T extends List<E>> {
 
     @NotNull T toList(@NotNull Stream<E> stream) throws DataException;
 
-    default <S> Stream<E> compare(SearchFunction.Match match, TriFunction<Function<E, S>, E, S, Boolean> compare, Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
+    default <S> Stream<E> compare(SearchFunction.Match match, TriPredicate<Function<E, S>, E, S> compare, Iterable<Pair<Function<E, S>, S>> predicates) throws DataException {
         Stream<E> itemsCopy = this.stream();
 
         if (match == SearchFunction.Match.ANY) {
@@ -31,13 +31,13 @@ public interface SearchQuery<E, T extends List<E>> {
                 boolean matches = false;
 
                 for (Pair<Function<E, S>, S> predicate : predicates)
-                    matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
+                    matches |= compare.test(predicate.getLeft(), it, predicate.getValue());
 
                 return matches;
             });
         } else if (match == SearchFunction.Match.ALL) {
             for (Pair<Function<E, S>, S> predicate : predicates)
-                itemsCopy = itemsCopy.filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()));
+                itemsCopy = itemsCopy.filter(it -> compare.test(predicate.getLeft(), it, predicate.getRight()));
         } else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Invalid match type '%s'.", match)
@@ -46,7 +46,7 @@ public interface SearchQuery<E, T extends List<E>> {
         return itemsCopy;
     }
 
-    default <S> Stream<E> contains(SearchFunction.Match match, TriFunction<Function<E, List<S>>, E, S, Boolean> compare, Iterable<Pair<Function<E, List<S>>, S>> predicates) throws DataException {
+    default <S> Stream<E> contains(SearchFunction.Match match, TriPredicate<Function<E, List<S>>, E, S> compare, Iterable<Pair<Function<E, List<S>>, S>> predicates) throws DataException {
         Stream<E> itemsCopy = this.stream();
 
         if (match == SearchFunction.Match.ANY) {
@@ -54,13 +54,13 @@ public interface SearchQuery<E, T extends List<E>> {
                 boolean matches = false;
 
                 for (Pair<Function<E, List<S>>, S> predicate : predicates)
-                    matches |= compare.apply(predicate.getLeft(), it, predicate.getValue());
+                    matches |= compare.test(predicate.getLeft(), it, predicate.getValue());
 
                 return matches;
             });
         } else if (match == SearchFunction.Match.ALL) {
             for (Pair<Function<E, List<S>>, S> predicate : predicates)
-                itemsCopy = itemsCopy.filter(it -> compare.apply(predicate.getLeft(), it, predicate.getRight()));
+                itemsCopy = itemsCopy.filter(it -> compare.test(predicate.getLeft(), it, predicate.getRight()));
         } else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Invalid match type '%s'.", match)
