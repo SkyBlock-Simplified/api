@@ -1,12 +1,14 @@
 package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.collection.MaxSizeLinkedMap;
-import dev.sbs.api.util.comparator.LastCharCompare;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +20,7 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegexUtil {
 
-    private static final LinkedHashMap<String, String> ORDERED_MESSAGES = new MaxSizeLinkedMap<>(100);
+    private static final LinkedHashMap<String, String> CACHED_COLOR_MESSAGES = new MaxSizeLinkedMap<>(100);
     private static final LastCharCompare CODE_COMPARE = new LastCharCompare();
 
     // Minecraft Chat Formatting
@@ -56,10 +58,10 @@ public class RegexUtil {
      * @return The cached replaced message.
      */
     public static String lameColor(String message) {
-        if (!ORDERED_MESSAGES.containsKey(message))
-            ORDERED_MESSAGES.put(message, message.replace(SECTOR_SYMBOL, "&&"));
+        if (!CACHED_COLOR_MESSAGES.containsKey(message))
+            CACHED_COLOR_MESSAGES.put(message, message.replace(SECTOR_SYMBOL, "&&"));
 
-        return ORDERED_MESSAGES.get(message);
+        return CACHED_COLOR_MESSAGES.get(message);
     }
 
     /**
@@ -506,7 +508,7 @@ public class RegexUtil {
      * @return The cached filtered message.
      */
     public static String replaceColor(String message, Pattern pattern) {
-        if (!ORDERED_MESSAGES.containsKey(message)) {
+        if (!CACHED_COLOR_MESSAGES.containsKey(message)) {
             Pattern patternx = Pattern.compile(String.format("(((?:[&%s]%s)%s)+)([^&%1$s]*)", SECTOR_SYMBOL, "{1,2}", ALL_PATTERN));
             String[] parts = StringUtil.split(" ", message);
             String newMessage = message;
@@ -525,10 +527,10 @@ public class RegexUtil {
                 newMessage = newMessage.replace(part, newPart);
             }
 
-            ORDERED_MESSAGES.put(message, newMessage);
+            CACHED_COLOR_MESSAGES.put(message, newMessage);
         }
 
-        return replaceAll(replaceAll(ORDERED_MESSAGES.get(message), pattern, RegexUtil.SECTOR_SYMBOL + "$1"), REPLACE_PATTERN, "&");
+        return replaceAll(replaceAll(CACHED_COLOR_MESSAGES.get(message), pattern, RegexUtil.SECTOR_SYMBOL + "$1"), REPLACE_PATTERN, "&");
     }
 
     /**
@@ -540,6 +542,33 @@ public class RegexUtil {
      */
     public static String strip(String message, Pattern pattern) {
         return replaceAll(message, pattern, "");
+    }
+
+    private static class LastCharCompare implements Comparator<String> {
+
+        private final Set<Character> ignoreCharacters = new HashSet<>();
+
+        public void addIgnoreCharacter(char c) {
+            this.ignoreCharacters.add(c);
+        }
+
+        @Override
+        public int compare(String s1, String s2) {
+            if (s1.isEmpty() && !s2.isEmpty()) return 1;
+            if (s2.isEmpty() && !s1.isEmpty()) return -1;
+            if (s2.isEmpty()) return 0;
+
+            char firstChar = s1.charAt(s1.length() - 1);
+            char secondChar = s2.charAt(s2.length() - 1);
+
+            if (this.ignoreCharacters.contains(firstChar))
+                return (secondChar - firstChar) * -1;
+            else if (this.ignoreCharacters.contains(secondChar))
+                return (firstChar - secondChar) * -1;
+            else
+                return firstChar - secondChar;
+        }
+
     }
 
 }
