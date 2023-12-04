@@ -61,10 +61,10 @@ public class EnhancedBestiary extends Bestiary {
             ConcurrentMap<String, Integer> patterns = buildPatterns(type);
 
             this.mobs = Stream.concat(
-                    kills.pairStream()
+                    kills.stream()
                         .filterKey(patterns::containsKey)
                         .map(Pair::of),
-                    deaths.pairStream()
+                    deaths.stream()
                         .filterKey(patterns::containsKey)
                         .map(Pair::of)
                 )

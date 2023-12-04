@@ -122,10 +122,6 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return !this.isEmpty();
 	}
 
-	public final @NotNull PairStream<K, V> pairStream() {
-		return PairStream.of(this);
-	}
-
 	public final @NotNull Stream<Entry<K, V>> parallelStream() {
 		return this.entrySet().parallelStream();
 	}
@@ -193,8 +189,8 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		return this.ref.size();
 	}
 
-	public final @NotNull Stream<Entry<K, V>> stream() {
-		return this.entrySet().stream();
+	public final @NotNull PairStream<K, V> stream() {
+		return PairStream.of(this);
 	}
 
 	@Override

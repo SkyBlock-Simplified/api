@@ -914,17 +914,17 @@ public class Reflection<T> {
 
         // Handle Invalid Required
         invalidRequired.get("_DEFAULT_")
-            .pairStream()
+            .stream()
             .filterValue(Boolean::booleanValue)
             .findFirst()
             .ifPresentOrElse(pair -> {
                 throw SimplifiedException.of(ReflectionException.class)
-                    .withMessage("Field '%s' is required and is null/empty!", pair.getLeft().getField().getName())
+                    .withMessage("Field '%s' is required and is null/empty!", pair.getKey().getField().getName())
                     .build();
             }, () -> {
-                invalidRequired.pairStream()
+                invalidRequired.stream()
                     .filterKey(key -> !key.equals("_DEFAULT_"))
-                    .filter((key, fields) -> fields.pairStream().allMatch((field, invalid) -> invalid))
+                    .filter((key, fields) -> fields.stream().allMatch((field, invalid) -> invalid))
                     .findFirst()
                     .ifPresent(invalidGroup -> {
                         throw SimplifiedException.of(ReflectionException.class)
@@ -932,7 +932,7 @@ public class Reflection<T> {
                                 "Field group '%s' is required and [%s] is null/empty!",
                                 invalidGroup.getKey(),
                                 invalidGroup.getValue()
-                                    .pairStream()
+                                    .stream()
                                     .filterValue(Boolean::booleanValue)
                                     .map((field, invalid) -> field.getField().getName())
                                     .collect(Collectors.joining(","))

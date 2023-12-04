@@ -4,11 +4,14 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.data.tuple.pair.Pair;
+import dev.sbs.api.util.stream.triple.TriFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -17,7 +20,7 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-public interface PairStream<K, V> {
+public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
 
     // Create
 
@@ -33,6 +36,19 @@ public interface PairStream<K, V> {
         return () -> stream.map(key -> Pair.of(key, function.apply(key)));
     }
 
+    // Close
+
+    @Override
+    @SuppressWarnings("all")
+    default @NotNull PairStream<K, V> onClose(@NotNull Runnable closeHandler) {
+        return of(this.entries().onClose(closeHandler));
+    }
+
+    @Override
+    default void close() {
+        this.entries().close();
+    }
+
     // Entries
 
     @NotNull Stream<Map.Entry<K, V>> entries();
@@ -45,22 +61,31 @@ public interface PairStream<K, V> {
         return this.entries().map(Map.Entry::getValue);
     }
 
+    @Override
     default long count() {
         return this.entries().count();
     }
 
+    @Override
     default @NotNull PairStream<K, V> distinct() {
         return of(this.entries().distinct());
     }
 
+    @Override
     default @NotNull PairStream<K, V> limit(long maxSize) {
         return of(this.entries().limit(maxSize));
+    }
+
+    @Override
+    default @NotNull PairStream<K, V> peek(@NotNull Consumer<? super Map.Entry<K, V>> action) {
+        return of(this.entries().peek(action));
     }
 
     default @NotNull PairStream<K, V> peek(@NotNull BiConsumer<? super K, ? super V> action) {
         return of(this.entries().peek(entry -> action.accept(entry.getKey(), entry.getValue())));
     }
 
+    @Override
     default @NotNull PairStream<K, V> skip(long number) {
         return of(this.entries().skip(number));
     }
@@ -75,36 +100,62 @@ public interface PairStream<K, V> {
         return of(this.entries().filter(entry -> mapper.test(entry.getValue())));
     }
 
+    default @NotNull PairStream<K, V> filter(@NotNull Predicate<? super Map.Entry<K, V>> mapper) {
+        return of(this.entries().filter(mapper));
+    }
+
     default @NotNull PairStream<K, V> filter(@NotNull BiPredicate<? super K, ? super V> mapper) {
         return of(this.entries().filter(entry -> mapper.test(entry.getKey(), entry.getValue())));
     }
 
     // Find
 
-    default @NotNull Optional<Pair<K, V>> findAny() {
-        return this.entries().findAny().map(Pair::from);
+    @Override
+    default @NotNull Optional<Map.Entry<K, V>> findAny() {
+        return this.entries().findAny();
     }
 
-    default @NotNull Optional<Pair<K, V>> findFirst() {
-        return this.entries().findFirst().map(Pair::from);
+    @Override
+    default @NotNull Optional<Map.Entry<K, V>> findFirst() {
+        return this.entries().findFirst();
     }
 
     // Flatmapping
+
+    @Override
+    default <R> @NotNull Stream<R> flatMap(@NotNull Function<? super Map.Entry<K, V>, ? extends Stream<? extends R>> mapper) {
+        return this.entries().flatMap(mapper);
+    }
 
     default <RK, RV> @NotNull PairStream<RK, RV> flatMap(@NotNull BiFunction<? super K, ? super V, ? extends PairStream<RK, RV>> mapper) {
         return of(this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()).entries()));
     }
 
-    default <R> @NotNull Stream<R> flatMapToObj(@NotNull BiFunction<? super K, ? super V, ? extends Stream<R>> mapper) {
+    default <R> @NotNull Stream<R> flatMapToObj(@NotNull BiFunction<? super K, ? super V, ? extends Stream<? extends R>> mapper) {
         return this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default @NotNull DoubleStream flatMapToDouble(@NotNull Function<? super Map.Entry<K, V>, ? extends DoubleStream> mapper) {
+        return this.entries().flatMapToDouble(mapper);
     }
 
     default @NotNull DoubleStream flatMapToDouble(@NotNull BiFunction<? super K, ? super V, ? extends DoubleStream> mapper) {
         return this.entries().flatMapToDouble(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
+    @Override
+    default @NotNull IntStream flatMapToInt(@NotNull Function<? super Map.Entry<K, V>, ? extends IntStream> mapper) {
+        return this.entries().flatMapToInt(mapper);
+    }
+
     default @NotNull IntStream flatMapToInt(@NotNull BiFunction<? super K, ? super V, ? extends IntStream> mapper) {
         return this.entries().flatMapToInt(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default @NotNull LongStream flatMapToLong(@NotNull Function<? super Map.Entry<K, V>, ? extends LongStream> mapper) {
+        return this.entries().flatMapToLong(mapper);
     }
 
     default @NotNull LongStream flatMapToLong(@NotNull BiFunction<? super K, ? super V, ? extends LongStream> mapper) {
@@ -113,22 +164,59 @@ public interface PairStream<K, V> {
 
     // ForEach
 
+    @Override
+    default void forEach(@NotNull Consumer<? super Map.Entry<K, V>> action) {
+        this.entries().forEach(action);
+    }
+
     default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
         this.entries().forEach(entry -> action.accept(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default void forEachOrdered(@NotNull Consumer<? super Map.Entry<K, V>> action) {
+        this.entries().forEachOrdered(action);
     }
 
     default void forEachOrdered(@NotNull BiConsumer<? super K, ? super V> action) {
         this.entries().forEachOrdered(entry -> action.accept(entry.getKey(), entry.getValue()));
     }
 
+    // Iterator
+
+    @Override
+    default @NotNull Iterator<Map.Entry<K, V>> iterator() {
+        return this.entries().iterator();
+    }
+
+    @Override
+    default @NotNull Spliterator<Map.Entry<K, V>> spliterator() {
+        return this.entries().spliterator();
+    }
+
     // Matching
+
+    @Override
+    default boolean allMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return this.entries().allMatch(predicate);
+    }
 
     default boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
         return this.entries().allMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
     }
 
+    @Override
+    default boolean anyMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return this.entries().anyMatch(predicate);
+    }
+
     default boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
         return this.entries().anyMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default boolean noneMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return this.entries().noneMatch(predicate);
     }
 
     default boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
@@ -136,6 +224,11 @@ public interface PairStream<K, V> {
     }
 
     // Mapping
+
+    @Override
+    default <R> @NotNull Stream<R> map(@NotNull Function<? super Map.Entry<K, V>, ? extends R> mapper) {
+        return this.entries().map(mapper);
+    }
 
     default <R> @NotNull Stream<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
         return this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue()));
@@ -149,12 +242,27 @@ public interface PairStream<K, V> {
         return of(this.entries().map(entry -> Pair.of(entry.getKey(), mapper.apply(entry.getValue()))));
     }
 
+    @Override
+    default @NotNull DoubleStream mapToDouble(@NotNull ToDoubleFunction<? super Map.Entry<K, V>> mapper) {
+        return this.entries().mapToDouble(mapper);
+    }
+
     default @NotNull DoubleStream mapToDouble(@NotNull ToDoubleBiFunction<? super K, ? super V> mapper) {
         return this.entries().mapToDouble(entry -> mapper.applyAsDouble(entry.getKey(), entry.getValue()));
     }
 
+    @Override
+    default @NotNull IntStream mapToInt(@NotNull ToIntFunction<? super Map.Entry<K, V>> mapper) {
+        return this.entries().mapToInt(mapper);
+    }
+
     default @NotNull IntStream mapToInt(@NotNull ToIntBiFunction<? super K, ? super V> mapper) {
         return this.entries().mapToInt(entry -> mapper.applyAsInt(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default @NotNull LongStream mapToLong(@NotNull ToLongFunction<? super Map.Entry<K, V>> mapper) {
+        return this.entries().mapToLong(mapper);
     }
 
     default @NotNull LongStream mapToLong(@NotNull ToLongBiFunction<? super K, ? super V> mapper) {
@@ -163,12 +271,22 @@ public interface PairStream<K, V> {
 
     // Minmax
 
+    @Override
+    default @NotNull Optional<Map.Entry<K, V>> max(@NotNull Comparator<? super Map.Entry<K, V>> comparator) {
+        return this.entries().max(comparator);
+    }
+
     default @NotNull Optional<Map.Entry<K, V>> maxByKey(@NotNull Comparator<? super K> comparator) {
         return this.entries().max(Map.Entry.comparingByKey(comparator));
     }
 
     default @NotNull Optional<Map.Entry<K, V>> maxByValue(@NotNull Comparator<? super V> comparator) {
         return this.entries().max(Map.Entry.comparingByValue(comparator));
+    }
+
+    @Override
+    default @NotNull Optional<Map.Entry<K, V>> min(@NotNull Comparator<? super Map.Entry<K, V>> comparator) {
+        return this.entries().min(comparator);
     }
 
     default @NotNull Optional<Map.Entry<K, V>> minByKey(@NotNull Comparator<? super K> comparator) {
@@ -179,7 +297,61 @@ public interface PairStream<K, V> {
         return this.entries().min(Map.Entry.comparingByValue(comparator));
     }
 
+    // Order
+
+    @Override
+    default boolean isParallel() {
+        return this.entries().isParallel();
+    }
+
+    @Override
+    default @NotNull PairStream<K, V> parallel() {
+        return of(this.entries().parallel());
+    }
+
+    @Override
+    default @NotNull PairStream<K, V> sequential() {
+        return of(this.entries().sequential());
+    }
+
+    @Override
+    default @NotNull PairStream<K, V> unordered() {
+        return of(this.entries().unordered());
+    }
+
+
+    // Reduction
+
+    @Override
+    default @NotNull Map.Entry<K, V> reduce(@NotNull Map.Entry<K, V> identity, @NotNull BinaryOperator<Map.Entry<K, V>> accumulator) {
+        return this.entries().reduce(identity, accumulator);
+    }
+
+    @Override
+    default @NotNull Optional<Map.Entry<K, V>> reduce(@NotNull BinaryOperator<Map.Entry<K, V>> accumulator) {
+        return this.entries().reduce(accumulator);
+    }
+
+    @Override
+    default <U> @NotNull U reduce(@NotNull U identity, @NotNull BiFunction<U, ? super Map.Entry<K, V>, U> accumulator, @NotNull BinaryOperator<U> combiner) {
+        return this.entries().reduce(identity, accumulator, combiner);
+    }
+
+    default <U> @NotNull U reduce(@NotNull U identity, @NotNull TriFunction<U, ? super K, ? super V, U> accumulator, @NotNull BinaryOperator<U> combiner) {
+        return this.entries().reduce(identity, (u, entry) -> accumulator.apply(u, entry.getKey(), entry.getValue()), combiner);
+    }
+
     // Sorting
+
+    @Override
+    default PairStream<K, V> sorted() {
+        return of(this.entries().sorted());
+    }
+
+    @Override
+    default @NotNull PairStream<K, V> sorted(@NotNull Comparator<? super Map.Entry<K, V>> comparator) {
+        return of(this.entries().sorted(comparator));
+    }
 
     default @NotNull PairStream<K, V> sortedByKey(@NotNull Comparator<? super K> comparator) {
         return of(this.entries().sorted(Map.Entry.comparingByKey(comparator)));
@@ -243,8 +415,24 @@ public interface PairStream<K, V> {
      * @see Stream#collect(Supplier, BiConsumer, BiConsumer)
      * @see Collectors
      */
+    @Override
     default <R, A> R collect(@NotNull Collector<? super Map.Entry<K, V>, A, R> collector) {
         return this.entries().collect(collector);
+    }
+
+    @Override
+    default <R> R collect(@NotNull Supplier<R> supplier, @NotNull BiConsumer<R, ? super Map.Entry<K, V>> accumulator, @NotNull BiConsumer<R, R> combiner) {
+        return this.entries().collect(supplier, accumulator, combiner);
+    }
+
+    @Override
+    default @NotNull Object @NotNull [] toArray() {
+        return this.entries().toArray();
+    }
+
+    @Override
+    default <A> @NotNull A @NotNull [] toArray(@NotNull IntFunction<A[]> generator) {
+        return this.entries().toArray(generator);
     }
 
     default @NotNull ConcurrentMap<K, V> toConcurrentMap() {

@@ -38,7 +38,7 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
         );
 
         this.enhancedMembers = this.getMembers()
-            .pairStream()
+            .stream()
             .mapValue(Member::asEnhanced)
             .collect(Concurrent.toLinkedMap());
         this.profileTypeModel = this.getProfileName()
@@ -68,7 +68,7 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
 
     public @NotNull ConcurrentList<Integer> getCraftedMinions(@NotNull MinionModel type) {
         return this.getEnhancedMembers()
-            .pairStream()
+            .stream()
             .values()
             .flatMap(member -> member.getCraftedMinions(type).stream())
             .distinct()
@@ -78,7 +78,7 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
 
     public int getUniqueMinions() {
         return this.getMembers()
-            .pairStream()
+            .stream()
             .values()
             .mapToInt(member -> member.getPlayerData().getCraftedMinions().size())
             .sum() + this.getCommunityUpgrades()
