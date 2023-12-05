@@ -890,7 +890,7 @@ public class Reflection<T> {
 
                         if (CharSequence.class.isAssignableFrom(fieldType)) {
                             CharSequence sequence = (CharSequence) value;
-                            invalid = StringUtil.length(sequence) < flag.limit();
+                            invalid = StringUtil.length(sequence) > flag.limit();
                         } else if (value instanceof Optional<?> optional) {
                             final ParameterizedType parameterizedType = (ParameterizedType) field.getField().getGenericType();
                             final Type actualType = parameterizedType.getActualTypeArguments()[0];
@@ -898,7 +898,7 @@ public class Reflection<T> {
                             if (String.class.isAssignableFrom((Class<?>) actualType)) {
                                 invalid = optional.map(String::valueOf)
                                     .map(StringUtil::length)
-                                    .map(length -> length < flag.limit())
+                                    .map(length -> length > flag.limit())
                                     .orElse(false);
                             }
                         }
@@ -906,7 +906,7 @@ public class Reflection<T> {
 
                     if (invalid) {
                         throw SimplifiedException.of(ReflectionException.class)
-                            .withMessage("Field '%s' does not have length of '%s' or higher!", field.getType().getSimpleName(), flag.limit())
+                            .withMessage("Field '%s' does not have length of '%s' or lower!", field.getType().getSimpleName(), flag.limit())
                             .build();
                     }
                 }
