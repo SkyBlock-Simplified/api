@@ -24,7 +24,7 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
 
     private final @NotNull ConcurrentLinkedMap<UUID, EnhancedMember> enhancedMembers;
     private final @NotNull Optional<ProfileModel> profileTypeModel;
-    private final @NotNull Optional<EnhancedCommunityUpgrades> communityUpgrades;
+    private final @NotNull Optional<EnhancedCommunityUpgrades> enhancedCommunityUpgrades;
 
     public EnhancedSkyBlockIsland(@NotNull SkyBlockIsland skyBlockIsland) {
         super(
@@ -46,7 +46,7 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
                 .findCached()
                 .findFirst(ProfileModel::getKey, profileName)
             );
-        this.communityUpgrades = super.getCommunityUpgrades().map(CommunityUpgrades::asEnhanced);
+        this.enhancedCommunityUpgrades = super.getCommunityUpgrades().map(CommunityUpgrades::asEnhanced);
     }
 
     public @NotNull Collection getCollection(@NotNull CollectionModel type) {
@@ -81,7 +81,7 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
             .stream()
             .values()
             .mapToInt(member -> member.getPlayerData().getCraftedMinions().size())
-            .sum() + this.getCommunityUpgrades()
+            .sum() + this.getEnhancedCommunityUpgrades()
             .map(communityUpgrades -> communityUpgrades.getUpgraded()
                 .stream()
                 .filter(upgraded -> upgraded.getUpgrade() == CommunityUpgrades.Type.MINION_SLOTS)
