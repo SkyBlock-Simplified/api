@@ -92,20 +92,21 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
 
     // Filtering
 
-    default @NotNull PairStream<K, V> filterKey(@NotNull Predicate<? super K> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getKey())));
-    }
-
-    default @NotNull PairStream<K, V> filterValue(@NotNull Predicate<? super V> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getValue())));
-    }
-
+    @Override
     default @NotNull PairStream<K, V> filter(@NotNull Predicate<? super Map.Entry<K, V>> mapper) {
         return of(this.entries().filter(mapper));
     }
 
     default @NotNull PairStream<K, V> filter(@NotNull BiPredicate<? super K, ? super V> mapper) {
         return of(this.entries().filter(entry -> mapper.test(entry.getKey(), entry.getValue())));
+    }
+
+    default @NotNull PairStream<K, V> filterKey(@NotNull Predicate<? super K> mapper) {
+        return of(this.entries().filter(entry -> mapper.test(entry.getKey())));
+    }
+
+    default @NotNull PairStream<K, V> filterValue(@NotNull Predicate<? super V> mapper) {
+        return of(this.entries().filter(entry -> mapper.test(entry.getValue())));
     }
 
     // Find
@@ -194,35 +195,6 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return this.entries().spliterator();
     }
 
-    // Matching
-
-    @Override
-    default boolean allMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return this.entries().allMatch(predicate);
-    }
-
-    default boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return this.entries().allMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
-    }
-
-    @Override
-    default boolean anyMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return this.entries().anyMatch(predicate);
-    }
-
-    default boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return this.entries().anyMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
-    }
-
-    @Override
-    default boolean noneMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return this.entries().noneMatch(predicate);
-    }
-
-    default boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return this.entries().noneMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
-    }
-
     // Mapping
 
     @Override
@@ -267,6 +239,35 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
 
     default @NotNull LongStream mapToLong(@NotNull ToLongBiFunction<? super K, ? super V> mapper) {
         return this.entries().mapToLong(entry -> mapper.applyAsLong(entry.getKey(), entry.getValue()));
+    }
+
+    // Matching
+
+    @Override
+    default boolean allMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return this.entries().allMatch(predicate);
+    }
+
+    default boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return this.entries().allMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default boolean anyMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return this.entries().anyMatch(predicate);
+    }
+
+    default boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return this.entries().anyMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
+    }
+
+    @Override
+    default boolean noneMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return this.entries().noneMatch(predicate);
+    }
+
+    default boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return this.entries().noneMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
     }
 
     // Minmax
@@ -318,7 +319,6 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
     default @NotNull PairStream<K, V> unordered() {
         return of(this.entries().unordered());
     }
-
 
     // Reduction
 
