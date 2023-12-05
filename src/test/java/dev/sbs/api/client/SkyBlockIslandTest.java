@@ -6,11 +6,14 @@ import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelSkyBlockRequest;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Collection;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.EnhancedSkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.JacobsContest;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.SkyBlockIsland;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Slayer;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.bestiary.Bestiary;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.dungeon.Dungeon;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.member.EnhancedMember;
+import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.member.Member;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet.EnhancedPet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.pet.Pet;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.profile_stats.ProfileStats;
@@ -137,11 +140,11 @@ public class SkyBlockIslandTest {
 
             // Did Hypixel Reply
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
-            SkyBlockIsland island = profiles.getSelected(); // Bingo Profile = 0
+            EnhancedSkyBlockIsland island = profiles.getSelected().asEnhanced(); // Bingo Profile = 0
 
             // Does Member Exist
             MatcherAssert.assertThat(island.getMembers().containsKey(uniqueId), Matchers.equalTo(true));
-            SkyBlockIsland.Member member = island.getMembers().get(uniqueId);
+            EnhancedMember member = island.getEnhancedMembers().get(uniqueId);
 
             // SkyBlock Levels
             int exp1 = member.getLeveling().getExperience();
@@ -229,8 +232,8 @@ public class SkyBlockIslandTest {
             Optional<SkyBlockIsland> pineappleIsland = profiles.getIsland(checkThis.getRight().getKey());
             assert pineappleIsland.isPresent();
             SkyBlockIsland island = pineappleIsland.get();
-            SkyBlockIsland.Member member = island.getMembers().get(checkThis.getKey());
-            SkyBlockIsland.EnhancedMember enhancedMember = member.asEnhanced();
+            Member member = island.getMembers().get(checkThis.getKey());
+            EnhancedMember enhancedMember = member.asEnhanced();
 
             int petScore = member.getPetData().getPetScore();
 
