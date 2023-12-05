@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -309,19 +310,19 @@ public interface SearchQuery<E, T extends List<E>> {
     }
 
     // --- MATCH ALL ---
-    default T matchAll(@NotNull Function<E, Boolean>... predicates) throws DataException {
+    default T matchAll(@NotNull Predicate<E>... predicates) throws DataException {
         return this.matchAll(Concurrent.newList(predicates));
     }
 
-    default T matchAll(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default T matchAll(@NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchAll(SearchFunction.Match.ALL, predicates);
     }
 
-    default T matchAll(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+    default T matchAll(@NotNull SearchFunction.Match match, @NotNull Predicate<E>... predicates) throws DataException {
         return this.matchAll(match, Concurrent.newList(predicates));
     }
 
-    default T matchAll(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default T matchAll(@NotNull SearchFunction.Match match, @NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.toList(this.compare(
             match,
             (predicate, it, value) -> {
@@ -332,25 +333,25 @@ public interface SearchQuery<E, T extends List<E>> {
                 }
             },
             StreamSupport.stream(predicates.spliterator(), false)
-                .map(predicate -> Pair.of(predicate, true))
+                .map(predicate -> Pair.<Function<E, Boolean>, Boolean>of(predicate::test, true))
                 .collect(Concurrent.toList())
         ));
     }
 
     // --- MATCH FIRST ---
-    default Optional<E> matchFirst(@NotNull Function<E, Boolean>... predicates) throws DataException {
+    default Optional<E> matchFirst(@NotNull Predicate<E>... predicates) throws DataException {
         return this.matchFirst(Concurrent.newList(predicates));
     }
 
-    default Optional<E> matchFirst(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default Optional<E> matchFirst(@NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchFirst(SearchFunction.Match.ALL, predicates);
     }
 
-    default Optional<E> matchFirst(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+    default Optional<E> matchFirst(@NotNull SearchFunction.Match match, @NotNull Predicate<E>... predicates) throws DataException {
         return this.matchFirst(match, Concurrent.newList(predicates));
     }
 
-    default Optional<E> matchFirst(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default Optional<E> matchFirst(@NotNull SearchFunction.Match match, @NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.compare(
             match,
             (predicate, it, value) -> {
@@ -361,41 +362,41 @@ public interface SearchQuery<E, T extends List<E>> {
                 }
             },
             StreamSupport.stream(predicates.spliterator(), false)
-                .map(predicate -> Pair.of(predicate, true))
+                .map(predicate -> Pair.<Function<E, Boolean>, Boolean>of(predicate::test, true))
                 .collect(Concurrent.toList())
         ).findFirst();
     }
 
-    default E matchFirstOrNull(@NotNull Function<E, Boolean>... predicates) throws DataException {
+    default E matchFirstOrNull(@NotNull Predicate<E>... predicates) throws DataException {
         return this.matchFirstOrNull(Concurrent.newList(predicates));
     }
 
-    default E matchFirstOrNull(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default E matchFirstOrNull(@NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchFirstOrNull(SearchFunction.Match.ALL, predicates);
     }
 
-    default E matchFirstOrNull(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+    default E matchFirstOrNull(@NotNull SearchFunction.Match match, @NotNull Predicate<E>... predicates) throws DataException {
         return this.matchFirstOrNull(match, Concurrent.newList(predicates));
     }
 
-    default E matchFirstOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default E matchFirstOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchFirst(match, predicates).orElse(null);
     }
 
     // --- MATCH LAST ---
-    default Optional<E> matchLast(@NotNull Function<E, Boolean>... predicates) throws DataException {
+    default Optional<E> matchLast(@NotNull Predicate<E>... predicates) throws DataException {
         return this.matchLast(Concurrent.newList(predicates));
     }
 
-    default Optional<E> matchLast(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default Optional<E> matchLast(@NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchLast(SearchFunction.Match.ALL, predicates);
     }
 
-    default Optional<E> matchLast(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+    default Optional<E> matchLast(@NotNull SearchFunction.Match match, @NotNull Predicate<E>... predicates) throws DataException {
         return this.matchLast(match, Concurrent.newList(predicates));
     }
 
-    default Optional<E> matchLast(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default Optional<E> matchLast(@NotNull SearchFunction.Match match, @NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.compare(
             match,
             (predicate, it, value) -> {
@@ -406,24 +407,24 @@ public interface SearchQuery<E, T extends List<E>> {
                 }
             },
             StreamSupport.stream(predicates.spliterator(), false)
-                .map(predicate -> Pair.of(predicate, true))
+                .map(predicate -> Pair.<Function<E, Boolean>, Boolean>of(predicate::test, true))
                 .collect(Concurrent.toList())
         ).reduce((first, second) -> second);
     }
 
-    default E matchLastOrNull(@NotNull Function<E, Boolean>... predicates) throws DataException {
+    default E matchLastOrNull(@NotNull Predicate<E>... predicates) throws DataException {
         return this.matchLastOrNull(Concurrent.newList(predicates));
     }
 
-    default E matchLastOrNull(@NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default E matchLastOrNull(@NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchLastOrNull(SearchFunction.Match.ALL, predicates);
     }
 
-    default E matchLastOrNull(@NotNull SearchFunction.Match match, @NotNull Function<E, Boolean>... predicates) throws DataException {
+    default E matchLastOrNull(@NotNull SearchFunction.Match match, @NotNull Predicate<E>... predicates) throws DataException {
         return this.matchLastOrNull(match, Concurrent.newList(predicates));
     }
 
-    default E matchLastOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Function<E, Boolean>> predicates) throws DataException {
+    default E matchLastOrNull(@NotNull SearchFunction.Match match, @NotNull Iterable<Predicate<E>> predicates) throws DataException {
         return this.matchLast(match, predicates).orElse(null);
     }
 
