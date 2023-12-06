@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.discord.command_data.commands;
 
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCategoryModel;
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiModel;
@@ -22,8 +21,6 @@ public interface CommandModel extends Model {
     GuildModel getGuild();
 
     EmojiModel getEmoji();
-
-    CommandCategoryModel getCategory();
 
     String getDescription();
 

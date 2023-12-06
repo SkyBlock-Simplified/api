@@ -1,7 +1,6 @@
 package dev.sbs.api.data.model.discord.command_data.commands;
 
 import dev.sbs.api.data.model.SqlModel;
-import dev.sbs.api.data.model.discord.command_data.command_categories.CommandCategorySqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_groups.CommandGroupSqlModel;
 import dev.sbs.api.data.model.discord.command_data.command_parents.CommandParentSqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
@@ -86,11 +85,6 @@ public class CommandSqlModel implements CommandModel, SqlModel {
     private EmojiSqlModel emoji;
 
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "category_key", referencedColumnName = "key")
-    private CommandCategorySqlModel category;
-
-    @Setter
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -148,7 +142,6 @@ public class CommandSqlModel implements CommandModel, SqlModel {
             .append(this.getName(), that.getName())
             .append(this.getGuild(), that.getGuild())
             .append(this.getEmoji(), that.getEmoji())
-            .append(this.getCategory(), that.getCategory())
             .append(this.getDescription(), that.getDescription())
             .append(this.getLongDescription(), that.getLongDescription())
             .append(this.getDefaultMemberPermissions(), that.getDefaultMemberPermissions())
@@ -167,7 +160,6 @@ public class CommandSqlModel implements CommandModel, SqlModel {
             .append(this.getName())
             .append(this.getGuild())
             .append(this.getEmoji())
-            .append(this.getCategory())
             .append(this.getDescription())
             .append(this.getLongDescription())
             .append(this.getDefaultMemberPermissions())
