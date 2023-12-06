@@ -38,8 +38,8 @@ public @interface BuildFlag {
     @NotNull String pattern() default "";
 
     /**
-     * Limits field maximum length.
-     * <br><br>if it's a {@link CharSequence}.
+     * Limits field maximum length/size.
+     * <br><br>
      * Checks {@link CharSequence}, {@link String}, {@link List}, {@link Set}, etc.
      */
     int limit() default -1;
