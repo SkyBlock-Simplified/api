@@ -867,12 +867,12 @@ public class Reflection<T> {
                                 .orElse(false);
                         } else if (Collection.class.isAssignableFrom(fieldType))
                             invalid = ((Collection<?>) value).size() > flag.limit();
-                    }
 
-                    if (invalid) {
-                        throw SimplifiedException.of(ReflectionException.class)
-                            .withMessage("Field '%s' does not match pattern '%s'!", field.getType().getSimpleName(), flag.pattern())
-                            .build();
+                        if (invalid) {
+                            throw SimplifiedException.of(ReflectionException.class)
+                                .withMessage("Field '%s' does not match pattern '%s'!", field.getField().getName(), flag.pattern())
+                                .build();
+                        }
                     }
                 }
 
@@ -897,12 +897,12 @@ public class Reflection<T> {
                                     .orElse(false);
                             }
                         }
-                    }
 
-                    if (invalid) {
-                        throw SimplifiedException.of(ReflectionException.class)
-                            .withMessage("Field '%s' does not have length of '%s' or lower!", field.getType().getSimpleName(), flag.limit())
-                            .build();
+                        if (invalid) {
+                            throw SimplifiedException.of(ReflectionException.class)
+                                .withMessage("Field '%s' does not have length of '%s' or lower!", field.getField().getName(), flag.limit())
+                                .build();
+                        }
                     }
                 }
             });
