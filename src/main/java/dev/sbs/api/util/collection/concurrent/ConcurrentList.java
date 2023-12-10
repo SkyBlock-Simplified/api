@@ -55,8 +55,8 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> implements Se
 		return Concurrent.newList(super.inverse());
 	}
 
-	@Override @NotNull
-	public ConcurrentList<E> subList(int fromIndex, int toIndex) {
+	@Override
+	public @NotNull ConcurrentList<E> subList(int fromIndex, int toIndex) {
 		return Concurrent.newList(super.subList(fromIndex, toIndex));
 	}
 
