@@ -2039,8 +2039,28 @@ public class StringUtil {
         return null;
     }
 
-    public static Optional<String> formatNullable(@PrintFormat @Nullable String format, @Nullable Object... args) {
+    public static @NotNull Optional<String> formatNullable(@PrintFormat @Nullable String format, @Nullable Object... args) {
         return Optional.ofNullable(Objects.isNull(format) ? null : String.format(format, args));
+    }
+
+    public static @NotNull String format(@NotNull String format, @NotNull Map<String, Object> variables) {
+        StringBuilder newFormat = new StringBuilder(format);
+        List<Object> valueList = new ArrayList<>();
+
+        Matcher matcher = Pattern.compile("[$][{](\\w+)}", Pattern.CASE_INSENSITIVE).matcher(format);
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String paramName = "${" + key + "}";
+            int index = newFormat.indexOf(paramName);
+
+            if (index != -1) {
+                newFormat.replace(index, index + paramName.length(), "%s");
+                valueList.add(variables.get(key));
+            }
+        }
+
+        return String.format(newFormat.toString(), valueList.toArray());
     }
 
     /**
