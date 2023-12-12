@@ -74,19 +74,19 @@ public class ResourceAccessor {
     public @NotNull ConcurrentList<ClassInfo> getClasses() {
         return this.getResources()
             .stream()
-            .filter(resourceInfo -> resourceInfo instanceof ClassInfo)
+            .filter(ClassInfo.class::isInstance)
             .map(ClassInfo.class::cast)
             .collect(Concurrent.toUnmodifiableList());
     }
 
     @SuppressWarnings("unchecked")
-    public <T> @NotNull ConcurrentList<Class<T>> getSubtypesOf(@NotNull Class<T> type) {
+    public <T> @NotNull ConcurrentList<Class<? extends T>> getSubtypesOf(@NotNull Class<T> type) {
         return this.getClasses()
             .stream()
             .map(ClassInfo::load)
             .filter(storedType -> !storedType.equals(type))
             .filter(type::isAssignableFrom)
-            .map(storedType -> (Class<T>) storedType)
+            .map(storedType -> (Class<? extends T>) storedType)
             .collect(Concurrent.toUnmodifiableList());
     }
 

@@ -2,6 +2,7 @@ package dev.sbs.api.data;
 
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.sort.Graph;
 import lombok.Getter;
@@ -28,12 +29,15 @@ public abstract class DataConfig<T extends Model> {
     }
 
     @SuppressWarnings("unchecked")
-    protected static <T> @NotNull ConcurrentList<Class<T>> loadModels(@NotNull Class<T> modelType) {
+    protected static <T extends Model> @NotNull ConcurrentList<Class<T>> loadModels(@NotNull Class<T> modelType) {
         return Graph.builder(modelType)
             .withValues(
                 Reflection.getResources()
                     .filterPackage(modelType)
                     .getSubtypesOf(modelType)
+                    .stream()
+                    .map(storedType -> (Class<T>) storedType)
+                    .collect(Concurrent.toUnmodifiableList())
             )
             .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
                 .map(Field::getType)
