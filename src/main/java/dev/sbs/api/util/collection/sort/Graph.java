@@ -17,18 +17,19 @@ import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Graph<T> {
 
-    @Getter private final @NotNull ConcurrentList<Node<T>> nodes;
-    @Getter private final @NotNull ConcurrentList<T> edges;
-    @Getter private final @NotNull ConcurrentMap<T, ConcurrentList<T>> nodeEdges;
+    private final @NotNull ConcurrentList<Node<T>> nodes;
+    private final @NotNull ConcurrentList<T> edges;
+    private final @NotNull ConcurrentMap<T, ConcurrentList<T>> nodeEdges;
 
-    public static <T> Builder<T> builder(T type) {
+    public static <T> @NotNull Builder<T> builder(@NotNull T type) {
         return new Builder<>(type);
     }
 
-    private Node<T> findNode(T value) {
+    private @NotNull Node<T> findNode(@NotNull T value) {
         return this.getNodes().findFirstOrNull(Node::getValue, value);
     }
 
@@ -46,7 +47,7 @@ public class Graph<T> {
                 this.sort(node, stack);
         }
 
-        return Concurrent.newList(stack);
+        return Concurrent.newUnmodifiableList(stack);
     }
 
     /**
@@ -56,7 +57,7 @@ public class Graph<T> {
      * @param node The current node.
      * @param stack The combined stack.
      */
-    private void sort(Node<T> node, Stack<T> stack){
+    private void sort(@NotNull Node<T> node, @NotNull Stack<T> stack){
         node.setVisited(true);
 
         // The leaf nodes have no neighbours
@@ -121,9 +122,11 @@ public class Graph<T> {
             ));
 
             return new Graph<>(
-                Concurrent.newUnmodifiableList(this.values.stream().map(Node::new).collect(Concurrent.toList())),
-                Concurrent.newUnmodifiableList(this.edges),
-                Concurrent.newUnmodifiableMap(this.nodeEdges)
+                this.values.stream()
+                    .map(Node::new)
+                    .collect(Concurrent.toUnmodifiableList()),
+                this.edges.toUnmodifiableList(),
+                this.nodeEdges.toUnmodifiableMap()
             );
         }
 
