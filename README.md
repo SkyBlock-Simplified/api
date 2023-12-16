@@ -81,9 +81,10 @@ class file locator, type-matched methods/constructors, accessor caching, supercl
     * **Graph** - Sort a collection that share the same superclass topologically, this is used for efficient Hibernate loading.
   * **Helpers** - Classes to help you with reading and manipulating java types and resources.
   * **Streams**
-    * **PairStream** - Custom stream wrapper for Maps that makes it easier to iterate using only `K`/`V` as well as `Map.Entry<K, V>`.
-    * **TripleStream** - Custom stream wrapper that converts `Stream<T>` to `TripleStream extends Stream<Triple<L, M, R>>`.
-    AtomicCollection and it's inheritors all implement this as an indexed stream, allowing you to know the position of each element
+    * **PairStream** - Custom stream wrapper for Maps that converts `Stream<Map.Entry<K, V>>` to `PairStream<K, V>`.
+    AtomicMap and its inheritors all implement this, allowing you to interact using only `K`/`V` on top of `Map.Entry<K, V>`.
+    * **TripleStream** - Custom stream wrapper for Collections that converts `Stream<T>` to `TripleStream<T, M, R>`.
+    AtomicCollection and its inheritors all implement this as an indexed stream, allowing you to know the position of each element
     and the size of the stream.
   * **Other** - CommandLine, Mutables, Tuples (Pair/Triple), GSON adapters, etc.
 
