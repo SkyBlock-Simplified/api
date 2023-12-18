@@ -3,11 +3,12 @@ package dev.sbs.api.client.exception;
 import dev.sbs.api.client.HttpStatus;
 import feign.FeignException;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
+@Getter
 public abstract class ApiException extends FeignException {
 
-    @Getter
-    private final HttpStatus httpStatus;
+    private final @NotNull HttpStatus httpStatus;
 
     @SuppressWarnings("deprecation")
     public ApiException(FeignException exception) {
