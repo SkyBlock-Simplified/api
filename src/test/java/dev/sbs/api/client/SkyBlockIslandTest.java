@@ -2,8 +2,7 @@ package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
-import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
-import dev.sbs.api.client.hypixel.request.HypixelSkyBlockRequest;
+import dev.sbs.api.client.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.Collection;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.EnhancedSkyBlockIsland;
@@ -60,16 +59,15 @@ public class SkyBlockIslandTest {
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
             System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
-            HypixelPlayerRequest hypixelPlayerRequest = SimplifiedApi.getApiRequest(HypixelPlayerRequest.class);
-            HypixelSkyBlockRequest hypixelSkyBlockRequest = SimplifiedApi.getApiRequest(HypixelSkyBlockRequest.class);
+            HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
             String guildName = "SkyBlock Simplified";
 
-            hypixelPlayerRequest.getGuildByName(guildName)
+            hypixelRequest.getGuildByName(guildName)
                 .getGuild()
                 .ifPresent(guild -> {
                     ConcurrentMap<Pair<UUID, String>, Integer> playerLevels = guild.getMembers()
                         .stream()
-                        .map(member -> hypixelSkyBlockRequest.getProfiles(member.getUniqueId())
+                        .map(member -> hypixelRequest.getProfiles(member.getUniqueId())
                             .getIslands()
                             .stream()
                             .max(Comparator.comparingInt(island -> island.getMembers()
@@ -80,7 +78,7 @@ public class SkyBlockIslandTest {
                             .map(island -> Pair.of(
                                 Pair.of(
                                     member.getUniqueId(),
-                                    hypixelPlayerRequest.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
+                                    hypixelRequest.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
                                 ),
                                 island.getMembers()
                                     .get(member.getUniqueId())
@@ -132,11 +130,11 @@ public class SkyBlockIslandTest {
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
             System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
-            HypixelSkyBlockRequest hypixelSkyBlockRequest = SimplifiedApi.getApiRequest(HypixelSkyBlockRequest.class);
+            HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
 
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
             //UUID uniqueId = StringUtil.toUUID("df5e1701-809c-48be-9b0d-ef50b83b009e"); // GoldenDusk
-            SkyBlockProfilesResponse profiles = hypixelSkyBlockRequest.getProfiles(uniqueId);
+            SkyBlockProfilesResponse profiles = hypixelRequest.getProfiles(uniqueId);
 
             // Did Hypixel Reply
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
@@ -207,7 +205,7 @@ public class SkyBlockIslandTest {
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
             System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
             System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
-            HypixelSkyBlockRequest hypixelSkyBlockRequest = SimplifiedApi.getApiRequest(HypixelSkyBlockRequest.class);
+            HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
             ProfileModel pineappleProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE");
             ProfileModel bananaProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "BANANA");
 
@@ -225,7 +223,7 @@ public class SkyBlockIslandTest {
             );
             Pair<UUID, ProfileModel> checkThis = pair_CraftedFury;
 
-            SkyBlockProfilesResponse profiles = hypixelSkyBlockRequest.getProfiles(checkThis.getKey());
+            SkyBlockProfilesResponse profiles = hypixelRequest.getProfiles(checkThis.getKey());
             MatcherAssert.assertThat(profiles.isSuccess(), Matchers.equalTo(true));
 
             //SkyBlockIsland island = profiles.getSelected(); // Bingo Profile = 0

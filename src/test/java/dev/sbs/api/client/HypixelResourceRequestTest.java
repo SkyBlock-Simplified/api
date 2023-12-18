@@ -1,7 +1,7 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
+import dev.sbs.api.client.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.hypixel.response.resource.ResourceCollectionsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;
 import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 public class HypixelResourceRequestTest {
 
-    private static final HypixelResourceRequest HYPIXEL_RESOURCE_REQUEST;
+    private static final HypixelRequest HYPIXEL_RESOURCE_REQUEST;
 
     static {
-        HYPIXEL_RESOURCE_REQUEST = SimplifiedApi.getApiRequest(HypixelResourceRequest.class);
+        HYPIXEL_RESOURCE_REQUEST = SimplifiedApi.getApiRequest(HypixelRequest.class);
     }
 
     @Test
