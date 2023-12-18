@@ -5,12 +5,14 @@ import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.util.helper.StringUtil;
 import feign.FeignException;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 
+@Getter
 public final class SbsApiException extends ApiException {
 
-    @Getter private final SbsErrorResponse errorResponse;
+    private final @NotNull SbsErrorResponse errorResponse;
 
     public SbsApiException(FeignException exception) {
         super(exception);

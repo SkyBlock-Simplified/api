@@ -32,7 +32,7 @@ public class SkyBlockImagesResponse {
 
         @Override
         public SkyBlockImagesResponse deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
-            return new SkyBlockImagesResponse(Concurrent.newUnmodifiableMap(
+            return new SkyBlockImagesResponse(
                 jsonElement.getAsJsonObject()
                     .entrySet()
                     .stream()
@@ -43,8 +43,8 @@ public class SkyBlockImagesResponse {
                             entry.getValue().getAsJsonObject().get("enchanted").getAsString()
                         )
                     ))
-                    .collect(Concurrent.toMap())
-            ));
+                    .collect(Concurrent.toUnmodifiableMap())
+            );
         }
 
     }

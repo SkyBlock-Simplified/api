@@ -58,7 +58,7 @@ public class SkyBlockEmojisResponse {
         public SkyBlockEmojisResponse deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jdc) throws JsonParseException {
             Gson gson = SimplifiedApi.getGson();
 
-            return new SkyBlockEmojisResponse(Concurrent.newUnmodifiableMap(
+            return new SkyBlockEmojisResponse(
                 jsonElement.getAsJsonObject()
                     .entrySet()
                     .stream()
@@ -69,8 +69,8 @@ public class SkyBlockEmojisResponse {
                             Pair.of(true, gson.fromJson(entry.getValue().getAsJsonObject().get("enchanted"), Emoji.class))
                         )
                     ))
-                    .collect(Concurrent.toMap())
-            ));
+                    .collect(Concurrent.toUnmodifiableMap())
+            );
         }
 
     }

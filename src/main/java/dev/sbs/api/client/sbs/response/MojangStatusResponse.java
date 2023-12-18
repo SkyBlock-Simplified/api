@@ -2,45 +2,45 @@ package dev.sbs.api.client.sbs.response;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.HttpStatus;
-import dev.sbs.api.client.sbs.MojangServices;
+import dev.sbs.api.client.mojang.client.MojangClient;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
-import java.net.URL;
-
+@Getter
 public class MojangStatusResponse {
 
-    @Getter
-    private ConcurrentMap<Service, State> allStates;
+    private @NotNull ConcurrentMap<Service, State> allStates = Concurrent.newMap();
 
     public State getState(Service service) {
         return this.allStates.get(service);
     }
 
+    @Getter
     public enum Service {
 
         @SerializedName("minecraft.net")
-        MINECRAFT(MojangServices.SERVICE_MINECRAFT),
+        MINECRAFT(MojangClient.Domain.MINECRAFT),
         @SerializedName("session.minecraft.net")
-        SESSION(MojangServices.SERVICE_MINECRAFT_SESSION),
+        SESSION(MojangClient.Domain.MINECRAFT_SESSION),
         @SerializedName("account.minecraft.net")
-        ACCOUNT(MojangServices.SERVICE_MOJANG_ACCOUNT),
+        ACCOUNT(MojangClient.Domain.MOJANG_ACCOUNT),
         @SerializedName("authserver.minecraft.net")
-        AUTHENTICATION_SERVER(MojangServices.SERVICE_MOJANG_AUTHSERVER),
+        AUTHENTICATION_SERVER(MojangClient.Domain.MOJANG_AUTHSERVER),
         @SerializedName("sessionserver.minecraft.net")
-        SESSION_SERVER(MojangServices.SERVICE_MOJANG_SESSION),
+        SESSION_SERVER(MojangClient.Domain.MOJANG_SESSIONSERVER),
         @SerializedName("api.minecraft.net")
-        API(MojangServices.SERVICE_MOJANG_API),
+        API(MojangClient.Domain.MOJANG_API),
         @SerializedName("textures.minecraft.net")
-        TEXTURES(MojangServices.SERVICE_MINECRAFT_TEXTURES),
+        TEXTURES(MojangClient.Domain.MINECRAFT_TEXTURES),
         @SerializedName("mojang.net")
-        MOJANG(MojangServices.SERVICE_MOJANG);
+        MOJANG(MojangClient.Domain.MOJANG);
 
-        @Getter
-        private final URL url;
+        private final @NotNull MojangClient.Domain domain;
 
-        Service(URL url) {
-            this.url = url;
+        Service(@NotNull MojangClient.Domain domain) {
+            this.domain = domain;
         }
 
     }

@@ -4,18 +4,19 @@ import dev.sbs.api.client.sbs.response.MojangProfileResponse;
 import dev.sbs.api.client.sbs.response.MojangStatusResponse;
 import feign.Param;
 import feign.RequestLine;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface MojangRequest extends SbsRequest {
+public interface SbsMojangRequest extends ISbsRequest {
 
     @RequestLine("GET /mojang/user/{username}")
-    MojangProfileResponse getProfileFromUsername(@Param("username") String username);
+    @NotNull MojangProfileResponse getProfileFromUsername(@Param("username") String username);
 
     @RequestLine("GET /mojang/user/{uniqueId}")
-    MojangProfileResponse getProfileFromUniqueId(@Param("uniqueId") UUID uniqueId);
+    @NotNull MojangProfileResponse getProfileFromUniqueId(@Param("uniqueId") UUID uniqueId);
 
     @RequestLine("GET /mojang/status")
-    MojangStatusResponse getStatus();
+    @NotNull MojangStatusResponse getStatus();
 
 }

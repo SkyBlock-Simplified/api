@@ -5,19 +5,20 @@ import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
 import feign.RequestLine;
+import org.jetbrains.annotations.NotNull;
 
-public interface SkyBlockRequest extends SbsRequest {
+public interface SbsSkyBlockRequest extends ISbsRequest {
 
     @RequestLine("GET /skyblock/emojis.json")
-    SkyBlockEmojisResponse getEmojis();
+    @NotNull SkyBlockEmojisResponse getEmojis();
 
     @RequestLine("GET /skyblock/images.json")
-    SkyBlockImagesResponse getImages();
+    @NotNull SkyBlockImagesResponse getImages();
 
     @RequestLine("GET /skyblock/items.json")
-    SkyBlockItemsResponse getItems();
+    @NotNull SkyBlockItemsResponse getItems();
 
-    default SkyBlockEmojis getItemEmojis() {
+    default @NotNull SkyBlockEmojis getItemEmojis() {
         return new SkyBlockEmojis(
             this.getItems(),
             this.getEmojis(),
