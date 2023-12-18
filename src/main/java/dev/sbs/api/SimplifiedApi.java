@@ -6,18 +6,23 @@ import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
-import dev.sbs.api.client.ApiBuilder;
-import dev.sbs.api.client.Request;
-import dev.sbs.api.client.hypixel.HypixelApiBuilder;
+import dev.sbs.api.client.Client;
+import dev.sbs.api.client.IRequest;
+import dev.sbs.api.client.hypixel.HypixelClient;
 import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
 import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
 import dev.sbs.api.client.hypixel.request.HypixelSkyBlockRequest;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
-import dev.sbs.api.client.sbs.SbsApiBuilder;
-import dev.sbs.api.client.sbs.request.MojangRequest;
-import dev.sbs.api.client.sbs.request.SkyBlockRequest;
+import dev.sbs.api.client.mojang.MojangProxy;
+import dev.sbs.api.client.mojang.client.MojangApiClient;
+import dev.sbs.api.client.mojang.client.MojangSessionClient;
+import dev.sbs.api.client.mojang.request.MojangApiRequest;
+import dev.sbs.api.client.mojang.request.MojangSessionRequest;
+import dev.sbs.api.client.mojang.response.MojangMultiUsernameResponse;
+import dev.sbs.api.client.sbs.SbsClient;
+import dev.sbs.api.client.sbs.request.SbsMojangRequest;
+import dev.sbs.api.client.sbs.request.SbsSkyBlockRequest;
 import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
@@ -41,7 +46,6 @@ import dev.sbs.api.util.gson.adapter.SkyBlockDateTypeAdapter;
 import dev.sbs.api.util.gson.adapter.UUIDTypeAdapter;
 import dev.sbs.api.util.gson.factory.OptionalTypeAdapterFactory;
 import dev.sbs.api.util.gson.factory.SerializedPathTypeAdaptorFactory;
-import feign.gson.DoubleToIntMapTypeAdapter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,7 +56,6 @@ import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.time.Instant;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -68,11 +71,12 @@ public final class SimplifiedApi {
     static {
         // Provide Services
         serviceManager.add(Gson.class, new GsonBuilder()
-            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            //.registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
             .registerTypeAdapter(Color.class, new ColorTypeAdapter())
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .registerTypeAdapter(NbtContent.class, new NbtContentTypeAdapter())
+            .registerTypeAdapter(MojangMultiUsernameResponse.class, new MojangMultiUsernameResponse.Deserializer())
             .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockDateTypeAdapter.RealTime())
             .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockDateTypeAdapter.SkyBlockTime())
             .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
@@ -88,28 +92,32 @@ public final class SimplifiedApi {
         serviceManager.add(SessionManager.class, new SessionManager());
 
         // Provide Builders
-        builderManager.add(MojangRequest.class, SbsApiBuilder.class);
-        builderManager.add(SkyBlockRequest.class, SbsApiBuilder.class);
-        builderManager.add(HypixelPlayerRequest.class, HypixelApiBuilder.class);
-        builderManager.add(HypixelResourceRequest.class, HypixelApiBuilder.class);
-        builderManager.add(HypixelSkyBlockRequest.class, HypixelApiBuilder.class);
+        builderManager.add(MojangApiRequest.class, MojangApiClient.class);
+        builderManager.add(MojangSessionRequest.class, MojangSessionClient.class);
+        builderManager.add(SbsMojangRequest.class, SbsClient.class);
+        builderManager.add(SbsSkyBlockRequest.class, SbsClient.class);
+        builderManager.add(HypixelPlayerRequest.class, HypixelClient.class);
+        builderManager.add(HypixelResourceRequest.class, HypixelClient.class);
+        builderManager.add(HypixelSkyBlockRequest.class, HypixelClient.class);
         builderManager.add(String.class, StringBuilder.class);
         builderManager.add(LineSegment.class, LineSegment.Builder.class);
         builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
         builderManager.add(TextSegment.class, TextSegment.Builder.class);
 
-        // Create Api Builders
-        SbsApiBuilder sbsApiBuilder = new SbsApiBuilder();
-        HypixelApiBuilder hypixelApiBuilder = new HypixelApiBuilder();
-        serviceManager.add(SbsApiBuilder.class, sbsApiBuilder);
-        serviceManager.add(HypixelApiBuilder.class, hypixelApiBuilder);
+        // Create Api Handlers & Feign Proxies
+        MojangProxy mojangProxy = new MojangProxy();
+        serviceManager.add(MojangProxy.class, mojangProxy);
 
-        // Provide Client Api Implementations
-        serviceManager.add(HypixelPlayerRequest.class, hypixelApiBuilder.build(HypixelPlayerRequest.class));
-        serviceManager.add(HypixelResourceRequest.class, hypixelApiBuilder.build(HypixelResourceRequest.class));
-        serviceManager.add(HypixelSkyBlockRequest.class, hypixelApiBuilder.build(HypixelSkyBlockRequest.class));
-        serviceManager.add(MojangRequest.class, sbsApiBuilder.build(MojangRequest.class));
-        serviceManager.add(SkyBlockRequest.class, sbsApiBuilder.build(SkyBlockRequest.class));
+        SbsClient sbsApiClient = new SbsClient();
+        serviceManager.add(SbsClient.class, sbsApiClient);
+        serviceManager.add(SbsMojangRequest.class, sbsApiClient.build(SbsMojangRequest.class));
+        serviceManager.add(SbsSkyBlockRequest.class, sbsApiClient.build(SbsSkyBlockRequest.class));
+
+        HypixelClient hypixelApiClient = new HypixelClient();
+        serviceManager.add(HypixelClient.class, hypixelApiClient);
+        serviceManager.add(HypixelPlayerRequest.class, hypixelApiClient.build(HypixelPlayerRequest.class));
+        serviceManager.add(HypixelResourceRequest.class, hypixelApiClient.build(HypixelResourceRequest.class));
+        serviceManager.add(HypixelSkyBlockRequest.class, hypixelApiClient.build(HypixelSkyBlockRequest.class));
     }
 
     @SneakyThrows
@@ -129,8 +137,31 @@ public final class SimplifiedApi {
         return serviceManager.get(Scheduler.class);
     }
 
-    public static <T extends Request, A extends ApiBuilder<T>> A getApiBuilder(Class<A> tClass) {
+    /**
+     * Gets the built API client for the given class of client type {@link A}.
+     *
+     * @param tClass Client to locate.
+     * @param <T> Request type to match.
+     * @param <A> Client type to match.
+     */
+    public static <T extends IRequest, A extends Client<T>> A getApiClient(@NotNull Class<A> tClass) {
         return serviceManager.get(tClass);
+    }
+
+    /**
+     * Gets the built API request proxy for the given class of request type {@link T}.
+     * @param tClass Request proxy to locate.
+     * @param <T> Request type to match.
+     */
+    public static <T extends IRequest> T getApiRequest(@NotNull Class<T> tClass) {
+        return serviceManager.get(tClass);
+    }
+
+    /**
+     * Gets the {@link MojangProxy} used to interact with the Mojang API.
+     */
+    public static @NotNull MojangProxy getMojangProxy() {
+        return serviceManager.get(MojangProxy.class);
     }
 
     /**
@@ -140,16 +171,12 @@ public final class SimplifiedApi {
      * @param <T> The type of model.
      * @return The repository of type {@link T}.
      */
-    public static <T extends Model> @NotNull Repository<T> getRepositoryOf(Class<T> tClass) {
+    public static <T extends Model> @NotNull Repository<T> getRepositoryOf(@NotNull Class<T> tClass) {
         return getSessionManager().getRepositoryOf(tClass);
     }
 
-    public static SessionManager getSessionManager() {
+    public static @NotNull SessionManager getSessionManager() {
         return serviceManager.get(SessionManager.class);
-    }
-
-    public static <T extends Request> T getWebApi(Class<T> tClass) {
-        return serviceManager.get(tClass);
     }
 
     /**
