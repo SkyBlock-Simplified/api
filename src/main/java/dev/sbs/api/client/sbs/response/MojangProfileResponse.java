@@ -60,7 +60,7 @@ public class MojangProfileResponse {
             this.raw = new Raw(
                 property.getRaw(),
                 property.getSignature()
-            )
+            );
             this.skin = new Value(
                 value.getSkinUrl(),
                 value.getSkinUrl()
