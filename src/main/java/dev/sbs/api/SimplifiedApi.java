@@ -9,9 +9,7 @@ import com.google.gson.TypeAdapter;
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.IRequest;
 import dev.sbs.api.client.hypixel.HypixelClient;
-import dev.sbs.api.client.hypixel.request.HypixelPlayerRequest;
-import dev.sbs.api.client.hypixel.request.HypixelResourceRequest;
-import dev.sbs.api.client.hypixel.request.HypixelSkyBlockRequest;
+import dev.sbs.api.client.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.client.mojang.MojangProxy;
@@ -21,8 +19,7 @@ import dev.sbs.api.client.mojang.request.MojangApiRequest;
 import dev.sbs.api.client.mojang.request.MojangSessionRequest;
 import dev.sbs.api.client.mojang.response.MojangMultiUsernameResponse;
 import dev.sbs.api.client.sbs.SbsClient;
-import dev.sbs.api.client.sbs.request.SbsMojangRequest;
-import dev.sbs.api.client.sbs.request.SbsSkyBlockRequest;
+import dev.sbs.api.client.sbs.request.SbsRequest;
 import dev.sbs.api.client.sbs.response.SkyBlockEmojisResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockImagesResponse;
 import dev.sbs.api.client.sbs.response.SkyBlockItemsResponse;
@@ -94,11 +91,8 @@ public final class SimplifiedApi {
         // Provide Builders
         builderManager.add(MojangApiRequest.class, MojangApiClient.class);
         builderManager.add(MojangSessionRequest.class, MojangSessionClient.class);
-        builderManager.add(SbsMojangRequest.class, SbsClient.class);
-        builderManager.add(SbsSkyBlockRequest.class, SbsClient.class);
-        builderManager.add(HypixelPlayerRequest.class, HypixelClient.class);
-        builderManager.add(HypixelResourceRequest.class, HypixelClient.class);
-        builderManager.add(HypixelSkyBlockRequest.class, HypixelClient.class);
+        builderManager.add(SbsRequest.class, SbsClient.class);
+        builderManager.add(HypixelRequest.class, HypixelClient.class);
         builderManager.add(String.class, StringBuilder.class);
         builderManager.add(LineSegment.class, LineSegment.Builder.class);
         builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
@@ -110,14 +104,11 @@ public final class SimplifiedApi {
 
         SbsClient sbsApiClient = new SbsClient();
         serviceManager.add(SbsClient.class, sbsApiClient);
-        serviceManager.add(SbsMojangRequest.class, sbsApiClient.build(SbsMojangRequest.class));
-        serviceManager.add(SbsSkyBlockRequest.class, sbsApiClient.build(SbsSkyBlockRequest.class));
+        serviceManager.add(SbsRequest.class, sbsApiClient.build(SbsRequest.class));
 
         HypixelClient hypixelApiClient = new HypixelClient();
         serviceManager.add(HypixelClient.class, hypixelApiClient);
-        serviceManager.add(HypixelPlayerRequest.class, hypixelApiClient.build(HypixelPlayerRequest.class));
-        serviceManager.add(HypixelResourceRequest.class, hypixelApiClient.build(HypixelResourceRequest.class));
-        serviceManager.add(HypixelSkyBlockRequest.class, hypixelApiClient.build(HypixelSkyBlockRequest.class));
+        serviceManager.add(HypixelRequest.class, hypixelApiClient.build(HypixelRequest.class));
     }
 
     @SneakyThrows

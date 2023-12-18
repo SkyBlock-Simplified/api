@@ -3,7 +3,7 @@ package dev.sbs.api.client.hypixel;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.hypixel.exception.HypixelApiException;
-import dev.sbs.api.client.hypixel.request.IHypixelRequest;
+import dev.sbs.api.client.hypixel.request.HypixelRequest;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
@@ -12,7 +12,7 @@ import feign.FeignException;
 import feign.codec.ErrorDecoder;
 import org.jetbrains.annotations.NotNull;
 
-public final class HypixelClient extends Client<IHypixelRequest> {
+public final class HypixelClient extends Client<HypixelRequest> {
 
     public HypixelClient() {
         super("api.hypixel.net");

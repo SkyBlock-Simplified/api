@@ -2,12 +2,12 @@ package dev.sbs.api.client.sbs;
 
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.sbs.exception.SbsApiException;
-import dev.sbs.api.client.sbs.request.ISbsRequest;
+import dev.sbs.api.client.sbs.request.SbsRequest;
 import feign.FeignException;
 import feign.codec.ErrorDecoder;
 import org.jetbrains.annotations.NotNull;
 
-public final class SbsClient extends Client<ISbsRequest> {
+public final class SbsClient extends Client<SbsRequest> {
 
     public SbsClient() {
         super("api.sbs.dev");

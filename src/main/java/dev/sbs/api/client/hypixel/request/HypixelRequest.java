@@ -1,5 +1,15 @@
 package dev.sbs.api.client.hypixel.request;
 
+import dev.sbs.api.client.IRequest;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelCountsResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelGuildResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelPlayerResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelPunishmentStatsResponse;
+import dev.sbs.api.client.hypixel.response.hypixel.HypixelStatusResponse;
+import dev.sbs.api.client.hypixel.response.resource.ResourceCollectionsResponse;
+import dev.sbs.api.client.hypixel.response.resource.ResourceElectionResponse;
+import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;
+import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsEndedResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockAuctionsResponse;
@@ -14,7 +24,32 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface HypixelSkyBlockRequest extends IHypixelRequest {
+public interface HypixelRequest extends IRequest {
+
+    // Hypixel
+
+    @RequestLine("GET /counts")
+    @NotNull HypixelCountsResponse getCounts();
+
+    @RequestLine("GET /guild?id={id}")
+    @NotNull HypixelGuildResponse getGuild(@Param("id") String guildId);
+
+    @RequestLine("GET /guild?name={name}")
+    @NotNull HypixelGuildResponse getGuildByName(@Param("name") String guildName);
+
+    @RequestLine("GET /guild?player={player}")
+    @NotNull HypixelGuildResponse getGuildByPlayer(@Param("player") UUID playerId);
+
+    @RequestLine("GET /player?uuid={uuid}")
+    @NotNull HypixelPlayerResponse getPlayer(@Param("uuid") UUID playerId);
+
+    @RequestLine("GET /punishmentstats")
+    @NotNull HypixelPunishmentStatsResponse getPunishmentStats();
+
+    @RequestLine("GET /status?uuid={uuid}")
+    @NotNull HypixelStatusResponse getStatus(@Param("uuid") UUID playerId);
+
+    // SkyBlock
 
     @RequestLine("GET /skyblock/museum?profile={profile}")
     @NotNull SkyBlockMuseumResponse getMuseum();
@@ -48,5 +83,20 @@ public interface HypixelSkyBlockRequest extends IHypixelRequest {
 
     @RequestLine("GET /skyblock/firesales")
     @NotNull SkyBlockFireSaleResponse getFireSales();
+
+    // SkyBlock Resources
+
+    @RequestLine("GET /resources/skyblock/skills")
+    @NotNull ResourceSkillsResponse getSkills();
+
+    @RequestLine("GET /resources/skyblock/collections")
+    @NotNull ResourceCollectionsResponse getCollections();
+
+    @RequestLine("GET /resources/skyblock/items")
+    @NotNull ResourceItemsResponse getItems();
+
+    @RequestLine("GET /resources/skyblock/election")
+    @NotNull ResourceElectionResponse getElection();
+
 
 }
