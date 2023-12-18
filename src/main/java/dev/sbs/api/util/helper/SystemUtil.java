@@ -2,8 +2,12 @@ package dev.sbs.api.util.helper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 /**
  * <p>
@@ -261,6 +265,14 @@ public class SystemUtil {
      */
     public static boolean isJavaAwtHeadless() {
         return JAVA_AWT_HEADLESS != null && JAVA_AWT_HEADLESS.equals(Boolean.TRUE.toString());
+    }
+
+    @SneakyThrows
+    public static @NotNull InetAddress getPreferredAddress() {
+        try (final DatagramSocket socket = new DatagramSocket()) {
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            return socket.getLocalAddress();
+        }
     }
 
     /**
