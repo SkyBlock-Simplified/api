@@ -7,30 +7,31 @@ import dev.sbs.api.client.hypixel.response.hypixel.HypixelPunishmentStatsRespons
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelStatusResponse;
 import feign.Param;
 import feign.RequestLine;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface HypixelPlayerRequest extends HypixelRequest {
+public interface HypixelPlayerRequest extends IHypixelRequest {
 
     @RequestLine("GET /counts")
-    HypixelCountsResponse getCounts();
+    @NotNull HypixelCountsResponse getCounts();
 
     @RequestLine("GET /guild?id={id}")
-    HypixelGuildResponse getGuild(@Param("id") String guildId);
+    @NotNull HypixelGuildResponse getGuild(@Param("id") String guildId);
 
     @RequestLine("GET /guild?name={name}")
-    HypixelGuildResponse getGuildByName(@Param("name") String guildName);
+    @NotNull HypixelGuildResponse getGuildByName(@Param("name") String guildName);
 
     @RequestLine("GET /guild?player={player}")
-    HypixelGuildResponse getGuildByPlayer(@Param("player") UUID playerId);
+    @NotNull HypixelGuildResponse getGuildByPlayer(@Param("player") UUID playerId);
 
     @RequestLine("GET /player?uuid={uuid}")
-    HypixelPlayerResponse getPlayer(@Param("uuid") UUID playerId);
+    @NotNull HypixelPlayerResponse getPlayer(@Param("uuid") UUID playerId);
 
     @RequestLine("GET /punishmentstats")
-    HypixelPunishmentStatsResponse getPunishmentStats();
+    @NotNull HypixelPunishmentStatsResponse getPunishmentStats();
 
     @RequestLine("GET /status?uuid={uuid}")
-    HypixelStatusResponse getStatus(@Param("uuid") UUID playerId);
+    @NotNull HypixelStatusResponse getStatus(@Param("uuid") UUID playerId);
 
 }

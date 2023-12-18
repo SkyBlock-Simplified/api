@@ -3,13 +3,14 @@ package dev.sbs.api.client.hypixel.exception;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
+@Getter
 public class HypixelErrorResponse {
 
-    @Getter protected boolean success;
+    protected boolean success;
     @SerializedName("cause")
-    @Getter protected String reason;
-    @Getter private boolean throttle;
-    @Getter private boolean global;
+    protected String reason;
+    protected boolean throttle;
+    protected boolean global;
 
     public static class Unknown extends HypixelErrorResponse {
 

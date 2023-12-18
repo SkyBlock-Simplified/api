@@ -7,7 +7,7 @@ import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;
 import feign.RequestLine;
 import org.jetbrains.annotations.NotNull;
 
-public interface HypixelResourceRequest extends HypixelRequest {
+public interface HypixelResourceRequest extends IHypixelRequest {
 
     @RequestLine("GET /resources/skyblock/skills")
     @NotNull ResourceSkillsResponse getSkills();

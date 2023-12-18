@@ -8,9 +8,9 @@ import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
+@Getter
 public final class HypixelApiException extends ApiException {
 
-    @Getter
     private final HypixelErrorResponse errorResponse;
 
     public HypixelApiException(FeignException exception) {

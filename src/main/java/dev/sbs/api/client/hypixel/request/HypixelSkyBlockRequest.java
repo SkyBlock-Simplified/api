@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface HypixelSkyBlockRequest extends HypixelRequest {
+public interface HypixelSkyBlockRequest extends IHypixelRequest {
 
     @RequestLine("GET /skyblock/museum?profile={profile}")
     @NotNull SkyBlockMuseumResponse getMuseum();
