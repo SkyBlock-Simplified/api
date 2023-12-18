@@ -6,7 +6,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.gson.SerializedPath;
 import dev.sbs.api.util.helper.DataUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,6 @@ public class MojangPropertiesResponse {
     private UUID uniqueId;
     @SerializedName("name")
     private String username;
-    @Getter(AccessLevel.PROTECTED)
     private ConcurrentList<Property> properties = Concurrent.newList();
     private ConcurrentList<String> profileActions = Concurrent.newList();
 

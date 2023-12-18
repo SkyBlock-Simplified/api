@@ -6,7 +6,7 @@ import dev.sbs.api.client.mojang.client.MojangSessionClient;
 import dev.sbs.api.client.mojang.exception.MojangApiException;
 import dev.sbs.api.client.mojang.request.MojangApiRequest;
 import dev.sbs.api.client.mojang.request.MojangSessionRequest;
-import dev.sbs.api.client.mojang.response.MojangProfile;
+import dev.sbs.api.client.sbs.response.MojangProfileResponse;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -90,21 +90,21 @@ public final class MojangProxy {
     }
 
     /**
-     * Gets the {@link MojangProfile} for the given username.
+     * Gets the {@link MojangProfileResponse} for the given username.
      *
      * @param username Unique profile username (case-insensitive).
      */
-    public @NotNull MojangProfile getMojangProfile(@NotNull String username) throws MojangApiException {
+    public @NotNull MojangProfileResponse getMojangProfile(@NotNull String username) throws MojangApiException {
         return getMojangProfile(this.getApiRequest().getUniqueId(username).getUniqueId());
     }
 
     /**
-     * Gets the {@link MojangProfile} for the given unique id.
+     * Gets the {@link MojangProfileResponse} for the given unique id.
      *
      * @param uniqueId Unique profile identifier.
      */
-    public @NotNull MojangProfile getMojangProfile(@NotNull UUID uniqueId) throws MojangApiException {
-        return new MojangProfile(this.getSessionRequest().getProperties(uniqueId));
+    public @NotNull MojangProfileResponse getMojangProfile(@NotNull UUID uniqueId) throws MojangApiException {
+        return new MojangProfileResponse(this.getSessionRequest().getProperties(uniqueId));
     }
 
     public @NotNull MojangSessionClient getSessionClient() {

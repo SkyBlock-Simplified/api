@@ -11,10 +11,10 @@ import java.util.UUID;
 public interface SbsMojangRequest extends ISbsRequest {
 
     @RequestLine("GET /mojang/user/{username}")
-    @NotNull MojangProfileResponse getProfileFromUsername(@Param("username") String username);
+    @NotNull MojangProfileResponse getProfileFromUsername(@NotNull @Param("username") String username);
 
     @RequestLine("GET /mojang/user/{uniqueId}")
-    @NotNull MojangProfileResponse getProfileFromUniqueId(@Param("uniqueId") UUID uniqueId);
+    @NotNull MojangProfileResponse getProfileFromUniqueId(@NotNull @Param("uniqueId") UUID uniqueId);
 
     @RequestLine("GET /mojang/status")
     @NotNull MojangStatusResponse getStatus();
