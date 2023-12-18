@@ -19,6 +19,7 @@ import java.net.Socket;
 
 public class MinecraftPing {
 
+    // https://github.com/lucaazalim/minecraft-server-ping
     public static final byte PACKET_HANDSHAKE = 0x00;
     public static final byte PACKET_STATUSREQUEST = 0x00;
     public static final byte PACKET_PING = 0x01;

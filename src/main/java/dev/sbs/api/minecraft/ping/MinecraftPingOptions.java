@@ -9,21 +9,18 @@ import java.nio.charset.StandardCharsets;
 /**
  * Storage class for {@link MinecraftPing} options.
  */
+@Getter
 @Builder
 public class MinecraftPingOptions {
 
-    @Getter
     private String hostname;
 
     @Builder.Default
-    @Getter
     private Charset charset = StandardCharsets.UTF_8;
 
-    @Getter
     @Builder.Default
     private int port = 25565;
 
-    @Getter
     @Builder.Default
     private int timeout = 5000;
 
