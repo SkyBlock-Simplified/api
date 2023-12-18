@@ -1,7 +1,7 @@
 package dev.sbs.api.text;
 
-import dev.sbs.api.client.sbs.SbsApiBuilder;
-import dev.sbs.api.client.sbs.request.MojangRequest;
+import dev.sbs.api.client.sbs.SbsClient;
+import dev.sbs.api.client.sbs.request.SbsMojangRequest;
 import dev.sbs.api.client.sbs.response.MojangProfileResponse;
 import dev.sbs.api.minecraft.image.MinecraftHead;
 import dev.sbs.api.minecraft.image.MinecraftText;
@@ -22,7 +22,7 @@ public class MinecraftImageGenTest {
     @Test
     public void generateHead() {
         String username = "GoldenDusk";
-        MojangProfileResponse mojangProfile = new SbsApiBuilder().build(MojangRequest.class).getProfileFromUsername(username);
+        MojangProfileResponse mojangProfile = new SbsClient().build(SbsMojangRequest.class).getProfileFromUsername(username);
         String textureUrl = mojangProfile.getTextures().getSkin().getUrl();
         String base64Skin = mojangProfile.getTextures().getSkin().getData();
         System.out.println(textureUrl);

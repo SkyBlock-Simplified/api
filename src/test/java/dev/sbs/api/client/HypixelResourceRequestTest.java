@@ -14,7 +14,7 @@ public class HypixelResourceRequestTest {
     private static final HypixelResourceRequest HYPIXEL_RESOURCE_REQUEST;
 
     static {
-        HYPIXEL_RESOURCE_REQUEST = SimplifiedApi.getWebApi(HypixelResourceRequest.class);
+        HYPIXEL_RESOURCE_REQUEST = SimplifiedApi.getApiRequest(HypixelResourceRequest.class);
     }
 
     @Test
