@@ -1,5 +1,6 @@
 package dev.sbs.api.client.exception;
 
+import feign.FeignException;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ public class ApiRetryableException extends ApiException {
     /**
     * @param retryAfter usually corresponds to the {@link feign.Util#RETRY_AFTER} header.
     */
-    public ApiRetryableException(@NotNull ApiException exception, Date retryAfter) {
+    public ApiRetryableException(@NotNull FeignException exception, Date retryAfter) {
         super(exception);
         this.retryAfter = retryAfter != null ? retryAfter.getTime() : null;
     }

@@ -38,15 +38,16 @@ public interface ApiErrorDecoder extends ErrorDecoder {
 
         @Override
         public @NotNull ApiException decode(@NotNull String methodKey, @NotNull Response response) {
-            ApiException exception = new ApiException(FeignException.errorStatus(methodKey, response, maxBodyBytesLength, maxBodyCharsLength));
+            FeignException feignException = FeignException.errorStatus(methodKey, response, maxBodyBytesLength, maxBodyCharsLength);
             Date retryAfter = this.retryAfter.apply(firstOrNull(response.headers(), Util.RETRY_AFTER));
 
             if (retryAfter != null)
-                return new ApiRetryableException(exception, retryAfter);
+                return new ApiRetryableException(feignException, retryAfter);
 
-            return exception;
+            return new ApiException(feignException);
         }
 
+        @SuppressWarnings("all")
         private <T> T firstOrNull(Map<String, Collection<T>> map, String key) {
             if (map.containsKey(key) && !map.get(key).isEmpty())
                 return map.get(key).iterator().next();
