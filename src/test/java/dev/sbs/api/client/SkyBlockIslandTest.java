@@ -114,7 +114,7 @@ public class SkyBlockIslandTest {
                 });
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
-            MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
+            MatcherAssert.assertThat(hypixelApiException.getResponse().getStatus().getCode(), Matchers.greaterThan(400));
         } catch (Exception exception) {
             exception.printStackTrace();
             Assertions.fail();
@@ -189,7 +189,7 @@ public class SkyBlockIslandTest {
             //playerStats.getCombinedStats().forEach((statModel, statData) -> System.out.println(statModel.getKey() + ": " + statData.getTotal() + " (" + statData.getBase() + " / " + statData.getBonus() + ")"));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
-            MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
+            MatcherAssert.assertThat(hypixelApiException.getResponse().getStatus().getCode(), Matchers.greaterThan(400));
         } catch (Exception exception) {
             exception.printStackTrace();
             Assertions.fail();
@@ -314,7 +314,7 @@ public class SkyBlockIslandTest {
             MatcherAssert.assertThat(member.getUniqueId(), Matchers.equalTo(checkThis.getKey()));
         } catch (HypixelApiException hypixelApiException) {
             hypixelApiException.printStackTrace();
-            MatcherAssert.assertThat(hypixelApiException.getHttpStatus().getCode(), Matchers.greaterThan(400));
+            MatcherAssert.assertThat(hypixelApiException.getResponse().getStatus().getCode(), Matchers.greaterThan(400));
         } catch (Exception exception) {
             exception.printStackTrace();
             Assertions.fail();
