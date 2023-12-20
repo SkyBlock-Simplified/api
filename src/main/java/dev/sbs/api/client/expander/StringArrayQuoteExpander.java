@@ -1,4 +1,4 @@
-package dev.sbs.api.client.impl.mojang.expander;
+package dev.sbs.api.client.expander;
 
 import feign.Param;
 import org.jetbrains.annotations.NotNull;

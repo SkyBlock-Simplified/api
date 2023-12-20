@@ -1,7 +1,7 @@
 package dev.sbs.api.client.impl.mojang.request;
 
+import dev.sbs.api.client.expander.StringArrayQuoteExpander;
 import dev.sbs.api.client.impl.mojang.exception.MojangApiException;
-import dev.sbs.api.client.impl.mojang.expander.StringArrayQuoteExpander;
 import dev.sbs.api.client.impl.mojang.response.MojangMultiUsernameResponse;
 import dev.sbs.api.client.impl.mojang.response.MojangUsernameResponse;
 import feign.Body;
