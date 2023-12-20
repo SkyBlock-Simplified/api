@@ -3,17 +3,17 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistryException;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
+import dev.sbs.api.minecraft.nbt.exception.TagTypeRegistryException;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
+import dev.sbs.api.minecraft.nbt.tags.TagRegistry;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.helper.ListUtil;
+import dev.sbs.api.minecraft.nbt.tags.impl.RegistryTag;
+import dev.sbs.api.util.data.tuple.triple.Triple;
+import dev.sbs.api.util.stream.StreamUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -23,14 +23,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * The list tag (type ID 9) is used for storing an ordered list of unnamed NBT tags all the same type.
  */
 @SuppressWarnings("unchecked")
-public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
+public final class ListTag<E extends Tag<?>> extends RegistryTag<List<E>> implements List<E> {
 
     private byte tagTypeId;
 
@@ -46,7 +48,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      *
      * @param name the tag's name.
      */
-    public ListTag(String name) {
+    public ListTag(@Nullable String name) {
         this(name, new LinkedList<>());
     }
 
@@ -56,12 +58,8 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value.
      */
-    public ListTag(String name, @NotNull List<E> value) {
-        super(name, value, new TagTypeRegistry(), true);
-    }
-
-    private E createTag2(Object element) {
-        return (E) this.registry.instantiate(this.registry.getTagClassFromId(this.tagTypeId), element);
+    public ListTag(@Nullable String name, @NotNull List<E> value) {
+        super(TagType.LIST.getId(), name, value, true);
     }
 
     /**
@@ -72,14 +70,15 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      */
     @Override
     public boolean add(@NotNull E element) {
-        if (this.value.isEmpty())
-            this.tagTypeId = this.registry.getIdFromTypeClass(element.getClass());
+        this.requireModifiable();
 
-        if (this.registry.getIdFromTypeClass(element.getClass()) != this.tagTypeId)
+        if (this.getValue().isEmpty())
+            this.tagTypeId = element.getTypeId();
+
+        if (element.getTypeId() != this.getListType())
             return false;
 
-        //Tag<E> wrappedElement = this.createTag(element);
-        return this.value.add(element);
+        return this.getValue().add(element);
     }
 
     /**
@@ -91,14 +90,15 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      */
     @Override
     public void add(int index, E element) {
-        if (this.value.isEmpty())
-            this.tagTypeId = this.registry.getIdFromTypeClass(element.getClass());
+        this.requireModifiable();
 
-        if (this.registry.getIdFromTypeClass(element.getClass()) != this.tagTypeId)
+        if (this.getValue().isEmpty())
+            this.tagTypeId = element.getTypeId();
+
+        if (element.getTypeId() != this.getListType())
             return;
 
-        //Tag<E> wrappedElement = this.createTag(element);
-        this.value.add(index, element);
+        this.getValue().add(index, element);
     }
 
     @Override
@@ -123,13 +123,23 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
-        return false;
+    public boolean removeAll(@NotNull Collection<?> collection) {
+        int resultSize = this.size() - collection.size();
+        this.removeIf(tag -> collection.contains(tag) || collection.contains(tag.getValue()));
+        return this.size() == resultSize;
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
-        return false;
+    public boolean removeIf(@NotNull Predicate<? super E> filter) {
+        this.requireModifiable();
+        return this.getValue().removeIf(filter);
+    }
+
+    @Override
+    public boolean retainAll(@NotNull Collection<?> collection) {
+        int resultSize = this.size() - collection.size();
+        this.removeIf(tag -> !(collection.contains(tag) || collection.contains(tag.getValue())));
+        return this.size() == resultSize;
     }
 
     /**
@@ -137,8 +147,9 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      */
     @Override
     public void clear() {
+        this.requireModifiable();
         this.tagTypeId = 0;
-        this.value.clear();
+        this.getValue().clear();
     }
 
     /**
@@ -149,65 +160,43 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      */
     @Override
     public boolean contains(Object obj) {
-        return this.value.contains(obj instanceof Tag ? obj : this.createTag2(obj));
+        return this.getValue()
+            .stream()
+            .anyMatch(tag -> Objects.equals((obj instanceof Tag<?>) ? tag : tag.getValue(), obj));
     }
 
     /**
      * Returns true if this list contains all tags in the collection, false otherwise.
      *
-     * @param tags the tags to be checked for.
+     * @param collection the values to be checked for.
      * @return true if this list contains all tags in the collection, false otherwise.
      */
     @Override
-    @SuppressWarnings("all")
     public boolean containsAll(@NotNull Collection<?> collection) {
-        Object firstElement = collection.stream().findFirst().orElse(null);
-
-        if (firstElement == null)
+        if (this.isEmpty() || collection.isEmpty())
             return false;
 
-        if (firstElement instanceof Tag)
-            return this.value.containsAll(collection);
-        else {
-            Collection<Tag<?>> tagCollection = Concurrent.newCollection();
-            byte tagTypeId = this.registry.getIdFromTypeClass(firstElement.getClass());
+        boolean isTags = collection.stream().findFirst().orElseThrow() instanceof Tag<?>;
 
-            collection.forEach(element -> {
-                Tag<?> tag = this.registry.instantiate(this.registry.getTagClassFromId(tagTypeId), element);
-                tagCollection.add(tag);
-            });
-
-            return this.value.containsAll(tagCollection);
-        }
+        return this.getValue()
+            .stream()
+            .allMatch(tag -> collection.contains(isTags ? tag : tag.getValue()));
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        ListTag<?> that = (ListTag<?>) obj;
-
-        return new EqualsBuilder()
-            .append(this.value, that.value)
-            .append(this.tagTypeId, that.tagTypeId)
-            .build();
-    }
-
-    @Override
-    public void forEach(Consumer<? super E> action) {
+    public void forEach(@NotNull Consumer<? super E> action) {
         for (E tag : this)
             action.accept(tag);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ListTag<E> fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull ListTag<E> fromJson(@NotNull JsonObject json, int depth, @NotNull TagRegistry registry) throws IOException {
         if (depth > 512) {
             throw new IOException("NBT structure too complex (depth > 512).");
         }
 
         this.clear();
-        this.registry = registry;
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         byte listTypeId = json.get("listType").getAsByte();
 
@@ -215,16 +204,17 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
         for (JsonElement element : json.getAsJsonArray("value")) {
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(listTypeId);
 
-            if (tagClass == null)
-                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", listTypeId));
-
             try {
                 nextTag = (E) registry.instantiate(tagClass);
             } catch (TagTypeRegistryException e) {
                 throw new IOException(e);
             }
 
-            nextTag.fromJson((JsonObject) element, depth + 1, registry);
+            if (nextTag instanceof RegistryTag<?> nextRTag)
+                nextRTag.fromJson((JsonObject) element, depth + 1, registry);
+            else
+                nextTag.fromJson((JsonObject) element, depth + 1);
+
             this.add(nextTag);
         }
 
@@ -239,7 +229,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      * @return the tag value at the specified index.
      */
     @Override
-    public E get(int index) {
+    public @NotNull E get(int index) {
         return this.getValue().get(index);
     }
 
@@ -253,21 +243,13 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
     }
 
     @Override
-    public byte getTypeId() {
-        return TagType.LIST.getId();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-            .append(this.value)
-            .append(this.tagTypeId)
-            .build();
-    }
-
-    @Override
-    public int indexOf(Object obj) {
-        return this.value.indexOf(obj instanceof Tag ? obj : this.createTag2(obj));
+    public int indexOf(@Nullable Object obj) {
+        return StreamUtil.zipWithIndex(this.getValue().stream())
+            .filterLeft(tag -> Objects.equals((obj instanceof Tag<?>) ? tag : tag.getValue(), obj))
+            .map(Triple::getMiddle)
+            .reduce((f, s) -> f)
+            .map(Long::intValue)
+            .orElse(-1);
     }
 
     /**
@@ -277,48 +259,47 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      */
     @Override
     public boolean isEmpty() {
-        return this.value.isEmpty();
+        return this.getValue().isEmpty();
     }
 
-    @NotNull
     @Override
-    public Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return this.getValue().iterator();
     }
 
     @Override
-    public int lastIndexOf(Object obj) {
-        return this.getValue().lastIndexOf(obj instanceof Tag ? obj : this.createTag2(obj));
+    public int lastIndexOf(@Nullable Object obj) {
+        return StreamUtil.zipWithIndex(this.getValue().stream())
+            .filterLeft(tag -> Objects.equals((obj instanceof Tag<?>) ? tag : tag.getValue(), obj))
+            .map(Triple::getMiddle)
+            .reduce((f, s) -> s)
+            .map(Long::intValue)
+            .orElse(-1);
     }
 
-    @NotNull
     @Override
-    public ListIterator<E> listIterator() {
+    public @NotNull ListIterator<E> listIterator() {
         return this.listIterator(0);
     }
 
-    @NotNull
     @Override
-    public ListIterator<E> listIterator(int index) {
+    public @NotNull ListIterator<E> listIterator(int index) {
         return this.getValue().listIterator();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ListTag<E> read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull ListTag<E> read(@NotNull DataInput input, int depth, @NotNull TagRegistry registry) throws IOException {
         if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
 
         this.clear();
-        byte tagType = input.readByte();
+        byte tagTypeId = input.readByte();
         int length = input.readInt();
 
         E next;
         for (int i = 0; i < length; i++) {
-            Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(tagType);
-
-            if (tagClass == null)
-                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", tagType));
+            Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(tagTypeId);
 
             try {
                 next = (E) registry.instantiate(tagClass);
@@ -326,12 +307,16 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
                 throw new IOException(e);
             }
 
-            next.read(input, depth + 1, registry);
+            if (next instanceof RegistryTag<?> nextRTag)
+                nextRTag.read(input, depth + 1, registry);
+            else
+                next.read(input, depth + 1);
+
             next.setName(null);
-            this.value.add(next);
+            this.getValue().add(next);
         }
 
-        this.tagTypeId = this.isEmpty() ? 0 : tagType;
+        this.tagTypeId = this.isEmpty() ? 0 : tagTypeId;
         return this;
     }
 
@@ -342,10 +327,11 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      * @return the removed tag.
      */
     @Override
-    public E remove(int index) {
+    public @NotNull E remove(int index) {
+        this.requireModifiable();
         E previous = this.getValue().remove(index);
 
-        if (this.getValue().isEmpty())
+        if (this.isEmpty())
             this.tagTypeId = 0;
 
         return previous;
@@ -359,17 +345,19 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
      */
     @Override
     public boolean remove(Object obj) {
-        boolean result = this.getValue().remove(obj instanceof Tag ? obj : this.createTag2(obj));
+        this.requireModifiable();
+        boolean result = this.removeIf(tag -> Objects.equals((obj instanceof Tag<?>) ? tag : tag.getValue(), obj));
 
-        if (ListUtil.isEmpty(this.value))
+        if (this.isEmpty())
             this.tagTypeId = 0;
 
         return result;
     }
 
     @Override
-    public E set(int index, E element) {
-        return this.getValue().set(index, this.createTag2(element));
+    public E set(int index, @NotNull E element) {
+        this.requireModifiable();
+        return this.getValue().set(index, element);
     }
 
     /**
@@ -383,31 +371,27 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
     }
 
     @Override
-    public Spliterator<E> spliterator() {
+    public @NotNull Spliterator<E> spliterator() {
         return this.getValue().spliterator();
     }
 
-    @NotNull
     @Override
-    public ListTag<E> subList(int fromIndex, int toIndex) {
+    public @NotNull ListTag<E> subList(int fromIndex, int toIndex) {
         return new ListTag<>(this.getName(), this.getValue().subList(fromIndex, toIndex));
     }
 
-    @NotNull
     @Override
-    public Object[] toArray() {
+    public @NotNull Object @NotNull [] toArray() {
         return this.getValue().toArray();
     }
 
-    @NotNull
     @Override
-    @SuppressWarnings("all")
-    public <T> T[] toArray(@NotNull T[] array) {
+    public <T> @NotNull T @NotNull [] toArray(@NotNull T @NotNull [] array) {
         return this.getValue().toArray(array);
     }
 
     @Override
-    public JsonObject toJson(int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull JsonObject toJson(int depth) throws IOException {
         if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
 
@@ -419,24 +403,23 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
         if (this.getName() != null)
             json.addProperty("name", this.getName());
 
-        for (E tag : this.value) {
+        for (E tag : this.getValue()) {
             tag.setName(null);
-            value.add(tag.toJson(depth + 1, registry));
+            value.add(tag.toJson(depth + 1));
         }
 
         json.add("value", value);
-
         return json;
     }
 
     @Override
-    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
+    public @NotNull String toSnbt(int depth, @NotNull SnbtConfig config) {
         StringBuilder sb = new StringBuilder("[");
 
         if (config.isPrettyPrint())
             sb.append('\n').append(SnbtUtil.multiplyIndent(depth + 1, config));
 
-        for (int i = 0; i < this.value.size(); ++i) {
+        for (int i = 0; i < this.getValue().size(); ++i) {
             if (i != 0) {
                 if (config.isPrettyPrint())
                     sb.append(",\n").append(SnbtUtil.multiplyIndent(depth + 1, config));
@@ -444,7 +427,7 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
                     sb.append(',');
             }
 
-            sb.append(this.value.get(i).toSnbt(depth + 1, registry, config));
+            sb.append(this.getValue().get(i).toSnbt(depth + 1, config));
         }
 
         if (config.isPrettyPrint())
@@ -456,15 +439,16 @@ public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E> {
     }
 
     @Override
-    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
+    public void write(@NotNull DataOutput output, int depth) throws IOException {
         if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
 
         output.writeByte(this.tagTypeId);
-        output.writeInt(this.value.size());
+        output.writeInt(this.getValue().size());
 
-        for (E tag : this.value)
-            tag.write(output, depth + 1, registry);
+        for (E tag : this.getValue()) {
+            tag.write(output, depth + 1);
+        }
     }
 
 }

@@ -2,54 +2,34 @@ package dev.sbs.api.minecraft.nbt.tags.array;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.helper.PrimitiveUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * The int array tag (type ID 11) is used for storing {@code int[]} arrays in NBT structures.
- * It is not stored as a list of {@link IntTag}s.
+ * <br><br>
+ * It is not stored as a list of {@link IntTag IntTags}.
  */
-public class IntArrayTag extends ArrayTag<Integer> {
+public final class IntArrayTag extends ArrayTag<Integer> {
 
-    public static final IntArrayTag EMPTY = new IntArrayTag() {{ this.setNonUpdatable(); }};
+    public static final @NotNull IntArrayTag EMPTY = new IntArrayTag(null, new Integer[0], false);
 
     /**
      * Constructs an empty int array.
      */
     public IntArrayTag() {
-        this(null, new LinkedList<>());
-    }
-
-    /**
-     * Constructs an int array tag with a given name and value.
-     *
-     * @param name  the tag's name.
-     * @param value the tag's {@code int[]} value.
-     */
-    public IntArrayTag(String name, int[] value) {
-        this(name, PrimitiveUtil.wrap(value));
-    }
-
-    /**
-     * Constructs an int array tag with a given name and value.
-     *
-     * @param name  the tag's name.
-     * @param value the tag's {@code int[]} value.
-     */
-    public IntArrayTag(String name, Integer[] value) {
-        super(name, value);
+        this(new LinkedList<>());
     }
 
     /**
@@ -57,7 +37,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
      *
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code int[]} array.
      */
-    public IntArrayTag(@NotNull List<Integer> value) {
+    public IntArrayTag(@NotNull Collection<Integer> value) {
         this(null, value);
     }
 
@@ -67,57 +47,58 @@ public class IntArrayTag extends ArrayTag<Integer> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code int[]} array.
      */
-    public IntArrayTag(String name, @NotNull List<Integer> value) {
-        super(name, value.toArray(new Integer[0]));
+    public IntArrayTag(@Nullable String name, @NotNull Collection<Integer> value) {
+        this(name, value.toArray(new Integer[0]));
+    }
+
+    /**
+     * Constructs an int array tag with a given name and value.
+     *
+     * @param name  the tag's name.
+     * @param value the tag's {@code int[]} value.
+     */
+    public IntArrayTag(@Nullable String name, int... value) {
+        this(name, PrimitiveUtil.wrap(value));
+    }
+
+    /**
+     * Constructs an int array tag with a given name and value.
+     *
+     * @param name  the tag's name.
+     * @param value the tag's {@code int[]} value.
+     */
+    public IntArrayTag(@Nullable String name, Integer... value) {
+        this(name, value, true);
+    }
+
+    private IntArrayTag(@Nullable String name, Integer[] value, boolean updatable) {
+        super(TagType.INT_ARRAY.getId(), name, value, updatable);
     }
 
     @Override
-    public void clear() {
-        this.value = new Integer[0];
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        IntArrayTag that = (IntArrayTag) o;
-        return Arrays.equals(this.getValue(), that.getValue());
-    }
-
-    @Override
-    public IntArrayTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull IntArrayTag fromJson(@NotNull JsonObject json, int depth) throws IOException {
         JsonArray array = json.getAsJsonArray("value");
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.setValue(new Integer[array.size()]);
 
         for (int i = 0; i < array.size(); i++)
-            this.value[i] = array.get(i).getAsInt();
+            this.getValue()[i] = array.get(i).getAsInt();
 
         return this;
     }
 
     @Override
-    public byte getTypeId() {
-        return TagType.INT_ARRAY.getId();
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(getValue());
-    }
-
-    @Override
-    public IntArrayTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull IntArrayTag read(@NotNull DataInput input, int depth) throws IOException {
         this.setValue(new Integer[input.readInt()]);
 
         for (int i = 0; i < this.getValue().length; i++)
-            this.value[i] = input.readInt();
+            this.getValue()[i] = input.readInt();
 
         return this;
     }
 
     @Override
-    public JsonObject toJson(int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull JsonObject toJson(int depth) throws IOException {
         JsonObject json = new JsonObject();
         JsonArray array = new JsonArray();
         json.addProperty("type", this.getTypeId());
@@ -134,7 +115,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
     }
 
     @Override
-    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
+    public @NotNull String toSnbt(int depth, @NotNull SnbtConfig config) {
         StringBuilder sb = new StringBuilder("[I;");
 
         if (config.isPrettyPrint()) {
@@ -167,7 +148,7 @@ public class IntArrayTag extends ArrayTag<Integer> {
     }
 
     @Override
-    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
+    public void write(@NotNull DataOutput output, int depth) throws IOException {
         output.writeInt(this.size());
 
         for (int i : this)

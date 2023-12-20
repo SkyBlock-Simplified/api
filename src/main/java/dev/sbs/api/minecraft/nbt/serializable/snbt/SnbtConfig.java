@@ -1,4 +1,4 @@
-package dev.sbs.api.minecraft.nbt.snbt;
+package dev.sbs.api.minecraft.nbt.serializable.snbt;
 
 import lombok.Data;
 

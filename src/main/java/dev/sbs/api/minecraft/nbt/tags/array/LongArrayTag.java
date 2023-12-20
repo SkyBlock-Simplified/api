@@ -2,54 +2,34 @@ package dev.sbs.api.minecraft.nbt.tags.array;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.util.helper.PrimitiveUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * The long array tag (type ID 12) is used for storing {@code long[]} arrays in NBT structures.
- * It is not stored as a list of {@link LongTag}s.
+ * <br><br>
+ * It is not stored as a list of {@link LongTag LongTags}.
  */
-public class LongArrayTag extends ArrayTag<Long> {
+public final class LongArrayTag extends ArrayTag<Long> {
 
-    public static final LongArrayTag EMPTY = new LongArrayTag() {{ this.setNonUpdatable(); }};
+    public static final @NotNull LongArrayTag EMPTY = new LongArrayTag(null, new Long[0], false);
 
     /**
      * Constructs an empty long array.
      */
     public LongArrayTag() {
-        this(null, new LinkedList<>());
-    }
-
-    /**
-     * Constructs a long array tag with a given name and value.
-     *
-     * @param name  the tag's name.
-     * @param value the tag's {@code long[]} value.
-     */
-    public LongArrayTag(String name, long[] value) {
-        this(name, PrimitiveUtil.wrap(value));
-    }
-
-    /**
-     * Constructs a long array tag with a given name and value.
-     *
-     * @param name  the tag's name.
-     * @param value the tag's {@code long[]} value.
-     */
-    public LongArrayTag(String name, Long[] value) {
-        super(name, value);
+        this(new LinkedList<>());
     }
 
     /**
@@ -57,7 +37,7 @@ public class LongArrayTag extends ArrayTag<Long> {
      *
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code long[]} array.
      */
-    public LongArrayTag(@NotNull List<Long> value) {
+    public LongArrayTag(@NotNull Collection<Long> value) {
         this(null, value);
     }
 
@@ -67,58 +47,58 @@ public class LongArrayTag extends ArrayTag<Long> {
      * @param name  the tag's name.
      * @param value the tag's {@code List<>} value, to be converted to a primitive {@code long[]} array.
      */
-    public LongArrayTag(String name, @NotNull List<Long> value) {
-        super(name, value.toArray(new Long[0]));
+    public LongArrayTag(@Nullable String name, @NotNull Collection<Long> value) {
+        this(name, value.toArray(new Long[0]));
+    }
+
+    /**
+     * Constructs a long array tag with a given name and value.
+     *
+     * @param name  the tag's name.
+     * @param value the tag's {@code long[]} value.
+     */
+    public LongArrayTag(@Nullable String name, long[] value) {
+        this(name, PrimitiveUtil.wrap(value));
+    }
+
+    /**
+     * Constructs a long array tag with a given name and value.
+     *
+     * @param name  the tag's name.
+     * @param value the tag's {@code long[]} value.
+     */
+    public LongArrayTag(@Nullable String name, Long[] value) {
+        this(name, value, true);
+    }
+
+    private LongArrayTag(@Nullable String name, Long[] value, boolean updatable) {
+        super(TagType.LONG_ARRAY.getId(), name, value, updatable);
     }
 
     @Override
-    public void clear() {
-        this.value = new Long[0];
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LongArrayTag that = (LongArrayTag) o;
-        return Arrays.equals(this.getValue(), that.getValue());
-    }
-
-    @Override
-    public LongArrayTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull LongArrayTag fromJson(@NotNull JsonObject json, int depth) throws IOException {
         JsonArray array = json.getAsJsonArray("value");
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         this.setValue(new Long[array.size()]);
 
-        for (int i = 0; i < array.size(); i++) {
-            this.value[i] = array.get(i).getAsLong();
-        }
+        for (int i = 0; i < array.size(); i++)
+            this.getValue()[i] = array.get(i).getAsLong();
 
         return this;
     }
 
     @Override
-    public int hashCode() {
-        return Arrays.hashCode(getValue());
-    }
-
-    @Override
-    public byte getTypeId() {
-        return TagType.LONG_ARRAY.getId();
-    }
-
-    @Override
-    public LongArrayTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull LongArrayTag read(@NotNull DataInput input, int depth) throws IOException {
         this.setValue(new Long[input.readInt()]);
 
         for (int i = 0; i < this.size(); i++)
-            this.value[i] = input.readLong();
+            this.getValue()[i] = input.readLong();
 
         return this;
     }
 
     @Override
-    public JsonObject toJson(int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull JsonObject toJson(int depth) throws IOException {
         JsonObject json = new JsonObject();
         JsonArray array = new JsonArray();
         json.addProperty("type", this.getTypeId());
@@ -135,7 +115,7 @@ public class LongArrayTag extends ArrayTag<Long> {
     }
 
     @Override
-    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
+    public @NotNull String toSnbt(int depth, @NotNull SnbtConfig config) {
         StringBuilder sb = new StringBuilder("[L;");
 
         if (config.isPrettyPrint()) {
@@ -171,7 +151,7 @@ public class LongArrayTag extends ArrayTag<Long> {
     }
 
     @Override
-    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
+    public void write(@NotNull DataOutput output, int depth) throws IOException {
         output.writeInt(this.size());
 
         for (long l : this)

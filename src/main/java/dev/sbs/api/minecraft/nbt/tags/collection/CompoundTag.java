@@ -2,12 +2,13 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistryException;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtUtil;
+import dev.sbs.api.minecraft.nbt.exception.TagTypeRegistryException;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
+import dev.sbs.api.minecraft.nbt.tags.TagRegistry;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
+import dev.sbs.api.minecraft.nbt.tags.impl.RegistryTag;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.StringUtil;
@@ -35,7 +36,7 @@ import java.util.function.Consumer;
  */
 @Getter
 @SuppressWarnings("unchecked")
-public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String, Tag<?>>, Iterable<Map.Entry<String, Tag<?>>> {
+public final class CompoundTag extends RegistryTag<Map<String, Tag<?>>> implements Map<String, Tag<?>>, Iterable<Map.Entry<String, Tag<?>>> {
 
     private final boolean root;
 
@@ -58,7 +59,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      *
      * @param name the tag's name.
      */
-    public CompoundTag(String name) {
+    public CompoundTag(@Nullable String name) {
         this(name, false);
     }
 
@@ -67,7 +68,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      *
      * @param name the tag's name.
      */
-    public CompoundTag(String name, boolean root) {
+    public CompoundTag(@Nullable String name, boolean root) {
         this(name, new LinkedHashMap<>(), root);
     }
 
@@ -77,7 +78,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param name  the tag's name.
      * @param value the tag's {@code Map<>} value.
      */
-    public CompoundTag(String name, @NotNull Map<String, Tag<?>> value) {
+    public CompoundTag(@Nullable String name, @NotNull Map<String, Tag<?>> value) {
         this(name, value, false);
     }
 
@@ -87,8 +88,8 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param name  the tag's name.
      * @param value the tag's {@code Map<>} value.
      */
-    public CompoundTag(String name, @NotNull Map<String, Tag<?>> value, boolean root) {
-        super(name, value, new TagTypeRegistry(), true);
+    public CompoundTag(@Nullable String name, @NotNull Map<String, Tag<?>> value, boolean root) {
+        super(TagType.COMPOUND.getId(), name, value, true);
         this.root = root;
     }
 
@@ -97,15 +98,12 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      */
     @Override
     public void clear() {
-        this.value.clear();
+        this.getValue().clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("all")
-    public CompoundTag clone() {
+    public @NotNull CompoundTag clone() {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.putAll(this);
         return compoundTag;
@@ -115,8 +113,8 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * {@inheritDoc}
      */
     @Override
-    public boolean containsKey(Object key) {
-        return this.value.containsKey(key);
+    public boolean containsKey(@NotNull Object key) {
+        return this.getValue().containsKey(key);
     }
 
     public boolean containsListOf(@NotNull String key, byte of) {
@@ -150,7 +148,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param path The path to the entry.
      * @return True if found.
      */
-    public boolean containsPath(String path) {
+    public boolean containsPath(@NotNull String path) {
         List<String> entries = StringUtil.toList(StringUtil.split(path, "\\."));
         CompoundTag current = this;
 
@@ -173,37 +171,31 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * {@inheritDoc}
      */
     @Override
-    public boolean containsValue(Object value) {
-        return this.getValue().containsValue(value instanceof Tag ? value : this.registry.instantiate(this.registry.getTagClassFromTypeClass(value.getClass()), value));
+    public boolean containsValue(@NotNull Object value) {
+        return this.values()
+            .stream()
+            .anyMatch(tagValue -> Objects.equals(((value instanceof Tag<?>) ? tagValue : tagValue.getValue()), value));
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public Set<Map.Entry<String, Tag<?>>> entrySet() {
+    public @NotNull Set<Map.Entry<String, Tag<?>>> entrySet() {
         return this.getValue().entrySet();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CompoundTag that = (CompoundTag) o;
-        return Objects.equals(this.getValue(), that.getValue());
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void forEach(Consumer<? super Entry<String, Tag<?>>> action) {
-        this.value.forEach((key, value) -> action.accept(Pair.of(key, value)));
+    public void forEach(@NotNull Consumer<? super Entry<String, Tag<?>>> action) {
+        this.getValue().forEach((key, value) -> action.accept(Pair.of(key, value)));
     }
 
     @Override
-    public CompoundTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull CompoundTag fromJson(@NotNull JsonObject json, int depth, @NotNull TagRegistry registry) throws IOException {
         if (depth > 512) {
             throw new IOException("NBT structure too complex (depth > 512).");
         }
@@ -212,27 +204,28 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
         Map<String, Tag<?>> tags = new LinkedHashMap<>();
         byte nextTypeId;
-        Tag<?> nextTag;
+        Tag<?> next;
 
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("value").entrySet()) {
             JsonObject entryJson = entry.getValue().getAsJsonObject();
             nextTypeId = entryJson.get("type").getAsByte();
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(nextTypeId);
 
-            if (tagClass == null)
-                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", nextTypeId));
-
             try {
-                nextTag = registry.instantiate(tagClass);
+                next = registry.instantiate(tagClass);
             } catch (TagTypeRegistryException e) {
                 throw new IOException(e);
             }
 
-            nextTag.fromJson(entryJson, depth + 1, registry);
-            tags.put(nextTag.getName(), nextTag);
+            if (next instanceof RegistryTag<?> nextRTag)
+                nextRTag.fromJson(entryJson, depth + 1, registry);
+            else
+                next.fromJson(entryJson, depth + 1);
+
+            tags.put(next.getName(), next);
         }
 
-        this.value = tags;
+        this.setValue(tags);
         return this;
     }
 
@@ -361,16 +354,6 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return this.containsKey(key) ? (T) this.get(key).getValue() : defaultValue;
     }
 
-    @Override
-    public byte getTypeId() {
-        return TagType.COMPOUND.getId();
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getValue().hashCode();
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -405,12 +388,13 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * Adds a given tag to this compound. The tag must have a name, or NPE is thrown.
      *
      * @param tag the named tag to be added to the compound.
-     * @param <E> the type of an existing tag you believe you may be replacing (optional).
+     * @param <T> the type of an existing tag you believe you may be replacing (optional).
      * @return the previous value mapped with the tag's name as type E if provided, or null if there wasn't any.
      * @throws NullPointerException if the tag's name is null.
      */
-    public <E extends Tag<?>> E putTag(@NotNull Tag<?> tag) {
-        return (E) this.put(tag.getName(), tag);
+    @SuppressWarnings("all")
+    public <U, T extends Tag<U>> @Nullable T putTag(@NotNull Tag<?> tag) {
+        return (T) this.put(tag.getName(), tag);
     }
 
     /**
@@ -420,9 +404,8 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param value the tag to be added to the compound.
      * @return the previous value mapped with the tag's name as type E if provided, or null if there wasn't any.
      */
-    @Nullable
     @Override
-    public Tag<?> put(String key, Tag<?> value) {
+    public @Nullable Tag<?> put(@NotNull String key, @NotNull Tag<?> value) {
         value.setName(key);
         return this.getValue().put(key, value);
     }
@@ -449,34 +432,37 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         List<String> entries = StringUtil.toList(StringUtil.split(path, "\\."));
         CompoundTag map = this.getMap(entries.subList(0, entries.size() - 1), true);
         map.put(entries.get(entries.size() - 1), value);
-        //this.save(); TODO: Save tag data
+        // TODO: Save tag data
         return this;
     }
 
     @Override
-    public CompoundTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
+    @SuppressWarnings("all")
+    public @NotNull CompoundTag read(@NotNull DataInput input, int depth, @NotNull TagRegistry registry) throws IOException {
         if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
 
         this.clear();
         byte nextTypeId;
-        Tag<?> nextTag;
+        Tag<?> next;
 
         while ((nextTypeId = input.readByte()) != 0) {
             Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(nextTypeId);
 
-            if (tagClass == null)
-                throw new IOException(String.format("Tag type with ID %s not present in tag type registry.", nextTypeId));
-
             try {
-                nextTag = registry.instantiate(tagClass);
+                next = registry.instantiate(tagClass);
             } catch (TagTypeRegistryException e) {
                 throw new IOException(e);
             }
 
-            nextTag.setName(input.readUTF());
-            nextTag.read(input, depth + 1, registry);
-            this.put(nextTag.getName(), nextTag);
+            next.setName(input.readUTF());
+
+            if (next instanceof RegistryTag<?> nextRTag)
+                nextRTag.read(input, depth + 1, registry);
+            else
+                next.read(input, depth + 1);
+
+            this.put(next.getName(), next);
         }
 
         return this;
@@ -515,7 +501,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
                 currentTag = currentTag.getTag(entry);
         }
 
-        //this.save(); TODO: Save tag data
+        // TODO: Save tag data
         return currentTag;
     }
 
@@ -553,7 +539,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     @Override
-    public JsonObject toJson(int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull JsonObject toJson(int depth) throws IOException {
         if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
 
@@ -566,9 +552,9 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
 
         for (Tag<?> tag : this.getValue().values()) {
             try {
-                value.add(tag.getName(), tag.toJson(depth + 1, registry));
-            } catch (ClassCastException e) {
-                throw new IOException("Tag not JsonSerializable.", e);
+                value.add(StringUtil.stripToEmpty(tag.getName()), tag.toJson(depth + 1));
+            } catch (Exception ex) {
+                throw new IOException("Tag not JsonSerializable.", ex);
             }
         }
 
@@ -577,7 +563,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     @Override
-    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
+    public @NotNull String toSnbt(int depth, @NotNull SnbtConfig config) {
         if (this.isEmpty())
             return "{}";
 
@@ -595,9 +581,9 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
                     sb.append(',');
             }
 
-            sb.append(SnbtUtil.escape(tag.getName()));
+            sb.append(SnbtUtil.escape(StringUtil.stripToEmpty(tag.getName())));
             sb.append(String.format(":%s", config.isPrettyPrint() ? " " : ""));
-            sb.append(tag.toSnbt(depth + 1, registry, config));
+            sb.append(tag.toSnbt(depth + 1, config));
 
             if (first)
                 first = false;
@@ -622,15 +608,15 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     @Override
-    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
+    public void write(@NotNull DataOutput output, int depth) throws IOException {
         if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
 
         for (Map.Entry<String, Tag<?>> entry : this) {
             Tag<?> tag = entry.getValue();
             output.writeByte(tag.getTypeId());
-            output.writeUTF(tag.getName());
-            tag.write(output, depth + 1, registry);
+            output.writeUTF(StringUtil.stripToEmpty(tag.getName()));
+            tag.write(output, depth + 1);
         }
 
         output.writeByte(0);

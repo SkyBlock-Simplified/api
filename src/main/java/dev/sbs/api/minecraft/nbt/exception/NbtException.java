@@ -10,9 +10,9 @@ import dev.sbs.api.util.data.tuple.triple.Triple;
  * {@link NbtException NbtExceptions} are thrown when the {@link NbtFactory} class is unable<br>
  * to parse nbt data.
  */
-public final class NbtException extends SimplifiedException {
+public class NbtException extends SimplifiedException {
 
-    private NbtException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
+    protected NbtException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
         super(message, cause, enableSuppression, writableStackTrace, fields, data);
     }
 

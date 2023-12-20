@@ -1,13 +1,18 @@
-package dev.sbs.api.minecraft.nbt.snbt;
+package dev.sbs.api.minecraft.nbt.serializable.snbt;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SnbtUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class SnbtUtil {
 
-    public static String escape(String str) {
+    public static @NotNull String escape(@NotNull String str) {
         StringBuilder sb = new StringBuilder(" ");
         char quote = 0;
 
@@ -36,11 +41,11 @@ public class SnbtUtil {
         return sb.toString();
     }
 
-    public static String multiplyIndent(int by, SnbtConfig config) {
+    public static @NotNull String multiplyIndent(int by, @NotNull SnbtConfig config) {
         return new String(new char[by * config.getIndentSpaces()]).replace("\0", " ");
     }
 
-    public static String[] getMatches(Pattern regex, String in) {
+    public static @NotNull String[] getMatches(@NotNull Pattern regex, @NotNull String in) {
         List<String> matches = new ArrayList<>();
         Matcher matcher = regex.matcher(in);
 

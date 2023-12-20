@@ -1,7 +1,8 @@
 package dev.sbs.api.minecraft.nbt.tags.primitive;
 
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An abstract superclass of all NBT tags representing numeric values that can be converted to the primitive types.
@@ -10,8 +11,8 @@ import dev.sbs.api.minecraft.nbt.tags.Tag;
  */
 public abstract class NumericalTag<T extends Number> extends Tag<T> {
 
-    protected NumericalTag(String name, T value) {
-        super(name, value, new TagTypeRegistry(), true);
+    protected NumericalTag(byte typeId, @Nullable String name, @NotNull T value, boolean modifiable) {
+        super(typeId, name, value, modifiable);
     }
 
     /**
@@ -24,12 +25,21 @@ public abstract class NumericalTag<T extends Number> extends Tag<T> {
     }
 
     /**
-     * Returns the value held by this tag as a primitive {@code short}.
+     * Returns the value held by this tag as a primitive {@code double}.
      *
-     * @return the value held by this tag as a primitive {@code short}.
+     * @return the value held by this tag as a primitive {@code double}.
      */
-    public final short shortValue() {
-        return this.getValue().shortValue();
+    public final double doubleValue() {
+        return this.getValue().doubleValue();
+    }
+
+    /**
+     * Returns the value held by this tag as a primitive {@code float}.
+     *
+     * @return the value held by this tag as a primitive {@code float}.
+     */
+    public final float floatValue() {
+        return this.getValue().floatValue();
     }
 
     /**
@@ -51,21 +61,12 @@ public abstract class NumericalTag<T extends Number> extends Tag<T> {
     }
 
     /**
-     * Returns the value held by this tag as a primitive {@code float}.
+     * Returns the value held by this tag as a primitive {@code short}.
      *
-     * @return the value held by this tag as a primitive {@code float}.
+     * @return the value held by this tag as a primitive {@code short}.
      */
-    public final float floatValue() {
-        return this.getValue().floatValue();
-    }
-
-    /**
-     * Returns the value held by this tag as a primitive {@code double}.
-     *
-     * @return the value held by this tag as a primitive {@code double}.
-     */
-    public final double doubleValue() {
-        return this.getValue().doubleValue();
+    public final short shortValue() {
+        return this.getValue().shortValue();
     }
 
 }

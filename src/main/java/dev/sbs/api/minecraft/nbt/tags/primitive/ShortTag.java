@@ -1,22 +1,21 @@
 package dev.sbs.api.minecraft.nbt.tags.primitive;
 
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
-import dev.sbs.api.minecraft.nbt.snbt.SnbtConfig;
+import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * The short tag (type ID 2) is used for storing a 16-bit signed two's complement integer; a Java primitive {@code short}.
  */
-public class ShortTag extends NumericalTag<Short> {
+public final class ShortTag extends NumericalTag<Short> {
 
-    public static final ShortTag EMPTY = new ShortTag() {{ this.setNonUpdatable(); }};
+    public static final @NotNull ShortTag EMPTY = new ShortTag(null, 0, false);
 
     /**
      * Constructs a short tag with a 0 value.
@@ -28,7 +27,7 @@ public class ShortTag extends NumericalTag<Short> {
     /**
      * Constructs a short tag with a given value.
      *
-     * @param value the tag's {@code Number} value, to be converted to {@code short}.
+     * @param value the tag's value, to be converted to {@code short}.
      */
     public ShortTag(@NotNull Number value) {
         this(null, value);
@@ -38,45 +37,31 @@ public class ShortTag extends NumericalTag<Short> {
      * Constructs a short tag with a given name and value.
      *
      * @param name  the tag's name.
-     * @param value the tag's {@code Number} value, to be converted to {@code short}.
+     * @param value the tag's value, to be converted to {@code short}.
      */
-    public ShortTag(String name, @NotNull Number value) {
-        this(name, value.shortValue());
+    public ShortTag(@Nullable String name, @NotNull Number value) {
+        this(name, value, true);
     }
 
-    /**
-     * Constructs a short tag with a given name and value.
-     *
-     * @param name  the tag's name.
-     * @param value the tag's {@code short} value.
-     */
-    public ShortTag(String name, short value) {
-        super(name, value);
+    private ShortTag(@Nullable String name, @NotNull Number value, boolean modifiable) {
+        super(TagType.SHORT.getId(), name, value.shortValue(), modifiable);
     }
 
     @Override
-    public byte getTypeId() {
-        return TagType.SHORT.getId();
+    public @NotNull ShortTag fromJson(@NotNull JsonObject json, int depth) {
+        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
+        this.setValue(json.getAsJsonPrimitive("value").getAsShort());
+        return this;
     }
 
     @Override
-    public void write(DataOutput output, int depth, TagTypeRegistry registry) throws IOException {
-        output.writeShort(this.getValue());
-    }
-
-    @Override
-    public ShortTag read(DataInput input, int depth, TagTypeRegistry registry) throws IOException {
+    public @NotNull ShortTag read(@NotNull DataInput input, int depth) throws IOException {
         this.setValue(input.readShort());
         return this;
     }
 
     @Override
-    public String toSnbt(int depth, TagTypeRegistry registry, SnbtConfig config) {
-        return this.getValue() + "s";
-    }
-
-    @Override
-    public JsonObject toJson(int depth, TagTypeRegistry registry) {
+    public @NotNull JsonObject toJson(int depth) {
         JsonObject json = new JsonObject();
         json.addProperty("type", this.getTypeId());
 
@@ -88,23 +73,13 @@ public class ShortTag extends NumericalTag<Short> {
     }
 
     @Override
-    public ShortTag fromJson(JsonObject json, int depth, TagTypeRegistry registry) {
-        this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
-        this.setValue(json.getAsJsonPrimitive("value").getAsShort());
-        return this;
+    public @NotNull String toSnbt(int depth, @NotNull SnbtConfig config) {
+        return this.getValue() + "s";
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ShortTag shortTag = (ShortTag) o;
-        return Objects.equals(getValue(), shortTag.getValue());
-    }
-
-    @Override
-    public int hashCode() {
-        return getValue();
+    public void write(@NotNull DataOutput output, int depth) throws IOException {
+        output.writeShort(this.getValue());
     }
 
 }

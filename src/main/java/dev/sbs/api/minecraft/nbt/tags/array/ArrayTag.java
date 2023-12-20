@@ -1,9 +1,9 @@
 package dev.sbs.api.minecraft.nbt.tags.array;
 
-import dev.sbs.api.minecraft.nbt.registry.TagTypeRegistry;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.util.helper.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -20,8 +20,8 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
 
     public static final Pattern NUMBER_PATTERN = Pattern.compile("[-0-9]+");
 
-    protected ArrayTag(String name, T[] value) {
-        super(name, value, new TagTypeRegistry(), true);
+    protected ArrayTag(byte typeId, @Nullable String name, @NotNull T @NotNull [] value, boolean modifiable) {
+        super(typeId, name, value, modifiable);
     }
 
     /**
@@ -30,17 +30,23 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * @param elements element(s) to be added.
      */
     @SafeVarargs
-    public final void add(T... elements) {
-        this.insert(this.size() - 1, elements);
+    public final void add(@NotNull T... elements) {
+        this.insert(this.size(), elements);
     }
 
     /**
      * Removes all the elements from this array tag. The array tag will be empty after this call returns.
      */
-    public abstract void clear();
+    public final void clear() {
+        this.requireModifiable();
+        this.setValue(ArrayUtil.removeAll(this.getValue()));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final void forEach(Consumer<? super T> action) {
+    public final void forEach(@NotNull Consumer<? super T> action) {
         Arrays.asList(this.getValue()).forEach(action);
     }
 
@@ -50,7 +56,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * @param index index of the element to return.
      * @return the element at the specified position in this array tag.
      */
-    public final T get(int index) {
+    public final @NotNull T get(int index) {
         return this.getValue()[index];
     }
 
@@ -63,12 +69,15 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      */
     @SafeVarargs
     public final void insert(int index, @NotNull T... elements) {
-        this.value = ArrayUtil.insert(index, this.value, elements);
+        this.requireModifiable();
+        this.setValue(ArrayUtil.insert(index, this.getValue(), elements));
     }
 
-    @NotNull
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final Iterator<T> iterator() {
+    public final @NotNull Iterator<T> iterator() {
         return Arrays.asList(this.getValue()).iterator();
     }
 
@@ -79,12 +88,12 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * @param index the index of the element to be removed.
      * @return the element previously at the specified position.
      */
-    public final T remove(int index) {
-        T previous = this.value[index];
-        this.value = ArrayUtil.remove(this.value, index);
+    public final @NotNull T remove(int index) {
+        this.requireModifiable();
+        T previous = this.getValue()[index];
+        this.setValue(ArrayUtil.remove(this.getValue(), index));
         return previous;
     }
-
 
     /**
      * Replaces the element at the specified position in this array tag with the specified element.
@@ -93,8 +102,9 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      * @param element element to be stored at the specified position.
      * @return the element previously at the specified position.
      */
-    public final T set(int index, @NotNull T element) {
-        return this.value[index] = element;
+    public final @NotNull T set(int index, @NotNull T element) {
+        this.requireModifiable();
+        return this.getValue()[index] = element;
     }
 
     /**
@@ -106,8 +116,11 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
         return this.getValue().length;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final Spliterator<T> spliterator() {
+    public final @NotNull Spliterator<T> spliterator() {
         return Arrays.asList(this.getValue()).spliterator();
     }
 
