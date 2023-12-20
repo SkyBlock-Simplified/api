@@ -23,8 +23,8 @@ public class MinecraftImageGenTest {
     public void generateHead() {
         String username = "GoldenDusk";
         MojangProfileResponse mojangProfileResponse = new SbsClient().build(SbsRequest.class).getProfileFromUsername(username);
-        String textureUrl = mojangProfileResponse.getTextures().getSkin().getUrl().orElseThrow();
-        String base64Skin = mojangProfileResponse.getTextures().getSkin().getData().orElseThrow();
+        String textureUrl = mojangProfileResponse.getTextures().getSkin().orElseThrow().getUrl();
+        String base64Skin = mojangProfileResponse.getTextures().getSkin().orElseThrow().getData();
         System.out.println(textureUrl);
 
         try {
