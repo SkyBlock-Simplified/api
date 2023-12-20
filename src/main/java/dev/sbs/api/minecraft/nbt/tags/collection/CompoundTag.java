@@ -196,9 +196,8 @@ public final class CompoundTag extends RegistryTag<Map<String, Tag<?>>> implemen
 
     @Override
     public @NotNull CompoundTag fromJson(@NotNull JsonObject json, int depth, @NotNull TagRegistry registry) throws IOException {
-        if (depth > 512) {
+        if (depth > 512)
             throw new IOException("NBT structure too complex (depth > 512).");
-        }
 
         this.clear();
         this.setName(json.has("name") ? json.getAsJsonPrimitive("name").getAsString() : null);
