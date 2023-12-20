@@ -1,8 +1,8 @@
 package dev.sbs.api.text;
 
-import dev.sbs.api.client.sbs.SbsClient;
-import dev.sbs.api.client.sbs.request.SbsRequest;
-import dev.sbs.api.client.sbs.response.MojangProfileResponse;
+import dev.sbs.api.client.impl.sbs.SbsClient;
+import dev.sbs.api.client.impl.sbs.request.SbsRequest;
+import dev.sbs.api.client.impl.sbs.response.MojangProfileResponse;
 import dev.sbs.api.minecraft.image.MinecraftHead;
 import dev.sbs.api.minecraft.image.MinecraftText;
 import dev.sbs.api.minecraft.text.ChatFormat;

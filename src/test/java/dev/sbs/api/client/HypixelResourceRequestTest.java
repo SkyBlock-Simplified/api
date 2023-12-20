@@ -1,10 +1,10 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.hypixel.request.HypixelRequest;
-import dev.sbs.api.client.hypixel.response.resource.ResourceCollectionsResponse;
-import dev.sbs.api.client.hypixel.response.resource.ResourceItemsResponse;
-import dev.sbs.api.client.hypixel.response.resource.ResourceSkillsResponse;
+import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
+import dev.sbs.api.client.impl.hypixel.response.resource.ResourceCollectionsResponse;
+import dev.sbs.api.client.impl.hypixel.response.resource.ResourceItemsResponse;
+import dev.sbs.api.client.impl.hypixel.response.resource.ResourceSkillsResponse;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
