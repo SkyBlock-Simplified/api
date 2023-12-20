@@ -1,5 +1,6 @@
 package dev.sbs.api.client.impl.sbs.request;
 
+import dev.sbs.api.client.impl.mojang.response.MojangUsernameResponse;
 import dev.sbs.api.client.impl.sbs.response.MojangProfileResponse;
 import dev.sbs.api.client.impl.sbs.response.MojangStatusResponse;
 import dev.sbs.api.client.impl.sbs.response.SkyBlockEmojis;
@@ -17,7 +18,7 @@ public interface SbsRequest extends IRequest {
 
     @RequestLine("GET /test/{username}")
     @Deprecated
-    @NotNull MojangProfileResponse getTestProfileFromUsername(@NotNull @Param("username") String username);
+    @NotNull MojangUsernameResponse getTestProfileFromUsername(@NotNull @Param("username") String username);
 
     @RequestLine("GET /mojang/user/{username}")
     @NotNull MojangProfileResponse getProfileFromUsername(@NotNull @Param("username") String username);
