@@ -40,29 +40,6 @@ public final class MojangProxy {
         this.defaultSessionClient = new MojangSessionClient();
     }
 
-    private @NotNull Inet6Address getRandomInet6Address() {
-        return this.getInet6NetworkPrefix()
-            .map(networkPrefix -> {
-                String inet6NetworkPrefix = StringUtil.join(networkPrefix, ":");
-                ThreadLocalRandom random = ThreadLocalRandom.current();
-
-                try {
-                    return Inet6Address.getByName(String.format(
-                        "%s:%08x:%08x:%08x:%08x",
-                        inet6NetworkPrefix,
-                        random.nextInt(17),
-                        random.nextInt(17),
-                        random.nextInt(17),
-                        random.nextInt(17)
-                    ));
-                } catch (UnknownHostException uhex) {
-                    throw SimplifiedException.wrapNative(uhex).build();
-                }
-            })
-            .map(Inet6Address.class::cast)
-            .orElseThrow();
-    }
-
     private @NotNull MojangApiClient createInet6ApiClient() {
         return new MojangApiClient(this.getRandomInet6Address());
     }
@@ -105,6 +82,32 @@ public final class MojangProxy {
      */
     public @NotNull MojangProfileResponse getMojangProfile(@NotNull UUID uniqueId) throws MojangApiException {
         return new MojangProfileResponse(this.getSessionRequest().getProperties(uniqueId));
+    }
+
+    private @NotNull Inet6Address getRandomInet6Address() {
+        return this.getInet6NetworkPrefix()
+            .map(networkPrefix -> {
+                String inet6NetworkPrefix = StringUtil.join(networkPrefix, ":");
+
+                try {
+                    return Inet6Address.getByName(String.format(
+                        "%s:%04x:%04x:%04x:%04x",
+                        inet6NetworkPrefix,
+                        getRandomInet6Group(),
+                        getRandomInet6Group(),
+                        getRandomInet6Group(),
+                        getRandomInet6Group()
+                    ));
+                } catch (UnknownHostException uhex) {
+                    throw SimplifiedException.wrapNative(uhex).build();
+                }
+            })
+            .map(Inet6Address.class::cast)
+            .orElseThrow();
+    }
+
+    private static int getRandomInet6Group() {
+        return ThreadLocalRandom.current().nextInt() & 0xFFFF;
     }
 
     public @NotNull MojangSessionClient getSessionClient() {
