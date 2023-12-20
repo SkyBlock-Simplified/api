@@ -1,6 +1,6 @@
 package dev.sbs.api.data.model.skyblock.seasons;
 
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
+import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.data.model.Model;
 
 public interface SeasonModel extends Model {

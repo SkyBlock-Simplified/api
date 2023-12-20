@@ -3,7 +3,7 @@ package dev.sbs.api.util.gson.adapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.SkyBlockDate;
+import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

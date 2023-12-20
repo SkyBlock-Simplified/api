@@ -4,7 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import dev.sbs.api.client.hypixel.response.skyblock.implementation.island.util.NbtContent;
+import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.reflection.Reflection;
 
 import java.io.IOException;
