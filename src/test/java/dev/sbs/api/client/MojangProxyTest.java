@@ -5,8 +5,8 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.mojang.MojangProxy;
 import dev.sbs.api.client.mojang.request.MojangApiRequest;
 import dev.sbs.api.client.mojang.response.MojangMultiUsernameResponse;
-import dev.sbs.api.client.sbs.response.MojangProfileResponse;
 import dev.sbs.api.client.mojang.response.MojangUsernameResponse;
+import dev.sbs.api.client.sbs.response.MojangProfileResponse;
 import org.junit.jupiter.api.Test;
 
 public class MojangProxyTest {
@@ -32,6 +32,8 @@ public class MojangProxyTest {
         MojangProxy mojangProxy = SimplifiedApi.getMojangProxy();
         MojangProfileResponse mojangProfileResponse = mojangProxy.getMojangProfile("CraftedFury");
         System.out.println(mojangProfileResponse.getUsername() + " : " + mojangProfileResponse.getUniqueId());
+        String json = SimplifiedApi.getGson().toJson(mojangProfileResponse);
+        System.out.println(json);
     }
 
 }
