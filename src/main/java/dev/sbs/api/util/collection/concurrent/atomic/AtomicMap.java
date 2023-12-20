@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.stream.PairStream;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Iterable<Map.Entry<K, V>>, Map<K, V>, Serializable {
@@ -165,6 +168,27 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		try {
 			this.lock.readLock().lock();
 			return this.ref.remove(key);
+		} finally {
+			this.lock.readLock().unlock();
+		}
+	}
+
+	public boolean removeIf(@NotNull BiPredicate<? super K, ? super V> predicate) {
+		return this.removeIf(entry -> predicate.test(entry.getKey(), entry.getValue()));
+	}
+
+	public boolean removeIf(@NotNull Predicate<? super Entry<K, V>> predicate) {
+		MutableBoolean removed = new MutableBoolean(false);
+
+		try {
+			this.lock.readLock().lock();
+
+			for (Entry<K, V> entry : this) {
+				if (predicate.test(entry))
+					this.remove(entry.getKey());
+			}
+
+			return removed.get();
 		} finally {
 			this.lock.readLock().unlock();
 		}
