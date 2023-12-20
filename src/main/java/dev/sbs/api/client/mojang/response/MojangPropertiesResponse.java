@@ -63,7 +63,13 @@ public class MojangPropertiesResponse {
             private Optional<String> capeModel = Optional.empty();
 
             public boolean isSlim() {
-                return this.getCapeModel().map(model -> model.equals("slim")).orElse(false);
+                return this.getCapeModel()
+                    .map(model -> model.equals("slim"))
+                    .orElse(this.isDefaultSlim());
+            }
+
+            public boolean isDefaultSlim() {
+                return this.getUniqueId().hashCode() % 2 == 1;
             }
 
         }
