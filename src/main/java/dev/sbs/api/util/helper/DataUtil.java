@@ -112,45 +112,45 @@ public class DataUtil {
 		return Base64.getEncoder().encodeToString(input);
 	}
 
-	public static CompressionType getCompression(InputStream inputStream) throws IOException {
+	public static @NotNull CompressionType getCompression(@NotNull InputStream inputStream) throws IOException {
 		if (!inputStream.markSupported())
 			inputStream = new BufferedInputStream(inputStream);
 
 		CompressionType compressionType = CompressionType.NONE;
 		inputStream.mark(0);
+		int magic = inputStream.read();
 
-		if (inputStream.read() == 120)
+		if (magic == 120)
 			compressionType = CompressionType.ZLIB;
 
-		inputStream.reset();
-		if (inputStream.read() == 31)
+		if (magic == 31 || inputStream.read() == 139)
 			compressionType = CompressionType.GZIP;
 
 		inputStream.reset();
 		return compressionType;
 	}
 
-	public static ByteArrayDataInput newDataInput(byte[] data) {
+	public static @NotNull ByteArrayDataInput newDataInput(byte[] data) {
 		return ByteStreams.newDataInput(data);
 	}
 
-	public static ByteArrayDataInput newDataInput(ByteArrayInputStream inputStream) {
+	public static @NotNull ByteArrayDataInput newDataInput(ByteArrayInputStream inputStream) {
 		return ByteStreams.newDataInput(inputStream);
 	}
 
-	public static ByteArrayDataInput newDataInput(byte[] data, int start) {
+	public static @NotNull ByteArrayDataInput newDataInput(byte[] data, int start) {
 		return ByteStreams.newDataInput(data, start);
 	}
 
-	public static ByteArrayDataOutput newDataOutput() {
+	public static @NotNull ByteArrayDataOutput newDataOutput() {
 		return ByteStreams.newDataOutput();
 	}
 
-	public static ByteArrayDataOutput newDataOutput(ByteArrayOutputStream outputStream) {
+	public static @NotNull ByteArrayDataOutput newDataOutput(ByteArrayOutputStream outputStream) {
 		return ByteStreams.newDataOutput(outputStream);
 	}
 
-	public static ByteArrayDataOutput newDataOutput(int size) {
+	public static @NotNull ByteArrayDataOutput newDataOutput(int size) {
 		return ByteStreams.newDataOutput(size);
 	}
 
