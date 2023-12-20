@@ -47,10 +47,17 @@ public interface NbtWriter {
      * @throws NbtException if any I/O error occurs.
      */
     default byte[] toByteArray(@NotNull CompoundTag compound) throws NbtException {
-        @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        @Cleanup DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(byteArrayOutputStream));
-        this.toStream(compound, dataOutputStream);
-        return byteArrayOutputStream.toByteArray();
+        try {
+            @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            @Cleanup DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(byteArrayOutputStream));
+            this.toStream(compound, dataOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception unreported) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(unreported)
+                .withMessage(unreported.getMessage())
+                .build();
+        }
     }
 
     /**

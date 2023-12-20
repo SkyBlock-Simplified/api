@@ -59,8 +59,15 @@ public interface NbtReader {
      * @throws NbtException if any I/O error occurs.
      */
     default @NotNull CompoundTag fromByteArray(byte[] bytes) throws NbtException {
-        @Cleanup ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        return this.fromStream(byteArrayInputStream);
+        try {
+            @Cleanup ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            return this.fromStream(byteArrayInputStream);
+        } catch (Exception unreported) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(unreported)
+                .withMessage(unreported.getMessage())
+                .build();
+        }
     }
 
     /**
@@ -74,10 +81,10 @@ public interface NbtReader {
         try {
             @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
             return this.fromStream(fileInputStream);
-        } catch (IOException ioException) {
+        } catch (IOException ex) {
             throw SimplifiedException.of(NbtException.class)
-                .withCause(ioException)
-                .withMessage(ioException.getMessage())
+                .withCause(ex)
+                .withMessage(ex.getMessage())
                 .build();
         }
     }
