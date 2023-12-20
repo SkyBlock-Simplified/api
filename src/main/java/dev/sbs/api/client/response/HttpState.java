@@ -1,8 +1,9 @@
-package dev.sbs.api.client;
+package dev.sbs.api.client.response;
 
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 
+@Getter
 public enum HttpState {
 
     CLIENT_ERROR,
@@ -12,11 +13,11 @@ public enum HttpState {
     NETWORK_ERROR,
     REDIRECTION,
     SERVER_ERROR,
-    CLOUDFLARE_ERROR("CloudFlare"),
+    CLOUDFLARE_ERROR("Cloudflare"),
     NGINX_ERROR("nginx"),
     SUCCESS;
 
-    @Getter private final String title;
+    private final String title;
 
     HttpState() {
         this(null);

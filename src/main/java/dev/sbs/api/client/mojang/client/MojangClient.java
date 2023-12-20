@@ -4,8 +4,8 @@ import dev.sbs.api.client.Client;
 import dev.sbs.api.client.mojang.exception.MojangApiException;
 import dev.sbs.api.client.mojang.request.IMojangRequest;
 import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 import feign.FeignException;
-import feign.codec.ErrorDecoder;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -26,19 +26,16 @@ public abstract class MojangClient<T extends IMojangRequest> extends Client<T> {
         super(domain.getHost().getHost(), inet6Address);
         this.domain = domain;
         this.request = this.build(Reflection.getSuperClass(this));
-    }
-
-    @Override
-    protected @NotNull ErrorDecoder getErrorDecoder() {
-        return (methodKey, response) -> {
+        super.setCachedResponseHeaders(Concurrent.newUnmodifiableSet("CF-Cache-Status"));
+        super.setErrorDecoder((methodKey, response) -> {
             throw new MojangApiException(FeignException.errorStatus(methodKey, response));
-        };
+        });
     }
 
     public boolean isRateLimited() {
         return this.getRecentResponses()
             .stream()
-            .filter(time -> time >= System.currentTimeMillis() - this.getDomain().getRateLimit().getDurationMillis())
+            .filter(response -> response.getTimestamp().toEpochMilli() >= System.currentTimeMillis() - this.getDomain().getRateLimit().getDurationMillis())
             .count() >= this.getDomain().getRateLimit().getAllowed();
     }
     

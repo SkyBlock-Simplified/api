@@ -1,17 +1,24 @@
 package dev.sbs.api.client.sbs.exception;
 
+import dev.sbs.api.client.exception.ApiErrorResponse;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class SbsErrorResponse {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class SbsErrorResponse implements ApiErrorResponse {
 
-    private int code;
-    private String error;
-    @Getter protected String reason;
+    protected boolean success;
+    protected String error;
+    protected String reason;
 
     public static class Unknown extends SbsErrorResponse {
 
         public Unknown() {
-            super.reason = "Unknown";
+            super.success = false;
+            super.error = "UNKNOWN";
+            super.reason = "Unknown reason.";
         }
 
     }

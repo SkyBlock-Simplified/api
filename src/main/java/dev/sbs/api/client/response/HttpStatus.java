@@ -1,7 +1,9 @@
-package dev.sbs.api.client;
+package dev.sbs.api.client.response;
 
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 public enum HttpStatus {
@@ -97,22 +99,22 @@ public enum HttpStatus {
     UNKNOWN_ERROR(999, HttpState.JAVA_ERROR);
 
     private final int code;
-    private final String message;
-    private final HttpState state;
+    private final @NotNull String message;
+    private final @NotNull HttpState state;
 
     HttpStatus(int code) {
         this(code, null, null);
     }
 
-    HttpStatus(int code, HttpState state) {
+    HttpStatus(int code, @NotNull HttpState state) {
         this(code, null, state);
     }
 
-    HttpStatus(int code, String message) {
+    HttpStatus(int code, @Nullable String message) {
         this(code, message, null);
     }
 
-    HttpStatus(int code, String message, HttpState state) {
+    HttpStatus(int code, @Nullable String message, @Nullable HttpState state) {
         this.code = code;
         message = StringUtil.isEmpty(message) ? StringUtil.capitalizeFully(this.name().replace("_", " ")) : message;
 
@@ -137,7 +139,7 @@ public enum HttpStatus {
         this.message = message;
     }
 
-    public static HttpStatus getByCode(int code) {
+    public static @NotNull HttpStatus of(int code) {
         for (HttpStatus httpCode : HttpStatus.values()) {
             if (httpCode.getCode() == code)
                 return httpCode;

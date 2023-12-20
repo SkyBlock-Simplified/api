@@ -1,20 +1,27 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.exception.ApiErrorDecoder;
+import dev.sbs.api.client.exception.ApiException;
+import dev.sbs.api.client.request.HttpMethod;
+import dev.sbs.api.client.request.IRequest;
+import dev.sbs.api.client.request.Request;
+import dev.sbs.api.client.response.HttpStatus;
+import dev.sbs.api.client.response.Response;
 import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.data.tuple.pair.Pair;
-import dev.sbs.api.util.helper.ListUtil;
 import feign.Feign;
-import feign.codec.ErrorDecoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -22,26 +29,34 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.Inet6Address;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Getter
+@Getter(AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String url;
-    private final @NotNull Optional<Inet6Address> inet6Address;
-    private final @NotNull ConcurrentLinkedList<Long> recentRequests = Concurrent.newLinkedList();
-    private final @NotNull ConcurrentLinkedList<Long> recentResponses = Concurrent.newLinkedList();
-    private @NotNull ConcurrentMap<String, ConcurrentList<String>> headerCache = Concurrent.newUnmodifiableMap();
+    @Getter private final @NotNull Optional<Inet6Address> inet6Address;
+    private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
+    private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
+    @Setter(AccessLevel.PROTECTED)
+    private @NotNull ApiErrorDecoder errorDecoder = new ApiErrorDecoder.Default();
+    @Setter(AccessLevel.PROTECTED)
+    private @NotNull ConcurrentMap<String, String> requestHeaders = Concurrent.newUnmodifiableMap();
+    @Setter(AccessLevel.PROTECTED)
+    private @NotNull ConcurrentMap<String, String> requestQueries = Concurrent.newUnmodifiableMap();
+    @Setter(AccessLevel.PROTECTED)
+    private @NotNull ConcurrentSet<String> cachedResponseHeaders = Concurrent.newUnmodifiableSet();
 
-    public Client(@NotNull String url) {
-        this(url, null);
+    protected Client(@NotNull String url) {
+        this(url, Optional.empty());
     }
 
-    public Client(@NotNull String url, @Nullable Inet6Address inet6Address) {
-        this.url = String.format("https://%s", url.replaceFirst("^https?://", ""));
-        this.inet6Address = Optional.ofNullable(inet6Address);
+    protected Client(@NotNull String url, @Nullable Inet6Address inet6Address) {
+        this(url, Optional.ofNullable(inet6Address));
     }
 
     @Override
@@ -61,31 +76,53 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
             )
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
-            .requestInterceptor(template -> {
-                Client.this.getRequestHeaders().forEach((key, value) -> template.header(key, value));
-                Client.this.getRequestQueries().forEach((key, values) -> template.query(key, values));
-                this.recentRequests.add(System.currentTimeMillis());
-                this.recentRequests.removeIf(millis -> millis < System.currentTimeMillis() - ONE_HOUR);
+            .requestInterceptor(context -> {
+                Client.this.getRequestHeaders().forEach((key, value) -> context.header(key, value));
+                Client.this.getRequestQueries().forEach((key, values) -> context.query(key, values));
+                this.recentRequests.add(new Request.Impl(
+                    System.currentTimeMillis(),
+                    HttpMethod.of(context.method()),
+                    context.url(),
+                    context.headers()
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .map(entry -> Pair.of(
+                            entry.getKey(),
+                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
+                        ))
+                        .collect(Concurrent.toUnmodifiableMap())
+                ));
+                this.recentRequests.removeIf(request -> request.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
             })
             .responseInterceptor(context -> {
-                if (ListUtil.notEmpty(this.getResponseCacheHeaders())) {
-                    this.headerCache = context.response()
+                this.recentResponses.add(new Response.Impl(
+                    System.currentTimeMillis(),
+                    HttpStatus.of(context.response().status()),
+                    context.response()
                         .headers()
                         .entrySet()
                         .stream()
-                        .filter(entry -> this.getResponseCacheHeaders()
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .filter(entry -> this.getCachedResponseHeaders()
                             .stream()
-                            .anyMatch(key -> entry.getKey().matches(key))
+                            .anyMatch(key -> entry.getKey().equalsIgnoreCase(key))
                         )
-                        .map(entry -> Pair.of(entry.getKey(), Concurrent.newList(entry.getValue())))
-                        .collect(Concurrent.toUnmodifiableMap());
-                }
+                        .map(entry -> Pair.of(
+                            entry.getKey(),
+                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
+                        ))
+                        .collect(Concurrent.toUnmodifiableMap())
+                ));
 
-                this.recentResponses.add(System.currentTimeMillis());
-                this.recentResponses.removeIf(millis -> millis < System.currentTimeMillis() - ONE_HOUR);
+                this.recentResponses.removeIf(response -> response.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
                 return context.decoder().decode(context.response(), context.returnType());
             })
-            .errorDecoder(this.getErrorDecoder())
+            .errorDecoder((methodKey, response) -> {
+                ApiException exception = this.getErrorDecoder().decode(methodKey, response);
+                this.recentResponses.add(exception);
+                return exception;
+            })
             .options(new feign.Request.Options(
                 5,
                 TimeUnit.SECONDS,
@@ -96,32 +133,32 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
             .target(tClass, this.getUrl());
     }
 
-    protected @NotNull ErrorDecoder getErrorDecoder() {
-        return new ErrorDecoder.Default();
+    public final @NotNull Optional<Request> getLastRequest() {
+        return this.getRecentRequests()
+            .stream()
+            .reduce((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()) <= 0 ? o2 : o1);
     }
 
-    public final long getLastRequest() {
-        return this.getRecentRequests().getLast().orElse(0L);
-    }
-
-    public final long getLastResponse() {
-        return this.getRecentResponses().getLast().orElse(0L);
+    public final @NotNull Optional<Response> getLastResponse() {
+        return this.getRecentResponses()
+            .stream()
+            .reduce((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()) <= 0 ? o2 : o1);
     }
 
     public final long getLatency() {
-        return this.getLastResponse() - this.getLastRequest();
+        return this.getLastRequest()
+            .map(Request::getTimestamp)
+            .map(Instant::toEpochMilli)
+            .map(request -> this.getLastResponse()
+                .map(Response::getTimestamp)
+                .map(Instant::toEpochMilli)
+                .orElse(request + 1)
+            )
+            .orElse(-1L);
     }
 
-    protected @NotNull ConcurrentMap<String, String> getRequestHeaders() {
-        return Concurrent.newUnmodifiableMap();
-    }
-
-    protected @NotNull ConcurrentMap<String, ConcurrentList<String>> getRequestQueries() {
-        return Concurrent.newUnmodifiableMap();
-    }
-
-    protected @NotNull ConcurrentSet<String> getResponseCacheHeaders() {
-        return Concurrent.newUnmodifiableSet();
+    public final @NotNull String getUrl() {
+        return String.format("https://%s", this.url.replaceFirst("^https?://", ""));
     }
 
 }

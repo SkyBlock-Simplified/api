@@ -1,8 +1,8 @@
 package dev.sbs.api.client.sbs.response;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.client.HttpStatus;
 import dev.sbs.api.client.mojang.client.MojangClient;
+import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
@@ -47,12 +47,11 @@ public class MojangStatusResponse {
 
     public static class State {
 
-        @Getter
-        private boolean success;
+        @Getter private boolean success;
         private int code;
 
-        public HttpStatus getHttpStatus() {
-            return HttpStatus.getByCode(this.code);
+        public @NotNull HttpStatus getHttpStatus() {
+            return HttpStatus.of(this.code);
         }
 
     }

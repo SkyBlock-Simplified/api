@@ -1,10 +1,11 @@
 package dev.sbs.api.client.hypixel.exception;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.client.exception.ApiErrorResponse;
 import lombok.Getter;
 
 @Getter
-public class HypixelErrorResponse {
+public class HypixelErrorResponse implements ApiErrorResponse {
 
     protected boolean success;
     @SerializedName("cause")

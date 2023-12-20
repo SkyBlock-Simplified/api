@@ -1,6 +1,5 @@
 package dev.sbs.api.client.hypixel.request;
 
-import dev.sbs.api.client.IRequest;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelCountsResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelGuildResponse;
 import dev.sbs.api.client.hypixel.response.hypixel.HypixelPlayerResponse;
@@ -18,6 +17,7 @@ import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockFireSaleResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockMuseumResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockNewsResponse;
 import dev.sbs.api.client.hypixel.response.skyblock.SkyBlockProfilesResponse;
+import dev.sbs.api.client.request.IRequest;
 import feign.Param;
 import feign.RequestLine;
 import org.jetbrains.annotations.NotNull;
