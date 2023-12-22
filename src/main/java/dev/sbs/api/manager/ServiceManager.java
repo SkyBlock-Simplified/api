@@ -47,7 +47,7 @@ public class ServiceManager extends Manager<Class<?>, Object> {
      * @throws RegisteredReferenceException When the given class already has a registered service.
      * @throws InvalidReferenceException When the given repository does not match the given service.
      */
-    public final void addRepository(@NotNull Class<? extends Model> service, @NotNull Repository<? extends Model> repository) throws RegisteredReferenceException, InvalidReferenceException {
+    public final <T extends Model, R extends Repository<? extends T>> void addRepository(@NotNull Class<T> service, @NotNull R repository) throws RegisteredReferenceException, InvalidReferenceException {
         if (!service.isAssignableFrom(repository.getType()))
             throw SimplifiedException.of(InvalidReferenceException.class)
                 .withMessage(InvalidReferenceException.getMessage(service.getName(), repository))
@@ -82,8 +82,7 @@ public class ServiceManager extends Manager<Class<?>, Object> {
         ConcurrentSet<T> values = this.ref.stream()
             .filter(entry -> service.isAssignableFrom(entry.getKey()))
             .map(entry -> (T) entry.getValue())
-            .collect(Concurrent.toSet())
-            .toUnmodifiableSet();
+            .collect(Concurrent.toUnmodifiableSet());
 
         if (values.isEmpty())
             throw SimplifiedException.of(UnknownReferenceException.class)

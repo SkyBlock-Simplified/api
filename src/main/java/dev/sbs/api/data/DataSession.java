@@ -23,7 +23,7 @@ public abstract class DataSession<T extends Model> {
     protected long initializationTime;
     protected long startupTime;
 
-    protected abstract void addRepository(@NotNull Class<? extends T> model);
+    protected abstract <U extends T> void addRepository(@NotNull Class<U> model);
 
     public final <M extends T, S extends DataSession<M>> @NotNull S asType(@NotNull Class<S> sessionType) {
         return sessionType.cast(this);

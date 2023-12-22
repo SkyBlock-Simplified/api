@@ -39,7 +39,7 @@ public final class SqlSession extends DataSession<SqlModel> {
     }
 
     @Override
-    protected void addRepository(@NotNull Class<? extends SqlModel> model) {
+    protected <U extends SqlModel> void addRepository(@NotNull Class<U> model) {
         this.serviceManager.addRepository(model, new SqlRepository<>(this, model));
     }
 

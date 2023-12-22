@@ -32,7 +32,7 @@ public abstract class Manager<K, V> {
      * @param value Key value.
      * @throws RegisteredReferenceException When the given reference is already registered.
      */
-    public final void add(@NotNull K identifier, @NotNull V value) throws RegisteredReferenceException {
+    protected void add(@NotNull K identifier, @NotNull V value) throws RegisteredReferenceException {
         if (this.isRegistered(identifier))
             throw SimplifiedException.of(RegisteredReferenceException.class)
                 .withMessage(RegisteredReferenceException.getMessage(identifier))
@@ -62,7 +62,7 @@ public abstract class Manager<K, V> {
      * @throws UnknownReferenceException When the given identifier is not registered.
      * @see #isRegistered
      */
-    public final V get(@NotNull K identifier) throws UnknownReferenceException {
+    protected @NotNull V get(@NotNull K identifier) throws UnknownReferenceException {
         return this.ref.stream()
             .filter(entry -> this.keyMatcher.apply(entry, identifier))
             .map(Map.Entry::getValue)
@@ -89,7 +89,7 @@ public abstract class Manager<K, V> {
      * @throws UnknownReferenceException When the given identifier is not registered.
      * @throws InsufficientModeException When the mode isn't {@link Mode#ALL}.
      */
-    public final void remove(@NotNull K identifier) throws InsufficientModeException, UnknownReferenceException {
+    protected void remove(@NotNull K identifier) throws InsufficientModeException, UnknownReferenceException {
         if (!this.isRegistered(identifier)) {
             throw SimplifiedException.of(UnknownReferenceException.class)
                 .withMessage(UnknownReferenceException.getMessage(identifier))
@@ -112,7 +112,7 @@ public abstract class Manager<K, V> {
      * @throws UnknownReferenceException When the given identifier is not registered.
      * @throws InsufficientModeException When the mode isn't {@link Mode#UPDATE} or higher.
      */
-    public final void update(@NotNull K identifier, @NotNull V newValue) throws InsufficientModeException, UnknownReferenceException {
+    protected void update(@NotNull K identifier, @NotNull V newValue) throws InsufficientModeException, UnknownReferenceException {
         if (!this.isRegistered(identifier)) {
             throw SimplifiedException.of(UnknownReferenceException.class)
                 .withMessage(UnknownReferenceException.getMessage(identifier))
