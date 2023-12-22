@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+@FunctionalInterface
 public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
 
     // Create
