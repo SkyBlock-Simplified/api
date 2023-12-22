@@ -101,6 +101,8 @@ public final class SimplifiedApi {
         // Create Api Handlers & Feign Proxies
         MojangProxy mojangProxy = new MojangProxy();
         serviceManager.add(MojangProxy.class, mojangProxy);
+        serviceManager.add(MojangApiRequest.class, mojangProxy.getApiRequest());
+        serviceManager.add(MojangSessionRequest.class, mojangProxy.getSessionRequest());
 
         SbsClient sbsApiClient = new SbsClient();
         serviceManager.add(SbsClient.class, sbsApiClient);
