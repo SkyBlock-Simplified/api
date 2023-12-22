@@ -208,7 +208,7 @@ public final class CompoundTag extends RegistryTag<Map<String, Tag<?>>> implemen
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("value").entrySet()) {
             JsonObject entryJson = entry.getValue().getAsJsonObject();
             nextTypeId = entryJson.get("type").getAsByte();
-            Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(nextTypeId);
+            Class<? extends Tag<?>> tagClass = registry.getTypeFromId(nextTypeId).getTagClass();
 
             try {
                 next = registry.instantiate(tagClass);
@@ -446,7 +446,7 @@ public final class CompoundTag extends RegistryTag<Map<String, Tag<?>>> implemen
         Tag<?> next;
 
         while ((nextTypeId = input.readByte()) != 0) {
-            Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(nextTypeId);
+            Class<? extends Tag<?>> tagClass = registry.getTypeFromId(nextTypeId).getTagClass();
 
             try {
                 next = registry.instantiate(tagClass);

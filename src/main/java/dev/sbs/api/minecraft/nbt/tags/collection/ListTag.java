@@ -202,7 +202,7 @@ public final class ListTag<E extends Tag<?>> extends RegistryTag<List<E>> implem
 
         E nextTag;
         for (JsonElement element : json.getAsJsonArray("value")) {
-            Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(listTypeId);
+            Class<? extends Tag<?>> tagClass = registry.getTypeFromId(listTypeId).getTagClass();
 
             try {
                 nextTag = (E) registry.instantiate(tagClass);
@@ -299,7 +299,7 @@ public final class ListTag<E extends Tag<?>> extends RegistryTag<List<E>> implem
 
         E next;
         for (int i = 0; i < length; i++) {
-            Class<? extends Tag<?>> tagClass = registry.getTagClassFromId(tagTypeId);
+            Class<? extends Tag<?>> tagClass = registry.getTypeFromId(tagTypeId).getTagClass();
 
             try {
                 next = (E) registry.instantiate(tagClass);

@@ -12,7 +12,7 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
-import lombok.AccessLevel;
+import dev.sbs.api.reflection.Reflection;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,110 +20,125 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the 12 standard NBT tag types and their IDs supported by this library, laid out in the Notchian spec.
+ * Defines the 12 standard NBT tag types and their IDs supported by this library.
  */
-@Getter
-public enum TagType {
+public interface TagType {
 
     /**
      * ID: 1
      *
      * @see ByteTag
      */
-    BYTE(1, Byte.class, ByteTag.class),
+    TagType BYTE = of(1, Byte.class, ByteTag.class);
     /**
      * ID: 2
      *
      * @see ShortTag
      */
-    SHORT(2, Short.class, ShortTag.class),
+    TagType SHORT = of(2, Short.class, ShortTag.class);
     /**
      * ID: 3
      *
      * @see IntTag
      */
-    INT(3, Integer.class, IntTag.class),
+    TagType INT = of(3, Integer.class, IntTag.class);
     /**
      * ID: 4
      *
      * @see LongTag
      */
-    LONG(4, Long.class, LongTag.class),
+    TagType LONG = of(4, Long.class, LongTag.class);
     /**
      * ID: 5
      *
      * @see FloatTag
      */
-    FLOAT(5, Float.class, FloatTag.class),
+    TagType FLOAT = of(5, Float.class, FloatTag.class);
     /**
      * ID: 6
      *
      * @see DoubleTag
      */
-    DOUBLE(6, Double.class, DoubleTag.class),
+    TagType DOUBLE = of(6, Double.class, DoubleTag.class);
     /**
      * ID: 7
      *
      * @see ByteArrayTag
      */
-    BYTE_ARRAY(7, Byte[].class, ByteArrayTag.class),
+    TagType BYTE_ARRAY = of(7, Byte[].class, ByteArrayTag.class);
     /**
      * ID: 8
      *
      * @see StringTag
      */
-    STRING(8, String.class, StringTag.class),
+    TagType STRING = of(8, String.class, StringTag.class);
     /**
      * ID: 9
      *
      * @see ListTag
      */
-    LIST(9, List.class, ListTag.class),
+    @SuppressWarnings("unchecked")
+    TagType LIST = of(9, List.class, ListTag.class);
     /**
      * ID: 10
      *
      * @see CompoundTag
      */
-    COMPOUND(10, Map.class, CompoundTag.class),
+    TagType COMPOUND = of(10, Map.class, CompoundTag.class);
     /**
      * ID: 11
      *
      * @see IntArrayTag
      */
-    INT_ARRAY(11, Integer[].class, IntArrayTag.class),
+    TagType INT_ARRAY = of(11, Integer[].class, IntArrayTag.class);
     /**
      * ID: 12
      *
      * @see LongArrayTag
      */
-    LONG_ARRAY(12, Long[].class, LongArrayTag.class);
+    TagType LONG_ARRAY = of(12, Long[].class, LongArrayTag.class);
 
-    @Getter(AccessLevel.NONE)
-    private final @NotNull Integer id;
-    private final @NotNull Class<?> javaClass;
-    private final @NotNull Class<? extends Tag<?>> tagClass;
+    byte getId();
 
-    <U, T extends Tag<U>> TagType(@NotNull Integer id, @NotNull Class<? super U> javaClass, @NotNull Class<T> tagClass) {
-        this.id = id;
-        this.javaClass = javaClass;
-        this.tagClass = tagClass;
+    @NotNull Class<?> getJavaClass();
+
+    @NotNull Class<? extends Tag<?>> getTagClass();
+
+    static <J, T extends Tag<J>> @NotNull TagType of(byte id, @NotNull Class<? super J> javaClass, @NotNull Class<T> tagClass) {
+        return of(Integer.valueOf(id), javaClass, tagClass);
     }
 
-    public byte getId() {
-        return this.id.byteValue();
+    static <J, T extends Tag<J>> @NotNull TagType of(@NotNull Integer id, @NotNull Class<? super J> javaClass, @NotNull Class<T> tagClass) {
+        return new Impl(id, javaClass, tagClass);
     }
 
-    public static @NotNull TagType getById(int id) {
-        return getById((byte) id);
+    static @NotNull TagType[] values() {
+        return Reflection.of(TagType.class)
+            .getFields()
+            .stream()
+            .filter(fieldAccessor -> fieldAccessor.getType().equals(TagType.class))
+            .map(TagType.class::cast)
+            .toArray(TagType[]::new);
     }
 
-    public static @NotNull TagType getById(byte id) {
-        for (TagType tagType : values()) {
-            if (tagType.getId() == id)
-                return tagType;
+    @Getter
+    class Impl implements TagType {
+
+        private final @NotNull Integer id;
+        private final @NotNull Class<?> javaClass;
+        private final @NotNull Class<? extends Tag<?>> tagClass;
+
+        <J, T extends Tag<J>> Impl(@NotNull Integer id, @NotNull Class<? super J> javaClass, @NotNull Class<T> tagClass) {
+            this.id = id;
+            this.javaClass = javaClass;
+            this.tagClass = tagClass;
         }
 
-        throw new IllegalArgumentException(String.format("Tag with id '%s' does not exist.", id));
+        @Override
+        public byte getId() {
+            return this.id.byteValue();
+        }
+
     }
 
 }
