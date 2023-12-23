@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.collection.search.Sortable;
 import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
-public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<E, T> implements List<E> {
+public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<E, T> implements Sortable<E>, List<E> {
 
 	protected AtomicList(@NotNull T type) {
 		super(type);

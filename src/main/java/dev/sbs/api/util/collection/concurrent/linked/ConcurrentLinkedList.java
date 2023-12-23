@@ -1,9 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.linked;
 
-import dev.sbs.api.data.exception.DataException;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicList;
-import dev.sbs.api.util.collection.search.SearchQuery;
+import dev.sbs.api.util.collection.search.Sortable;
 import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +13,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * A concurrent list that allows for simultaneously fast reading, iteration and
@@ -28,7 +25,7 @@ import java.util.stream.Stream;
  * @param <E> type of elements
  */
 @SuppressWarnings("all")
-public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implements SearchQuery<E, ConcurrentLinkedList<E>> {
+public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implements Sortable<E> {
 
 	/**
 	 * Create a new concurrent list.
@@ -50,11 +47,6 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	 */
 	public ConcurrentLinkedList(Collection<? extends E> collection) {
 		super(ListUtil.isEmpty(collection) ? new LinkedList<>() : new LinkedList<>(collection));
-	}
-
-	@Override
-	public @NotNull ConcurrentLinkedList<E> findAll() throws DataException {
-		return new ConcurrentLinkedList<>(this);
 	}
 
 	@Override
@@ -85,11 +77,6 @@ public class ConcurrentLinkedList<E> extends AtomicList<E, LinkedList<E>> implem
 	public ConcurrentLinkedList<E> sorted(Comparator<? super E> comparator) {
 		super.sorted(comparator);
 		return this;
-	}
-
-	@Override
-	public final @NotNull ConcurrentLinkedList<E> toList(@NotNull Stream<E> stream) throws DataException {
-		return stream.collect(Concurrent.toLinkedList());
 	}
 
 }

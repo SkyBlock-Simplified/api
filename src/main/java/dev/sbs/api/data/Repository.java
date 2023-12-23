@@ -4,7 +4,7 @@ import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.search.SearchQuery;
+import dev.sbs.api.util.collection.search.Sortable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public abstract class Repository<T extends Model> implements SearchQuery<T, ConcurrentList<T>> {
+public abstract class Repository<T extends Model> implements Sortable<T> {
 
     @Getter protected final @NotNull Class<T> type;
     protected @NotNull ConcurrentList<T> cache = Concurrent.newList();
@@ -28,15 +28,15 @@ public abstract class Repository<T extends Model> implements SearchQuery<T, Conc
     }
 
     /**
+     * Returns an updated {@link ResultSet} from {@link Hibernate} collected in {@link ConcurrentList}.
+     */
+    public abstract @NotNull ConcurrentList<T> findAll();
+
+    /**
      * Returns the cached {@link ResultSet} from {@link Hibernate} collected in {@link ConcurrentList<T>}.
      */
     public final @NotNull ConcurrentList<T> findCached() {
         return this.cache;
-    }
-
-    @Override
-    public final @NotNull ConcurrentList<T> toList(@NotNull Stream<T> stream) throws DataException {
-        return stream.collect(Concurrent.toList());
     }
 
 }

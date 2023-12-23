@@ -1,7 +1,6 @@
 package dev.sbs.api.data.sql;
 
 import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.SimplifiedException;
@@ -37,11 +36,11 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
     }
 
     @Override
-    public final @NotNull ConcurrentList<T> findAll() throws DataException {
+    public @NotNull ConcurrentList<T> findAll() {
         return this.sqlSession.with((Function<Session, ? extends ConcurrentList<T>>) this::findAll);
     }
 
-    public final @NotNull ConcurrentList<T> findAll(@NotNull Session session) throws DataException {
+    public @NotNull ConcurrentList<T> findAll(@NotNull Session session) {
         try {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getType());

@@ -33,7 +33,7 @@ public class PetData {
 
     public int getPetScoreMagicFind() {
         return magicFindPetScore.matchAll(breakpoint -> breakpoint <= this.getPetScore())
-            .getLast()
+            .reduce((m1, m2) -> m2)
             .orElse(0);
     }
 

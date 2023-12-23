@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.collection.search.Searchable;
 import dev.sbs.api.util.stream.StreamUtil;
 import dev.sbs.api.util.stream.triple.TripleStream;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings("all")
-public abstract class AtomicCollection<E, T extends Collection<E>> extends AbstractCollection<E> implements Collection<E>, Serializable {
+public abstract class AtomicCollection<E, T extends Collection<E>> extends AbstractCollection<E> implements Collection<E>, Searchable<E>, Serializable {
 
 	protected final @NotNull T ref;
 	protected final transient ReadWriteLock lock = new ReentrantReadWriteLock();
