@@ -35,8 +35,8 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.search.SearchFunction;
-import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import dev.sbs.api.util.stream.StreamUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -251,7 +251,9 @@ public class SkyBlockIslandTest {
             // skills, skill_levels
             Repository<SkillModel> skillRepo = SimplifiedApi.getRepositoryOf(SkillModel.class);
             SkillModel combatSkillModel = skillRepo.findFirstOrNull(SkillModel::getKey, "COMBAT");
-            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class).findAll(SkillLevelModel::getSkill, combatSkillModel);
+            ConcurrentList<SkillLevelModel> skillLevels = SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
+                .findAll(SkillLevelModel::getSkill, combatSkillModel)
+                .collect(Concurrent.toList());
             MatcherAssert.assertThat(skillLevels.size(), Matchers.equalTo(60));
 
             // collection_items, collections
