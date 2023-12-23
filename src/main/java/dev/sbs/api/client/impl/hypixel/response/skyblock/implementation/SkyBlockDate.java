@@ -1,13 +1,13 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation;
 
 import com.google.common.base.Preconditions;
+import dev.sbs.api.util.SimpleDate;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.data.tuple.pair.Pair;
-import dev.sbs.api.util.date.CustomDate;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 /**
  * SkyBlock DateTime converter.
  */
-public class SkyBlockDate extends CustomDate {
+public class SkyBlockDate extends SimpleDate {
 
     private static final SimpleDateFormat FULL_DATE_FORMAT = new SimpleDateFormat("MMMMM dd, yyyy HH:mm z");
     public static final ConcurrentList<String> ZOO_CYCLE = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
