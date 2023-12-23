@@ -27,6 +27,7 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.manager.BuilderManager;
+import dev.sbs.api.manager.ClassBuilderManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
@@ -64,6 +65,7 @@ public final class SimplifiedApi {
     @Getter private static final @NotNull KeyManager<String, UUID> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
     @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
     @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
+    @Getter private static final @NotNull ClassBuilderManager classBuilderManager = new ClassBuilderManager(Manager.Mode.UPDATE);
 
     static {
         // Provide Services
@@ -88,11 +90,13 @@ public final class SimplifiedApi {
         serviceManager.add(Scheduler.class, new Scheduler());
         serviceManager.add(SessionManager.class, new SessionManager());
 
+        // Provide Class Builders
+        classBuilderManager.add(MojangApiRequest.class, MojangApiClient.class);
+        classBuilderManager.add(MojangSessionRequest.class, MojangSessionClient.class);
+        classBuilderManager.add(SbsRequest.class, SbsClient.class);
+        classBuilderManager.add(HypixelRequest.class, HypixelClient.class);
+
         // Provide Builders
-        builderManager.add(MojangApiRequest.class, MojangApiClient.class);
-        builderManager.add(MojangSessionRequest.class, MojangSessionClient.class);
-        builderManager.add(SbsRequest.class, SbsClient.class);
-        builderManager.add(HypixelRequest.class, HypixelClient.class);
         builderManager.add(String.class, StringBuilder.class);
         builderManager.add(LineSegment.class, LineSegment.Builder.class);
         builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
@@ -137,7 +141,7 @@ public final class SimplifiedApi {
      * @param <T> Request type to match.
      * @param <A> Client type to match.
      */
-    public static <T extends IRequest, A extends Client<T>> A getApiClient(@NotNull Class<A> tClass) {
+    public static <T extends IRequest, A extends Client<T>> @NotNull A getApiClient(@NotNull Class<A> tClass) {
         return serviceManager.get(tClass);
     }
 
@@ -146,7 +150,7 @@ public final class SimplifiedApi {
      * @param tClass Request proxy to locate.
      * @param <T> Request type to match.
      */
-    public static <T extends IRequest> T getApiRequest(@NotNull Class<T> tClass) {
+    public static <T extends IRequest> @NotNull T getApiRequest(@NotNull Class<T> tClass) {
         return serviceManager.get(tClass);
     }
 
@@ -165,7 +169,7 @@ public final class SimplifiedApi {
      * @return The repository of type {@link T}.
      */
     public static <T extends Model> @NotNull Repository<T> getRepositoryOf(@NotNull Class<T> tClass) {
-        return getSessionManager().getRepositoryOf(tClass);
+        return getSessionManager().getRepository(tClass);
     }
 
     public static @NotNull SessionManager getSessionManager() {

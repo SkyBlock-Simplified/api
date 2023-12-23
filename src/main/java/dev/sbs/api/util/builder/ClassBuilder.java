@@ -1,7 +1,9 @@
 package dev.sbs.api.util.builder;
 
-public interface ClassBuilder<T> extends CoreBuilder {
+import org.jetbrains.annotations.NotNull;
 
-    <R extends T> R build(Class<R> tClass);
+public interface ClassBuilder<T> {
+
+    <R extends T> @NotNull R build(@NotNull Class<R> tClass);
 
 }

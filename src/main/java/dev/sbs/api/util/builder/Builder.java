@@ -1,5 +1,6 @@
 package dev.sbs.api.util.builder;
 
+import dev.sbs.api.reflection.Reflection;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -61,13 +62,14 @@ import org.jetbrains.annotations.NotNull;
  * @param <T> the type of object that the builder will construct or compute.
  */
 @FunctionalInterface
-public interface Builder<T> extends CoreBuilder {
+public interface Builder<T> {
 
     /**
      * Returns a reference to the object being constructed or result being
      * calculated by the builder.
+     * <br><br>
+     * See {@link Reflection#validateFlags(Builder)}
      *
-     * @see Use {@link dev.sbs.api.reflection.Reflection#}
      * @return the object constructed or result calculated by the builder.
      */
     @NotNull T build();

@@ -59,7 +59,7 @@ public final class SessionManager {
      * @param <M> The type of model.
      * @return The repository of type {@link M}.
      */
-    public <M extends Model> @NotNull Repository<M> getRepositoryOf(Class<M> tClass) {
+    public <M extends Model> @NotNull Repository<M> getRepository(@NotNull Class<M> tClass) {
         return this.getSession().getRepositoryOf(tClass);
     }
 
