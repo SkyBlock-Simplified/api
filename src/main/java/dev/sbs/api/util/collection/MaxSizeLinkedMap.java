@@ -1,5 +1,7 @@
 package dev.sbs.api.util.collection;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,11 +23,11 @@ public class MaxSizeLinkedMap<K, V> extends LinkedHashMap<K, V> {
         this.maxSize = maxSize;
     }
 
-    public MaxSizeLinkedMap(Map<? extends K, ? extends V> map) {
+    public MaxSizeLinkedMap(@NotNull Map<? extends K, ? extends V> map) {
         this(map, -1);
     }
 
-    public MaxSizeLinkedMap(Map<? extends K, ? extends V> map, int maxSize) {
+    public MaxSizeLinkedMap(@NotNull Map<? extends K, ? extends V> map, int maxSize) {
         super(map);
         this.maxSize = maxSize;
     }

@@ -1,10 +1,10 @@
 package dev.sbs.api.util.collection.concurrent.linked;
 
+import dev.sbs.api.util.collection.MaxSizeLinkedMap;
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @param <K> type of keys
  * @param <V> type of values
  */
-public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, ConcurrentLinkedMap.MaxSizeLinkedMap<K, V>> {
+public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, MaxSizeLinkedMap<K, V>> {
 
 	/**
 	 * Create a new concurrent map.
@@ -56,23 +56,5 @@ public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, ConcurrentLinkedM
 		super(new MaxSizeLinkedMap<>(maxSize), map);
 	}
 
-	protected static final class MaxSizeLinkedMap<K, V> extends LinkedHashMap<K, V> {
-
-		private final int maxSize;
-
-		public MaxSizeLinkedMap() {
-			this(-1);
-		}
-
-		public MaxSizeLinkedMap(int maxSize) {
-			this.maxSize = maxSize;
-		}
-
-		@Override
-		protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-			return this.maxSize != -1 && this.size() > this.maxSize;
-		}
-
-	}
 
 }
