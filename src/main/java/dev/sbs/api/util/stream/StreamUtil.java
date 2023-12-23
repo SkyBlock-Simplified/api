@@ -9,7 +9,7 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
-import dev.sbs.api.util.mutable.tuple.triple.Triple;
+import dev.sbs.api.util.mutable.triple.Triple;
 import dev.sbs.api.util.stream.triple.TriFunction;
 import dev.sbs.api.util.stream.triple.TripleStream;
 import lombok.AccessLevel;

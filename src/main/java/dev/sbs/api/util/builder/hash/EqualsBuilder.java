@@ -3,7 +3,7 @@ package dev.sbs.api.util.builder.hash;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.helper.ArrayUtil;
-import dev.sbs.api.util.mutable.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.pair.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;

@@ -3,7 +3,7 @@ package dev.sbs.api.util.collection.search;
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.mutable.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.pair.Pair;
 import dev.sbs.api.util.stream.triple.TriPredicate;
 import org.jetbrains.annotations.NotNull;
 

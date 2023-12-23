@@ -11,7 +11,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.impl.RegistryTag;
 import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.mutable.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.pair.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

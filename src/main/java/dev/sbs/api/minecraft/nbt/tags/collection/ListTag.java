@@ -10,7 +10,7 @@ import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagRegistry;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.impl.RegistryTag;
-import dev.sbs.api.util.mutable.tuple.triple.Triple;
+import dev.sbs.api.util.mutable.triple.Triple;
 import dev.sbs.api.util.stream.StreamUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
