@@ -1,6 +1,7 @@
 package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
+import dev.sbs.api.util.collection.search.Searchable;
 import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.stream.PairStream;
@@ -20,7 +21,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Iterable<Map.Entry<K, V>>, Map<K, V>, Serializable {
+public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends AbstractMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Searchable<Map.Entry<K, V>>, Serializable {
 
 	protected final @NotNull M ref;
 	protected final transient ReadWriteLock lock = new ReentrantReadWriteLock();
