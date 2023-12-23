@@ -8,7 +8,7 @@ import com.google.gson.JsonParseException;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

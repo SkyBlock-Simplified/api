@@ -6,7 +6,7 @@ import dev.sbs.api.client.impl.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import feign.FeignException;
 import org.jetbrains.annotations.NotNull;
 

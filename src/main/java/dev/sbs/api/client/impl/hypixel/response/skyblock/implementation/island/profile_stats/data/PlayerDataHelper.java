@@ -12,11 +12,11 @@ import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.mutable.MutableBoolean;
-import dev.sbs.api.util.data.mutable.MutableDouble;
-import dev.sbs.api.util.data.tuple.pair.Pair;
-import dev.sbs.api.util.data.tuple.triple.Triple;
 import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.mutable.primitive.MutableBoolean;
+import dev.sbs.api.util.mutable.primitive.MutableDouble;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.tuple.triple.Triple;
 
 import java.util.Arrays;
 import java.util.List;

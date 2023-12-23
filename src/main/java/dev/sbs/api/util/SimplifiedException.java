@@ -5,7 +5,7 @@ import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.triple.Triple;
+import dev.sbs.api.util.mutable.tuple.triple.Triple;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

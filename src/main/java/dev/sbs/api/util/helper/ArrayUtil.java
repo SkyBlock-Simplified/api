@@ -1,7 +1,7 @@
 package dev.sbs.api.util.helper;
 
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
-import dev.sbs.api.util.data.mutable.MutableInt;
+import dev.sbs.api.util.mutable.primitive.MutableInt;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

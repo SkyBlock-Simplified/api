@@ -2,8 +2,8 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
 import dev.sbs.api.util.collection.search.Searchable;
-import dev.sbs.api.util.data.mutable.MutableBoolean;
 import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.mutable.primitive.MutableBoolean;
 import dev.sbs.api.util.stream.PairStream;
 import org.jetbrains.annotations.NotNull;
 

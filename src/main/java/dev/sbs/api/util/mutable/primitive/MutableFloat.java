@@ -1,59 +1,61 @@
-package dev.sbs.api.util.data.mutable;
+package dev.sbs.api.util.mutable.primitive;
+
+import dev.sbs.api.util.mutable.Mutable;
 
 /**
- * A mutable {@code double} wrapper.
+ * A mutable {@code float} wrapper.
  * <p>
- * Note that as MutableDouble does not extend Double, it is not treated by String.format as a Double parameter.
+ * Note that as MutableFloat does not extend Float, it is not treated by String.format as a Float parameter.
  *
- * @see Double
+ * @see Float
  */
-public class MutableDouble extends Number implements Comparable<MutableDouble>, Mutable<Number> {
+public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
 
     /** The mutable value. */
-    private double value;
+    private float value;
 
     /**
-     * Constructs a new MutableDouble with the default value of zero.
+     * Constructs a new MutableFloat with the default value of zero.
      */
-    public MutableDouble() { }
+    public MutableFloat() { }
 
     /**
-     * Constructs a new MutableDouble with the specified value.
+     * Constructs a new MutableFloat with the specified value.
      *
      * @param value  the initial value to store
      */
-    public MutableDouble(final double value) {
+    public MutableFloat(final float value) {
         this.value = value;
     }
 
     /**
-     * Constructs a new MutableDouble with the specified value.
+     * Constructs a new MutableFloat with the specified value.
      *
      * @param value  the initial value to store, not null
      * @throws NullPointerException if the object is null
      */
-    public MutableDouble(final Number value) {
-        this.value = value.doubleValue();
+    public MutableFloat(final Number value) {
+        this.value = value.floatValue();
     }
 
     /**
-     * Constructs a new MutableDouble parsing the given string.
+     * Constructs a new MutableFloat parsing the given string.
      *
      * @param value  the string to parse, not null
-     * @throws NumberFormatException if the string cannot be parsed into a double
+     * @throws NumberFormatException if the string cannot be parsed into a float
      */
-    public MutableDouble(final String value) {
-        this.value = Double.parseDouble(value);
+    public MutableFloat(final String value) {
+        this.value = Float.parseFloat(value);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value as a Double instance.
+     * Gets the value as a Float instance.
      *
-     * @return the value as a Double, never null
+     * @return the value as a Float, never null
      */
     @Override
-    public Double get() {
+    public Float get() {
         return this.value;
     }
 
@@ -62,7 +64,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      *
      * @param value  the value to set
      */
-    public void set(final double value) {
+    public void set(final float value) {
         this.value = value;
     }
 
@@ -74,31 +76,32 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      */
     @Override
     public void set(final Number value) {
-        this.value = value.doubleValue();
+        this.value = value.floatValue();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether the double value is the special NaN value.
+     * Checks whether the float value is the special NaN value.
      *
      * @return true if NaN
      */
     public boolean isNaN() {
-        return Double.isNaN(value);
+        return Float.isNaN(value);
     }
 
     /**
-     * Checks whether the double value is infinite.
+     * Checks whether the float value is infinite.
      *
      * @return true if infinite
      */
     public boolean isInfinite() {
-        return Double.isInfinite(value);
+        return Float.isInfinite(value);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Increments the value.
+     *
      */
     public void increment() {
         value++;
@@ -110,8 +113,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      *
      * @return the value associated with the instance before it was incremented
      */
-    public double getAndIncrement() {
-        final double last = value;
+    public float getAndIncrement() {
+        final float last = value;
         value++;
         return last;
     }
@@ -122,7 +125,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      *
      * @return the value associated with the instance after it is incremented
      */
-    public double incrementAndGet() {
+    public float incrementAndGet() {
         value++;
         return value;
     }
@@ -140,8 +143,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      *
      * @return the value associated with the instance before it was decremented
      */
-    public double getAndDecrement() {
-        final double last = value;
+    public float getAndDecrement() {
+        final float last = value;
         value--;
         return last;
     }
@@ -152,7 +155,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      *
      * @return the value associated with the instance after it is decremented
      */
-    public double decrementAndGet() {
+    public float decrementAndGet() {
         value--;
         return value;
     }
@@ -161,9 +164,9 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     /**
      * Adds a value to the value of this instance.
      *
-     * @param operand  the value to add
+     * @param operand  the value to add, not null
      */
-    public void add(final double operand) {
+    public void add(final float operand) {
         this.value += operand;
     }
 
@@ -174,15 +177,15 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @throws NullPointerException if the object is null
      */
     public void add(final Number operand) {
-        this.value += operand.doubleValue();
+        this.value += operand.floatValue();
     }
 
     /**
      * Subtracts a value from the value of this instance.
      *
-     * @param operand  the value to subtract, not null
+     * @param operand  the value to subtract
      */
-    public void subtract(final double operand) {
+    public void subtract(final float operand) {
         this.value -= operand;
     }
 
@@ -193,7 +196,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @throws NullPointerException if the object is null
      */
     public void subtract(final Number operand) {
-        this.value -= operand.doubleValue();
+        this.value -= operand.floatValue();
     }
 
     /**
@@ -203,7 +206,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @param operand the quantity to add, not null
      * @return the value associated with this instance after adding the operand
      */
-    public double addAndGet(final double operand) {
+    public float addAndGet(final float operand) {
         this.value += operand;
         return value;
     }
@@ -216,8 +219,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance after adding the operand
      */
-    public double addAndGet(final Number operand) {
-        this.value += operand.doubleValue();
+    public float addAndGet(final Number operand) {
+        this.value += operand.floatValue();
         return value;
     }
 
@@ -228,8 +231,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @param operand the quantity to add, not null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public double getAndAdd(final double operand) {
-        final double last = value;
+    public float getAndAdd(final float operand) {
+        final float last = value;
         this.value += operand;
         return last;
     }
@@ -242,16 +245,16 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public double getAndAdd(final Number operand) {
-        final double last = value;
-        this.value += operand.doubleValue();
+    public float getAndAdd(final Number operand) {
+        final float last = value;
+        this.value += operand.floatValue();
         return last;
     }
 
     //-----------------------------------------------------------------------
     // shortValue and byteValue rely on Number implementation
     /**
-     * Returns the value of this MutableDouble as an int.
+     * Returns the value of this MutableFloat as an int.
      *
      * @return the numeric value represented by this object after conversion to type int.
      */
@@ -261,7 +264,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * Returns the value of this MutableDouble as a long.
+     * Returns the value of this MutableFloat as a long.
      *
      * @return the numeric value represented by this object after conversion to type long.
      */
@@ -271,17 +274,17 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * Returns the value of this MutableDouble as a float.
+     * Returns the value of this MutableFloat as a float.
      *
      * @return the numeric value represented by this object after conversion to type float.
      */
     @Override
     public float floatValue() {
-        return (float) value;
+        return value;
     }
 
     /**
-     * Returns the value of this MutableDouble as a double.
+     * Returns the value of this MutableFloat as a double.
      *
      * @return the numeric value represented by this object after conversion to type double.
      */
@@ -292,48 +295,50 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
 
     //-----------------------------------------------------------------------
     /**
-     * Gets this mutable as an instance of Double.
+     * Gets this mutable as an instance of Float.
      *
-     * @return a Double instance containing the value from this mutable, never null
+     * @return a Float instance containing the value from this mutable, never null
      */
-    public Double toDouble() {
-        return doubleValue();
+    public Float toFloat() {
+        return floatValue();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this object against the specified object. The result is {@code true} if and only if the argument
-     * is not {@code null} and is a {@code Double} object that represents a double that has the identical
-     * bit pattern to the bit pattern of the double represented by this object. For this purpose, two
-     * {@code double} values are considered to be the same if and only if the method
-     * {@link Double#doubleToLongBits(double)}returns the same long value when applied to each.
+     * Compares this object against some other object. The result is {@code true} if and only if the argument is
+     * not {@code null} and is a {@code Float} object that represents a {@code float} that has the
+     * identical bit pattern to the bit pattern of the {@code float} represented by this object. For this
+     * purpose, two float values are considered to be the same if and only if the method
+     * {@link Float#floatToIntBits(float)}returns the same int value when applied to each.
      * <p>
-     * Note that in most cases, for two instances of class {@code Double},{@code d1} and {@code d2},
-     * the value of {@code d1.equals(d2)} is {@code true} if and only if <blockquote>
+     * Note that in most cases, for two instances of class {@code Float},{@code f1} and {@code f2},
+     * the value of {@code f1.equals(f2)} is {@code true} if and only if <blockquote>
      *
      * <pre>
-     *   d1.doubleValue()&nbsp;== d2.doubleValue()
+     *   f1.floatValue() == f2.floatValue()
      * </pre>
      *
      * </blockquote>
      * <p>
      * also has the value {@code true}. However, there are two exceptions:
      * <ul>
-     * <li>If {@code d1} and {@code d2} both represent {@code Double.NaN}, then the
-     * {@code equals} method returns {@code true}, even though {@code Double.NaN==Double.NaN} has
+     * <li>If {@code f1} and {@code f2} both represent {@code Float.NaN}, then the
+     * {@code equals} method returns {@code true}, even though {@code Float.NaN==Float.NaN} has
      * the value {@code false}.
-     * <li>If {@code d1} represents {@code +0.0} while {@code d2} represents {@code -0.0},
+     * <li>If {@code f1} represents {@code +0.0f} while {@code f2} represents {@code -0.0f},
      * or vice versa, the {@code equal} test has the value {@code false}, even though
-     * {@code +0.0==-0.0} has the value {@code true}. This allows hashtables to operate properly.
+     * {@code 0.0f==-0.0f} has the value {@code true}.
      * </ul>
+     * This definition allows hashtables to operate properly.
      *
      * @param obj  the object to compare with, null returns false
      * @return {@code true} if the objects are the same; {@code false} otherwise.
+     * @see Float#floatToIntBits(float)
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof MutableDouble
-            && Double.doubleToLongBits(((MutableDouble) obj).value) == Double.doubleToLongBits(value);
+        return obj instanceof MutableFloat
+            && Float.floatToIntBits(((MutableFloat) obj).value) == Float.floatToIntBits(value);
     }
 
     /**
@@ -343,8 +348,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      */
     @Override
     public int hashCode() {
-        final long bits = Double.doubleToLongBits(value);
-        return (int) (bits ^ bits >>> 32);
+        return Float.floatToIntBits(value);
     }
 
     //-----------------------------------------------------------------------
@@ -355,8 +359,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * @return negative if this is less, zero if equal, positive if greater
      */
     @Override
-    public int compareTo(final MutableDouble other) {
-        return Double.compare(this.value, other.value);
+    public int compareTo(final MutableFloat other) {
+        return Float.compare(this.value, other.value);
     }
 
     //-----------------------------------------------------------------------

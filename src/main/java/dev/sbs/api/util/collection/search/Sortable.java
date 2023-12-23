@@ -2,7 +2,7 @@ package dev.sbs.api.util.collection.search;
 
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.data.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package dev.sbs.api.util.data.mutable;
+package dev.sbs.api.util.mutable;
 
 /**
  * Provides mutable access to a value.

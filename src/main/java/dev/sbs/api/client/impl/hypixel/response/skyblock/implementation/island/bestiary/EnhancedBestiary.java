@@ -6,7 +6,7 @@ import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_brackets.BestiaryB
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.data.tuple.pair.Pair;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

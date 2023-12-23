@@ -1,66 +1,67 @@
-package dev.sbs.api.util.data.mutable;
+package dev.sbs.api.util.mutable.primitive;
 
 import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.mutable.Mutable;
 
 /**
- * A mutable {@code int} wrapper.
+ * A mutable {@code short} wrapper.
  * <p>
- * Note that as MutableInt does not extend Integer, it is not treated by String.format as an Integer parameter.
+ * Note that as MutableShort does not extend Short, it is not treated by String.format as a Short parameter.
  *
- * @see Integer
+ * @see Short
  */
-public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
+public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 
     /** The mutable value. */
-    private int value;
+    private short value;
 
     /**
-     * Constructs a new MutableInt with the default value of zero.
+     * Constructs a new MutableShort with the default value of zero.
      */
-    public MutableInt() {
+    public MutableShort() {
         super();
     }
 
     /**
-     * Constructs a new MutableInt with the specified value.
+     * Constructs a new MutableShort with the specified value.
      *
      * @param value  the initial value to store
      */
-    public MutableInt(final int value) {
+    public MutableShort(final short value) {
         super();
         this.value = value;
     }
 
     /**
-     * Constructs a new MutableInt with the specified value.
+     * Constructs a new MutableShort with the specified value.
      *
      * @param value  the initial value to store, not null
      * @throws NullPointerException if the object is null
      */
-    public MutableInt(final Number value) {
+    public MutableShort(final Number value) {
         super();
-        this.value = value.intValue();
+        this.value = value.shortValue();
     }
 
     /**
-     * Constructs a new MutableInt parsing the given string.
+     * Constructs a new MutableShort parsing the given string.
      *
      * @param value  the string to parse, not null
-     * @throws NumberFormatException if the string cannot be parsed into an int
+     * @throws NumberFormatException if the string cannot be parsed into a short
      */
-    public MutableInt(final String value) {
+    public MutableShort(final String value) {
         super();
-        this.value = Integer.parseInt(value);
+        this.value = Short.parseShort(value);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value as a Integer instance.
+     * Gets the value as a Short instance.
      *
-     * @return the value as a Integer, never null
+     * @return the value as a Short, never null
      */
     @Override
-    public Integer get() {
+    public Short get() {
         return this.value;
     }
 
@@ -69,7 +70,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @param value  the value to set
      */
-    public void set(final int value) {
+    public void set(final short value) {
         this.value = value;
     }
 
@@ -81,7 +82,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      */
     @Override
     public void set(final Number value) {
-        this.value = value.intValue();
+        this.value = value.shortValue();
     }
 
     //-----------------------------------------------------------------------
@@ -99,8 +100,8 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @return the value associated with the instance before it was incremented
      */
-    public int getAndIncrement() {
-        final int last = value;
+    public short getAndIncrement() {
+        final short last = value;
         value++;
         return last;
     }
@@ -111,7 +112,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @return the value associated with the instance after it is incremented
      */
-    public int incrementAndGet() {
+    public short incrementAndGet() {
         value++;
         return value;
     }
@@ -130,8 +131,8 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @return the value associated with the instance before it was decremented
      */
-    public int getAndDecrement() {
-        final int last = value;
+    public short getAndDecrement() {
+        final short last = value;
         value--;
         return last;
     }
@@ -142,7 +143,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @return the value associated with the instance after it is decremented
      */
-    public int decrementAndGet() {
+    public short decrementAndGet() {
         value--;
         return value;
     }
@@ -153,7 +154,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @param operand  the value to add, not null
      */
-    public void add(final int operand) {
+    public void add(final short operand) {
         this.value += operand;
     }
 
@@ -164,7 +165,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @throws NullPointerException if the object is null
      */
     public void add(final Number operand) {
-        this.value += operand.intValue();
+        this.value += operand.shortValue();
     }
 
     /**
@@ -172,7 +173,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      *
      * @param operand  the value to subtract, not null
      */
-    public void subtract(final int operand) {
+    public void subtract(final short operand) {
         this.value -= operand;
     }
 
@@ -183,7 +184,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @throws NullPointerException if the object is null
      */
     public void subtract(final Number operand) {
-        this.value -= operand.intValue();
+        this.value -= operand.shortValue();
     }
 
     /**
@@ -193,7 +194,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @param operand the quantity to add, not null
      * @return the value associated with this instance after adding the operand
      */
-    public int addAndGet(final int operand) {
+    public short addAndGet(final short operand) {
         this.value += operand;
         return value;
     }
@@ -206,8 +207,8 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance after adding the operand
      */
-    public int addAndGet(final Number operand) {
-        this.value += operand.intValue();
+    public short addAndGet(final Number operand) {
+        this.value += operand.shortValue();
         return value;
     }
 
@@ -218,8 +219,8 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @param operand the quantity to add, not null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public int getAndAdd(final int operand) {
-        final int last = value;
+    public short getAndAdd(final short operand) {
+        final short last = value;
         this.value += operand;
         return last;
     }
@@ -232,16 +233,26 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public int getAndAdd(final Number operand) {
-        final int last = value;
-        this.value += operand.intValue();
+    public short getAndAdd(final Number operand) {
+        final short last = value;
+        this.value += operand.shortValue();
         return last;
     }
 
     //-----------------------------------------------------------------------
-    // shortValue and byteValue rely on Number implementation
+    // byteValue relies on Number implementation
     /**
-     * Returns the value of this MutableInt as an int.
+     * Returns the value of this MutableShort as a short.
+     *
+     * @return the numeric value represented by this object after conversion to type short.
+     */
+    @Override
+    public short shortValue() {
+        return value;
+    }
+
+    /**
+     * Returns the value of this MutableShort as an int.
      *
      * @return the numeric value represented by this object after conversion to type int.
      */
@@ -251,7 +262,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * Returns the value of this MutableInt as a long.
+     * Returns the value of this MutableShort as a long.
      *
      * @return the numeric value represented by this object after conversion to type long.
      */
@@ -261,7 +272,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * Returns the value of this MutableInt as a float.
+     * Returns the value of this MutableShort as a float.
      *
      * @return the numeric value represented by this object after conversion to type float.
      */
@@ -271,7 +282,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * Returns the value of this MutableInt as a double.
+     * Returns the value of this MutableShort as a double.
      *
      * @return the numeric value represented by this object after conversion to type double.
      */
@@ -282,27 +293,27 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets this mutable as an instance of Integer.
+     * Gets this mutable as an instance of Short.
      *
-     * @return a Integer instance containing the value from this mutable, never null
+     * @return a Short instance containing the value from this mutable, never null
      */
-    public Integer toInteger() {
-        return intValue();
+    public Short toShort() {
+        return shortValue();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this object to the specified object. The result is {@code true} if and only if the argument is
-     * not {@code null} and is a {@code MutableInt} object that contains the same {@code int} value
-     * as this object.
+     * Compares this object to the specified object. The result is {@code true} if and only if the argument
+     * is not {@code null} and is a {@code MutableShort} object that contains the same {@code short}
+     * value as this object.
      *
      * @param obj  the object to compare with, null returns false
      * @return {@code true} if the objects are the same; {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof MutableInt) {
-            return value == ((MutableInt) obj).intValue();
+        if (obj instanceof MutableShort) {
+            return value == ((MutableShort) obj).shortValue();
         }
         return false;
     }
@@ -325,7 +336,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * @return negative if this is less, zero if equal, positive if greater
      */
     @Override
-    public int compareTo(final MutableInt other) {
+    public int compareTo(final MutableShort other) {
         return NumberUtil.compare(this.value, other.value);
     }
 

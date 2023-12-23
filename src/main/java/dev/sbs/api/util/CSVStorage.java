@@ -1,4 +1,4 @@
-package dev.sbs.api.util.data;
+package dev.sbs.api.util;
 
 import com.google.common.base.Preconditions;
 import dev.sbs.api.util.collection.concurrent.Concurrent;

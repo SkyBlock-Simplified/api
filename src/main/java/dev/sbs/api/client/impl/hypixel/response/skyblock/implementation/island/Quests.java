@@ -5,8 +5,8 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlock
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.data.tuple.pair.Pair;
 import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.mutable.tuple.pair.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

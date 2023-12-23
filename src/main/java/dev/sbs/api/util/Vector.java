@@ -1,4 +1,4 @@
-package dev.sbs.api.util.data;
+package dev.sbs.api.util;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
