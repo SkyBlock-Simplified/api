@@ -3,7 +3,7 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.exception.TagTypeRegistryException;
+import dev.sbs.api.minecraft.nbt.exception.TagRegistryException;
 import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
@@ -206,7 +206,7 @@ public final class ListTag<E extends Tag<?>> extends RegistryTag<List<E>> implem
 
             try {
                 nextTag = (E) registry.instantiate(tagClass);
-            } catch (TagTypeRegistryException e) {
+            } catch (TagRegistryException e) {
                 throw new IOException(e);
             }
 
@@ -303,7 +303,7 @@ public final class ListTag<E extends Tag<?>> extends RegistryTag<List<E>> implem
 
             try {
                 next = (E) registry.instantiate(tagClass);
-            } catch (TagTypeRegistryException e) {
+            } catch (TagRegistryException e) {
                 throw new IOException(e);
             }
 

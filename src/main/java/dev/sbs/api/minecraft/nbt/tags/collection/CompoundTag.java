@@ -2,7 +2,7 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.sbs.api.minecraft.nbt.exception.TagTypeRegistryException;
+import dev.sbs.api.minecraft.nbt.exception.TagRegistryException;
 import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtConfig;
 import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtUtil;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
@@ -212,7 +212,7 @@ public final class CompoundTag extends RegistryTag<Map<String, Tag<?>>> implemen
 
             try {
                 next = registry.instantiate(tagClass);
-            } catch (TagTypeRegistryException e) {
+            } catch (TagRegistryException e) {
                 throw new IOException(e);
             }
 
@@ -450,7 +450,7 @@ public final class CompoundTag extends RegistryTag<Map<String, Tag<?>>> implemen
 
             try {
                 next = registry.instantiate(tagClass);
-            } catch (TagTypeRegistryException e) {
+            } catch (TagRegistryException e) {
                 throw new IOException(e);
             }
 
