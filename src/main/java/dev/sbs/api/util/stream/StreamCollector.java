@@ -1,5 +1,6 @@
 package dev.sbs.api.util.stream;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -15,6 +16,7 @@ import java.util.stream.Collector;
 @Getter
 @Accessors(fluent = true)
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class StreamCollector<T, A, R> implements Collector<T, A, R> {
 
     @SuppressWarnings("unchecked")
@@ -25,11 +27,7 @@ public class StreamCollector<T, A, R> implements Collector<T, A, R> {
     private final @NotNull Supplier<A> supplier;
     private final @NotNull BiConsumer<A, T> accumulator;
     private final @NotNull BinaryOperator<A> combiner;
-    private final @NotNull Function<A, R> finisher;
+    private @NotNull Function<A, R> finisher = castingIdentity();
     private final @NotNull Set<Characteristics> characteristics;
-
-    public StreamCollector(@NotNull Supplier<A> supplier, @NotNull BiConsumer<A, T> accumulator, @NotNull BinaryOperator<A> combiner, @NotNull Set<Characteristics> characteristics) {
-        this(supplier, accumulator, combiner, castingIdentity(), characteristics);
-    }
 
 }
