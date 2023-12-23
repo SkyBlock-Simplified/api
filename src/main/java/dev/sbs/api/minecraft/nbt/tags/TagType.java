@@ -13,11 +13,13 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.reflection.accessor.FieldAccessor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Defines the 12 standard NBT tag types and their IDs supported by this library.
@@ -114,9 +116,10 @@ public interface TagType {
 
     static @NotNull TagType[] values() {
         return Reflection.of(TagType.class)
-            .getFields()
-            .stream()
-            .filter(fieldAccessor -> fieldAccessor.getType().equals(TagType.class))
+            .getFields().stream()
+            .filter(fieldAccessor -> TagType.class.isAssignableFrom(fieldAccessor.getType()))
+            .map(FieldAccessor::get)
+            .filter(Objects::nonNull)
             .map(TagType.class::cast)
             .toArray(TagType[]::new);
     }
