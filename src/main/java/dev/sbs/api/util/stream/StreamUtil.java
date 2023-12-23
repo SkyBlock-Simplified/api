@@ -189,6 +189,17 @@ public class StreamUtil {
         return new StreamCollector<>(ConcurrentLinkedList::new, ConcurrentLinkedList::addAll, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <E, A extends ConcurrentLinkedList<E>> @NotNull Collector<E, ?, A> toConcurrentUnmodifiableLinkedList() {
+        return new StreamCollector<>(
+            ConcurrentLinkedList::new,
+            ConcurrentLinkedList::addAll,
+            (left, right) -> { left.addAll(right); return left; },
+            list -> (A) list.toUnmodifiableLinkedList(),
+            CHARACTERISTICS
+        );
+    }
+
     public static <E> @NotNull Collector<E, ?, ConcurrentList<E>> toConcurrentList() {
         return new StreamCollector<>(ConcurrentList::new, ConcurrentList::addAll, (left, right) -> { left.addAll(right); return left; }, CHARACTERISTICS);
     }

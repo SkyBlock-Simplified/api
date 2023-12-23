@@ -4,6 +4,7 @@ import dev.sbs.api.util.collection.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.collection.sort.SortOrder;
 import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,19 +37,19 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 	 * Create a new concurrent list and fill it with the given array.
 	 */
 	@SafeVarargs
-	public ConcurrentList(E... array) {
+	public ConcurrentList(@NotNull E... array) {
 		this(Arrays.asList(array));
 	}
 
 	/**
 	 * Create a new concurrent list and fill it with the given collection.
 	 */
-	public ConcurrentList(Collection<? extends E> collection) {
+	public ConcurrentList(@Nullable Collection<? extends E> collection) {
 		super(ListUtil.isEmpty(collection) ? new ArrayList<>() : new ArrayList<>(collection));
 	}
 
 	@Override
-	public ConcurrentList<E> inverse() {
+	public @NotNull ConcurrentList<E> inverse() {
 		return Concurrent.newList(super.inverse());
 	}
 
@@ -64,25 +65,25 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 	}
 
 	@Override
-	public ConcurrentList<E> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
+	public @NotNull ConcurrentList<E> sorted(@NotNull SortOrder sortOrder, Function<E, ? extends Comparable>... functions) {
 		super.sorted(sortOrder, functions);
 		return this;
 	}
 
 	@Override
-	public ConcurrentList<E> sorted(@NotNull Iterable<Function<E, ? extends Comparable>> functions) {
+	public @NotNull ConcurrentList<E> sorted(@NotNull Iterable<Function<E, ? extends Comparable>> functions) {
 		super.sorted(functions);
 		return this;
 	}
 
 	@Override
-	public ConcurrentList<E> sorted(@NotNull SortOrder sortOrder, @NotNull Iterable<Function<E, ? extends Comparable>> functions) {
+	public @NotNull ConcurrentList<E> sorted(@NotNull SortOrder sortOrder, @NotNull Iterable<Function<E, ? extends Comparable>> functions) {
 		super.sorted(sortOrder, functions);
 		return this;
 	}
 
 	@Override
-	public ConcurrentList<E> sorted(Comparator<? super E> comparator) {
+	public @NotNull ConcurrentList<E> sorted(Comparator<? super E> comparator) {
 		super.sorted(comparator);
 		return this;
 	}

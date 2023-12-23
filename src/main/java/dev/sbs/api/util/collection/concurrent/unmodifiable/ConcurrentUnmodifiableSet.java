@@ -30,14 +30,14 @@ public class ConcurrentUnmodifiableSet<E> extends ConcurrentSet<E> {
 	 * Create a new unmodifiable concurrent set and fill it with the given array.
 	 */
 	@SafeVarargs
-	public ConcurrentUnmodifiableSet(E... array) {
+	public ConcurrentUnmodifiableSet(@NotNull E... array) {
 		this(Arrays.asList(array));
 	}
 
 	/**
 	 * Create a new unmodifiable concurrent set and fill it with the given collection.
 	 */
-	public ConcurrentUnmodifiableSet(Collection<? extends E> collection) {
+	public ConcurrentUnmodifiableSet(@NotNull Collection<? extends E> collection) {
 		super(new HashSet<>(collection));
 	}
 

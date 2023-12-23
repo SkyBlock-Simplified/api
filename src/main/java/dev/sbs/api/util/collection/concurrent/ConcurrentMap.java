@@ -32,7 +32,7 @@ public class ConcurrentMap<K, V> extends AtomicMap<K, V, AbstractMap<K, V>> {
     /**
      * Create a new concurrent map and fill it with the given map.
      */
-    public ConcurrentMap(Map<? extends K, ? extends V> map) {
+    public ConcurrentMap(@NotNull Map<? extends K, ? extends V> map) {
         super(new HashMap<>(), map);
     }
 
@@ -40,7 +40,7 @@ public class ConcurrentMap<K, V> extends AtomicMap<K, V, AbstractMap<K, V>> {
      * Create a new concurrent map and fill it with the given pairs.
      */
     @SafeVarargs
-    public ConcurrentMap(Map.Entry<K, V>... pairs) {
+    public ConcurrentMap(@NotNull Map.Entry<K, V>... pairs) {
         super(new HashMap<>(), Arrays.stream(pairs).collect(Concurrent.toMap()));
     }
 

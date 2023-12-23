@@ -2,6 +2,7 @@ package dev.sbs.api.util.collection.concurrent.unmodifiable;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * An unmodifiable concurrent list that allows for simultaneous fast reading and iteration utilizing {@link AtomicReference}.
+ * An unmodifiable concurrent linked list that allows for simultaneous fast reading and iteration utilizing {@link AtomicReference}.
  * <p>
  * The AtomicReference changes the methods that modify the list by replacing the
  * entire list on each modification. This allows for maintaining the original
@@ -21,12 +22,12 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @param <E> type of elements
  */
-public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
+public class ConcurrentUnmodifiableLinkedList<E> extends ConcurrentLinkedList<E> {
 
 	/**
 	 * Create a new unmodifiable concurrent list.
 	 */
-	public ConcurrentUnmodifiableList() {
+	public ConcurrentUnmodifiableLinkedList() {
 		super((Collection<? extends E>) null);
 	}
 
@@ -34,14 +35,14 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 	 * Create a new unmodifiable concurrent list and fill it with the given array.
 	 */
 	@SafeVarargs
-	public ConcurrentUnmodifiableList(@NotNull E... array) {
-		this(Arrays.asList(array));
+	public ConcurrentUnmodifiableLinkedList(@NotNull E... array) {
+		super(Arrays.asList(array));
 	}
 
 	/**
 	 * Create a new unmodifiable concurrent list and fill it with the given collection.
 	 */
-	public ConcurrentUnmodifiableList(@NotNull Collection<? extends E> collection) {
+	public ConcurrentUnmodifiableLinkedList(@NotNull Collection<? extends E> collection) {
 		super(collection);
 	}
 
@@ -71,17 +72,17 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 	}
 
 	@Override
-	public final @NotNull ConcurrentUnmodifiableList<E> inverse() {
+	public final ConcurrentUnmodifiableLinkedList<E> inverse() {
 		ConcurrentList<E> list = Concurrent.newList(this);
 		Collections.reverse(list);
-		return Concurrent.newUnmodifiableList(list);
+		return Concurrent.newUnmodifiableLinkedList(list);
 	}
 
 	@Override
 	public final @NotNull ListIterator<E> listIterator(int index) {
 		return new ListIterator<>() {
 
-            private final ListIterator<? extends E> atomicIterator = ConcurrentUnmodifiableList.super.listIterator(index);
+            private final ListIterator<? extends E> atomicIterator = ConcurrentUnmodifiableLinkedList.super.listIterator(index);
 
             @Override
             public boolean hasNext() {
@@ -162,8 +163,8 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 	}
 
 	@Override
-	public @NotNull ConcurrentList<E> subList(int fromIndex, int toIndex) {
-		return new ConcurrentUnmodifiableList<>(super.subList(fromIndex, toIndex));
+	public @NotNull ConcurrentLinkedList<E> subList(int fromIndex, int toIndex) {
+		return new ConcurrentUnmodifiableLinkedList<>(super.subList(fromIndex, toIndex));
 	}
 
 }

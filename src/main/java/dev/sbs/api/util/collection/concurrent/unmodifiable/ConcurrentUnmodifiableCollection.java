@@ -23,21 +23,21 @@ public class ConcurrentUnmodifiableCollection<E> extends ConcurrentCollection<E>
 	 * Create a new unmodifiable concurrent list.
 	 */
 	public ConcurrentUnmodifiableCollection() {
-		super(new ArrayList<>());
+		super((Collection<? extends E>) null);
 	}
 
 	/**
 	 * Create a new unmodifiable concurrent list and fill it with the given array.
 	 */
 	@SafeVarargs
-	public ConcurrentUnmodifiableCollection(E... array) {
+	public ConcurrentUnmodifiableCollection(@NotNull E... array) {
 		this(Arrays.asList(array));
 	}
 
 	/**
 	 * Create a new unmodifiable concurrent list and fill it with the given collection.
 	 */
-	public ConcurrentUnmodifiableCollection(Collection<? extends E> collection) {
+	public ConcurrentUnmodifiableCollection(@NotNull Collection<? extends E> collection) {
 		super(new ArrayList<>(collection));
 	}
 

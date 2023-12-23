@@ -45,7 +45,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
     /**
      * Create a new unmodifiable concurrent map and fill it with the given map.
      */
-    public ConcurrentUnmodifiableMap(Map<? extends K, ? extends V> map) {
+    public ConcurrentUnmodifiableMap(@NotNull Map<? extends K, ? extends V> map) {
         super(map);
     }
 
@@ -53,7 +53,7 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
      * Create a new concurrent map and fill it with the given pairs.
      */
     @SafeVarargs
-    public ConcurrentUnmodifiableMap(Map.Entry<K, V>... pairs) {
+    public ConcurrentUnmodifiableMap(@NotNull Map.Entry<K, V>... pairs) {
         super(Arrays.stream(pairs).collect(Concurrent.toMap()));
     }
 
@@ -219,9 +219,9 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
             };
         }
 
-        @Override @NotNull
+        @Override
         @SuppressWarnings("unchecked")
-        public Object[] toArray() {
+        public @NotNull Object @NotNull [] toArray() {
             Object[] a = this.ref.toArray();
 
             for (int i = 0; i < a.length; i++)
@@ -230,9 +230,9 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
             return a;
         }
 
-        @Override @NotNull
+        @Override
         @SuppressWarnings("all")
-        public <T> T[] toArray(T[] array) {
+        public <T> @NotNull T[] toArray(T[] array) {
             // We don't pass a to ref.toArray, to avoid window of
             // vulnerability wherein an unscrupulous multithreaded client
             // could get his hands on raw (unwrapped) Entries from ref.

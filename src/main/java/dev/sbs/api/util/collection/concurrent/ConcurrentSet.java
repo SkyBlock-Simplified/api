@@ -31,14 +31,14 @@ public class ConcurrentSet<E> extends AtomicSet<E, HashSet<E>> {
 	 * Create a new concurrent set and fill it with the given array.
 	 */
 	@SafeVarargs
-	public ConcurrentSet(E... array) {
+	public ConcurrentSet(@NotNull E... array) {
 		this(Arrays.asList(array));
 	}
 
 	/**
 	 * Create a new concurrent set and fill it with the given collection.
 	 */
-	public ConcurrentSet(Collection<? extends E> collection) {
+	public ConcurrentSet(@NotNull Collection<? extends E> collection) {
 		super(new HashSet<>(collection));
 	}
 

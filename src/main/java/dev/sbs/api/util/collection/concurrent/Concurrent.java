@@ -4,6 +4,7 @@ import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedSet;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableCollection;
+import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableLinkedList;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableList;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableSet;
@@ -27,11 +28,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentCollection<E> newCollection(E... array) {
+	public static <E> @NotNull ConcurrentCollection<E> newCollection(@NotNull E... array) {
 		return new ConcurrentCollection<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentCollection<E> newCollection(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentCollection<E> newCollection(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentCollection<>(collection);
 	}
 
@@ -40,11 +41,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentDeque<E> newDeque(E... array) {
+	public static <E> @NotNull ConcurrentDeque<E> newDeque(@NotNull E... array) {
 		return new ConcurrentDeque<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentDeque<E> newDeque(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentDeque<E> newDeque(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentDeque<>(collection);
 	}
 
@@ -53,20 +54,20 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentList<E> newList(E... array) {
+	public static <E> @NotNull ConcurrentList<E> newList(@NotNull E... array) {
 		return new ConcurrentList<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentList<E> newList(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentList<E> newList(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentList<>(collection);
 	}
 
 	@SafeVarargs
-	public static <K, V> @NotNull ConcurrentMap<K, V> newMap(Map.Entry<K, V>... entries) {
+	public static <K, V> @NotNull ConcurrentMap<K, V> newMap(@NotNull Map.Entry<K, V>... entries) {
 		return new ConcurrentMap<>(entries);
 	}
 
-	public static <K, V> @NotNull ConcurrentMap<K, V> newMap(Map<? extends K, ? extends V> map) {
+	public static <K, V> @NotNull ConcurrentMap<K, V> newMap(@NotNull Map<? extends K, ? extends V> map) {
 		return new ConcurrentMap<>(map);
 	}
 
@@ -75,11 +76,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentQueue<E> newQueue(E... array) {
+	public static <E> @NotNull ConcurrentQueue<E> newQueue(@NotNull E... array) {
 		return new ConcurrentQueue<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentQueue<E> newQueue(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentQueue<E> newQueue(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentQueue<>(collection);
 	}
 
@@ -88,11 +89,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentSet<E> newSet(E... array) {
+	public static <E> @NotNull ConcurrentSet<E> newSet(@NotNull E... array) {
 		return new ConcurrentSet<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentSet<E> newSet(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentSet<E> newSet(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentSet<>(collection);
 	}
 
@@ -101,11 +102,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentLinkedList<E> newLinkedList(E... array) {
+	public static <E> @NotNull ConcurrentLinkedList<E> newLinkedList(@NotNull E... array) {
 		return new ConcurrentLinkedList<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentLinkedList<E> newLinkedList(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentLinkedList<E> newLinkedList(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentLinkedList<>(collection);
 	}
 
@@ -117,11 +118,11 @@ public final class Concurrent {
 		return new ConcurrentLinkedMap<>(maxSize);
 	}
 
-	public static <K, V> @NotNull ConcurrentLinkedMap<K, V> newLinkedMap(Map<? extends K, ? extends V> map) {
+	public static <K, V> @NotNull ConcurrentLinkedMap<K, V> newLinkedMap(@NotNull Map<? extends K, ? extends V> map) {
 		return new ConcurrentLinkedMap<>(map);
 	}
 
-	public static <K, V> @NotNull ConcurrentLinkedMap<K, V> newLinkedMap(Map<? extends K, ? extends V> map, int maxSize) {
+	public static <K, V> @NotNull ConcurrentLinkedMap<K, V> newLinkedMap(@NotNull Map<? extends K, ? extends V> map, int maxSize) {
 		return new ConcurrentLinkedMap<>(map, maxSize);
 	}
 
@@ -130,11 +131,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentLinkedSet<E> newLinkedSet(E... array) {
+	public static <E> @NotNull ConcurrentLinkedSet<E> newLinkedSet(@NotNull E... array) {
 		return new ConcurrentLinkedSet<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentLinkedSet<E> newLinkedSet(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentLinkedSet<E> newLinkedSet(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentLinkedSet<>(collection);
 	}
 
@@ -143,12 +144,25 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection(E... array) {
+	public static <E> @NotNull ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection(@NotNull E... array) {
 		return new ConcurrentUnmodifiableCollection<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentUnmodifiableCollection<E> newUnmodifiableCollection(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentUnmodifiableCollection<>(collection);
+	}
+
+	public static <E> @NotNull ConcurrentUnmodifiableLinkedList<E> newUnmodifiableLinkedList() {
+		return new ConcurrentUnmodifiableLinkedList<>();
+	}
+
+	@SafeVarargs
+	public static <E> @NotNull ConcurrentUnmodifiableLinkedList<E> newUnmodifiableLinkedList(@NotNull E... array) {
+		return new ConcurrentUnmodifiableLinkedList<>(array);
+	}
+
+	public static <E> @NotNull ConcurrentUnmodifiableLinkedList<E> newUnmodifiableLinkedList(@NotNull Collection<? extends E> collection) {
+		return new ConcurrentUnmodifiableLinkedList<>(collection);
 	}
 
 	public static <E> @NotNull ConcurrentUnmodifiableList<E> newUnmodifiableList() {
@@ -156,20 +170,20 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentUnmodifiableList<E> newUnmodifiableList(E... array) {
+	public static <E> @NotNull ConcurrentUnmodifiableList<E> newUnmodifiableList(@NotNull E... array) {
 		return new ConcurrentUnmodifiableList<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentUnmodifiableList<E> newUnmodifiableList(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentUnmodifiableList<E> newUnmodifiableList(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentUnmodifiableList<>(collection);
 	}
 
 	@SafeVarargs
-	public static <K, V> @NotNull ConcurrentUnmodifiableMap<K, V> newUnmodifiableMap(Map.Entry<K, V>... entries) {
+	public static <K, V> @NotNull ConcurrentUnmodifiableMap<K, V> newUnmodifiableMap(@NotNull Map.Entry<K, V>... entries) {
 		return new ConcurrentUnmodifiableMap<>(entries);
 	}
 
-	public static <K, V> @NotNull ConcurrentUnmodifiableMap<K, V> newUnmodifiableMap(Map<? extends K, ? extends V> map) {
+	public static <K, V> @NotNull ConcurrentUnmodifiableMap<K, V> newUnmodifiableMap(@NotNull Map<? extends K, ? extends V> map) {
 		return new ConcurrentUnmodifiableMap<>(map);
 	}
 
@@ -178,11 +192,11 @@ public final class Concurrent {
 	}
 
 	@SafeVarargs
-	public static <E> @NotNull ConcurrentUnmodifiableSet<E> newUnmodifiableSet(E... array) {
+	public static <E> @NotNull ConcurrentUnmodifiableSet<E> newUnmodifiableSet(@NotNull E... array) {
 		return new ConcurrentUnmodifiableSet<>(array);
 	}
 
-	public static <E> @NotNull ConcurrentUnmodifiableSet<E> newUnmodifiableSet(Collection<? extends E> collection) {
+	public static <E> @NotNull ConcurrentUnmodifiableSet<E> newUnmodifiableSet(@NotNull Collection<? extends E> collection) {
 		return new ConcurrentUnmodifiableSet<>(collection);
 	}
 
