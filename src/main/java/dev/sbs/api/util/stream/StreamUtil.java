@@ -365,6 +365,15 @@ public class StreamUtil {
         );
     }
 
+    public static <E> @NotNull Collector<E, ?, StringBuilder> toStringBuilder(@NotNull String separator) {
+        return new StreamCollector<>(
+            StringBuilder::new,
+            (builder, element) -> builder.append(element).appendSeparator(separator),
+            (left, right) -> left.append(right).appendSeparator(separator),
+            CHARACTERISTICS
+        );
+    }
+
     @AllArgsConstructor(access = AccessLevel.PACKAGE)
     private static abstract class MapWithIndexSpliterator<F extends Spliterator<?>, R, S extends MapWithIndexSpliterator<F, R, S>> implements Spliterator<R> {
 
