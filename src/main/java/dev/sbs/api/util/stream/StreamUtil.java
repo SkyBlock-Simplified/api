@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +47,15 @@ public class StreamUtil {
     public static <T> @NotNull Predicate<T> distinctByKey(@NotNull Function<? super T, ?> keyExtractor) {
         ConcurrentSet<Object> seen = Concurrent.newSet();
         return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    public static <T> @NotNull Stream<T> ofArrays(@Nullable T[]... arrays) {
+        Stream<T> stream = Stream.empty();
+
+        for (T[] array : arrays)
+            stream = Stream.concat(stream, (array == null ? Stream.empty() : Arrays.stream(array)));
+
+        return stream;
     }
 
     public static <T> @NotNull Stream<T> flattenOptional(@NotNull Optional<T> optional) {
