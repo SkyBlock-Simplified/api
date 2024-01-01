@@ -29,7 +29,7 @@ public @interface BuildFlag {
     /**
      * Should field be empty checked.
      * <br><br>
-     * Checks null, {@link ArrayUtil#isEmpty}, {@link StringUtil#isEmpty}, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
+     * Checks {@link ArrayUtil#isEmpty}, {@link StringUtil#isEmpty}, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
      */
     boolean notEmpty() default false;
 
