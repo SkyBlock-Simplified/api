@@ -119,6 +119,23 @@ public interface NbtWriter {
     }
 
     /**
+     * Serializes the given root {@link CompoundTag} to a JSON {@link String}.
+     *
+     * @param compound the NBT structure to serialize to JSON, contained within a {@link CompoundTag}.
+     * @throws NbtException if any I/O error occurs.
+     */
+    default @NotNull String toJson(@NotNull CompoundTag compound) throws NbtException {
+        try {
+            return SimplifiedApi.getGson().toJson(compound.toJson());
+        } catch (IOException ioException) {
+            throw SimplifiedException.of(NbtException.class)
+                .withCause(ioException)
+                .withMessage(ioException.getMessage())
+                .build();
+        }
+    }
+
+    /**
      * Serializes the given root {@link CompoundTag} to a SNBT (Stringified NBT).
      *
      * @param compound the NBT structure to serialize to SNBT, contained within a {@link CompoundTag}.
