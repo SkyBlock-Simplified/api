@@ -13,30 +13,23 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.ResultSet;
 import java.util.stream.Stream;
 
+@Getter
 @RequiredArgsConstructor
 public abstract class Repository<T extends Model> implements Sortable<T> {
 
-    @Getter protected final @NotNull Class<T> type;
-    protected @NotNull ConcurrentList<T> cache = Concurrent.newList();
+    protected final @NotNull Class<T> type;
 
     /**
-     * Returns an updated {@link ResultSet} from {@link Hibernate} collected in {@link Stream<T>}.
+     * Returns the cached {@link ResultSet} from {@link Hibernate} collected in {@link Stream<T>}.
      */
     @Override
-    public final @NotNull Stream<T> stream() throws DataException {
-        return this.findAll().stream();
-    }
+    public abstract @NotNull Stream<T> stream() throws DataException;
 
     /**
      * Returns an updated {@link ResultSet} from {@link Hibernate} collected in {@link ConcurrentList}.
      */
-    public abstract @NotNull ConcurrentList<T> findAll();
-
-    /**
-     * Returns the cached {@link ResultSet} from {@link Hibernate} collected in {@link ConcurrentList<T>}.
-     */
-    public final @NotNull ConcurrentList<T> findCached() {
-        return this.cache;
+    public final @NotNull ConcurrentList<T> findAll() throws DataException {
+        return this.stream().collect(Concurrent.toUnmodifiableList());
     }
 
 }

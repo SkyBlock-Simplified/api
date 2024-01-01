@@ -4,8 +4,6 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.Getter;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
@@ -16,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class SqlRepository<T extends SqlModel> extends Repository<T> {
 
@@ -36,23 +35,22 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
     }
 
     @Override
-    public @NotNull ConcurrentList<T> findAll() {
-        return this.sqlSession.with((Function<Session, ? extends ConcurrentList<T>>) this::findAll);
+    public @NotNull Stream<T> stream() throws SqlException {
+        return this.sqlSession.with((Function<Session, ? extends Stream<T>>) this::stream);
     }
 
-    public @NotNull ConcurrentList<T> findAll(@NotNull Session session) {
+    public @NotNull Stream<T> stream(@NotNull Session session) throws SqlException {
         try {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getType());
             Root<T> rootEntry = criteriaQuery.from(this.getType());
             criteriaQuery = criteriaQuery.select(rootEntry);
 
-            return this.cache = Concurrent.newUnmodifiableList(
-                session.createQuery(criteriaQuery)
-                    .setCacheRegion(this.getType().getName())
-                    .setCacheable(true)
-                    .getResultList() // Fastest
-            );
+            return session.createQuery(criteriaQuery)
+                .setCacheRegion(this.getType().getName())
+                .setCacheable(true)
+                .getResultList() // Fastest
+                .stream();
         } catch (Exception exception) {
             throw SimplifiedException.of(SqlException.class)
                 .withCause(exception)
