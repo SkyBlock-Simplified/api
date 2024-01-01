@@ -38,9 +38,6 @@ import java.util.UUID;
             columnList = "emoji_key"
         ),
         @Index(
-            columnList = "category_key"
-        ),
-        @Index(
             columnList = "group_key"
         ),
         @Index(
