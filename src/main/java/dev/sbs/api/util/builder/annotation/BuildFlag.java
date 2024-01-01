@@ -1,5 +1,7 @@
 package dev.sbs.api.util.builder.annotation;
 
+import dev.sbs.api.util.helper.ArrayUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,18 +20,23 @@ import java.util.Set;
 public @interface BuildFlag {
 
     /**
-     * Should field be null/empty checked.
+     * Should field be null checked.
      * <br><br>
-     * Checks null, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
+     * Checks null, {@link StringUtil#isEmpty}.
      */
-    boolean required() default false;
+    boolean nonNull() default false;
 
     /**
-     * Match only one required field in the same group.
+     * Should field be empty checked.
      * <br><br>
-     * Checks null, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
+     * Checks null, {@link ArrayUtil#isEmpty}, {@link StringUtil#isEmpty}, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
      */
-    @NotNull String requireGroup() default "";
+    boolean notEmpty() default false;
+
+    /**
+     * Match only one {@link #nonNull()} or {@link #notEmpty()} field in the same group.
+     */
+    @NotNull String[] group() default "";
 
     /**
      * Should field match a specific RegExp pattern.
