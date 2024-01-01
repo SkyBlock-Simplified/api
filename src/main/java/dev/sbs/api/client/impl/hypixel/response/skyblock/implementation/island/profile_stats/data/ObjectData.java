@@ -79,7 +79,8 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
 
         // Load Bonus Item Stat Model
         this.bonusItemStatModels = SimplifiedApi.getRepositoryOf(BonusItemStatModel.class)
-            .findAll(BonusItemStatModel::getItem, itemModel);
+            .findAll(BonusItemStatModel::getItem, itemModel)
+            .collect(Concurrent.toUnmodifiableList());
 
         // Load Reforge Model
         this.reforge = SimplifiedApi.getRepositoryOf(ReforgeModel.class)

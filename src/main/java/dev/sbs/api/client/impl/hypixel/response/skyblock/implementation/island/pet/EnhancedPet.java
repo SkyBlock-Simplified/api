@@ -36,7 +36,6 @@ public class EnhancedPet extends Pet implements Experience {
         this.typeModel = SimplifiedApi.getRepositoryOf(PetModel.class).findFirst(PetModel::getKey, this.getType());
         this.experienceTiers = SimplifiedApi.getRepositoryOf(PetLevelModel.class)
             .findAll(PetLevelModel::getRarityOrdinal, Math.min(this.getRarity().ordinal(), 4))
-            .stream()
             .map(PetLevelModel::getValue)
             .collect(Concurrent.toList());
     }

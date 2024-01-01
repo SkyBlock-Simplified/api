@@ -155,7 +155,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                 if (skillLevel > 0) {
                     return SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
                         .findAll(SkillLevelModel::getSkill, skillModel)
-                        .stream()
                         .filter(skillLevelModel -> skillLevelModel.getLevel() <= skillLevel)
                         .map(SkillLevelModel::getBuffEffects)
                         .flatMap(map -> map.entrySet().stream())
@@ -348,7 +347,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         // Load Rarity Filtered Pet Stats
         SimplifiedApi.getRepositoryOf(PetStatModel.class)
             .findAll(PetStatModel::getPet, petModel)
-            .stream()
             .filter(petStatModel -> petStatModel.getRarities().contains(activePet.getRarityOrdinal()))
             .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * enhancedActivePet.getLevel())));
 
@@ -358,10 +356,8 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         // Load Rarity Filtered Ability Stats
         SimplifiedApi.getRepositoryOf(PetAbilityModel.class)
             .findAll(PetAbilityModel::getPet, petModel)
-            .stream()
             .map(petAbilityModel -> Pair.of(petAbilityModel, SimplifiedApi.getRepositoryOf(PetAbilityStatModel.class)
                 .findAll(PetAbilityStatModel::getAbility, petAbilityModel)
-                .stream()
                 .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(activePet.getRarityOrdinal()))
                 .collect(Concurrent.toList())
             ))
@@ -443,7 +439,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                     .ifPresent(potionModel -> {
                         ConcurrentList<PotionTierModel> potionTierModels = SimplifiedApi.getRepositoryOf(PotionTierModel.class)
                             .findAll(PotionTierModel::getPotion, potionModel)
-                            .stream()
                             .filter(potionTierModel -> potionTierModel.getTier() == potion.getLevel())
                             .collect(Concurrent.toList());
 
@@ -637,7 +632,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                 if (skillLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SkillLevelModel.class)
                         .findAll(SkillLevelModel::getSkill, skillModel)
-                        .stream()
                         .filter(skillLevelModel -> skillLevelModel.getLevel() <= skillLevel)
                         .map(SkillLevelModel::getEffects)
                         .flatMap(map -> map.entrySet().stream())
@@ -661,7 +655,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                 if (slayerLevel > 0) {
                     SimplifiedApi.getRepositoryOf(SlayerLevelModel.class)
                         .findAll(SlayerLevelModel::getSlayer, slayerModel)
-                        .stream()
                         .filter(slayerLevelModel -> slayerLevelModel.getLevel() <= slayerLevel)
                         .map(SlayerLevelModel::getEffects)
                         .flatMap(map -> map.entrySet().stream())

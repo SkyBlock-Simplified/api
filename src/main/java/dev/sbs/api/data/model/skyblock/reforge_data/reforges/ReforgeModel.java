@@ -4,6 +4,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforge_conditions.ReforgeConditionModel;
+import dev.sbs.api.util.collection.concurrent.Concurrent;
 
 import java.util.List;
 
@@ -34,7 +35,9 @@ public interface ReforgeModel extends Model {
     }
 
     default List<ReforgeConditionModel> getConditions() {
-        return SimplifiedApi.getRepositoryOf(ReforgeConditionModel.class).findAll(ReforgeConditionModel::getReforge, this);
+        return SimplifiedApi.getRepositoryOf(ReforgeConditionModel.class)
+            .findAll(ReforgeConditionModel::getReforge, this)
+            .collect(Concurrent.toUnmodifiableList());
     }
 
 }

@@ -43,7 +43,6 @@ public class EnhancedSkyBlockIsland extends SkyBlockIsland {
             .collect(Concurrent.toLinkedMap());
         this.profileTypeModel = this.getProfileName()
             .flatMap(profileName -> SimplifiedApi.getRepositoryOf(ProfileModel.class)
-                .findCached()
                 .findFirst(ProfileModel::getKey, profileName)
             );
         this.enhancedCommunityUpgrades = super.getCommunityUpgrades().map(CommunityUpgrades::asEnhanced);

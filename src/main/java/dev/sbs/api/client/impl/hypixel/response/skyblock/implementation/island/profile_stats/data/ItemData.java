@@ -108,7 +108,6 @@ public class ItemData extends ObjectData<ItemData.Type> {
                     // Handle Enchantment Stat Models
                     SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
                         .findAll(EnchantmentStatModel::getEnchantment, enchantmentData.getLeft())
-                        .stream()
                         .filter(enchantmentStatModel -> enchantmentStatModel.getLevels().stream().anyMatch(level -> enchantmentData.getValue() >= level)) // Contains Level
                         .forEach(enchantmentStatModel -> enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel));
 

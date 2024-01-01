@@ -80,7 +80,6 @@ public class EnhancedBestiary extends Bestiary {
 
             this.tiers = SimplifiedApi.getRepositoryOf(BestiaryBracketModel.class)
                 .findAll(BestiaryBracketModel::getBracket, this.getBracket().getBracket())
-                .stream()
                 .map(BestiaryBracketModel::getTotalKillsRequired)
                 .collect(Concurrent.toUnmodifiableList());
         }
