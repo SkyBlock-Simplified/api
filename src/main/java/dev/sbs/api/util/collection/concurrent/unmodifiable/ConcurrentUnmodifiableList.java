@@ -163,7 +163,7 @@ public class ConcurrentUnmodifiableList<E> extends ConcurrentList<E> {
 
 	@Override
 	public @NotNull ConcurrentList<E> subList(int fromIndex, int toIndex) {
-		return new ConcurrentUnmodifiableList<>(super.subList(fromIndex, toIndex));
+		return Concurrent.newUnmodifiableList(super.subList(fromIndex, toIndex));
 	}
 
 }
