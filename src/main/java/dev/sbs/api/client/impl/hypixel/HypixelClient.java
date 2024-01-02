@@ -4,6 +4,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.impl.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
+import dev.sbs.api.client.response.CFCacheStatus;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.mutable.pair.Pair;
@@ -15,7 +16,7 @@ public final class HypixelClient extends Client<HypixelRequest> {
     public HypixelClient() {
         super("api.hypixel.net");
         super.setCachedResponseHeaders(Concurrent.newUnmodifiableSet(
-            "CF-Cache-Status",
+            CFCacheStatus.HEADER_KEY,
             "RateLimit-Limit",
             "RateLimit-Remaining",
             "RateLimit-Reset"

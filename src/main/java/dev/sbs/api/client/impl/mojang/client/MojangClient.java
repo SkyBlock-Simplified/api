@@ -3,6 +3,7 @@ package dev.sbs.api.client.impl.mojang.client;
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.impl.mojang.exception.MojangApiException;
 import dev.sbs.api.client.impl.mojang.request.IMojangRequest;
+import dev.sbs.api.client.response.CFCacheStatus;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import feign.FeignException;
@@ -26,7 +27,7 @@ public abstract class MojangClient<T extends IMojangRequest> extends Client<T> {
         super(domain.getHost().getHost(), inet6Address);
         this.domain = domain;
         this.request = this.build(Reflection.getSuperClass(this));
-        super.setCachedResponseHeaders(Concurrent.newUnmodifiableSet("CF-Cache-Status"));
+        super.setCachedResponseHeaders(Concurrent.newUnmodifiableSet(CFCacheStatus.HEADER_KEY));
         super.setErrorDecoder((methodKey, response) -> {
             throw new MojangApiException(FeignException.errorStatus(methodKey, response));
         });
