@@ -3,6 +3,7 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
+import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.SimplifiedException;
 import lombok.Cleanup;
 import lombok.Getter;
@@ -23,9 +24,7 @@ import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
 import javax.cache.expiry.ModifiedExpiryPolicy;
-import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -33,25 +32,23 @@ import java.util.function.Function;
 public final class SqlSession extends DataSession<SqlModel> {
 
     private final @NotNull SqlConfig config;
+    private final @NotNull Scheduler scheduler;
     private StandardServiceRegistry serviceRegistry;
     private SessionFactory sessionFactory;
 
     public SqlSession(@NotNull SqlConfig config) {
         super(config.getModels());
         this.config = config;
+        this.scheduler = new Scheduler();
     }
 
     @Override
     protected <U extends SqlModel> void addRepository(@NotNull Class<U> model) {
-        this.serviceManager.addRepository(model, new SqlRepository<>(this, model));
+        this.getServiceManager().addRepository(model, new SqlRepository<>(this, model));
     }
 
     private Class<SqlModel> buildCacheConfiguration(@NotNull Class<SqlModel> type) {
-        Duration duration = Optional.ofNullable(type.getAnnotation(CacheExpiry.class))
-            .map(cacheExpiry -> new Duration(cacheExpiry.length(), cacheExpiry.value()))
-            .orElse(new Duration(TimeUnit.MINUTES, 5));
-
-        this.buildCacheConfiguration(type.getName(), duration);
+        this.buildCacheConfiguration(type.getName(), Duration.ETERNAL);
         return type;
     }
 
@@ -124,12 +121,13 @@ public final class SqlSession extends DataSession<SqlModel> {
             .build();
 
         // Register SqlModel Classes
-        MetadataSources sources = new MetadataSources(this.serviceRegistry);
-        this.models.stream()
+        MetadataSources sources = new MetadataSources(this.getServiceRegistry());
+        this.getModels()
+            .stream()
             .map(this::buildCacheConfiguration) // Build Entity Cache
             .forEach(modelType -> {
                 sources.addAnnotatedClass(modelType);
-                Configurator.setLevel(String.format("%s-%s", Ehcache.class, modelType.getName()), this.config.getLogLevel());
+                Configurator.setLevel(String.format("%s-%s", Ehcache.class, modelType.getName()), this.getConfig().getLogLevel());
             });
 
         // Build Query Caches
@@ -166,6 +164,7 @@ public final class SqlSession extends DataSession<SqlModel> {
     public void shutdown() {
         super.shutdown();
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
+        super.serviceManager.getAll(SqlRepository.class).forEach(sqlRepository -> sqlRepository.getTask().cancel(true));
         super.serviceManager.clear();
 
         if (this.getSessionFactory() != null)
