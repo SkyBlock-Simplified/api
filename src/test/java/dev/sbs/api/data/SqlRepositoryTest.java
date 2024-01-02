@@ -53,7 +53,7 @@ public class SqlRepositoryTest {
             Scheduler scheduler = new Scheduler();
             scheduler.scheduleAsync(() -> {
                 StatSqlModel statSqlModel = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
-                statSqlModel.setName("Magic Find " + repeat.getAndIncrement());
+                statSqlModel.setName("Magic Find");
                 statSqlModel.update();
             }, 0L, 35L, TimeUnit.SECONDS);
 
@@ -62,7 +62,7 @@ public class SqlRepositoryTest {
                 StatSqlModel statSqlModel = statRepository.findFirstOrNull(StatModel::getKey, "MAGIC_FIND");
                 long afterFind = System.currentTimeMillis();
                 long diff = afterFind - beforeFind;
-                System.out.printf("Getting %s:%s (%s) took: %s%n", statSqlModel.getKey(), statSqlModel.getName(), repeat.get(), diff);
+                System.out.printf("Getting %s:%s (%s) took: %s%n", statSqlModel.getKey(), statSqlModel.getName(), repeat.getAndIncrement(), diff);
 
                 Scheduler.sleep(3 * 1000);
             }

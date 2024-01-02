@@ -23,15 +23,18 @@ import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
 import javax.cache.expiry.ModifiedExpiryPolicy;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Getter
 public final class SqlSession extends DataSession<SqlModel> {
 
-    @Getter private final @NotNull SqlConfig config;
+    private final @NotNull SqlConfig config;
     private StandardServiceRegistry serviceRegistry;
-    @Getter private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     public SqlSession(@NotNull SqlConfig config) {
         super(config.getModels());
@@ -43,16 +46,20 @@ public final class SqlSession extends DataSession<SqlModel> {
         this.serviceManager.addRepository(model, new SqlRepository<>(this, model));
     }
 
-    private Class<SqlModel> buildCacheConfiguration(@NotNull Class<SqlModel> tClass) {
-        this.buildCacheConfiguration(tClass.getName(), __ -> Duration.ETERNAL);
-        return tClass;
+    private Class<SqlModel> buildCacheConfiguration(@NotNull Class<SqlModel> type) {
+        Duration duration = Optional.ofNullable(type.getAnnotation(CacheExpiry.class))
+            .map(cacheExpiry -> new Duration(cacheExpiry.length(), cacheExpiry.value()))
+            .orElse(new Duration(TimeUnit.MINUTES, 5));
+
+        this.buildCacheConfiguration(type.getName(), duration);
+        return type;
     }
 
-    private void buildCacheConfiguration(@NotNull String cacheName, @NotNull Function<SqlConfig, Duration> function) {
+    private void buildCacheConfiguration(@NotNull String cacheName, @NotNull Duration duration) {
         // Build Configuration
         MutableConfiguration<Object, Object> cacheConfiguration = new MutableConfiguration<>()
             .setStoreByValue(false) // IdentityCopier = false
-            .setExpiryPolicyFactory(ModifiedExpiryPolicy.factoryOf(function.apply(this.getConfig())));
+            .setExpiryPolicyFactory(ModifiedExpiryPolicy.factoryOf(duration));
 
         // Set Configuration
         CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
@@ -71,25 +78,33 @@ public final class SqlSession extends DataSession<SqlModel> {
             put("hibernate.connection.password", config.getPassword());
             put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
 
-            // Settings
-            put("hibernate.generate_statistics", true);
-            put("hibernate.globally_quoted_identifiers", true);
+            // Log Settings
+            put("hibernate.jdbc.log.warnings", config.isLogLevel(Level.WARN));
             put("hibernate.show_sql", config.isLogLevel(Level.DEBUG));
             put("hibernate.format_sql", config.isLogLevel(Level.TRACE)); // Log Spam
-            put("hibernate.use_sql_comments", true);
+            put("hibernate.highlight_sql", config.isLogLevel(Level.TRACE));
+            put("hibernate.use_sql_comments", config.isLogLevel(Level.DEBUG));
+
+            // Settings
+            put("hibernate.globally_quoted_identifiers", true);
+            put("hibernate.generate_statistics", config.isUsingStatistics());
 
             // Batching
             put("hibernate.jdbc.batch_size", 100);
-            put("hibernate.jdbc.fetch_size", 400);
             put("hibernate.order_inserts", true);
             put("hibernate.order_updates", true);
+
+            // Fetching
+            put("hibernate.jdbc.fetch_size", 400);
+            put("hibernate.jdbc.use_get_generated_keys", true);
 
             // Caching
             put("hibernate.cache.region.factory_class", "jcache");
             put("hibernate.cache.provider_class", "org.ehcache.jsr107.EhcacheCachingProvider");
-            put("hibernate.cache.use_structured_entries", config.isLogLevel(Level.DEBUG));
             put("hibernate.cache.use_reference_entries", true);
-            put("hibernate.cache.use_query_cache", config.isCachingQueries());
+            put("hibernate.cache.use_structured_entries", config.isLogLevel(Level.DEBUG));
+            put("hibernate.cache.use_query_cache", config.isUsingQueryCache());
+            put("hibernate.cache.use_second_level_cache", config.isUsing2ndLevelCache());
             put("hibernate.cache.default_cache_concurrency_strategy", config.getCacheConcurrencyStrategy().toAccessType().getExternalName());
             put("hibernate.javax.cache.missing_cache_strategy", config.getMissingCacheStrategy().getExternalRepresentation());
 
@@ -118,8 +133,8 @@ public final class SqlSession extends DataSession<SqlModel> {
             });
 
         // Build Query Caches
-        this.buildCacheConfiguration("default-update-timestamps-region", sqlConfig -> Duration.ETERNAL);
-        this.buildCacheConfiguration("default-query-results-region", SqlConfig::getQueryResultsTTL);
+        this.buildCacheConfiguration("default-update-timestamps-region", Duration.ETERNAL);
+        this.buildCacheConfiguration("default-query-results-region", this.getConfig().getQueryResultsTTL());
 
         // Build Session Factory
         Metadata metadata = sources.getMetadataBuilder().build();

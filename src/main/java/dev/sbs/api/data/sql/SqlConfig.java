@@ -40,10 +40,12 @@ public final class SqlConfig extends DataConfig<SqlModel> {
     private @NotNull String user;
     @Flag(secure = true)
     private @NotNull String password;
-    private boolean cachingQueries;
-    private CacheConcurrencyStrategy cacheConcurrencyStrategy;
-    private MissingCacheStrategy missingCacheStrategy;
-    private Duration queryResultsTTL;
+    private boolean usingQueryCache;
+    private boolean using2ndLevelCache;
+    private boolean usingStatistics;
+    private @NotNull CacheConcurrencyStrategy cacheConcurrencyStrategy;
+    private @NotNull MissingCacheStrategy missingCacheStrategy;
+    private @NotNull Duration queryResultsTTL;
 
     public static @NotNull Builder builder() {
         return new Builder();
@@ -63,7 +65,8 @@ public final class SqlConfig extends DataConfig<SqlModel> {
             .withUser(ResourceUtil.getEnv("DATABASE_USER"))
             .withPassword(ResourceUtil.getEnv("DATABASE_PASSWORD"))
             .withLogLevel(StandardLevel.WARN)
-            .isCachingQueries()
+            .isUsingQueryCache()
+            .isUsing2ndLevelCache()
             .withCacheConcurrencyStrategy(CacheConcurrencyStrategy.READ_WRITE)
             .withMissingCacheStrategy(MissingCacheStrategy.CREATE_WARN)
             .withQueryResultsTTL(30)
@@ -89,35 +92,55 @@ public final class SqlConfig extends DataConfig<SqlModel> {
     public static class Builder implements dev.sbs.api.util.builder.Builder<SqlConfig> {
 
         // Required Settings
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private SqlDriver driver = SqlDriver.MariaDB;
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private Optional<String> host = Optional.empty();
-        @BuildFlag(required = true, pattern = "[\\d]+")
+        @BuildFlag(nonNull = true, pattern = "[\\d]+")
         private Optional<Integer> port = Optional.empty();
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private Optional<String> schema = Optional.empty();
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private Optional<String> user = Optional.empty();
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private Optional<String> password = Optional.empty();
 
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private StandardLevel logLevel = StandardLevel.WARN;
-        private boolean cachingQueries = false;
-        @BuildFlag(required = true)
+        private boolean usingQueryCache = false;
+        private boolean using2ndLevelCache = false;
+        private boolean usingStatistics = false;
+        @BuildFlag(nonNull = true)
         private CacheConcurrencyStrategy cacheConcurrencyStrategy = CacheConcurrencyStrategy.NONE;
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private MissingCacheStrategy missingCacheStrategy = MissingCacheStrategy.FAIL;
-        @BuildFlag(required = true)
+        @BuildFlag(nonNull = true)
         private Optional<Long> queryResultsTTL = Optional.of(0L);
 
-        public Builder isCachingQueries() {
-            return this.isCachingQueries(true);
+        public Builder isUsing2ndLevelCache() {
+            return this.isUsing2ndLevelCache(true);
         }
 
-        public Builder isCachingQueries(boolean value) {
-            this.cachingQueries = value;
+        public Builder isUsing2ndLevelCache(boolean value) {
+            this.using2ndLevelCache = value;
+            return this;
+        }
+
+        public Builder isUsingQueryCache() {
+            return this.isUsingQueryCache(true);
+        }
+
+        public Builder isUsingQueryCache(boolean value) {
+            this.usingQueryCache = value;
+            return this;
+        }
+
+        public Builder isUsingStatistics() {
+            return this.isUsingStatistics(true);
+        }
+
+        public Builder isUsingStatistics(boolean value) {
+            this.usingStatistics = value;
             return this;
         }
 
@@ -206,7 +229,9 @@ public final class SqlConfig extends DataConfig<SqlModel> {
                 this.schema.orElseThrow(),
                 this.user.orElseThrow(),
                 this.password.orElseThrow(),
-                this.cachingQueries,
+                this.usingQueryCache,
+                this.using2ndLevelCache,
+                this.usingStatistics,
                 this.cacheConcurrencyStrategy,
                 this.missingCacheStrategy,
                 new Duration(TimeUnit.SECONDS, this.queryResultsTTL.orElseThrow())
