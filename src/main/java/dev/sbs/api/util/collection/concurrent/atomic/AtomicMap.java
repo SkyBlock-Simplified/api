@@ -87,6 +87,10 @@ public abstract class AtomicMap<K, V, M extends AbstractMap<K, V>> extends Abstr
 		}
 	}
 
+	public final @NotNull Optional<V> getOptional(Object key) {
+		return Optional.ofNullable(this.get(key));
+	}
+
 	@Override
 	public final V getOrDefault(Object key, V defaultValue) {
 		try {
