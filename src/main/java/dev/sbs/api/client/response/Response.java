@@ -11,13 +11,11 @@ import java.time.Instant;
 public interface Response {
 
     default @NotNull CFCacheStatus getCFCacheStatus() {
-        return this.getHeaders().containsKey(CFCacheStatus.HEADER_KEY) ?
-            this.getHeaders()
-                .get(CFCacheStatus.HEADER_KEY)
-                .getFirst()
-                .map(CFCacheStatus::of)
-                .orElse(CFCacheStatus.UNKNOWN) :
-            CFCacheStatus.UNKNOWN;
+        return this.getHeaders()
+            .getOptional(CFCacheStatus.HEADER_KEY)
+            .flatMap(ConcurrentList::getFirst)
+            .map(CFCacheStatus::of)
+            .orElse(CFCacheStatus.UNKNOWN);
     }
 
     @NotNull ConcurrentMap<String, ConcurrentList<String>> getHeaders();
