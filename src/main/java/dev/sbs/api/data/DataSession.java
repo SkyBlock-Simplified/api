@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class DataSession<T extends Model> {
 
-    @Getter(AccessLevel.NONE)
+    @Getter(AccessLevel.PROTECTED)
     protected final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.ALL);
     protected final @NotNull ConcurrentList<Class<T>> models;
     protected boolean active;
     protected boolean cached = false;
-    protected long initializationTime;
-    protected long startupTime;
+    protected long initialization;
+    protected long startup;
 
     protected abstract <U extends T> void addRepository(@NotNull Class<U> model);
 
@@ -40,7 +40,7 @@ public abstract class DataSession<T extends Model> {
             for (Class<? extends T> model : this.getModels())
                 this.addRepository(model);
 
-            this.startupTime = System.currentTimeMillis() - startTime;
+            this.startup = System.currentTimeMillis() - startTime;
         } else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Session has already cached repositories!")
@@ -69,7 +69,7 @@ public abstract class DataSession<T extends Model> {
             long startTime = System.currentTimeMillis();
             this.build();
             this.active = true;
-            this.initializationTime = System.currentTimeMillis() - startTime;
+            this.initialization = System.currentTimeMillis() - startTime;
         } else
             throw SimplifiedException.of(DataException.class)
                 .withMessage("Session is already initialized!")
