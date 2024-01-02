@@ -4,6 +4,7 @@ import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_bosses.DungeonBossSqlModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_floor_sizes.DungeonFloorSizeSqlModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonSqlModel;
+import dev.sbs.api.data.sql.CacheExpiry;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Entity
@@ -38,6 +40,7 @@ import java.time.Instant;
         )
     }
 )
+@CacheExpiry(length = TimeUnit.HOURS, value = 24)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonFloorSqlModel implements DungeonFloorModel, SqlModel {
 

@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.skyblock.dungeon_data.dungeons;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
+import dev.sbs.api.data.sql.CacheExpiry;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Entity
@@ -27,6 +29,7 @@ import java.time.Instant;
         )
     }
 )
+@CacheExpiry(length = TimeUnit.HOURS, value = 24)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DungeonSqlModel implements DungeonModel, SqlModel {
 

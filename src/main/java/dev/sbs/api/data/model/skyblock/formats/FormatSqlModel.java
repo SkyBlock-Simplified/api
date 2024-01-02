@@ -1,6 +1,7 @@
 package dev.sbs.api.data.model.skyblock.formats;
 
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.sql.CacheExpiry;
 import dev.sbs.api.data.sql.converter.ColorConverter;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
@@ -17,12 +18,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.awt.*;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Entity
 @Table(
     name = "skyblock_formats"
 )
+@CacheExpiry(length = TimeUnit.HOURS, value = 24)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class FormatSqlModel implements FormatModel, SqlModel {
 

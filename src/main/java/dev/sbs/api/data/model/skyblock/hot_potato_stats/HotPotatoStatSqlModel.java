@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.skyblock.hot_potato_stats;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.stats.StatSqlModel;
+import dev.sbs.api.data.sql.CacheExpiry;
 import dev.sbs.api.data.sql.converter.list.StringListConverter;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Entity
@@ -36,6 +38,7 @@ import java.util.List;
         )
     }
 )
+@CacheExpiry(length = TimeUnit.HOURS, value = 24)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HotPotatoStatSqlModel implements HotPotatoStatModel, SqlModel {
 

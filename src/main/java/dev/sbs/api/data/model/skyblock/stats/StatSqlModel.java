@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.skyblock.stats;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.formats.FormatSqlModel;
+import dev.sbs.api.data.sql.CacheExpiry;
 import dev.sbs.api.data.sql.converter.UnicodeConverter;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
@@ -20,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Entity
@@ -31,6 +33,7 @@ import java.time.Instant;
         )
     }
 )
+@CacheExpiry(length = TimeUnit.HOURS, value = 24)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class StatSqlModel implements StatModel, SqlModel {
 

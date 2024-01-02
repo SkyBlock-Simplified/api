@@ -2,6 +2,7 @@ package dev.sbs.api.data.model.skyblock.rarities;
 
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.emojis.EmojiSqlModel;
+import dev.sbs.api.data.sql.CacheExpiry;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Entity
@@ -27,6 +29,7 @@ import java.time.Instant;
         )
     }
 )
+@CacheExpiry(length = TimeUnit.HOURS, value = 24)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RaritySqlModel implements RarityModel, SqlModel {
 
