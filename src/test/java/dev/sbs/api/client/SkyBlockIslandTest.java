@@ -57,8 +57,8 @@ public class SkyBlockIslandTest {
         try {
             System.out.println("Database Starting... ");
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
-            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitialization() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartup() + "ms");
             HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
             String guildName = "SkyBlock Simplified";
 
@@ -128,8 +128,8 @@ public class SkyBlockIslandTest {
         try {
             System.out.println("Database Starting... ");
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
-            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitialization() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartup() + "ms");
             HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
 
             UUID uniqueId = StringUtil.toUUID("f33f51a7-9691-4076-abda-f66e3d047a71"); // CraftedFury
@@ -203,8 +203,8 @@ public class SkyBlockIslandTest {
         try {
             System.out.println("Database Starting... ");
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
-            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitialization() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartup() + "ms");
             HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
             ProfileModel pineappleProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "PINEAPPLE");
             ProfileModel bananaProfile = SimplifiedApi.getRepositoryOf(ProfileModel.class).findFirstOrNull(ProfileModel::getKey, "BANANA");
