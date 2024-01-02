@@ -54,7 +54,6 @@ import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
 import dev.sbs.api.util.mutable.primitive.MutableBoolean;
-import dev.sbs.api.util.stream.StreamUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -198,7 +197,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             // --- Load Armor Multiplier Enchantments ---
             this.getArmor()
                 .stream()
-                .flatMap(StreamUtil::flattenOptional)
+                .flatMap(Optional::stream)
                 .forEach(itemData -> itemData.getEnchantments().forEach((enchantmentModel, value) -> itemData.getEnchantmentStats().get(enchantmentModel)
                     .stream()
                     .filter(EnchantmentStatModel::hasStat)
@@ -233,7 +232,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                     // Handle Armor
                     this.getArmor()
                         .stream()
-                        .flatMap(StreamUtil::flattenOptional)
+                        .flatMap(Optional::stream)
                         .forEach(itemData -> itemData.getStats().forEach((type, statEntries) -> statEntries.forEach((statModel, statData) -> {
                             this.setBase(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBase(), itemData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
                             this.setBonus(statData, PlayerDataHelper.handleBonusEffects(statModel, statData.getBonus(), itemData.getCompoundTag(), petExpressionVariables, bonusPetAbilityStatModel));
@@ -294,7 +293,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         // Collect Armor Data
         this.getArmor()
             .stream()
-            .flatMap(StreamUtil::flattenOptional)
+            .flatMap(Optional::stream)
             .map(StatData::getStats)
             .forEach(statTypeEntries -> statTypeEntries.stream()
                 .filter(entry -> !optimizerConstant || entry.getKey().isOptimizerConstant())

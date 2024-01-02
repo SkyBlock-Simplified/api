@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiConsumer;
@@ -58,29 +57,25 @@ public class StreamUtil {
         return stream;
     }
 
-    public static <T> @NotNull Stream<T> flattenOptional(@NotNull Optional<T> optional) {
-        return Stream.ofNullable(optional.orElse(null));
-    }
-
     /**
      * Zips the specified stream with its indices.
      */
-    public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Stream<T> stream) {
+    public static <T> @NotNull TripleStream<T, Long, Long> zipWithIndex(@NotNull Stream<T> stream) {
         return zipWithIndex(stream.spliterator(), stream.isParallel());
     }
 
     /**
      * Zips the specified spliterator with its indices.
      */
-    public static <T> TripleStream<T, Long, Long> zipWithIndex(@NotNull Spliterator<T> spliterator, boolean parallel) {
+    public static <T> @NotNull TripleStream<T, Long, Long> zipWithIndex(@NotNull Spliterator<T> spliterator, boolean parallel) {
         return TripleStream.of(mapWithIndex(spliterator, parallel, Triple::of));
     }
 
-    public static <T> Stream<Triple<T, Long, Long>> indexedStream(@NotNull Stream<T> stream) {
+    public static <T> @NotNull Stream<Triple<T, Long, Long>> indexedStream(@NotNull Stream<T> stream) {
         return indexedStream(stream.spliterator(), stream.isParallel()).onClose(stream::close);
     }
 
-    public static <T> Stream<Triple<T, Long, Long>> indexedStream(@NotNull Spliterator<T> spliterator, boolean parallel) {
+    public static <T> @NotNull Stream<Triple<T, Long, Long>> indexedStream(@NotNull Spliterator<T> spliterator, boolean parallel) {
         return mapWithIndex(spliterator, parallel, Triple::of);
     }
 

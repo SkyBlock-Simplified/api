@@ -37,7 +37,6 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.search.SearchFunction;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
-import dev.sbs.api.util.stream.StreamUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -86,7 +85,7 @@ public class SkyBlockIslandTest {
                                     .getLevel()
                             ))
                         )
-                        .flatMap(StreamUtil::flattenOptional)
+                        .flatMap(Optional::stream)
                         .sorted(Comparator.comparingInt(Pair::getRight))
                         .collect(Concurrent.toMap());
 
