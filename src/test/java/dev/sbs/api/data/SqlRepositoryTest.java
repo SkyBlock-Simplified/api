@@ -23,8 +23,8 @@ public class SqlRepositoryTest {
         try {
             System.out.println("Database Starting... ");
             SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
-            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
-            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
+            System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitialization() + "ms");
+            System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartup() + "ms");
 
             //System.out.println("QUERYING RARITIES #1");
             // Retrieve object from the database
@@ -77,8 +77,8 @@ public class SqlRepositoryTest {
     public void searchTest_ok() {
         System.out.println("Database Starting... ");
         SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
-        System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitializationTime() + "ms");
-        System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartupTime() + "ms");
+        System.out.println("Database initialized in " + SimplifiedApi.getSessionManager().getSession().getInitialization() + "ms");
+        System.out.println("Database started in " + SimplifiedApi.getSessionManager().getSession().getStartup() + "ms");
 
         runTest(StatModel.class, StatModel::getKey, "MAGIC_FIND");
         runTest(ItemModel.class, ItemModel::getItemId, "WITHER_RELIC");

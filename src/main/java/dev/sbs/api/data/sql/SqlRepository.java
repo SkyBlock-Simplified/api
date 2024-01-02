@@ -3,23 +3,37 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
+import dev.sbs.api.scheduler.ScheduledTask;
 import dev.sbs.api.util.SimplifiedException;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
+import java.time.Duration;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+@Getter
 public class SqlRepository<T extends SqlModel> extends Repository<T> {
 
+    @Getter(AccessLevel.NONE)
     private final @NotNull SqlSession sqlSession;
-    @Getter private final long startupTime;
+    @Getter(AccessLevel.PROTECTED)
+    private final @NotNull ScheduledTask task;
+    private final long startup;
+    private final @NotNull CacheExpiry cacheExpiry;
+    private final @NotNull Duration cacheDuration;
+    private long lastRefresh;
+    private long lastRefreshDuration;
 
     /**
      * Creates a new repository of type {@link T}.
@@ -29,9 +43,17 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
     public SqlRepository(@NotNull SqlSession sqlSession, @NotNull Class<T> type) {
         super(type);
         this.sqlSession = sqlSession;
-        long startTime = System.currentTimeMillis();
-        this.findAll();
-        this.startupTime = System.currentTimeMillis() - startTime;
+        this.cacheExpiry = Optional.ofNullable(type.getAnnotation(CacheExpiry.class)).orElse(CacheExpiry.DEFAULT);
+        this.cacheDuration = Duration.of(cacheExpiry.value(), cacheExpiry.length().toChronoUnit());
+        this.refresh();
+        this.startup = this.lastRefresh;
+
+        this.task = this.sqlSession.getScheduler().scheduleAsync(
+            this::refresh,
+            this.getCacheDuration().toMillis(),
+            this.getCacheDuration().toMillis(),
+            TimeUnit.MILLISECONDS
+        );
     }
 
     @Override
@@ -73,6 +95,23 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
                 .withCause(exception)
                 .build();
         }
+    }
+
+    public boolean isStale() {
+        return System.currentTimeMillis() - this.getLastRefresh() >= this.getCacheDuration().toMillis();
+    }
+
+    public void refresh() throws SqlException {
+        long refresh = System.currentTimeMillis();
+        SessionFactory sessionFactory = this.sqlSession.getSessionFactory();
+
+        // Evict From Cache
+        if (sessionFactory.getCache() != null)
+            sessionFactory.getCache().evict(this.getType());
+
+        this.stream().close();
+        this.lastRefresh = System.currentTimeMillis();
+        this.lastRefreshDuration = this.getLastRefresh() - refresh;
     }
 
     public @NotNull T save(@NotNull T model) throws SqlException {
