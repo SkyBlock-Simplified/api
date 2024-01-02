@@ -2,6 +2,7 @@ package dev.sbs.api.data.sql;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,8 +13,27 @@ import java.util.concurrent.TimeUnit;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CacheExpiry {
 
-    @NotNull TimeUnit length() default TimeUnit.MINUTES;
+    @NotNull CacheExpiry DEFAULT = new CacheExpiry() {
 
-    int value() default 5;
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return CacheExpiry.class;
+        }
+
+        @Override
+        public @NotNull TimeUnit length() {
+            return TimeUnit.SECONDS;
+        }
+
+        @Override
+        public int value() {
+            return 30;
+        }
+
+    };
+
+    @NotNull TimeUnit length();
+
+    int value();
 
 }
