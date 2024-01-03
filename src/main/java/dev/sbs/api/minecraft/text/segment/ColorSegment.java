@@ -27,11 +27,11 @@ public class ColorSegment {
         this.setText(text);
     }
 
-    public static Builder builder() {
+    public static @NotNull Builder builder() {
         return new Builder();
     }
 
-    public static LineSegment fromLegacy(@NotNull String legacyText) {
+    public static @NotNull LineSegment fromLegacy(@NotNull String legacyText) {
         return fromLegacy(legacyText, '&');
     }
 
@@ -48,11 +48,11 @@ public class ColorSegment {
      * @param symbolSubstitute The character substitute
      * @return A TextObject representing the legacy text.
      */
-    public static LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
+    public static @NotNull LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
         return fromLegacyHandler(legacyText, symbolSubstitute, () -> new ColorSegment(""));
     }
 
-    protected static LineSegment fromLegacyHandler(@NotNull String legacyText, char symbolSubstitute, @NotNull Supplier<? extends ColorSegment> segmentSupplier) {
+    protected static @NotNull LineSegment fromLegacyHandler(@NotNull String legacyText, char symbolSubstitute, @NotNull Supplier<? extends ColorSegment> segmentSupplier) {
         LineSegment.Builder builder = LineSegment.builder();
         ColorSegment currentObject = segmentSupplier.get();
         StringBuilder text = new StringBuilder();
@@ -133,10 +133,10 @@ public class ColorSegment {
     public void setText(@NotNull String value) {
         this.text = StringUtil.defaultIfEmpty(value, "")
             .replaceAll("(?<!\\\\)'", "’") // Handle Unescaped Windows Apostrophe
-            .replaceAll("\\\\'", "'"); // Remove Escape Backslash
+            .replaceAll("\\\\'", "'"); // Remove Escaped Backslash
     }
 
-    public JsonObject toJson() {
+    public @NotNull JsonObject toJson() {
         JsonObject object = new JsonObject();
         object.addProperty("text", this.getText());
         this.getColor().ifPresent(color -> object.addProperty("color", color.toJsonString()));
@@ -149,7 +149,7 @@ public class ColorSegment {
         return object;
     }
 
-    public String toLegacy() {
+    public @NotNull String toLegacy() {
         return this.toLegacy(ChatFormat.SECTION_SYMBOL);
     }
 
@@ -159,15 +159,15 @@ public class ColorSegment {
      * @param substitute The substitute character to use if you do not want to use {@link ChatFormat#SECTION_SYMBOL}
      * @return A legacy string representation of a text object
      */
-    public String toLegacy(char substitute) {
+    public @NotNull String toLegacy(char substitute) {
         return this.toLegacyBuilder(substitute).toString();
     }
 
-    protected StringBuilder toLegacyBuilder() {
+    protected @NotNull StringBuilder toLegacyBuilder() {
         return this.toLegacyBuilder(ChatFormat.SECTION_SYMBOL);
     }
 
-    protected StringBuilder toLegacyBuilder(char symbol) {
+    protected @NotNull StringBuilder toLegacyBuilder(char symbol) {
         StringBuilder builder = new StringBuilder();
         this.getColor().ifPresent(color -> builder.append(symbol).append(color.getCode()));
         if (this.isObfuscated()) builder.append(symbol).append(ChatFormat.OBFUSCATED.getCode());
@@ -187,7 +187,7 @@ public class ColorSegment {
         return builder;
     }
 
-    public TextSegment toTextObject() {
+    public @Nullable TextSegment toTextObject() {
         return TextSegment.fromJson(this.toJson());
     }
 

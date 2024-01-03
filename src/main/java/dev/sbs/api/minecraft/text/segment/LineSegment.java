@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LineSegment {
 
-    @Getter private final @NotNull ConcurrentList<ColorSegment> segments;
+    private final @NotNull ConcurrentList<ColorSegment> segments;
 
-    public static Builder builder() {
+    public static @NotNull Builder builder() {
         return new Builder();
     }
 
@@ -28,7 +29,7 @@ public final class LineSegment {
             .sum();
     }
 
-    public JsonElement toJson() {
+    public @NotNull JsonElement toJson() {
         JsonArray rootArray = new JsonArray();
         rootArray.add("");
         this.getSegments().forEach(segment -> rootArray.add(segment.toJson()));

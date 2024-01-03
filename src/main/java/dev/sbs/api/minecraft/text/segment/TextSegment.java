@@ -19,26 +19,26 @@ import java.util.Optional;
 @ToString
 public final class TextSegment extends ColorSegment {
 
-    private Optional<ClickEvent> clickEvent = Optional.empty();
-    private Optional<HoverEvent> hoverEvent = Optional.empty();
+    private @NotNull Optional<ClickEvent> clickEvent = Optional.empty();
+    private @NotNull Optional<HoverEvent> hoverEvent = Optional.empty();
 
     public TextSegment(@NotNull String text) {
         super(text);
     }
 
     @Override
-    public JsonObject toJson() {
+    public @NotNull JsonObject toJson() {
         JsonObject object = super.toJson(); // ColorSegment#toJson
         this.getClickEvent().ifPresent(clickEvent -> object.add("clickEvent", clickEvent.toJson()));
         this.getHoverEvent().ifPresent(hoverEvent -> object.add("hoverEvent", hoverEvent.toJson()));
         return object;
     }
 
-    public static TextSegment fromJson(@NotNull String jsonString) {
+    public static @Nullable TextSegment fromJson(@NotNull String jsonString) {
         return fromJson(JsonParser.parseString(jsonString).getAsJsonObject());
     }
 
-    public static TextSegment fromJson(@NotNull JsonObject jsonObject) {
+    public static @Nullable TextSegment fromJson(@NotNull JsonObject jsonObject) {
         if (jsonObject.has("text")) {
             TextSegment textSegment = new TextSegment(jsonObject.get("text").getAsString());
             if (jsonObject.has("clickEvent")) textSegment.setClickEvent(Optional.of(ClickEvent.fromJson(jsonObject.get("clickEvent").getAsJsonObject())));
@@ -70,7 +70,7 @@ public final class TextSegment extends ColorSegment {
      * @param symbolSubstitute The character substitute
      * @return A TextObject representing the legacy text.
      */
-    public static LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
+    public static @NotNull LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
         return fromLegacyHandler(legacyText, symbolSubstitute, () -> new TextSegment(""));
     }
 
