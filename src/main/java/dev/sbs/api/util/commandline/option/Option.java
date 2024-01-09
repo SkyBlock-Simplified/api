@@ -43,7 +43,7 @@ public class Option implements Cloneable, Serializable {
      * {@link CommandLine#getOptionValue(String opt)} to check
      * for existence and argument.
      */
-    @Getter @Setter private final String opt;
+    @Getter private final String opt;
 
     /** the long representation of the option */
     @Getter @Setter private String longOpt;
