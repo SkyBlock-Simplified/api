@@ -1,169 +1,57 @@
 plugins {
+    id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0' apply true
     id 'org.flywaydb.flyway' version '8.0.0-beta2'
     id 'maven-publish'
 }
 
-static def loadEnv() {
-    def env = [:]
+project.sourceCompatibility = "17"
+project.targetCompatibility = "17"
 
-    try {
-        def file = new File('.env')
-        def scanner = new Scanner(file)
-        while (scanner.hasNextLine()) {
-            def line = scanner.nextLine()
-            if (line.contains('=')) {
-                def pair = line.split('=')
-                env.put(pair[0], pair.length == 2 ? pair[1] : '')
-            }
-        }
-    } catch (FileNotFoundException ignored) { }
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
-    env.putAll(System.getenv())
-    return env
-}
-
-def env = loadEnv()
-
-shadowJar {
-    def remoteGson = 'com.google.code.gson'
-    def remoteCommon = 'com.google.common'
-    def remoteYaml = 'org.yaml.snakeyaml'
-
-    def localGson = 'dev.sbs.api.util.google.gson'
-    def localCommon = 'dev.sbs.api.util.google.common'
-    def localYaml = 'dev.sbs.api.data.yaml.snake'
-
-    relocate remoteGson, localGson
-    relocate remoteCommon, localCommon
-    relocate remoteYaml, localYaml
-}
-
-/*sourceSets {
-    dev {
-        java {
-            srcDirs = ['src/main/java']
-        }
-        resources {
-            srcDirs = ['src/main/resources']
-        }
+repositories {
+    mavenCentral()
+    maven {
+        name = 'jitpack-repo'
+        url = 'https://jitpack.io'
     }
-    devTest {
-        java {
-            srcDirs = ['src/test/java']
-            compileClasspath += sourceSets.dev.output
-            runtimeClasspath += sourceSets.dev.output
-        }
-        resources {
-            srcDirs = ['src/test/resources']
-        }
-    }
-}*/
-
-configurations {
-    devImplementation.extendsFrom implementation
-    devCompileOnly.extendsFrom compileOnly
-    devAnnotationProcessor.extendsFrom annotationProcessor
-
-    devTestImplementation.extendsFrom implementation
-    devTestCompileOnly.extendsFrom compileOnly
-    devTestAnnotationProcessor.extendsFrom annotationProcessor
-    devTestImplementation.extendsFrom testImplementation
-    devTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
-// Exclude specific packages while they are being refactored
-/*task devJar(type: Jar, group: 'build') {
-    archiveAppendix.value('dev')
-    archiveBaseName.value(artifactIdProp)
-    archiveVersion.value(versionProp)
-
-    from sourceSets.dev.java
-    from sourceSets.dev.output
-}*/
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-/*publishing {
-    repositories {
-        maven {
-            name = 'GitHubPackages'
-            url = uri('https://maven.pkg.github.com/skyblock-simplified/sbs-api')
-            credentials {
-                username = env.get('GITHUB_USER')
-                password = env.get('GITHUB_TOKEN')
-            }
-        }
-    }
-    publications {
-        devPub(MavenPublication) {
-            groupId = groupIdProp
-            artifactId = artifactIdProp + '-dev'
-            version = versionProp
-            artifacts = [devJar]
-            pom.withXml {
-                def dependencies = asNode().appendNode('dependencies')
-                configurations.implementation.allDependencies.each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.group)
-                    dependency.appendNode('artifactId', it.name)
-                    dependency.appendNode('version', it.version)
-                }
-                configurations.compileOnly.allDependencies.each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.group)
-                    dependency.appendNode('artifactId', it.name)
-                    dependency.appendNode('version', it.version)
-                }
-                configurations.annotationProcessor.allDependencies.each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.group)
-                    dependency.appendNode('artifactId', it.name)
-                    dependency.appendNode('version', it.version)
-                }
-            }
-        }
-        releasePub(MavenPublication) {
-            groupId = groupIdProp
-            artifactId = artifactIdProp
-            version = versionProp
-            artifacts = [shadowJar]
-            pom.withXml {
-                def dependencies = asNode().appendNode('dependencies')
-                configurations.implementation.allDependencies.each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.group)
-                    dependency.appendNode('artifactId', it.name)
-                    dependency.appendNode('version', it.version)
-                }
-                configurations.compileOnly.allDependencies.each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.group)
-                    dependency.appendNode('artifactId', it.name)
-                    dependency.appendNode('version', it.version)
-                }
-                configurations.annotationProcessor.allDependencies.each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.group)
-                    dependency.appendNode('artifactId', it.name)
-                    dependency.appendNode('version', it.version)
-                }
-            }
-        }
-    }
-}*/
-
-flyway {
-    url = 'jdbc:mariadb://' + env.get('DATABASE_HOST') + ':' + env.get('DATABASE_PORT') + '/' + env.get('DATABASE_SCHEMA')
-    user = env.get('DATABASE_USER')
-    password = env.get('DATABASE_PASSWORD')
-}
-
-/*tasks.register('devTest', Test) {
+test {
     useJUnitPlatform()
-    group = 'verification'
-    testClassesDirs = sourceSets.devTest.output.classesDirs
-    classpath = sourceSets.devTest.runtimeClasspath
-}*/
+}
+
+dependencies {
+    // Annotations
+    implementation group: 'org.jetbrains', name: 'annotations', version: '24.0.1'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // Tests
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.2'
+
+    // Logging
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.20.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.20.0'
+
+    // Deserialization
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
+
+    // Database
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.1.4'
+    implementation group: 'org.ehcache', name: 'ehcache', version: '3.10.8'
+    implementation group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.6.15.Final'
+    implementation group: 'org.hibernate', name: 'hibernate-jcache', version: '5.6.15.Final'
+
+    // Api Clients
+    implementation group: 'io.github.openfeign', name: 'feign-gson', version: '12.4'
+    implementation group: 'io.github.openfeign', name: 'feign-httpclient', version: '12.4'
+    implementation group: 'redis.clients', name: 'jedis', version: '4.4.3'
+}
