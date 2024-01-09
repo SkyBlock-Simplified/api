@@ -10,7 +10,9 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
 import feign.FeignException;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -26,9 +28,13 @@ public class ApiException extends RuntimeException implements Response {
     private final @NotNull Request request;
     private final @NotNull Optional<String> body;
     private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
+    @Setter(AccessLevel.PROTECTED)
+    protected @NotNull String name = "Api";
+    protected @NotNull ApiErrorResponse response;
 
     public ApiException(@NotNull FeignException exception) {
         super(exception.getMessage(), exception.getCause(), false, true);
+        this.response = exception::getMessage;
         this.timestamp = Instant.now();
         this.status = HttpStatus.of(exception.status());
         this.body = exception.responseBody().map(byteBuffer -> StringUtil.toEncodedString(byteBuffer.array(), StandardCharsets.UTF_8));

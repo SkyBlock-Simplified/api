@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SbsErrorResponse implements ApiErrorResponse {
 
-    protected boolean success;
     protected String error;
     protected String reason;
 
     public static class Unknown extends SbsErrorResponse {
 
         public Unknown() {
-            super.success = false;
             super.error = "UNKNOWN";
             super.reason = "Unknown reason.";
         }

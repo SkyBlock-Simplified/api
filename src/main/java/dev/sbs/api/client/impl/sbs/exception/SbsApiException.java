@@ -9,12 +9,13 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public final class SbsApiException extends ApiException {
 
-    private final @NotNull SbsErrorResponse errorResponse;
+    private final @NotNull SbsErrorResponse response;
 
     public SbsApiException(@NotNull FeignException exception) {
         super(exception);
+        this.setName("Sbs");
 
-        this.errorResponse = this.getBody()
+        this.response = this.getBody()
             .map(json -> SimplifiedApi.getGson().fromJson(json, SbsErrorResponse.class))
             .orElse(new SbsErrorResponse.Unknown());
     }

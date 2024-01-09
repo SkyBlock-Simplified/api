@@ -9,12 +9,13 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public final class MojangApiException extends ApiException {
 
-    private final @NotNull MojangErrorResponse errorResponse;
+    private final @NotNull MojangErrorResponse response;
 
     public MojangApiException(@NotNull FeignException exception) {
         super(exception);
+        this.setName("Mojang");
 
-        this.errorResponse = this.getBody()
+        this.response = this.getBody()
             .map(json -> SimplifiedApi.getGson().fromJson(json, MojangErrorResponse.class))
             .orElse(new MojangErrorResponse.Unknown());
     }
