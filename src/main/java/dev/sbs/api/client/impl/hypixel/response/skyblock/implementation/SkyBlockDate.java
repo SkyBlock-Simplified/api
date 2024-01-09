@@ -1,17 +1,17 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation;
 
-import com.google.common.base.Preconditions;
 import dev.sbs.api.util.SimpleDate;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.mutable.pair.Pair;
+import dev.sbs.api.util.helper.Preconditions;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 
@@ -24,19 +24,19 @@ public class SkyBlockDate extends SimpleDate {
     public static final ConcurrentList<String> ZOO_CYCLE = Concurrent.newUnmodifiableList("ELEPHANT", "GIRAFFE", "BLUE_WHALE", "TIGER", "LION", "MONKEY");
     public static final ConcurrentList<String> SPECIAL_MAYOR_CYCLE = Concurrent.newUnmodifiableList("SCORPIUS", "DERPY", "JERRY");
 
-    public SkyBlockDate(Season season, int day) {
+    public SkyBlockDate(@NotNull Season season, int day) {
         this(season, day, 0);
     }
 
-    public SkyBlockDate(Season season, int day, int hour) {
+    public SkyBlockDate(@NotNull Season season, int day, int hour) {
         this(season, day, hour, 0);
     }
 
-    public SkyBlockDate(Season season, int day, int hour, int minute) {
+    public SkyBlockDate(@NotNull Season season, int day, int hour, int minute) {
         this(getRealTime(season, day, hour, minute), false);
     }
 
-    public SkyBlockDate(int year, Season season, int day) {
+    public SkyBlockDate(int year, @NotNull Season season, int day) {
         this(year, (season.ordinal() + 1), day);
     }
 
@@ -44,11 +44,11 @@ public class SkyBlockDate extends SimpleDate {
         this(year, month, day, 0);
     }
 
-    public SkyBlockDate(int year, Season season, int day, int hour) {
+    public SkyBlockDate(int year, @NotNull Season season, int day, int hour) {
         this(year, season, day, hour, 0);
     }
 
-    public SkyBlockDate(int year, Season season, int day, int hour, int minute) {
+    public SkyBlockDate(int year, @NotNull Season season, int day, int hour, int minute) {
         this(year, (season.ordinal() + 1), day, hour, minute);
     }
 
@@ -68,31 +68,31 @@ public class SkyBlockDate extends SimpleDate {
         super(isRealTime ? milliseconds : milliseconds + Launch.SKYBLOCK);
     }
 
-    public SkyBlockDate append(int year) {
+    public @NotNull SkyBlockDate append(int year) {
         return this.append(year, 0);
     }
 
-    public SkyBlockDate append(int year, Season season) {
+    public @NotNull SkyBlockDate append(int year, @NotNull Season season) {
         return this.append(year, season.ordinal() + 1);
     }
 
-    public SkyBlockDate append(int year, int month) {
+    public @NotNull SkyBlockDate append(int year, int month) {
         return this.append(year, month, 0);
     }
 
-    public SkyBlockDate append(int year, Season season, int day) {
+    public @NotNull SkyBlockDate append(int year, @NotNull Season season, int day) {
         return this.append(year, season.ordinal() + 1, day);
     }
 
-    public SkyBlockDate append(int year, int month, int day) {
+    public @NotNull SkyBlockDate append(int year, int month, int day) {
         return this.append(year, month, day, 0);
     }
 
-    public SkyBlockDate append(int year, Season season, int day, int hour) {
+    public @NotNull SkyBlockDate append(int year, @NotNull Season season, int day, int hour) {
         return this.append(year, season.ordinal() + 1, day, hour);
     }
 
-    public SkyBlockDate append(int year, int month, int day, int hour) {
+    public @NotNull SkyBlockDate append(int year, int month, int day, int hour) {
         return new SkyBlockDate(this.getYear() + year, this.getMonth() + month, this.getDay() + day, this.getHour() + hour);
     }
 
@@ -109,20 +109,19 @@ public class SkyBlockDate extends SimpleDate {
             .build();
     }
 
-    public static long getRealTime(Season season) {
+    public static long getRealTime(@NotNull Season season) {
         return getRealTime(season, 1);
     }
 
-    public static long getRealTime(Season season, int day) {
+    public static long getRealTime(@NotNull Season season, int day) {
         return getRealTime(season, day, 1);
     }
 
-    public static long getRealTime(Season season, int day, int hour) {
+    public static long getRealTime(@NotNull Season season, int day, int hour) {
         return getRealTime(season, day, hour, 0);
     }
 
-    public static long getRealTime(Season season, int day, int hour, int minute) {
-        Preconditions.checkNotNull(season, "Season cannot be NULL.");
+    public static long getRealTime(@NotNull Season season, int day, int hour, int minute) {
         Preconditions.checkArgument(day > 0 && day < 32, "Day must be between 1 and 31 inclusive.");
         Preconditions.checkArgument(hour > 0 && hour < 25, "Hour must be between 1 and 24 inclusive.");
         long month_millis = (season.ordinal() + 1) * Length.MONTH_MS;
@@ -133,26 +132,26 @@ public class SkyBlockDate extends SimpleDate {
         return month_millis + day_millis + hour_millis - minute_millis;
     }
 
-    public static Pair<SkyBlockDate, String> getNextSpecialMayor() {
-        return Pair.from(getSpecialMayors(1).iterator().next());
+    public static @NotNull Mayor getNextSpecialMayor() {
+        return getSpecialMayors(1).findFirstOrNull();
     }
 
-    public static ConcurrentLinkedMap<SkyBlockDate, String> getSpecialMayors(int next) {
+    public static @NotNull ConcurrentList<Mayor> getSpecialMayors(int next) {
         return getSpecialMayors(next, new SkyBlockDate(System.currentTimeMillis()));
     }
 
-    public static ConcurrentLinkedMap<SkyBlockDate, String> getSpecialMayors(int next, SkyBlockDate fromDate) {
+    public static @NotNull ConcurrentList<Mayor> getSpecialMayors(int next, @NotNull SkyBlockDate fromDate) {
         next = Math.max(next, 1);
         SkyBlockDate specialMayorDate = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS_START);
-        ConcurrentLinkedMap<SkyBlockDate, String> specialMayors = Concurrent.newLinkedMap(next);
+        ConcurrentList<Mayor> specialMayors = Concurrent.newList();
         int iterations = 0;
 
         while (specialMayors.size() < next) {
+            if (specialMayorDate.getYear() >= fromDate.getYear())
+                specialMayors.add(new Mayor(SPECIAL_MAYOR_CYCLE.get(iterations % 3), specialMayorDate.getYear()));
+
             specialMayorDate = specialMayorDate.append(8);
             iterations++;
-
-            if (specialMayorDate.getYear() >= fromDate.getYear())
-                specialMayors.put(specialMayorDate, SPECIAL_MAYOR_CYCLE.get(iterations % 3));
         }
 
         return specialMayors;
@@ -179,9 +178,9 @@ public class SkyBlockDate extends SimpleDate {
      */
     @Override
     public int getDay() {
-        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        remainder -= ((this.getMonth() - 1) * SkyBlockDate.Length.MONTH_MS);
-        return (int) (remainder / SkyBlockDate.Length.DAY_MS) + 1;
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * Length.YEAR_MS);
+        remainder -= ((this.getMonth() - 1) * Length.MONTH_MS);
+        return (int) (remainder / Length.DAY_MS) + 1;
     }
 
     /**
@@ -189,10 +188,10 @@ public class SkyBlockDate extends SimpleDate {
      */
     @Override
     public int getHour() {
-        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        remainder -= ((this.getMonth() - 1) * SkyBlockDate.Length.MONTH_MS);
-        remainder -= ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
-        return (int) (remainder / SkyBlockDate.Length.HOUR_MS);
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * Length.YEAR_MS);
+        remainder -= ((this.getMonth() - 1) * Length.MONTH_MS);
+        remainder -= ((this.getDay() - 1) * Length.DAY_MS);
+        return (int) (remainder / Length.HOUR_MS);
     }
 
     /**
@@ -200,9 +199,9 @@ public class SkyBlockDate extends SimpleDate {
      */
     @Override
     public int getMinute() {
-        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        remainder -= ((this.getMonth() - 1) * SkyBlockDate.Length.MONTH_MS);
-        remainder -= ((this.getDay() - 1) * SkyBlockDate.Length.DAY_MS);
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * Length.YEAR_MS);
+        remainder -= ((this.getMonth() - 1) * Length.MONTH_MS);
+        remainder -= ((this.getDay() - 1) * Length.DAY_MS);
         remainder -= (this.getHour() * Length.HOUR_MS);
         return (int) (remainder / Length.MINUTE_MS);
     }
@@ -212,8 +211,8 @@ public class SkyBlockDate extends SimpleDate {
      */
     @Override
     public int getMonth() {
-        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * SkyBlockDate.Length.YEAR_MS);
-        return (int) (remainder / SkyBlockDate.Length.MONTH_MS) + 1;
+        long remainder = this.getSkyBlockTime() - ((this.getYear() - 1) * Length.YEAR_MS);
+        return (int) (remainder / Length.MONTH_MS) + 1;
     }
 
     /**
@@ -279,7 +278,7 @@ public class SkyBlockDate extends SimpleDate {
         WINTER("Winter"),
         LATE_WINTER("Late Winter");
 
-        private final String name;
+        private final @NotNull String name;
 
     }
 
@@ -320,6 +319,59 @@ public class SkyBlockDate extends SimpleDate {
          * The time Special Mayors end in RealTime.
          */
         public static final long SPECIAL_ELECTIONS_END = new SkyBlockDate(96, Season.LATE_SPRING, 27, 0).getRealTime();
+
+    }
+
+    @Getter
+    public static class Mayor {
+
+        private final @NotNull String name;
+        private final @NotNull Cycle election;
+        private final @NotNull Cycle term;
+
+        private Mayor(@NotNull String name, int year) {
+            this.name = name;
+            this.election = new Cycle(
+                new SkyBlockDate(year, Season.LATE_SUMMER, 27, 0),
+                new SkyBlockDate(year, Season.LATE_SPRING, 27, 0)
+            );
+            this.term = new Cycle(
+                new SkyBlockDate(year, Season.LATE_SPRING, 27, 0),
+                new SkyBlockDate(year + 1, Season.LATE_SPRING, 27, 0)
+            );
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Mayor mayor = (Mayor) o;
+
+            return new EqualsBuilder()
+                .append(this.getName(), mayor.getName())
+                .append(this.getElection(), mayor.getElection())
+                .append(this.getTerm(), mayor.getTerm())
+                .build();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                .append(this.getName())
+                .append(this.getElection())
+                .append(this.getTerm())
+                .build();
+        }
+
+    }
+
+    @Getter
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Cycle {
+
+        private final @NotNull SkyBlockDate start;
+        private final @NotNull SkyBlockDate end;
 
     }
 

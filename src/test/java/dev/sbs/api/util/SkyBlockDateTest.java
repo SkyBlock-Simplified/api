@@ -1,8 +1,7 @@
 package dev.sbs.api.util;
 
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.mutable.pair.Pair;
+import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,9 @@ public class SkyBlockDateTest {
         minutes %= 60;
         seconds %= 60;
 
-        Pair<SkyBlockDate, String> nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
-        ConcurrentLinkedMap<SkyBlockDate, String> specialMayors = SkyBlockDate.getSpecialMayors(5, new SkyBlockDate(System.currentTimeMillis()).append(-16));
-        int specialYear = nextSpecialMayor.getLeft().getYear();
+        SkyBlockDate.Mayor nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
+        ConcurrentList<SkyBlockDate.Mayor> specialMayors = SkyBlockDate.getSpecialMayors(5, new SkyBlockDate(System.currentTimeMillis()).append(-16));
+        int specialYear = nextSpecialMayor.getElection().getStart().getYear();
 
         System.out.println("SB Time #1: " + currentDate.getSkyBlockTime());
         System.out.println("Year #1: " + currentDate.getYear());
