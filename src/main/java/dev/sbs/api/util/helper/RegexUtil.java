@@ -3,6 +3,7 @@ package dev.sbs.api.util.helper;
 import dev.sbs.api.util.collection.MaxSizeLinkedMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.intellij.lang.annotations.RegExp;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -361,7 +362,7 @@ public class RegexUtil {
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
      */
-    public static String replaceAll(final String text, final String regex, final String replacement) {
+    public static String replaceAll(final String text, @RegExp final String regex, final String replacement) {
         if (text == null || regex == null || replacement == null)
             return text;
 
@@ -452,7 +453,7 @@ public class RegexUtil {
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
      */
-    public static String replaceFirst(final String text, final String regex, final String replacement) {
+    public static String replaceFirst(final String text, @RegExp final String regex, final String replacement) {
         if (text == null || regex == null || replacement == null) {
             return text;
         }

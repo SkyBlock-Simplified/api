@@ -1,10 +1,10 @@
 package dev.sbs.api.util;
 
-import com.google.common.base.Preconditions;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.helper.ResourceUtil;
 import dev.sbs.api.util.helper.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,8 +21,7 @@ public abstract class CSVStorage {
 	private static final Pattern CSV_SPLIT = Pattern.compile(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 	private final File file;
 
-	public CSVStorage(File folder, String fileName) {
-		Preconditions.checkArgument(StringUtil.isNotEmpty(fileName), "Filename cannot be NULL!");
+	public CSVStorage(@NotNull File folder, @NotNull String fileName) {
 		this.file = new File(folder, fileName + (fileName.endsWith(".csv") ? "" : ".csv"));
 
 		try {

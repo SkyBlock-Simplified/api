@@ -1,7 +1,8 @@
 package dev.sbs.api.util;
 
-import com.google.common.base.Preconditions;
+import dev.sbs.api.util.helper.Preconditions;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -219,9 +220,7 @@ public final class Range<T> implements Serializable {
      * @param element  the element to check for, not null
      * @return -1, 0 or +1 depending on the element's location relative to the range
      */
-    public int elementCompareTo(final T element) {
-        // Comparable API says throw NPE on null
-        Preconditions.checkNotNull(element, "Element is NULL.");
+    public int elementCompareTo(@NotNull final T element) {
         if (isAfter(element)) {
             return -1;
         } else if (isBefore(element)) {

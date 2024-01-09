@@ -1,9 +1,9 @@
 package dev.sbs.api.util.builder.hash;
 
-import com.google.common.base.Preconditions;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.annotation.HashCodeExclude;
 import dev.sbs.api.util.helper.ArrayUtil;
+import dev.sbs.api.util.helper.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;

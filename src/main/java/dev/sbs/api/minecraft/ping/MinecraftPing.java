@@ -1,12 +1,12 @@
 package dev.sbs.api.minecraft.ping;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.util.helper.Preconditions;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 

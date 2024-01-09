@@ -1,15 +1,13 @@
 package dev.sbs.api.util.helper;
 
-import com.google.common.collect.Iterables;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.stream.StreamUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Collector;
@@ -154,22 +152,6 @@ public class ListUtil {
 	 */
 	public static <T> int sizeOf(@NotNull Collection<? extends T> collection) {
 		return collection.size();
-	}
-
-	/**
-	 * Converts the given iterable into an array of the given type.
-	 *
-	 * @param iterable The iterable to convert to array.
-	 * @param type The type of elements the iterable contains.
-	 * @return The converted array of the passed collection.
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] toArray(@NotNull Iterable<? extends T> iterable, @NotNull Class<T> type) {
-		try {
-			return Iterables.toArray(iterable, type);
-		} catch (NullPointerException npe) {
-			return (T[]) Array.newInstance(type, 0);
-		}
 	}
 
 	public static ConcurrentList<String> appendEach(ConcurrentList<String> stringList, String entryValue, String lastEntry) {

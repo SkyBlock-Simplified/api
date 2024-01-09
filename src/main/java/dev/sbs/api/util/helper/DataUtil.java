@@ -1,8 +1,7 @@
 package dev.sbs.api.util.helper;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
+import dev.sbs.api.util.io.ByteArrayDataInput;
+import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -131,27 +130,27 @@ public class DataUtil {
 	}
 
 	public static @NotNull ByteArrayDataInput newDataInput(byte[] data) {
-		return ByteStreams.newDataInput(data);
+		return ByteArrayDataInput.of(data);
 	}
 
-	public static @NotNull ByteArrayDataInput newDataInput(ByteArrayInputStream inputStream) {
-		return ByteStreams.newDataInput(inputStream);
+	public static @NotNull ByteArrayDataInput newDataInput(@NotNull ByteArrayInputStream inputStream) {
+		return ByteArrayDataInput.of(inputStream);
 	}
 
 	public static @NotNull ByteArrayDataInput newDataInput(byte[] data, int start) {
-		return ByteStreams.newDataInput(data, start);
+		return ByteArrayDataInput.of(data, start);
 	}
 
 	public static @NotNull ByteArrayDataOutput newDataOutput() {
-		return ByteStreams.newDataOutput();
+		return ByteArrayDataOutput.of();
 	}
 
 	public static @NotNull ByteArrayDataOutput newDataOutput(ByteArrayOutputStream outputStream) {
-		return ByteStreams.newDataOutput(outputStream);
+		return ByteArrayDataOutput.of(outputStream);
 	}
 
 	public static @NotNull ByteArrayDataOutput newDataOutput(int size) {
-		return ByteStreams.newDataOutput(size);
+		return ByteArrayDataOutput.of(size);
 	}
 
 	@SneakyThrows
@@ -210,7 +209,7 @@ public class DataUtil {
 	 * @param data to convert
 	 * @return converted objects in byte array
 	 */
-	public static byte[] toByteArray(Object... data) {
+	public static byte[] toByteArray(@NotNull Object... data) {
 		return toByteArray(Arrays.asList(data));
 	}
 
@@ -220,7 +219,7 @@ public class DataUtil {
 	 * @param data to convert
 	 * @return converted objects in byte array
 	 */
-	public static byte[] toByteArray(Collection<?> data) {
+	public static byte[] toByteArray(@NotNull Collection<?> data) {
 		ByteArrayDataOutput output = DataUtil.newDataOutput();
 
 		for (Object obj : data) {

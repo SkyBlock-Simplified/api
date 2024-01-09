@@ -1,6 +1,6 @@
 package dev.sbs.api.minecraft.text;
 
-import com.google.common.base.Preconditions;
+import dev.sbs.api.util.helper.Preconditions;
 import dev.sbs.api.util.helper.RegexUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
