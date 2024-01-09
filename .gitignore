@@ -3,7 +3,10 @@
 *.class
 
 # Log file
+local/
+logs/
 *.log
+*.log.gz
 
 # BlueJ files
 *.ctxt
@@ -113,6 +116,3 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
-
-/.env
-
