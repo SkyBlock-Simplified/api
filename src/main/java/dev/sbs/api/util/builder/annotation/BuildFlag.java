@@ -36,7 +36,7 @@ public @interface BuildFlag {
     /**
      * Match only one {@link #nonNull()} or {@link #notEmpty()} field in the same group.
      */
-    @NotNull String[] group() default "";
+    @NotNull String[] group() default { };
 
     /**
      * Should field match a specific RegExp pattern.
