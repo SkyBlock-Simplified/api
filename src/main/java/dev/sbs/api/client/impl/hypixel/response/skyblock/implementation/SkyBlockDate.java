@@ -132,23 +132,46 @@ public class SkyBlockDate extends SimpleDate {
         return month_millis + day_millis + hour_millis - minute_millis;
     }
 
-    public static @NotNull Mayor getNextSpecialMayor() {
+    public static @NotNull Mayor getNextMayor() {
+        return getMayors(1).findFirstOrNull();
+    }
+
+    public static @NotNull ConcurrentList<Mayor> getMayors(int next) {
+        return getMayors(next, new SkyBlockDate(System.currentTimeMillis()));
+    }
+
+    public static @NotNull ConcurrentList<Mayor> getMayors(int next, @NotNull SkyBlockDate fromDate) {
+        next = Math.max(next, 1);
+        SkyBlockDate specialMayorDate = new SkyBlockDate(Launch.MAYOR_ELECTIONS_START);
+        ConcurrentList<Mayor> mayors = Concurrent.newList();
+
+        while (mayors.size() < next) {
+            if (specialMayorDate.getYear() >= fromDate.getYear())
+                mayors.add(new Mayor(specialMayorDate.getYear()));
+
+            specialMayorDate = specialMayorDate.append(8);
+        }
+
+        return mayors;
+    }
+
+    public static @NotNull SpecialMayor getNextSpecialMayor() {
         return getSpecialMayors(1).findFirstOrNull();
     }
 
-    public static @NotNull ConcurrentList<Mayor> getSpecialMayors(int next) {
+    public static @NotNull ConcurrentList<SpecialMayor> getSpecialMayors(int next) {
         return getSpecialMayors(next, new SkyBlockDate(System.currentTimeMillis()));
     }
 
-    public static @NotNull ConcurrentList<Mayor> getSpecialMayors(int next, @NotNull SkyBlockDate fromDate) {
+    public static @NotNull ConcurrentList<SpecialMayor> getSpecialMayors(int next, @NotNull SkyBlockDate fromDate) {
         next = Math.max(next, 1);
         SkyBlockDate specialMayorDate = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS_START);
-        ConcurrentList<Mayor> specialMayors = Concurrent.newList();
+        ConcurrentList<SpecialMayor> specialMayors = Concurrent.newList();
         int iterations = 0;
 
         while (specialMayors.size() < next) {
             if (specialMayorDate.getYear() >= fromDate.getYear())
-                specialMayors.add(new Mayor(SPECIAL_MAYOR_CYCLE.get(iterations % 3), specialMayorDate.getYear()));
+                specialMayors.add(new SpecialMayor(SPECIAL_MAYOR_CYCLE.get(iterations % 3), specialMayorDate.getYear()));
 
             specialMayorDate = specialMayorDate.append(8);
             iterations++;
@@ -323,14 +346,24 @@ public class SkyBlockDate extends SimpleDate {
     }
 
     @Getter
-    public static class Mayor {
+    public static class SpecialMayor extends Mayor {
 
         private final @NotNull String name;
+
+        private SpecialMayor(@NotNull String name, int year) {
+            super(year);
+            this.name = name;
+        }
+
+    }
+
+    @Getter
+    public static class Mayor {
+
         private final @NotNull Cycle election;
         private final @NotNull Cycle term;
 
-        private Mayor(@NotNull String name, int year) {
-            this.name = name;
+        private Mayor(int year) {
             this.election = new Cycle(
                 new SkyBlockDate(year, Season.LATE_SUMMER, 27, 0),
                 new SkyBlockDate(year, Season.LATE_SPRING, 27, 0)
@@ -349,7 +382,6 @@ public class SkyBlockDate extends SimpleDate {
             Mayor mayor = (Mayor) o;
 
             return new EqualsBuilder()
-                .append(this.getName(), mayor.getName())
                 .append(this.getElection(), mayor.getElection())
                 .append(this.getTerm(), mayor.getTerm())
                 .build();
@@ -358,7 +390,6 @@ public class SkyBlockDate extends SimpleDate {
         @Override
         public int hashCode() {
             return new HashCodeBuilder()
-                .append(this.getName())
                 .append(this.getElection())
                 .append(this.getTerm())
                 .build();

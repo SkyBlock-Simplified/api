@@ -31,8 +31,8 @@ public class SkyBlockDateTest {
         minutes %= 60;
         seconds %= 60;
 
-        SkyBlockDate.Mayor nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
-        ConcurrentList<SkyBlockDate.Mayor> specialMayors = SkyBlockDate.getSpecialMayors(5, new SkyBlockDate(System.currentTimeMillis()).append(-16));
+        SkyBlockDate.SpecialMayor nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
+        ConcurrentList<SkyBlockDate.SpecialMayor> specialMayors = SkyBlockDate.getSpecialMayors(5, new SkyBlockDate(System.currentTimeMillis()).append(-16));
         int specialYear = nextSpecialMayor.getElection().getStart().getYear();
 
         System.out.println("SB Time #1: " + currentDate.getSkyBlockTime());
