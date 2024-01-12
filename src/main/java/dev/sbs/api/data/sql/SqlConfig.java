@@ -3,6 +3,8 @@ package dev.sbs.api.data.sql;
 import dev.sbs.api.data.DataConfig;
 import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.SqlModel;
+import dev.sbs.api.data.sql.driver.MariaDBDriver;
+import dev.sbs.api.data.sql.driver.SqlDriver;
 import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.builder.annotation.BuildFlag;
@@ -58,7 +60,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
 
     public static @NotNull SqlConfig defaultSql() {
         return builder()
-            .withDriver(SqlDriver.MariaDB)
+            .withDriver(new MariaDBDriver())
             .withHost(ResourceUtil.getEnv("DATABASE_HOST"))
             .withPort(ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt))
             .withSchema(ResourceUtil.getEnv("DATABASE_SCHEMA"))
@@ -81,7 +83,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
         Configurator.setLevel("com.zaxxer.hikari", this.getLogLevel());
         Configurator.setLevel("org.jboss.logging", this.getLogLevel());
         Configurator.setLevel("ch.qos.logback", this.getLogLevel());
-        Configurator.setLevel(this.getDriver().getDriverPackage(), this.getLogLevel());
+        Configurator.setLevel(this.getDriver().getClassPath(), this.getLogLevel());
         Configurator.setLevel(String.format("%s-%s", Ehcache.class, "default-update-timestamps-region"), this.getLogLevel());
         Configurator.setLevel(String.format("%s-%s", Ehcache.class, "default-query-results-region"), this.getLogLevel());
 
@@ -93,7 +95,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
 
         // Required Settings
         @BuildFlag(nonNull = true)
-        private SqlDriver driver = SqlDriver.MariaDB;
+        private SqlDriver driver = new MariaDBDriver();
         @BuildFlag(nonNull = true)
         private Optional<String> host = Optional.empty();
         @BuildFlag(nonNull = true, pattern = "[\\d]+")
