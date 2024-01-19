@@ -149,8 +149,8 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 	}
 
 	@Override
-	public Stream<E> parallelStream() {
-		return this.ref.parallelStream();
+	public final @NotNull Stream<E> parallelStream() {
+		return StreamSupport.stream(this.spliterator(), true);
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public abstract class AtomicCollection<E, T extends Collection<E>> extends Abstr
 	}
 
 	@Override
-	public @NotNull Stream<E> stream() {
+	public final @NotNull Stream<E> stream() {
 		return StreamSupport.stream(this.spliterator(), false);
 	}
 
