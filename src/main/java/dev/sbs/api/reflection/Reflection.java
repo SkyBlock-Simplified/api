@@ -46,12 +46,7 @@ import java.util.stream.Collectors;
 @Getter
 public class Reflection<T> {
 
-    private static final @NotNull Map<String, Map<Class<?>[], ConstructorAccessor>> CONSTRUCTOR_CACHE = new HashMap<>();
-    private static final @NotNull Map<String, Map<Class<?>, Map<Class<?>[], MethodAccessor>>> METHOD_CACHE_CLASS = new HashMap<>();
-    private static final @NotNull Map<String, Map<String, Map<Class<?>[], MethodAccessor>>> METHOD_CACHE_NAME = new HashMap<>();
-    private static final @NotNull Map<String, Map<Class<?>, FieldAccessor>> FIELD_CACHE_CLASS = new HashMap<>();
-    private static final @NotNull Map<String, Map<String, FieldAccessor>> FIELD_CACHE_NAME = new HashMap<>();
-    //private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
+    private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
     private final @NotNull Class<T> type;
 
     /**
@@ -71,12 +66,17 @@ public class Reflection<T> {
      */
     @SuppressWarnings("unchecked")
     private Reflection(@NotNull String classPath) {
-        try {
-            this.type = (Class<T>) Class.forName(classPath);
-        } catch (Exception cnfex) {
-            throw SimplifiedException.of(ReflectionException.class)
-                .withCause(cnfex)
-                .build();
+        if (CLASS_CACHE.containsKey(classPath))
+            this.type = (Class<T>) CLASS_CACHE.get(classPath);
+        else {
+            try {
+                this.type = (Class<T>) Class.forName(classPath);
+                CLASS_CACHE.put(classPath, this.type);
+            } catch (Exception cnfex) {
+                throw SimplifiedException.of(ReflectionException.class)
+                    .withCause(cnfex)
+                    .build();
+            }
         }
     }
 
@@ -111,25 +111,12 @@ public class Reflection<T> {
     public final ConstructorAccessor getConstructor(Class<?>... paramTypes) throws ReflectionException {
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
-        if (CONSTRUCTOR_CACHE.containsKey(this.getName())) {
-            Map<Class<?>[], ConstructorAccessor> constructors = CONSTRUCTOR_CACHE.get(this.getName());
-
-            for (Map.Entry<Class<?>[], ConstructorAccessor> entry : constructors.entrySet()) {
-                if (Arrays.equals(entry.getKey(), types)) {
-                    return entry.getValue();
-                }
-            }
-        } else
-            CONSTRUCTOR_CACHE.put(this.getName(), new HashMap<>());
-
         for (Constructor<?> constructor : this.getType().getDeclaredConstructors()) {
             Class<?>[] constructorTypes = toPrimitiveTypeArray(constructor.getParameterTypes());
 
             if (isEqualsTypeArray(constructorTypes, types)) {
                 constructor.setAccessible(true);
-                ConstructorAccessor constructorAccessor = new ConstructorAccessor(this, constructor);
-                CONSTRUCTOR_CACHE.get(this.getName()).put(types, constructorAccessor);
-                return constructorAccessor;
+                return new ConstructorAccessor(this, constructor);
             }
         }
 
@@ -152,20 +139,10 @@ public class Reflection<T> {
     public final @NotNull FieldAccessor getField(@NotNull Class<?> type) throws ReflectionException {
         Class<?> utype = (type.isPrimitive() ? PrimitiveUtil.wrap(type) : PrimitiveUtil.unwrap(type));
 
-        if (FIELD_CACHE_CLASS.containsKey(this.getName())) {
-            Map<Class<?>, FieldAccessor> fields = FIELD_CACHE_CLASS.get(this.getName());
-
-            if (fields.containsKey(utype))
-                return fields.get(utype);
-        } else
-            FIELD_CACHE_CLASS.put(this.getName(), new HashMap<>());
-
         for (Field field : this.getType().getDeclaredFields()) {
             if (field.getType().equals(type) || type.isAssignableFrom(field.getType()) || field.getType().equals(utype) || utype.isAssignableFrom(field.getType())) {
                 field.setAccessible(true);
-                FieldAccessor fieldAccessor = new FieldAccessor(this, field);
-                FIELD_CACHE_CLASS.get(this.getName()).put(type, fieldAccessor);
-                return fieldAccessor;
+                return new FieldAccessor(this, field);
             }
         }
 
@@ -203,20 +180,10 @@ public class Reflection<T> {
      * @throws ReflectionException When the class or field cannot be located.
      */
     public final @NotNull FieldAccessor getField(@NotNull String name, boolean isCaseSensitive) throws ReflectionException {
-        if (FIELD_CACHE_NAME.containsKey(this.getName())) {
-            Map<String, FieldAccessor> fields = FIELD_CACHE_NAME.get(this.getName());
-
-            if (fields.containsKey(name))
-                return fields.get(name);
-        } else
-            FIELD_CACHE_NAME.put(this.getName(), new HashMap<>());
-
         for (Field field : this.getType().getDeclaredFields()) {
             if (isCaseSensitive ? field.getName().equals(name) : field.getName().equalsIgnoreCase(name)) {
                 field.setAccessible(true);
-                FieldAccessor fieldAccessor = new FieldAccessor(this, field);
-                FIELD_CACHE_NAME.get(this.getName()).put(name, fieldAccessor);
-                return fieldAccessor;
+                return new FieldAccessor(this, field);
             }
         }
 
@@ -239,14 +206,9 @@ public class Reflection<T> {
     public final @NotNull ConcurrentSet<FieldAccessor> getFields() throws ReflectionException {
         ConcurrentSet<FieldAccessor> fieldAccessors = Concurrent.newSet();
 
-        if (!FIELD_CACHE_CLASS.containsKey(this.getName()))
-            FIELD_CACHE_CLASS.put(this.getName(), Concurrent.newMap());
-
         for (Field field : this.getType().getDeclaredFields()) {
             field.setAccessible(true);
-            FieldAccessor fieldAccessor = new FieldAccessor(this, field);
-            FIELD_CACHE_CLASS.get(this.getName()).put(field.getType(), fieldAccessor);
-            fieldAccessors.add(fieldAccessor);
+            fieldAccessors.add(new FieldAccessor(this, field));
         }
 
         if (this.getType().getSuperclass() != null)
@@ -291,33 +253,13 @@ public class Reflection<T> {
         Class<?> utype = (type.isPrimitive() ? PrimitiveUtil.wrap(type) : PrimitiveUtil.unwrap(type));
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
-        if (METHOD_CACHE_CLASS.containsKey(this.getName())) {
-            Map<Class<?>, Map<Class<?>[], MethodAccessor>> methods = METHOD_CACHE_CLASS.get(this.getName());
-
-            if (methods.containsKey(type)) {
-                Map<Class<?>[], MethodAccessor> returnTypeMethods = methods.get(type);
-
-                for (Map.Entry<Class<?>[], MethodAccessor> entry : returnTypeMethods.entrySet()) {
-                    if (Arrays.equals(entry.getKey(), types)) {
-                        return entry.getValue();
-                    }
-                }
-            } else
-                METHOD_CACHE_CLASS.get(this.getName()).put(type, new HashMap<>());
-        } else {
-            METHOD_CACHE_CLASS.put(this.getName(), new HashMap<>());
-            METHOD_CACHE_CLASS.get(this.getName()).put(type, new HashMap<>());
-        }
-
         for (Method method : this.getType().getDeclaredMethods()) {
             Class<?>[] methodTypes = toPrimitiveTypeArray(method.getParameterTypes());
             Class<?> returnType = method.getReturnType();
 
             if ((returnType.equals(type) || type.isAssignableFrom(returnType) || returnType.equals(utype) || utype.isAssignableFrom(returnType)) && isEqualsTypeArray(methodTypes, types)) {
                 method.setAccessible(true);
-                MethodAccessor methodAccessor = new MethodAccessor(this, method);
-                METHOD_CACHE_CLASS.get(this.getName()).get(type).put(types, methodAccessor);
-                return methodAccessor;
+                return new MethodAccessor(this, method);
             }
         }
 
@@ -363,31 +305,12 @@ public class Reflection<T> {
     public final @NotNull MethodAccessor getMethod(@NotNull String name, boolean isCaseSensitive, @Nullable Class<?>... paramTypes) throws ReflectionException {
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
-        if (METHOD_CACHE_NAME.containsKey(this.getName())) {
-            Map<String, Map<Class<?>[], MethodAccessor>> methods = METHOD_CACHE_NAME.get(this.getName());
-
-            if (methods.containsKey(name)) {
-                Map<Class<?>[], MethodAccessor> nameMethods = methods.get(name);
-
-                for (Map.Entry<Class<?>[], MethodAccessor> entry : nameMethods.entrySet()) {
-                    if (Arrays.equals(entry.getKey(), types))
-                        return entry.getValue();
-                }
-            } else
-                METHOD_CACHE_NAME.get(this.getName()).put(name, new HashMap<>());
-        } else {
-            METHOD_CACHE_NAME.put(this.getName(), new HashMap<>());
-            METHOD_CACHE_NAME.get(this.getName()).put(name, new HashMap<>());
-        }
-
         for (Method method : this.getType().getDeclaredMethods()) {
             Class<?>[] methodTypes = toPrimitiveTypeArray(method.getParameterTypes());
 
             if ((isCaseSensitive ? method.getName().equals(name) : method.getName().equalsIgnoreCase(name)) && isEqualsTypeArray(methodTypes, types)) {
                 method.setAccessible(true);
-                MethodAccessor methodAccessor = new MethodAccessor(this, method);
-                METHOD_CACHE_NAME.get(this.getName()).get(name).put(types, methodAccessor);
-                return methodAccessor;
+                return new MethodAccessor(this, method);
             }
         }
 
@@ -787,7 +710,7 @@ public class Reflection<T> {
      * @return Converted class types.
      */
     @SuppressWarnings("all")
-    public static @NotNull Class<?>[] toPrimitiveTypeArray(Class<?>[] types) {
+    public static @NotNull Class<?>[] toPrimitiveTypeArray(@Nullable Class<?> @Nullable [] types) {
         Class<?>[] newTypes = new Class<?>[types != null ? types.length : 0];
 
         for (int i = 0; i < newTypes.length; i++)
@@ -803,7 +726,7 @@ public class Reflection<T> {
      * @return Converted class types.
      */
     @SuppressWarnings("all")
-    public static @NotNull Class<?>[] toPrimitiveTypeArray(Object[] objects) {
+    public static @NotNull Class<?>[] toPrimitiveTypeArray(@Nullable Object @Nullable [] objects) {
         Class<?>[] newTypes = new Class<?>[objects != null ? objects.length : 0];
 
         for (int i = 0; i < newTypes.length; i++)
