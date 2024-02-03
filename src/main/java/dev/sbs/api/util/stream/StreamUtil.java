@@ -1,6 +1,5 @@
 package dev.sbs.api.util.stream;
 
-import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentCollection;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
@@ -9,9 +8,8 @@ import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.util.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
+import dev.sbs.api.util.function.TriFunction;
 import dev.sbs.api.util.mutable.triple.Triple;
-import dev.sbs.api.util.stream.triple.TriFunction;
-import dev.sbs.api.util.stream.triple.TripleStream;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -30,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -258,6 +257,24 @@ public class StreamUtil {
         );
     }
 
+    /**
+     * Collect a stream into a single item, only if there is 1 item expected.
+     *
+     * @return Singleton object from stream.
+     * @throws IllegalStateException If result size is not equal to 1.
+     */
+    public static <T> @NotNull Collector<T, ?, T> toSingleton() {
+        return Collectors.collectingAndThen(
+            toConcurrentList(),
+            list -> {
+                if (list.size() != 1)
+                    throw new IllegalStateException();
+
+                return list.get(0);
+            }
+        );
+    }
+
     @SuppressWarnings("unchecked")
     public static <K, V, T> @NotNull Collector<T, ?, ConcurrentLinkedMap<K, V>> toWeakConcurrentLinkedMap() {
         return toConcurrentLinkedMap(entry -> ((Map.Entry<K, V>) entry).getKey(), entry -> ((Map.Entry<K, V>) entry).getValue(), throwingMerger());
@@ -357,10 +374,10 @@ public class StreamUtil {
     public static <E> @NotNull Collector<E, ?, StringBuilder> toStringBuilder(boolean newLine) {
         return new StreamCollector<E, StringBuilder, StringBuilder>(
             StringBuilder::new,
-            newLine ? StringBuilder::appendln : StringBuilder::append,
+            newLine ? (builder, element) -> builder.append(element).append(System.lineSeparator()) : StringBuilder::append,
             (left, right) -> {
                 if (newLine)
-                    left.appendln(right);
+                    left.append(right).append(System.lineSeparator());
                 else
                     left.append(right);
 
@@ -373,8 +390,8 @@ public class StreamUtil {
     public static <E> @NotNull Collector<E, ?, StringBuilder> toStringBuilder(@NotNull String separator) {
         return new StreamCollector<>(
             StringBuilder::new,
-            (builder, element) -> builder.append(element).appendSeparator(separator),
-            (left, right) -> left.append(right).appendSeparator(separator),
+            (builder, element) -> builder.append(element.toString()).append(separator),
+            (left, right) -> left.append(right.toString()),
             CHARACTERISTICS
         );
     }
