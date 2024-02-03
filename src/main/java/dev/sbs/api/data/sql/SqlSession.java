@@ -69,7 +69,7 @@ public final class SqlSession extends DataSession<SqlModel> {
         Properties properties = new Properties() {{
             // Connection
             put("hibernate.dialect", config.getDriver().getDialectClass());
-            put("hibernate.connection.driver_class", config.getDriver().getDriverClass());
+            put("hibernate.connection.driver_class", config.getDriver().getClassPath());
             put("hibernate.connection.url", config.getDriver().getConnectionUrl(config.getHost(), config.getPort(), config.getSchema()));
             put("hibernate.connection.username", config.getUser());
             put("hibernate.connection.password", config.getPassword());

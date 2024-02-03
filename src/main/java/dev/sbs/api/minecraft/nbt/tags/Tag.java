@@ -1,94 +1,76 @@
 package dev.sbs.api.minecraft.nbt.tags;
 
-import dev.sbs.api.minecraft.nbt.serializable.json.JsonSerializable;
-import dev.sbs.api.minecraft.nbt.serializable.snbt.SnbtSerializable;
-import dev.sbs.api.minecraft.nbt.serializable.tag.TagSerializable;
+import dev.sbs.api.minecraft.nbt.exception.MaxDepthException;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * An abstract NBT tag.
- */
+ * <p>Interface for all NBT tags.</p>
+ *
+ * <p>All serializing and deserializing methods data track the nesting levels to prevent
+ * circular references or malicious data which could, when deserialized, result in thousands
+ * of instances causing a denial of service.</p>
+ *
+ * <p>These methods have a parameter for the maximum nesting depth they are allowed to traverse. A
+ * value of {@code 0} means that only the object itself, but no nested objects may be processed.
+ * If an instance is nested further than allowed, a {@link MaxDepthException} will be thrown.
+ * Providing a negative maximum nesting depth will cause an {@code IllegalArgumentException}
+ * to be thrown.</p>
+ *
+ * <p>Some methods do not provide a parameter to specify the maximum nesting depth, but instead use
+ * {@link #DEFAULT_MAX_DEPTH}, which is also the maximum used by Minecraft.</p>
+ *
+ * @param <T> The type of the contained value.
+ * */
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Tag<T> implements TagSerializable, JsonSerializable, SnbtSerializable {
+@Setter
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class Tag<T> implements Cloneable {
+
+    private @NotNull T value;
+
+    /**
+     * The default maximum depth of the NBT structure.
+     * */
+    public static final int DEFAULT_MAX_DEPTH = 512;
+
+    /**
+     * Creates a clone of this Tag.
+     * */
+    public abstract @NotNull Tag<T> clone();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tag<?> tag = (Tag<?>) o;
+
+        return new EqualsBuilder()
+            .append(this.getValue(), tag.getValue())
+            .build();
+    }
 
     /**
      * Gets the unique ID for this NBT tag type.
      * <br><br>
      * 0 to 12 (inclusive) are reserved.
      */
-    private final byte typeId;
-    /**
-     * Gets the name (key) of this tag.
-     */
-    private @Nullable String name;
-    /**
-     * Gets the value held by this tag.
-     */
-    private @NotNull T value;
-    /**
-     * Gets if the name and value are modifiable.
-     */
-    @Getter(AccessLevel.PROTECTED)
-    private boolean modifiable;
+    public abstract byte getId();
 
     @Override
-    public final boolean equals(@Nullable Object obj) {
-        if (this == obj) return true;
-        if (obj == null || this.getClass() != obj.getClass()) return false;
-        Tag<?> that = (Tag<?>) obj;
-
-        return new EqualsBuilder()
-            .append(this.getTypeId(), that.getTypeId())
-            .append(this.getName(), that.getName())
-            .append(this.getValue(), that.getValue())
-            .append(this.isModifiable(), that.isModifiable())
-            .build();
-    }
-
-    @Override
-    public final int hashCode() {
+    public int hashCode() {
         return new HashCodeBuilder()
-            .append(this.getTypeId())
-            .append(this.getName())
             .append(this.getValue())
             .build();
     }
 
-    protected final void requireModifiable() {
-        if (!this.isModifiable())
-            throw new UnsupportedOperationException("This Tag is not modifiable!");
-    }
-
-    /**
-     * Sets the name (key) of this tag.
-     *
-     * @param name the new name to be set.
-     */
-    public final void setName(@Nullable String name) {
-        this.requireModifiable();
-        this.name = name;
-    }
-
-    /**
-     * Sets the {@link T} value of this byte tag.
-     *
-     * @param value new {@link T} value to be set.
-     */
-    public final void setValue(@NotNull T value) {
-        this.requireModifiable();
-        this.value = value;
-    }
-
     @Override
-    public final @NotNull String toString() {
-        return this.getValue().toString();
-    }
+    public abstract @NotNull String toString();
 
 }

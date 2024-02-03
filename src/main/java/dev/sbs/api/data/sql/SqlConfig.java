@@ -9,7 +9,7 @@ import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.builder.annotation.BuildFlag;
 import dev.sbs.api.util.helper.NumberUtil;
-import dev.sbs.api.util.helper.ResourceUtil;
+import dev.sbs.api.util.helper.SystemUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,11 +61,11 @@ public final class SqlConfig extends DataConfig<SqlModel> {
     public static @NotNull SqlConfig defaultSql() {
         return builder()
             .withDriver(new MariaDBDriver())
-            .withHost(ResourceUtil.getEnv("DATABASE_HOST"))
-            .withPort(ResourceUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt))
-            .withSchema(ResourceUtil.getEnv("DATABASE_SCHEMA"))
-            .withUser(ResourceUtil.getEnv("DATABASE_USER"))
-            .withPassword(ResourceUtil.getEnv("DATABASE_PASSWORD"))
+            .withHost(SystemUtil.getEnv("DATABASE_HOST"))
+            .withPort(SystemUtil.getEnv("DATABASE_PORT").map(NumberUtil::tryParseInt))
+            .withSchema(SystemUtil.getEnv("DATABASE_SCHEMA"))
+            .withUser(SystemUtil.getEnv("DATABASE_USER"))
+            .withPassword(SystemUtil.getEnv("DATABASE_PASSWORD"))
             .withLogLevel(StandardLevel.WARN)
             .isUsingQueryCache()
             .isUsing2ndLevelCache()

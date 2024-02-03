@@ -10,7 +10,6 @@ import dev.sbs.api.data.sql.SqlRepository;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.search.SearchFunction;
-import dev.sbs.api.util.helper.DataUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
 import dev.sbs.api.util.mutable.primitive.MutableInt;
 import org.jetbrains.annotations.NotNull;
@@ -138,7 +137,7 @@ public class SqlRepositoryTest {
                 String tableName = entry.getValue();
                 System.out.println("Saving " + tableName + "...");
 
-                try (FileWriter fileWriter = DataUtil.newFileWriter(dbDir.getAbsolutePath() + "/" + tableName + ".json")) {
+                try (FileWriter fileWriter = new FileWriter(dbDir.getAbsolutePath() + "/" + tableName + ".json")) {
                     fileWriter.write(SimplifiedApi.getGson().toJson(SimplifiedApi.getRepositoryOf(entry.getKey()).findAll()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);

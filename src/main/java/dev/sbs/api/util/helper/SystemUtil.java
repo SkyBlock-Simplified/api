@@ -1,13 +1,27 @@
 package dev.sbs.api.util.helper;
 
+import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import lombok.AccessLevel;
+import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * <p>
@@ -295,6 +309,108 @@ public class SystemUtil {
             System.err.println("Caught a SecurityException reading the system property '" + property
                                    + "'; the SystemUtils property value will default to null.");
             return null;
+        }
+    }
+    public static @NotNull ConcurrentMap<String, String> getEnvironmentVariables() {
+        ConcurrentMap<String, String> env = Concurrent.newMap();
+
+        // Load src/main/resources/.env
+        InputStream file = getResource("../.env");
+
+        if (file != null) {
+            Scanner scanner = new Scanner(file);
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+
+                if (line.contains("=")) {
+                    String[] pair = line.split("=");
+                    env.put(pair[0], pair.length == 2 ? pair[1] : "");
+                }
+            }
+
+            try {
+                file.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        // Override From OS
+        env.putAll(System.getenv());
+        return env;
+    }
+
+    /**
+     * Get environment variable.
+     *
+     * @param variableName the name of the environment variable
+     * @return the value of the environment variable
+     */
+    public static @NotNull Optional<String> getEnv(@NotNull String variableName) {
+        return getEnvironmentVariables()
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getKey().equalsIgnoreCase(variableName))
+            .map(Map.Entry::getValue)
+            .findFirst();
+    }
+
+    public static InputStream getResource(@NotNull String resourcePath) {
+        return ClassUtil.getClassLoader(SystemUtil.class).getResourceAsStream(
+            RegexUtil.replaceFirst(resourcePath, "^resources/", "").replaceFirst("^/", "")
+        );
+    }
+
+    public static @NotNull List<String> getResourceFiles(@NotNull String resourcePath) {
+        List<String> fileNames = new ArrayList<>();
+
+        try {
+            resourcePath = RegexUtil.replaceFirst(resourcePath, "^resources/", "");
+            @Cleanup InputStream inputStream = getResource(resourcePath);
+            @Cleanup BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String resource;
+
+            while ((resource = bufferedReader.readLine()) != null)
+                fileNames.add(resource);
+        } catch (IOException ignore) { }
+
+        return fileNames;
+    }
+
+    public static void saveResource(@NotNull File outputDir, @NotNull String resourcePath, boolean replace) {
+        saveResource(outputDir, resourcePath, "", replace);
+    }
+
+    @SuppressWarnings("all")
+    public static void saveResource(@NotNull File outputDir, @NotNull String resourcePath, @Nullable String child, boolean replace) {
+        File directory = outputDir;
+
+        if (StringUtil.isNotEmpty(child))
+            directory = new File(directory, child);
+
+        File output = new File(directory, resourcePath);
+
+        try (InputStream inputStream = getResource(resourcePath)) {
+            if (!directory.exists()) {
+                if (!directory.mkdirs())
+                    throw new IllegalStateException(String.format("Unable to create parent directories for '%s'.", output));
+            }
+
+            if (replace)
+                output.delete();
+            else if (output.exists())
+                throw new IllegalStateException(String.format("Output file '%s' already exists.", output));
+
+            try (FileOutputStream outputStream = new FileOutputStream(output)) {
+                byte[] buffer = new byte[1024];
+                int length;
+
+                while ((length = inputStream.read(buffer)) > 0)
+                    outputStream.write(buffer, 0, length);
+            }
+        } catch (Exception exception) {
+            throw new IllegalStateException(String.format("Unable to save resource '%s' to '%s'.", resourcePath, output), exception);
         }
     }
 
