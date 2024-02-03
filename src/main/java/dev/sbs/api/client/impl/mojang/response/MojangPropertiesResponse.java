@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.gson.SerializedPath;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.io.gson.SerializedPath;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

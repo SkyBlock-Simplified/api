@@ -5,8 +5,8 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlock
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.gson.SerializedPath;
 import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.io.gson.SerializedPath;
 import dev.sbs.api.util.mutable.pair.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
