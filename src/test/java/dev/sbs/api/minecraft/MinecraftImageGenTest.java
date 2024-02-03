@@ -1,4 +1,4 @@
-package dev.sbs.api.text;
+package dev.sbs.api.minecraft;
 
 import dev.sbs.api.client.impl.sbs.SbsClient;
 import dev.sbs.api.client.impl.sbs.request.SbsRequest;
@@ -7,8 +7,8 @@ import dev.sbs.api.minecraft.image.MinecraftHead;
 import dev.sbs.api.minecraft.image.MinecraftText;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
-import dev.sbs.api.minecraft.text.segment.TextSegment;
-import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.minecraft.text.segment.LineSegment;
+import dev.sbs.api.util.helper.StringUtil;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -34,7 +34,7 @@ public class MinecraftImageGenTest {
             //File tempFile = minecraftHead.toFile();
             //System.out.println(tempFile.getAbsolutePath());
 
-            byte[] data = DataUtil.decode(base64Skin);
+            byte[] data = StringUtil.decodeBase64(base64Skin);
             BufferedImage b64Image = ImageIO.read(new ByteArrayInputStream(data));
             MinecraftHead minecraftHead2 = new MinecraftHead(b64Image).drawHead();
             File tempFile2 = minecraftHead2.toFile();
@@ -46,7 +46,13 @@ public class MinecraftImageGenTest {
     public void generateTextLine() {
         MinecraftText text = MinecraftText.builder()
             .withAlpha(255)
-            .withSegments(
+            .withLines(
+                LineSegment.fromLegacy(
+                    "CraftedFury\nherro there\\nhello world",
+                    '&'
+                )
+            )
+            /*.withSegments(
                 TextSegment.builder()
                     .withColor(ChatFormat.GOLD)
                     .withText("CraftedFury")
@@ -55,7 +61,7 @@ public class MinecraftImageGenTest {
                     .withColor(ChatFormat.WHITE)
                     .withText(": Hello World!")
                     .build()
-            )
+            )*/
             .withPadding(0)
             .build()
             .render();
