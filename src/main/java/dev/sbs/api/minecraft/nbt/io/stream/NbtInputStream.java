@@ -15,10 +15,12 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.PrimitiveUtil;
+import dev.sbs.api.util.io.Compression;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -26,8 +28,8 @@ import java.io.InputStream;
  */
 public class NbtInputStream extends DataInputStream implements NbtInput {
 
-    public NbtInputStream(@NotNull InputStream inputStream) {
-        super(inputStream);
+    public NbtInputStream(@NotNull InputStream inputStream) throws IOException {
+        super(Compression.wrap(inputStream));
     }
 
     @SneakyThrows

@@ -20,7 +20,15 @@ import lombok.Cleanup;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -250,7 +258,7 @@ public class NbtFactory {
                 default -> outputStream;
             };
 
-            this.toStream(compound, new DataOutputStream(outputStream));
+            this.toStream(compound, outputStream);
         } catch (IOException exception) {
             throw new NbtException(exception);
         }
