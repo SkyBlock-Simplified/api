@@ -2,17 +2,16 @@ package dev.sbs.api.minecraft.nbt.tags.primitive;
 
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * An abstract superclass of all NBT tags representing numeric values that can be converted to the primitive types.
+ * An abstract superclass of all {@link Tag Tags} representing numeric values that can be converted to the primitive types.
  *
  * @param <T> the {@code Number} type this NBT tag represents.
  */
-public abstract class NumericalTag<T extends Number> extends Tag<T> {
+public abstract class NumericalTag<T extends Number & Comparable<T>> extends Tag<T> {
 
-    protected NumericalTag(byte typeId, @Nullable String name, @NotNull T value, boolean modifiable) {
-        super(typeId, name, value, modifiable);
+    protected NumericalTag(@NotNull T value) {
+        super(value);
     }
 
     /**
@@ -23,6 +22,9 @@ public abstract class NumericalTag<T extends Number> extends Tag<T> {
     public final byte byteValue() {
         return this.getValue().byteValue();
     }
+
+    @Override
+    public abstract @NotNull NumericalTag<T> clone();
 
     /**
      * Returns the value held by this tag as a primitive {@code double}.
@@ -67,6 +69,11 @@ public abstract class NumericalTag<T extends Number> extends Tag<T> {
      */
     public final short shortValue() {
         return this.getValue().shortValue();
+    }
+
+    @Override
+    public final @NotNull String toString() {
+        return this.getValue().toString();
     }
 
 }

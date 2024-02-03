@@ -3,7 +3,6 @@ package dev.sbs.api.minecraft.nbt.tags.array;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.util.helper.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -12,16 +11,16 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
- * Abstract class for implementing NBT array tags.
+ * An abstract superclass of all {@link Tag Tags} representing numeric array values that can be converted to the primitive types.
  *
- * @param <T> the type held in the array.
+ * @param <T> the {@code Number} type this NBT tag represents.
  */
-public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
+public abstract class ArrayTag<T extends Number> extends Tag<T[]> implements Iterable<T> {
 
     public static final Pattern NUMBER_PATTERN = Pattern.compile("[-0-9]+");
 
-    protected ArrayTag(byte typeId, @Nullable String name, @NotNull T @NotNull [] value, boolean modifiable) {
-        super(typeId, name, value, modifiable);
+    protected ArrayTag(@NotNull T[] value) {
+        super(value);
     }
 
     /**
@@ -31,7 +30,7 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      */
     @SafeVarargs
     public final void add(@NotNull T... elements) {
-        this.insert(this.size(), elements);
+        this.insert(this.length(), elements);
     }
 
     /**
@@ -40,6 +39,18 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
     public final void clear() {
         this.requireModifiable();
         this.setValue(ArrayUtil.removeAll(this.getValue()));
+    }
+
+    @Override
+    public abstract @NotNull ArrayTag<T> clone();
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ArrayTag<?> arrayTag = (ArrayTag<?>) o;
+        return ArrayUtil.isEquals(this.getValue(), arrayTag.getValue());
     }
 
     /**
@@ -58,6 +69,11 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
      */
     public final @NotNull T get(int index) {
         return this.getValue()[index];
+    }
+
+    @Override
+    public final int hashCode() {
+        return Arrays.hashCode(this.getValue());
     }
 
     /**
@@ -82,6 +98,13 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
     }
 
     /**
+     * Get the number of elements in this array tag.
+     */
+    public final int length() {
+        return this.getValue().length;
+    }
+
+    /**
      * Removes the element at the specified position in this array tag.
      * Shifts any subsequent elements to the left. Returns the element that was removed from the array tag.
      *
@@ -95,6 +118,8 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
         return previous;
     }
 
+    protected void requireModifiable() { }
+
     /**
      * Replaces the element at the specified position in this array tag with the specified element.
      *
@@ -107,13 +132,9 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
         return this.getValue()[index] = element;
     }
 
-    /**
-     * Returns the number of elements in this array tag.
-     *
-     * @return the number of elements in this array tag.
-     */
-    public final int size() {
-        return this.getValue().length;
+    public final void setValue(@NotNull T @NotNull [] value) {
+        this.requireModifiable();
+        super.setValue(value);
     }
 
     /**
@@ -122,6 +143,11 @@ public abstract class ArrayTag<T> extends Tag<T[]> implements Iterable<T> {
     @Override
     public final @NotNull Spliterator<T> spliterator() {
         return Arrays.asList(this.getValue()).spliterator();
+    }
+
+    @Override
+    public final @NotNull String toString() {
+        return ArrayUtil.toString(this.getValue());
     }
 
 }

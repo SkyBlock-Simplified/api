@@ -1,0 +1,42 @@
+package dev.sbs.api.minecraft.nbt.tags.primitive;
+
+import dev.sbs.api.minecraft.nbt.tags.Tag;
+import dev.sbs.api.minecraft.nbt.tags.TagType;
+import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * {@link TagType#END} (ID 0) represents the end of a {@link CompoundTag}.
+ */
+@Getter
+public final class EndTag extends Tag<Void> {
+
+    public static final @NotNull EndTag INSTANCE = new EndTag();
+
+    private EndTag() {
+        super(null);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public @NotNull Tag<Void> clone() {
+        return INSTANCE;
+    }
+
+    @Override
+    public byte getId() {
+        return TagType.END.getId();
+    }
+
+    @Override
+    public void setValue(@NotNull Void value) {
+
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "\"end\"";
+    }
+
+}
