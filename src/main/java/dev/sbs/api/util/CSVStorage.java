@@ -2,8 +2,8 @@ package dev.sbs.api.util;
 
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.ResourceUtil;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.helper.SystemUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -50,7 +50,7 @@ public abstract class CSVStorage {
 	}
 
 	protected final InputStream getResource() {
-		return ResourceUtil.getResource(this.getLocalFile().getName());
+		return SystemUtil.getResource(this.getLocalFile().getName());
 	}
 
 	protected final File getLocalFile() {
@@ -79,7 +79,7 @@ public abstract class CSVStorage {
 	}
 
 	public final void save(boolean replace) {
-		ResourceUtil.saveResource(this.getLocalFile().getParentFile(), this.getLocalFile().getName(), replace);
+		SystemUtil.saveResource(this.getLocalFile().getParentFile(), this.getLocalFile().getName(), replace);
 	}
 
 }
