@@ -11,7 +11,6 @@ import com.google.gson.stream.JsonWriter;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.gson.SerializedPath;
-import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -124,9 +123,6 @@ public final class SerializedPathTypeAdaptorFactory implements TypeAdapterFactor
                 final SerializedPath serializedPath = field.getAnnotation(SerializedPath.class);
 
                 if (Objects.nonNull(serializedPath)) {
-                    if (ListUtil.isEmpty(collection))
-                        collection = new ArrayList<>();
-
                     field.setAccessible(true);
                     collection.add(new FieldInfo(field, serializedPath.value()));
                 }

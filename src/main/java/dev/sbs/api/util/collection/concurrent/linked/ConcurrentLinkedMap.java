@@ -56,5 +56,4 @@ public class ConcurrentLinkedMap<K, V> extends AtomicMap<K, V, MaxSizeLinkedMap<
 		super(new MaxSizeLinkedMap<>(maxSize), map);
 	}
 
-
 }

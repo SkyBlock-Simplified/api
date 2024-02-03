@@ -5,17 +5,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
-import dev.sbs.api.util.helper.DataUtil;
 import dev.sbs.api.util.helper.Preconditions;
+import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 
-import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class MinecraftPing {
 
@@ -73,31 +75,30 @@ public class MinecraftPing {
 
         @Cleanup DataInputStream in = new DataInputStream(socket.getInputStream());
         @Cleanup DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        //> Handshake
-        @Cleanup ByteArrayOutputStream handshake_bytes = new ByteArrayOutputStream();
-        @Cleanup DataOutputStream handshake = new DataOutputStream(handshake_bytes);
 
+        //> Handshake
+        @Cleanup ByteArrayDataOutput handshake = new ByteArrayDataOutput();
         handshake.writeByte(PACKET_HANDSHAKE);
-        DataUtil.writeVarInt(handshake, PROTOCOL_VERSION);
-        DataUtil.writeVarInt(handshake, options.getHostname().length());
+        writeVarInt(handshake, PROTOCOL_VERSION);
+        writeVarInt(handshake, options.getHostname().length());
         handshake.writeBytes(options.getHostname());
         handshake.writeShort(options.getPort());
-        DataUtil.writeVarInt(handshake, STATUS_HANDSHAKE);
+        writeVarInt(handshake, STATUS_HANDSHAKE);
 
-        DataUtil.writeVarInt(out, handshake_bytes.size());
-        out.write(handshake_bytes.toByteArray());
+        writeVarInt(out, handshake.size());
+        out.write(handshake.toByteArray());
 
         //> Status request
         out.writeByte(0x01); // Size of packet
         out.writeByte(PACKET_STATUSREQUEST);
 
         //< Status response
-        DataUtil.readVarInt(in); // Size
-        int id = DataUtil.readVarInt(in);
+        readVarInt(in); // Size
+        int id = readVarInt(in);
         if (id == -1) throw new IOException("Server prematurely ended stream.");
         if (id != PACKET_STATUSREQUEST) throw new IOException("Server returned invalid packet.");
 
-        int length = DataUtil.readVarInt(in);
+        int length = readVarInt(in);
         if (length == -1) throw new IOException("Server prematurely ended stream.");
         if (length == 0) throw new IOException("Server returned invalid packet.");
 
@@ -111,8 +112,8 @@ public class MinecraftPing {
         out.writeLong(System.currentTimeMillis());
 
         //< Ping
-        DataUtil.readVarInt(in); // Size
-        id = DataUtil.readVarInt(in);
+        readVarInt(in); // Size
+        id = readVarInt(in);
         if (id == -1) throw new IOException("Server prematurely ended stream.");
         if (id != PACKET_PING) throw new IOException("Server returned invalid packet.");
 
@@ -144,6 +145,42 @@ public class MinecraftPing {
         output.setPing(ping);
 
         return output;
+    }
+
+    private static int readVarInt(DataInput dataInput) throws IOException {
+        int i = 0;
+        int j = 0;
+
+        while (true) {
+            int k = dataInput.readByte();
+            i |= (k & 0x7F) << j++ * 7;
+            if (j > 5) throw new RuntimeException("VarInt too big");
+            if ((k & 0x80) != 128) break;
+        }
+
+        return i;
+    }
+
+    private static void writeByteArray(DataOutput out, byte[] data) throws IOException {
+        writeVarInt(out, data.length);
+        out.write(data);
+    }
+
+    private static void writeString(DataOutput out, String string) throws IOException {
+        writeVarInt(out, string.length());
+        out.write(string.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static void writeVarInt(DataOutput out, int paramInt) throws IOException {
+        while (true) {
+            if ((paramInt & 0xFFFFFF80) == 0) {
+                out.writeByte(paramInt);
+                return;
+            }
+
+            out.writeByte(paramInt & 0x7F | 0x80);
+            paramInt >>>= 7;
+        }
     }
 
 }

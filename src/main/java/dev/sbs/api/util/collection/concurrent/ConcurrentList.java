@@ -2,9 +2,7 @@ package dev.sbs.api.util.collection.concurrent;
 
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicList;
 import dev.sbs.api.util.collection.sort.SortOrder;
-import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,8 +42,8 @@ public class ConcurrentList<E> extends AtomicList<E, ArrayList<E>> {
 	/**
 	 * Create a new concurrent list and fill it with the given collection.
 	 */
-	public ConcurrentList(@Nullable Collection<? extends E> collection) {
-		super(ListUtil.isEmpty(collection) ? new ArrayList<>() : new ArrayList<>(collection));
+	public ConcurrentList(@NotNull Collection<? extends E> collection) {
+		super(new ArrayList<>(collection));
 	}
 
 	@Override

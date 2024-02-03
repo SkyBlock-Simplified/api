@@ -2,7 +2,6 @@ package dev.sbs.api.data.yaml.converter;
 
 import dev.sbs.api.data.yaml.InternalConverter;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.helper.ListUtil;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
@@ -30,9 +29,9 @@ public class SetConverter extends YamlConverter {
             if (converter != null) {
                 for (Object value : values)
                     newSet.add(converter.fromConfig((Class<?>) genericType.getActualTypeArguments()[0], value, null));
-            } else if (ListUtil.notEmpty(values))
+            } else if (!values.isEmpty())
                 newSet.addAll(values);
-        } else if (ListUtil.notEmpty(values))
+        } else if (!values.isEmpty())
             newSet.addAll(values);
 
         return newSet;
@@ -43,7 +42,7 @@ public class SetConverter extends YamlConverter {
         java.util.Set<Object> values = (java.util.Set<Object>) obj;
         java.util.Set<Object> newSet = new HashSet<>();
 
-        if (ListUtil.notEmpty(values)) {
+        if (!values.isEmpty()) {
             for (Object value : values) {
                 YamlConverter converter = this.getConverter(value.getClass());
                 newSet.add(converter != null ? converter.toConfig(value.getClass(), value, null) : value);

@@ -1,6 +1,5 @@
 package dev.sbs.api.util.helper;
 
-import dev.sbs.api.util.builder.string.StringBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.intellij.lang.annotations.PrintFormat;
@@ -8,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.Normalizer;
 import java.util.*;
@@ -151,6 +151,8 @@ public class StringUtil {
     public static final Pattern UUID_REGEX = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}");
     public static final Pattern TRIMMED_UUID_REGEX = Pattern.compile("[a-f0-9]{12}4[a-f0-9]{3}[89aAbB][a-f0-9]{15}");
     private static final Pattern ADD_UUID_HYPHENS_REGEX = Pattern.compile("([a-f0-9]{8})([a-f0-9]{4})(4[a-f0-9]{3})([89aAbB][a-f0-9]{3})([a-f0-9]{12})");
+
+    public static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     /**
      * <p>Abbreviates a String using ellipses. This will turn
@@ -9569,6 +9571,124 @@ public class StringUtil {
             array[i] = source.charAt(i);
         }
         return array;
+    }
+
+
+    /**
+     * Gets human readable ascii of a hexadecimal string.
+     *
+     * @param hex to convert
+     * @return converted hexadecimal string into ascii
+     */
+    public static String toAsciiString(@NotNull String hex) {
+        java.lang.StringBuilder output = new java.lang.StringBuilder();
+
+        for (int i = 0; i < hex.length(); i += 2) {
+            String str = hex.substring(i, i + 2);
+            output.append((char)Integer.parseInt(str, 16));
+        }
+
+        return output.toString();
+    }
+
+    /**
+     * Gets the hexadecimal string of a byte array.
+     *
+     * @param bytes to convert
+     * @return converted byte array as hexadecimal string
+     */
+    public static String toHexString(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+
+        for (int i = 0; i < bytes.length; i++) {
+            int v = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+
+        return new String(hexChars);
+    }
+
+    // --- BASE64 ---
+
+    /**
+     * Decodes Base64 data.
+     * No blanks or line breaks are allowed within the Base64 encoded data.
+     *
+     * @param input a character array containing the Base64 encoded data.
+     * @return An array containing the decoded data.
+     * @throws IllegalArgumentException if the input is not valid Base64 encoded data.
+     */
+    public static byte[] decodeBase64(char[] input) {
+        return decodeBase64(new String(input));
+    }
+
+    /**
+     * Decodes Base64 data.
+     * No blanks or line breaks are allowed within the Base64 encoded data.
+     *
+     * @param input a character array containing the Base64 encoded data.
+     * @return An array containing the decoded data.
+     * @throws IllegalArgumentException if the input is not valid Base64 encoded data.
+     */
+    public static byte[] decodeBase64(@NotNull String input) {
+        return Base64.getDecoder().decode(input);
+    }
+
+    /**
+     * Decodes Base64 data.
+     * No blanks or line breaks are allowed within the Base64 encoded data.
+     *
+     * @param input a character array containing the Base64 encoded data.
+     * @return An array containing the decoded data.
+     * @throws IllegalArgumentException if the input is not valid Base64 encoded data.
+     */
+    public static String decodeBase64ToString(@NotNull String input) {
+        return new String(Base64.getDecoder().decode(input), StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Encodes a byte array into Base64 format. No blanks or line breaks are
+     * inserted.
+     *
+     * @param input an array containing the data bytes to be encoded.
+     * @return A byte array containing the encoded data.
+     */
+    public static byte[] encodeBase64(String input) {
+        return encodeBase64(input.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Encodes a byte array into Base64 format. No blanks or line breaks are
+     * inserted.
+     *
+     * @param input an array containing the data bytes to be encoded.
+     * @return A byte array containing the encoded data.
+     */
+    public static byte[] encodeBase64(byte[] input) {
+        return Base64.getEncoder().encode(input);
+    }
+
+    /**
+     * Encodes a byte array into Base64 format.
+     * No blanks or line breaks are inserted.
+     *
+     * @param input a string containing the data to be encoded.
+     * @return A string containing the encoded data.
+     */
+    public static String encodeBase64ToString(String input) {
+        return encodeBase64ToString(input.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Encodes a byte array into Base64 format.
+     * No blanks or line breaks are inserted.
+     *
+     * @param input an array containing the data bytes to be encoded.
+     * @return A string containing the encoded data.
+     */
+    public static String encodeBase64ToString(byte[] input) {
+        return Base64.getEncoder().encodeToString(input);
     }
 
 }

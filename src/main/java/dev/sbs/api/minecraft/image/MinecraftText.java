@@ -5,14 +5,15 @@ import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.util.Range;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.ResourceUtil;
 import dev.sbs.api.util.helper.SystemUtil;
+import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.AccessLevel;
+import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -275,7 +275,7 @@ public class MinecraftText {
     @Nullable
     private static Font initFont(String path, float size) {
         try {
-            try (InputStream inputStream = ResourceUtil.getResource(path)) {
+            try (InputStream inputStream = SystemUtil.getResource(path)) {
                 return Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(size);
             }
         } catch (IOException | FontFormatException ex) {
@@ -299,16 +299,16 @@ public class MinecraftText {
         return this;
     }
 
+    @SneakyThrows
     public InputStream toStream() {
-        try {
-            return new FileInputStream(this.toFile());
-        } catch (FileNotFoundException fnfex) {
-            throw SimplifiedException.wrapNative(fnfex).build();
-        }
+        @Cleanup ByteArrayDataOutput dataOutput = new ByteArrayDataOutput();
+        dataOutput.writeImage(this.getImage(), "PNG");
+        return new ByteArrayInputStream(dataOutput.toByteArray());
     }
 
     public File toFile() {
         try {
+            // TODO: Fix minecrafttext/ writing
             File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;

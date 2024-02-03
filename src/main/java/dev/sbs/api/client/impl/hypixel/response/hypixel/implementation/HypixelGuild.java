@@ -5,7 +5,6 @@ import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.ListUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +55,7 @@ public class HypixelGuild {
         long experience = this.getExperience();
 
         for (int i = 0; ; i++) {
-            int next = i >= ListUtil.sizeOf(HYPIXEL_GUILD_EXP) ? HYPIXEL_GUILD_EXP.getLast().orElse(0) : HYPIXEL_GUILD_EXP.get(i);
+            int next = i >= HYPIXEL_GUILD_EXP.size() ? HYPIXEL_GUILD_EXP.getLast().orElse(0) : HYPIXEL_GUILD_EXP.get(i);
             experience -= next;
 
             if (experience < 0)
@@ -84,7 +83,8 @@ public class HypixelGuild {
             else
                 return HypixelGuild.this.ranks.stream()
                     .filter(rank -> rank.getName().equals(this.rank))
-                    .collect(ListUtil.toSingleton());
+                    .findFirst()
+                    .orElseThrow();
         }
 
         private boolean isGuildMaster() {

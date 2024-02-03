@@ -3,13 +3,13 @@ package dev.sbs.api.reflection.accessor;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.builder.string.StringBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * Grants simpler access to method invoking.
@@ -43,17 +43,14 @@ public final class MethodAccessor extends ReflectionAccessor<Method> {
         try {
             return this.getMethod().invoke(obj, args);
         } catch (Exception exception) {
-            StringBuilder arguments = new StringBuilder();
+            StringJoiner arguments = new StringJoiner(",");
             Arrays.stream(args)
                 .filter(Objects::nonNull)
                 .map(Objects::toString)
-                .forEach(arg -> {
-                    arguments.appendSeparator(',');
-                    arguments.append(arg);
-                });
+                .forEach(arguments::add);
 
             throw SimplifiedException.of(ReflectionException.class)
-                .withMessage("Unable to invoke method '%s' in '%s' with arguments [%s].", this.getMethod(), this.getType(), arguments.build())
+                .withMessage("Unable to invoke method '%s' in '%s' with arguments [%s].", this.getMethod(), this.getType(), arguments.toString())
                 .withCause(exception)
                 .build();
         }

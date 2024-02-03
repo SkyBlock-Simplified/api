@@ -16,7 +16,6 @@ import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -112,7 +111,7 @@ public class ItemData extends ObjectData<ItemData.Type> {
                         .forEach(enchantmentStatModel -> enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel));
 
                     // Handle Enchantment Stats
-                    if (ListUtil.isEmpty(enchantmentData.getLeft().getMobTypes())) {
+                    if (enchantmentData.getLeft().getMobTypes().isEmpty()) {
                         enchantmentStats.get(enchantmentData.getKey())
                             .stream()
                             .filter(EnchantmentStatModel::notPercentage) // Static Only

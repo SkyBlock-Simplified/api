@@ -4,7 +4,6 @@ import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -101,7 +100,7 @@ public abstract class ConfigMapper extends YamlMap {
 
     protected void saveToYaml() throws InvalidConfigurationException {
         try (OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(this.configFile), StandardCharsets.UTF_8)) {
-            if (ListUtil.notEmpty(this.header)) {
+            if (this.header.notEmpty()) {
                 for (String line : this.header)
                     fileWriter.write("# " + line + "\n");
 

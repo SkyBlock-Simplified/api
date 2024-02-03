@@ -1,9 +1,7 @@
 package dev.sbs.api.util.collection.concurrent;
 
 import dev.sbs.api.util.collection.concurrent.atomic.AtomicCollection;
-import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractCollection;
 import java.util.ArrayList;
@@ -42,8 +40,8 @@ public class ConcurrentCollection<E> extends AtomicCollection<E, AbstractCollect
 	/**
 	 * Create a new concurrent set and fill it with the given collection.
 	 */
-	public ConcurrentCollection(@Nullable Collection<? extends E> collection) {
-		super(ListUtil.isEmpty(collection) ? new ArrayList<>() : new ArrayList<>(collection));
+	public ConcurrentCollection(@NotNull Collection<? extends E> collection) {
+		super(new ArrayList<>(collection));
 	}
 
 }

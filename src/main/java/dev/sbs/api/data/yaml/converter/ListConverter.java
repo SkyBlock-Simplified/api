@@ -2,7 +2,6 @@ package dev.sbs.api.data.yaml.converter;
 
 import dev.sbs.api.data.yaml.InternalConverter;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.helper.ListUtil;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -30,9 +29,9 @@ public class ListConverter extends YamlConverter {
             if (converter != null) {
                 for (Object value : values)
                     newList.add(converter.fromConfig((Class<?>) genericType.getActualTypeArguments()[0], value, null));
-            } else if (ListUtil.notEmpty(values))
+            } else if (!values.isEmpty())
                 newList.addAll(values);
-        } else if (ListUtil.notEmpty(values))
+        } else if (!values.isEmpty())
             newList.addAll(values);
 
         return newList;
@@ -43,11 +42,9 @@ public class ListConverter extends YamlConverter {
         java.util.List<Object> values = (java.util.List<Object>) obj;
         java.util.List<Object> newList = new ArrayList<>();
 
-        if (ListUtil.notEmpty(values)) {
-            for (Object value : values) {
-                YamlConverter converter = this.getConverter(value.getClass());
-                newList.add(converter != null ? converter.toConfig(value.getClass(), value, null) : value);
-            }
+        for (Object value : values) {
+            YamlConverter converter = this.getConverter(value.getClass());
+            newList.add(converter != null ? converter.toConfig(value.getClass(), value, null) : value);
         }
 
         return newList;

@@ -6,7 +6,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.gson.SerializedPath;
-import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.helper.NumberUtil;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.AccessLevel;
@@ -38,7 +37,7 @@ public class JacobsContest {
     private @NotNull ConcurrentMap<String, Integer> personalBests = Concurrent.newMap();
 
     public @NotNull ConcurrentList<Contest> getContests() {
-        if (ListUtil.isEmpty(this.contestList)) {
+        if (this.contestList.isEmpty()) {
             this.contestList = this.contestMap.stream()
                 .map(entry -> {
                     Contest contest = entry.getValue();

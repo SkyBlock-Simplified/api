@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.minecraft.nbt.exception.NbtException;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ public class NbtContent {
     @Getter private String rawData;
 
     public byte[] getData() {
-        return DataUtil.decode(this.getRawData().toCharArray());
+        return StringUtil.decodeBase64(this.getRawData().toCharArray());
     }
 
     public @NotNull CompoundTag getNbtData() throws NbtException {

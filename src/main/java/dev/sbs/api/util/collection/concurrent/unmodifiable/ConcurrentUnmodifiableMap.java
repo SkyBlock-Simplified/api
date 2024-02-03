@@ -16,8 +16,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * A concurrent map that allows for simultaneous fast reading, iteration utilizing {@link AtomicReference}.
@@ -134,18 +132,8 @@ public class ConcurrentUnmodifiableMap<K, V> extends ConcurrentMap<K, V> {
         }
 
         @Override
-        public Stream<Map.Entry<K,V>> parallelStream() {
-            return StreamSupport.stream(spliterator(), true);
-        }
-
-        @Override
         public Spliterator<Map.Entry<K, V>> spliterator() {
             return new UnmodifiableSpliterator<>(this.ref.spliterator());
-        }
-
-        @Override
-        public @NotNull Stream<Map.Entry<K,V>> stream() {
-            return StreamSupport.stream(spliterator(), false);
         }
 
         @AllArgsConstructor

@@ -3,7 +3,6 @@ package dev.sbs.api.util.collection.concurrent.atomic;
 import dev.sbs.api.util.collection.concurrent.iterator.ConcurrentIterator;
 import dev.sbs.api.util.collection.search.Sortable;
 import dev.sbs.api.util.collection.sort.SortOrder;
-import dev.sbs.api.util.helper.ListUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -131,7 +130,7 @@ public abstract class AtomicList<E, T extends List<E>> extends AtomicCollection<
 
 	@SuppressWarnings("all")
 	public AtomicList<E, T> sorted(@NotNull SortOrder sortOrder, @NotNull Iterable<Function<E, ? extends Comparable>> functions) {
-		if (ListUtil.notEmpty(functions)) {
+		if (functions.iterator().hasNext()) {
 			this.sort((s1, s2) -> {
 				Iterator<Function<E, ? extends Comparable>> iterator = functions.iterator();
 				Comparator<E> comparator = Comparator.comparing(iterator.next());

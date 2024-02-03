@@ -6,6 +6,9 @@ import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * Static convenience methods that help a method or constructor check whether it was invoked
  * correctly (that is, whether its <i>preconditions</i> were met).
@@ -308,6 +311,78 @@ public final class Preconditions {
             throw new IllegalArgumentException("negative size: " + size);
         else // index > size
             return String.format("%s (%s) must not be greater than size (%s)", desc, index, size);
+    }
+
+    /**
+     * Ensures the given array is not null and does not contain a null element.
+     *
+     * @param array The array to check.
+     * @param <T> The type of elements.
+     * @throws IllegalArgumentException If the given array is null or contains a null element.
+     */
+    public static <T> void noNullElements(@NotNull T[] array) throws IllegalArgumentException {
+        noNullElements(array, "The validated array is NULL!", "The validated array contains NULL element at index %s!");
+    }
+
+    /**
+     * Ensures the given collection is not null and does not contain a null element.
+     *
+     * @param collection The collection to check.
+     * @param <T> The type of elements.
+     * @throws IllegalArgumentException If the given collection is null or contains a null element.
+     */
+    public static <T> void noNullElements(@NotNull Collection<? extends T> collection) throws IllegalArgumentException {
+        noNullElements(collection, "The validated collection is NULL!", "The validated collection contains NULL element at index %s!");
+    }
+
+    /**
+     * Ensures the given array is not null and does not contain a null element.
+     *
+     * @param array The array to check.
+     * @param <T> The type of elements.
+     * @param message The custom message to display if an IllegalArgumentException is thrown.
+     * @throws IllegalArgumentException If the given array is null or contains a null element.
+     */
+    public static <T> void noNullElements(@NotNull T[] array, String message) throws IllegalArgumentException {
+        noNullElements(array, message, message);
+    }
+
+    /**
+     * Ensures the given collection is not null and does not contain a null element.
+     *
+     * @param collection The collection to check.
+     * @param <T> The type of elements.
+     * @param message The custom message to display if an IllegalArgumentException is thrown.
+     * @throws IllegalArgumentException If the given collection is null or contains a null element.
+     */
+    public static <T> void noNullElements(@NotNull Collection<? extends T> collection, String message) throws IllegalArgumentException {
+        noNullElements(collection, message, message);
+    }
+
+    private static <T> void noNullElements(@Nullable T[] array, String message, String elementMessage) throws IllegalArgumentException {
+        if (array == null)
+            throw new IllegalArgumentException(message);
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == null)
+                throw new IllegalArgumentException(String.format(elementMessage, i));
+        }
+    }
+
+    private static <T> void noNullElements(@Nullable Collection<? extends T> collection, String message, String elementMessage) throws IllegalArgumentException {
+        if (collection == null)
+            throw new IllegalArgumentException(message);
+
+        Iterator<? extends T> iterator = collection.iterator();
+        int i = -1;
+
+        while (iterator.hasNext()) {
+            T obj = iterator.next();
+            i++;
+
+            if (obj == null)
+                throw new IllegalArgumentException(String.format(elementMessage, i));
+        }
     }
 
 }

@@ -1647,9 +1647,9 @@ public final class ArrayUtil {
      * @throws IllegalArgumentException if the object argument is not an array.
      */
     public static int getLength(final Object array) {
-        if (array == null) {
+        if (array == null)
             return 0;
-        }
+
         return Array.getLength(array);
     }
 
