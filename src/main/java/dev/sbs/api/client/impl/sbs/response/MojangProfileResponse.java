@@ -3,7 +3,7 @@ package dev.sbs.api.client.impl.sbs.response;
 import dev.sbs.api.client.impl.mojang.response.MojangPropertiesResponse;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -81,7 +81,7 @@ public class MojangProfileResponse {
         private static @NotNull String encodeImage(@NotNull BufferedImage bufferedImage) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "PNG", outputStream);
-            return DataUtil.encodeToString(outputStream.toByteArray());
+            return StringUtil.encodeBase64ToString(outputStream.toByteArray());
         }
 
 

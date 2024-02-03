@@ -5,7 +5,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.gson.SerializedPath;
-import dev.sbs.api.util.helper.DataUtil;
+import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +39,7 @@ public class MojangPropertiesResponse {
         private Optional<String> signature = Optional.empty();
 
         public String getRawJson() {
-            return new String(DataUtil.decode(this.getRaw()), StandardCharsets.UTF_8);
+            return new String(StringUtil.decodeBase64(this.getRaw()), StandardCharsets.UTF_8);
         }
 
         public Value getValue() {

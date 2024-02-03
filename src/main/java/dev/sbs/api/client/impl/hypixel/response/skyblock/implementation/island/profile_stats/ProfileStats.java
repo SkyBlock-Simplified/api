@@ -51,7 +51,6 @@ import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.helper.ListUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
 import dev.sbs.api.util.mutable.primitive.MutableBoolean;
 import lombok.Getter;
@@ -360,7 +359,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                 .filter(petAbilityStatModel -> petAbilityStatModel.getRarities().contains(activePet.getRarityOrdinal()))
                 .collect(Concurrent.toList())
             ))
-            .filter(petAbilityStatPair -> ListUtil.notEmpty(petAbilityStatPair.getRight()))
+            .filter(petAbilityStatPair -> petAbilityStatPair.getRight().notEmpty())
             .forEach(petAbilityStatPair -> {
                 // Load Bonus Pet Ability Stats
                 SimplifiedApi.getRepositoryOf(BonusPetAbilityStatModel.class)

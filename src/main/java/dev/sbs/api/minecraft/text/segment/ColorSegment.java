@@ -2,7 +2,6 @@ package dev.sbs.api.minecraft.text.segment;
 
 import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.text.ChatFormat;
-import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.helper.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +45,7 @@ public class ColorSegment {
      *
      * @param legacyText The text to make into an object
      * @param symbolSubstitute The character substitute
-     * @return A TextObject representing the legacy text.
+     * @return A LineSegment representing the legacy text.
      */
     public static @NotNull LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
         return fromLegacyHandler(legacyText, symbolSubstitute, () -> new ColorSegment(""));
