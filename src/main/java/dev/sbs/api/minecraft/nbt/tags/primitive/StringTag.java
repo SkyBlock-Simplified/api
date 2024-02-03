@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#STRING} (ID 8) is used for storing a UTF-8 encoded {@code String}, prefixed by a length value stored as a 32-bit {@code int}.
+ * {@link TagType#STRING} (ID 8) is used for storing a UTF-8 encoded {@code String}.
  */
 @Getter
 public class StringTag extends Tag<String> {

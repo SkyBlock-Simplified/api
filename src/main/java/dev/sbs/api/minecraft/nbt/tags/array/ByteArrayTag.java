@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * {@link TagType#BYTE_ARRAY} (ID 7) is used for storing {@code byte[]} arrays in NBT structures.
+ * {@link TagType#BYTE_ARRAY} (ID 7) is used for storing an ordered list of 8-bit integers.
  */
 public class ByteArrayTag extends ArrayTag<Byte> {
 

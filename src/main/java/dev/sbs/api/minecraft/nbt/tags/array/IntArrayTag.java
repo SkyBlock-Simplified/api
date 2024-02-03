@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * {@link TagType#INT_ARRAY} (ID 11) is used for storing {@code int[]} arrays in NBT structures.
+ * {@link TagType#INT_ARRAY} (ID 11) is used for storing an ordered list of 32-bit integers.
  */
 public class IntArrayTag extends ArrayTag<Integer> {
 

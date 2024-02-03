@@ -4,7 +4,8 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#DOUBLE} (ID 6) is used for storing a double-precision 64-bit IEEE 754 floating point value; a Java primitive {@code double}.
+ * {@link TagType#DOUBLE} (ID 6) is used for storing a 64-bit, double-precision floating-point, ranging from {@link Double#MIN_VALUE} to {@link Double#MAX_VALUE}.
+ * @see <a href="https://en.wikipedia.org/wiki/IEEE_floating_point">IEEE_floating_point</a>
  */
 public class DoubleTag extends NumericalTag<Double> {
 

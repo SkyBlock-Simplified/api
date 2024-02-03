@@ -4,7 +4,8 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#FLOAT} (ID 5) is used for storing a single-precision 32-bit IEEE 754 floating point value; a Java primitive {@code float}.
+ * {@link TagType#FLOAT} (ID 5) is used for storing a 32-bit, 32-bit, single-precision floating-point number, ranging from {@link Float#MIN_VALUE} to {@link Float#MAX_VALUE}.
+ * @see <a href="https://en.wikipedia.org/wiki/IEEE_floating_point">IEEE_floating_point</a>
  */
 public class FloatTag extends NumericalTag<Float> {
 

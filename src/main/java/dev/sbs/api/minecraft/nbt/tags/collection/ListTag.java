@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * {@link TagType#LIST} (ID 9) is used for storing an ordered list of any same-type {@link Tag Tags}.
+ * {@link TagType#LIST} (ID 9) is used for storing an ordered list of {@link Tag Tags}.
  */
 public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E>, Comparable<ListTag<E>>, MaxDepthIO {
 

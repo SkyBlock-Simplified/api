@@ -4,7 +4,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#INT} (ID 3) is used for storing a 32-bit signed two's complement integer; a Java primitive {@code int}.
+ * {@link TagType#INT} (ID 3) is used for storing a signed 32-bit integer, ranging from {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE} (inclusive).
  */
 public class IntTag extends NumericalTag<Integer> {
 

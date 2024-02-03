@@ -4,7 +4,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#BYTE} (ID 1) is used for storing an 8-bit signed two's complement integer; a Java primitive {@code byte}.
+ * {@link TagType#BYTE} (ID 1) is used for storing a signed 8-bit integer, ranging from {@link Byte#MIN_VALUE} to {@link Byte#MAX_VALUE} (inclusive).
  */
 public class ByteTag extends NumericalTag<Byte> {
 

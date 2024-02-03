@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * {@link TagType#LONG_ARRAY} (ID 12) is used for storing {@code long[]} arrays in NBT structures.
+ * {@link TagType#LONG_ARRAY} (ID 12) is used for storing an ordered list of 64-bit integers.
  */
 public class LongArrayTag extends ArrayTag<Long> {
 

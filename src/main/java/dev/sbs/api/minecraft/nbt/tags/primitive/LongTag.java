@@ -4,7 +4,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#LONG} (ID 4) is used for storing a 64-bit signed two's complement integer; a Java primitive {@code long}.
+ * {@link TagType#LONG} (ID 4) is used for storing a signed 64-bit integer, ranging from {@link Long#MIN_VALUE} to {@link Long#MAX_VALUE} (inclusive).
  */
 public class LongTag extends NumericalTag<Long> {
 

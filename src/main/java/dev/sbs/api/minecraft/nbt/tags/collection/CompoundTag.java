@@ -19,7 +19,7 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 /**
- * {@link TagType#COMPOUND} (ID 10) is used for storing a map of any and all {@link Tag Tags}.
+ * {@link TagType#COMPOUND} (ID 10) is used for storing an ordered list of key-{@link Tag value} pairs.
  */
 @SuppressWarnings("unchecked")
 public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String, Tag<?>>, Iterable<Map.Entry<String, Tag<?>>> {

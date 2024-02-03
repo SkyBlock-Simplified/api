@@ -4,7 +4,7 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link TagType#SHORT} (ID 2) is used for storing a 16-bit signed two's complement integer; a Java primitive {@code short}.
+ * {@link TagType#SHORT} (ID 2) is used for storing a signed 16-bit integer, ranging from {@link Short#MIN_VALUE} to {@link Short#MAX_VALUE} (inclusive).
  */
 public class ShortTag extends NumericalTag<Short> {
 
