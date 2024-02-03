@@ -27,7 +27,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
     protected static final ConcurrentSet<Class<? extends YamlConverter>> GLOBAL_CUSTOM_CONVERTERS = Concurrent.newSet();
 
     private transient boolean suppressFailedConversions = false;
-    private transient int taskId = -1;
+    private transient long taskId = -1;
     private transient WatchService watchService;
     private transient WatchKey watchKey;
     private transient boolean reloadProcessing = false;
