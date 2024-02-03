@@ -2,12 +2,12 @@ package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.util.Range;
 import dev.sbs.api.util.collection.concurrent.Concurrent;
 import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.helper.StringUtil;
 import dev.sbs.api.util.io.gson.SerializedPath;
+import dev.sbs.api.util.mutable.Range;
 import dev.sbs.api.util.mutable.pair.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;

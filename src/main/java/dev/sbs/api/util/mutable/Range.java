@@ -1,4 +1,4 @@
-package dev.sbs.api.util;
+package dev.sbs.api.util.mutable;
 
 import dev.sbs.api.util.helper.Preconditions;
 import lombok.Getter;
