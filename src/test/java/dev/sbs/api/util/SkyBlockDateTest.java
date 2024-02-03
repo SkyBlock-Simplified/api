@@ -1,7 +1,7 @@
 package dev.sbs.api.util;
 
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
