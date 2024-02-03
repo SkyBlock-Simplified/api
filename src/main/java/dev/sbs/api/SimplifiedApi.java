@@ -36,7 +36,6 @@ import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.builder.string.StringBuilder;
 import dev.sbs.api.util.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.util.gson.adapter.InstantTypeAdapter;
 import dev.sbs.api.util.gson.adapter.NbtContentTypeAdapter;
@@ -97,7 +96,6 @@ public final class SimplifiedApi {
         classBuilderManager.add(HypixelRequest.class, HypixelClient.class);
 
         // Provide Builders
-        builderManager.add(String.class, StringBuilder.class);
         builderManager.add(LineSegment.class, LineSegment.Builder.class);
         builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
         builderManager.add(TextSegment.class, TextSegment.Builder.class);

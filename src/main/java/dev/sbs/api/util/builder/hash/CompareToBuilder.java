@@ -1,7 +1,6 @@
 package dev.sbs.api.util.builder.hash;
 
 import dev.sbs.api.util.builder.Builder;
-import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.helper.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -181,7 +180,7 @@ public class CompareToBuilder implements Builder<Integer> {
      *  with <code>lhs</code>
      */
     public static int reflectionCompare(Object lhs, Object rhs, Collection<String> excludeFields) {
-        return reflectionCompare(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
+        return reflectionCompare(lhs, rhs, ArrayUtil.toNoNullStringArray(excludeFields));
     }
 
     /**

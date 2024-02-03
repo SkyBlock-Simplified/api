@@ -1,7 +1,6 @@
 package dev.sbs.api.util.builder.hash;
 
 import dev.sbs.api.util.builder.Builder;
-import dev.sbs.api.util.builder.string.ReflectionToStringBuilder;
 import dev.sbs.api.util.helper.ArrayUtil;
 import dev.sbs.api.util.mutable.pair.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -223,7 +222,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @return <code>true</code> if the two Objects have tested equals.
      */
     public static boolean reflectionEquals(Object lhs, Object rhs, Collection<String> excludeFields) {
-        return reflectionEquals(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
+        return reflectionEquals(lhs, rhs, ArrayUtil.toNoNullStringArray(excludeFields));
     }
 
     /**
