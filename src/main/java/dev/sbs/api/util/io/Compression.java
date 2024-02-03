@@ -48,4 +48,12 @@ public enum Compression {
 		return compression;
 	}
 
+	public static @NotNull InputStream wrap(@NotNull InputStream inputStream) throws IOException {
+		return switch (Compression.getType(inputStream)) {
+			case GZIP -> new GZIPInputStream(inputStream, 65536);
+			case ZLIB -> new InflaterInputStream(inputStream);
+			default -> inputStream;
+		};
+	}
+
 }
