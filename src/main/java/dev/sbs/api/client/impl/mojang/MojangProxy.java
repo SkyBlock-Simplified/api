@@ -10,7 +10,6 @@ import dev.sbs.api.client.impl.sbs.response.MojangProfileResponse;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.PrimitiveUtil;
-import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -99,7 +98,7 @@ public final class MojangProxy {
                         getRandomInet6Group()
                     ));
                 } catch (UnknownHostException uhex) {
-                    throw SimplifiedException.wrapNative(uhex).build();
+                    throw new RuntimeException(uhex);
                 }
             })
             .map(Inet6Address.class::cast)

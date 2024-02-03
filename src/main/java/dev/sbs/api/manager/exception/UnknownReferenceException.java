@@ -1,14 +1,9 @@
 package dev.sbs.api.manager.exception;
 
-import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.mutable.triple.Triple;
-import dev.sbs.api.util.SimplifiedException;
+public final class UnknownReferenceException extends ManagerException {
 
-public final class UnknownReferenceException extends SimplifiedException {
-
-    private UnknownReferenceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
-        super(message, cause, enableSuppression, writableStackTrace, fields, data);
+    public UnknownReferenceException(Object identifier) {
+        super(String.format("Reference '%s' has not been registered!", identifier));
     }
 
     public static String getMessage(Object identifier) {

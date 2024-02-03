@@ -1,6 +1,6 @@
 package dev.sbs.api.minecraft.nbt.tags;
 
-import dev.sbs.api.minecraft.nbt.exception.MaxDepthException;
+import dev.sbs.api.minecraft.nbt.exception.NbtMaxDepthException;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>These methods have a parameter for the maximum nesting depth they are allowed to traverse. A
  * value of {@code 0} means that only the object itself, but no nested objects may be processed.
- * If an instance is nested further than allowed, a {@link MaxDepthException} will be thrown.
+ * If an instance is nested further than allowed, a {@link NbtMaxDepthException} will be thrown.
  * Providing a negative maximum nesting depth will cause an {@code IllegalArgumentException}
  * to be thrown.</p>
  *

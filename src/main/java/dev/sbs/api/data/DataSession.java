@@ -5,7 +5,6 @@ import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
-import dev.sbs.api.util.SimplifiedException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +41,7 @@ public abstract class DataSession<T extends Model> {
 
             this.startup = System.currentTimeMillis() - startTime;
         } else
-            throw SimplifiedException.of(DataException.class)
-                .withMessage("Session has already cached repositories!")
-                .build();
+            throw new DataException("Session has already cached repositories.");
     }
 
     /**
@@ -59,9 +56,7 @@ public abstract class DataSession<T extends Model> {
         if (this.isActive())
             return (Repository<M>) this.serviceManager.get(tClass);
         else
-            throw SimplifiedException.of(DataException.class)
-                .withMessage("Session connection is not active!")
-                .build();
+            throw new DataException("Session connection is not active.");
     }
 
     public final void initialize() {
@@ -71,9 +66,7 @@ public abstract class DataSession<T extends Model> {
             this.active = true;
             this.initialization = System.currentTimeMillis() - startTime;
         } else
-            throw SimplifiedException.of(DataException.class)
-                .withMessage("Session is already initialized!")
-                .build();
+            throw new DataException("Session is already initialized.");
     }
 
     public void shutdown() {

@@ -1,14 +1,21 @@
 package dev.sbs.api.data.exception;
 
-import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.mutable.triple.Triple;
-import dev.sbs.api.util.SimplifiedException;
+import org.intellij.lang.annotations.PrintFormat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class DataException extends SimplifiedException {
+public class DataException extends RuntimeException {
 
-    protected DataException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ConcurrentList<Triple<String, String, Boolean>> fields, ConcurrentMap<String, Object> data) {
-        super(message, cause, enableSuppression, writableStackTrace, fields, data);
+    public DataException(@NotNull Throwable cause) {
+        super(cause);
+    }
+
+    public DataException(@NotNull String message) {
+        super(message);
+    }
+
+    public DataException(@NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(String.format(message, args));
     }
 
 }

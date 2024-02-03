@@ -4,7 +4,6 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.scheduler.ScheduledTask;
-import dev.sbs.api.util.SimplifiedException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.hibernate.NonUniqueObjectException;
@@ -74,9 +73,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
                 .getResultList() // Fastest
                 .stream();
         } catch (Exception exception) {
-            throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
+            throw new SqlException(exception);
         }
     }
 
@@ -91,9 +88,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
             session.delete(model);
             return model;
         } catch (Exception exception) {
-            throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
+            throw new SqlException(exception);
         }
     }
 
@@ -125,9 +120,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
             Serializable serializable = session.save(model);
             return session.get(this.getType(), serializable);
         } catch (Exception exception) {
-            throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
+            throw new SqlException(exception);
         }
     }
 
@@ -144,9 +137,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
         } catch (NonUniqueObjectException nuoException) {
             return model;
         } catch (Exception exception) {
-            throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
+            throw new SqlException(exception);
         }
     }
 

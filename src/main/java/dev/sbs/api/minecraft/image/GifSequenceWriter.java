@@ -39,6 +39,8 @@ public class GifSequenceWriter {
      * @author Elliot Kroo (elliot[at]kroo[dot]net)
      */
     public GifSequenceWriter(ImageTypeSpecifier imageType, int timeBetweenFramesMS, boolean loopContinuously) throws IOException {
+        // TODO: http://www.java2s.com/Code/Java/2D-Graphics-GUI/AnimatedGifEncoder.htm
+        // TODO: https://stackoverflow.com/questions/51163881/issue-with-converting-an-arraylist-of-bufferedimages-to-a-gif-using-gifsequencew
         // Create the Writer
         this.gifWriter = getWriter();
         this.imageType = imageType;
@@ -84,7 +86,6 @@ public class GifSequenceWriter {
      */
     public void close() throws IOException {
         this.gifWriter.endWriteSequence();
-
     }
 
     /**
@@ -99,8 +100,8 @@ public class GifSequenceWriter {
 
         if (!iter.hasNext())
             throw new IIOException("No GIF Image Writers Exist");
-        else
-            return iter.next();
+
+        return iter.next();
     }
 
     /**

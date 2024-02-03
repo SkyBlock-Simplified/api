@@ -4,7 +4,6 @@ import dev.sbs.api.data.DataSession;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.SimplifiedException;
 import lombok.Cleanup;
 import lombok.Getter;
 import org.apache.logging.log4j.Level;
@@ -176,9 +175,7 @@ public final class SqlSession extends DataSession<SqlModel> {
             @Cleanup Session session = this.openSession();
             consumer.accept(session);
         } catch (Exception exception) {
-            throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
+            throw new SqlException(exception);
         }
     }
 
@@ -187,9 +184,7 @@ public final class SqlSession extends DataSession<SqlModel> {
             @Cleanup Session session = this.openSession();
             return function.apply(session);
         } catch (Exception exception) {
-            throw SimplifiedException.of(SqlException.class)
-                .withCause(exception)
-                .build();
+            throw new SqlException(exception);
         }
     }
 

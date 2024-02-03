@@ -2,11 +2,11 @@ package dev.sbs.api.minecraft.image;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.minecraft.exception.MinecraftException;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.mutable.Range;
-import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.SystemUtil;
 import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.AccessLevel;
@@ -306,14 +306,14 @@ public class MinecraftText {
         return new ByteArrayInputStream(dataOutput.toByteArray());
     }
 
-    public File toFile() {
+    public File toFile() throws MinecraftException {
         try {
             // TODO: Fix minecrafttext/ writing
             File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;
         } catch (IOException ioex) {
-            throw SimplifiedException.wrapNative(ioex).build();
+            throw new MinecraftException(ioex);
         }
     }
 

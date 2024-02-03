@@ -5,7 +5,6 @@ import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
-import dev.sbs.api.util.SimplifiedException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +33,7 @@ public abstract class Manager<K, V> {
      */
     protected void add(@NotNull K identifier, @NotNull V value) throws RegisteredReferenceException {
         if (this.isRegistered(identifier))
-            throw SimplifiedException.of(RegisteredReferenceException.class)
-                .withMessage(RegisteredReferenceException.getMessage(identifier))
-                .build();
+            throw new RegisteredReferenceException(identifier);
 
         this.ref.put(identifier, value);
     }
@@ -48,9 +45,7 @@ public abstract class Manager<K, V> {
      */
     public final void clear() throws InsufficientModeException {
         if (this.getMode().getLevel() < Mode.ALL.getLevel())
-            throw SimplifiedException.of(InsufficientModeException.class)
-                .withMessage(InsufficientModeException.getMessage(this.getMode()))
-                .build();
+            throw new InsufficientModeException(this.getMode());
 
         this.ref.clear();
     }
@@ -67,10 +62,7 @@ public abstract class Manager<K, V> {
             .filter(entry -> this.keyMatcher.apply(entry, identifier))
             .map(Map.Entry::getValue)
             .findFirst()
-            .orElseThrow(() -> SimplifiedException.of(UnknownReferenceException.class)
-                .withMessage(UnknownReferenceException.getMessage(identifier))
-                .build()
-            );
+            .orElseThrow(() -> new UnknownReferenceException(identifier));
     }
 
     /**
@@ -90,15 +82,11 @@ public abstract class Manager<K, V> {
      * @throws InsufficientModeException When the mode isn't {@link Mode#ALL}.
      */
     protected void remove(@NotNull K identifier) throws InsufficientModeException, UnknownReferenceException {
-        if (!this.isRegistered(identifier)) {
-            throw SimplifiedException.of(UnknownReferenceException.class)
-                .withMessage(UnknownReferenceException.getMessage(identifier))
-                .build();
-        } else {
+        if (!this.isRegistered(identifier))
+            throw new UnknownReferenceException(identifier);
+        else {
             if (this.getMode().getLevel() < Mode.ALL.getLevel())
-                throw SimplifiedException.of(InsufficientModeException.class)
-                    .withMessage(InsufficientModeException.getMessage(this.getMode()))
-                    .build();
+                throw new InsufficientModeException(this.getMode());
         }
 
         this.ref.remove(identifier);
@@ -113,15 +101,11 @@ public abstract class Manager<K, V> {
      * @throws InsufficientModeException When the mode isn't {@link Mode#UPDATE} or higher.
      */
     protected void update(@NotNull K identifier, @NotNull V newValue) throws InsufficientModeException, UnknownReferenceException {
-        if (!this.isRegistered(identifier)) {
-            throw SimplifiedException.of(UnknownReferenceException.class)
-                .withMessage(UnknownReferenceException.getMessage(identifier))
-                .build();
-        } else {
+        if (!this.isRegistered(identifier))
+            throw new UnknownReferenceException(identifier);
+        else {
             if (this.getMode().getLevel() < Mode.UPDATE.getLevel())
-                throw SimplifiedException.of(InsufficientModeException.class)
-                    .withMessage(InsufficientModeException.getMessage(this.getMode()))
-                    .build();
+                throw new InsufficientModeException(this.getMode());
         }
 
         this.ref.put(identifier, newValue);

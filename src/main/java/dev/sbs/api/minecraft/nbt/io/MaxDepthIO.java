@@ -1,7 +1,6 @@
 package dev.sbs.api.minecraft.nbt.io;
 
-import dev.sbs.api.minecraft.nbt.exception.MaxDepthException;
-import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.minecraft.nbt.exception.NbtMaxDepthException;
 
 public interface MaxDepthIO {
 
@@ -10,9 +9,7 @@ public interface MaxDepthIO {
             throw new IllegalArgumentException("Negative maximum depth is not allowed!");
 
         if (depth == 0) {
-            throw SimplifiedException.of(MaxDepthException.class)
-                .withMessage("Maximum depth has been reached!")
-                .build();
+            throw new NbtMaxDepthException();
         }
 
         return --depth;

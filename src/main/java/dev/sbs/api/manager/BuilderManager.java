@@ -6,7 +6,6 @@ import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.SimplifiedException;
 import dev.sbs.api.util.builder.Builder;
 import dev.sbs.api.util.builder.ClassBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -38,9 +37,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
      */
     public final <T, B extends Builder<T>> void add(@NotNull Class<T> service, @NotNull Class<B> builder) throws RegisteredReferenceException {
         if (this.isRegistered(service))
-            throw SimplifiedException.of(RegisteredReferenceException.class)
-                .withMessage(RegisteredReferenceException.getMessage(service))
-                .build();
+            throw new RegisteredReferenceException(service);
 
         try {
             Class<?> tClass = Reflection.getSuperClass(builder);
@@ -51,9 +48,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
             }
         } catch (ReflectionException ignore) { }
 
-        throw SimplifiedException.of(InvalidReferenceException.class)
-            .withMessage(InvalidReferenceException.getMessage(builder, service))
-            .build();
+        throw new InvalidReferenceException(builder, service);
     }
 
     /**
@@ -71,9 +66,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
         if (ClassBuilder.class.isAssignableFrom(builder))
             return ((ClassBuilder<T>) Reflection.of(builder).newInstance()).build(service);
 
-        throw SimplifiedException.of(InvalidReferenceException.class)
-            .withMessage(InvalidReferenceException.getMessage(service.getName(), builder))
-            .build();
+        throw new InvalidReferenceException(service.getName(), builder);
     }
 
     /**

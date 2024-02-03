@@ -8,7 +8,6 @@ import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
-import dev.sbs.api.util.SimplifiedException;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -49,9 +48,7 @@ public class ServiceManager extends Manager<Class<?>, Object> {
      */
     public final <T extends Model, R extends Repository<? extends T>> void addRepository(@NotNull Class<T> service, @NotNull R repository) throws RegisteredReferenceException, InvalidReferenceException {
         if (!service.isAssignableFrom(repository.getType()))
-            throw SimplifiedException.of(InvalidReferenceException.class)
-                .withMessage(InvalidReferenceException.getMessage(service.getName(), repository))
-                .build();
+            throw new InvalidReferenceException(service.getName(), repository);
 
         super.add(service, repository);
     }
@@ -85,9 +82,7 @@ public class ServiceManager extends Manager<Class<?>, Object> {
             .collect(Concurrent.toUnmodifiableSet());
 
         if (values.isEmpty())
-            throw SimplifiedException.of(UnknownReferenceException.class)
-                .withMessage(UnknownReferenceException.getMessage(service))
-                .build();
+            throw new UnknownReferenceException(service);
 
         return values;
     }

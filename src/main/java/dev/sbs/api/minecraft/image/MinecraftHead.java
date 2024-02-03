@@ -1,6 +1,6 @@
 package dev.sbs.api.minecraft.image;
 
-import dev.sbs.api.util.SimplifiedException;
+import dev.sbs.api.minecraft.exception.MinecraftException;
 import dev.sbs.api.util.SystemUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -204,21 +204,21 @@ public class MinecraftHead {
         return finalHead;
     }
 
-    public InputStream toStream() {
+    public InputStream toStream() throws MinecraftException {
         try {
             return new FileInputStream(this.toFile());
         } catch (FileNotFoundException fnfex) {
-            throw SimplifiedException.wrapNative(fnfex).build();
+            throw new MinecraftException(fnfex);
         }
     }
 
-    public File toFile() {
+    public File toFile() throws MinecraftException {
         try {
             File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;
         } catch (IOException ioex) {
-            throw SimplifiedException.wrapNative(ioex).build();
+            throw new MinecraftException(ioex);
         }
     }
 

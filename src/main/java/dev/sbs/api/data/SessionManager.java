@@ -2,7 +2,6 @@ package dev.sbs.api.data;
 
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.Model;
-import dev.sbs.api.util.SimplifiedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -70,9 +69,7 @@ public final class SessionManager {
         if (this.isRegistered())
             return (S) this.session.get();
         else
-            throw SimplifiedException.of(DataException.class)
-                .withMessage("Session has not been initialized!")
-                .build();
+            throw new DataException("Session has not been initialized.");
     }
 
     public boolean isActive() {
