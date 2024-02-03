@@ -1,8 +1,8 @@
-package dev.sbs.api.util.commandline.parser;
+package dev.sbs.api.util.io.commandline.parser;
 
-import dev.sbs.api.util.commandline.CommandLine;
-import dev.sbs.api.util.commandline.exception.ParseException;
-import dev.sbs.api.util.commandline.option.Options;
+import dev.sbs.api.util.io.commandline.CommandLine;
+import dev.sbs.api.util.io.commandline.exception.ParseException;
+import dev.sbs.api.util.io.commandline.option.Options;
 
 /**
  * A class that implements the <code>CommandLineParser</code> interface

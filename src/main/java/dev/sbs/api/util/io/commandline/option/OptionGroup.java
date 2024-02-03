@@ -1,6 +1,6 @@
-package dev.sbs.api.util.commandline.option;
+package dev.sbs.api.util.io.commandline.option;
 
-import dev.sbs.api.util.commandline.exception.AlreadySelectedException;
+import dev.sbs.api.util.io.commandline.exception.AlreadySelectedException;
 import lombok.Getter;
 import lombok.Setter;
 

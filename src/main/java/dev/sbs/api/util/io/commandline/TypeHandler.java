@@ -1,6 +1,6 @@
-package dev.sbs.api.util.commandline;
+package dev.sbs.api.util.io.commandline;
 
-import dev.sbs.api.util.commandline.exception.ParseException;
+import dev.sbs.api.util.io.commandline.exception.ParseException;
 
 import java.io.File;
 import java.net.MalformedURLException;

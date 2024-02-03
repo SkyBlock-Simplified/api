@@ -1,6 +1,6 @@
-package dev.sbs.api.util.commandline.exception;
+package dev.sbs.api.util.io.commandline.exception;
 
-import dev.sbs.api.util.commandline.option.Option;
+import dev.sbs.api.util.io.commandline.option.Option;
 import lombok.Getter;
 
 /**

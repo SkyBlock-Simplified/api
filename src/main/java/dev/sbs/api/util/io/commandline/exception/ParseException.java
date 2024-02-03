@@ -1,4 +1,4 @@
-package dev.sbs.api.util.commandline.exception;
+package dev.sbs.api.util.io.commandline.exception;
 
 /**
  * Base for Exceptions thrown during parsing of a command-line.

@@ -1,17 +1,17 @@
-package dev.sbs.api.util.commandline.parser;
+package dev.sbs.api.util.io.commandline.parser;
 
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.commandline.CommandLine;
-import dev.sbs.api.util.commandline.exception.AlreadySelectedException;
-import dev.sbs.api.util.commandline.exception.AmbiguousOptionException;
-import dev.sbs.api.util.commandline.exception.MissingArgumentException;
-import dev.sbs.api.util.commandline.exception.MissingOptionException;
-import dev.sbs.api.util.commandline.exception.ParseException;
-import dev.sbs.api.util.commandline.exception.UnrecognizedOptionException;
-import dev.sbs.api.util.commandline.option.Option;
-import dev.sbs.api.util.commandline.option.OptionGroup;
-import dev.sbs.api.util.commandline.option.Options;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.io.commandline.CommandLine;
+import dev.sbs.api.util.io.commandline.exception.AlreadySelectedException;
+import dev.sbs.api.util.io.commandline.exception.AmbiguousOptionException;
+import dev.sbs.api.util.io.commandline.exception.MissingArgumentException;
+import dev.sbs.api.util.io.commandline.exception.MissingOptionException;
+import dev.sbs.api.util.io.commandline.exception.ParseException;
+import dev.sbs.api.util.io.commandline.exception.UnrecognizedOptionException;
+import dev.sbs.api.util.io.commandline.option.Option;
+import dev.sbs.api.util.io.commandline.option.OptionGroup;
+import dev.sbs.api.util.io.commandline.option.Options;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

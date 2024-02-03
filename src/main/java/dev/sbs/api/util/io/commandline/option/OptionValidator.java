@@ -1,4 +1,4 @@
-package dev.sbs.api.util.commandline.option;
+package dev.sbs.api.util.io.commandline.option;
 
 /**
  * Validates an Option string.

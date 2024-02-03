@@ -1,6 +1,6 @@
-package dev.sbs.api.util.commandline.option;
+package dev.sbs.api.util.io.commandline.option;
 
-import dev.sbs.api.util.commandline.CommandLine;
+import dev.sbs.api.util.io.commandline.CommandLine;
 import lombok.Getter;
 import lombok.Setter;
 

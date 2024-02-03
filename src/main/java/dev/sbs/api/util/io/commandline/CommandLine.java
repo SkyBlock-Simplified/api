@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package dev.sbs.api.util.commandline;
+package dev.sbs.api.util.io.commandline;
 
-import dev.sbs.api.util.commandline.exception.ParseException;
-import dev.sbs.api.util.commandline.option.Option;
-import dev.sbs.api.util.commandline.option.Options;
 import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.io.commandline.exception.ParseException;
+import dev.sbs.api.util.io.commandline.option.Option;
+import dev.sbs.api.util.io.commandline.option.Options;
 
 import java.io.Serializable;
 import java.util.ArrayList;
