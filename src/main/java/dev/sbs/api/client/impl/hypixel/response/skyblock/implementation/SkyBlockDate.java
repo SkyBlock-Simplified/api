@@ -366,11 +366,11 @@ public class SkyBlockDate extends SimpleDate {
         private Mayor(int year) {
             this.election = new Cycle(
                 new SkyBlockDate(year, Season.LATE_SUMMER, 27, 0),
-                new SkyBlockDate(year, Season.LATE_SPRING, 27, 0)
+                new SkyBlockDate(year + 1, Season.LATE_SPRING, 27, 0)
             );
             this.term = new Cycle(
-                new SkyBlockDate(year, Season.LATE_SPRING, 27, 0),
-                new SkyBlockDate(year + 1, Season.LATE_SPRING, 27, 0)
+                new SkyBlockDate(year + 1, Season.LATE_SPRING, 27, 0),
+                new SkyBlockDate(year + 2, Season.LATE_SPRING, 27, 0)
             );
         }
 
