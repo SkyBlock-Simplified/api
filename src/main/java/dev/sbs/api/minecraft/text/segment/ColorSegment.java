@@ -2,7 +2,7 @@ package dev.sbs.api.minecraft.text.segment;
 
 import com.google.gson.JsonObject;
 import dev.sbs.api.minecraft.text.ChatFormat;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -8,7 +8,7 @@ import dev.sbs.api.minecraft.image.MinecraftText;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;

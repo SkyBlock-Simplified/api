@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
-import dev.sbs.api.util.helper.Preconditions;
+import dev.sbs.api.util.Preconditions;
 import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.Cleanup;
 import lombok.SneakyThrows;

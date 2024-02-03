@@ -1,6 +1,6 @@
 package dev.sbs.api.math.function;
 
-import dev.sbs.api.util.helper.ArrayUtil;
+import dev.sbs.api.util.ArrayUtil;
 
 /**
  * Class representing the builtin functions available for use in expressions

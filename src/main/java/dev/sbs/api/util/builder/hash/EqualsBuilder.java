@@ -1,8 +1,8 @@
 package dev.sbs.api.util.builder.hash;
 
+import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.util.ArrayUtil;
 import dev.sbs.api.util.builder.Builder;
-import dev.sbs.api.util.helper.ArrayUtil;
-import dev.sbs.api.util.mutable.pair.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;

@@ -4,11 +4,11 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.weight.Weight;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.weight.Weighted;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_levels.DungeonLevelModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.NumberUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

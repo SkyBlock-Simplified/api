@@ -2,9 +2,9 @@ package dev.sbs.api.client.impl.mojang.response;
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.io.gson.SerializedPath;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

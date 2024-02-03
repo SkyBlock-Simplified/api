@@ -5,13 +5,13 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.weight.Weight;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.weight.Weighted;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.model.skyblock.slayer_levels.SlayerLevelModel;
 import dev.sbs.api.data.model.skyblock.slayers.SlayerModel;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.NumberUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

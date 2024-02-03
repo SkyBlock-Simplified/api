@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.event.ClickEvent;
 import dev.sbs.api.minecraft.text.event.HoverEvent;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -1,7 +1,7 @@
 package dev.sbs.api.util.io.commandline.parser;
 
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.io.commandline.CommandLine;
 import dev.sbs.api.util.io.commandline.exception.AlreadySelectedException;
 import dev.sbs.api.util.io.commandline.exception.AmbiguousOptionException;

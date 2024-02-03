@@ -5,8 +5,8 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.a
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.account.CommunityUpgrades;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.member.Member;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.profile_stats.ProfileStats;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

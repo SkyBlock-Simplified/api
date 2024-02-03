@@ -7,11 +7,11 @@ import dev.sbs.api.client.impl.mojang.exception.MojangApiException;
 import dev.sbs.api.client.impl.mojang.request.MojangApiRequest;
 import dev.sbs.api.client.impl.mojang.request.MojangSessionRequest;
 import dev.sbs.api.client.impl.sbs.response.MojangProfileResponse;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.PrimitiveUtil;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.PrimitiveUtil;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

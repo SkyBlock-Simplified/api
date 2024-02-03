@@ -8,15 +8,15 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.d
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.skill.EnhancedSkill;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.skill.Skill;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.weight.Weight;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minions.MinionModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.util.mutable.pair.Pair;
-import dev.sbs.api.util.mutable.primitive.MutableDouble;
+import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.mutable.primitive.MutableDouble;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

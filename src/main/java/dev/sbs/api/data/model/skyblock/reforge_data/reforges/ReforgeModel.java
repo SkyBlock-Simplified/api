@@ -1,10 +1,10 @@
 package dev.sbs.api.data.model.skyblock.reforge_data.reforges;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.data.model.skyblock.items.ItemModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforge_conditions.ReforgeConditionModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
 
 import java.util.List;
 

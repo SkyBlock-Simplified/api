@@ -1,6 +1,6 @@
 package dev.sbs.api.util.io.commandline.option;
 
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.io.commandline.CommandLine;
 
 import java.io.Serializable;

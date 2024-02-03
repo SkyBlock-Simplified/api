@@ -1,7 +1,7 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.bestiary;
 
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.io.gson.SerializedPath;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

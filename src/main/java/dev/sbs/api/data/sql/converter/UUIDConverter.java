@@ -1,6 +1,6 @@
 package dev.sbs.api.data.sql.converter;
 
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

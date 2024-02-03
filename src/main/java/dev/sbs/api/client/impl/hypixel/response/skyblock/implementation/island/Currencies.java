@@ -1,9 +1,9 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island;
 
 import com.google.gson.annotations.SerializedName;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.mutable.pair.Pair;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.mutable.pair.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

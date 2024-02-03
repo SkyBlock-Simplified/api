@@ -1,7 +1,7 @@
 package dev.sbs.api.client.impl.hypixel.response.hypixel.implementation;
 
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

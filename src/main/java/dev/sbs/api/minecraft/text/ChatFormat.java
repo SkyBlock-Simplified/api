@@ -1,8 +1,8 @@
 package dev.sbs.api.minecraft.text;
 
-import dev.sbs.api.util.helper.Preconditions;
-import dev.sbs.api.util.helper.RegexUtil;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.Preconditions;
+import dev.sbs.api.util.RegexUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

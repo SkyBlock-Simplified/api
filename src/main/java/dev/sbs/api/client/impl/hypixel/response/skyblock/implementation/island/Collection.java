@@ -1,8 +1,8 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island;
 
+import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

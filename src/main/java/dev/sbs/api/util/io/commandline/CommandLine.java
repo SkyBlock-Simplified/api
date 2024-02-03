@@ -17,7 +17,7 @@
 
 package dev.sbs.api.util.io.commandline;
 
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.io.commandline.exception.ParseException;
 import dev.sbs.api.util.io.commandline.option.Option;
 import dev.sbs.api.util.io.commandline.option.Options;

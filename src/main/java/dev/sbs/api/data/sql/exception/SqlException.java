@@ -1,9 +1,9 @@
 package dev.sbs.api.data.sql.exception;
 
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.exception.DataException;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.mutable.triple.Triple;
+import dev.sbs.api.mutable.triple.Triple;
 
 public class SqlException extends DataException {
 

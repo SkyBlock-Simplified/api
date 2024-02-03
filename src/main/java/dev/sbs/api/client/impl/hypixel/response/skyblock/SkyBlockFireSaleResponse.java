@@ -1,8 +1,8 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock;
 
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockFireSale;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

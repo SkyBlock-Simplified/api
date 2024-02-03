@@ -1,14 +1,14 @@
 package dev.sbs.api.minecraft.image;
 
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
+import dev.sbs.api.mutable.Range;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.SystemUtil;
+import dev.sbs.api.util.SystemUtil;
 import dev.sbs.api.util.io.ByteArrayDataOutput;
-import dev.sbs.api.util.mutable.Range;
 import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.Getter;

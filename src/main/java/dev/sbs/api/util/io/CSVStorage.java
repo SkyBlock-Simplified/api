@@ -1,9 +1,9 @@
 package dev.sbs.api.util.io;
 
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.helper.SystemUtil;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.util.StringUtil;
+import dev.sbs.api.util.SystemUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;

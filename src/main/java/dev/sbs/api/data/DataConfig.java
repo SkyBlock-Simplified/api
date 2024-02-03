@@ -1,10 +1,10 @@
 package dev.sbs.api.data;
 
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.sort.Graph;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.sort.Graph;
 import lombok.Getter;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;

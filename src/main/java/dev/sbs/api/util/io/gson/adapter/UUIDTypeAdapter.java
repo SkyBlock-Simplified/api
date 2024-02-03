@@ -3,7 +3,7 @@ package dev.sbs.api.util.io.gson.adapter;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 
 import java.io.IOException;
 import java.util.UUID;

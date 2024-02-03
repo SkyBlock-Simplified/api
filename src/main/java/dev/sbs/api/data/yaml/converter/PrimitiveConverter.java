@@ -1,7 +1,7 @@
 package dev.sbs.api.data.yaml.converter;
 
 import dev.sbs.api.data.yaml.InternalConverter;
-import dev.sbs.api.util.helper.NumberUtil;
+import dev.sbs.api.util.NumberUtil;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;

@@ -3,10 +3,10 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 import dev.sbs.api.minecraft.nbt.io.MaxDepthIO;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
+import dev.sbs.api.mutable.triple.Triple;
+import dev.sbs.api.stream.StreamUtil;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
 import dev.sbs.api.util.builder.hash.HashCodeBuilder;
-import dev.sbs.api.util.mutable.triple.Triple;
-import dev.sbs.api.util.stream.StreamUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

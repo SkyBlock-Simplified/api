@@ -2,8 +2,8 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
-import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.mutable.pair.Pair;
+import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

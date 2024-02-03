@@ -1,6 +1,6 @@
 package dev.sbs.api.data.yaml;
 
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

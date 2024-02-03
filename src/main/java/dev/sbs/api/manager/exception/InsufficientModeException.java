@@ -1,10 +1,10 @@
 package dev.sbs.api.manager.exception;
 
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.manager.Manager;
+import dev.sbs.api.mutable.triple.Triple;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.mutable.triple.Triple;
 
 public final class InsufficientModeException extends SimplifiedException {
 

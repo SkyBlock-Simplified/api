@@ -1,6 +1,6 @@
 package dev.sbs.api.minecraft.ping;
 
-import dev.sbs.api.util.helper.RegexUtil;
+import dev.sbs.api.util.RegexUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

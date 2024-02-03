@@ -1,7 +1,7 @@
 package dev.sbs.api.data.sql.converter.list;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.Concurrent;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

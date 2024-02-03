@@ -16,7 +16,7 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

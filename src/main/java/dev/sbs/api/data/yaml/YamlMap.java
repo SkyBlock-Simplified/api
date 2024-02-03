@@ -1,10 +1,10 @@
 package dev.sbs.api.data.yaml;
 
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

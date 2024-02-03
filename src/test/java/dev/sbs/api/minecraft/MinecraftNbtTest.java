@@ -5,13 +5,13 @@ import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.SkyBlockAuctionsResponse;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockAuction;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.NbtContent;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.array.IntArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.helper.StringUtil;
-import dev.sbs.api.util.helper.SystemUtil;
+import dev.sbs.api.util.StringUtil;
+import dev.sbs.api.util.SystemUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;

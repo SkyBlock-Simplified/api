@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.impl.hypixel.response.Rarity;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.Experience;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.weight.Weight;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

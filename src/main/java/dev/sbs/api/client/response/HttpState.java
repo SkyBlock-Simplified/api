@@ -1,6 +1,6 @@
 package dev.sbs.api.client.response;
 
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
 
 @Getter

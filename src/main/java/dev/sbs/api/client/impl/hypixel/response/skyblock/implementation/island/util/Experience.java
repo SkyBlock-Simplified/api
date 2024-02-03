@@ -1,6 +1,6 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util;
 
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.IntStream;

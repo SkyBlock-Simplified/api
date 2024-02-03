@@ -11,10 +11,10 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.d
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.mining.ForgeItem;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.mining.Mining;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.pet.PetData;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.util.io.gson.SerializedPath;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

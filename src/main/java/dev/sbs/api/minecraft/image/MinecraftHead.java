@@ -1,7 +1,7 @@
 package dev.sbs.api.minecraft.image;
 
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.helper.SystemUtil;
+import dev.sbs.api.util.SystemUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

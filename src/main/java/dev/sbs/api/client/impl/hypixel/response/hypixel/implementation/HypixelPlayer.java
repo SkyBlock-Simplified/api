@@ -1,12 +1,12 @@
 package dev.sbs.api.client.impl.hypixel.response.hypixel.implementation;
 
 import com.google.gson.annotations.SerializedName;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.minecraft.text.ChatFormat;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.helper.RegexUtil;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.RegexUtil;
+import dev.sbs.api.util.StringUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

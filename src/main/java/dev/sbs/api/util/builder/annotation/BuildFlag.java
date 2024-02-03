@@ -1,7 +1,7 @@
 package dev.sbs.api.util.builder.annotation;
 
-import dev.sbs.api.util.helper.ArrayUtil;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.ArrayUtil;
+import dev.sbs.api.util.StringUtil;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 

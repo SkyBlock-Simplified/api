@@ -5,13 +5,13 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.a
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.account.EnhancedCommunityUpgrades;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.member.EnhancedMember;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.member.Member;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minions.MinionModel;
 import dev.sbs.api.data.model.skyblock.profiles.ProfileModel;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.linked.ConcurrentLinkedMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

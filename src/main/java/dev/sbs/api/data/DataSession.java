@@ -1,11 +1,11 @@
 package dev.sbs.api.data;
 
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.data.exception.DataException;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

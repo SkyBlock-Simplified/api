@@ -2,11 +2,11 @@ package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.
 
 import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.minecraft.text.ChatFormat;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.util.io.gson.SerializedPath;
 import lombok.AccessLevel;
 import lombok.Getter;

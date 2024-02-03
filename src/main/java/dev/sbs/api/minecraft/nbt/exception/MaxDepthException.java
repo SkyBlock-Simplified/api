@@ -1,8 +1,8 @@
 package dev.sbs.api.minecraft.nbt.exception;
 
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.mutable.triple.Triple;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.mutable.triple.Triple;
 
 /**
  * Checked exception thrown after reaching maximum depth deserializing an NBT tag.

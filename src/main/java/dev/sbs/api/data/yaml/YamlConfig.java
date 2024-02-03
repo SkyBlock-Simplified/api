@@ -1,13 +1,13 @@
 package dev.sbs.api.data.yaml;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.collection.concurrent.Concurrent;
-import dev.sbs.api.util.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.util.helper.StringUtil;
+import dev.sbs.api.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

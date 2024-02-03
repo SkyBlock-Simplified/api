@@ -1,10 +1,10 @@
 package dev.sbs.api.minecraft.nbt.exception;
 
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
+import dev.sbs.api.mutable.triple.Triple;
 import dev.sbs.api.util.SimplifiedException;
-import dev.sbs.api.util.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.mutable.triple.Triple;
 
 /**
  * {@link NbtException NbtExceptions} are thrown when the {@link NbtFactory} class is unable<br>
