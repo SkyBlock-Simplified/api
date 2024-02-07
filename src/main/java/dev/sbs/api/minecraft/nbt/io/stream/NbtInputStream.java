@@ -84,25 +84,25 @@ public class NbtInputStream extends DataInputStream implements NbtInput {
 
     @SneakyThrows
     @Override
-    public @NotNull ListTag<?> readListTag(int maxDepth) {
+    public @NotNull ListTag<?> readListTag(int depth) {
         ListTag<Tag<?>> listTag = new ListTag<>();
         int listType = this.readUnsignedByte();
         int length = Math.max(0, this.readInt());
 
         for (int i = 0; i < length; i++)
-            listTag.add(this.readTag((byte) listType, this.decrementMaxDepth(maxDepth)));
+            listTag.add(this.readTag((byte) listType, this.incrementMaxDepth(depth)));
 
         return listTag;
     }
 
     @SneakyThrows
     @Override
-    public @NotNull CompoundTag readCompoundTag(int maxDepth) {
+    public @NotNull CompoundTag readCompoundTag(int depth) {
         CompoundTag compoundTag = new CompoundTag();
 
         for (int id = this.readUnsignedByte() & 0xFF; id != 0; id = this.readUnsignedByte() & 0xFF) {
             String key = this.readUTF();
-            Tag<?> tag = this.readTag((byte) id, this.decrementMaxDepth(maxDepth));
+            Tag<?> tag = this.readTag((byte) id, this.incrementMaxDepth(depth));
             compoundTag.put(key, tag);
         }
 

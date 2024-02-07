@@ -109,7 +109,7 @@ public class SnbtDeserializer extends StringReader implements NbtInput {
     }
 
     @Override
-    public @NotNull ListTag<?> readListTag(int maxDepth) throws IOException {
+    public @NotNull ListTag<?> readListTag(int depth) throws IOException {
         ListTag<Tag<?>> listTag = new ListTag<>();
 
         if (this.read() != ARRAY_START)
@@ -123,7 +123,7 @@ public class SnbtDeserializer extends StringReader implements NbtInput {
                 break;
             this.reset();
 
-            listTag.add(this.readTag(this.peekTagId(), this.decrementMaxDepth(maxDepth)));
+            listTag.add(this.readTag(this.peekTagId(), this.incrementMaxDepth(depth)));
             this.skipWhitespace();
         } while (this.read() == ENTRY_SEPARATOR);
 
@@ -131,7 +131,7 @@ public class SnbtDeserializer extends StringReader implements NbtInput {
     }
 
     @Override
-    public @NotNull CompoundTag readCompoundTag(int maxDepth) throws IOException {
+    public @NotNull CompoundTag readCompoundTag(int depth) throws IOException {
         CompoundTag compoundTag = new CompoundTag();
 
         if (this.read() != COMPOUND_START)
@@ -152,7 +152,7 @@ public class SnbtDeserializer extends StringReader implements NbtInput {
                 throw new IOException("Invalid value indicator in SNBT CompoundTag.");
             this.skipWhitespace();
 
-            Tag<?> tag = this.readTag(this.peekTagId(), this.decrementMaxDepth(maxDepth));
+            Tag<?> tag = this.readTag(this.peekTagId(), this.incrementMaxDepth(depth));
             compoundTag.put(key, tag);
             this.skipWhitespace();
         } while (this.read() == ENTRY_SEPARATOR);

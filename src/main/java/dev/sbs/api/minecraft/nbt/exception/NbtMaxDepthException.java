@@ -6,7 +6,7 @@ package dev.sbs.api.minecraft.nbt.exception;
 public class NbtMaxDepthException extends NbtException {
 
     public NbtMaxDepthException() {
-        super("Maximum depth has been reached!");
+        super("Maximum CompoundTag depth of 512 has been reached!");
     }
 
 }

@@ -6,10 +6,8 @@ import dev.sbs.api.minecraft.nbt.io.snbt.SnbtDeserializer;
 import dev.sbs.api.minecraft.nbt.io.snbt.SnbtSerializer;
 import dev.sbs.api.minecraft.nbt.io.stream.NbtInputStream;
 import dev.sbs.api.minecraft.nbt.io.stream.NbtOutputStream;
-import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.mutable.Range;
 import dev.sbs.api.util.PrimitiveUtil;
 import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.SystemUtil;
@@ -46,16 +44,6 @@ import java.util.zip.InflaterInputStream;
  */
 @Getter
 public class NbtFactory {
-
-    private final int maxDepth;
-
-    public NbtFactory() {
-        this(Tag.DEFAULT_MAX_DEPTH);
-    }
-
-    public NbtFactory(@org.jetbrains.annotations.Range(from = 0, to = Integer.MAX_VALUE) int maxDepth) {
-        this.maxDepth = Range.between(0, Integer.MAX_VALUE).fit(maxDepth);
-    }
 
     /**
      * Deserializes an NBT Base64 encoded {@link String} into a {@link CompoundTag}.
@@ -131,7 +119,7 @@ public class NbtFactory {
     public @NotNull CompoundTag fromSnbt(@NotNull String snbt) throws NbtException {
         try {
             @Cleanup SnbtDeserializer snbtDeserializer = new SnbtDeserializer(snbt);
-            return snbtDeserializer.readCompoundTag(this.getMaxDepth());
+            return snbtDeserializer.readCompoundTag(0);
         } catch (IOException exception) {
             throw new NbtException(exception);
         }
@@ -182,7 +170,7 @@ public class NbtFactory {
                 throw new IOException("Root tag in NBT structure must be a CompoundTag.");
 
             inputStream.readUTF(); // Discard Root Name
-            return inputStream.readCompoundTag(this.getMaxDepth());
+            return inputStream.readCompoundTag();
         } catch (IOException exception) {
             throw new NbtException(exception);
         }
@@ -276,7 +264,7 @@ public class NbtFactory {
         try {
             @Cleanup FileWriter writer = new FileWriter(file);
             NbtJsonSerializer nbtJsonSerializer = new NbtJsonSerializer(writer);
-            nbtJsonSerializer.writeCompoundTag(compound, this.getMaxDepth());
+            nbtJsonSerializer.writeCompoundTag(compound);
         } catch (IOException exception) {
             throw new NbtException(exception);
         }
@@ -292,7 +280,7 @@ public class NbtFactory {
         try {
             StringWriter writer = new StringWriter();
             NbtJsonSerializer nbtJsonSerializer = new NbtJsonSerializer(writer);
-            nbtJsonSerializer.writeCompoundTag(compound, this.getMaxDepth());
+            nbtJsonSerializer.writeCompoundTag(compound);
             return writer.toString();
         } catch (IOException exception) {
             throw new NbtException(exception);
@@ -309,7 +297,7 @@ public class NbtFactory {
         try {
             StringWriter writer = new StringWriter();
             SnbtSerializer snbtSerializer = new SnbtSerializer(writer);
-            snbtSerializer.writeCompoundTag(compound, this.getMaxDepth());
+            snbtSerializer.writeCompoundTag(compound);
             return writer.toString();
         } catch (IOException exception) {
             throw new NbtException(exception);
@@ -327,7 +315,7 @@ public class NbtFactory {
         try {
             @Cleanup FileWriter writer = new FileWriter(file);
             SnbtSerializer snbtSerializer = new SnbtSerializer(writer);
-            snbtSerializer.writeCompoundTag(compound, this.getMaxDepth());
+            snbtSerializer.writeCompoundTag(compound);
         } catch (IOException exception) {
             throw new NbtException(exception);
         }
@@ -356,7 +344,7 @@ public class NbtFactory {
         try {
             outputStream.writeByte(TagType.COMPOUND.getId());
             outputStream.writeUTF(""); // Empty Root Name
-            outputStream.writeCompoundTag(compound, this.getMaxDepth());
+            outputStream.writeCompoundTag(compound);
         } catch (IOException exception) {
             throw new NbtException(exception);
         }

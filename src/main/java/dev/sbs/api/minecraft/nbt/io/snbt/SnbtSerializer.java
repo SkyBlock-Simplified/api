@@ -87,17 +87,17 @@ public class SnbtSerializer extends JsonWriter implements NbtOutput, Closeable {
     }
 
     @Override
-    public void writeListTag(@NotNull ListTag<Tag<?>> tag, int maxDepth) throws IOException {
+    public void writeListTag(@NotNull ListTag<Tag<?>> tag, int depth) throws IOException {
         this.beginArray();
 
         for (Tag<?> value : tag)
-            this.writeTag(value, this.decrementMaxDepth(maxDepth));
+            this.writeTag(value, this.incrementMaxDepth(depth));
 
         this.endArray();
     }
 
     @Override
-    public void writeCompoundTag(@NotNull CompoundTag tag, int maxDepth) throws IOException {
+    public void writeCompoundTag(@NotNull CompoundTag tag, int depth) throws IOException {
         this.beginObject();
 
         for (Map.Entry<String, Tag<?>> entry : tag) {
@@ -105,7 +105,7 @@ public class SnbtSerializer extends JsonWriter implements NbtOutput, Closeable {
                 break;
 
             this.name(StringUtil.stripToEmpty(entry.getKey()));
-            this.writeTag(entry.getValue(), this.decrementMaxDepth(maxDepth));
+            this.writeTag(entry.getValue(), this.incrementMaxDepth(depth));
         }
 
         this.endObject();

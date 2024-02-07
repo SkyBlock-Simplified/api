@@ -54,9 +54,17 @@ public interface NbtOutput extends MaxDepthIO {
 
     void writeStringTag(@NotNull StringTag tag) throws IOException;
 
-    public void writeListTag(@NotNull ListTag<Tag<?>> tag, int maxDepth) throws IOException;
+    default void writeListTag(@NotNull ListTag<Tag<?>> tag) throws IOException {
+        this.writeListTag(tag, 0);
+    }
 
-    void writeCompoundTag(@NotNull CompoundTag tag, int maxDepth) throws IOException;
+    void writeListTag(@NotNull ListTag<Tag<?>> tag, int depth) throws IOException;
+
+    default void writeCompoundTag(@NotNull CompoundTag tag) throws IOException {
+        this.writeCompoundTag(tag, 0);
+    }
+
+    void writeCompoundTag(@NotNull CompoundTag tag, int depth) throws IOException;
 
     void writeIntArrayTag(@NotNull IntArrayTag tag) throws IOException;
 

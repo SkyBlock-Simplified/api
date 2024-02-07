@@ -53,9 +53,17 @@ public interface NbtInput extends MaxDepthIO {
 
     @NotNull StringTag readStringTag() throws IOException;
 
-    @NotNull ListTag<?> readListTag(int maxDepth) throws IOException;
+    default @NotNull ListTag<?> readListTag() throws IOException {
+        return this.readListTag(0);
+    }
 
-    @NotNull CompoundTag readCompoundTag(int maxDepth) throws IOException;
+    @NotNull ListTag<?> readListTag(int depth) throws IOException;
+
+    default @NotNull CompoundTag readCompoundTag() throws IOException {
+        return this.readCompoundTag(0);
+    }
+
+    @NotNull CompoundTag readCompoundTag(int depth) throws IOException;
 
     @NotNull IntArrayTag readIntArrayTag() throws IOException;
 

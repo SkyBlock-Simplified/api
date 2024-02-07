@@ -84,24 +84,24 @@ public class NbtOutputStream extends DataOutputStream implements NbtOutput {
 
     @SneakyThrows
     @Override
-    public void writeListTag(@NotNull ListTag<Tag<?>> tag, int maxDepth) {
+    public void writeListTag(@NotNull ListTag<Tag<?>> tag, int depth) {
         this.writeByte(tag.getListType());
         this.writeInt(tag.size());
 
         for (Tag<?> element : tag)
-            this.writeTag(element, this.decrementMaxDepth(maxDepth));
+            this.writeTag(element, this.incrementMaxDepth(depth));
     }
 
     @SneakyThrows
     @Override
-    public void writeCompoundTag(@NotNull CompoundTag tag, int maxDepth) {
+    public void writeCompoundTag(@NotNull CompoundTag tag, int depth) {
         for (Map.Entry<String, Tag<?>> entry : tag) {
             if (entry.getValue().getId() == TagType.END.getId())
                 break;
 
             this.writeByte(entry.getValue().getId());
             this.writeUTF(StringUtil.stripToEmpty(entry.getKey()));
-            this.writeTag(entry.getValue(), this.decrementMaxDepth(maxDepth));
+            this.writeTag(entry.getValue(), this.incrementMaxDepth(depth));
         }
 
         this.writeByte(0);
