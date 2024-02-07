@@ -1,6 +1,5 @@
 package dev.sbs.api.minecraft.nbt.tags.collection;
 
-import dev.sbs.api.minecraft.nbt.io.MaxDepthIO;
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.mutable.triple.Triple;
@@ -23,7 +22,7 @@ import java.util.function.Predicate;
 /**
  * {@link TagType#LIST} (ID 9) is used for storing an ordered list of {@link Tag Tags}.
  */
-public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E>, Comparable<ListTag<E>>, MaxDepthIO {
+public class ListTag<E extends Tag<?>> extends Tag<List<E>> implements List<E>, Comparable<ListTag<E>> {
 
     private byte elementId;
 
