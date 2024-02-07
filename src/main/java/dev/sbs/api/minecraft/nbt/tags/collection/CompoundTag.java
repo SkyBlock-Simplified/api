@@ -2,6 +2,16 @@ package dev.sbs.api.minecraft.nbt.tags.collection;
 
 import dev.sbs.api.minecraft.nbt.tags.Tag;
 import dev.sbs.api.minecraft.nbt.tags.TagType;
+import dev.sbs.api.minecraft.nbt.tags.array.ByteArrayTag;
+import dev.sbs.api.minecraft.nbt.tags.array.IntArrayTag;
+import dev.sbs.api.minecraft.nbt.tags.array.LongArrayTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.ByteTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.DoubleTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.FloatTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
+import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.mutable.pair.Pair;
 import dev.sbs.api.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +33,13 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings("unchecked")
 public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String, Tag<?>>, Iterable<Map.Entry<String, Tag<?>>> {
+
+    public static final @NotNull CompoundTag EMPTY = new CompoundTag() {
+        @Override
+        public void requireModifiable() {
+            throw new UnsupportedOperationException("This nbt tag is not modifiable.");
+        }
+    };
 
     /**
      * Constructs an empty, unnamed compound tag.
@@ -65,7 +82,11 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     public boolean containsListOf(@NotNull String key, byte of) {
-        return this.containsType(key, TagType.LIST) && this.getList(key).getListType() == of;
+        return this.containsType(key, TagType.LIST) && this.getListTag(key).getListType() == of;
+    }
+
+    public boolean containsType(@NotNull String key, @NotNull TagType tagType) {
+        return this.containsType(key, tagType.getId());
     }
 
     /**
@@ -75,15 +96,12 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param typeId the tag type ID to test for.
      * @return true if this compound contains an entry with a given name (key) and if that entry is of a given tag type, false otherwise.
      */
+    @SuppressWarnings("")
     public boolean containsType(@NotNull String key, byte typeId) {
         if (!this.containsKey(key))
             return false;
 
-        return this.getTag(key).getId() == typeId;
-    }
-
-    public boolean containsType(@NotNull String key, TagType tagType) {
-        return this.containsType(key, tagType.getId());
+        return Objects.requireNonNull(this.get(key)).getId() == typeId;
     }
 
     /**
@@ -100,7 +118,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         CompoundTag current = this;
 
         for (String entry : entries) {
-            Tag<?> childTag = current.getTag(entry);
+            Tag<?> childTag = current.get(entry);
 
             if (childTag == null)
                 return false;
@@ -144,8 +162,12 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * {@inheritDoc}
      */
     @Override
-    public Tag<?> get(Object key) {
-        return this.getValue().get(key);
+    public @Nullable Tag<?> get(@Nullable Object key) {
+        return this.getOrDefault(key, null);
+    }
+
+    public <T extends Tag<?>> @NotNull T getOrDefault(@NotNull String key, @NotNull T defaultValue) {
+        return this.containsKey(key) ? (T) this.getValue().get(key) : defaultValue;
     }
 
     @Override
@@ -153,7 +175,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return TagType.COMPOUND.getId();
     }
 
-    public <T extends Tag<?>> ListTag<T> getList(@NotNull String key) {
+    public <T extends Tag<?>> ListTag<T> getListTag(@NotNull String key) {
         return this.getTag(key);
     }
 
@@ -166,7 +188,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param path The path to the entry.
      * @return The value, or NULL if not found.
      */
-    public <T extends Tag<?>> T getPath(String path) {
+    public <T extends Tag<?>> @Nullable T getPath(@NotNull String path) {
         return this.getPathOrDefault(path, null);
     }
 
@@ -177,9 +199,9 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * retrieval operation will be cancelled if any of them are missing.
      *
      * @param path The path to the entry.
-     * @return The value, or NULL if not found.
+     * @return The value, or default value if not found.
      */
-    public <T extends Tag<?>> T getPathOrDefault(String path, T defaultValue) {
+    public <T extends Tag<?>> T getPathOrDefault(@NotNull String path, @Nullable T defaultValue) {
         T value = defaultValue;
 
         if (this.containsPath(path)) {
@@ -189,32 +211,6 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         }
 
         return value;
-    }
-
-    /**
-     * Retrieve a map from a given path.
-     *
-     * @param path      The path of compounds to look up.
-     * @param createNew Whether or not to create new compounds on the way.
-     * @return The map at this location.
-     */
-    private CompoundTag getMap(List<String> path, boolean createNew) {
-        CompoundTag current = this;
-
-        for (String entry : path) {
-            CompoundTag childTag = current.getTag(entry);
-
-            if (childTag == null) {
-                if (!createNew)
-                    throw new IllegalArgumentException(String.format("Cannot find '%s' in '%s'.", entry, path));
-
-                current.put(entry, childTag = new CompoundTag());
-            }
-
-            current = childTag;
-        }
-
-        return current;
     }
 
     /**
@@ -240,35 +236,52 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     /**
+     * Retrieve a map from a given path.
+     *
+     * @param path      The path of compounds to look up.
+     * @param createNew Whether or not to create new compounds on the way.
+     * @return The map at this location.
+     */
+    private CompoundTag getMap(List<String> path, boolean createNew) {
+        CompoundTag current = this;
+
+        for (String entry : path) {
+            CompoundTag childTag = current.getTag(entry);
+
+            if (childTag == null) {
+                if (!createNew)
+                    throw new IllegalArgumentException(String.format("Cannot find '%s' in '%s'.", entry, path));
+
+                this.requireModifiable();
+                current.put(entry, childTag = new CompoundTag());
+            }
+
+            current = childTag;
+        }
+
+        return current;
+    }
+
+    /**
      * Retrieves a tag from this compound with a given name (key).
      *
      * @param key the name whose mapping is to be retrieved from this compound.
      * @param <T> the tag type you believe you are retrieving.
      * @return the value associated with {@code key} as type T.
      */
-    public <T extends Tag<?>> T getTag(@NotNull String key) {
+    public <T extends Tag<?>> @Nullable T getTag(@NotNull String key) {
         return (T) this.get(key);
     }
 
     /**
-     * Retrieve the value by the given key.
+     * Retrieves a tag from this compound with a given name (key).
      *
-     * @param key The name of the value.
-     * @return An existing or null value.
+     * @param key the name whose mapping is to be retrieved from this compound.
+     * @param <T> the tag type you believe you are retrieving.
+     * @return the value associated with {@code key} as type T.
      */
-    public <T> T getValue(String key) {
-        return this.getValue(key, null);
-    }
-
-    /**
-     * Retrieve the value by the given key.
-     *
-     * @param key          The name of the value.
-     * @param defaultValue The default value if key doesn't exist.
-     * @return An existing or default value.
-     */
-    public <T> T getValue(String key, T defaultValue) {
-        return this.containsKey(key) ? (T) this.get(key).getValue() : defaultValue;
+    public <T extends Tag<?>> @NotNull T getTagOrDefault(@NotNull String key, @NotNull T defaultValue) {
+        return this.getOrDefault(key, defaultValue);
     }
 
     /**
@@ -288,9 +301,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     /**
-     * Returns a {@code Set<>} of all names (keys) currently used within this compound.
-     *
-     * @return a {@code Set<>} of all names (keys) currently used within this compound.
+     * {@inheritDoc}
      */
     @Override
     public @NotNull Set<String> keySet() {
@@ -302,15 +313,60 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
     }
 
     /**
-     * Adds a given tag to this compound. Be careful, the tag's name is set to the {@code name} parameter automatically.
-     *
-     * @param key   the tag's name (key).
-     * @param value the tag to be added to the compound.
-     * @return the previous value mapped with the tag's name as type E if provided, or null if there wasn't any.
+     * {@inheritDoc}
      */
     @Override
     public @Nullable Tag<?> put(@NotNull String key, @NotNull Tag<?> value) {
+        this.requireModifiable();
         return this.getValue().put(key, value);
+    }
+
+    public @Nullable ByteTag put(@NotNull String key, byte value) {
+        return this.putTag(key, new ByteTag(value));
+    }
+
+    public @Nullable ShortTag put(@NotNull String key, short value) {
+        return this.putTag(key, new ShortTag(value));
+    }
+
+    public @Nullable IntTag put(@NotNull String key, int value) {
+        return this.putTag(key, new IntTag(value));
+    }
+
+    public @Nullable LongTag put(@NotNull String key, long value) {
+        return this.putTag(key, new LongTag(value));
+    }
+
+    public @Nullable FloatTag put(@NotNull String key, float value) {
+        return this.putTag(key, new FloatTag(value));
+    }
+
+    public @Nullable DoubleTag put(@NotNull String key, double value) {
+        return this.putTag(key, new DoubleTag(value));
+    }
+
+    public @Nullable ByteArrayTag put(@NotNull String key, @NotNull Byte[] value) {
+        return this.putTag(key, new ByteArrayTag(value));
+    }
+
+    public @Nullable StringTag put(@NotNull String key, @NotNull String value) {
+        return this.putTag(key, new StringTag(value));
+    }
+
+    public <T extends Tag<?>> @Nullable ListTag<T> put(@NotNull String key, @NotNull ListTag<T> value) {
+        return this.putTag(key, new ListTag<>(value));
+    }
+
+    public @Nullable CompoundTag put(@NotNull String key, @NotNull CompoundTag value) {
+        return this.putTag(key, new CompoundTag(value));
+    }
+
+    public @Nullable IntArrayTag put(@NotNull String key, @NotNull Integer[] value) {
+        return this.putTag(key, new IntArrayTag(value));
+    }
+
+    public @Nullable LongArrayTag put(@NotNull String key, @NotNull Long[] value) {
+        return this.putTag(key, new LongArrayTag(value));
     }
 
     /**
@@ -331,7 +387,7 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * @param value The new value of this entry.
      * @return This compound, for chaining.
      */
-    public CompoundTag putPath(String path, Tag<?> value) {
+    public @NotNull CompoundTag putPath(@NotNull String path, @NotNull Tag<?> value) {
         List<String> entries = StringUtil.toList(StringUtil.split(path, "\\."));
         CompoundTag map = this.getMap(entries.subList(0, entries.size() - 1), true);
         map.put(entries.get(entries.size() - 1), value);
@@ -339,14 +395,16 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return this;
     }
 
+    public <T extends Tag<?>> @Nullable T putTag(@NotNull String key, @NotNull T value) {
+        return (T) this.put(key, value);
+    }
+
     /**
-     * Removes a tag from this compound with a given name (key).
-     *
-     * @param key the key whose mapping is to be removed from this compound.
-     * @return the previous value associated with {@code key}.
+     * {@inheritDoc}
      */
     @Override
-    public Tag<?> remove(Object key) {
+    public @Nullable Tag<?> remove(Object key) {
+        this.requireModifiable();
         return this.getValue().remove(key);
     }
 
@@ -357,9 +415,10 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
      * retrieval operation will return the last most compound.
      *
      * @param path The path to the entry.
-     * @return The last most compound, or this compound if not found..
+     * @return The last most compound, or this compound if not found.
      */
-    public CompoundTag removePath(String path) {
+    public @NotNull CompoundTag removePath(@NotNull String path) {
+        this.requireModifiable();
         List<String> entries = StringUtil.toList(StringUtil.split(path, "\\."));
         CompoundTag currentTag = this;
 
@@ -367,35 +426,16 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
             String entry = entries.get(i);
 
             if (i == entries.size() - 1)
-                currentTag.remove(entry);
+                Objects.requireNonNull(currentTag).remove(entry);
             else
-                currentTag = currentTag.getTag(entry);
+                currentTag = Objects.requireNonNull(currentTag).getTag(entry);
         }
 
         // TODO: Save tag data
-        return currentTag;
+        return Objects.requireNonNull(currentTag);
     }
 
-    /**
-     * Removes a tag from this compound with a given name (key).
-     *
-     * @param key the name whose mapping is to be removed from this compound.
-     * @param <T> the tag type you believe you are removing (optional).
-     * @return the previous value associated with {@code key} as type T if provided.
-     */
-    public <T extends Tag<?>> T removeTag(@NotNull String key) {
-        return (T) this.getValue().remove(key);
-    }
-
-    /**
-     * Remove the value of a given entry.
-     *
-     * @param key The name of the value.
-     * @return The previous value, or NULL if not found.
-     */
-    public <T> T removeValue(String key) {
-        return (T) this.remove(key);
-    }
+    public void requireModifiable() { }
 
     /**
      * {@inheritDoc}
@@ -404,21 +444,25 @@ public class CompoundTag extends Tag<Map<String, Tag<?>>> implements Map<String,
         return this.getValue().size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Spliterator<Map.Entry<String, Tag<?>>> spliterator() {
         return this.getValue().entrySet().spliterator();
     }
 
     /**
-     * Returns all {@link Tag}s contained within this compound.
-     *
-     * @return all {@link Tag}s contained within this compound.
+     * {@inheritDoc}
      */
     @Override
     public @NotNull Collection<Tag<?>> values() {
         return this.getValue().values();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String toString() {
         return this.getValue().toString();
