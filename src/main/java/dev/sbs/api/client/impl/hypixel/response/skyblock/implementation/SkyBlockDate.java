@@ -2,6 +2,7 @@ package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.mutable.pair.Pair;
 import dev.sbs.api.util.Preconditions;
 import dev.sbs.api.util.SimpleDate;
 import dev.sbs.api.util.builder.hash.EqualsBuilder;
@@ -155,23 +156,23 @@ public class SkyBlockDate extends SimpleDate {
         return mayors;
     }
 
-    public static @NotNull SpecialMayor getNextSpecialMayor() {
+    public static @NotNull Pair<String, Mayor> getNextSpecialMayor() {
         return getSpecialMayors(1).findFirstOrNull();
     }
 
-    public static @NotNull ConcurrentList<SpecialMayor> getSpecialMayors(int next) {
+    public static @NotNull ConcurrentList<Pair<String, Mayor>> getSpecialMayors(int next) {
         return getSpecialMayors(next, new SkyBlockDate(System.currentTimeMillis()));
     }
 
-    public static @NotNull ConcurrentList<SpecialMayor> getSpecialMayors(int next, @NotNull SkyBlockDate fromDate) {
+    public static @NotNull ConcurrentList<Pair<String, Mayor>> getSpecialMayors(int next, @NotNull SkyBlockDate fromDate) {
         next = Math.max(next, 1);
         SkyBlockDate specialMayorDate = new SkyBlockDate(SkyBlockDate.Launch.SPECIAL_ELECTIONS_START);
-        ConcurrentList<SpecialMayor> specialMayors = Concurrent.newList();
+        ConcurrentList<Pair<String, Mayor>> specialMayors = Concurrent.newList();
         int iterations = 0;
 
         while (specialMayors.size() < next) {
             if (specialMayorDate.getYear() >= fromDate.getYear())
-                specialMayors.add(new SpecialMayor(SPECIAL_MAYOR_CYCLE.get(iterations % 3), specialMayorDate.getYear()));
+                specialMayors.add(Pair.of(SPECIAL_MAYOR_CYCLE.get(iterations % 3), new Mayor(specialMayorDate.getYear())));
 
             specialMayorDate = specialMayorDate.append(8);
             iterations++;
@@ -342,18 +343,6 @@ public class SkyBlockDate extends SimpleDate {
          * The time Special Mayors end in RealTime.
          */
         public static final long SPECIAL_ELECTIONS_END = new SkyBlockDate(96, Season.LATE_SPRING, 27, 0).getRealTime();
-
-    }
-
-    @Getter
-    public static class SpecialMayor extends Mayor {
-
-        private final @NotNull String name;
-
-        private SpecialMayor(@NotNull String name, int year) {
-            super(year);
-            this.name = name;
-        }
 
     }
 
