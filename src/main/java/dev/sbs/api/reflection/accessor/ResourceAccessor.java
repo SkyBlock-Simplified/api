@@ -48,8 +48,7 @@ public class ResourceAccessor {
         this.resources = locations.stream()
             .flatMap(locationInfo -> locationInfo.scanResources(scanned).stream())
             .filter(resourceInfo -> StringUtil.isEmpty(resourceName) || resourceInfo.getResourceName().startsWith(resourceName))
-            .collect(Concurrent.toList())
-            .toUnmodifiableList();
+            .collect(Concurrent.toUnmodifiableList());
     }
 
     private ResourceAccessor(@NotNull ClassLoader classLoader, @NotNull ConcurrentList<ResourceInfo> resources, @NotNull String packageName) {

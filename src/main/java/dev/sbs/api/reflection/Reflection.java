@@ -43,10 +43,10 @@ import java.util.stream.Collectors;
  * Allows for cached access to hidden fields, methods and classes.
  */
 @Getter
-public class Reflection<T> {
+public class Reflection<R> {
 
     private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
-    private final @NotNull Class<T> type;
+    private final @NotNull Class<R> type;
 
     /**
      * Creates a new reflection instance of {@literal packageName}.{@literal className}.
@@ -66,10 +66,10 @@ public class Reflection<T> {
     @SuppressWarnings("unchecked")
     private Reflection(@NotNull String classPath) {
         if (CLASS_CACHE.containsKey(classPath))
-            this.type = (Class<T>) CLASS_CACHE.get(classPath);
+            this.type = (Class<R>) CLASS_CACHE.get(classPath);
         else {
             try {
-                this.type = (Class<T>) Class.forName(classPath);
+                this.type = (Class<R>) Class.forName(classPath);
                 CLASS_CACHE.put(classPath, this.type);
             } catch (Exception cnfex) {
                 throw new ReflectionException(cnfex);
@@ -82,15 +82,15 @@ public class Reflection<T> {
      *
      * @param type The class to reflect.
      */
-    private Reflection(@NotNull Class<T> type) {
+    private Reflection(@NotNull Class<R> type) {
         this.type = PrimitiveUtil.wrap(type);
     }
 
-    public static <T> Reflection<T> of(@NotNull Class<T> clazz) {
+    public static <R> Reflection<R> of(@NotNull Class<R> clazz) {
         return new Reflection<>(clazz);
     }
 
-    public static <T> Reflection<T> of(@NotNull String packageName, @NotNull String simplifiedName) {
+    public static <R> Reflection<R> of(@NotNull String packageName, @NotNull String simplifiedName) {
         return new Reflection<>(packageName, simplifiedName);
     }
 
@@ -105,7 +105,8 @@ public class Reflection<T> {
      * @return The constructor with matching parameter types.
      * @throws ReflectionException When the class or constructor cannot be located.
      */
-    public final ConstructorAccessor getConstructor(Class<?>... paramTypes) throws ReflectionException {
+    @SuppressWarnings("unchecked")
+    public final ConstructorAccessor<R> getConstructor(Class<?>... paramTypes) throws ReflectionException {
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
         for (Constructor<?> constructor : this.getType().getDeclaredConstructors()) {
@@ -113,7 +114,7 @@ public class Reflection<T> {
 
             if (isEqualsTypeArray(constructorTypes, types)) {
                 constructor.setAccessible(true);
-                return new ConstructorAccessor(this, constructor);
+                return new ConstructorAccessor<R>(this, (Constructor<R>) constructor);
             }
         }
 
@@ -131,13 +132,13 @@ public class Reflection<T> {
      * @return The field with matching type.
      * @throws ReflectionException When the class or field cannot be located.
      */
-    public final @NotNull FieldAccessor getField(@NotNull Class<?> type) throws ReflectionException {
+    public final <T> @NotNull FieldAccessor<T> getField(@NotNull Class<T> type) throws ReflectionException {
         Class<?> utype = (type.isPrimitive() ? PrimitiveUtil.wrap(type) : PrimitiveUtil.unwrap(type));
 
         for (Field field : this.getType().getDeclaredFields()) {
             if (field.getType().equals(type) || type.isAssignableFrom(field.getType()) || field.getType().equals(utype) || utype.isAssignableFrom(field.getType())) {
                 field.setAccessible(true);
-                return new FieldAccessor(this, field);
+                return new FieldAccessor<>(this, field);
             }
         }
 
@@ -158,7 +159,7 @@ public class Reflection<T> {
      * @return The field with identically matching name.
      * @throws ReflectionException When the class or field cannot be located.
      */
-    public final @NotNull FieldAccessor getField(@NotNull String name) throws ReflectionException {
+    public final <T> @NotNull FieldAccessor<T> getField(@NotNull String name) throws ReflectionException {
         return this.getField(name, true);
     }
 
@@ -172,11 +173,11 @@ public class Reflection<T> {
      * @return The field with matching name.
      * @throws ReflectionException When the class or field cannot be located.
      */
-    public final @NotNull FieldAccessor getField(@NotNull String name, boolean isCaseSensitive) throws ReflectionException {
+    public final <T> @NotNull FieldAccessor<T> getField(@NotNull String name, boolean isCaseSensitive) throws ReflectionException {
         for (Field field : this.getType().getDeclaredFields()) {
             if (isCaseSensitive ? field.getName().equals(name) : field.getName().equalsIgnoreCase(name)) {
                 field.setAccessible(true);
-                return new FieldAccessor(this, field);
+                return new FieldAccessor<>(this, field);
             }
         }
 
@@ -194,12 +195,12 @@ public class Reflection<T> {
      * @return All fields.
      * @throws ReflectionException When the class or fields cannot be located.
      */
-    public final @NotNull ConcurrentSet<FieldAccessor> getFields() throws ReflectionException {
-        ConcurrentSet<FieldAccessor> fieldAccessors = Concurrent.newSet();
+    public final @NotNull ConcurrentSet<FieldAccessor<?>> getFields() throws ReflectionException {
+        ConcurrentSet<FieldAccessor<?>> fieldAccessors = Concurrent.newSet();
 
         for (Field field : this.getType().getDeclaredFields()) {
             field.setAccessible(true);
-            fieldAccessors.add(new FieldAccessor(this, field));
+            fieldAccessors.add(new FieldAccessor<>(this, field));
         }
 
         if (this.getType().getSuperclass() != null)
@@ -240,7 +241,7 @@ public class Reflection<T> {
      * @return The field with matching return type and parameter types.
      * @throws ReflectionException When the class or method cannot be located.
      */
-    public final @NotNull MethodAccessor getMethod(@NotNull Class<?> type, @Nullable Class<?>... paramTypes) throws ReflectionException {
+    public final <T> @NotNull MethodAccessor<T> getMethod(@NotNull Class<T> type, @Nullable Class<?>... paramTypes) throws ReflectionException {
         Class<?> utype = (type.isPrimitive() ? PrimitiveUtil.wrap(type) : PrimitiveUtil.unwrap(type));
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
@@ -250,7 +251,7 @@ public class Reflection<T> {
 
             if ((returnType.equals(type) || type.isAssignableFrom(returnType) || returnType.equals(utype) || utype.isAssignableFrom(returnType)) && isEqualsTypeArray(methodTypes, types)) {
                 method.setAccessible(true);
-                return new MethodAccessor(this, method);
+                return new MethodAccessor<>(this, method);
             }
         }
 
@@ -274,7 +275,7 @@ public class Reflection<T> {
      * @return The method with matching name and parameter types.
      * @throws ReflectionException When the class or method cannot be located.
      */
-    public final @NotNull MethodAccessor getMethod(@NotNull String name, @Nullable Class<?>... paramTypes) throws ReflectionException {
+    public final @NotNull MethodAccessor<?> getMethod(@NotNull String name, @Nullable Class<?>... paramTypes) throws ReflectionException {
         return this.getMethod(name, true, paramTypes);
     }
 
@@ -291,7 +292,7 @@ public class Reflection<T> {
      * @return The method with matching name and parameter types.
      * @throws ReflectionException When the class or method cannot be located.
      */
-    public final @NotNull MethodAccessor getMethod(@NotNull String name, boolean isCaseSensitive, @Nullable Class<?>... paramTypes) throws ReflectionException {
+    public final @NotNull MethodAccessor<?> getMethod(@NotNull String name, boolean isCaseSensitive, @Nullable Class<?>... paramTypes) throws ReflectionException {
         Class<?>[] types = toPrimitiveTypeArray(paramTypes);
 
         for (Method method : this.getType().getDeclaredMethods()) {
@@ -299,7 +300,7 @@ public class Reflection<T> {
 
             if ((isCaseSensitive ? method.getName().equals(name) : method.getName().equalsIgnoreCase(name)) && isEqualsTypeArray(methodTypes, types)) {
                 method.setAccessible(true);
-                return new MethodAccessor(this, method);
+                return new MethodAccessor<>(this, method);
             }
         }
 
@@ -549,10 +550,9 @@ public class Reflection<T> {
      * @return The invoked method value with matching return type.
      * @throws ReflectionException When the class or method with matching arguments cannot be located.
      */
-    @SuppressWarnings("unchecked")
     public final <U> @Nullable U invokeMethod(@NotNull Class<U> type, @Nullable Object obj, @Nullable Object... args) throws ReflectionException {
         Class<?>[] types = toPrimitiveTypeArray(args);
-        return (U) this.getMethod(type, types).invoke(obj, args);
+        return this.getMethod(type, types).invoke(obj, args);
     }
 
     /**
@@ -608,35 +608,16 @@ public class Reflection<T> {
      * @param args The arguments with matching types to pass to the constructor.
      * @throws ReflectionException When the class or constructor with matching arguments cannot be located.
      */
-    @SuppressWarnings("unchecked")
-    public final @NotNull T newInstance(@Nullable Object... args) throws ReflectionException {
+    public final @NotNull R newInstance(@Nullable Object... args) throws ReflectionException {
         try {
             Class<?>[] types = toPrimitiveTypeArray(args);
-            ConstructorAccessor c = this.getConstructor(types);
-            return (T) c.newInstance(args);
+            ConstructorAccessor<R> c = this.getConstructor(types);
+            return c.newInstance(args);
         } catch (ReflectionException reflectionException) {
             throw reflectionException;
         } catch (Exception ex) {
             throw new ReflectionException(ex);
         }
-    }
-
-    /**
-     * Sets the value of a field with matching {@link #getType() class type}.
-     * <p>
-     * The field type is automatically checked against assignable types and primitives.
-     * <p>
-     * This is the same as calling {@link #setValue(Class, Object, Object) setValue(reflection.getClazz(), obj, value)}.
-     * <p>
-     * Super classes are automatically checked.
-     *
-     * @param reflection The reflection object housing the field's class type to look for.
-     * @param obj        Instance of the current class object, null if static field.
-     * @param value      The new value of the field.
-     * @throws ReflectionException When the class or field cannot be located.
-     */
-    public final void setValue(@NotNull Reflection<?> reflection, @NotNull Object obj, @Nullable Object value) throws ReflectionException {
-        this.setValue(reflection.getType(), obj, value);
     }
 
     /**
@@ -651,7 +632,7 @@ public class Reflection<T> {
      * @param value The new value of the field.
      * @throws ReflectionException When the class or field cannot be located or the value does match the field type.
      */
-    public final void setValue(@NotNull Class<?> type, @NotNull Object obj, @Nullable Object value) throws ReflectionException {
+    public final <T> void setValue(@NotNull Class<T> type, @NotNull Object obj, @Nullable T value) throws ReflectionException {
         this.getField(type).set(obj, value);
     }
 
@@ -719,7 +700,7 @@ public class Reflection<T> {
     }
 
     public static <T extends Builder<?>> void validateFlags(@NotNull T builder) {
-        ConcurrentMap<String, ConcurrentMap<FieldAccessor, Boolean>> invalidRequired = Concurrent.newMap();
+        ConcurrentMap<String, ConcurrentMap<FieldAccessor<?>, Boolean>> invalidRequired = Concurrent.newMap();
         invalidRequired.put("_DEFAULT_", Concurrent.newMap());
 
         Reflection.of(builder.getClass())
@@ -728,7 +709,7 @@ public class Reflection<T> {
             .filter(fieldAccessor -> fieldAccessor.hasAnnotation(BuildFlag.class))
             .map(fieldAccessor -> Pair.of(fieldAccessor, fieldAccessor.getAnnotation(BuildFlag.class).orElseThrow()))
             .forEach(fieldPair -> {
-                FieldAccessor field = fieldPair.getLeft();
+                FieldAccessor<?> field = fieldPair.getLeft();
                 BuildFlag flag = fieldPair.getRight();
                 boolean invalid = false;
 

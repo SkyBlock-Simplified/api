@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 /**
  * Grants simpler access to constructor instantialization.
  */
-public final class ConstructorAccessor extends ReflectionAccessor<Constructor<?>> {
+public final class ConstructorAccessor<T> extends ReflectionAccessor<Constructor<T>> {
 
-    public ConstructorAccessor(Reflection<?> reflection, Constructor<?> constructor) {
+    public ConstructorAccessor(@NotNull Reflection<T> reflection, @NotNull Constructor<T> constructor) {
         super(reflection, constructor);
     }
 
@@ -24,7 +24,7 @@ public final class ConstructorAccessor extends ReflectionAccessor<Constructor<?>
      *
      * @return The constructor.
      */
-    public @NotNull Constructor<?> getConstructor() {
+    public @NotNull Constructor<T> getConstructor() {
         return this.getHandle();
     }
 
@@ -36,7 +36,7 @@ public final class ConstructorAccessor extends ReflectionAccessor<Constructor<?>
      * @param args The arguments with matching types to pass to the constructor.
      * @throws ReflectionException When the constructor is passed invalid arguments.
      */
-    public @NotNull Object newInstance(@Nullable Object... args) throws ReflectionException {
+    public @NotNull T newInstance(@Nullable Object... args) throws ReflectionException {
         try {
             return this.getConstructor().newInstance(args);
         } catch (Exception exception) {

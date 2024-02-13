@@ -10,9 +10,9 @@ import java.lang.reflect.Field;
 /**
  * Grants simpler access to field getting and setting.
  */
-public final class FieldAccessor extends ReflectionAccessor<Field> {
+public final class FieldAccessor<T> extends ReflectionAccessor<Field> {
 
-    public FieldAccessor(Reflection<?> reflection, Field field) {
+    public FieldAccessor(@NotNull Reflection<?> reflection, @NotNull Field field) {
         super(reflection, field);
     }
 
@@ -35,7 +35,7 @@ public final class FieldAccessor extends ReflectionAccessor<Field> {
      * @return The field value with matching type.
      * @throws ReflectionException When the static field cannot be located.
      */
-    public <T> @Nullable T get() throws ReflectionException {
+    public @Nullable T get() throws ReflectionException {
         return this.get(null);
     }
 
@@ -49,7 +49,7 @@ public final class FieldAccessor extends ReflectionAccessor<Field> {
      * @throws ReflectionException When the field cannot be located.
      */
     @SuppressWarnings("unchecked")
-    public <T> @Nullable T get(@Nullable Object obj) throws ReflectionException {
+    public @Nullable T get(@Nullable Object obj) throws ReflectionException {
         try {
             return (T) this.getField().get(obj);
         } catch (Exception exception) {
@@ -67,7 +67,7 @@ public final class FieldAccessor extends ReflectionAccessor<Field> {
      * @param value The new value of the field.
      * @throws ReflectionException When the field cannot be located or the value does match the field type.
      */
-    public void set(@Nullable Object value) throws ReflectionException {
+    public void set(@Nullable T value) throws ReflectionException {
         this.set(null, value);
     }
 
@@ -80,7 +80,7 @@ public final class FieldAccessor extends ReflectionAccessor<Field> {
      * @param value The new value of the field.
      * @throws ReflectionException When the field cannot be located or the value does match the field type.
      */
-    public void set(@Nullable Object obj, @Nullable Object value) throws ReflectionException {
+    public void set(@Nullable Object obj, @Nullable T value) throws ReflectionException {
         try {
             this.getField().set(obj, value);
         } catch (Exception exception) {

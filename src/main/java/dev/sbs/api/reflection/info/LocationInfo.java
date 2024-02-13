@@ -3,8 +3,6 @@ package dev.sbs.api.reflection.info;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.reflection.accessor.ResourceAccessor;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,14 +16,11 @@ import java.util.jar.JarFile;
  * Represents a single location (a directory or a jar file) in the class path and is responsible
  * for scanning resources from this location.
  */
-public class LocationInfo {
+@Getter
+public class LocationInfo extends FileInfo {
 
-    @Getter private final @NotNull File file;
-    private final @NotNull ClassLoader classloader;
-
-    public LocationInfo(@NotNull File home, @NotNull ClassLoader classloader) {
-        this.file = home;
-        this.classloader = classloader;
+    public LocationInfo(@NotNull File file, @NotNull ClassLoader classloader) {
+        super(file, classloader);
     }
 
     /**
@@ -107,7 +102,7 @@ public class LocationInfo {
             if (entry.isDirectory() || entry.getName().equals(JarFile.MANIFEST_NAME))
                 continue;
 
-            builder.add(ResourceInfo.of(new File(file.getName()), entry.getName(), classloader));
+            builder.add(ResourceInfo.of(new File(file.getName()), entry.getName(), this.getClassLoader()));
         }
     }
 
@@ -152,34 +147,9 @@ public class LocationInfo {
                 String resourceName = packagePrefix + name;
 
                 if (!resourceName.equals(JarFile.MANIFEST_NAME))
-                    builder.add(ResourceInfo.of(f, resourceName, classloader));
+                    builder.add(ResourceInfo.of(f, resourceName, this.getClassLoader()));
             }
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        LocationInfo that = (LocationInfo) o;
-
-        return new EqualsBuilder()
-            .append(this.getFile(), that.getFile())
-            .append(this.classloader, that.classloader)
-            .build();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-            .append(this.getFile())
-            .build();
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return this.getFile().toString();
     }
 
 }

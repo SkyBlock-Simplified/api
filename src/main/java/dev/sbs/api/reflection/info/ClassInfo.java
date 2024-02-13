@@ -12,7 +12,7 @@ public class ClassInfo extends ResourceInfo {
 
     private final @NotNull String name;
 
-    public ClassInfo(File file, String resourceName, ClassLoader loader) {
+    public ClassInfo(@NotNull File file, @NotNull String resourceName, @NotNull ClassLoader loader) {
         super(file, resourceName, loader);
         this.name = Reflection.getName(resourceName);
     }
@@ -38,8 +38,7 @@ public class ClassInfo extends ResourceInfo {
      * <p>Behaves similarly to {@link Class#getSimpleName()} but does not require the class to be
      * loaded.
      *
-     * <p>But note that this class uses heuristics to identify the simple name. See a related
-     * discussion in <a href="https://github.com/google/guava/issues/3349">issue 3349</a>.
+     * @apiNote This class uses heuristics to identify the simple name.
      */
     public String getSimpleName() {
         int lastDollarSign = this.getName().lastIndexOf('$');
@@ -65,8 +64,6 @@ public class ClassInfo extends ResourceInfo {
      * '$' in the name. This method may return false for a top-level class that's intentionally
      * named with the '$' character. If this is a concern, you could use {@link #load} and then
      * check on the loaded {@link Class} object instead.
-     *
-     * @since 30.1
      */
     public boolean isTopLevel() {
         return this.getName().indexOf('$') == -1;
@@ -80,7 +77,7 @@ public class ClassInfo extends ResourceInfo {
      */
     public @NotNull Class<?> load() {
         try {
-            return this.getLoader().loadClass(this.getName());
+            return this.getClassLoader().loadClass(this.getName());
         } catch (ClassNotFoundException e) {
             // Shouldn't happen, since the class name is read from the class path.
             throw new IllegalStateException(e);
