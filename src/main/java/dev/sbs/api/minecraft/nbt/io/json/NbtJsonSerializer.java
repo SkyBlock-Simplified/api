@@ -25,6 +25,8 @@ import java.util.Map;
 
 /**
  * Implementation for NBT JSON serialization.
+ * <br><br>
+ * This destroys the type information, making deserialization unreliable, and thus is left unimplemented.
  */
 public class NbtJsonSerializer extends JsonWriter implements NbtOutput {
 
