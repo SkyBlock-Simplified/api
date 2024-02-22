@@ -5,11 +5,13 @@ import dev.sbs.api.minecraft.nbt.tags.TagType;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * {@link TagType#END} (ID 0) represents the end of a {@link CompoundTag}.
  */
 @Getter
+@SuppressWarnings("all")
 public final class EndTag extends Tag<Void> {
 
     public static final @NotNull EndTag INSTANCE = new EndTag();
@@ -27,6 +29,11 @@ public final class EndTag extends Tag<Void> {
     @Override
     public byte getId() {
         return TagType.END.getId();
+    }
+
+    @Override
+    public @Nullable Void getValue() {
+        return null;
     }
 
     @Override
