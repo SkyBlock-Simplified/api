@@ -29,11 +29,16 @@ public class ApiException extends RuntimeException implements Response {
     private final @NotNull Optional<String> body;
     private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
     @Setter(AccessLevel.PROTECTED)
-    protected @NotNull String name = "Api";
+    protected @NotNull String name;
     protected @NotNull ApiErrorResponse response;
 
     public ApiException(@NotNull FeignException exception) {
+        this(exception, "Api");
+    }
+
+    public ApiException(@NotNull FeignException exception, @NotNull String name) {
         super(exception.getMessage(), exception.getCause(), false, true);
+        this.name = name;
         this.response = exception::getMessage;
         this.timestamp = Instant.now();
         this.status = HttpStatus.of(exception.status());

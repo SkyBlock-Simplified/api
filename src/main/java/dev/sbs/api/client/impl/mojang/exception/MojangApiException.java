@@ -12,9 +12,7 @@ public final class MojangApiException extends ApiException {
     private final @NotNull MojangErrorResponse response;
 
     public MojangApiException(@NotNull FeignException exception) {
-        super(exception);
-        this.setName("Mojang");
-
+        super(exception, "Mojang");
         this.response = this.getBody()
             .map(json -> SimplifiedApi.getGson().fromJson(json, MojangErrorResponse.class))
             .orElse(new MojangErrorResponse.Unknown());

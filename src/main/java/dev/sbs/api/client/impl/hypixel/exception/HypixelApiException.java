@@ -12,9 +12,7 @@ public final class HypixelApiException extends ApiException {
     private final @NotNull HypixelErrorResponse response;
 
     public HypixelApiException(@NotNull FeignException exception) {
-        super(exception);
-        this.setName("Hypixel");
-
+        super(exception, "Hypixel");
         this.response = this.getBody()
             .map(json -> SimplifiedApi.getGson().fromJson(json, HypixelErrorResponse.class))
             .orElse(new HypixelErrorResponse.Unknown());

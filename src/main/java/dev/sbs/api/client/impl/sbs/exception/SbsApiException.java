@@ -12,9 +12,7 @@ public final class SbsApiException extends ApiException {
     private final @NotNull SbsErrorResponse response;
 
     public SbsApiException(@NotNull FeignException exception) {
-        super(exception);
-        this.setName("Sbs");
-
+        super(exception, "Sbs");
         this.response = this.getBody()
             .map(json -> SimplifiedApi.getGson().fromJson(json, SbsErrorResponse.class))
             .orElse(new SbsErrorResponse.Unknown());
