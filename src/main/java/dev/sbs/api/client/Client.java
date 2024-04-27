@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,7 +46,7 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
     @Setter(AccessLevel.PROTECTED)
     private @NotNull ApiErrorDecoder errorDecoder = new ApiErrorDecoder.Default();
     @Setter(AccessLevel.PROTECTED)
-    private @NotNull ConcurrentMap<String, String> requestHeaders = Concurrent.newUnmodifiableMap();
+    private @NotNull ConcurrentMap<String, Supplier<String>> requestHeaders = Concurrent.newUnmodifiableMap();
     @Setter(AccessLevel.PROTECTED)
     private @NotNull ConcurrentMap<String, String> requestQueries = Concurrent.newUnmodifiableMap();
     @Setter(AccessLevel.PROTECTED)
@@ -77,7 +78,7 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(context -> {
-                Client.this.getRequestHeaders().forEach((key, value) -> context.header(key, value));
+                Client.this.getRequestHeaders().forEach((key, value) -> context.header(key, value.get()));
                 Client.this.getRequestQueries().forEach((key, values) -> context.query(key, values));
                 this.recentRequests.add(new Request.Impl(
                     System.currentTimeMillis(),
@@ -149,10 +150,10 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
         return this.getLastRequest()
             .map(Request::getTimestamp)
             .map(Instant::toEpochMilli)
-            .map(request -> this.getLastResponse()
+            .flatMap(request -> this.getLastResponse()
                 .map(Response::getTimestamp)
                 .map(Instant::toEpochMilli)
-                .orElse(request + 1)
+                .map(response -> request - response)
             )
             .orElse(-1L);
     }
