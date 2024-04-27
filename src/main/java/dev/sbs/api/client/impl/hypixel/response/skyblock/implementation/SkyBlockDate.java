@@ -384,6 +384,11 @@ public class SkyBlockDate extends SimpleDate {
                 .build();
         }
 
+        @Override
+        public String toString() {
+            return String.format("%s -> %s", this.getElection().getStart(), this.getTerm());
+        }
+
     }
 
     @Getter
@@ -392,6 +397,11 @@ public class SkyBlockDate extends SimpleDate {
 
         private final @NotNull SkyBlockDate start;
         private final @NotNull SkyBlockDate end;
+
+        @Override
+        public String toString() {
+            return String.format("%s -> %s", this.getStart(), this.getEnd());
+        }
 
     }
 
