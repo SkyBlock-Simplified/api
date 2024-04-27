@@ -8,8 +8,8 @@ import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.u
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
-import dev.sbs.api.minecraft.nbt.tags.array.IntArrayTag;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
+import dev.sbs.api.util.Benchmark;
 import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.SystemUtil;
 import org.junit.jupiter.api.Test;
@@ -38,14 +38,11 @@ public class MinecraftNbtTest {
     public void getArmor_ok() {
         NbtFactory nbtFactory = SimplifiedApi.getNbtFactory();
         CompoundTag compoundTag = nbtFactory.fromBase64(ARMOR);
-        CompoundTag armorTag = (CompoundTag) compoundTag.getList("i").get(0);
-        armorTag.put("test", new IntArrayTag(1, 2, 3));
-        armorTag.put("ench", armorTag.getPath("tag.ench"));
-        armorTag.remove("tag");
+        CompoundTag armorTag = (CompoundTag) compoundTag.getListTag("i").get(0);
 
-        //String json = nbtFactory.toJson(armorTag);
+        String json = nbtFactory.toJson(armorTag);
         String snbt = nbtFactory.toSnbt(armorTag);
-        CompoundTag item = SimplifiedApi.getNbtFactory().fromSnbt(snbt);
+        CompoundTag item = nbtFactory.fromSnbt(snbt);
         boolean compare = armorTag.equals(item);
         String breakpoint = "here";
     }
@@ -71,24 +68,22 @@ public class MinecraftNbtTest {
         auctions.addAll(auctions2);
 
         /*long start2 = System.currentTimeMillis();
-        List<CompoundTag> auctionTags2 = auctions
-            .stream()
-            .map(SkyBlockAuction::getItemNbt)
-            .filter(Objects::nonNull)
-            .map(NbtContent::getNbtData)
-            .collect(Collectors.toList());
-        long end2 = System.currentTimeMillis();
-        System.out.println("NBT sync test took: " + (end2 - start2) + "ms");*/
-
-        long start3 = System.currentTimeMillis();
-        ConcurrentList<CompoundTag> auctionTags3 = auctions
+        ConcurrentList<byte[]> auctionTags2 = auctions
             .parallelStream()
             .map(SkyBlockAuction::getItemNbt)
             .filter(Objects::nonNull)
-            .map(NbtContent::getNbtData)
+            .map(NbtContent::getData)
             .collect(Concurrent.toList());
-        long end3 = System.currentTimeMillis();
-        System.out.println("NBT parallel test took: " + (end3 - start3) + "ms");
+        long end2 = System.currentTimeMillis();
+        System.out.println("Collecting byte arrays took: " + (end2 - start2) + "ms");*/
+
+        Benchmark auctionTags3 = SimplifiedApi.benchmark(() -> auctions.parallelStream()
+            .map(SkyBlockAuction::getItemNbt)
+            .filter(Objects::nonNull)
+            .map(NbtContent::getNbtData)
+            .collect(Concurrent.toList())
+        );
+        System.out.println("NBT parallel test took: " + auctionTags3.getDuration() + "ms");
     }
 
 }

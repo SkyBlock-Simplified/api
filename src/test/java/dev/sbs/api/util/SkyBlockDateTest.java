@@ -7,11 +7,18 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 public class SkyBlockDateTest {
 
     @Test
     public void getDate_ok() {
-        SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis(), true);
+        long givenDate = convertDateToMillis(2024, 4, 22, 7, 0, 0);
+        SkyBlockDate currentDate = new SkyBlockDate(givenDate, true);
+        //SkyBlockDate currentDate = new SkyBlockDate(System.currentTimeMillis(), true);
 
         long currentYear = currentDate.getYear();
         long currentMonth = currentDate.getMonth();
@@ -19,6 +26,7 @@ public class SkyBlockDateTest {
         long currentDay = currentDate.getDay();
         long currentHour = currentDate.getHour();
         long currentMinute = currentDate.getMinute();
+        //long currentSeconds = currentDate.getSecond();
         SkyBlockDate sbDate2 = new SkyBlockDate(currentDate.getYear(), currentDate.getMonth(), currentDate.getDay(), currentDate.getHour(), currentDate.getMinute());
 
         SkyBlockDate futureDate = new SkyBlockDate(300, 0, 0);
@@ -32,8 +40,28 @@ public class SkyBlockDateTest {
         minutes %= 60;
         seconds %= 60;
 
+        long dateInMilliseconds = convertDateToMillis(
+            2023,
+            6, // June
+            1,
+            0,
+            0,
+            0
+        );
+        long elapsedHours = getElapsedHours(dateInMilliseconds);
+        long artificialJank = elapsedHours / 124;
+        long test2 = 337 - artificialJank;
+        SkyBlockDate sbd = new SkyBlockDate(dateInMilliseconds, true);
+        int year = sbd.getYear();
+
+        SkyBlockDate sbd2 = new SkyBlockDate(400, 1, 0);
+        String time = sbd2.toString();
+
         Pair<String, SkyBlockDate.Mayor> nextSpecialMayor = SkyBlockDate.getNextSpecialMayor();
-        ConcurrentList<Pair<String, SkyBlockDate.Mayor>> specialMayors = SkyBlockDate.getSpecialMayors(5, new SkyBlockDate(System.currentTimeMillis()).append(-16));
+        ConcurrentList<Pair<String, SkyBlockDate.Mayor>> specialMayors = SkyBlockDate.getSpecialMayors(
+            5,
+            new SkyBlockDate(System.currentTimeMillis()).append(-16)
+        );
         int specialYear = nextSpecialMayor.getRight().getElection().getStart().getYear();
 
         System.out.println("SB Time #1: " + currentDate.getSkyBlockTime());
@@ -55,6 +83,17 @@ public class SkyBlockDateTest {
         System.out.println("Season #2: " + sbDate2.getSeason().getName());
 
         MatcherAssert.assertThat(currentDate, Matchers.equalTo(sbDate2));
+    }
+
+    private static long convertDateToMillis(int year, int month, int day, int hours, int minutes, int seconds) {
+        return LocalDateTime.of(year, month, day, hours, minutes, seconds)
+            .atZone(ZoneId.of("America/New_York"))
+            .toInstant()
+            .toEpochMilli();
+    }
+
+    private static long getElapsedHours(long historicalTime) {
+        return Duration.between(Instant.ofEpochMilli(historicalTime), Instant.now()).toHours();
     }
 
 }
