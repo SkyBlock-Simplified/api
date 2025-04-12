@@ -34,16 +34,10 @@ public class SnbtSerializer extends JsonWriter implements NbtOutput, Closeable {
 
     private static final Reflection<JsonWriter> JSON_REFLECTION = Reflection.of(JsonWriter.class);
     private static final @NotNull Pattern NON_QUOTE_PATTERN = Pattern.compile("[a-zA-Z_.+\\-]+");
-    private final boolean prettyPrint;
 
     public SnbtSerializer(@NotNull Writer writer) {
-        this(writer, false);
-    }
-
-    public SnbtSerializer(@NotNull Writer writer, boolean prettyPrint) {
         super(writer);
         this.setIndent("    ");
-        this.prettyPrint = prettyPrint;
     }
 
     @Override
