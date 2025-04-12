@@ -30,6 +30,17 @@ public class ColorSegment {
         return new Builder();
     }
 
+    public static @NotNull Builder from(@NotNull ColorSegment colorSegment) {
+        return builder()
+            .withText(colorSegment.getText())
+            .withColor(colorSegment.getColor())
+            .isItalic(colorSegment.isItalic())
+            .isBold(colorSegment.isBold())
+            .isUnderlined(colorSegment.isUnderlined())
+            .isObfuscated(colorSegment.isObfuscated())
+            .isStrikethrough(colorSegment.isStrikethrough());
+    }
+
     public static @NotNull LineSegment fromLegacy(@NotNull String legacyText) {
         return fromLegacy(legacyText, '&');
     }
@@ -49,6 +60,10 @@ public class ColorSegment {
      */
     public static @NotNull LineSegment fromLegacy(@NotNull String legacyText, char symbolSubstitute) {
         return fromLegacyHandler(legacyText, symbolSubstitute, () -> new ColorSegment(""));
+    }
+
+    public @NotNull Builder mutate() {
+        return from(this);
     }
 
     protected static @NotNull LineSegment fromLegacyHandler(@NotNull String legacyText, char symbolSubstitute, @NotNull Supplier<? extends ColorSegment> segmentSupplier) {
