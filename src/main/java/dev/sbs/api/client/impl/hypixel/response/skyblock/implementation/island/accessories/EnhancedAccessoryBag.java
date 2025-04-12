@@ -47,7 +47,7 @@ public class EnhancedAccessoryBag extends AccessoryBag {
         if (this.getContents() != null) {
             this.getContents()
                 .getNbtData()
-                .<CompoundTag>getList("i")
+                .<CompoundTag>getListTag("i")
                 .stream()
                 .filter(CompoundTag::notEmpty)
                 .forEach(compoundTag -> SimplifiedApi.getRepositoryOf(AccessoryModel.class)
