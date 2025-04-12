@@ -8,7 +8,6 @@ import dev.sbs.api.data.yaml.converter.ListConverter;
 import dev.sbs.api.data.yaml.converter.MapConverter;
 import dev.sbs.api.data.yaml.converter.PrimitiveConverter;
 import dev.sbs.api.data.yaml.converter.SetConverter;
-import dev.sbs.api.data.yaml.converter.VectorConverter;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.data.yaml.exception.InvalidConverterException;
 
@@ -35,7 +34,6 @@ public class InternalConverter {
         this.addConverter(EnumConverter.class);
         this.addConverter(MapConverter.class);
         this.addConverter(SetConverter.class);
-        this.addConverter(VectorConverter.class);
     }
 
     private void addConverter(Class<? extends YamlConverter> converter) throws InvalidConverterException {
