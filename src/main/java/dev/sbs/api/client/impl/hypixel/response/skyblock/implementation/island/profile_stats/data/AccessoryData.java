@@ -56,8 +56,8 @@ public class AccessoryData extends ObjectData<AccessoryData.Type> {
         // New Year Cake Bag
         if ("NEW_YEAR_CAKE_BAG".equals(this.getAccessory().getItem().getItemId())) {
             try {
-                Byte[] nbtCakeBag = compoundTag.<ByteArrayTag>getPath("tag.ExtraAttributes.new_year_cake_bag_data").getValue();
-                ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getList("i");
+                Byte[] nbtCakeBag = compoundTag.getPathOrDefault("tag.ExtraAttributes.new_year_cake_bag_data", ByteArrayTag.EMPTY).getValue();
+                ListTag<CompoundTag> cakeBagItems = SimplifiedApi.getNbtFactory().fromByteArray(nbtCakeBag).getListTag("i");
                 SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
                     .ifPresent(statModel -> this.addBonus(this.getStats(AccessoryData.Type.CAKE_BAG).get(statModel), cakeBagItems.size()));
             } catch (NbtException ignore) { }
