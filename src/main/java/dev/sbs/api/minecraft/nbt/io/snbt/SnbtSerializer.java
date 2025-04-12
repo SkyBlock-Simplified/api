@@ -25,6 +25,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -34,10 +35,12 @@ public class SnbtSerializer extends JsonWriter implements NbtOutput, Closeable {
 
     private static final Reflection<JsonWriter> JSON_REFLECTION = Reflection.of(JsonWriter.class);
     private static final @NotNull Pattern NON_QUOTE_PATTERN = Pattern.compile("[a-zA-Z_.+\\-]+");
+    private final @NotNull Writer writer;
 
     public SnbtSerializer(@NotNull Writer writer) {
         super(writer);
         this.setIndent("    ");
+        this.writer = Objects.requireNonNull(JSON_REFLECTION.getValue(Writer.class, this));
     }
 
     @Override
@@ -117,8 +120,7 @@ public class SnbtSerializer extends JsonWriter implements NbtOutput, Closeable {
 
     private <T extends Number> void writeArray(@NotNull ArrayTag<T> arrayTag, char prefix) throws IOException {
         this.beginArray();
-        Writer writer = JSON_REFLECTION.getValue(Writer.class, this);
-        writer.append(prefix).append(';');
+        this.writer.append(prefix).append(';');
 
         for (int i = 0; i < arrayTag.length(); i++)
             this.jsonValue(arrayTag.get(i).toString());
