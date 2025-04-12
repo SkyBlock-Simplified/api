@@ -1,6 +1,8 @@
 package dev.sbs.api.minecraft.text.segment;
 
 import com.google.gson.JsonObject;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.StringUtil;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -28,6 +31,15 @@ public class ColorSegment {
 
     public static @NotNull Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Explode the {@link #getText()} into single-words for use in a dynamic newline system.
+     */
+    public @NotNull ConcurrentList<ColorSegment> explode() {
+        return Arrays.stream(StringUtil.split(this.getText(), " "))
+            .map(word -> this.mutate().withText(word).build())
+            .collect(Concurrent.toList());
     }
 
     public static @NotNull Builder from(@NotNull ColorSegment colorSegment) {

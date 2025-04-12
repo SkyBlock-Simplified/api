@@ -24,6 +24,16 @@ public final class LineSegment {
         return new Builder();
     }
 
+    /**
+     * Explode the {@link #getSegments()} into single-words for use in a dynamic newline system.
+     */
+    public @NotNull ConcurrentList<ColorSegment> explode() {
+        return this.getSegments()
+            .stream()
+            .flatMap(segment -> segment.explode().stream())
+            .collect(Concurrent.toList());
+    }
+
     public int length() {
         return this.getSegments()
             .stream()
