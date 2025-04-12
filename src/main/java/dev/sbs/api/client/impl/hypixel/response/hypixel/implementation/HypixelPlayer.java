@@ -82,7 +82,7 @@ public class HypixelPlayer {
     public ConcurrentList<String> getAchievementsOneTime() {
         if (this.achievementsOneTimeFixed == null) {
             this.achievementsOneTimeFixed = this.achievementsOneTime.stream()
-                .filter(obj -> (obj instanceof String))
+                .filter(String.class::isInstance)
                 .map(String::valueOf)
                 .collect(Concurrent.toList());
         }
