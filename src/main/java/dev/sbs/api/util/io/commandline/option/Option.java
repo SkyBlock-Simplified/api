@@ -199,7 +199,7 @@ public class Option implements Cloneable, Serializable {
      * @return if the display name for the argument value has been set.
      */
     public boolean hasArgName() {
-        return argName != null && argName.length() > 0;
+        return argName != null && !argName.isEmpty();
     }
 
     /**
@@ -473,7 +473,7 @@ public class Option implements Cloneable, Serializable {
     /**
      * A rather odd clone method - due to incorrect code in 1.0 it is public 
      * and in 1.1 rather than throwing a CloneNotSupportedException it throws 
-     * a RuntimeException so as to maintain backwards compat at the API level. 
+     * a RuntimeException as to maintain backwards compat at the API level.
      *
      * After calling this method, it is very likely you will want to call 
      * clearValues(). 
@@ -486,7 +486,7 @@ public class Option implements Cloneable, Serializable {
     public Object clone() {
         try {
             Option option = (Option) super.clone();
-            option.values = new ArrayList<String>(values);
+            option.values = new ArrayList<>(values);
             return option;
         } catch (CloneNotSupportedException cnse) {
             throw new RuntimeException("A CloneNotSupportedException was thrown: " + cnse.getMessage());
