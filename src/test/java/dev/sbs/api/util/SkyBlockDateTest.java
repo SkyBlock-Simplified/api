@@ -29,7 +29,8 @@ public class SkyBlockDateTest {
         //long currentSeconds = currentDate.getSecond();
         SkyBlockDate sbDate2 = new SkyBlockDate(currentDate.getYear(), currentDate.getMonth(), currentDate.getDay(), currentDate.getHour(), currentDate.getMinute());
 
-        SkyBlockDate futureDate = new SkyBlockDate(300, 0, 0);
+        SkyBlockDate futureDate = new SkyBlockDate(400, 1, 1, 0, 0);
+        ConcurrentList<Pair<String, SkyBlockDate.Mayor>> specialMayors1 = SkyBlockDate.getSpecialMayors(3);
         long remaining = futureDate.getRealTime() - currentDate.getRealTime();
         long seconds = remaining / 1000;
         long minutes = seconds / 60;
