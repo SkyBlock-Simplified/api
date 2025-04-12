@@ -71,7 +71,7 @@ public final class MojangProxy {
      * @param username Unique profile username (case-insensitive).
      */
     public @NotNull MojangProfileResponse getMojangProfile(@NotNull String username) throws MojangApiException {
-        return getMojangProfile(this.getApiRequest().getUniqueId(username).getUniqueId());
+        return this.getMojangProfile(this.getApiRequest().getUniqueId(username).getUniqueId());
     }
 
     /**
