@@ -77,7 +77,7 @@ public class SkyBlockIslandTest {
                             .map(island -> Pair.of(
                                 Pair.of(
                                     member.getUniqueId(),
-                                    hypixelRequest.getPlayer(member.getUniqueId()).getPlayer().getDisplayName()
+                                    hypixelRequest.getPlayer(member.getUniqueId()).getPlayer().get().getDisplayName()
                                 ),
                                 island.getMembers()
                                     .get(member.getUniqueId())
