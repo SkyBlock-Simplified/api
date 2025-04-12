@@ -90,39 +90,37 @@ public class ItemData extends ObjectData<ItemData.Type> {
         ConcurrentMap<EnchantmentModel, Integer> enchantments = Concurrent.newMap();
         ConcurrentMap<EnchantmentModel, ConcurrentList<EnchantmentStatModel>> enchantmentStats = Concurrent.newMap();
 
-        if (compoundTag.containsPath("tag.ExtraAttributes.enchantments")) {
-            compoundTag.<CompoundTag>getPath("tag.ExtraAttributes.enchantments")
-                .entrySet()
-                .stream()
-                .map(entry -> Pair.of(
-                    SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
-                        .findFirstOrNull(EnchantmentModel::getKey, entry.getKey().toUpperCase()),
-                    ((IntTag)entry.getValue()).getValue()
-                ))
-                .filter(enchantmentData -> Objects.nonNull(enchantmentData.getLeft()))
-                .forEach(enchantmentData -> {
-                    enchantments.put(enchantmentData.getKey(), enchantmentData.getValue());
-                    enchantmentStats.put(enchantmentData.getKey(), Concurrent.newList());
+        compoundTag.getPathOrDefault("tag.ExtraAttributes.enchantments", CompoundTag.EMPTY)
+            .entrySet()
+            .stream()
+            .map(entry -> Pair.of(
+                SimplifiedApi.getRepositoryOf(EnchantmentModel.class)
+                    .findFirstOrNull(EnchantmentModel::getKey, entry.getKey().toUpperCase()),
+                ((IntTag)entry.getValue()).getValue()
+            ))
+            .filter(enchantmentData -> Objects.nonNull(enchantmentData.getLeft()))
+            .forEach(enchantmentData -> {
+                enchantments.put(enchantmentData.getKey(), enchantmentData.getValue());
+                enchantmentStats.put(enchantmentData.getKey(), Concurrent.newList());
 
-                    // Handle Enchantment Stat Models
-                    SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
-                        .findAll(EnchantmentStatModel::getEnchantment, enchantmentData.getLeft())
-                        .filter(enchantmentStatModel -> enchantmentStatModel.getLevels().stream().anyMatch(level -> enchantmentData.getValue() >= level)) // Contains Level
-                        .forEach(enchantmentStatModel -> enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel));
+                // Handle Enchantment Stat Models
+                SimplifiedApi.getRepositoryOf(EnchantmentStatModel.class)
+                    .findAll(EnchantmentStatModel::getEnchantment, enchantmentData.getLeft())
+                    .filter(enchantmentStatModel -> enchantmentStatModel.getLevels().stream().anyMatch(level -> enchantmentData.getValue() >= level)) // Contains Level
+                    .forEach(enchantmentStatModel -> enchantmentStats.get(enchantmentData.getKey()).add(enchantmentStatModel));
 
-                    // Handle Enchantment Stats
-                    if (enchantmentData.getLeft().getMobTypes().isEmpty()) {
-                        enchantmentStats.get(enchantmentData.getKey())
-                            .stream()
-                            .filter(EnchantmentStatModel::notPercentage) // Static Only
-                            .filter(EnchantmentStatModel::hasStat) // Has Stat
-                            .forEach(enchantmentStatModel -> {
-                                double enchantBonus = enchantmentStatModel.getLevels().stream().filter(level -> enchantmentData.getValue() >= level).mapToDouble(__ -> enchantmentStatModel.getLevelBonus()).sum();
-                                this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
-                            });
-                    }
-                });
-        }
+                // Handle Enchantment Stats
+                if (enchantmentData.getLeft().getMobTypes().isEmpty()) {
+                    enchantmentStats.get(enchantmentData.getKey())
+                        .stream()
+                        .filter(EnchantmentStatModel::notPercentage) // Static Only
+                        .filter(EnchantmentStatModel::hasStat) // Has Stat
+                        .forEach(enchantmentStatModel -> {
+                            double enchantBonus = enchantmentStatModel.getLevels().stream().filter(level -> enchantmentData.getValue() >= level).mapToDouble(__ -> enchantmentStatModel.getLevelBonus()).sum();
+                            this.getStats(Type.ENCHANTS).get(enchantmentStatModel.getStat()).addBonus(enchantBonus);
+                        });
+                }
+            });
 
         this.enchantments = enchantments;
         this.enchantmentStats = enchantmentStats;
