@@ -558,6 +558,10 @@ public class StringUtil {
         return new String(newCodePoints, 0, outOffset);
     }
 
+    public static @NotNull String capitalizeEnum(@NotNull Enum<?> value) {
+        return capitalizeFully(value.name().replace("_", " "));
+    }
+
     //-----------------------------------------------------------------------
     /**
      * <p>Converts all the whitespace separated words in a String into capitalized words,
