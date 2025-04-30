@@ -87,16 +87,10 @@ public final class MojangProxy {
         return this.getInet6NetworkPrefix()
             .map(networkPrefix -> {
                 String inet6NetworkPrefix = StringUtil.join(networkPrefix, ":");
+                String inet6NetworkTail = StringUtil.repeat(String.format("%04x", getRandomInet6Group()), ":", 8 - networkPrefix.length);
 
                 try {
-                    return Inet6Address.getByName(String.format(
-                        "%s:%04x:%04x:%04x:%04x",
-                        inet6NetworkPrefix,
-                        getRandomInet6Group(),
-                        getRandomInet6Group(),
-                        getRandomInet6Group(),
-                        getRandomInet6Group()
-                    ));
+                    return Inet6Address.getByName(inet6NetworkPrefix + inet6NetworkTail);
                 } catch (UnknownHostException uhex) {
                     throw new RuntimeException(uhex);
                 }
@@ -130,12 +124,24 @@ public final class MojangProxy {
     /**
      * Set your assigned IPv6 network prefix to cycle through for web requests.
      * <br><br>
-     * You must run commands as root on your server to make this possible:
+     * Enable non-local IPv6 binding (as root)
      * <pre><code>
-     * ip route add local {ipv6address}/{prefix} dev {interface}
      * sysctl net.ipv6.ip_nonlocal_bind = 1
+     * echo "net.ipv6.ip_nonlocal_bind=1" >> /etc/sysctl.d/99-sysctl.conf
      * </code></pre>
-     * You must also edit <code>/etc/sysctl.d/{interface}</code>
+     * <br>
+     * Create Hurricane Electric IPv6 Tunnel (as root)
+     * <pre><code>
+     * modprobe ipv6
+     * modprobe sit
+     * ip tunnel add he-ipv6 mode sit remote SERVER_IPV4_ADDRESS local CLIENT_IPV4_ADDRESS ttl 255
+     * ip link set he-ipv6 up
+     * ip addr add ROUTED_48 dev he-ipv6
+     * ip route del ::/0
+     * ip route add ::/0 dev he-ipv6
+     * ip -6 route add local ROUTED_48 dev lo
+     * ip -f inet6 addr
+     * </code></pre>
      *
      * @param networkPrefix Your IPv6 Network Prefix
      */
