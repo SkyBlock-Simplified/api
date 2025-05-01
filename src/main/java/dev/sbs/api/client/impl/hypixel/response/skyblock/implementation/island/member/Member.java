@@ -68,6 +68,8 @@ public class Member {
     protected SkyBlockDate.RealTime firstJoin;
     @SerializedPath("profile.personal_bank_upgrade")
     protected int personalBankUpgrade;
+    @SerializedPath("profile.cookie_buff_active")
+    protected boolean boosterCookieActive;
 
     // Maps
     @SerializedName("trophy_fish")
