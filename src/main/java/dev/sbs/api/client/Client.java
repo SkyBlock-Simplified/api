@@ -96,7 +96,7 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
                 ));
                 this.recentRequests.removeIf(request -> request.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
             })
-            .responseInterceptor(context -> {
+            .responseInterceptor((context, chain) -> {
                 this.recentResponses.add(new Response.Impl(
                     System.currentTimeMillis(),
                     HttpStatus.of(context.response().status()),
@@ -117,7 +117,7 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
                 ));
 
                 this.recentResponses.removeIf(response -> response.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
-                return context.decoder().decode(context.response(), context.returnType());
+                return chain.next(context);
             })
             .errorDecoder((methodKey, response) -> {
                 ApiException exception = this.getErrorDecoder().decode(methodKey, response);
