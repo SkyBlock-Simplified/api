@@ -5,6 +5,8 @@ import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.impl.hypixel.response.resource.ResourceCollectionsResponse;
 import dev.sbs.api.client.impl.hypixel.response.resource.ResourceItemsResponse;
 import dev.sbs.api.client.impl.hypixel.response.resource.ResourceSkillsResponse;
+import dev.sbs.api.util.StringUtil;
+import dev.sbs.api.util.SystemUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,10 @@ public class HypixelResourceRequestTest {
 
     @Test
     public void getSkills_ok() {
+        SystemUtil.getEnv("HYPIXEL_API_KEY")
+            .map(StringUtil::toUUID)
+            .ifPresent(value -> SimplifiedApi.getKeyManager().add("HYPIXEL_API_KEY", value));
+
         ResourceSkillsResponse skills = HYPIXEL_RESOURCE_REQUEST.getSkills();
         MatcherAssert.assertThat(skills.getSkills().size(), Matchers.greaterThan(0));
     }
