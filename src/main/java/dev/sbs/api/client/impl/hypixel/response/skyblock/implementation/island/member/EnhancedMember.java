@@ -54,6 +54,7 @@ public class EnhancedMember extends Member {
             member.getFirstJoinHub(),
             member.getFirstJoin(),
             member.getPersonalBankUpgrade(),
+            member.isBoosterCookieActive(),
             member.trophyFishMap,
             member.getCollection(),
             member.getTutorialObjectives(),
