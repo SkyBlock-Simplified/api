@@ -27,6 +27,7 @@ public final class MojangProxy {
     // Skin Renderer
     // https://visage.surgeplay.com/index.html
     // https://github.com/unascribed-archive/Visage
+    // https://playerdb.co/api/player/minecraft/CraftedFury
 
     private final @NotNull MojangApiClient defaultApiClient;
     private final @NotNull MojangSessionClient defaultSessionClient;
