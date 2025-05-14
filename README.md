@@ -86,7 +86,7 @@ class file locator, type-matched methods/constructors, accessor caching, supercl
     * **TripleStream** - Custom stream wrapper for Collections that converts `Stream<T>` to `TripleStream<T, M, R>`.
     AtomicCollection and its inheritors all implement this as an indexed stream, allowing you to know the position of each element
     and the size of the stream.
-  * **Other** - CommandLine, Mutables, Tuples (Pair/Triple), GSON adapters, etc.
+  * **Other** - Mutables, Tuples (Pair/Triple), GSON adapters, etc.
 
 ## 📦 Standalone Installation
 
