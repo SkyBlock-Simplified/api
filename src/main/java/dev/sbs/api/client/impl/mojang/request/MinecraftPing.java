@@ -1,14 +1,15 @@
-package dev.sbs.api.minecraft.ping;
+package dev.sbs.api.client.impl.mojang.request;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.impl.mojang.response.MinecraftPingResponse;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
-import dev.sbs.api.util.Preconditions;
 import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataInputStream;
@@ -19,7 +20,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class MinecraftPing {
+public final class MinecraftPing {
 
     // https://github.com/lucaazalim/minecraft-server-ping
     public static final byte PACKET_HANDSHAKE = 0x00;
@@ -28,49 +29,30 @@ public class MinecraftPing {
     public static final int PROTOCOL_VERSION = 4;
     public static final int STATUS_HANDSHAKE = 1;
 
-    private static final String SRV_QUERY_PREFIX = "_minecraft._tcp.%s";
-
     /**
      * Fetches a {@link MinecraftPingResponse} for the supplied hostname.
      * <b>Assumed timeout of 2s and port of 25565.</b>
      *
-     * @param address - a valid String hostname
+     * @param hostname A valid hostname
      * @return {@link MinecraftPingResponse}
      */
-    public static MinecraftPingResponse getPing(final String address) {
-        return getPing(MinecraftPingOptions.builder().hostname(address).build());
+    public static MinecraftPingResponse getPing(final String hostname) {
+        return getPing(hostname, 25565, 2000);
     }
 
     /**
      * Fetches a {@link MinecraftPingResponse} for the supplied options.
      *
-     * @param options - a filled instance of {@link MinecraftPingOptions}
+     * @param hostname A valid hostname.
+     * @param port Minecraft server port.
+     * @param timeout Timeout in milliseconds for the connection to complete.
      * @return {@link MinecraftPingResponse}
      */
     @SneakyThrows
-    public static MinecraftPingResponse getPing(final MinecraftPingOptions options) {
-        Preconditions.checkNotNull(options.getHostname(), "Hostname cannot be NULL");
-
-        String hostname = options.getHostname();
-        int port = options.getPort();
-
-        /*try { // dnsjava:3.4.0
-            Record[] records = new Lookup(String.format(SRV_QUERY_PREFIX, hostname), Type.SRV).run();
-
-            if (records != null) {
-                for (Record record : records) {
-                    SRVRecord srv = (SRVRecord) record;
-                    hostname = srv.getTarget().toString().replaceFirst("\\.$", "");
-                    port = srv.getPort();
-                }
-            }
-        } catch (TextParseException e) {
-            e.printStackTrace();
-        }*/
-
+    public static MinecraftPingResponse getPing(@NotNull String hostname, int port, int timeout) {
         @Cleanup Socket socket = new Socket();
         long start = System.currentTimeMillis();
-        socket.connect(new InetSocketAddress(hostname, port), options.getTimeout());
+        socket.connect(new InetSocketAddress(hostname, port), timeout);
         long ping = System.currentTimeMillis() - start;
 
         @Cleanup DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -80,9 +62,9 @@ public class MinecraftPing {
         @Cleanup ByteArrayDataOutput handshake = new ByteArrayDataOutput();
         handshake.writeByte(PACKET_HANDSHAKE);
         writeVarInt(handshake, PROTOCOL_VERSION);
-        writeVarInt(handshake, options.getHostname().length());
-        handshake.writeBytes(options.getHostname());
-        handshake.writeShort(options.getPort());
+        writeVarInt(handshake, hostname.length());
+        handshake.writeBytes(hostname);
+        handshake.writeShort(port);
         writeVarInt(handshake, STATUS_HANDSHAKE);
 
         writeVarInt(out, handshake.size());
@@ -104,7 +86,7 @@ public class MinecraftPing {
 
         byte[] data = new byte[length];
         in.readFully(data);
-        String json = new String(data, options.getCharset());
+        String json = new String(data, StandardCharsets.UTF_8);
 
         //> Ping
         out.writeByte(0x09); // Size of packet
@@ -159,16 +141,6 @@ public class MinecraftPing {
         }
 
         return i;
-    }
-
-    private static void writeByteArray(DataOutput out, byte[] data) throws IOException {
-        writeVarInt(out, data.length);
-        out.write(data);
-    }
-
-    private static void writeString(DataOutput out, String string) throws IOException {
-        writeVarInt(out, string.length());
-        out.write(string.getBytes(StandardCharsets.UTF_8));
     }
 
     private static void writeVarInt(DataOutput out, int paramInt) throws IOException {
