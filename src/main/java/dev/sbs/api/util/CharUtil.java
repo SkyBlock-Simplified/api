@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>#ThreadSafe#</p>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CharUtil {
+public final class CharUtil {
 
     /**
      * Linefeed character LF ({@code '\n'}, Unicode 000a).

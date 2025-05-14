@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @SuppressWarnings("all")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PrimitiveUtil {
+public final class PrimitiveUtil {
 
     /**
      * Returns an immutable map of all nine primitive types (including {@code void}). Note that a

@@ -101,7 +101,7 @@ import java.util.regex.Pattern;
  * @see String
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class StringUtil {
+public final class StringUtil {
 
     private static final int STRING_BUILDER_SIZE = 256;
     private static final int TO_STRING_LIMIT = 16;

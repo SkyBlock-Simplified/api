@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * @see Pattern
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RegexUtil {
+public final class RegexUtil {
 
     private static final LinkedHashMap<String, String> CACHED_COLOR_MESSAGES = new MaxSizeLinkedMap<>(100);
     private static final LastCharCompare CODE_COMPARE = new LastCharCompare();

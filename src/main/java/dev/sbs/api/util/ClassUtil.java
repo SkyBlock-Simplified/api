@@ -23,7 +23,7 @@ import java.util.List;
  * {@code [I}. </p>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ClassUtil {
+public final class ClassUtil {
 
     /**
      * <p>The package separator character: <code>'&#x2e;' == {@value}</code>.</p>

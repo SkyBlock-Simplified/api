@@ -41,7 +41,7 @@ import java.util.Scanner;
  * </p>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SystemUtil {
+public final class SystemUtil {
 
     /**
      * The System property key for the user home directory.

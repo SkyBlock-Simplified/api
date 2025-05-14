@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * <p>Provides extra functionality for Java Number classes.</p>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class NumberUtil {
+public final class NumberUtil {
 
     /** Reusable Long constant for zero. */
     public static final Long LONG_ZERO = 0L;

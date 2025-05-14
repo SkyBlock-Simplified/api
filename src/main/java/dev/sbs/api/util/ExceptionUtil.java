@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
  *
  * @since 1.0
  */
-public class ExceptionUtil {
+public final class ExceptionUtil {
 
     private static final int NOT_FOUND = -1;
 
