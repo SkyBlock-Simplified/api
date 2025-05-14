@@ -62,7 +62,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SimplifiedApi {
 
-    @Getter private static final @NotNull KeyManager<String, UUID> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
+    @Getter private static final @NotNull KeyManager<String, String> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
     @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
     @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
     @Getter private static final @NotNull ClassBuilderManager classBuilderManager = new ClassBuilderManager(Manager.Mode.UPDATE);

@@ -2,6 +2,7 @@ package dev.sbs.api.util;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.mutable.pair.Pair;
 import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.NoArgsConstructor;
@@ -354,6 +355,22 @@ public final class SystemUtil {
             .filter(entry -> entry.getKey().equalsIgnoreCase(variableName))
             .map(Map.Entry::getValue)
             .findFirst();
+    }
+
+    /**
+     * Get environment variable.
+     *
+     * @param variableName the name of the environment variable
+     * @return the key-value of the environment variable
+     */
+    public static @NotNull Pair<String, Optional<String>> getEnvPair(@NotNull String variableName) {
+        return getEnvironmentVariables()
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getKey().equalsIgnoreCase(variableName))
+            .map(entry -> Pair.of(variableName, Optional.ofNullable(entry.getValue())))
+            .findFirst()
+            .orElse(Pair.of(variableName, Optional.empty()));
     }
 
     public static InputStream getResource(@NotNull String resourcePath) {

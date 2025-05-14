@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 /**
@@ -57,12 +58,22 @@ public abstract class Manager<K, V> {
      * @throws UnknownReferenceException When the given identifier is not registered.
      * @see #isRegistered
      */
-    protected @NotNull V get(@NotNull K identifier) throws UnknownReferenceException {
+    protected @NotNull Optional<V> getOptional(@NotNull K identifier) {
         return this.ref.stream()
             .filter(entry -> this.keyMatcher.apply(entry, identifier))
             .map(Map.Entry::getValue)
-            .findFirst()
-            .orElseThrow(() -> new UnknownReferenceException(identifier));
+            .findFirst();
+    }
+
+    /**
+     * Gets the value stored for the given identifier.
+     *
+     * @param identifier Reference identifier.
+     * @throws UnknownReferenceException When the given identifier is not registered.
+     * @see #isRegistered
+     */
+    protected @NotNull V get(@NotNull K identifier) throws UnknownReferenceException {
+        return this.getOptional(identifier).orElseThrow(() -> new UnknownReferenceException(identifier));
     }
 
     /**

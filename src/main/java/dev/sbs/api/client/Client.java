@@ -34,22 +34,20 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter
+@Setter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
-    private final @NotNull String url;
-    @Getter private final @NotNull Optional<Inet6Address> inet6Address;
+    private final @NotNull String baseUrl;
+    private final @NotNull Optional<Inet6Address> inet6Address;
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
     private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
-    @Setter(AccessLevel.PROTECTED)
     private @NotNull ApiErrorDecoder errorDecoder = new ApiErrorDecoder.Default();
-    @Setter(AccessLevel.PROTECTED)
-    private @NotNull ConcurrentMap<String, Supplier<String>> requestHeaders = Concurrent.newUnmodifiableMap();
-    @Setter(AccessLevel.PROTECTED)
-    private @NotNull ConcurrentMap<String, String> requestQueries = Concurrent.newUnmodifiableMap();
-    @Setter(AccessLevel.PROTECTED)
+    private @NotNull ConcurrentMap<String, String> staticRequestQueries = Concurrent.newUnmodifiableMap();
+    private @NotNull ConcurrentMap<String, String> staticRequestHeaders = Concurrent.newUnmodifiableMap();
+    private @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicRequestHeaders = Concurrent.newUnmodifiableMap();
     private @NotNull ConcurrentSet<String> cachedResponseHeaders = Concurrent.newUnmodifiableSet();
 
     protected Client(@NotNull String url) {
@@ -78,8 +76,12 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(context -> {
-                Client.this.getRequestHeaders().forEach((key, value) -> context.header(key, value.get()));
-                Client.this.getRequestQueries().forEach((key, values) -> context.query(key, values));
+                this.getStaticRequestQueries().forEach((key, value) -> context.query(key, value));
+                this.getStaticRequestHeaders().forEach((key, value) -> context.header(key, value));
+                this.getDynamicRequestHeaders().forEach((key, supplier) -> supplier.get()
+                    .ifPresent(value -> context.header(key, value))
+                );
+
                 this.recentRequests.add(new Request.Impl(
                     System.currentTimeMillis(),
                     HttpMethod.of(context.method()),
@@ -159,7 +161,7 @@ public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
     }
 
     public final @NotNull String getUrl() {
-        return String.format("https://%s", this.url.replaceFirst("^https?://", ""));
+        return String.format("https://%s", this.baseUrl.replaceFirst("^https?://", ""));
     }
 
 }

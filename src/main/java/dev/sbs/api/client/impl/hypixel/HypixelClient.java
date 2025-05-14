@@ -22,8 +22,8 @@ public final class HypixelClient extends Client<HypixelRequest> {
         super.setErrorDecoder((methodKey, response) -> {
             throw new HypixelApiException(FeignException.errorStatus(methodKey, response));
         });
-        super.setRequestHeaders(Concurrent.newUnmodifiableMap(
-            Pair.of("API-Key", () -> SimplifiedApi.getKeyManager().get("HYPIXEL_API_KEY").toString())
+        super.setDynamicRequestHeaders(Concurrent.newUnmodifiableMap(
+            Pair.of("API-Key", SimplifiedApi.getKeyManager().getSupplier("HYPIXEL_API_KEY"))
         ));
     }
 
