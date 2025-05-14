@@ -36,7 +36,6 @@ import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.util.Benchmark;
 import dev.sbs.api.util.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.util.io.gson.adapter.InstantTypeAdapter;
 import dev.sbs.api.util.io.gson.adapter.NbtContentTypeAdapter;
@@ -114,14 +113,6 @@ public final class SimplifiedApi {
         HypixelClient hypixelApiClient = new HypixelClient();
         serviceManager.add(HypixelClient.class, hypixelApiClient);
         serviceManager.add(HypixelRequest.class, hypixelApiClient.build(HypixelRequest.class));
-    }
-
-    public static @NotNull Benchmark benchmark(@NotNull Runnable runnable) {
-        return benchmark(runnable, Benchmark.Type.MILLI);
-    }
-
-    public static @NotNull Benchmark benchmark(@NotNull Runnable runnable, @NotNull Benchmark.Type type) {
-        return new Benchmark(runnable, type).run();
     }
 
     @SneakyThrows

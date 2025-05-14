@@ -4,17 +4,14 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.SkyBlockAuctionsResponse;
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockAuction;
-import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.NbtContent;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.util.Benchmark;
 import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.SystemUtil;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class MinecraftNbtTest {
@@ -77,13 +74,13 @@ public class MinecraftNbtTest {
         long end2 = System.currentTimeMillis();
         System.out.println("Collecting byte arrays took: " + (end2 - start2) + "ms");*/
 
-        Benchmark auctionTags3 = SimplifiedApi.benchmark(() -> auctions.parallelStream()
+        /*Benchmark auctionTags3 = SimplifiedApi.benchmark(() -> auctions.parallelStream()
             .map(SkyBlockAuction::getItemNbt)
             .filter(Objects::nonNull)
             .map(NbtContent::getNbtData)
             .collect(Concurrent.toList())
         );
-        System.out.println("NBT parallel test took: " + auctionTags3.getDuration() + "ms");
+        System.out.println("NBT parallel test took: " + auctionTags3.getDuration() + "ms");*/
     }
 
 }
