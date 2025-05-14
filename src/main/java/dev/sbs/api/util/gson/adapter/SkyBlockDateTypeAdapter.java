@@ -1,4 +1,4 @@
-package dev.sbs.api.util.io.gson.adapter;
+package dev.sbs.api.util.gson.adapter;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

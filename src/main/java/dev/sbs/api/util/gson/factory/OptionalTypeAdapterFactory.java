@@ -1,4 +1,4 @@
-package dev.sbs.api.util.io.gson.factory;
+package dev.sbs.api.util.gson.factory;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;

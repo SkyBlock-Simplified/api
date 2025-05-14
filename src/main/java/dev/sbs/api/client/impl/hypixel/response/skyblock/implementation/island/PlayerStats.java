@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import dev.sbs.api.client.impl.hypixel.response.Rarity;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.io.gson.SerializedPath;
+import dev.sbs.api.util.gson.SerializedPath;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
