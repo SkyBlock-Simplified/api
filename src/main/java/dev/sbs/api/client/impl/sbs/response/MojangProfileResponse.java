@@ -84,7 +84,6 @@ public class MojangProfileResponse {
             return StringUtil.encodeBase64ToString(outputStream.toByteArray());
         }
 
-
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor

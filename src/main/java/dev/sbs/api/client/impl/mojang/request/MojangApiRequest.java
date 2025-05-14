@@ -21,7 +21,7 @@ public interface MojangApiRequest extends IMojangRequest {
     @Headers("Content-Type: application/json")
     @RequestLine("POST /profiles/minecraft")
     @Body("[{usernames}]")
-    @NotNull MojangMultiUsernameResponse getMultipleUniqueIds(@NotNull @Param(value = "usernames",  expander = StringArrayQuoteExpander.class) String... usernames) throws MojangApiException;
+    @NotNull MojangMultiUsernameResponse getMultipleUniqueIds(@NotNull @Param(value = "usernames", expander = StringArrayQuoteExpander.class) String... usernames) throws MojangApiException;
 
     @RequestLine("GET /users/profiles/minecraft/{username}")
     @NotNull MojangUsernameResponse getUniqueId(@NotNull @Param("username") String username) throws MojangApiException;
