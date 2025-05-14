@@ -35,8 +35,8 @@ public class KeyManager<K, V> extends Manager<K, V> {
         value.ifPresent(v -> this.add(identifier, v));
     }
 
-    public final void add(@NotNull Pair<K, Optional<V>> keypair) throws RegisteredReferenceException {
-        keypair.getValue().ifPresent(value -> this.add(keypair.getKey(), value));
+    public final void add(@NotNull Pair<K, Optional<V>> pair) throws RegisteredReferenceException {
+        pair.getValue().ifPresent(value -> this.add(pair.getKey(), value));
     }
 
     @Override

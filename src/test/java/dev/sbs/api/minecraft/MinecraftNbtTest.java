@@ -8,7 +8,6 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.nbt.NbtFactory;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
-import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.SystemUtil;
 import org.junit.jupiter.api.Test;
 
@@ -46,9 +45,7 @@ public class MinecraftNbtTest {
 
     @Test
     public void getAuctionHouse_ok() {
-        SystemUtil.getEnv("HYPIXEL_API_KEY")
-            .map(StringUtil::toUUID)
-            .ifPresent(value -> SimplifiedApi.getKeyManager().add("HYPIXEL_API_KEY", value));
+        SimplifiedApi.getKeyManager().add(SystemUtil.getEnvPair("HYPIXEL_API_KEY"));
 
         HypixelRequest hypixelRequest = SimplifiedApi.getApiRequest(HypixelRequest.class);
         SkyBlockAuctionsResponse auctionsResponse = hypixelRequest.getAuctions();
