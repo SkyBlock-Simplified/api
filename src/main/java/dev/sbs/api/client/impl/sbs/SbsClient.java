@@ -11,7 +11,12 @@ public final class SbsClient extends Client<SbsRequest> {
 
     public SbsClient() {
         super("api.sbs.dev");
-        super.setCachedResponseHeaders(Concurrent.newUnmodifiableSet(CFCacheStatus.HEADER_KEY));
+        super.setCachedResponseHeaders(Concurrent.newUnmodifiableSet(
+            CFCacheStatus.HEADER_KEY,
+            "RateLimit-Limit",
+            "RateLimit-Remaining",
+            "RateLimit-Reset"
+        ));
         super.setErrorDecoder((methodKey, response) -> {
             throw new SbsApiException(FeignException.errorStatus(methodKey, response));
         });
