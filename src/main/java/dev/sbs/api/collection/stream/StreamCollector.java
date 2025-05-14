@@ -1,4 +1,4 @@
-package dev.sbs.api.stream;
+package dev.sbs.api.collection.stream;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

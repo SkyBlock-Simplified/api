@@ -1,4 +1,4 @@
-package dev.sbs.api.stream;
+package dev.sbs.api.collection.stream;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentCollection;
@@ -8,9 +8,9 @@ import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
+import dev.sbs.api.collection.stream.triple.TriFunction;
+import dev.sbs.api.collection.stream.triple.TripleStream;
 import dev.sbs.api.mutable.triple.Triple;
-import dev.sbs.api.stream.triple.TriFunction;
-import dev.sbs.api.stream.triple.TripleStream;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
