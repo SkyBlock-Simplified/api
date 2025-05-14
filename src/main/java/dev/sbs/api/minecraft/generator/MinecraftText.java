@@ -1,4 +1,4 @@
-package dev.sbs.api.minecraft.image;
+package dev.sbs.api.minecraft.generator;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;

@@ -1,4 +1,4 @@
-package dev.sbs.api.minecraft.image;
+package dev.sbs.api.minecraft.generator;
 
 import javax.imageio.IIOException;
 import javax.imageio.IIOImage;

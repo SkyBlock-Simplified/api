@@ -1,4 +1,4 @@
-package dev.sbs.api.minecraft.image;
+package dev.sbs.api.minecraft.generator;
 
 import dev.sbs.api.minecraft.exception.MinecraftException;
 import dev.sbs.api.util.SystemUtil;
