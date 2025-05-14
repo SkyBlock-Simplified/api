@@ -20,16 +20,16 @@ import java.util.Set;
 public @interface BuildFlag {
 
     /**
-     * Should field be null checked.
+     * Null checking.
      * <br><br>
-     * Checks null, {@link StringUtil#isEmpty}.
+     * Checks null.
      */
     boolean nonNull() default false;
 
     /**
-     * Should field be empty checked.
+     * Empty checking.
      * <br><br>
-     * Checks {@link ArrayUtil#isEmpty}, {@link StringUtil#isEmpty}, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}, etc.
+     * Checks {@link ArrayUtil#isEmpty}, {@link StringUtil#isEmpty}, {@link Optional#isEmpty()}, {@link Collection#isEmpty()}, {@link Map#isEmpty()}.
      */
     boolean notEmpty() default false;
 
