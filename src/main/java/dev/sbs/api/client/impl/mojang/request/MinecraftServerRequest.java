@@ -20,9 +20,13 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public final class MinecraftPing {
+/**
+ * Ping a Minecraft server directly using the Minecraft protocol.
+ *
+ * @see <a href="https://github.com/lucaazalim/minecraft-server-ping">https://github.com/lucaazalim/minecraft-server-ping</a>
+ */
+public final class MinecraftServerRequest implements IMojangRequest {
 
-    // https://github.com/lucaazalim/minecraft-server-ping
     public static final byte PACKET_HANDSHAKE = 0x00;
     public static final byte PACKET_STATUSREQUEST = 0x00;
     public static final byte PACKET_PING = 0x01;
@@ -33,23 +37,35 @@ public final class MinecraftPing {
      * Fetches a {@link MinecraftPingResponse} for the supplied hostname.
      * <b>Assumed timeout of 2s and port of 25565.</b>
      *
-     * @param hostname A valid hostname
+     * @param hostname Minecraft server hostname.
      * @return {@link MinecraftPingResponse}
      */
-    public static MinecraftPingResponse getPing(final String hostname) {
-        return getPing(hostname, 25565, 2000);
+    public @NotNull MinecraftPingResponse pingServer(final String hostname) {
+        return this.pingServer(hostname, 25565);
+    }
+
+    /**
+     * Fetches a {@link MinecraftPingResponse} for the supplied hostname.
+     * <b>Assumed timeout of 2s and port of 25565.</b>
+     *
+     * @param hostname Minecraft server hostname.
+     * @param port Minecraft server port.
+     * @return {@link MinecraftPingResponse}
+     */
+    public @NotNull MinecraftPingResponse pingServer(final String hostname, int port) {
+        return this.pingServer(hostname, port, 2000);
     }
 
     /**
      * Fetches a {@link MinecraftPingResponse} for the supplied options.
      *
-     * @param hostname A valid hostname.
+     * @param hostname Minecraft server hostname.
      * @param port Minecraft server port.
      * @param timeout Timeout in milliseconds for the connection to complete.
      * @return {@link MinecraftPingResponse}
      */
     @SneakyThrows
-    public static MinecraftPingResponse getPing(@NotNull String hostname, int port, int timeout) {
+    public @NotNull MinecraftPingResponse pingServer(@NotNull String hostname, int port, int timeout) {
         @Cleanup Socket socket = new Socket();
         long start = System.currentTimeMillis();
         socket.connect(new InetSocketAddress(hostname, port), timeout);
