@@ -34,14 +34,13 @@ public abstract class DataConfig<T extends Model> {
             .withValues(
                 Reflection.getResources()
                     .filterPackage(modelType)
-                    .getSubtypesOf(modelType)
+                    .getTypesOf(modelType)
                     .stream()
-                    .map(storedType -> (Class<T>) storedType)
                     .collect(Concurrent.toUnmodifiableList())
             )
             .withEdgeFunction(type -> Arrays.stream(type.getDeclaredFields())
                 .map(Field::getType)
-                .filter(modelType::isAssignableFrom)
+                .filter(modelType::isAssignableFrom) // Relies on modelType
                 .map(fieldType -> (Class<T>) fieldType)
             )
             .build()
