@@ -83,7 +83,9 @@ public final class SimplifiedApi {
             .registerTypeAdapter(SkyBlockItemsResponse.class, new SkyBlockItemsResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
+            .setDateFormat("yyyy-MM-dd HH:mm:ss")
             .setPrettyPrinting()
+            .serializeNulls()
             .create()
         );
         serviceManager.add(NbtFactory.class, new NbtFactory());
