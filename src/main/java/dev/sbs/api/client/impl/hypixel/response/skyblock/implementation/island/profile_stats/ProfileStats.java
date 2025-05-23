@@ -91,8 +91,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         this.accessoryBag = member.getAccessoryBag().asEnhanced();
 
         // --- Populate Default Expression Variables ---
-        member.getPetData().getActivePet().ifPresent(petInfo -> this.expressionVariables.put("PET_LEVEL", (double) petInfo.asEnhanced().getLevel()));
-        // TODO: Loading enhanced pet data, why am I not caching it???
+        this.getActivePet().ifPresent(activePet -> this.expressionVariables.put("PET_LEVEL", (double) activePet.getLevel()));
         this.expressionVariables.put("SKILL_AVERAGE", member.getSkillAverage());
         this.expressionVariables.put("SKYBLOCK_LEVEL", (double) member.getLeveling().getLevel());
         this.expressionVariables.put("BESTIARY_MILESTONE", (double) member.getBestiary().asEnhanced().getMilestone());
@@ -135,7 +134,6 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
 
         // TODO
         //  Optimizer Request: No API Data
-        //     Booster Cookie:     +15 Magic Find
         //     Beacon:             +5 Magic Find
         //  Optimizer Request: Missing API Data
         //     Defused Traps:      +6 Intelligence
@@ -178,6 +176,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         this.loadEssencePerks(member);
         this.loadLevels(member);
         this.loadBestiary(member);
+        this.loadBoosterCookie(member);
         this.loadMelodyHarp(member);
         this.loadJacobsPerks(member);
 
@@ -331,22 +330,21 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     }
 
     private void loadActivePet(Member member) {
-        if (member.getPetData().getActivePet().isEmpty())
+        if (this.getActivePet().isEmpty())
             return;
 
-        Pet activePet = member.getPetData().getActivePet().get();
-        EnhancedPet enhancedActivePet = activePet.asEnhanced();
+        EnhancedPet activePet = this.getActivePet().get();
 
-        if (enhancedActivePet.getTypeModel().isEmpty())
+        if (activePet.getTypeModel().isEmpty())
             return;
 
-        PetModel petModel = enhancedActivePet.getTypeModel().get();
+        PetModel petModel = activePet.getTypeModel().get();
 
         // Load Rarity Filtered Pet Stats
         SimplifiedApi.getRepositoryOf(PetStatModel.class)
             .findAll(PetStatModel::getPet, petModel)
             .filter(petStatModel -> petStatModel.getRarities().contains(activePet.getRarityOrdinal()))
-            .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * enhancedActivePet.getLevel())));
+            .forEach(petStatModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(petStatModel.getStat()), petStatModel.getBaseValue() + (petStatModel.getLevelBonus() * activePet.getLevel())));
 
         // Save Pet Stats to Expression Variables
         this.stats.get(Type.ACTIVE_PET).forEach((statModel, statData) -> this.expressionVariables.put(String.format("STAT_PET_%s", statModel.getKey()), statData.getTotal()));
@@ -367,7 +365,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
                     .ifPresent(this.bonusPetAbilityStatModels::add);
 
                 petAbilityStatPair.getValue().forEach(petAbilityStatModel -> {
-                    double abilityValue = petAbilityStatModel.getBaseValue() + (petAbilityStatModel.getLevelBonus() * enhancedActivePet.getLevel());
+                    double abilityValue = petAbilityStatModel.getBaseValue() + (petAbilityStatModel.getLevelBonus() * activePet.getLevel());
 
                     // Save Ability Stat
                     if (petAbilityStatModel.getStat() != null)
@@ -380,7 +378,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             });
 
         // Handle Static Pet Item Bonuses
-        enhancedActivePet.getHeldPetItemModel()
+        activePet.getHeldPetItemModel()
             .filter(PetItemModel::notPercentage)
             .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
                 .ifPresent(statModel -> this.addBonus(this.stats.get(Type.ACTIVE_PET).get(statModel), petItemModel.getEffect(key)))
@@ -407,7 +405,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             );
 
         // Handle Percentage Pet Item Bonuses
-        enhancedActivePet.getHeldPetItemModel()
+        activePet.getHeldPetItemModel()
             .filter(PetItemModel::isPercentage)
             .ifPresent(petItemModel -> petItemModel.getEffects().forEach((key, value) -> SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, key)
                 .ifPresent(statModel -> {
@@ -496,7 +494,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
             ConcurrentList<ItemModel> items = SimplifiedApi.getRepositoryOf(ItemModel.class).findAll();
             ConcurrentList<Pair<CompoundTag, Optional<ItemModel>>> armorItemModels = member.getInventory().getArmor()
                 .getNbtData()
-                .<CompoundTag>getList("i")
+                .<CompoundTag>getListTag("i")
                 .stream()
                 .map(itemTag -> Pair.of(
                     itemTag,
@@ -527,8 +525,22 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
     }
 
     private void loadBestiary(Member member) {
-        SimplifiedApi.getRepositoryOf(StatModel.class).findFirst(StatModel::getKey, "HEALTH")
+        SimplifiedApi.getRepositoryOf(StatModel.class)
+            .findFirst(StatModel::getKey, "HEALTH")
             .ifPresent(healthStatModel -> this.addBase(this.stats.get(Type.BESTIARY).get(healthStatModel), member.getBestiary().asEnhanced().getMilestone() * 2.0));
+    }
+
+    private void loadBoosterCookie(Member member) {
+        if (!member.isBoosterCookieActive())
+            return;
+
+        SimplifiedApi.getRepositoryOf(StatModel.class)
+            .findFirst(StatModel::getKey, "MAGIC_FIND")
+            .ifPresent(magicFindStatModel -> this.addBase(this.stats.get(Type.BOOSTER_COOKIE).get(magicFindStatModel), 15));
+
+        SimplifiedApi.getRepositoryOf(StatModel.class)
+            .matchAll(statModel -> statModel.getKey().endsWith("_WISDOM"))
+            .forEach(wisdomStateModel -> this.addBase(this.stats.get(Type.BOOSTER_COOKIE).get(wisdomStateModel), 25));
     }
 
     private void loadCenturyCakes(Member member) {
@@ -723,6 +735,7 @@ public class ProfileStats extends StatData<ProfileStats.Type> {
         ACTIVE_POTIONS(true),
         BASE_STATS(true),
         BESTIARY(true),
+        BOOSTER_COOKIE(true),
         CENTURY_CAKES(true),
         DUNGEONS(true),
         ESSENCE(true),

@@ -83,7 +83,7 @@ public final class MojangProxy {
         return new MojangProfileResponse(this.getSessionRequest().getProperties(uniqueId));
     }
 
-    private @NotNull Inet6Address getRandomInet6Address() {
+    private @NotNull Optional<Inet6Address> getRandomInet6Address() {
         return this.getInet6NetworkPrefix()
             .map(networkPrefix -> {
                 String inet6NetworkPrefix = StringUtil.join(networkPrefix, ":");
@@ -95,8 +95,7 @@ public final class MojangProxy {
                     throw new RuntimeException(uhex);
                 }
             })
-            .map(Inet6Address.class::cast)
-            .orElseThrow();
+            .map(Inet6Address.class::cast);
     }
 
     private static int getRandomInet6Group() {

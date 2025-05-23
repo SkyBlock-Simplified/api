@@ -16,6 +16,7 @@ import java.net.Inet6Address;
 import java.net.URL;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Getter
 public abstract class MojangClient<T extends IMojangRequest> extends Client<T> {
@@ -24,6 +25,10 @@ public abstract class MojangClient<T extends IMojangRequest> extends Client<T> {
     private final @NotNull T request;
 
     public MojangClient(@NotNull Domain domain, @Nullable Inet6Address inet6Address) {
+        this(domain, Optional.ofNullable(inet6Address));
+    }
+
+    public MojangClient(@NotNull Domain domain, @NotNull Optional<Inet6Address> inet6Address) {
         super(domain.getHost().getHost(), inet6Address);
         this.domain = domain;
         this.request = this.build(Reflection.getSuperClass(this));

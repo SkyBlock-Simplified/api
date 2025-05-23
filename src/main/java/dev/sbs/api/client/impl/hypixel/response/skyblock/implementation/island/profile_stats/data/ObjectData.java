@@ -67,8 +67,8 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
         this.tierBoosted = compoundTag.getPathOrDefault("tag.ExtraAttributes.baseStatBoostPercentage", IntTag.EMPTY).getValue() > 0;
 
         // Load Gemstones
-        CompoundTag gemTag = compoundTag.getPath("tag.ExtraAttributes.gems");
-        this.gemstones = Concurrent.newUnmodifiableMap((gemTag != null && gemTag.notEmpty()) ? findGemstones(gemTag) : Concurrent.newMap());
+        CompoundTag gemTag = compoundTag.getPathOrDefault("tag.ExtraAttributes.gems", CompoundTag.EMPTY);
+        this.gemstones = Concurrent.newUnmodifiableMap(gemTag.notEmpty() ? findGemstones(gemTag) : Concurrent.newMap());
 
         // Initialize Stats
         ConcurrentList<StatModel> statModels = SimplifiedApi.getRepositoryOf(StatModel.class).findAll().sorted(StatModel::getOrdinal);
@@ -124,7 +124,7 @@ public abstract class ObjectData<T extends ObjectData.Type> extends StatData<T> 
                 // Handle Generic Slots
                 if (entry.getValue().getValue().equals(gemstoneModel.getKey()) && entry.getKey().endsWith("_gem")) {
                     handle = true;
-                    typeKey = gemTag.getValue(entry.getKey().replace("_gem", ""));
+                    typeKey = gemTag.getOrDefault(entry.getKey().replace("_gem", ""), StringTag.EMPTY).getValue();
                 }
 
                 if (handle) {
