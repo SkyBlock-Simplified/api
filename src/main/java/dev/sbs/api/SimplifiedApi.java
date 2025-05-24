@@ -57,7 +57,20 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * The Official SkyBlock Simplified Api.
+ * The {@code SimplifiedApi} is a final, non-instantiable utility class that
+ * serves as a utility container for managing and accessing various managers,
+ * services, builders, and API clients used across the application.
+ * <p>
+ * This class centralizes the initialization and retrieval of dependent resources to ensure
+ * a simplified and consistent interface for interacting with API components.
+ * <ul>
+ *     <li>Management of key-value associations through {@link KeyManager}.</li>
+ *     <li>Centralized service management through {@link ServiceManager}.</li>
+ *     <li>Builder class management through {@link BuilderManager}.</li>
+ *     <li>Class-to-class mapping configurations through {@link ClassBuilderManager}.</li>
+ *     <li>Custom serialization configurations through {@link Gson}.</li>
+ *     <li>and more...</li>
+ * </ul>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SimplifiedApi {

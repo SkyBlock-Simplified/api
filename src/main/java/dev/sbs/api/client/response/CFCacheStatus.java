@@ -7,7 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 /**
- * The output of the {@code CF-Cache-Status} header shows whether a resource is cached.
+ * Represents the caching status of a resource as determined by Cloudflare.
+ * <p>
+ * The values in this enum correspond to possible statuses returned by Cloudflare for a resource,
+ * indicating its caching behavior or eligibility. These statuses provide insight into
+ * whether a resource was cached, served from the origin server, or encountered specific
+ * caching behaviors.
  */
 @Getter
 @RequiredArgsConstructor

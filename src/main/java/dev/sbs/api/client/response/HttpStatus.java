@@ -5,6 +5,15 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Represents an HTTP response status code, providing standardized status codes
+ * and messages as defined by the HTTP standard, along with additional custom
+ * statuses for specific server or application errors.
+ * <p>
+ * Status codes are organized based on their numeric ranges and associated
+ * categories, such as informational, success, redirection, client error, server error,
+ * or other specialized states (e.g., network or proxy-specific errors).
+ */
 @Getter
 public enum HttpStatus {
 
@@ -116,36 +125,33 @@ public enum HttpStatus {
 
     HttpStatus(int code, @Nullable String message, @Nullable HttpState state) {
         this.code = code;
+        this.state = state != null ? state : HttpState.of(code);
         message = StringUtil.isEmpty(message) ? StringUtil.capitalizeFully(this.name().replace("_", " ")) : message;
 
         if (state != null)
             message = String.format("%s: %s", state.getTitle(), message);
-        else {
-            if (this.getCode() >= 500)
-                state = HttpState.SERVER_ERROR;
-            else if (this.getCode() >= 400)
-                state = HttpState.CLIENT_ERROR;
-            else if (this.getCode() >= 300)
-                state = HttpState.REDIRECTION;
-            else if (this.getCode() >= 200)
-                state = HttpState.SUCCESS;
-            else if (this.getCode() >= 100)
-                state = HttpState.INFORMATIONAL;
-            else
-                state = HttpState.OTHER;
-        }
 
-        this.state = state;
         this.message = message;
     }
 
+    /**
+     * Retrieves the corresponding {@link HttpStatus} for the specified HTTP status code.
+     * <p>
+     * Iterates through all available {@link HttpStatus} values and returns the one
+     * matching the given code. If no match is found, an {@link IllegalArgumentException}
+     * is thrown stating the code is invalid.
+     *
+     * @param code the HTTP status code to find the corresponding {@link HttpStatus}
+     * @return the {@link HttpStatus} associated with the provided code
+     * @throws IllegalArgumentException if the provided code does not match any valid {@link HttpStatus}
+     */
     public static @NotNull HttpStatus of(int code) {
         for (HttpStatus httpCode : HttpStatus.values()) {
             if (httpCode.getCode() == code)
                 return httpCode;
         }
 
-        return HttpStatus.OK;
+        throw new IllegalArgumentException("Invalid HTTP status code: " + code);
     }
 
 }
