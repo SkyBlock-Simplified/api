@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
  * This should be used in an API, and only once across all projects.
  */
 @SuppressWarnings({ "unchecked" })
-public class ClassBuilderManager extends Manager<Class<?>, Class<? extends ClassCompiler<?>>> {
+public class CompilerManager extends Manager<Class<?>, Class<? extends ClassCompiler<?>>> {
 
-    public ClassBuilderManager() {
+    public CompilerManager() {
         this(Mode.NORMAL);
     }
 
-    public ClassBuilderManager(@NotNull Mode mode) {
+    public CompilerManager(@NotNull Mode mode) {
         super((entry, service) -> service.isAssignableFrom(entry.getKey()), mode);
     }
 

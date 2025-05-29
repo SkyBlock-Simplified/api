@@ -27,8 +27,15 @@ import dev.sbs.api.client.request.IRequest;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.data.model.Model;
+import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
+import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
+import dev.sbs.api.io.gson.adapter.NbtContentTypeAdapter;
+import dev.sbs.api.io.gson.adapter.SkyBlockDateTypeAdapter;
+import dev.sbs.api.io.gson.adapter.UUIDTypeAdapter;
+import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
+import dev.sbs.api.io.gson.factory.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.manager.BuilderManager;
-import dev.sbs.api.manager.ClassBuilderManager;
+import dev.sbs.api.manager.CompilerManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
@@ -37,13 +44,6 @@ import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.scheduler.Scheduler;
-import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
-import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
-import dev.sbs.api.io.gson.adapter.NbtContentTypeAdapter;
-import dev.sbs.api.io.gson.adapter.SkyBlockDateTypeAdapter;
-import dev.sbs.api.io.gson.adapter.UUIDTypeAdapter;
-import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
-import dev.sbs.api.io.gson.factory.SerializedPathTypeAdaptorFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,7 +67,7 @@ import java.util.UUID;
  *     <li>Management of key-value associations through {@link KeyManager}.</li>
  *     <li>Centralized service management through {@link ServiceManager}.</li>
  *     <li>Builder class management through {@link BuilderManager}.</li>
- *     <li>Class-to-class mapping configurations through {@link ClassBuilderManager}.</li>
+ *     <li>Class-to-class mapping configurations through {@link CompilerManager}.</li>
  *     <li>Custom serialization configurations through {@link Gson}.</li>
  *     <li>and more...</li>
  * </ul>
@@ -78,7 +78,7 @@ public final class SimplifiedApi {
     @Getter private static final @NotNull KeyManager<String, String> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
     @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
     @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
-    @Getter private static final @NotNull ClassBuilderManager classBuilderManager = new ClassBuilderManager(Manager.Mode.UPDATE);
+    @Getter private static final @NotNull CompilerManager compilerManager = new CompilerManager(Manager.Mode.UPDATE);
 
     static {
         // Provide Services
@@ -106,10 +106,10 @@ public final class SimplifiedApi {
         serviceManager.add(SessionManager.class, new SessionManager());
 
         // Provide Class Builders
-        classBuilderManager.add(MojangApiRequest.class, MojangApiClient.class);
-        classBuilderManager.add(MojangSessionRequest.class, MojangSessionClient.class);
-        classBuilderManager.add(SbsRequest.class, SbsClient.class);
-        classBuilderManager.add(HypixelRequest.class, HypixelClient.class);
+        compilerManager.add(MojangApiRequest.class, MojangApiClient.class);
+        compilerManager.add(MojangSessionRequest.class, MojangSessionClient.class);
+        compilerManager.add(SbsRequest.class, SbsClient.class);
+        compilerManager.add(HypixelRequest.class, HypixelClient.class);
 
         // Provide Builders
         builderManager.add(LineSegment.class, LineSegment.Builder.class);
