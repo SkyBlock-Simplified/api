@@ -1,4 +1,4 @@
-package dev.sbs.api.mutable.pair;
+package dev.sbs.api.stream.pair;
 
 import lombok.Getter;
 

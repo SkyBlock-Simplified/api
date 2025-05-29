@@ -1,8 +1,7 @@
-package dev.sbs.api.collection.stream.triple;
+package dev.sbs.api.stream.triple;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.mutable.triple.Triple;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;

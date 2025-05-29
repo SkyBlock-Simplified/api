@@ -1,4 +1,4 @@
-package dev.sbs.api.mutable.triple;
+package dev.sbs.api.stream.triple;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package dev.sbs.api.mutable.triple;
+package dev.sbs.api.stream.triple;
 
 import dev.sbs.api.builder.CompareToBuilder;
 import dev.sbs.api.builder.EqualsBuilder;

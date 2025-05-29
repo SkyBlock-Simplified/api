@@ -1,4 +1,4 @@
-package dev.sbs.api.collection.stream;
+package dev.sbs.api.stream;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentCollection;
@@ -8,18 +8,22 @@ import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedList;
 import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.collection.concurrent.unmodifiable.ConcurrentUnmodifiableMap;
-import dev.sbs.api.collection.stream.triple.TriFunction;
-import dev.sbs.api.collection.stream.triple.TripleStream;
-import dev.sbs.api.mutable.triple.Triple;
+import dev.sbs.api.stream.triple.TriFunction;
+import dev.sbs.api.stream.triple.Triple;
+import dev.sbs.api.stream.triple.TripleStream;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiConsumer;
@@ -34,7 +38,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class StreamUtil {
+public final class StreamUtil {
 
     public static final ConcurrentSet<Collector.Characteristics> CHARACTERISTICS = Concurrent.newSet(Collector.Characteristics.CONCURRENT, Collector.Characteristics.IDENTITY_FINISH);
     public static final ConcurrentSet<Collector.Characteristics> UN_CHARACTERISTICS = Concurrent.newSet(Collector.Characteristics.CONCURRENT, Collector.Characteristics.IDENTITY_FINISH, Collector.Characteristics.UNORDERED);
@@ -395,6 +399,25 @@ public class StreamUtil {
             (left, right) -> left.append(right.toString()),
             CHARACTERISTICS
         );
+    }
+
+    @Getter
+    @Accessors(fluent = true)
+    @RequiredArgsConstructor
+    @AllArgsConstructor
+    private static class StreamCollector<T, A, R> implements Collector<T, A, R> {
+
+        @SuppressWarnings("unchecked")
+        private static <I, R> Function<I, R> castingIdentity() {
+            return i -> (R) i;
+        }
+
+        private final @NotNull Supplier<A> supplier;
+        private final @NotNull BiConsumer<A, T> accumulator;
+        private final @NotNull BinaryOperator<A> combiner;
+        private @NotNull Function<A, R> finisher = castingIdentity();
+        private final @NotNull Set<Characteristics> characteristics;
+
     }
 
     @AllArgsConstructor(access = AccessLevel.PACKAGE)

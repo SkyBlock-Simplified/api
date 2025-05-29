@@ -1,10 +1,9 @@
-package dev.sbs.api.collection.stream;
+package dev.sbs.api.stream.pair;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.collection.stream.triple.TriFunction;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.triple.TriFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;

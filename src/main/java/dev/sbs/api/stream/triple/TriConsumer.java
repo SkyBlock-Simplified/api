@@ -1,4 +1,4 @@
-package dev.sbs.api.collection.stream.triple;
+package dev.sbs.api.stream.triple;
 
 import org.jetbrains.annotations.NotNull;
 
