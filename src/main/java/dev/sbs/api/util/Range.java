@@ -1,6 +1,5 @@
-package dev.sbs.api.mutable;
+package dev.sbs.api.util;
 
-import dev.sbs.api.util.Preconditions;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

@@ -8,7 +8,7 @@ import dev.sbs.api.minecraft.exception.MinecraftException;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
-import dev.sbs.api.mutable.Range;
+import dev.sbs.api.util.Range;
 import dev.sbs.api.util.SystemUtil;
 import lombok.AccessLevel;
 import lombok.Cleanup;
