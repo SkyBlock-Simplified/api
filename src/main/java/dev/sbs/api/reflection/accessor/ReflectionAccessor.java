@@ -62,6 +62,139 @@ abstract class ReflectionAccessor<T extends AccessibleObject> {
         return this.getHandle().isAnnotationPresent(annotationClass);
     }
 
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code public} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code public} modifier; {@code false} otherwise.
+     */
+    public final boolean isPublic() {
+        return Modifier.isPublic(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code private} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code private} modifier; {@code false} otherwise.
+     */
+    public final boolean isPrivate() {
+        return Modifier.isPrivate(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code protected} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code protected} modifier; {@code false} otherwise.
+     */
+    public final boolean isProtected() {
+        return Modifier.isProtected(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code static} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code static} modifier; {@code false} otherwise.
+     */
+    public final boolean isStatic() {
+        return Modifier.isStatic(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code final} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code final} modifier; {@code false} otherwise.
+     */
+    public final boolean isFinal() {
+        return Modifier.isFinal(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code synchronized} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code synchronized} modifier; {@code false} otherwise.
+     */
+    public final boolean isSynchronized() {
+        return Modifier.isSynchronized(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code volatile} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code volatile} modifier; {@code false} otherwise.
+     */
+    public final boolean isVolatile() {
+        return Modifier.isVolatile(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code transient} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code transient} modifier; {@code false} otherwise.
+     */
+    public final boolean isTransient() {
+        return Modifier.isTransient(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code native} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code native} modifier; {@code false} otherwise.
+     */
+    public final boolean isNative() {
+        return Modifier.isNative(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code interface} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code interface} modifier; {@code false} otherwise.
+     */
+    public final boolean isInterface() {
+        return Modifier.isInterface(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code abstract} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code abstract} modifier; {@code false} otherwise.
+     */
+    public final boolean isAbstract() {
+        return Modifier.isAbstract(this.getModifiers());
+    }
+
+    /**
+     * Return {@code true} if the integer argument includes the
+     * {@code strictfp} modifier, {@code false} otherwise.
+     *
+     * @return {@code true} if {@code mod} includes the
+     * {@code strictfp} modifier; {@code false} otherwise.
+     */
+    public final boolean isStrict() {
+        return Modifier.isStrict(this.getModifiers());
+    }
+
+
     @Override
     public final int hashCode() {
         return new HashCodeBuilder().append(this.getType()).append(this.getHandle()).build();
