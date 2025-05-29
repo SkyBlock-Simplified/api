@@ -15,8 +15,8 @@ import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
 import dev.sbs.api.data.model.skyblock.collection_data.collection_items.CollectionItemModel;
 import dev.sbs.api.data.model.skyblock.collection_data.collections.CollectionModel;
 import dev.sbs.api.data.model.skyblock.minion_data.minions.MinionModel;
-import dev.sbs.api.mutable.pair.Pair;
-import dev.sbs.api.mutable.primitive.MutableDouble;
+import dev.sbs.api.mutable.MutableDouble;
+import dev.sbs.api.stream.pair.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

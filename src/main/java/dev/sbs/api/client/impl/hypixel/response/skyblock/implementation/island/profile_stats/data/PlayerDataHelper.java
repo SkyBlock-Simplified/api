@@ -12,10 +12,10 @@ import dev.sbs.api.math.Expression;
 import dev.sbs.api.math.ExpressionBuilder;
 import dev.sbs.api.minecraft.nbt.tags.collection.CompoundTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
-import dev.sbs.api.mutable.pair.Pair;
-import dev.sbs.api.mutable.primitive.MutableBoolean;
-import dev.sbs.api.mutable.primitive.MutableDouble;
-import dev.sbs.api.mutable.triple.Triple;
+import dev.sbs.api.mutable.MutableBoolean;
+import dev.sbs.api.mutable.MutableDouble;
+import dev.sbs.api.stream.pair.Pair;
+import dev.sbs.api.stream.triple.Triple;
 import dev.sbs.api.util.NumberUtil;
 
 import java.util.Arrays;

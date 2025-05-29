@@ -12,7 +12,7 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.IntTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.pair.Pair;
 import dev.sbs.api.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

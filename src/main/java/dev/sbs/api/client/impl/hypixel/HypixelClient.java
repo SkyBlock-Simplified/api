@@ -6,7 +6,7 @@ import dev.sbs.api.client.impl.hypixel.exception.HypixelApiException;
 import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
 import dev.sbs.api.client.response.CFCacheStatus;
 import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.pair.Pair;
 import feign.FeignException;
 
 public final class HypixelClient extends Client<HypixelRequest> {

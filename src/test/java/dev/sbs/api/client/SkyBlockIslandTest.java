@@ -35,7 +35,7 @@ import dev.sbs.api.data.model.skyblock.sacks.SackModel;
 import dev.sbs.api.data.model.skyblock.skill_levels.SkillLevelModel;
 import dev.sbs.api.data.model.skyblock.skills.SkillModel;
 import dev.sbs.api.data.sql.SqlConfig;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.pair.Pair;
 import dev.sbs.api.util.StringUtil;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

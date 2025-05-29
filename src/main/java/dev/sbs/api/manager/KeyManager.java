@@ -3,7 +3,7 @@ package dev.sbs.api.manager;
 import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.pair.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

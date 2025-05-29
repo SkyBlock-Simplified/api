@@ -2,7 +2,7 @@ package dev.sbs.api.util;
 
 import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.pair.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

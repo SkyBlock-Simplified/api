@@ -8,7 +8,7 @@ import dev.sbs.api.data.model.skyblock.reforge_data.reforge_stats.ReforgeStatMod
 import dev.sbs.api.data.model.skyblock.reforge_data.reforges.ReforgeModel;
 import dev.sbs.api.data.sql.SqlConfig;
 import dev.sbs.api.data.sql.exception.SqlException;
-import dev.sbs.api.mutable.pair.Pair;
+import dev.sbs.api.stream.pair.Pair;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

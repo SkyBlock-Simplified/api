@@ -1,11 +1,11 @@
 package dev.sbs.api.client.impl.hypixel.response.skyblock.implementation;
 
-import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.mutable.pair.Pair;
-import dev.sbs.api.util.SimpleDate;
 import dev.sbs.api.builder.EqualsBuilder;
 import dev.sbs.api.builder.HashCodeBuilder;
+import dev.sbs.api.collection.concurrent.Concurrent;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
+import dev.sbs.api.stream.pair.Pair;
+import dev.sbs.api.util.SimpleDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
