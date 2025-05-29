@@ -2,6 +2,8 @@ package dev.sbs.api.builder;
 
 import dev.sbs.api.mutable.pair.Pair;
 import dev.sbs.api.util.ArrayUtil;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;
@@ -62,6 +64,8 @@ import java.util.Set;
  * }
  * </pre>
  */
+@Getter
+@NoArgsConstructor
 public class EqualsBuilder implements ClassBuilder<Boolean> {
 
     /**
@@ -186,18 +190,12 @@ public class EqualsBuilder implements ClassBuilder<Boolean> {
     /**
      * If the fields tested are equals.
      * The default value is <code>true</code>.
+     * -- GETTER --
+     *  <p>Returns <code>true</code> if the fields that have been checked
+     *  are all equal.</p>
+
      */
     private boolean isEquals = true;
-
-    /**
-     * <p>Constructor for EqualsBuilder.</p>
-     *
-     * <p>Starts off assuming that equals is <code>true</code>.</p>
-     * @see Object#equals(Object)
-     */
-    public EqualsBuilder() {
-        // do nothing for now.
-    }
 
     //-------------------------------------------------------------------------
 
@@ -832,16 +830,6 @@ public class EqualsBuilder implements ClassBuilder<Boolean> {
             append(lhs[i], rhs[i]);
         }
         return this;
-    }
-
-    /**
-     * <p>Returns <code>true</code> if the fields that have been checked
-     * are all equal.</p>
-     *
-     * @return boolean
-     */
-    public boolean isEquals() {
-        return this.isEquals;
     }
 
     /**

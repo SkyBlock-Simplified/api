@@ -3,7 +3,7 @@ package dev.sbs.api.builder;
 /**
  * Wrap an identity key (System.identityHashCode())
  * so that an object can only be equal() to itself.
- *
+ * <p>
  * This is necessary to disambiguate the occasional duplicate
  * identityHashCodes that can occur.
  */
