@@ -1,6 +1,4 @@
-package dev.sbs.api.mutable.primitive;
-
-import dev.sbs.api.mutable.Mutable;
+package dev.sbs.api.mutable;
 
 import java.io.Serializable;
 

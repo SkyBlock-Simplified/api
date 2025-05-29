@@ -1,6 +1,5 @@
-package dev.sbs.api.mutable.primitive;
+package dev.sbs.api.mutable;
 
-import dev.sbs.api.mutable.Mutable;
 import dev.sbs.api.util.NumberUtil;
 
 /**
