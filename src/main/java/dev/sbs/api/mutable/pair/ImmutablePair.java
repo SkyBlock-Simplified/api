@@ -1,5 +1,7 @@
 package dev.sbs.api.mutable.pair;
 
+import lombok.Getter;
+
 /**
  * <p>An immutable pair consisting of two {@code Object} elements.</p>
  *
@@ -13,6 +15,7 @@ package dev.sbs.api.mutable.pair;
  * @param <L> the left element type
  * @param <R> the right element type
  */
+@Getter
 public final class ImmutablePair<L, R> extends Pair<L, R> {
 
     /**
@@ -56,22 +59,6 @@ public final class ImmutablePair<L, R> extends Pair<L, R> {
     //-----------------------------------------------------------------------
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public L getLeft() {
-        return left;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public R getRight() {
-        return right;
-    }
-
-    /**
      * <p>Throws {@code UnsupportedOperationException}.</p>
      *
      * <p>This pair is immutable, so this operation is not supported.</p>
@@ -80,6 +67,7 @@ public final class ImmutablePair<L, R> extends Pair<L, R> {
      * @return never
      * @throws UnsupportedOperationException as this operation is not supported
      */
+    @Override
     public R setValue(R value) {
         throw new UnsupportedOperationException();
     }

@@ -1,5 +1,10 @@
 package dev.sbs.api.mutable.pair;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * <p>A mutable pair consisting of two {@code Object} elements.</p>
  *
@@ -8,7 +13,11 @@ package dev.sbs.api.mutable.pair;
  * @param <L> the left element type
  * @param <R> the right element type
  */
-public class MutablePair<L, R> extends Pair<L, R> {
+@Getter
+@Setter
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
+public final class MutablePair<L, R> extends Pair<L, R> {
 
     /**
      * Left object
@@ -18,25 +27,6 @@ public class MutablePair<L, R> extends Pair<L, R> {
      * Right object
      */
     public R right;
-
-    /**
-     * Create a new pair instance of two nulls.
-     */
-    public MutablePair() {
-        super();
-    }
-
-    /**
-     * Create a new pair instance.
-     *
-     * @param left  the left value, may be null
-     * @param right the right value, may be null
-     */
-    public MutablePair(L left, R right) {
-        super();
-        this.left = left;
-        this.right = right;
-    }
 
     /**
      * <p>Obtains an immutable pair of from two objects inferring the generic types.</p>
@@ -55,40 +45,6 @@ public class MutablePair<L, R> extends Pair<L, R> {
     }
 
     //-----------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public L getLeft() {
-        return left;
-    }
-
-    /**
-     * Sets the left element of the pair.
-     *
-     * @param left the new value of the left element, may be null
-     */
-    public void setLeft(L left) {
-        this.left = left;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public R getRight() {
-        return right;
-    }
-
-    /**
-     * Sets the right element of the pair.
-     *
-     * @param right the new value of the right element, may be null
-     */
-    public void setRight(R right) {
-        this.right = right;
-    }
 
     /**
      * Sets the {@code Map.Entry} value.

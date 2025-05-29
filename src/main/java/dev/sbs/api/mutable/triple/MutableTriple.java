@@ -1,8 +1,8 @@
 package dev.sbs.api.mutable.triple;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor(force = true)
-@RequiredArgsConstructor
-public class MutableTriple<L, M, R> extends Triple<L, M, R> {
+@AllArgsConstructor
+public final class MutableTriple<L, M, R> extends Triple<L, M, R> {
 
-    public final L left;
-    public final M middle;
-    public final R right;
+    public L left;
+    public M middle;
+    public R right;
 
     /**
      * <p>Obtains a mutable triple of three objects inferring the generic types.</p>
