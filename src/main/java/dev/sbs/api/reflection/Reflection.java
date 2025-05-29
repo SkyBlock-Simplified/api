@@ -18,6 +18,7 @@ import dev.sbs.api.util.PrimitiveUtil;
 import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.SystemUtil;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +48,7 @@ public class Reflection<R> {
 
     private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
     private final @NotNull Class<R> type;
+    @Setter private boolean processingSuperclass = true;
 
     /**
      * Creates a new reflection instance of {@literal packageName}.{@literal className}.
@@ -142,7 +144,7 @@ public class Reflection<R> {
             }
         }
 
-        if (this.getType().getSuperclass() != null)
+        if (this.isProcessingSuperclass() && this.getType().getSuperclass() != null)
             return this.getSuperReflection().getField(type);
 
         throw new ReflectionException("The field with type '%s' was not found!", type);
@@ -181,7 +183,7 @@ public class Reflection<R> {
             }
         }
 
-        if (this.getType().getSuperclass() != null)
+        if (this.isProcessingSuperclass() && this.getType().getSuperclass() != null)
             return this.getSuperReflection().getField(name);
 
         throw new ReflectionException("The field '%s' was not found!", name);
@@ -203,7 +205,7 @@ public class Reflection<R> {
             fieldAccessors.add(new FieldAccessor<>(this, field));
         }
 
-        if (this.getType().getSuperclass() != null)
+        if (this.isProcessingSuperclass() && this.getType().getSuperclass() != null)
             fieldAccessors.addAll(this.getSuperReflection().getFields());
 
         return fieldAccessors;
@@ -255,7 +257,7 @@ public class Reflection<R> {
             }
         }
 
-        if (this.getType().getSuperclass() != null)
+        if (this.isProcessingSuperclass() && this.getType().getSuperclass() != null)
             return this.getSuperReflection().getMethod(type, paramTypes);
 
         throw new ReflectionException("The method with return type '%s' was not found with parameters ['%s']!", type, Arrays.asList(types));
@@ -304,7 +306,7 @@ public class Reflection<R> {
             }
         }
 
-        if (this.getType().getSuperclass() != null)
+        if (this.isProcessingSuperclass() && this.getType().getSuperclass() != null)
             return this.getSuperReflection().getMethod(name, paramTypes);
 
         throw new ReflectionException("The method ''%s'' was not found with parameters ''%s''.", name, Arrays.asList(types));
