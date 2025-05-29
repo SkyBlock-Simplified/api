@@ -118,14 +118,15 @@ public class GifSequenceWriter {
     }
 
     /**
-     * Converts the frames added to the writer into a single compiled {@link BufferedImage}.
-     * The method processes all the added frames and outputs the resulting image, in GIF format.
+     * Converts the frames added to the writer into a byte array representing a GIF sequence.
+     * <p>
+     * The method processes all the stored frames and outputs the resulting byte array, in GIF format.
      *
-     * @return the compiled {@link BufferedImage} representing the GIF sequence.
+     * @return the compiled byte array representing the GIF sequence.
      * @throws IllegalStateException if no frames have been added to the writer.
      */
     @SneakyThrows
-    public @NotNull BufferedImage toImage() {
+    public byte[] toByteArray() {
         if (this.getFrames().isEmpty())
             throw new IllegalStateException("No frames have been added to the writer.");
 
@@ -139,8 +140,20 @@ public class GifSequenceWriter {
         this.getFrames().forEach(this::writeToSequence);
         this.close();
 
-        // Compile GIF
-        @Cleanup ByteArrayDataInput dataInput = new ByteArrayDataInput(dataOutput.toByteArray());
+        return dataOutput.toByteArray();
+    }
+
+    /**
+     * Converts the frames added to the writer into a single compiled {@link BufferedImage}.
+     * <p>
+     * The method processes all the stored frames and outputs the resulting image, in GIF format.
+     *
+     * @return the compiled {@link BufferedImage} representing the GIF sequence.
+     * @throws IllegalStateException if no frames have been added to the writer.
+     */
+    @SneakyThrows
+    public @NotNull BufferedImage toImage() {
+        @Cleanup ByteArrayDataInput dataInput = new ByteArrayDataInput(this.toByteArray());
         return ImageIO.read(dataInput);
     }
 
