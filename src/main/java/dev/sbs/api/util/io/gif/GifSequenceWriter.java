@@ -107,6 +107,17 @@ public class GifSequenceWriter {
     }
 
     /**
+     * Adds a frame to the GIF sequence at a specified index.
+     *
+     * @param index the position in the sequence where the frame should be inserted
+     * @param image the {@link BufferedImage} representing the frame to be added to the sequence
+     * @throws IndexOutOfBoundsException if the index is out of the valid range for the sequence
+     */
+    public void addFrame(int index, @NotNull BufferedImage image) {
+        this.frames.add(index, image);
+    }
+
+    /**
      * Converts the frames added to the writer into a single compiled {@link BufferedImage}.
      * The method processes all the added frames and outputs the resulting image, in GIF format.
      *
