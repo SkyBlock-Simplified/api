@@ -1,4 +1,4 @@
-package dev.sbs.api.util.gson.factory;
+package dev.sbs.api.io.gson.factory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.StringUtil;
-import dev.sbs.api.util.gson.SerializedPath;
+import dev.sbs.api.io.gson.SerializedPath;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;

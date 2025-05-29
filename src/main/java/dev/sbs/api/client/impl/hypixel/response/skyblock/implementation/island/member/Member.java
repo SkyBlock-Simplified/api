@@ -15,7 +15,7 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.util.gson.SerializedPath;
+import dev.sbs.api.io.gson.SerializedPath;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

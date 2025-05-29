@@ -15,7 +15,7 @@ import dev.sbs.api.minecraft.nbt.tags.primitive.LongTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.ShortTag;
 import dev.sbs.api.minecraft.nbt.tags.primitive.StringTag;
 import dev.sbs.api.util.PrimitiveUtil;
-import dev.sbs.api.util.io.Compression;
+import dev.sbs.api.io.Compression;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 

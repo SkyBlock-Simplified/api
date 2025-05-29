@@ -1,4 +1,4 @@
-package dev.sbs.api.util.io.gif;
+package dev.sbs.api.io.gif;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package dev.sbs.api.util.io;
+package dev.sbs.api.io;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;

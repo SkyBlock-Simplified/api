@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.impl.mojang.response.MinecraftPingResponse;
 import dev.sbs.api.minecraft.text.segment.TextSegment;
-import dev.sbs.api.util.io.ByteArrayDataOutput;
+import dev.sbs.api.io.ByteArrayDataOutput;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
