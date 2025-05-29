@@ -1,6 +1,6 @@
 package dev.sbs.api.minecraft.generator.font;
 
-import dev.sbs.api.minecraft.exception.MinecraftException;
+import dev.sbs.api.minecraft.generator.exception.FontException;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.util.SystemUtil;
 import lombok.Cleanup;
@@ -36,16 +36,16 @@ public enum MinecraftFont {
      * @param resourcePath the relative path to the font file resource
      * @param size the desired font size to apply to the loaded font
      * @return the {@link Font} object initialized with the specified resource and size
-     * @throws MinecraftException if the font file cannot be loaded or is in an invalid format
+     * @throws FontException if the font file cannot be loaded or is in an invalid format
      */
-    private static @NotNull Font initFont(String resourcePath, float size) {
+    private static @NotNull Font initFont(String resourcePath, float size) throws FontException {
         try {
             @Cleanup InputStream inputStream = SystemUtil.getResource(resourcePath);
             Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(size);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
             return font;
         } catch (IOException | FontFormatException ex) {
-            throw new MinecraftException(ex, "Unable to load font from file '%s'!", resourcePath);
+            throw new FontException(ex, resourcePath);
         }
     }
 

@@ -1,6 +1,6 @@
 package dev.sbs.api.minecraft.generator;
 
-import dev.sbs.api.minecraft.exception.MinecraftException;
+import dev.sbs.api.minecraft.generator.exception.GeneratorException;
 import dev.sbs.api.util.SystemUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -204,21 +204,21 @@ public class MinecraftHead {
         return finalHead;
     }
 
-    public InputStream toStream() throws MinecraftException {
+    public InputStream toStream() throws GeneratorException {
         try {
             return new FileInputStream(this.toFile());
         } catch (FileNotFoundException fnfex) {
-            throw new MinecraftException(fnfex);
+            throw new GeneratorException(fnfex);
         }
     }
 
-    public File toFile() throws MinecraftException {
+    public File toFile() throws GeneratorException {
         try {
             File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;
         } catch (IOException ioex) {
-            throw new MinecraftException(ioex);
+            throw new GeneratorException(ioex);
         }
     }
 

@@ -4,9 +4,6 @@ import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * General minecraft exceptions.
- */
 public class MinecraftException extends RuntimeException {
 
     public MinecraftException(@NotNull Throwable cause) {

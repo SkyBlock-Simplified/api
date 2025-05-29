@@ -4,7 +4,7 @@ import dev.sbs.api.builder.ClassBuilder;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.io.ByteArrayDataOutput;
-import dev.sbs.api.minecraft.exception.MinecraftException;
+import dev.sbs.api.minecraft.generator.exception.GeneratorException;
 import dev.sbs.api.minecraft.generator.font.MinecraftFont;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
@@ -268,14 +268,14 @@ public class MinecraftText {
         return new ByteArrayInputStream(dataOutput.toByteArray());
     }
 
-    public File toFile() throws MinecraftException {
+    public File toFile() throws GeneratorException {
         try {
             // TODO: Fix minecrafttext/ writing
             File tempFile = new File(SystemUtil.getJavaIoTmpDir(), String.format("minecrafttext/%s.png", UUID.randomUUID()));
             ImageIO.write(this.getImage(), "PNG", tempFile);
             return tempFile;
         } catch (IOException ioex) {
-            throw new MinecraftException(ioex);
+            throw new GeneratorException(ioex);
         }
     }
 
