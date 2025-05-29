@@ -1,21 +1,30 @@
 package dev.sbs.api.data.yaml.exception;
 
-public class YamlException extends RuntimeException {
+import dev.sbs.api.data.exception.DataException;
+import org.intellij.lang.annotations.PrintFormat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-    private static final long serialVersionUID = -4738336175050337570L;
+public class YamlException extends DataException {
 
-    public YamlException() { }
-
-    public YamlException(String message) {
-        super(message);
-    }
-
-    public YamlException(Throwable cause) {
+    public YamlException(@NotNull Throwable cause) {
         super(cause);
     }
 
-    public YamlException(String message, Throwable cause) {
-        super(message, cause);
+    public YamlException(@NotNull String message) {
+        super(message);
+    }
+
+    public YamlException(@NotNull Throwable cause, @NotNull String message) {
+        super(cause, message);
+    }
+
+    public YamlException(@NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(message, args);
+    }
+
+    public YamlException(@NotNull Throwable cause, @NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(cause, message, args);
     }
 
 }

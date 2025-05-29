@@ -15,8 +15,16 @@ public class SqlException extends DataException {
         super(message);
     }
 
+    public SqlException(@NotNull Throwable cause, @NotNull String message) {
+        super(cause, message);
+    }
+
     public SqlException(@NotNull @PrintFormat String message, @Nullable Object... args) {
-        super(String.format(message, args));
+        super(message, args);
+    }
+
+    public SqlException(@NotNull Throwable cause, @NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(cause, message, args);
     }
 
 }

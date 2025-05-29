@@ -14,8 +14,16 @@ public class DataException extends RuntimeException {
         super(message);
     }
 
+    public DataException(@NotNull Throwable cause, @NotNull String message) {
+        super(message, cause);
+    }
+
     public DataException(@NotNull @PrintFormat String message, @Nullable Object... args) {
         super(String.format(message, args));
+    }
+
+    public DataException(@NotNull Throwable cause, @NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(String.format(message, args), cause);
     }
 
 }
