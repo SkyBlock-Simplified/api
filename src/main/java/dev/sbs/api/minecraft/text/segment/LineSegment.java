@@ -7,6 +7,7 @@ import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.stream.StreamUtil;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.StringUtil;
+import dev.sbs.api.util.builder.ClassBuilder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,7 @@ public final class LineSegment {
             .collect(Concurrent.toList());
     }
 
-    public static class Builder implements dev.sbs.api.util.builder.Builder<LineSegment> {
+    public static class Builder implements ClassBuilder<LineSegment> {
 
         private final ConcurrentList<ColorSegment> segments = Concurrent.newList();
 

@@ -62,13 +62,13 @@ import org.jetbrains.annotations.NotNull;
  * @param <T> the type of object that the builder will construct or compute.
  */
 @FunctionalInterface
-public interface Builder<T> {
+public interface ClassBuilder<T> {
 
     /**
      * Returns a reference to the object being constructed or result being
      * calculated by the builder.
      * <br><br>
-     * See {@link Reflection#validateFlags(Builder)}
+     * See {@link Reflection#validateFlags(ClassBuilder)}
      *
      * @return the object constructed or result calculated by the builder.
      */

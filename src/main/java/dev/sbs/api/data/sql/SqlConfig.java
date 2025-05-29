@@ -9,6 +9,7 @@ import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.NumberUtil;
 import dev.sbs.api.util.SystemUtil;
+import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.builder.annotation.BuildFlag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -91,7 +92,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
         this.getModels().forEach(model -> Configurator.setLevel(String.format("%s-%s", Ehcache.class, model.getName()), this.getLogLevel()));
     }
 
-    public static class Builder implements dev.sbs.api.util.builder.Builder<SqlConfig> {
+    public static class Builder implements ClassBuilder<SqlConfig> {
 
         // Required Settings
         @BuildFlag(nonNull = true)

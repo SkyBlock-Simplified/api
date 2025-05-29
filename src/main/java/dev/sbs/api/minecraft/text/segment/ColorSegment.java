@@ -5,6 +5,7 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.util.StringUtil;
+import dev.sbs.api.util.builder.ClassBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -217,7 +218,7 @@ public class ColorSegment {
         return TextSegment.fromJson(this.toJson());
     }
 
-    public static class Builder implements dev.sbs.api.util.builder.Builder<ColorSegment> {
+    public static class Builder implements ClassBuilder<ColorSegment> {
 
         protected String text = "";
         protected Optional<ChatFormat> color = Optional.empty();

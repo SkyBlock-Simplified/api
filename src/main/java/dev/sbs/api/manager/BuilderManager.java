@@ -6,7 +6,7 @@ import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.builder.ClassCompiler;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * This should be used in an API, and only once across all projects.
  */
 @SuppressWarnings({ "unchecked" })
-public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>>> {
+public class BuilderManager extends Manager<Class<?>, Class<? extends ClassBuilder<?>>> {
 
     public BuilderManager() {
         this(Mode.NORMAL);
@@ -35,7 +35,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
      * @param <B>     Type of builder class.
      * @throws RegisteredReferenceException When the given service class already has a registered builder.
      */
-    public final <T, B extends Builder<T>> void add(@NotNull Class<T> service, @NotNull Class<B> builder) throws RegisteredReferenceException {
+    public final <T, B extends ClassBuilder<T>> void add(@NotNull Class<T> service, @NotNull Class<B> builder) throws RegisteredReferenceException {
         if (this.isRegistered(service))
             throw new RegisteredReferenceException(service);
 
@@ -77,7 +77,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
      * @throws UnknownReferenceException When the given service class does not have a registered builder.
      * @see #isRegistered(Class)
      */
-    public final <T, B extends Builder<T>> @NotNull B get(@NotNull Class<T> service) throws UnknownReferenceException {
+    public final <T, B extends ClassBuilder<T>> @NotNull B get(@NotNull Class<T> service) throws UnknownReferenceException {
         return (B) Reflection.of(super.get(service)).newInstance();
     }
 
@@ -103,7 +103,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
      * @throws UnknownReferenceException When the given service class is not registered.
      * @throws InsufficientModeException When the mode isn't {@link Mode#UPDATE} or higher.
      */
-    public final <T, B extends Builder<T>> void update(@NotNull Class<T> service, @NotNull Class<B> builder) throws InsufficientModeException, UnknownReferenceException {
+    public final <T, B extends ClassBuilder<T>> void update(@NotNull Class<T> service, @NotNull Class<B> builder) throws InsufficientModeException, UnknownReferenceException {
         super.update(service, builder);
     }
 

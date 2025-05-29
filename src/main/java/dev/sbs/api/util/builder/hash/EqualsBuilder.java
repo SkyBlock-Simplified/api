@@ -2,7 +2,7 @@ package dev.sbs.api.util.builder.hash;
 
 import dev.sbs.api.mutable.pair.Pair;
 import dev.sbs.api.util.ArrayUtil;
-import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.ClassBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;
@@ -63,7 +63,7 @@ import java.util.Set;
  * }
  * </pre>
  */
-public class EqualsBuilder implements Builder<Boolean> {
+public class EqualsBuilder implements ClassBuilder<Boolean> {
 
     /**
      * <p>

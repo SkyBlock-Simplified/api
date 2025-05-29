@@ -6,6 +6,7 @@ import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.event.ClickEvent;
 import dev.sbs.api.minecraft.text.event.HoverEvent;
 import dev.sbs.api.util.StringUtil;
+import dev.sbs.api.util.builder.ClassBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -74,7 +75,7 @@ public final class TextSegment extends ColorSegment {
         return fromLegacyHandler(legacyText, symbolSubstitute, () -> new TextSegment(""));
     }
 
-    public static class Builder implements dev.sbs.api.util.builder.Builder<TextSegment> {
+    public static class Builder implements ClassBuilder<TextSegment> {
 
         protected String text = "";
         protected Optional<ChatFormat> color = Optional.empty();

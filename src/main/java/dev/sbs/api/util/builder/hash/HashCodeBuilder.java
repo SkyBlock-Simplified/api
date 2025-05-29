@@ -2,7 +2,7 @@ package dev.sbs.api.util.builder.hash;
 
 import dev.sbs.api.util.ArrayUtil;
 import dev.sbs.api.util.Preconditions;
-import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.builder.annotation.HashCodeExclude;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +86,7 @@ import java.util.Set;
  * <p>The {@link HashCodeExclude} annotation can be used to exclude fields from being
  * used by the {@code reflectionHashCode} methods.</p>
  */
-public class HashCodeBuilder implements Builder<Integer> {
+public class HashCodeBuilder implements ClassBuilder<Integer> {
 
     /**
      * The default initial value to use in reflection hash code building.

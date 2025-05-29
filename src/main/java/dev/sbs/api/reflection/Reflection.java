@@ -15,7 +15,7 @@ import dev.sbs.api.util.ClassUtil;
 import dev.sbs.api.util.PrimitiveUtil;
 import dev.sbs.api.util.StringUtil;
 import dev.sbs.api.util.SystemUtil;
-import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.builder.annotation.BuildFlag;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -699,7 +699,7 @@ public class Reflection<R> {
         return newTypes;
     }
 
-    public static <T extends Builder<?>> void validateFlags(@NotNull T builder) {
+    public static <T extends ClassBuilder<?>> void validateFlags(@NotNull T builder) {
         ConcurrentMap<String, ConcurrentMap<FieldAccessor<?>, Boolean>> invalidRequired = Concurrent.newMap();
         invalidRequired.put("_DEFAULT_", Concurrent.newMap());
 

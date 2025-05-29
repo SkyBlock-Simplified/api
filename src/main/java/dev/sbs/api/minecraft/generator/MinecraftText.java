@@ -8,6 +8,7 @@ import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
 import dev.sbs.api.mutable.Range;
 import dev.sbs.api.util.SystemUtil;
+import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.io.ByteArrayDataOutput;
 import lombok.AccessLevel;
 import lombok.Cleanup;
@@ -329,7 +330,7 @@ public class MinecraftText {
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Builder implements dev.sbs.api.util.builder.Builder<MinecraftText> {
+    public static class Builder implements ClassBuilder<MinecraftText> {
 
         private ConcurrentList<LineSegment> lines = Concurrent.newList();
         private ChatFormat defaultColor = ChatFormat.GRAY;

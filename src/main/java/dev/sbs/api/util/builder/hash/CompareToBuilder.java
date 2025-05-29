@@ -1,7 +1,7 @@
 package dev.sbs.api.util.builder.hash;
 
 import dev.sbs.api.util.ArrayUtil;
-import dev.sbs.api.util.builder.Builder;
+import dev.sbs.api.util.builder.ClassBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;
@@ -69,7 +69,7 @@ import java.util.Comparator;
  * @see EqualsBuilder
  * @see HashCodeBuilder
  */
-public class CompareToBuilder implements Builder<Integer> {
+public class CompareToBuilder implements ClassBuilder<Integer> {
 
     /**
      * Current state of the comparison as appended fields are checked.

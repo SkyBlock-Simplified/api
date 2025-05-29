@@ -3,6 +3,7 @@ package dev.sbs.api.util.io.gif;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.util.NumberUtil;
+import dev.sbs.api.util.builder.ClassBuilder;
 import dev.sbs.api.util.builder.annotation.BuildFlag;
 import dev.sbs.api.util.io.ByteArrayDataInput;
 import dev.sbs.api.util.io.ByteArrayDataOutput;
@@ -184,7 +185,7 @@ public class GifSequenceWriter {
         this.writer.writeToSequence(new IIOImage(image, null, this.imageMetaData), this.parameters);
     }
 
-    public static class Builder implements dev.sbs.api.util.builder.Builder<GifSequenceWriter> {
+    public static class Builder implements ClassBuilder<GifSequenceWriter> {
 
         @BuildFlag(nonNull = true)
         private ImageType imageType = ImageType.INT_ARGB;
