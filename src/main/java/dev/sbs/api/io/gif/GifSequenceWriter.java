@@ -77,9 +77,9 @@ public class GifSequenceWriter {
 
         // Looping
         child.setUserObject(new byte[] {
-            0x1,
-            (byte) (this.isLooping() ? 0x1 : 0x0),
-            (byte) 0x0
+            0x1, // Sub-block index (always 1)
+            (byte) (this.isLooping() ? 0x0 : 0x1), // Low byte of the loop count (0 = infinite)
+            (byte) 0x0 // High byte of the loop count (must be 0)
         });
         appExtensionsNode.appendChild(child);
 
