@@ -1,12 +1,12 @@
 package dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_floors;
 
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_bosses.DungeonBossSqlModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeon_floor_sizes.DungeonFloorSizeSqlModel;
 import dev.sbs.api.data.model.skyblock.dungeon_data.dungeons.DungeonSqlModel;
 import dev.sbs.api.data.sql.CacheExpiry;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

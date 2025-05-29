@@ -1,4 +1,4 @@
-package dev.sbs.api.util.builder;
+package dev.sbs.api.builder;
 
 import dev.sbs.api.reflection.Reflection;
 import org.jetbrains.annotations.NotNull;

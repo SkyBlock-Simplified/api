@@ -1,7 +1,6 @@
-package dev.sbs.api.util.builder.hash;
+package dev.sbs.api.builder;
 
 import dev.sbs.api.util.ArrayUtil;
-import dev.sbs.api.util.builder.ClassBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AccessibleObject;

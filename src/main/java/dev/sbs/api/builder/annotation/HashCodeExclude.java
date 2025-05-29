@@ -1,6 +1,6 @@
-package dev.sbs.api.util.builder.annotation;
+package dev.sbs.api.builder.annotation;
 
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

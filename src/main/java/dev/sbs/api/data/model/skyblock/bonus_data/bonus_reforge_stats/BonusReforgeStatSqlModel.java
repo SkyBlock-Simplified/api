@@ -1,11 +1,11 @@
 package dev.sbs.api.data.model.skyblock.bonus_data.bonus_reforge_stats;
 
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.reforge_data.reforges.ReforgeSqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

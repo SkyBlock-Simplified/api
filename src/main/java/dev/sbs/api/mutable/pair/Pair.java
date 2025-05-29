@@ -1,6 +1,6 @@
 package dev.sbs.api.mutable.pair;
 
-import dev.sbs.api.util.builder.hash.CompareToBuilder;
+import dev.sbs.api.builder.CompareToBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

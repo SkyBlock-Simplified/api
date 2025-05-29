@@ -1,11 +1,11 @@
 package dev.sbs.api.data.model.skyblock.gemstone_data.gemstone_stats;
 
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.gemstone_data.gemstone_types.GemstoneTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.gemstone_data.gemstones.GemstoneSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

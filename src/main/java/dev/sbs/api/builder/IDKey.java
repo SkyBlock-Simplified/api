@@ -1,4 +1,4 @@
-package dev.sbs.api.util.builder.hash;
+package dev.sbs.api.builder;
 
 /**
  * Wrap an identity key (System.identityHashCode())

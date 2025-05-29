@@ -6,7 +6,7 @@ import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.event.ClickEvent;
 import dev.sbs.api.minecraft.text.event.HoverEvent;
 import dev.sbs.api.util.StringUtil;
-import dev.sbs.api.util.builder.ClassBuilder;
+import dev.sbs.api.builder.ClassBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

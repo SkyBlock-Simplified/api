@@ -1,13 +1,13 @@
 package dev.sbs.api.data.model.skyblock.bonus_data.bonus_pet_ability_stats;
 
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.discord.optimizer_mob_types.OptimizerMobTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.items.ItemSqlModel;
 import dev.sbs.api.data.model.skyblock.pet_data.pet_abilities.PetAbilitySqlModel;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

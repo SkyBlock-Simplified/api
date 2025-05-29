@@ -1,12 +1,12 @@
 package dev.sbs.api.io.gif;
 
+import dev.sbs.api.builder.ClassBuilder;
+import dev.sbs.api.builder.annotation.BuildFlag;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.NumberUtil;
-import dev.sbs.api.util.builder.ClassBuilder;
-import dev.sbs.api.util.builder.annotation.BuildFlag;
 import dev.sbs.api.io.ByteArrayDataInput;
 import dev.sbs.api.io.ByteArrayDataOutput;
+import dev.sbs.api.util.NumberUtil;
 import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.Getter;

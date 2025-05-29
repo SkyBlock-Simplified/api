@@ -1,13 +1,13 @@
 package dev.sbs.api.manager;
 
+import dev.sbs.api.builder.ClassBuilder;
+import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.util.builder.ClassBuilder;
-import dev.sbs.api.util.builder.ClassCompiler;
 import org.jetbrains.annotations.NotNull;
 
 /**

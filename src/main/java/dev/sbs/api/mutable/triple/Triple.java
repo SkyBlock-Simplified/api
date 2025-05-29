@@ -1,8 +1,8 @@
 package dev.sbs.api.mutable.triple;
 
-import dev.sbs.api.util.builder.hash.CompareToBuilder;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
+import dev.sbs.api.builder.CompareToBuilder;
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**

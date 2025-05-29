@@ -1,11 +1,11 @@
 package dev.sbs.api.data.model.skyblock.bestiary_data.bestiary;
 
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_brackets.BestiaryBracketSqlModel;
 import dev.sbs.api.data.model.skyblock.bestiary_data.bestiary_categories.BestiaryCategorySqlModel;
 import dev.sbs.api.data.sql.converter.list.IntegerListConverter;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;

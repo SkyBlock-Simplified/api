@@ -1,4 +1,4 @@
-package dev.sbs.api.util.builder.annotation;
+package dev.sbs.api.builder.annotation;
 
 import dev.sbs.api.util.ArrayUtil;
 import dev.sbs.api.util.StringUtil;

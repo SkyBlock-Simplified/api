@@ -1,5 +1,7 @@
 package dev.sbs.api.data.model.skyblock.items;
 
+import dev.sbs.api.builder.EqualsBuilder;
+import dev.sbs.api.builder.HashCodeBuilder;
 import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.model.skyblock.item_types.ItemTypeSqlModel;
 import dev.sbs.api.data.model.skyblock.rarities.RaritySqlModel;
@@ -8,8 +10,6 @@ import dev.sbs.api.data.sql.converter.list.StringObjectMapListListConverter;
 import dev.sbs.api.data.sql.converter.map.StringDoubleListMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringDoubleMapConverter;
 import dev.sbs.api.data.sql.converter.map.StringObjectMapConverter;
-import dev.sbs.api.util.builder.hash.EqualsBuilder;
-import dev.sbs.api.util.builder.hash.HashCodeBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
