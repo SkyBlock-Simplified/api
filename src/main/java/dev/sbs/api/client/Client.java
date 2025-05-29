@@ -13,7 +13,7 @@ import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.mutable.pair.Pair;
-import dev.sbs.api.util.builder.ClassBuilder;
+import dev.sbs.api.util.builder.ClassCompiler;
 import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Client<R extends IRequest> implements ClassBuilder<R> {
+public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;

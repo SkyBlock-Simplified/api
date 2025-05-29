@@ -7,7 +7,7 @@ import dev.sbs.api.manager.exception.UnknownReferenceException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.builder.Builder;
-import dev.sbs.api.util.builder.ClassBuilder;
+import dev.sbs.api.util.builder.ClassCompiler;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -63,8 +63,8 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends Builder<?>
     public final <T> @NotNull T build(@NotNull Class<T> service) throws UnknownReferenceException {
         Class<?> builder = super.get(service);
 
-        if (ClassBuilder.class.isAssignableFrom(builder))
-            return ((ClassBuilder<T>) Reflection.of(builder).newInstance()).build(service);
+        if (ClassCompiler.class.isAssignableFrom(builder))
+            return ((ClassCompiler<T>) Reflection.of(builder).newInstance()).build(service);
 
         throw new InvalidReferenceException(service.getName(), builder);
     }
