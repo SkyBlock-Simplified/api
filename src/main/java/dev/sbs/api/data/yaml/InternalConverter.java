@@ -10,10 +10,9 @@ import dev.sbs.api.data.yaml.converter.PrimitiveConverter;
 import dev.sbs.api.data.yaml.converter.SetConverter;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.data.yaml.exception.InvalidConverterException;
+import dev.sbs.api.reflection.accessor.FieldAccessor;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,13 +43,13 @@ public class InternalConverter {
         try {
             converters.add(converter.getConstructor(InternalConverter.class).newInstance(this));
         } catch (NoSuchMethodException nsmException) {
-            throw new InvalidConverterException("Converter does not implement a constructor which takes the InternalConverter instance!", nsmException);
+            throw new InvalidConverterException(nsmException, "Converter does not implement a constructor which takes the InternalConverter instance.");
         } catch (InvocationTargetException intException) {
-            throw new InvalidConverterException("Converter could not be invoked!", intException);
+            throw new InvalidConverterException(intException, "Converter could not be invoked.");
         } catch (InstantiationException insException) {
-            throw new InvalidConverterException("Converter could not be instantiated!", insException);
+            throw new InvalidConverterException(insException, "Converter could not be instantiated.");
         } catch (IllegalAccessException ilaException) {
-            throw new InvalidConverterException("Converter does not implement a public Constructor which takes the InternalConverter instance!", ilaException);
+            throw new InvalidConverterException(ilaException, "Converter does not implement a public Constructor which takes the InternalConverter instance.");
         }
     }
 
@@ -59,41 +58,33 @@ public class InternalConverter {
         this.customConverterClasses.add(converter);
     }
 
-    public void fromConfig(YamlMap yamlMap, Field field, ConfigSection root, String path) throws Exception {
-        Object obj = field.get(yamlMap);
+    public void fromConfig(YamlMap yamlMap, FieldAccessor<?> accessor, ConfigSection root, String path) throws Exception {
+        Object obj = accessor.get(yamlMap);
         YamlConverter converter;
 
         if (obj != null) {
             converter = this.getConverter(obj.getClass());
 
             if (converter != null) {
-                if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class)) {
-                    if (!field.getAnnotation(Flag.class).preserveStatic())
-                        return;
-                }
+                if (accessor.isStatic() && !accessor.getAnnotation(Flag.class).map(Flag::preserveStatic).orElse(false))
+                    return;
 
-                field.set(yamlMap, converter.fromConfig(obj.getClass(), root.get(path), (field.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) field.getGenericType() : null));
+                accessor.getField().set(yamlMap, converter.fromConfig(obj.getClass(), root.get(path), (accessor.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) accessor.getGenericType() : null));
                 return;
             }
         }
 
-        converter = this.getConverter(field.getType());
-        if (converter != null) {
-            if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class)) {
-                if (!field.getAnnotation(Flag.class).preserveStatic())
-                    return;
-            }
+        converter = this.getConverter(accessor.getType());
 
-            field.set(yamlMap, converter.fromConfig(field.getType(), root.get(path), (field.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) field.getGenericType() : null));
+        if (accessor.isStatic() && !accessor.getAnnotation(Flag.class).map(Flag::preserveStatic).orElse(false))
+            return;
+
+        if (converter != null) {
+            accessor.getField().set(yamlMap, converter.fromConfig(accessor.getType(), root.get(path), (accessor.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) accessor.getGenericType() : null));
             return;
         }
 
-        if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class)) {
-            if (!field.getAnnotation(Flag.class).preserveStatic())
-                return;
-        }
-
-        field.set(yamlMap, root.get(path));
+        accessor.set(yamlMap, root.get(path));
     }
 
     public final YamlConverter getConverter(Class<?> type) {
@@ -114,22 +105,22 @@ public class InternalConverter {
         return Collections.unmodifiableSet(this.customConverterClasses);
     }
 
-    public void toConfig(YamlMap yamlMap, Field field, ConfigSection root, String path) throws Exception {
-        Object obj = field.get(yamlMap);
+    public void toConfig(YamlMap yamlMap, FieldAccessor<?> accessor, ConfigSection root, String path) throws Exception {
+        Object obj = accessor.get(yamlMap);
         YamlConverter converter;
 
         if (obj != null) {
             converter = this.getConverter(obj.getClass());
 
             if (converter != null) {
-                root.set(path, converter.toConfig(obj.getClass(), obj, (field.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) field.getGenericType() : null));
+                root.set(path, converter.toConfig(obj.getClass(), obj, (accessor.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) accessor.getGenericType() : null));
                 return;
             }
 
-            converter = this.getConverter(field.getType());
+            converter = this.getConverter(accessor.getType());
 
             if (converter != null) {
-                root.set(path, converter.toConfig(field.getType(), obj, (field.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) field.getGenericType() : null));
+                root.set(path, converter.toConfig(accessor.getType(), obj, (accessor.getGenericType() instanceof ParameterizedType) ? (ParameterizedType) accessor.getGenericType() : null));
                 return;
             }
         }

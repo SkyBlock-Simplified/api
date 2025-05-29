@@ -93,8 +93,8 @@ public abstract class ConfigMapper extends YamlMap {
 
             if (object != null)
                 convertMapsToSections((Map<?, ?>) object, this.root);
-        } catch (Exception/*IOException | ClassCastException | YAMLException*/ ex) {
-            throw new InvalidConfigurationException("Could not load YML", ex);
+        } catch (Exception ex) {
+            throw new InvalidConfigurationException(ex, "Could not load YML.");
         }
     }
 
@@ -170,8 +170,8 @@ public abstract class ConfigMapper extends YamlMap {
             }
 
             fileWriter.write(writeLines.toString());
-        } catch (IOException e) {
-            throw new InvalidConfigurationException("Could not save YML", e);
+        } catch (IOException ex) {
+            throw new InvalidConfigurationException(ex, "Could not save YML.");
         }
     }
 

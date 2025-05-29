@@ -6,14 +6,15 @@ import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
 import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
+import dev.sbs.api.mutable.Mutable;
+import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.reflection.accessor.FieldAccessor;
 import dev.sbs.api.scheduler.Scheduler;
 import dev.sbs.api.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.FileSystems;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
@@ -79,7 +80,7 @@ public class YamlConfig extends ConfigMapper implements Runnable {
                 this.configFile.createNewFile();
                 this.save();
             } catch (IOException ex) {
-                throw new InvalidConfigurationException("Could not create new empty config!", ex);
+                throw new InvalidConfigurationException(ex, "Could not create new empty config!");
             }
         } else
             this.load();
@@ -90,36 +91,33 @@ public class YamlConfig extends ConfigMapper implements Runnable {
             this.internalLoad(clazz.getSuperclass());
 
         boolean save = false;
+        Reflection<?> refClass = Reflection.of(clazz);
+        refClass.setProcessingSuperclass(false);
 
-        for (Field field : clazz.getDeclaredFields()) {
-            if (doSkip(field)) continue;
-            String path = this.getPathMode(field);
+        for (FieldAccessor<?> accessor : refClass.getFields()) {
+            if (doSkip(accessor)) continue;
+            final Mutable<String> path = Mutable.of(this.getPathMode(accessor));
 
-            if (field.isAnnotationPresent(Flag.class)) {
-                Flag flag = field.getAnnotation(Flag.class);
+            accessor.getAnnotation(Flag.class)
+                .map(Flag::path)
+                .filter(StringUtil::isNotEmpty)
+                .ifPresent(path::set);
 
-                if (StringUtil.isNotEmpty(flag.path()))
-                    path = flag.path();
-            }
-
-            if (Modifier.isPrivate(field.getModifiers()))
-                field.setAccessible(true);
-
-            if (this.root.has(path)) {
+            if (this.root.has(path.get())) {
                 try {
-                    this.converter.fromConfig(this, field, this.root, path);
+                    this.converter.fromConfig(this, accessor, this.root, path.get());
                 } catch (Exception ex) {
                     if (!this.isSuppressingFailedConversions())
-                        throw new InvalidConfigurationException(String.format("Could not set field %s!", field.getName()), ex);
+                        throw new InvalidConfigurationException(ex, "Could not set field %s.", accessor.getName());
                 }
             } else {
                 try {
-                    this.converter.toConfig(this, field, this.root, path);
-                    this.converter.fromConfig(this, field, this.root, path);
+                    this.converter.toConfig(this, accessor, this.root, path.get());
+                    this.converter.fromConfig(this, accessor, this.root, path.get());
                     save = true;
                 } catch (Exception ex) {
                     if (!this.isSuppressingFailedConversions())
-                        throw new InvalidConfigurationException(String.format("Could not get field %s!", field.getName()), ex);
+                        throw new InvalidConfigurationException(ex, "Could not get field %s.", accessor.getName());
                 }
             }
         }
@@ -132,35 +130,35 @@ public class YamlConfig extends ConfigMapper implements Runnable {
         if (!clazz.getSuperclass().equals(YamlMap.class))
             this.internalSave(clazz.getSuperclass());
 
-        for (Field field : clazz.getDeclaredFields()) {
-            if (doSkip(field)) continue;
-            String path = this.getPathMode(field);
+        Reflection<?> refClass = Reflection.of(clazz);
+        refClass.setProcessingSuperclass(false);
+
+        for (FieldAccessor<?> accessor : refClass.getFields()) {
+            if (doSkip(accessor)) continue;
+            final Mutable<String> path = Mutable.of(this.getPathMode(accessor));
             ArrayList<String> comments = new ArrayList<>();
 
-            if (field.isAnnotationPresent(Flag.class)) {
-                Flag flag = field.getAnnotation(Flag.class);
+            accessor.getAnnotation(Flag.class)
+                .map(Flag::path)
+                .filter(StringUtil::isNotEmpty)
+                .ifPresent(path::set);
 
-                if (StringUtil.isNotEmpty(flag.comment()))
-                    comments.addAll(Arrays.asList(StringUtil.split(flag.comment(), '\n')));
-
-                if (StringUtil.isNotEmpty(flag.path()))
-                    path = flag.path();
-            }
+            accessor.getAnnotation(Flag.class)
+                .map(Flag::comment)
+                .filter(StringUtil::isNotEmpty)
+                .ifPresent(comment -> comments.addAll(Arrays.asList(StringUtil.split(comment, '\n'))));
 
             if (!comments.isEmpty()) {
                 for (String comment : comments)
-                    this.addComment(path, comment);
+                    this.addComment(path.get(), comment);
             }
 
-            if (Modifier.isPrivate(field.getModifiers()))
-                field.setAccessible(true);
-
             try {
-                this.converter.toConfig(this, field, root, path);
-                this.converter.fromConfig(this, field, root, path);
+                this.converter.toConfig(this, accessor, root, path.get());
+                this.converter.fromConfig(this, accessor, root, path.get());
             } catch (Exception ex) {
                 if (!this.isSuppressingFailedConversions())
-                    throw new InvalidConfigurationException(String.format("Could not save field %s!", field.getName()), ex);
+                    throw new InvalidConfigurationException(ex, "Could not save field %s!", accessor.getName());
             }
         }
     }

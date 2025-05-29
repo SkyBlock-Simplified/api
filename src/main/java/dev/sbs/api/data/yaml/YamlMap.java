@@ -4,12 +4,16 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.data.yaml.converter.YamlConverter;
+import dev.sbs.api.mutable.Mutable;
+import dev.sbs.api.reflection.Reflection;
+import dev.sbs.api.reflection.accessor.FieldAccessor;
+import dev.sbs.api.reflection.exception.ReflectionException;
 import dev.sbs.api.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class YamlMap {
@@ -22,9 +26,8 @@ public abstract class YamlMap {
         return section;
     }
 
-    static boolean doSkip(Field field) {
-        return Modifier.isTransient(field.getModifiers()) || Modifier.isFinal(field.getModifiers()) ||
-            (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(Flag.class) && !field.getAnnotation(Flag.class).preserveStatic());
+    static boolean doSkip(@NotNull FieldAccessor<?> accessor) {
+        return accessor.isTransient() || accessor.isFinal() || (accessor.isStatic() && !accessor.getAnnotation(Flag.class).map(Flag::preserveStatic).orElse(false));
     }
 
     public final void addCustomConverter(Class<? extends YamlConverter> converter) {
@@ -35,11 +38,11 @@ public abstract class YamlMap {
         return this.converter.getCustomConverters();
     }
 
-    protected final String getPathMode(Field field) {
-        String path = field.getName();
+    protected final String getPathMode(@NotNull FieldAccessor<?> accessor) {
+        String path = accessor.getName();
 
         if (this.getClass().isAnnotationPresent(Flag.class)) {
-            switch (this.getClass().getAnnotation(Flag.class).mode()) {
+            switch (Objects.requireNonNull(this.getClass().getAnnotation(Flag.class)).mode()) {
                 case FIELD_IS_KEY:
                     path = path.replace("_", ".");
                     break;
@@ -61,21 +64,19 @@ public abstract class YamlMap {
         if (!clazz.getSuperclass().equals(YamlMap.class))
             this.loadFromMap(section, clazz.getSuperclass());
 
-        for (Field field : this.getClass().getDeclaredFields()) {
-            if (doSkip(field)) continue;
-            String path = this.getPathMode(field);
+        Reflection<?> refClass = Reflection.of(clazz);
+        refClass.setProcessingSuperclass(false);
 
-            if (field.isAnnotationPresent(Flag.class)) {
-                Flag flag = field.getAnnotation(Flag.class);
+        for (FieldAccessor<?> accessor : refClass.getFields()) {
+            if (doSkip(accessor)) continue;
+            final Mutable<String> path = Mutable.of(this.getPathMode(accessor));
 
-                if (StringUtil.isNotEmpty(flag.path()))
-                    path = flag.path();
-            }
+            accessor.getAnnotation(Flag.class)
+                .map(Flag::path)
+                .filter(StringUtil::isNotEmpty)
+                .ifPresent(path::set);
 
-            if (Modifier.isPrivate(field.getModifiers()))
-                field.setAccessible(true);
-
-            this.converter.fromConfig(this, field, convertFromMap(section), path);
+            this.converter.fromConfig(this, accessor, convertFromMap(section), path.get());
         }
     }
 
@@ -88,24 +89,21 @@ public abstract class YamlMap {
             returnMap.putAll(map);
         }
 
-        for (Field field : this.getClass().getDeclaredFields()) {
-            if (doSkip(field)) continue;
-            String path = this.getPathMode(field);
+        Reflection<?> refClass = Reflection.of(clazz);
+        refClass.setProcessingSuperclass(false);
 
-            if (field.isAnnotationPresent(Flag.class)) {
-                Flag flag = field.getAnnotation(Flag.class);
+        for (FieldAccessor<?> accessor : refClass.getFields()) {
+            if (doSkip(accessor)) continue;
+            final Mutable<String> path = Mutable.of(this.getPathMode(accessor));
 
-                if (StringUtil.isNotEmpty(flag.path()))
-                    path = flag.path();
-            }
-
-            if (Modifier.isPrivate(field.getModifiers()))
-                field.setAccessible(true);
+            accessor.getAnnotation(Flag.class)
+                .map(Flag::path)
+                .filter(StringUtil::isNotEmpty)
+                .ifPresent(path::set);
 
             try {
-                returnMap.put(path, field.get(this));
-            } catch (IllegalAccessException ignore) {
-            }
+                returnMap.put(path.get(), accessor.get(this));
+            } catch (ReflectionException ignore) { }
         }
 
         YamlConverter converter = this.converter.getConverter(Map.class);
