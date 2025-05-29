@@ -5,6 +5,7 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.io.ByteArrayDataOutput;
 import dev.sbs.api.minecraft.exception.MinecraftException;
+import dev.sbs.api.minecraft.generator.font.MinecraftFont;
 import dev.sbs.api.minecraft.text.ChatFormat;
 import dev.sbs.api.minecraft.text.segment.ColorSegment;
 import dev.sbs.api.minecraft.text.segment.LineSegment;
@@ -15,9 +16,7 @@ import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -37,8 +36,6 @@ public class MinecraftText {
     private static final int STRIKETHROUGH_OFFSET = -8;
     private static final int UNDERLINE_OFFSET = 2;
     private static final Range<Integer> LINE_LENGTH = Range.between(38, 80);
-    private static final @NotNull ConcurrentList<Font> MINECRAFT_FONTS;
-    private static final Font sansSerif;
 
     // Current Settings
     @Getter private final ConcurrentList<LineSegment> lines;
@@ -49,25 +46,12 @@ public class MinecraftText {
     private final Graphics2D graphics;
     @Getter private BufferedImage image;
     @Getter private ChatFormat currentColor;
-    private Font currentFont;
+    private MinecraftFont currentFont;
 
     // Positioning & Size
     private int locationX = START_XY;
     private int locationY = START_XY + PIXEL_SIZE * 2 + Y_INCREMENT / 2;
     private int largestWidth = 0;
-
-    static {
-        sansSerif = new Font("SansSerif", Font.PLAIN, 20);
-        MINECRAFT_FONTS = Concurrent.newUnmodifiableList(
-            initFont("minecraft/1_Minecraft.otf", 15.5f),
-            initFont("minecraft/3_Minecraft-Bold.otf", 20.0f),
-            initFont("minecraft/2_Minecraft-Italic.otf", 20.5f),
-            initFont("minecraft/4_Minecraft-BoldItalic.otf", 20.5f)
-        );
-
-        // Register Minecraft Fonts
-        MINECRAFT_FONTS.forEach(GraphicsEnvironment.getLocalGraphicsEnvironment()::registerFont);
-    }
 
     private MinecraftText(ConcurrentList<LineSegment> lines, ChatFormat defaultColor, int alpha, int padding, boolean paddingFirstLine) {
         this.alpha = alpha;
@@ -165,8 +149,8 @@ public class MinecraftText {
         this.getLines().forEach(line -> {
             line.getSegments().forEach(segment -> {
                 // Change Fonts and Color
-                this.currentFont = MINECRAFT_FONTS.get((segment.isBold() ? 1 : 0) + (segment.isItalic() ? 2 : 0));
-                this.getGraphics().setFont(this.currentFont);
+                this.currentFont = MinecraftFont.of(segment);
+                this.getGraphics().setFont(this.currentFont.getFont());
                 this.currentColor = segment.getColor().orElse(ChatFormat.GRAY);
 
                 StringBuilder subWord = new StringBuilder();
@@ -176,7 +160,7 @@ public class MinecraftText {
                 for (int charIndex = 0; charIndex < segmentText.length(); charIndex++) {
                     char character = segmentText.charAt(charIndex);
 
-                    if (!this.currentFont.canDisplay(character)) {
+                    if (!this.currentFont.getFont().canDisplay(character)) {
                         this.drawString(subWord.toString(), segment);
                         subWord.setLength(0);
                         this.drawSymbol(character, segment);
@@ -200,7 +184,7 @@ public class MinecraftText {
      * @param symbol The symbol to draw.
      */
     private void drawSymbol(char symbol, @NotNull ColorSegment colorSegment) {
-        this.drawString(Character.toString(symbol), colorSegment, sansSerif);
+        this.drawString(Character.toString(symbol), colorSegment, MinecraftFont.SANS_SERIF);
     }
 
     /**
@@ -209,7 +193,7 @@ public class MinecraftText {
      * @param value The value to draw.
      */
     private void drawString(@NotNull String value, @NotNull ColorSegment colorSegment) {
-        this.drawString(value, colorSegment, this.currentFont);
+        this.drawString(value, colorSegment, this.currentFont.getFont());
     }
 
     private void drawString(@NotNull String value, @NotNull ColorSegment colorSegment, @NotNull Font font) {
@@ -247,7 +231,7 @@ public class MinecraftText {
         this.locationX += nextBounds;
 
         // Reset Font
-        this.getGraphics().setFont(this.currentFont);
+        this.getGraphics().setFont(this.currentFont.getFont());
     }
 
     private void drawThickLine(int width, int xPosition, int yPosition, int xOffset, int yOffset, boolean dropShadow) {
@@ -264,29 +248,6 @@ public class MinecraftText {
         this.getGraphics().setColor(dropShadow ? this.currentColor.getBackgroundColor() : this.currentColor.getColor());
         this.getGraphics().drawLine(xPosition1, yPosition, xPosition2, yPosition);
         this.getGraphics().drawLine(xPosition1, yPosition + 1, xPosition2, yPosition + 1);
-    }
-
-    /**
-     * Initializes a font.
-     *
-     * @param path The path to the font in the resources' folder.
-     *
-     * @return The initialized font.
-     */
-    @Nullable
-    private static Font initFont(String path, float size) {
-        try {
-            try (InputStream inputStream = SystemUtil.getResource(path)) {
-                return Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(size);
-            }
-        } catch (IOException | FontFormatException ex) {
-            LogManager.getLogger(MinecraftText.class)
-                .atError()
-                .withThrowable(ex)
-                .log("Unable to load font from file '{}'!", path);
-        }
-
-        return null;
     }
 
     /**
