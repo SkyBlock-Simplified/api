@@ -1597,6 +1597,7 @@ public final class StringUtil {
      * @return the passed in CharSequence, or the default
      * @see StringUtil#defaultString(String, String)
      */
+    //@Contract("(param1 == null) -> param2; (param1.length() == 0) -> param2")
     public static <T extends CharSequence> T defaultIfBlank(final T str, final T defaultStr) {
         return isBlank(str) ? defaultStr : str;
     }
@@ -1619,6 +1620,7 @@ public final class StringUtil {
      * @return the passed in CharSequence, or the default
      * @see StringUtil#defaultString(String, String)
      */
+    //@Contract("(param1 == null) -> param2; (param1.length() == 0) -> param2; () -> param1")
     public static <T extends CharSequence> T defaultIfEmpty(final T str, final T defaultStr) {
         return isEmpty(str) ? defaultStr : str;
     }
@@ -1757,6 +1759,7 @@ public final class StringUtil {
      * @return {@code true} if the CharSequence ends with the suffix, case sensitive, or
      *  both {@code null}isEmpty
      */
+    //@Contract("(param1 == param2) -> true; (param1 == null) -> false; (param2 == null) -> false; (param1.length() < param2.length()) -> false")
     public static boolean endsWith(final CharSequence str, final CharSequence suffix) {
         return endsWith(str, suffix, false);
     }
@@ -3242,6 +3245,7 @@ public final class StringUtil {
      * @param cs  the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is null, empty or whitespace onlyisEmpty
      */
+    //@Contract("(param1 == null) -> true; (param1.length() == 0) -> true")
     public static boolean isBlank(final CharSequence cs) {
         final int strLen = length(cs);
         if (strLen == 0) {
@@ -3269,6 +3273,7 @@ public final class StringUtil {
      * @param cs  the CharSequence to check, may be null
      * @return if the CharSequence is empty or null
      */
+    //@Contract("(param1 == null) -> true; (param1.length() == 0) -> true; () -> false")
     public static boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.isEmpty();
     }
@@ -3397,6 +3402,7 @@ public final class StringUtil {
      * @param cs  the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is not empty and not null
      */
+    //@Contract("(param1 == null) -> false; (param1.length() == 0) -> false; () -> true")
     public static boolean isNotEmpty(final CharSequence cs) {
         return !isEmpty(cs);
     }
@@ -7472,6 +7478,7 @@ public final class StringUtil {
      * @return {@code true} if the CharSequence starts with the prefix, case sensitive, or
      *  both {@code null}isEmpty
      */
+    //@Contract("(param1 == param2) -> true; (param1 == null) -> false; (param2 == null) -> false; (param1.length() < param2.length()) -> false")
     public static boolean startsWith(final CharSequence str, final CharSequence prefix) {
         return startsWith(str, prefix, false);
     }
