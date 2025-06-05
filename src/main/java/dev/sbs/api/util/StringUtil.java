@@ -583,7 +583,7 @@ public final class StringUtil {
      * @return capitalized String, {@code null} if null String input
      */
     public static String capitalizeFully(final String str) {
-        return capitalizeFully(str, null);
+        return capitalizeFully(str, (Character) null);
     }
 
     /**
@@ -5913,11 +5913,7 @@ public final class StringUtil {
                 }
                 return new String(output2);
             default :
-                final StringBuilder buf = new StringBuilder(outputLength);
-                for (int i = 0; i < repeat; i++) {
-                    buf.append(str);
-                }
-                return buf.toString();
+                return str.repeat(repeat);
         }
     }
 
