@@ -15,6 +15,7 @@ import dev.sbs.api.client.impl.mojang.MojangProxy;
 import dev.sbs.api.client.impl.mojang.client.MojangApiClient;
 import dev.sbs.api.client.impl.mojang.client.MojangSessionClient;
 import dev.sbs.api.client.impl.mojang.request.MinecraftServerRequest;
+import dev.sbs.api.client.impl.mojang.request.MinecraftServicesRequest;
 import dev.sbs.api.client.impl.mojang.request.MojangApiRequest;
 import dev.sbs.api.client.impl.mojang.request.MojangSessionRequest;
 import dev.sbs.api.client.impl.mojang.response.MojangMultiUsernameResponse;
@@ -121,6 +122,7 @@ public final class SimplifiedApi {
         serviceManager.add(MojangProxy.class, mojangProxy);
         serviceManager.add(MojangApiRequest.class, mojangProxy.getApiRequest());
         serviceManager.add(MojangSessionRequest.class, mojangProxy.getSessionRequest());
+        serviceManager.add(MinecraftServicesRequest.class, mojangProxy.getServicesRequest());
         serviceManager.add(MinecraftServerRequest.class, new MinecraftServerRequest());
 
         SbsClient sbsApiClient = new SbsClient();

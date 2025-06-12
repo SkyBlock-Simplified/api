@@ -62,6 +62,7 @@ public abstract class MojangClient<T extends IMojangRequest> extends Client<T> {
             new RateLimit(200, 10, 1, ChronoUnit.MINUTES)
         ),
         MINECRAFT("minecraft.net"),
+        MINECRAFT_SERVICES("api.minecraftservices.com"),
         MINECRAFT_SESSION("session.minecraft.net"),
         MINECRAFT_SKINS("skins.minecraft.net"),
         MINECRAFT_TEXTURES("textures.minecraft.net");
