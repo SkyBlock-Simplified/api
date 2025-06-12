@@ -1,6 +1,5 @@
 package dev.sbs.api.client.impl.mojang.exception;
 
-import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.ApiException;
 import feign.FeignException;
 import lombok.Getter;
@@ -14,7 +13,7 @@ public final class MojangApiException extends ApiException {
     public MojangApiException(@NotNull FeignException exception) {
         super(exception, "Mojang");
         this.response = this.getBody()
-            .map(json -> SimplifiedApi.getGson().fromJson(json, MojangErrorResponse.class))
+            .map(json -> super.fromJson(json, MojangErrorResponse.class))
             .orElse(new MojangErrorResponse.Unknown());
     }
 

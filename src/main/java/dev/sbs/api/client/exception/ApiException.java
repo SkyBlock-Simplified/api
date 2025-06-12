@@ -1,5 +1,7 @@
 package dev.sbs.api.client.exception;
 
+import com.google.gson.JsonSyntaxException;
+import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.request.HttpMethod;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
@@ -14,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -69,6 +72,14 @@ public class ApiException extends RuntimeException implements Response {
                 ))
                 .collect(Concurrent.toUnmodifiableMap())
         );
+    }
+
+    protected final @Nullable <T> T fromJson(@Nullable String json, @NotNull Class<T> classOfT) throws JsonSyntaxException {
+        try {
+            return SimplifiedApi.getGson().fromJson(json, classOfT);
+        } catch (JsonSyntaxException jsex) {
+            return null;
+        }
     }
 
 }
