@@ -7,31 +7,12 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import dev.sbs.api.client.Client;
-import dev.sbs.api.client.impl.hypixel.HypixelClient;
-import dev.sbs.api.client.impl.hypixel.request.HypixelRequest;
-import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.SkyBlockDate;
-import dev.sbs.api.client.impl.hypixel.response.skyblock.implementation.island.util.NbtContent;
-import dev.sbs.api.client.impl.mojang.MojangProxy;
-import dev.sbs.api.client.impl.mojang.client.MojangApiClient;
-import dev.sbs.api.client.impl.mojang.client.MojangSessionClient;
-import dev.sbs.api.client.impl.mojang.request.MinecraftServerRequest;
-import dev.sbs.api.client.impl.mojang.request.MinecraftServicesRequest;
-import dev.sbs.api.client.impl.mojang.request.MojangApiRequest;
-import dev.sbs.api.client.impl.mojang.request.MojangSessionRequest;
-import dev.sbs.api.client.impl.mojang.response.MojangMultiUsernameResponse;
-import dev.sbs.api.client.impl.sbs.SbsClient;
-import dev.sbs.api.client.impl.sbs.request.SbsRequest;
-import dev.sbs.api.client.impl.sbs.response.SkyBlockEmojisResponse;
-import dev.sbs.api.client.impl.sbs.response.SkyBlockImagesResponse;
-import dev.sbs.api.client.impl.sbs.response.SkyBlockItemsResponse;
 import dev.sbs.api.client.request.IRequest;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.data.model.Model;
 import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
-import dev.sbs.api.io.gson.adapter.NbtContentTypeAdapter;
-import dev.sbs.api.io.gson.adapter.SkyBlockDateTypeAdapter;
 import dev.sbs.api.io.gson.adapter.UUIDTypeAdapter;
 import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
 import dev.sbs.api.io.gson.factory.SerializedPathTypeAdaptorFactory;
@@ -40,10 +21,6 @@ import dev.sbs.api.manager.CompilerManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
-import dev.sbs.api.minecraft.nbt.NbtFactory;
-import dev.sbs.api.minecraft.text.segment.ColorSegment;
-import dev.sbs.api.minecraft.text.segment.LineSegment;
-import dev.sbs.api.minecraft.text.segment.TextSegment;
 import dev.sbs.api.scheduler.Scheduler;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -58,7 +35,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * The {@code SimplifiedApi} is a final, non-instantiable utility class that
+ * The {@code SimplifiedApi} is a non-instantiable utility class that
  * serves as a utility container for managing and accessing various managers,
  * services, builders, and API clients used across the application.
  * <p>
@@ -74,12 +51,12 @@ import java.util.UUID;
  * </ul>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SimplifiedApi {
+public class SimplifiedApi {
 
-    @Getter private static final @NotNull KeyManager<String, String> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
-    @Getter private static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
-    @Getter private static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
-    @Getter private static final @NotNull CompilerManager compilerManager = new CompilerManager(Manager.Mode.UPDATE);
+    @Getter protected static final @NotNull KeyManager<String, String> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
+    @Getter protected static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
+    @Getter protected static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
+    @Getter protected static final @NotNull CompilerManager compilerManager = new CompilerManager(Manager.Mode.UPDATE);
 
     static {
         // Provide Services
@@ -88,13 +65,6 @@ public final class SimplifiedApi {
             .registerTypeAdapter(Color.class, new ColorTypeAdapter())
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .registerTypeAdapter(NbtContent.class, new NbtContentTypeAdapter())
-            .registerTypeAdapter(MojangMultiUsernameResponse.class, new MojangMultiUsernameResponse.Deserializer())
-            .registerTypeAdapter(SkyBlockDate.RealTime.class, new SkyBlockDateTypeAdapter.RealTime())
-            .registerTypeAdapter(SkyBlockDate.SkyBlockTime.class, new SkyBlockDateTypeAdapter.SkyBlockTime())
-            .registerTypeAdapter(SkyBlockEmojisResponse.class, new SkyBlockEmojisResponse.Deserializer())
-            .registerTypeAdapter(SkyBlockImagesResponse.class, new SkyBlockImagesResponse.Deserializer())
-            .registerTypeAdapter(SkyBlockItemsResponse.class, new SkyBlockItemsResponse.Deserializer())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
             .setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -102,36 +72,8 @@ public final class SimplifiedApi {
             .serializeNulls()
             .create()
         );
-        serviceManager.add(NbtFactory.class, new NbtFactory());
         serviceManager.add(Scheduler.class, new Scheduler());
         serviceManager.add(SessionManager.class, new SessionManager());
-
-        // Provide Class Builders
-        compilerManager.add(MojangApiRequest.class, MojangApiClient.class);
-        compilerManager.add(MojangSessionRequest.class, MojangSessionClient.class);
-        compilerManager.add(SbsRequest.class, SbsClient.class);
-        compilerManager.add(HypixelRequest.class, HypixelClient.class);
-
-        // Provide Builders
-        builderManager.add(LineSegment.class, LineSegment.Builder.class);
-        builderManager.add(ColorSegment.class, ColorSegment.Builder.class);
-        builderManager.add(TextSegment.class, TextSegment.Builder.class);
-
-        // Create Api Handlers & Feign Proxies
-        MojangProxy mojangProxy = new MojangProxy();
-        serviceManager.add(MojangProxy.class, mojangProxy);
-        serviceManager.add(MojangApiRequest.class, mojangProxy.getApiRequest());
-        serviceManager.add(MojangSessionRequest.class, mojangProxy.getSessionRequest());
-        serviceManager.add(MinecraftServicesRequest.class, mojangProxy.getServicesRequest());
-        serviceManager.add(MinecraftServerRequest.class, new MinecraftServerRequest());
-
-        SbsClient sbsApiClient = new SbsClient();
-        serviceManager.add(SbsClient.class, sbsApiClient);
-        serviceManager.add(SbsRequest.class, sbsApiClient.build(SbsRequest.class));
-
-        HypixelClient hypixelApiClient = new HypixelClient();
-        serviceManager.add(HypixelClient.class, hypixelApiClient);
-        serviceManager.add(HypixelRequest.class, hypixelApiClient.build(HypixelRequest.class));
     }
 
     @SneakyThrows
@@ -141,10 +83,6 @@ public final class SimplifiedApi {
 
     public static @NotNull Gson getGson() {
         return serviceManager.get(Gson.class);
-    }
-
-    public static @NotNull NbtFactory getNbtFactory() {
-        return serviceManager.get(NbtFactory.class);
     }
 
     public static @NotNull Scheduler getScheduler() {
@@ -169,13 +107,6 @@ public final class SimplifiedApi {
      */
     public static <T extends IRequest> @NotNull T getApiRequest(@NotNull Class<T> tClass) {
         return serviceManager.get(tClass);
-    }
-
-    /**
-     * Gets the {@link MojangProxy} used to interact with the Mojang API.
-     */
-    public static @NotNull MojangProxy getMojangProxy() {
-        return serviceManager.get(MojangProxy.class);
     }
 
     /**
