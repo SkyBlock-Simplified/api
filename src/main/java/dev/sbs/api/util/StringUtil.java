@@ -2184,6 +2184,16 @@ public final class StringUtil {
         return strDigits.toString();
     }
 
+    public static @NotNull String getFileExtension(@NotNull String filename) {
+        int lastDot = filename.lastIndexOf('.');
+        int lastSeparator = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+
+        if (lastDot > lastSeparator)
+            return filename.substring(lastDot + 1);
+
+        return ""; // no extension
+    }
+
     /**
      * <p>Returns either the passed in CharSequence, or if the CharSequence is
      * whitespace, empty ("") or {@code null}, the value supplied by {@code defaultStrSupplier}.</p>
