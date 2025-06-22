@@ -15,6 +15,7 @@ import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
 import dev.sbs.api.io.gson.adapter.UUIDTypeAdapter;
 import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
+import dev.sbs.api.io.gson.factory.PostInitTypeAdapterFactory;
 import dev.sbs.api.io.gson.factory.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.manager.BuilderManager;
 import dev.sbs.api.manager.CompilerManager;
@@ -67,6 +68,7 @@ public class SimplifiedApi {
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
             .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
+            .registerTypeAdapterFactory(new PostInitTypeAdapterFactory())
             .setDateFormat("yyyy-MM-dd HH:mm:ss")
             .setPrettyPrinting()
             .serializeNulls()
