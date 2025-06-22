@@ -373,7 +373,7 @@ public final class SystemUtil {
             .orElse(Pair.of(variableName, Optional.empty()));
     }
 
-    public static InputStream getResource(@NotNull String resourcePath) {
+    public static @Nullable InputStream getResource(@NotNull String resourcePath) {
         return ClassUtil.getClassLoader(SystemUtil.class).getResourceAsStream(
             RegexUtil.replaceFirst(resourcePath, "^resources/", "").replaceFirst("^/", "")
         );
@@ -385,14 +385,22 @@ public final class SystemUtil {
         try {
             resourcePath = RegexUtil.replaceFirst(resourcePath, "^resources/", "");
             @Cleanup InputStream inputStream = getResource(resourcePath);
-            @Cleanup BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String resource;
+            if (inputStream != null) {
+                @Cleanup BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String resource;
 
-            while ((resource = bufferedReader.readLine()) != null)
-                fileNames.add(resource);
+                while ((resource = bufferedReader.readLine()) != null)
+                    fileNames.add(resource);
+            }
         } catch (IOException ignore) { }
 
         return fileNames;
+    }
+
+    @SneakyThrows
+    public static byte[] readResource(@NotNull String resourcePath) {
+        @Cleanup InputStream inputStream = getResource(resourcePath);
+        return inputStream != null ? inputStream.readAllBytes() : new byte[0];
     }
 
     public static void saveResource(@NotNull File outputDir, @NotNull String resourcePath, boolean replace) {
