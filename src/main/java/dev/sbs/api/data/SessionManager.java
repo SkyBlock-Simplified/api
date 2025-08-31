@@ -3,7 +3,6 @@ package dev.sbs.api.data;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.data.exception.DataException;
-import dev.sbs.api.data.model.Model;
 import org.jetbrains.annotations.NotNull;
 
 /**

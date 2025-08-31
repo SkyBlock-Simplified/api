@@ -1,7 +1,6 @@
 package dev.sbs.api.data.sql;
 
 import dev.sbs.api.data.DataSession;
-import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.scheduler.Scheduler;
 import lombok.Cleanup;

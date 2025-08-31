@@ -1,5 +1,7 @@
 package dev.sbs.api.data.model;
 
+import dev.sbs.api.data.Model;
+
 import java.util.Map;
 
 public interface EffectsModel<V> extends Model {

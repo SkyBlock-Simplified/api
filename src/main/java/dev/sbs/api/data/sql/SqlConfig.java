@@ -1,16 +1,15 @@
 package dev.sbs.api.data.sql;
 
+import dev.sbs.api.builder.ClassBuilder;
+import dev.sbs.api.builder.annotation.BuildFlag;
 import dev.sbs.api.data.DataConfig;
 import dev.sbs.api.data.DataSession;
-import dev.sbs.api.data.model.SqlModel;
 import dev.sbs.api.data.sql.driver.MariaDBDriver;
 import dev.sbs.api.data.sql.driver.SqlDriver;
 import dev.sbs.api.data.yaml.annotation.Flag;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.NumberUtil;
 import dev.sbs.api.util.SystemUtil;
-import dev.sbs.api.builder.ClassBuilder;
-import dev.sbs.api.builder.annotation.BuildFlag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

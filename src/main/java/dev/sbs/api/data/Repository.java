@@ -4,7 +4,6 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.search.Sortable;
 import dev.sbs.api.data.exception.DataException;
-import dev.sbs.api.data.model.Model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
