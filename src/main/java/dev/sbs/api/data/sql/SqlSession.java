@@ -35,7 +35,7 @@ public final class SqlSession extends DataSession<SqlModel> {
     private SessionFactory sessionFactory;
 
     public SqlSession(@NotNull SqlConfig config) {
-        super(config.getModels());
+        super(config.getModels(), Type.SQL);
         this.config = config;
         this.scheduler = new Scheduler();
     }
