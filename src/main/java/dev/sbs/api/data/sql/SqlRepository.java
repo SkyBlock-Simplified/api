@@ -21,32 +21,34 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Getter
-public class SqlRepository<T extends SqlModel> extends Repository<T> {
+public class SqlRepository<T extends SqlModel> implements Repository<T> {
 
-    @Getter(AccessLevel.NONE)
-    private final @NotNull SqlSession sqlSession;
+    private final @NotNull Class<T> type;
+    private final @NotNull SqlSession session;
     @Getter(AccessLevel.PROTECTED)
     private final @NotNull ScheduledTask task;
-    private final long startup;
+
+    // Time
     private final @NotNull CacheExpiry cacheExpiry;
     private final @NotNull Duration cacheDuration;
-    private long lastRefresh;
-    private long lastRefreshDuration;
+    private final long startup;
+    private long lastUpdated;
+    private long lastUpdateDuration;
 
     /**
      * Creates a new repository of type {@link T}.
      *
-     * @param sqlSession the sql session to use
+     * @param session the sql session to use
      */
-    public SqlRepository(@NotNull SqlSession sqlSession, @NotNull Class<T> type) {
-        super(type);
-        this.sqlSession = sqlSession;
+    public SqlRepository(@NotNull SqlSession session, @NotNull Class<T> type) {
+        this.type = type;
+        this.session = session;
         this.cacheExpiry = Optional.ofNullable(type.getAnnotation(CacheExpiry.class)).orElse(CacheExpiry.DEFAULT);
         this.cacheDuration = Duration.of(cacheExpiry.value(), cacheExpiry.length().toChronoUnit());
         this.refresh();
-        this.startup = this.lastRefresh;
+        this.startup = this.lastUpdated;
 
-        this.task = this.sqlSession.getScheduler().scheduleAsync(
+        this.task = this.getSession().getScheduler().scheduleAsync(
             this::refresh,
             this.getCacheDuration().toMillis(),
             this.getCacheDuration().toMillis(),
@@ -56,7 +58,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
 
     @Override
     public @NotNull Stream<T> stream() throws SqlException {
-        return this.sqlSession.with((Function<Session, ? extends Stream<T>>) this::stream);
+        return this.getSession().with((Function<Session, ? extends Stream<T>>) this::stream);
     }
 
     public @NotNull Stream<T> stream(@NotNull Session session) throws SqlException {
@@ -77,7 +79,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
     }
 
     public @NotNull T delete(@NotNull T model) throws SqlException {
-        return this.sqlSession.transaction(session -> {
+        return this.getSession().transaction(session -> {
             return this.delete(session, model);
         });
     }
@@ -91,25 +93,21 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
         }
     }
 
-    public boolean isStale() {
-        return System.currentTimeMillis() - this.getLastRefresh() >= this.getCacheDuration().toMillis();
-    }
-
     public void refresh() throws SqlException {
         long refresh = System.currentTimeMillis();
-        SessionFactory sessionFactory = this.sqlSession.getSessionFactory();
+        SessionFactory sessionFactory = this.getSession().getSessionFactory();
 
         // Evict From Cache
         if (sessionFactory.getCache() != null)
             sessionFactory.getCache().evict(this.getType());
 
         this.stream().close();
-        this.lastRefresh = System.currentTimeMillis();
-        this.lastRefreshDuration = this.getLastRefresh() - refresh;
+        this.lastUpdated = System.currentTimeMillis();
+        this.lastUpdateDuration = this.getLastUpdated() - refresh;
     }
 
     public @NotNull T save(@NotNull T model) throws SqlException {
-        return this.sqlSession.transaction(session -> {
+        return this.getSession().transaction(session -> {
             return this.save(session, model);
         });
     }
@@ -124,7 +122,7 @@ public class SqlRepository<T extends SqlModel> extends Repository<T> {
     }
 
     public @NotNull T update(@NotNull T model) throws SqlException {
-        return this.sqlSession.transaction(session -> {
+        return this.getSession().transaction(session -> {
             return this.update(session, model);
         });
     }
