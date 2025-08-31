@@ -36,12 +36,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * The {@code SimplifiedApi} is a non-instantiable utility class that
- * serves as a utility container for managing and accessing various managers,
+ * The {@code SimplifiedApi} is a non-instantiable utility class for managing and accessing various managers,
  * services, builders, and API clients used across the application.
  * <p>
- * This class centralizes the initialization and retrieval of dependent resources to ensure
- * a simplified and consistent interface for interacting with API components.
+ * This class centralizes the initialization and retrieval of dependent resources to ensure a simplified and
+ * consistent interface for interacting with API components.
  * <ul>
  *     <li>Management of key-value associations through {@link KeyManager}.</li>
  *     <li>Centralized service management through {@link ServiceManager}.</li>
