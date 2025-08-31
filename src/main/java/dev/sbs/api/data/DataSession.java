@@ -16,6 +16,7 @@ public abstract class DataSession<T extends Model> {
     @Getter(AccessLevel.PROTECTED)
     protected final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.ALL);
     protected final @NotNull ConcurrentList<Class<T>> models;
+    protected final @NotNull Type type;
     protected boolean active;
     protected boolean cached = false;
     protected long initialization;
