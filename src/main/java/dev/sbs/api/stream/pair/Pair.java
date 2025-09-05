@@ -128,8 +128,10 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @return negative if this is less, zero if equal, positive if greater
      */
     public int compareTo(Pair<L, R> other) {
-        return new CompareToBuilder().append(getLeft(), other.getLeft())
-            .append(getRight(), other.getRight()).toComparison();
+        return new CompareToBuilder()
+            .append(getLeft(), other.getLeft())
+            .append(getRight(), other.getRight())
+            .toComparison();
     }
 
     /**
@@ -168,7 +170,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @return a string describing this object, not null
      */
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.toString("(%s,%s)");
     }
 
@@ -183,7 +185,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @param format the format string, optionally containing {@code %1$s} and {@code %2$s}, not null
      * @return the formatted string, not null
      */
-    public String toString(String format) {
+    public @NotNull String toString(String format) {
         return String.format(format, getLeft(), getRight());
     }
 
