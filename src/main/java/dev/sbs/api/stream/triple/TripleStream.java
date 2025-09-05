@@ -428,10 +428,66 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
      * @see Stream#collect(Supplier, BiConsumer, BiConsumer)
      * @see Collectors
      */
+    @Override
     default <T, A> T collect(@NotNull Collector<? super Triple<L, M, R>, A, T> collector) {
         return this.entries().collect(collector);
     }
 
+    /**
+     * Performs a <a href="package-summary.html#MutableReduction">mutable
+     * reduction</a> operation on the elements of this stream.  A mutable
+     * reduction is one in which the reduced value is a mutable result container,
+     * such as an {@code ArrayList}, and elements are incorporated by updating
+     * the state of the result rather than by replacing the result.  This
+     * produces a result equivalent to:
+     * <pre>{@code
+     *     R result = supplier.get();
+     *     for (T element : this stream)
+     *         accumulator.accept(result, element);
+     *     return result;
+     * }</pre>
+     *
+     * <p>Like {@link Stream#reduce(Object, BinaryOperator)}, {@code collect} operations
+     * can be parallelized without requiring additional synchronization.
+     *
+     * <p>This is a <a href="package-summary.html#StreamOps">terminal
+     * operation</a>.
+     *
+     * @apiNote There are many existing classes in the JDK whose signatures are
+     * well-suited for use with method references as arguments to {@code collect()}.
+     * For example, the following will accumulate strings into an {@code ArrayList}:
+     * <pre>{@code
+     *     List<String> asList = stringStream.collect(ArrayList::new, ArrayList::add,
+     *                                                ArrayList::addAll);
+     * }</pre>
+     *
+     * <p>The following will take a stream of strings and concatenates them into a
+     * single string:
+     * <pre>{@code
+     *     String concat = stringStream.collect(StringBuilder::new, StringBuilder::append,
+     *                                          StringBuilder::append)
+     *                                 .toString();
+     * }</pre>
+     *
+     * @param <T> the type of the mutable result container
+     * @param supplier a function that creates a new mutable result container.
+     *                 For a parallel execution, this function may be called
+     *                 multiple times and must return a fresh value each time.
+     * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a>
+     *                    function that must fold an element into a result
+     *                    container.
+     * @param combiner an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a>
+     *                    function that accepts two partial result containers
+     *                    and merges them, which must be compatible with the
+     *                    accumulator function.  The combiner function must fold
+     *                    the elements from the second result container into the
+     *                    first result container.
+     * @return the result of the reduction
+     */
     @Override
     default <T> T collect(@NotNull Supplier<T> supplier, @NotNull BiConsumer<T, ? super Triple<L, M, R>> accumulator, @NotNull BiConsumer<T, T> combiner) {
         return this.entries().collect(supplier, accumulator, combiner);
