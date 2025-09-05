@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -47,11 +48,28 @@ public final class StreamUtil {
         return (key, value) -> { throw new IllegalStateException(String.format("Duplicate key %s!", key)); };
     }
 
+    /**
+     * Returns a predicate that maintains state about previously encountered keys
+     * and allows distinct elements based on the key extracted using the provided keyExtractor function.
+     *
+     * @param <T> the type of input to the predicate
+     * @param keyExtractor a function that extracts a key from an element
+     * @return a predicate that returns {@code true} for elements with unique keys and {@code false} otherwise
+     */
     public static <T> @NotNull Predicate<T> distinctByKey(@NotNull Function<? super T, ?> keyExtractor) {
         ConcurrentSet<Object> seen = Concurrent.newSet();
         return t -> seen.add(keyExtractor.apply(t));
     }
 
+    /**
+     * Concatenates the contents of a variable number of arrays into a single unified stream.
+     * <p>
+     * Null arrays are filtered out.
+     *
+     * @param <T>    The type of elements in the arrays and the resulting stream.
+     * @param arrays The arrays to be combined into a single stream. Can include NULL.
+     * @return A stream containing all the elements from the provided arrays.
+     */
     public static <T> @NotNull Stream<T> ofArrays(@Nullable T[]... arrays) {
         Stream<T> stream = Stream.empty();
 
@@ -251,13 +269,17 @@ public final class StreamUtil {
         @NotNull BinaryOperator<V> mergeFunction,
         @NotNull Supplier<A> mapSupplier
     ) {
-        BiConsumer<A, T> accumulator = (map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
-        BinaryOperator<A> combiner = (m1, m2) -> { m2.forEach((key, value) -> m1.merge(key, value, mergeFunction)); return m1; };
-
         return new StreamCollector<>(
             mapSupplier,
-            accumulator,
-            combiner,
+            (map, element) -> map.merge(
+                keyMapper.apply(element),
+                valueMapper.apply(element),
+                mergeFunction
+            ),
+            (m1, m2) -> {
+                m2.forEach((key, value) -> m1.merge(key, value, mergeFunction));
+                return m1;
+            },
             UN_CHARACTERISTICS
         );
     }
@@ -265,14 +287,18 @@ public final class StreamUtil {
     /**
      * Collect a stream into a single item, only if there is 1 item expected.
      *
-     * @return Singleton object from stream.
-     * @throws IllegalStateException If result size is not equal to 1.
+     * @return Only object from the stream.
+     * @throws NoSuchElementException If the stream size is equal to 0.
+     * @throws IllegalStateException If the stream size is greater than 1.
      */
     public static <T> @NotNull Collector<T, ?, T> toSingleton() {
         return Collectors.collectingAndThen(
             toConcurrentList(),
             list -> {
-                if (list.size() != 1)
+                if (list.isEmpty())
+                    throw new NoSuchElementException();
+
+                if (list.size() >= 2)
                     throw new IllegalStateException();
 
                 return list.get(0);
@@ -344,13 +370,17 @@ public final class StreamUtil {
         @NotNull BinaryOperator<V> mergeFunction,
         @NotNull Supplier<A> mapSupplier
     ) {
-        BiConsumer<A, T> accumulator = (map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
-        BinaryOperator<A> combiner = (m1, m2) -> { m2.forEach((key, value) -> m1.merge(key, value, mergeFunction)); return m1; };
-
         return new StreamCollector<>(
             mapSupplier,
-            accumulator,
-            combiner,
+            (map, element) -> map.merge(
+                keyMapper.apply(element),
+                valueMapper.apply(element),
+                mergeFunction
+            ),
+            (m1, m2) -> {
+                m2.forEach((key, value) -> m1.merge(key, value, mergeFunction));
+                return m1;
+            },
             Concurrent::newUnmodifiableMap,
             UN_CHARACTERISTICS
         );
@@ -433,9 +463,8 @@ public final class StreamUtil {
         public S trySplit() {
             Spliterator<?> splitOrNull = this.fromSpliterator.trySplit();
 
-            if (splitOrNull == null) {
+            if (splitOrNull == null)
                 return null;
-            }
 
             F split = (F) splitOrNull;
             S result = createSplit(split, index);
