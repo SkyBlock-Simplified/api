@@ -26,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Example Builder:
  * <pre><code>
- * class FontBuilder implements Builder&lt;Font&gt; {
+ * class FontBuilder implements ClassBuilder&lt;Font&gt; {
+ *
  *     private Font font;
  *
  *     public FontBuilder(String fontName) {
@@ -48,6 +49,7 @@ import org.jetbrains.annotations.NotNull;
  *     public Font build() {
  *         return this.font;
  *     }
+ *
  * }
  * </code></pre>
  *
