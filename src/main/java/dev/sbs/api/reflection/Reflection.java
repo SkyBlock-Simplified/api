@@ -791,6 +791,9 @@ public class Reflection<R> {
                         if (CharSequence.class.isAssignableFrom(fieldType)) {
                             CharSequence sequence = (CharSequence) value;
                             invalid = StringUtil.length(sequence) > flag.limit();
+                        } else if (Collection.class.isAssignableFrom(fieldType)) {
+                            Collection<?> collection = (Collection<?>) value;
+                            invalid = collection.size() > flag.limit();
                         } else if (value instanceof Optional<?> optional) {
                             final ParameterizedType parameterizedType = (ParameterizedType) field.getField().getGenericType();
                             final Type actualType = parameterizedType.getActualTypeArguments()[0];
