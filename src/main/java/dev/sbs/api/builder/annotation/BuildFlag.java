@@ -47,7 +47,9 @@ public @interface BuildFlag {
     /**
      * Limits field maximum length/size.
      * <br><br>
-     * Checks {@link CharSequence}, {@link String}, {@link List}, {@link Set}, etc.
+     * Checks {@link Collection}, {@link List}, {@link Set},
+     * {@link CharSequence}, {@link String},
+     * {@link Optional<String> Optional&lt;String>} and {@link Optional<Number> Optional&lt;Number>}.
      */
     int limit() default -1;
 
