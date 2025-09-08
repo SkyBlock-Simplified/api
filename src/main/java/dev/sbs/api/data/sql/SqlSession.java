@@ -162,7 +162,7 @@ public final class SqlSession extends DataSession<SqlModel> {
     public void shutdown() {
         super.shutdown();
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
-        super.serviceManager.getAll(SqlRepository.class).forEach(sqlRepository -> sqlRepository.getTask().cancel(true));
+        super.serviceManager.getAll(SqlRepository.class).forEach(repository -> repository.getTask().cancel(true));
         super.serviceManager.clear();
 
         if (this.getSessionFactory() != null)
