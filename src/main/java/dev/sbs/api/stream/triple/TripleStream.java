@@ -207,8 +207,12 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
         return this.entries().map(mapper);
     }
 
-    default <T> @NotNull Stream<T> map(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends T> mapper) {
+    default <T> @NotNull Stream<T> mapToObj(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends T> mapper) {
         return this.entries().map(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+    }
+
+    default <RL, RM, RR> @NotNull TripleStream<RL, RM, RR> map(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends Triple<RL, RM, RR>> mapper) {
+        return of(this.entries().map(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight())));
     }
 
     @Override
