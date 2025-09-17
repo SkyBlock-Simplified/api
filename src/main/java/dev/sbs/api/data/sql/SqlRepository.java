@@ -1,5 +1,6 @@
 package dev.sbs.api.data.sql;
 
+import dev.sbs.api.data.CacheExpiry;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.sql.exception.SqlException;
 import dev.sbs.api.scheduler.ScheduledTask;

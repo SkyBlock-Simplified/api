@@ -1,4 +1,4 @@
-package dev.sbs.api.data.sql;
+package dev.sbs.api.data;
 
 import org.jetbrains.annotations.NotNull;
 
