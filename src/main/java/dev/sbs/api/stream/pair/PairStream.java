@@ -24,6 +24,10 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
 
     // Create
 
+    static <K, V> @NotNull PairStream<K, V> empty() {
+        return of(Stream.empty());
+    }
+
     static <K, V> @NotNull PairStream<K, V> of(@NotNull Map<K, V> map) {
         return of(map.entrySet().stream());
     }

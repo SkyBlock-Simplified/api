@@ -21,6 +21,10 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
 
     // Create
 
+    static <L, M, R> @NotNull TripleStream<L, M, R> empty() {
+        return of(Stream.empty());
+    }
+
     static <L, M, R> @NotNull TripleStream<L, M, R> of(@NotNull Stream<Triple<L, M, R>> stream) {
         return () -> stream;
     }
