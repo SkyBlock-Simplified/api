@@ -97,20 +97,20 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
     // Filtering
 
     @Override
-    default @NotNull PairStream<K, V> filter(@NotNull Predicate<? super Map.Entry<K, V>> mapper) {
-        return of(this.entries().filter(mapper));
+    default @NotNull PairStream<K, V> filter(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
+        return of(this.entries().filter(predicate));
     }
 
-    default @NotNull PairStream<K, V> filter(@NotNull BiPredicate<? super K, ? super V> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getKey(), entry.getValue())));
+    default @NotNull PairStream<K, V> filter(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return of(this.entries().filter(entry -> predicate.test(entry.getKey(), entry.getValue())));
     }
 
-    default @NotNull PairStream<K, V> filterKey(@NotNull Predicate<? super K> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getKey())));
+    default @NotNull PairStream<K, V> filterKey(@NotNull Predicate<? super K> predicate) {
+        return of(this.entries().filter(entry -> predicate.test(entry.getKey())));
     }
 
-    default @NotNull PairStream<K, V> filterValue(@NotNull Predicate<? super V> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getValue())));
+    default @NotNull PairStream<K, V> filterValue(@NotNull Predicate<? super V> predicate) {
+        return of(this.entries().filter(entry -> predicate.test(entry.getValue())));
     }
 
     // Find
@@ -120,9 +120,17 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return this.entries().findAny();
     }
 
+    default @NotNull PairOptional<K, V> findAnyPair() {
+        return PairOptional.of(this.entries().findAny());
+    }
+
     @Override
     default @NotNull Optional<Map.Entry<K, V>> findFirst() {
         return this.entries().findFirst();
+    }
+
+    default @NotNull PairOptional<K, V> findFirstPair() {
+        return PairOptional.of(this.entries().findFirst());
     }
 
     // Flatmapping
@@ -132,12 +140,12 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return this.entries().flatMap(mapper);
     }
 
-    default <RK, RV> @NotNull PairStream<RK, RV> flatMap(@NotNull BiFunction<? super K, ? super V, ? extends PairStream<RK, RV>> mapper) {
-        return of(this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()).entries()));
-    }
-
     default <R> @NotNull Stream<R> flatMapToObj(@NotNull BiFunction<? super K, ? super V, ? extends Stream<? extends R>> mapper) {
         return this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+    }
+
+    default <RK, RV> @NotNull PairStream<RK, RV> flatMap(@NotNull BiFunction<? super K, ? super V, ? extends PairStream<RK, RV>> mapper) {
+        return of(this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()).entries()));
     }
 
     @Override
@@ -206,8 +214,12 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return this.entries().map(mapper);
     }
 
-    default <R> @NotNull Stream<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
+    default <R> @NotNull Stream<R> mapToObj(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
         return this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+    }
+
+    default <RK, RV> @NotNull PairStream<RK, RV> map(@NotNull BiFunction<? super K, ? super V, ? extends Map.Entry<RK, RV>> mapper) {
+        return of(this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue())));
     }
 
     default <R> @NotNull PairStream<R, V> mapKey(@NotNull Function<? super K, ? extends R> mapper) {
