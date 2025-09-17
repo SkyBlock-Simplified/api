@@ -50,8 +50,8 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
      * @param entry the entry, may not be null
      * @return a pair formed from the entry parameter, not null
      */
-    public static <L, R> Pair<L, R> from(@NotNull Map.Entry<L, R> entry) {
-        return new ImmutablePair<>(entry.getKey(), entry.getValue());
+    public static <L, R> Pair<L, R> from(@Nullable Map.Entry<L, R> entry) {
+        return entry != null ? new ImmutablePair<>(entry.getKey(), entry.getValue()) : empty();
     }
 
     /**
