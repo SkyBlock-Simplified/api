@@ -81,7 +81,7 @@ public final class PairOptional<L, R> {
      *
      * @param pair the pair value to describe.
      */
-    private PairOptional(@Nullable Map.Entry<L, R> pair) {
+    private PairOptional(@Nullable Map.Entry<? extends L, ? extends R> pair) {
         this.value = Pair.from(pair);
     }
 
@@ -120,7 +120,7 @@ public final class PairOptional<L, R> {
      * @return an {@code PairOptional} with the value present
      * @throws NullPointerException if value is {@code null}
      */
-    public static <L, R> PairOptional<L, R> of(@Nullable Map.Entry<L, R> pair) {
+    public static <L, R> PairOptional<L, R> of(@Nullable Map.Entry<? extends L, ? extends R> pair) {
         return new PairOptional<>(pair);
     }
 
