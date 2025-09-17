@@ -134,7 +134,7 @@ public final class PairOptional<L, R> {
      * @return an {@code PairOptional} with the value present
      * @throws NullPointerException if value is {@code null}
      */
-    public static <L, R> PairOptional<L, R> of(@NotNull Optional<Map.Entry<L, R>> pair) {
+    public static <L, R> PairOptional<L, R> of(@NotNull Optional<? extends Map.Entry<L, R>> pair) {
         return pair.map(PairOptional::new).orElse(empty());
     }
 
