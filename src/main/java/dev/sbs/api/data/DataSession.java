@@ -35,7 +35,6 @@ public abstract class DataSession<T extends Model> {
             this.cached = true;
             long startTime = System.currentTimeMillis();
 
-            // Provide SqlRepositories
             for (Class<? extends T> model : this.getModels())
                 this.addRepository(model);
 
