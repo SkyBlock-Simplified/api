@@ -2,41 +2,51 @@ package dev.sbs.api.data.json;
 
 import dev.sbs.api.builder.ClassBuilder;
 import dev.sbs.api.builder.annotation.BuildFlag;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.data.DataConfig;
 import dev.sbs.api.data.DataSession;
+import dev.sbs.api.data.DataType;
 import dev.sbs.api.reflection.Reflection;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.spi.StandardLevel;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 @Getter
-@Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JsonConfig extends DataConfig<JsonModel> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class JsonConfig implements DataConfig<JsonModel> {
+
+    private final @NotNull ConcurrentList<Class<JsonModel>> models;
+    private final @NotNull String identifier;
+    private @NotNull Level logLevel;
 
     public static @NotNull Builder builder() {
         return new Builder();
     }
 
     @Override
-    protected @NotNull DataSession<JsonModel> createSession() {
+    public @NotNull DataSession<JsonModel> createSession() {
         return new JsonSession(this);
+    }
+
+    @Override
+    public @NotNull DataType getType() {
+        return DataType.JSON;
     }
 
     public static @NotNull JsonConfig defaultJson() {
         return builder()
-            .withLogLevel(StandardLevel.WARN)
+            .withLogLevel(Level.WARN)
             .build();
     }
 
     @Override
-    protected void onLogLevelChange(@NotNull Level level) {
-        // Set Logging Level
+    public void setLogLevel(@NotNull Level level) {
+        this.logLevel = level;
         Configurator.setLevel("org.jboss.logging", this.getLogLevel());
         Configurator.setLevel("ch.qos.logback", this.getLogLevel());
     }
@@ -46,10 +56,9 @@ public final class JsonConfig extends DataConfig<JsonModel> {
         // Required Settings
 
         @BuildFlag(nonNull = true)
-        private StandardLevel logLevel = StandardLevel.WARN;
+        private Level logLevel = Level.WARN;
 
-
-        public Builder withLogLevel(@NotNull StandardLevel level) {
+        public Builder withLogLevel(@NotNull Level level) {
             this.logLevel = level;
             return this;
         }
@@ -58,9 +67,13 @@ public final class JsonConfig extends DataConfig<JsonModel> {
         public @NotNull JsonConfig build() {
             Reflection.validateFlags(this);
 
-            JsonConfig jsonConfig = new JsonConfig();
+            JsonConfig jsonConfig = new JsonConfig(
+                DataConfig.detectModels(Reflection.getSuperClass(JsonConfig.class)),
+                UUID.randomUUID().toString(),
+                this.logLevel
+            );
 
-            jsonConfig.setLogLevel(Level.toLevel(this.logLevel.name()));
+            jsonConfig.setLogLevel(this.logLevel);
             return jsonConfig;
         }
 

@@ -2,6 +2,7 @@ package dev.sbs.api.data;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.data.sql.SqlConfig;
+import dev.sbs.api.data.sql.SqlModel;
 import dev.sbs.api.data.sql.SqlSession;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -12,8 +13,8 @@ public class SqlSessionTest {
 
     @Test
     public void openSession_ok() {
-        SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
-        Session session = SimplifiedApi.getSessionManager().getSession().asType(SqlSession.class).openSession();
+        DataSession<SqlModel> dataSession = SimplifiedApi.getSessionManager().connect(SqlConfig.defaultSql());
+        Session session = dataSession.asType(SqlSession.class).openSession();
         MatcherAssert.assertThat(session, Matchers.notNullValue());
         session.close();
     }

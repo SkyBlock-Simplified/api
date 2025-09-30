@@ -16,7 +16,7 @@ public abstract class DataSession<T extends Model> {
     @Getter(AccessLevel.PROTECTED)
     protected final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.ALL);
     protected final @NotNull ConcurrentList<Class<T>> models;
-    protected final @NotNull Type type;
+    protected final @NotNull DataType type;
     protected boolean active;
     protected boolean cached = false;
     protected long initialization;
@@ -52,7 +52,7 @@ public abstract class DataSession<T extends Model> {
      * @return The repository of type {@link M}.
      */
     @SuppressWarnings("unchecked")
-    public final <M extends T> Repository<M> getRepositoryOf(Class<M> tClass) {
+    public final <M extends T> @NotNull Repository<M> getRepositoryOf(@NotNull Class<M> tClass) {
         if (this.isActive())
             return (Repository<M>) this.serviceManager.get(tClass);
         else
@@ -73,10 +73,4 @@ public abstract class DataSession<T extends Model> {
         this.active = false;
     }
 
-    public enum Type {
-
-        SQL,
-        JSON
-
-    }
 }

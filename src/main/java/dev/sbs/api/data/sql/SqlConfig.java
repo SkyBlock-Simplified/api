@@ -2,8 +2,11 @@ package dev.sbs.api.data.sql;
 
 import dev.sbs.api.builder.ClassBuilder;
 import dev.sbs.api.builder.annotation.BuildFlag;
+import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.data.DataConfig;
 import dev.sbs.api.data.DataSession;
+import dev.sbs.api.data.DataType;
+import dev.sbs.api.data.json.JsonConfig;
 import dev.sbs.api.data.sql.driver.MariaDBDriver;
 import dev.sbs.api.data.sql.driver.SqlDriver;
 import dev.sbs.api.data.yaml.annotation.Flag;
@@ -11,12 +14,10 @@ import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.util.NumberUtil;
 import dev.sbs.api.util.SystemUtil;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.spi.StandardLevel;
 import org.ehcache.core.Ehcache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.cache.jcache.MissingCacheStrategy;
@@ -24,38 +25,46 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.cache.expiry.Duration;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Getter
-@Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SqlConfig extends DataConfig<SqlModel> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class SqlConfig implements DataConfig<SqlModel> {
 
-    private @NotNull SqlDriver driver;
+    private final @NotNull ConcurrentList<Class<SqlModel>> models;
+    private final @NotNull String identifier;
+    private final @NotNull SqlDriver driver;
     @Flag(secure = true)
-    private @NotNull String host;
+    private final @NotNull String host;
     @Flag(secure = true)
-    private int port;
+    private final int port;
     @Flag(secure = true)
-    private @NotNull String schema;
+    private final @NotNull String schema;
     @Flag(secure = true)
-    private @NotNull String user;
+    private final @NotNull String user;
     @Flag(secure = true)
-    private @NotNull String password;
-    private boolean usingQueryCache;
-    private boolean using2ndLevelCache;
-    private boolean usingStatistics;
-    private @NotNull CacheConcurrencyStrategy cacheConcurrencyStrategy;
-    private @NotNull MissingCacheStrategy missingCacheStrategy;
-    private @NotNull Duration queryResultsTTL;
+    private final @NotNull String password;
+    private final boolean usingQueryCache;
+    private final boolean using2ndLevelCache;
+    private final boolean usingStatistics;
+    private final @NotNull CacheConcurrencyStrategy cacheConcurrencyStrategy;
+    private final @NotNull MissingCacheStrategy missingCacheStrategy;
+    private final @NotNull Duration queryResultsTTL;
+    private @NotNull Level logLevel;
 
     public static @NotNull Builder builder() {
         return new Builder();
     }
 
     @Override
-    protected @NotNull DataSession<SqlModel> createSession() {
+    public @NotNull DataSession<SqlModel> createSession() {
         return new SqlSession(this);
+    }
+
+    @Override
+    public @NotNull DataType getType() {
+        return DataType.SQL;
     }
 
     public static @NotNull SqlConfig defaultSql() {
@@ -66,7 +75,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
             .withSchema(SystemUtil.getEnv("DATABASE_SCHEMA"))
             .withUser(SystemUtil.getEnv("DATABASE_USER"))
             .withPassword(SystemUtil.getEnv("DATABASE_PASSWORD"))
-            .withLogLevel(StandardLevel.WARN)
+            .withLogLevel(Level.WARN)
             .isUsingQueryCache()
             .isUsing2ndLevelCache()
             .withCacheConcurrencyStrategy(CacheConcurrencyStrategy.READ_WRITE)
@@ -76,8 +85,10 @@ public final class SqlConfig extends DataConfig<SqlModel> {
     }
 
     @Override
-    protected void onLogLevelChange(@NotNull Level level) {
-        // Set Logging Level
+    public void setLogLevel(@NotNull Level logLevel) {
+        this.logLevel = logLevel;
+
+        // SQL Level
         Configurator.setLevel("org.hibernate", this.getLogLevel());
         Configurator.setLevel("org.ehcache", this.getLogLevel());
         Configurator.setLevel("com.zaxxer.hikari", this.getLogLevel());
@@ -87,7 +98,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
         Configurator.setLevel(String.format("%s-%s", Ehcache.class, "default-update-timestamps-region"), this.getLogLevel());
         Configurator.setLevel(String.format("%s-%s", Ehcache.class, "default-query-results-region"), this.getLogLevel());
 
-        // SQL Model Loggers
+        // SQL Model Level
         this.getModels().forEach(model -> Configurator.setLevel(String.format("%s-%s", Ehcache.class, model.getName()), this.getLogLevel()));
     }
 
@@ -108,7 +119,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
         private Optional<String> password = Optional.empty();
 
         @BuildFlag(nonNull = true)
-        private StandardLevel logLevel = StandardLevel.WARN;
+        private Level logLevel = Level.WARN;
         private boolean usingQueryCache = false;
         private boolean using2ndLevelCache = false;
         private boolean usingStatistics = false;
@@ -165,7 +176,7 @@ public final class SqlConfig extends DataConfig<SqlModel> {
             return this;
         }
 
-        public Builder withLogLevel(@NotNull StandardLevel level) {
+        public Builder withLogLevel(@NotNull Level level) {
             this.logLevel = level;
             return this;
         }
@@ -225,6 +236,8 @@ public final class SqlConfig extends DataConfig<SqlModel> {
             Reflection.validateFlags(this);
 
             SqlConfig sqlConfig = new SqlConfig(
+                DataConfig.detectModels(Reflection.getSuperClass(JsonConfig.class)),
+                UUID.randomUUID().toString(),
                 this.driver,
                 this.host.orElseThrow(),
                 this.port.orElseThrow(),
@@ -236,10 +249,11 @@ public final class SqlConfig extends DataConfig<SqlModel> {
                 this.usingStatistics,
                 this.cacheConcurrencyStrategy,
                 this.missingCacheStrategy,
-                new Duration(TimeUnit.SECONDS, this.queryResultsTTL.orElseThrow())
+                new Duration(TimeUnit.SECONDS, this.queryResultsTTL.orElseThrow()),
+                this.logLevel
             );
 
-            sqlConfig.setLogLevel(Level.toLevel(this.logLevel.name()));
+            sqlConfig.setLogLevel(this.logLevel);
             return sqlConfig;
         }
 

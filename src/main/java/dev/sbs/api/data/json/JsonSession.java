@@ -12,7 +12,7 @@ public final class JsonSession extends DataSession<JsonModel> {
     private final @NotNull Scheduler scheduler;
 
     public JsonSession(@NotNull JsonConfig config) {
-        super(config.getModels(), Type.JSON);
+        super(config.getModels(), config.getType());
         this.config = config;
         this.scheduler = new Scheduler();
     }
