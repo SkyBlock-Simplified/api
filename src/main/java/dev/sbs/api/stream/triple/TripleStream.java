@@ -38,348 +38,348 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
     @Override
     @SuppressWarnings("all")
     default @NotNull TripleStream<L, M, R> onClose(@NotNull Runnable closeHandler) {
-        return of(this.entries().onClose(closeHandler));
+        return of(this.underlying().onClose(closeHandler));
     }
 
     @Override
     default void close() {
-        this.entries().close();
+        this.underlying().close();
     }
 
     // Entries
 
-    @NotNull Stream<Triple<L, M, R>> entries();
+    @NotNull Stream<Triple<L, M, R>> underlying();
 
     default @NotNull Stream<L> lefts() {
-        return this.entries().map(Triple::getLeft);
+        return this.underlying().map(Triple::getLeft);
     }
 
     default @NotNull Stream<M> middles() {
-        return this.entries().map(Triple::getMiddle);
+        return this.underlying().map(Triple::getMiddle);
     }
 
     default @NotNull Stream<R> rights() {
-        return this.entries().map(Triple::getRight);
+        return this.underlying().map(Triple::getRight);
     }
 
     @Override
     default long count() {
-        return this.entries().count();
+        return this.underlying().count();
     }
 
     @Override
     default @NotNull TripleStream<L, M, R> distinct() {
-        return of(this.entries().distinct());
+        return of(this.underlying().distinct());
     }
 
     @Override
     default @NotNull TripleStream<L, M, R> limit(long maxSize) {
-        return of(this.entries().limit(maxSize));
+        return of(this.underlying().limit(maxSize));
     }
 
     @Override
     default @NotNull TripleStream<L, M, R> peek(@NotNull Consumer<? super Triple<L, M, R>> action) {
-        return of(this.entries().peek(action));
+        return of(this.underlying().peek(action));
     }
 
     default @NotNull TripleStream<L, M, R> peek(@NotNull TriConsumer<? super L, ? super M, ? super R> action) {
-        return of(this.entries().peek(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight())));
+        return of(this.underlying().peek(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight())));
     }
 
     @Override
     default @NotNull TripleStream<L, M, R> skip(long number) {
-        return of(this.entries().skip(number));
+        return of(this.underlying().skip(number));
     }
 
     // Filter
 
     @Override
     default @NotNull TripleStream<L, M, R> filter(@NotNull Predicate<? super Triple<L, M, R>> predicate) {
-        return of(this.entries().filter(predicate));
+        return of(this.underlying().filter(predicate));
     }
 
     default @NotNull TripleStream<L, M, R> filter(@NotNull TriPredicate<? super L, ? super M, ? super R> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getLeft(), entry.getMiddle(), entry.getRight())));
+        return of(this.underlying().filter(entry -> mapper.test(entry.getLeft(), entry.getMiddle(), entry.getRight())));
     }
 
     default @NotNull TripleStream<L, M, R> filterLeft(@NotNull Predicate<? super L> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getLeft())));
+        return of(this.underlying().filter(entry -> mapper.test(entry.getLeft())));
     }
 
     default @NotNull TripleStream<L, M, R> filterMiddle(@NotNull Predicate<? super M> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getMiddle())));
+        return of(this.underlying().filter(entry -> mapper.test(entry.getMiddle())));
     }
 
     default @NotNull TripleStream<L, M, R> filterRight(@NotNull Predicate<? super R> mapper) {
-        return of(this.entries().filter(entry -> mapper.test(entry.getRight())));
+        return of(this.underlying().filter(entry -> mapper.test(entry.getRight())));
     }
 
     // Find
 
     @Override
     default @NotNull Optional<Triple<L, M, R>> findAny() {
-        return this.entries().findAny();
+        return this.underlying().findAny();
     }
 
     @Override
     default @NotNull Optional<Triple<L, M, R>> findFirst() {
-        return this.entries().findFirst();
+        return this.underlying().findFirst();
     }
 
     // Flatmapping
 
     @Override
     default <RK> Stream<RK> flatMap(Function<? super Triple<L, M, R>, ? extends Stream<? extends RK>> mapper) {
-        return this.entries().flatMap(mapper);
+        return this.underlying().flatMap(mapper);
     }
 
     default <RL, RM, RR> @NotNull TripleStream<RL, RM, RR> flatMap(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends TripleStream<RL, RM, RR>> mapper) {
-        return of(this.entries().flatMap(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()).entries()));
+        return of(this.underlying().flatMap(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()).underlying()));
     }
 
     default <RT> @NotNull Stream<RT> flatMapToObj(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends Stream<RT>> mapper) {
-        return this.entries().flatMap(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().flatMap(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default @NotNull DoubleStream flatMapToDouble(Function<? super Triple<L, M, R>, ? extends DoubleStream> mapper) {
-        return this.entries().flatMapToDouble(mapper);
+        return this.underlying().flatMapToDouble(mapper);
     }
 
     default @NotNull DoubleStream flatMapToDouble(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends DoubleStream> mapper) {
-        return this.entries().flatMapToDouble(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().flatMapToDouble(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default @NotNull IntStream flatMapToInt(Function<? super Triple<L, M, R>, ? extends IntStream> mapper) {
-        return this.entries().flatMapToInt(mapper);
+        return this.underlying().flatMapToInt(mapper);
     }
 
     default @NotNull IntStream flatMapToInt(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends IntStream> mapper) {
-        return this.entries().flatMapToInt(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().flatMapToInt(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default @NotNull LongStream flatMapToLong(Function<? super Triple<L, M, R>, ? extends LongStream> mapper) {
-        return this.entries().flatMapToLong(mapper);
+        return this.underlying().flatMapToLong(mapper);
     }
 
     default @NotNull LongStream flatMapToLong(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends LongStream> mapper) {
-        return this.entries().flatMapToLong(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().flatMapToLong(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     // ForEach
 
     @Override
     default void forEach(@NotNull Consumer<? super Triple<L, M, R>> action) {
-        this.entries().forEach(action);
+        this.underlying().forEach(action);
     }
 
     default void forEach(@NotNull TriConsumer<? super L, ? super M, ? super R> action) {
-        this.entries().forEach(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        this.underlying().forEach(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default void forEachOrdered(@NotNull Consumer<? super Triple<L, M, R>> action) {
-        this.entries().forEachOrdered(action);
+        this.underlying().forEachOrdered(action);
     }
 
     default void forEachOrdered(@NotNull TriConsumer<? super L, ? super M, ? super R> action) {
-        this.entries().forEachOrdered(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        this.underlying().forEachOrdered(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     // Iterator
 
     @Override
     default @NotNull Iterator<Triple<L, M, R>> iterator() {
-        return this.entries().iterator();
+        return this.underlying().iterator();
     }
 
     @Override
     default @NotNull Spliterator<Triple<L, M, R>> spliterator() {
-        return this.entries().spliterator();
+        return this.underlying().spliterator();
     }
 
     // Mapping
 
     @Override
     default <RK> @NotNull Stream<RK> map(Function<? super Triple<L, M, R>, ? extends RK> mapper) {
-        return this.entries().map(mapper);
+        return this.underlying().map(mapper);
     }
 
     default <T> @NotNull Stream<T> mapToObj(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends T> mapper) {
-        return this.entries().map(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().map(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     default <RL, RM, RR> @NotNull TripleStream<RL, RM, RR> map(@NotNull TriFunction<? super L, ? super M, ? super R, ? extends Triple<RL, RM, RR>> mapper) {
-        return of(this.entries().map(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight())));
+        return of(this.underlying().map(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight())));
     }
 
     @Override
     default @NotNull DoubleStream mapToDouble(@NotNull ToDoubleFunction<? super Triple<L, M, R>> mapper) {
-        return this.entries().mapToDouble(mapper);
+        return this.underlying().mapToDouble(mapper);
     }
 
     default @NotNull DoubleStream mapToDouble(@NotNull TriFunction<? super L, ? super M, ? super R, Double> mapper) {
-        return this.entries().mapToDouble(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().mapToDouble(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default @NotNull IntStream mapToInt(@NotNull ToIntFunction<? super Triple<L, M, R>> mapper) {
-        return this.entries().mapToInt(mapper);
+        return this.underlying().mapToInt(mapper);
     }
 
     default @NotNull IntStream mapToInt(@NotNull TriFunction<? super L, ? super M, ? super R, Integer> mapper) {
-        return this.entries().mapToInt(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().mapToInt(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default @NotNull LongStream mapToLong(@NotNull ToLongFunction<? super Triple<L, M, R>> mapper) {
-        return this.entries().mapToLong(mapper);
+        return this.underlying().mapToLong(mapper);
     }
 
     default @NotNull LongStream mapToLong(@NotNull TriFunction<? super L, ? super M, ? super R, Long> mapper) {
-        return this.entries().mapToLong(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().mapToLong(entry -> mapper.apply(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     default <RT> @NotNull TripleStream<RT, M, R> mapLeft(@NotNull Function<? super L, ? extends RT> mapper) {
-        return of(this.entries().map(entry -> Triple.of(mapper.apply(entry.getLeft()), entry.getMiddle(), entry.getRight())));
+        return of(this.underlying().map(entry -> Triple.of(mapper.apply(entry.getLeft()), entry.getMiddle(), entry.getRight())));
     }
 
     default <RT> @NotNull TripleStream<L, RT, R> mapMiddle(@NotNull Function<? super M, ? extends RT> mapper) {
-        return of(this.entries().map(entry -> Triple.of(entry.getLeft(), mapper.apply(entry.getMiddle()), entry.getRight())));
+        return of(this.underlying().map(entry -> Triple.of(entry.getLeft(), mapper.apply(entry.getMiddle()), entry.getRight())));
     }
 
     default <RT> @NotNull TripleStream<L, M, RT> mapRight(@NotNull Function<? super R, ? extends RT> mapper) {
-        return of(this.entries().map(entry -> Triple.of(entry.getLeft(), entry.getMiddle(), mapper.apply(entry.getRight()))));
+        return of(this.underlying().map(entry -> Triple.of(entry.getLeft(), entry.getMiddle(), mapper.apply(entry.getRight()))));
     }
 
     // Matching
 
     @Override
     default boolean allMatch(@NotNull Predicate<? super Triple<L, M, R>> predicate) {
-        return this.entries().allMatch(predicate);
+        return this.underlying().allMatch(predicate);
     }
 
     default boolean allMatch(@NotNull TriPredicate<? super L, ? super M, ? super R> predicate) {
-        return this.entries().allMatch(entry -> predicate.test(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().allMatch(entry -> predicate.test(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default boolean anyMatch(@NotNull Predicate<? super Triple<L, M, R>> predicate) {
-        return this.entries().anyMatch(predicate);
+        return this.underlying().anyMatch(predicate);
     }
 
     default boolean anyMatch(@NotNull TriPredicate<? super L, ? super M, ? super R> predicate) {
-        return this.entries().anyMatch(entry -> predicate.test(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().anyMatch(entry -> predicate.test(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     @Override
     default boolean noneMatch(@NotNull Predicate<? super Triple<L, M, R>> predicate) {
-        return this.entries().noneMatch(predicate);
+        return this.underlying().noneMatch(predicate);
     }
 
     default boolean noneMatch(@NotNull TriPredicate<? super L, ? super M, ? super R> predicate) {
-        return this.entries().noneMatch(entry -> predicate.test(entry.getLeft(), entry.getMiddle(), entry.getRight()));
+        return this.underlying().noneMatch(entry -> predicate.test(entry.getLeft(), entry.getMiddle(), entry.getRight()));
     }
 
     // Minmax
 
     @Override
     default @NotNull Optional<Triple<L, M, R>> max(@NotNull Comparator<? super Triple<L, M, R>> comparator) {
-        return this.entries().max(comparator);
+        return this.underlying().max(comparator);
     }
 
     default @NotNull Optional<Triple<L, M, R>> maxByLeft(@NotNull Comparator<? super L> comparator) {
-        return this.entries().max((c1, c2) -> comparator.compare(c1.getLeft(), c2.getLeft()));
+        return this.underlying().max((c1, c2) -> comparator.compare(c1.getLeft(), c2.getLeft()));
     }
 
     default @NotNull Optional<Triple<L, M, R>> maxByMiddle(@NotNull Comparator<? super M> comparator) {
-        return this.entries().max((c1, c2) -> comparator.compare(c1.getMiddle(), c2.getMiddle()));
+        return this.underlying().max((c1, c2) -> comparator.compare(c1.getMiddle(), c2.getMiddle()));
     }
 
     default @NotNull Optional<Triple<L, M, R>> maxByRight(@NotNull Comparator<? super R> comparator) {
-        return this.entries().max((c1, c2) -> comparator.compare(c1.getRight(), c2.getRight()));
+        return this.underlying().max((c1, c2) -> comparator.compare(c1.getRight(), c2.getRight()));
     }
 
     @Override
     default @NotNull Optional<Triple<L, M, R>> min(@NotNull Comparator<? super Triple<L, M, R>> comparator) {
-        return this.entries().min(comparator);
+        return this.underlying().min(comparator);
     }
 
     default @NotNull Optional<Triple<L, M, R>> minByLeft(@NotNull Comparator<? super L> comparator) {
-        return this.entries().min((c1, c2) -> comparator.compare(c1.getLeft(), c2.getLeft()));
+        return this.underlying().min((c1, c2) -> comparator.compare(c1.getLeft(), c2.getLeft()));
     }
 
     default @NotNull Optional<Triple<L, M, R>> minByMiddle(@NotNull Comparator<? super M> comparator) {
-        return this.entries().min((c1, c2) -> comparator.compare(c1.getMiddle(), c2.getMiddle()));
+        return this.underlying().min((c1, c2) -> comparator.compare(c1.getMiddle(), c2.getMiddle()));
     }
 
     default @NotNull Optional<Triple<L, M, R>> minByRight(@NotNull Comparator<? super R> comparator) {
-        return this.entries().min((c1, c2) -> comparator.compare(c1.getRight(), c2.getRight()));
+        return this.underlying().min((c1, c2) -> comparator.compare(c1.getRight(), c2.getRight()));
     }
 
     // Order
 
     @Override
     default boolean isParallel() {
-        return this.entries().isParallel();
+        return this.underlying().isParallel();
     }
 
     @Override
     default @NotNull TripleStream<L, M ,R> parallel() {
-        return of(this.entries().parallel());
+        return of(this.underlying().parallel());
     }
 
     @Override
     default @NotNull TripleStream<L, M ,R> sequential() {
-        return of(this.entries().sequential());
+        return of(this.underlying().sequential());
     }
 
     @Override
     default @NotNull TripleStream<L, M ,R> unordered() {
-        return of(this.entries().unordered());
+        return of(this.underlying().unordered());
     }
 
     // Reduction
 
     @Override
     default @NotNull Triple<L, M, R> reduce(@NotNull Triple<L, M, R> identity, @NotNull BinaryOperator<Triple<L, M, R>> accumulator) {
-        return this.entries().reduce(identity, accumulator);
+        return this.underlying().reduce(identity, accumulator);
     }
 
     @Override
     default @NotNull Optional<Triple<L, M, R>> reduce(@NotNull BinaryOperator<Triple<L, M, R>> accumulator) {
-        return this.entries().reduce(accumulator);
+        return this.underlying().reduce(accumulator);
     }
 
     @Override
     default <U> @NotNull U reduce(@NotNull U identity, @NotNull BiFunction<U, ? super Triple<L, M, R>, U> accumulator, @NotNull BinaryOperator<U> combiner) {
-        return this.entries().reduce(identity, accumulator, combiner);
+        return this.underlying().reduce(identity, accumulator, combiner);
     }
 
     // Sorting
 
     @Override
     default TripleStream<L, M ,R> sorted() {
-        return of(this.entries().sorted());
+        return of(this.underlying().sorted());
     }
 
     @Override
     default @NotNull TripleStream<L, M ,R> sorted(@NotNull Comparator<? super Triple<L, M, R>> comparator) {
-        return of(this.entries().sorted(comparator));
+        return of(this.underlying().sorted(comparator));
     }
 
     default @NotNull TripleStream<L, M ,R> sortedByLeft(@NotNull Comparator<? super L> comparator) {
-        return of(this.entries().sorted((c1, c2) -> comparator.compare(c1.getLeft(), c2.getLeft())));
+        return of(this.underlying().sorted((c1, c2) -> comparator.compare(c1.getLeft(), c2.getLeft())));
     }
 
     default @NotNull TripleStream<L, M ,R> sortedByMiddle(@NotNull Comparator<? super M> comparator) {
-        return of(this.entries().sorted((c1, c2) -> comparator.compare(c1.getMiddle(), c2.getMiddle())));
+        return of(this.underlying().sorted((c1, c2) -> comparator.compare(c1.getMiddle(), c2.getMiddle())));
     }
 
     default @NotNull TripleStream<L, M ,R> sortedByRight(@NotNull Comparator<? super R> comparator) {
-        return of(this.entries().sorted((c1, c2) -> comparator.compare(c1.getRight(), c2.getRight())));
+        return of(this.underlying().sorted((c1, c2) -> comparator.compare(c1.getRight(), c2.getRight())));
     }
 
     // Collect
@@ -438,7 +438,7 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
      */
     @Override
     default <T, A> T collect(@NotNull Collector<? super Triple<L, M, R>, A, T> collector) {
-        return this.entries().collect(collector);
+        return this.underlying().collect(collector);
     }
 
     /**
@@ -498,25 +498,25 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
      */
     @Override
     default <T> T collect(@NotNull Supplier<T> supplier, @NotNull BiConsumer<T, ? super Triple<L, M, R>> accumulator, @NotNull BiConsumer<T, T> combiner) {
-        return this.entries().collect(supplier, accumulator, combiner);
+        return this.underlying().collect(supplier, accumulator, combiner);
     }
 
     @Override
     default @NotNull Object @NotNull [] toArray() {
-        return this.entries().toArray();
+        return this.underlying().toArray();
     }
 
     @Override
     default <A> @NotNull A @NotNull [] toArray(@NotNull IntFunction<A[]> generator) {
-        return this.entries().toArray(generator);
+        return this.underlying().toArray(generator);
     }
 
     default @NotNull ConcurrentList<Triple<L, M, R>> toConcurrentList() {
-        return this.entries().collect(Concurrent.toList());
+        return this.underlying().collect(Concurrent.toList());
     }
 
     default @NotNull ConcurrentList<Triple<L, M, R>> toConcurrentUnmodifiableList() {
-        return this.entries().collect(Concurrent.toUnmodifiableList());
+        return this.underlying().collect(Concurrent.toUnmodifiableList());
     }
 
 }

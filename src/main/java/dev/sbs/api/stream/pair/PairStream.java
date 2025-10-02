@@ -36,8 +36,8 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return () -> stream;
     }
 
-    static <K, V> @NotNull PairStream<K, V> of(@NotNull Stream<K> stream, @NotNull Function<? super K, ? extends V> function) {
-        return () -> stream.map(key -> Pair.of(key, function.apply(key)));
+    static <K, V> @NotNull PairStream<K, V> of(@NotNull Stream<K> stream, @NotNull Function<? super K, ? extends V> mapper) {
+        return () -> stream.map(key -> Pair.of(key, mapper.apply(key)));
     }
 
     // Close
@@ -45,344 +45,344 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
     @Override
     @SuppressWarnings("all")
     default @NotNull PairStream<K, V> onClose(@NotNull Runnable closeHandler) {
-        return of(this.entries().onClose(closeHandler));
+        return of(this.underlying().onClose(closeHandler));
     }
 
     @Override
     default void close() {
-        this.entries().close();
+        this.underlying().close();
     }
 
     // Entries
 
-    @NotNull Stream<Map.Entry<K, V>> entries();
+    @NotNull Stream<Map.Entry<K, V>> underlying();
 
     default @NotNull Stream<K> keys() {
-        return this.entries().map(Map.Entry::getKey);
+        return this.underlying().map(Map.Entry::getKey);
     }
 
     default @NotNull Stream<V> values() {
-        return this.entries().map(Map.Entry::getValue);
+        return this.underlying().map(Map.Entry::getValue);
     }
 
     @Override
     default long count() {
-        return this.entries().count();
+        return this.underlying().count();
     }
 
     @Override
     default @NotNull PairStream<K, V> distinct() {
-        return of(this.entries().distinct());
+        return of(this.underlying().distinct());
     }
 
     @Override
     default @NotNull PairStream<K, V> limit(long maxSize) {
-        return of(this.entries().limit(maxSize));
+        return of(this.underlying().limit(maxSize));
     }
 
     @Override
     default @NotNull PairStream<K, V> peek(@NotNull Consumer<? super Map.Entry<K, V>> action) {
-        return of(this.entries().peek(action));
+        return of(this.underlying().peek(action));
     }
 
     default @NotNull PairStream<K, V> peek(@NotNull BiConsumer<? super K, ? super V> action) {
-        return of(this.entries().peek(entry -> action.accept(entry.getKey(), entry.getValue())));
+        return of(this.underlying().peek(entry -> action.accept(entry.getKey(), entry.getValue())));
     }
 
     @Override
     default @NotNull PairStream<K, V> skip(long number) {
-        return of(this.entries().skip(number));
+        return of(this.underlying().skip(number));
     }
 
     // Filtering
 
     @Override
     default @NotNull PairStream<K, V> filter(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return of(this.entries().filter(predicate));
+        return of(this.underlying().filter(predicate));
     }
 
     default @NotNull PairStream<K, V> filter(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return of(this.entries().filter(entry -> predicate.test(entry.getKey(), entry.getValue())));
+        return of(this.underlying().filter(entry -> predicate.test(entry.getKey(), entry.getValue())));
     }
 
     default @NotNull PairStream<K, V> filterKey(@NotNull Predicate<? super K> predicate) {
-        return of(this.entries().filter(entry -> predicate.test(entry.getKey())));
+        return of(this.underlying().filter(entry -> predicate.test(entry.getKey())));
     }
 
     default @NotNull PairStream<K, V> filterValue(@NotNull Predicate<? super V> predicate) {
-        return of(this.entries().filter(entry -> predicate.test(entry.getValue())));
+        return of(this.underlying().filter(entry -> predicate.test(entry.getValue())));
     }
 
     // Find
 
     @Override
     default @NotNull Optional<Map.Entry<K, V>> findAny() {
-        return this.entries().findAny();
+        return this.underlying().findAny();
     }
 
     default @NotNull PairOptional<K, V> findAnyPair() {
-        return PairOptional.of(this.entries().findAny());
+        return PairOptional.of(this.underlying().findAny());
     }
 
     @Override
     default @NotNull Optional<Map.Entry<K, V>> findFirst() {
-        return this.entries().findFirst();
+        return this.underlying().findFirst();
     }
 
     default @NotNull PairOptional<K, V> findFirstPair() {
-        return PairOptional.of(this.entries().findFirst());
+        return PairOptional.of(this.underlying().findFirst());
     }
 
     // Flatmapping
 
     @Override
     default <R> @NotNull Stream<R> flatMap(@NotNull Function<? super Map.Entry<K, V>, ? extends Stream<? extends R>> mapper) {
-        return this.entries().flatMap(mapper);
+        return this.underlying().flatMap(mapper);
     }
 
     default <R> @NotNull Stream<R> flatMapToObj(@NotNull BiFunction<? super K, ? super V, ? extends Stream<? extends R>> mapper) {
-        return this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+        return this.underlying().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
     default <RK, RV> @NotNull PairStream<RK, RV> flatMap(@NotNull BiFunction<? super K, ? super V, ? extends PairStream<RK, RV>> mapper) {
-        return of(this.entries().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()).entries()));
+        return of(this.underlying().flatMap(entry -> mapper.apply(entry.getKey(), entry.getValue()).underlying()));
     }
 
     @Override
     default @NotNull DoubleStream flatMapToDouble(@NotNull Function<? super Map.Entry<K, V>, ? extends DoubleStream> mapper) {
-        return this.entries().flatMapToDouble(mapper);
+        return this.underlying().flatMapToDouble(mapper);
     }
 
     default @NotNull DoubleStream flatMapToDouble(@NotNull BiFunction<? super K, ? super V, ? extends DoubleStream> mapper) {
-        return this.entries().flatMapToDouble(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+        return this.underlying().flatMapToDouble(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default @NotNull IntStream flatMapToInt(@NotNull Function<? super Map.Entry<K, V>, ? extends IntStream> mapper) {
-        return this.entries().flatMapToInt(mapper);
+        return this.underlying().flatMapToInt(mapper);
     }
 
     default @NotNull IntStream flatMapToInt(@NotNull BiFunction<? super K, ? super V, ? extends IntStream> mapper) {
-        return this.entries().flatMapToInt(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+        return this.underlying().flatMapToInt(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default @NotNull LongStream flatMapToLong(@NotNull Function<? super Map.Entry<K, V>, ? extends LongStream> mapper) {
-        return this.entries().flatMapToLong(mapper);
+        return this.underlying().flatMapToLong(mapper);
     }
 
     default @NotNull LongStream flatMapToLong(@NotNull BiFunction<? super K, ? super V, ? extends LongStream> mapper) {
-        return this.entries().flatMapToLong(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+        return this.underlying().flatMapToLong(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
     // ForEach
 
     @Override
     default void forEach(@NotNull Consumer<? super Map.Entry<K, V>> action) {
-        this.entries().forEach(action);
+        this.underlying().forEach(action);
     }
 
     default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
-        this.entries().forEach(entry -> action.accept(entry.getKey(), entry.getValue()));
+        this.underlying().forEach(entry -> action.accept(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default void forEachOrdered(@NotNull Consumer<? super Map.Entry<K, V>> action) {
-        this.entries().forEachOrdered(action);
+        this.underlying().forEachOrdered(action);
     }
 
     default void forEachOrdered(@NotNull BiConsumer<? super K, ? super V> action) {
-        this.entries().forEachOrdered(entry -> action.accept(entry.getKey(), entry.getValue()));
+        this.underlying().forEachOrdered(entry -> action.accept(entry.getKey(), entry.getValue()));
     }
 
     // Iterator
 
     @Override
     default @NotNull Iterator<Map.Entry<K, V>> iterator() {
-        return this.entries().iterator();
+        return this.underlying().iterator();
     }
 
     @Override
     default @NotNull Spliterator<Map.Entry<K, V>> spliterator() {
-        return this.entries().spliterator();
+        return this.underlying().spliterator();
     }
 
     // Mapping
 
     @Override
     default <R> @NotNull Stream<R> map(@NotNull Function<? super Map.Entry<K, V>, ? extends R> mapper) {
-        return this.entries().map(mapper);
+        return this.underlying().map(mapper);
     }
 
     default <R> @NotNull Stream<R> mapToObj(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
-        return this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue()));
+        return this.underlying().map(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
     default @NotNull Stream<K> mapToKey() {
-        return this.entries().map(Map.Entry::getKey);
+        return this.underlying().map(Map.Entry::getKey);
     }
 
     default @NotNull Stream<V> mapToValue() {
-        return this.entries().map(Map.Entry::getValue);
+        return this.underlying().map(Map.Entry::getValue);
     }
 
     default <RK, RV> @NotNull PairStream<RK, RV> map(@NotNull BiFunction<? super K, ? super V, ? extends Map.Entry<RK, RV>> mapper) {
-        return of(this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue())));
+        return of(this.underlying().map(entry -> mapper.apply(entry.getKey(), entry.getValue())));
     }
 
     default <R> @NotNull PairStream<R, V> mapKey(@NotNull Function<? super K, ? extends R> mapper) {
-        return of(this.entries().map(entry -> Pair.of(mapper.apply(entry.getKey()), entry.getValue())));
+        return of(this.underlying().map(entry -> Pair.of(mapper.apply(entry.getKey()), entry.getValue())));
     }
 
     default <R> @NotNull PairStream<K, R> mapValue(@NotNull Function<? super V, ? extends R> mapper) {
-        return of(this.entries().map(entry -> Pair.of(entry.getKey(), mapper.apply(entry.getValue()))));
+        return of(this.underlying().map(entry -> Pair.of(entry.getKey(), mapper.apply(entry.getValue()))));
     }
 
     @Override
     default @NotNull DoubleStream mapToDouble(@NotNull ToDoubleFunction<? super Map.Entry<K, V>> mapper) {
-        return this.entries().mapToDouble(mapper);
+        return this.underlying().mapToDouble(mapper);
     }
 
     default @NotNull DoubleStream mapToDouble(@NotNull ToDoubleBiFunction<? super K, ? super V> mapper) {
-        return this.entries().mapToDouble(entry -> mapper.applyAsDouble(entry.getKey(), entry.getValue()));
+        return this.underlying().mapToDouble(entry -> mapper.applyAsDouble(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default @NotNull IntStream mapToInt(@NotNull ToIntFunction<? super Map.Entry<K, V>> mapper) {
-        return this.entries().mapToInt(mapper);
+        return this.underlying().mapToInt(mapper);
     }
 
     default @NotNull IntStream mapToInt(@NotNull ToIntBiFunction<? super K, ? super V> mapper) {
-        return this.entries().mapToInt(entry -> mapper.applyAsInt(entry.getKey(), entry.getValue()));
+        return this.underlying().mapToInt(entry -> mapper.applyAsInt(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default @NotNull LongStream mapToLong(@NotNull ToLongFunction<? super Map.Entry<K, V>> mapper) {
-        return this.entries().mapToLong(mapper);
+        return this.underlying().mapToLong(mapper);
     }
 
     default @NotNull LongStream mapToLong(@NotNull ToLongBiFunction<? super K, ? super V> mapper) {
-        return this.entries().mapToLong(entry -> mapper.applyAsLong(entry.getKey(), entry.getValue()));
+        return this.underlying().mapToLong(entry -> mapper.applyAsLong(entry.getKey(), entry.getValue()));
     }
 
     // Matching
 
     @Override
     default boolean allMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return this.entries().allMatch(predicate);
+        return this.underlying().allMatch(predicate);
     }
 
     default boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return this.entries().allMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
+        return this.underlying().allMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default boolean anyMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return this.entries().anyMatch(predicate);
+        return this.underlying().anyMatch(predicate);
     }
 
     default boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return this.entries().anyMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
+        return this.underlying().anyMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
     }
 
     @Override
     default boolean noneMatch(@NotNull Predicate<? super Map.Entry<K, V>> predicate) {
-        return this.entries().noneMatch(predicate);
+        return this.underlying().noneMatch(predicate);
     }
 
     default boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return this.entries().noneMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
+        return this.underlying().noneMatch(entry -> predicate.test(entry.getKey(), entry.getValue()));
     }
 
     // Minmax
 
     @Override
     default @NotNull Optional<Map.Entry<K, V>> max(@NotNull Comparator<? super Map.Entry<K, V>> comparator) {
-        return this.entries().max(comparator);
+        return this.underlying().max(comparator);
     }
 
     default @NotNull Optional<Map.Entry<K, V>> maxByKey(@NotNull Comparator<? super K> comparator) {
-        return this.entries().max(Map.Entry.comparingByKey(comparator));
+        return this.underlying().max(Map.Entry.comparingByKey(comparator));
     }
 
     default @NotNull Optional<Map.Entry<K, V>> maxByValue(@NotNull Comparator<? super V> comparator) {
-        return this.entries().max(Map.Entry.comparingByValue(comparator));
+        return this.underlying().max(Map.Entry.comparingByValue(comparator));
     }
 
     @Override
     default @NotNull Optional<Map.Entry<K, V>> min(@NotNull Comparator<? super Map.Entry<K, V>> comparator) {
-        return this.entries().min(comparator);
+        return this.underlying().min(comparator);
     }
 
     default @NotNull Optional<Map.Entry<K, V>> minByKey(@NotNull Comparator<? super K> comparator) {
-        return this.entries().min(Map.Entry.comparingByKey(comparator));
+        return this.underlying().min(Map.Entry.comparingByKey(comparator));
     }
 
     default @NotNull Optional<Map.Entry<K, V>> minByValue(@NotNull Comparator<? super V> comparator) {
-        return this.entries().min(Map.Entry.comparingByValue(comparator));
+        return this.underlying().min(Map.Entry.comparingByValue(comparator));
     }
 
     // Order
 
     @Override
     default boolean isParallel() {
-        return this.entries().isParallel();
+        return this.underlying().isParallel();
     }
 
     @Override
     default @NotNull PairStream<K, V> parallel() {
-        return of(this.entries().parallel());
+        return of(this.underlying().parallel());
     }
 
     @Override
     default @NotNull PairStream<K, V> sequential() {
-        return of(this.entries().sequential());
+        return of(this.underlying().sequential());
     }
 
     @Override
     default @NotNull PairStream<K, V> unordered() {
-        return of(this.entries().unordered());
+        return of(this.underlying().unordered());
     }
 
     // Reduction
 
     @Override
     default @NotNull Map.Entry<K, V> reduce(@NotNull Map.Entry<K, V> identity, @NotNull BinaryOperator<Map.Entry<K, V>> accumulator) {
-        return this.entries().reduce(identity, accumulator);
+        return this.underlying().reduce(identity, accumulator);
     }
 
     @Override
     default @NotNull Optional<Map.Entry<K, V>> reduce(@NotNull BinaryOperator<Map.Entry<K, V>> accumulator) {
-        return this.entries().reduce(accumulator);
+        return this.underlying().reduce(accumulator);
     }
 
     @Override
     default <U> @NotNull U reduce(@NotNull U identity, @NotNull BiFunction<U, ? super Map.Entry<K, V>, U> accumulator, @NotNull BinaryOperator<U> combiner) {
-        return this.entries().reduce(identity, accumulator, combiner);
+        return this.underlying().reduce(identity, accumulator, combiner);
     }
 
     default <U> @NotNull U reduce(@NotNull U identity, @NotNull TriFunction<U, ? super K, ? super V, U> accumulator, @NotNull BinaryOperator<U> combiner) {
-        return this.entries().reduce(identity, (u, entry) -> accumulator.apply(u, entry.getKey(), entry.getValue()), combiner);
+        return this.underlying().reduce(identity, (u, entry) -> accumulator.apply(u, entry.getKey(), entry.getValue()), combiner);
     }
 
     // Sorting
 
     @Override
     default PairStream<K, V> sorted() {
-        return of(this.entries().sorted());
+        return of(this.underlying().sorted());
     }
 
     @Override
     default @NotNull PairStream<K, V> sorted(@NotNull Comparator<? super Map.Entry<K, V>> comparator) {
-        return of(this.entries().sorted(comparator));
+        return of(this.underlying().sorted(comparator));
     }
 
     default @NotNull PairStream<K, V> sortedByKey(@NotNull Comparator<? super K> comparator) {
-        return of(this.entries().sorted(Map.Entry.comparingByKey(comparator)));
+        return of(this.underlying().sorted(Map.Entry.comparingByKey(comparator)));
     }
 
     default @NotNull PairStream<K, V> sortedByValue(@NotNull Comparator<? super V> comparator) {
-        return of(this.entries().sorted(Map.Entry.comparingByValue(comparator)));
+        return of(this.underlying().sorted(Map.Entry.comparingByValue(comparator)));
     }
 
     // Collect
@@ -441,82 +441,82 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
      */
     @Override
     default <R, A> R collect(@NotNull Collector<? super Map.Entry<K, V>, A, R> collector) {
-        return this.entries().collect(collector);
+        return this.underlying().collect(collector);
     }
 
     @Override
     default <R> R collect(@NotNull Supplier<R> supplier, @NotNull BiConsumer<R, ? super Map.Entry<K, V>> accumulator, @NotNull BiConsumer<R, R> combiner) {
-        return this.entries().collect(supplier, accumulator, combiner);
+        return this.underlying().collect(supplier, accumulator, combiner);
     }
 
     @Override
     default @NotNull Object @NotNull [] toArray() {
-        return this.entries().toArray();
+        return this.underlying().toArray();
     }
 
     @Override
     default <A> @NotNull A @NotNull [] toArray(@NotNull IntFunction<A[]> generator) {
-        return this.entries().toArray(generator);
+        return this.underlying().toArray(generator);
     }
 
     default @NotNull ConcurrentMap<K, V> toConcurrentMap() {
-        return this.entries().collect(Concurrent.toMap());
+        return this.underlying().collect(Concurrent.toMap());
     }
 
     default @NotNull ConcurrentMap<K, V> toConcurrentMap(@NotNull BinaryOperator<V> mergeFunction) {
-        return this.entries().collect(Concurrent.toMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
+        return this.underlying().collect(Concurrent.toMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
     }
 
     default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, V2> valueMapper) {
-        return this.entries().collect(Concurrent.toMap(keyMapper, valueMapper));
+        return this.underlying().collect(Concurrent.toMap(keyMapper, valueMapper));
     }
 
     default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction) {
-        return this.entries().collect(Concurrent.toMap(keyMapper, valueMapper, mergeFunction));
+        return this.underlying().collect(Concurrent.toMap(keyMapper, valueMapper, mergeFunction));
     }
 
     default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction, Supplier<ConcurrentMap<K2, V2>> mapSupplier) {
-        return this.entries().collect(Concurrent.toMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
+        return this.underlying().collect(Concurrent.toMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
     }
 
     default @NotNull ConcurrentLinkedMap<K, V> toConcurrentLinkedMap() {
-        return this.entries().collect(Concurrent.toLinkedMap());
+        return this.underlying().collect(Concurrent.toLinkedMap());
     }
 
     default @NotNull ConcurrentLinkedMap<K, V> toConcurrentLinkedMap(@NotNull BinaryOperator<V> mergeFunction) {
-        return this.entries().collect(Concurrent.toLinkedMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
+        return this.underlying().collect(Concurrent.toLinkedMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
     }
 
     default <K2, V2> @NotNull ConcurrentLinkedMap<K2, V2> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper) {
-        return this.entries().collect(Concurrent.toLinkedMap(keyMapper, valueMapper));
+        return this.underlying().collect(Concurrent.toLinkedMap(keyMapper, valueMapper));
     }
 
     default <K2, V2> @NotNull ConcurrentLinkedMap<K2, V2> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction) {
-        return this.entries().collect(Concurrent.toLinkedMap(keyMapper, valueMapper, mergeFunction));
+        return this.underlying().collect(Concurrent.toLinkedMap(keyMapper, valueMapper, mergeFunction));
     }
 
     default <K2, V2> @NotNull ConcurrentLinkedMap<K2, V2> toConcurrentLinkedMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction, Supplier<ConcurrentLinkedMap<K2, V2>> mapSupplier) {
-        return this.entries().collect(Concurrent.toLinkedMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
+        return this.underlying().collect(Concurrent.toLinkedMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
     }
 
     default @NotNull ConcurrentMap<K, V> toConcurrentUnmodifiableMap() {
-        return this.entries().collect(Concurrent.toUnmodifiableMap());
+        return this.underlying().collect(Concurrent.toUnmodifiableMap());
     }
 
     default @NotNull ConcurrentMap<K, V> toConcurrentUnmodifiableMap(@NotNull BinaryOperator<V> mergeFunction) {
-        return this.entries().collect(Concurrent.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
+        return this.underlying().collect(Concurrent.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue, mergeFunction));
     }
 
     default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper) {
-        return this.entries().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper));
+        return this.underlying().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper));
     }
 
     default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction) {
-        return this.entries().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper, mergeFunction));
+        return this.underlying().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper, mergeFunction));
     }
 
     default <K2, V2> @NotNull ConcurrentMap<K2, V2> toConcurrentUnmodifiableMap(Function<? super Map.Entry<K, V>, ? extends K2> keyMapper, Function<? super Map.Entry<K, V>, ? extends V2> valueMapper, BinaryOperator<V2> mergeFunction, Supplier<ConcurrentMap<K2, V2>> mapSupplier) {
-        return this.entries().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
+        return this.underlying().collect(Concurrent.toUnmodifiableMap(keyMapper, valueMapper, mergeFunction, mapSupplier));
     }
 
 }
