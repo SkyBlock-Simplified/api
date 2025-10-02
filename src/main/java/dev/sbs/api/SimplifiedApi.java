@@ -1,19 +1,14 @@
 package dev.sbs.api;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonSerializer;
-import com.google.gson.TypeAdapter;
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.request.IRequest;
 import dev.sbs.api.data.Model;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.SessionManager;
+import dev.sbs.api.io.gson.GsonSettings;
 import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
-import dev.sbs.api.io.gson.adapter.NullStringAdapter;
 import dev.sbs.api.io.gson.adapter.UUIDTypeAdapter;
 import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
 import dev.sbs.api.io.gson.factory.PostInitTypeAdapterFactory;
@@ -32,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
-import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -60,21 +54,26 @@ public class SimplifiedApi {
     @Getter protected static final @NotNull CompilerManager compilerManager = new CompilerManager(Manager.Mode.UPDATE);
 
     static {
+        // Provide Gson
+        GsonSettings gsonSettings = GsonSettings.builder()
+            .withDateFormat("yyyy-MM-dd HH:mm:ss")
+            .isPrettyPrint()
+            .isSerializingNulls()
+            .withStringType(GsonSettings.StringType.NULL)
+            //.withTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
+            .withTypeAdapter(Color.class, new ColorTypeAdapter())
+            .withTypeAdapter(Instant.class, new InstantTypeAdapter())
+            .withTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .withFactories(
+                new OptionalTypeAdapterFactory(),
+                new PostInitTypeAdapterFactory(),
+                new SerializedPathTypeAdaptorFactory()
+            )
+            .build();
+        serviceManager.add(GsonSettings.class, gsonSettings);
+        serviceManager.add(Gson.class, gsonSettings.create());
+
         // Provide Services
-        serviceManager.add(Gson.class, new GsonBuilder()
-            //.registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new DoubleToIntMapTypeAdapter()) // Feign
-            .registerTypeAdapter(Color.class, new ColorTypeAdapter())
-            .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .registerTypeAdapter(String.class, new NullStringAdapter())
-            .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
-            .registerTypeAdapterFactory(new PostInitTypeAdapterFactory())
-            .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
-            .setDateFormat("yyyy-MM-dd HH:mm:ss")
-            .setPrettyPrinting()
-            .serializeNulls()
-            .create()
-        );
         serviceManager.add(Scheduler.class, new Scheduler());
         serviceManager.add(SessionManager.class, new SessionManager());
     }
@@ -86,6 +85,10 @@ public class SimplifiedApi {
 
     public static @NotNull Gson getGson() {
         return serviceManager.get(Gson.class);
+    }
+
+    public static @NotNull GsonSettings getGsonSettings() {
+        return serviceManager.get(GsonSettings.class);
     }
 
     public static @NotNull Scheduler getScheduler() {
@@ -125,17 +128,6 @@ public class SimplifiedApi {
 
     public static @NotNull SessionManager getSessionManager() {
         return serviceManager.get(SessionManager.class);
-    }
-
-    /**
-     * Configures the global Gson instance with new serializers and deserializers.
-     *
-     * @param type the type definition for the type adapter being registered
-     * @param typeAdapter This object must implement at least one of the {@link TypeAdapter},
-     * {@link InstanceCreator}, {@link JsonSerializer}, and a {@link JsonDeserializer} interfaces.
-     */
-    public static void registerGsonTypeAdapter(@NotNull Type type, @NotNull Object typeAdapter) {
-        serviceManager.update(Gson.class, getGson().newBuilder().registerTypeAdapter(type, typeAdapter).create());
     }
 
 }
