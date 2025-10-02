@@ -218,6 +218,14 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue()));
     }
 
+    default @NotNull Stream<K> mapToKey() {
+        return this.entries().map(Map.Entry::getKey);
+    }
+
+    default @NotNull Stream<V> mapToValue() {
+        return this.entries().map(Map.Entry::getValue);
+    }
+
     default <RK, RV> @NotNull PairStream<RK, RV> map(@NotNull BiFunction<? super K, ? super V, ? extends Map.Entry<RK, RV>> mapper) {
         return of(this.entries().map(entry -> mapper.apply(entry.getKey(), entry.getValue())));
     }
