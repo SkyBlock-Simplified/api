@@ -13,6 +13,7 @@ import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
+import dev.sbs.api.io.gson.adapter.NullStringAdapter;
 import dev.sbs.api.io.gson.adapter.UUIDTypeAdapter;
 import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
 import dev.sbs.api.io.gson.factory.PostInitTypeAdapterFactory;
@@ -65,6 +66,7 @@ public class SimplifiedApi {
             .registerTypeAdapter(Color.class, new ColorTypeAdapter())
             .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .registerTypeAdapter(String.class, new NullStringAdapter())
             .registerTypeAdapterFactory(new OptionalTypeAdapterFactory())
             .registerTypeAdapterFactory(new PostInitTypeAdapterFactory())
             .registerTypeAdapterFactory(new SerializedPathTypeAdaptorFactory())
