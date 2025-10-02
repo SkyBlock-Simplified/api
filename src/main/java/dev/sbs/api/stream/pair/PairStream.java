@@ -89,6 +89,22 @@ public interface PairStream<K, V> extends Stream<Map.Entry<K, V>> {
         return of(this.underlying().peek(entry -> action.accept(entry.getKey(), entry.getValue())));
     }
 
+    @SuppressWarnings("all")
+    default @NotNull PairStream<K, V> with(@NotNull Consumer<? super Map.Entry<K, V>> action) {
+        return of(this.underlying().map(entry -> {
+            action.accept(entry);
+            return entry;
+        }));
+    }
+
+    @SuppressWarnings("all")
+    default @NotNull PairStream<K, V> with(@NotNull BiConsumer<? super K, ? super V> action) {
+        return of(this.underlying().map(entry -> {
+            action.accept(entry.getKey(), entry.getValue());
+            return entry;
+        }));
+    }
+
     @Override
     default @NotNull PairStream<K, V> skip(long number) {
         return of(this.underlying().skip(number));

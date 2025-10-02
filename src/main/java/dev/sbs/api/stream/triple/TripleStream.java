@@ -86,6 +86,22 @@ public interface TripleStream<L, M, R> extends Stream<Triple<L, M, R>> {
         return of(this.underlying().peek(entry -> action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight())));
     }
 
+    @SuppressWarnings("all")
+    default @NotNull TripleStream<L, M, R> with(@NotNull Consumer<? super Triple<L, M, R>> action) {
+        return of(this.underlying().map(entry -> {
+            action.accept(entry);
+            return entry;
+        }));
+    }
+
+    @SuppressWarnings("all")
+    default @NotNull TripleStream<L, M, R> with(@NotNull TriConsumer<? super L, ? super M, ? super R> action) {
+        return of(this.underlying().map(entry -> {
+            action.accept(entry.getLeft(), entry.getMiddle(), entry.getRight());
+            return entry;
+        }));
+    }
+
     @Override
     default @NotNull TripleStream<L, M, R> skip(long number) {
         return of(this.underlying().skip(number));
