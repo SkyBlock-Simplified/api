@@ -20,7 +20,6 @@ import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -45,12 +44,12 @@ import java.util.function.Supplier;
  */
 @Getter
 @Setter(AccessLevel.PROTECTED)
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
     private final @NotNull Optional<Inet6Address> inet6Address;
+    @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
     private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
     private @NotNull ApiErrorDecoder errorDecoder = new ApiErrorDecoder.Default();
@@ -67,6 +66,25 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
         this(url, Optional.ofNullable(inet6Address));
     }
 
+    private Client(@NotNull String url, @NotNull Optional<Inet6Address> inet6Address) {
+        this.baseUrl = url;
+        this.inet6Address = inet6Address;
+
+        // Build internal http client
+        HttpClientBuilder httpClient = HttpClientBuilder.create()
+            .setMaxConnTotal(100)
+            .setMaxConnPerRoute(20)
+            .evictIdleConnections(30, TimeUnit.SECONDS);
+
+        inet6Address.ifPresent(address -> httpClient.setDefaultRequestConfig(
+            RequestConfig.copy(RequestConfig.DEFAULT)
+                .setLocalAddress(address)
+                .build()
+        ));
+
+        this.internalClient = new ApacheHttpClient(httpClient.build());
+    }
+
     /**
      * Builds and configures an instance of the specified target class using Feign, based on the provided configurations.
      *
@@ -78,18 +96,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
     @Override
     public final <T extends R> @NotNull T build(@NotNull Class<T> tClass) {
         return Feign.builder()
-            .client(
-                this.getInet6Address()
-                    .map(inet6Address -> new ApacheHttpClient(
-                        HttpClientBuilder.create().setDefaultRequestConfig(
-                            RequestConfig.copy(RequestConfig.DEFAULT)
-                                .setLocalAddress(inet6Address)
-                                .build()
-                        ).build()
-                    ))
-                    .map(feign.Client.class::cast)
-                    .orElse(new ApacheHttpClient())
-            )
+            .client(this.internalClient)
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(context -> {
