@@ -20,7 +20,6 @@ import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -43,20 +42,23 @@ import java.util.function.Supplier;
  * @param <R> The request type that extends {@link IRequest}.
  */
 @Getter
-@Setter(AccessLevel.PROTECTED)
 public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
     private final @NotNull Optional<Inet6Address> inet6Address;
     @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
+
+    // Requests
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
+    private final @NotNull ConcurrentMap<String, String> requestQueries;
+    private final @NotNull ConcurrentMap<String, String> requestHeaders;
+    private final @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicHeaders;
+
+    // Responses
     private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
-    private @NotNull ApiErrorDecoder errorDecoder = new ApiErrorDecoder.Default();
-    private @NotNull ConcurrentMap<String, String> staticRequestQueries = Concurrent.newUnmodifiableMap();
-    private @NotNull ConcurrentMap<String, String> staticRequestHeaders = Concurrent.newUnmodifiableMap();
-    private @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicRequestHeaders = Concurrent.newUnmodifiableMap();
-    private @NotNull ConcurrentSet<String> cachedResponseHeaders = Concurrent.newUnmodifiableSet();
+    private final @NotNull ApiErrorDecoder errorDecoder;
+    private final @NotNull ConcurrentSet<String> responseHeaders;
 
     protected Client(@NotNull String url) {
         this(url, Optional.empty());
@@ -66,7 +68,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
         this(url, Optional.ofNullable(inet6Address));
     }
 
-    private Client(@NotNull String url, @NotNull Optional<Inet6Address> inet6Address) {
+    protected Client(@NotNull String url, @NotNull Optional<Inet6Address> inet6Address) {
         this.baseUrl = url;
         this.inet6Address = inet6Address;
 
@@ -83,6 +85,11 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
         ));
 
         this.internalClient = new ApacheHttpClient(httpClient.build());
+        this.requestQueries = this.configureRequestQueries();
+        this.requestHeaders = this.configureRequestHeaders();
+        this.dynamicHeaders = this.configureDynamicHeaders();
+        this.errorDecoder = this.configureErrorDecoder();
+        this.responseHeaders = this.configureResponseHeaders();
     }
 
     /**
@@ -100,9 +107,9 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
             .requestInterceptor(context -> {
-                this.getStaticRequestQueries().forEach((key, value) -> context.query(key, value));
-                this.getStaticRequestHeaders().forEach((key, value) -> context.header(key, value));
-                this.getDynamicRequestHeaders().forEach((key, supplier) -> supplier.get()
+                this.getRequestQueries().forEach((key, value) -> context.query(key, value));
+                this.getRequestHeaders().forEach((key, value) -> context.header(key, value));
+                this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
                     .ifPresent(value -> context.header(key, value))
                 );
 
@@ -131,7 +138,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
                         .entrySet()
                         .stream()
                         .filter(entry -> !entry.getValue().isEmpty())
-                        .filter(entry -> this.getCachedResponseHeaders()
+                        .filter(entry -> this.getResponseHeaders()
                             .stream()
                             .anyMatch(key -> entry.getKey().equalsIgnoreCase(key))
                         )
@@ -158,6 +165,26 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
                 true
             ))
             .target(tClass, this.getUrl());
+    }
+
+    protected @NotNull ConcurrentMap<String, String> configureRequestQueries() {
+        return Concurrent.newUnmodifiableMap();
+    }
+
+    protected @NotNull ConcurrentMap<String, String> configureRequestHeaders() {
+        return Concurrent.newUnmodifiableMap();
+    }
+
+    protected @NotNull ConcurrentSet<String> configureResponseHeaders() {
+        return Concurrent.newUnmodifiableSet();
+    }
+
+    protected @NotNull ConcurrentMap<String, Supplier<Optional<String>>> configureDynamicHeaders() {
+        return Concurrent.newUnmodifiableMap();
+    }
+
+    protected @NotNull ApiErrorDecoder configureErrorDecoder() {
+        return new ApiErrorDecoder.Default();
     }
 
     /**
