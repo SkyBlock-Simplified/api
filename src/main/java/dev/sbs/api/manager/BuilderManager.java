@@ -1,7 +1,6 @@
 package dev.sbs.api.manager;
 
 import dev.sbs.api.builder.ClassBuilder;
-import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
@@ -63,8 +62,8 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends ClassBuild
     public final <T> @NotNull T build(@NotNull Class<T> service) throws UnknownReferenceException {
         Class<?> builder = super.get(service);
 
-        if (ClassCompiler.class.isAssignableFrom(builder))
-            return ((ClassCompiler<T>) Reflection.of(builder).newInstance()).build(service);
+        if (ClassBuilder.class.isAssignableFrom(builder))
+            return ((ClassBuilder<T>) Reflection.of(builder).newInstance()).build();
 
         throw new InvalidReferenceException(service.getName(), builder);
     }
