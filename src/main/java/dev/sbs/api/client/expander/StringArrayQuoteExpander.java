@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class StringArrayQuoteExpander implements Param.Expander {
+public final class StringArrayQuoteExpander implements Param.Expander {
 
     @Override
     public String expand(@NotNull Object value) {
