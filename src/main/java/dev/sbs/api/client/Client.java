@@ -27,7 +27,6 @@ import lombok.Getter;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
@@ -88,32 +87,30 @@ public abstract class Client<E extends Endpoints> {
         this.baseUrl = url;
         this.inet6Address = inet6Address;
         this.timings = this.configureTimings();
-        this.internalClient = this.configureInternalClient();
+        this.errorDecoder = this.configureErrorDecoder();
         this.requestQueries = this.configureRequestQueries();
         this.requestHeaders = this.configureRequestHeaders();
         this.dynamicHeaders = this.configureDynamicHeaders();
-        this.errorDecoder = this.configureErrorDecoder();
         this.responseHeaders = this.configureResponseHeaders();
+        this.internalClient = this.configureInternalClient();
         this.endpoints = this.configureEndpoints();
     }
 
     protected final @NotNull ApacheHttpClient configureInternalClient() {
-        // Timed Socket Factories
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("http", new TimedPlainConnectionSocketFactory(
-                PlainConnectionSocketFactory.getSocketFactory(),
-                SystemDefaultDnsResolver.INSTANCE
-            ))
-            .register("https", new TimedSecureConnectionSocketFactory(
-                SSLConnectionSocketFactory.getSocketFactory(),
-                SystemDefaultDnsResolver.INSTANCE
-            ))
-            .build();
-
-        // HTTP Client
         @SuppressWarnings("deprecation")
         HttpClientBuilder httpClient = HttpClientBuilder.create()
-            .setConnectionManager(new PoolingHttpClientConnectionManager(registry))
+            .setConnectionManager(new PoolingHttpClientConnectionManager(
+                RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", new TimedPlainConnectionSocketFactory(
+                        PlainConnectionSocketFactory.getSocketFactory(),
+                        SystemDefaultDnsResolver.INSTANCE
+                    ))
+                    .register("https", new TimedSecureConnectionSocketFactory(
+                        SSLConnectionSocketFactory.getSocketFactory(),
+                        SystemDefaultDnsResolver.INSTANCE
+                    ))
+                    .build()
+            ))
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
                 context.setAttribute(Latency.REQUEST_START, System.nanoTime());
                 this.getRequestQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
