@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-public interface HttpRequest {
+public interface Request {
 
     @NotNull ConcurrentMap<String, ConcurrentList<String>> getHeaders();
 
@@ -20,7 +20,7 @@ public interface HttpRequest {
 
     @Getter
     @RequiredArgsConstructor
-    class Impl implements HttpRequest {
+    class Impl implements Request {
 
         private final long timestamp;
         private final @NotNull HttpMethod method;
