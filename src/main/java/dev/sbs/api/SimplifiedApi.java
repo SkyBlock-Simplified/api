@@ -87,10 +87,6 @@ public class SimplifiedApi {
         return serviceManager.get(Gson.class);
     }
 
-    public static @NotNull GsonSettings getGsonSettings() {
-        return serviceManager.get(GsonSettings.class);
-    }
-
     public static @NotNull Scheduler getScheduler() {
         return serviceManager.get(Scheduler.class);
     }
