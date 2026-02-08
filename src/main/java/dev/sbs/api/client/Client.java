@@ -5,7 +5,6 @@ import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.client.exception.ApiErrorDecoder;
 import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.client.request.HttpMethod;
-import dev.sbs.api.client.request.IRequest;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
@@ -39,10 +38,10 @@ import java.util.function.Supplier;
  * <p>
  * Subclasses can extend this class to create specific API client implementations.
  *
- * @param <R> The request type that extends {@link IRequest}.
+ * @param <R> An interface with annotated feign methods.
  */
 @Getter
-public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
+public abstract class Client<R> implements ClassCompiler<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
