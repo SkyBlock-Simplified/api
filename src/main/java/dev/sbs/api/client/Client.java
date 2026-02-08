@@ -242,7 +242,7 @@ public abstract class Client<E extends Endpoints> {
     /**
      * Retrieves the URL for the client instance, ensuring the returned string is consistently formatted.
      * <p>
-     * Any protocol prefix (http:// or https://) from the base URL is stripped and replaced with "https://".
+     * Any protocol prefix (http:// or https&colon;//) from the base URL is stripped and replaced with "https://".
      *
      * @return The formatted URL as a non-null string.
      */
