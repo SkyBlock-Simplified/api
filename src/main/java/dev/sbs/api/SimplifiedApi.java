@@ -2,7 +2,7 @@ package dev.sbs.api;
 
 import com.google.gson.Gson;
 import dev.sbs.api.client.Client;
-import dev.sbs.api.client.request.FeignRequest;
+import dev.sbs.api.client.request.Endpoints;
 import dev.sbs.api.data.Model;
 import dev.sbs.api.data.Repository;
 import dev.sbs.api.data.SessionManager;
@@ -98,17 +98,7 @@ public class SimplifiedApi {
      * @param <T> Request type to match.
      * @param <A> Client type to match.
      */
-    public static <T extends FeignRequest, A extends Client<T>> @NotNull A getApiClient(@NotNull Class<A> tClass) {
-        return serviceManager.get(tClass);
-    }
-
-    /**
-     * Gets the built API request proxy for the given {@link FeignRequest} of type {@link T}.
-     *
-     * @param tClass Request proxy to locate.
-     * @param <T> Request type to match.
-     */
-    public static <T extends FeignRequest> @NotNull T getApiRequest(@NotNull Class<T> tClass) {
+    public static <T extends Endpoints, A extends Client<T>> @NotNull A getClient(@NotNull Class<A> tClass) {
         return serviceManager.get(tClass);
     }
 

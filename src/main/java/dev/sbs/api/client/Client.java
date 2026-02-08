@@ -4,7 +4,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.client.exception.ApiErrorDecoder;
 import dev.sbs.api.client.exception.ApiException;
-import dev.sbs.api.client.request.FeignRequest;
+import dev.sbs.api.client.request.Endpoints;
 import dev.sbs.api.client.request.HttpMethod;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
@@ -13,6 +13,7 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.collection.concurrent.ConcurrentSet;
+import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.stream.pair.Pair;
 import feign.Feign;
 import feign.gson.GsonDecoder;
@@ -42,12 +43,13 @@ import java.util.function.Supplier;
  * @param <R> An interface with annotated feign methods.
  */
 @Getter
-public abstract class Client<R extends FeignRequest> implements ClassCompiler<R> {
+public abstract class Client<R extends Endpoints> implements ClassCompiler<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
     private final @NotNull Optional<Inet6Address> inet6Address;
     @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
+    private final @NotNull R endpoints;
 
     // Requests
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
@@ -90,6 +92,7 @@ public abstract class Client<R extends FeignRequest> implements ClassCompiler<R>
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.errorDecoder = this.configureErrorDecoder();
         this.responseHeaders = this.configureResponseHeaders();
+        this.endpoints = this.build(Reflection.getSuperClass(this));
     }
 
     /**
