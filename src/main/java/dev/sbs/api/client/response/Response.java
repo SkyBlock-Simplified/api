@@ -1,6 +1,6 @@
 package dev.sbs.api.client.response;
 
-import dev.sbs.api.client.timing.Latency;
+import dev.sbs.api.client.metrics.Latency;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import lombok.Getter;

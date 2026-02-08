@@ -3,14 +3,15 @@ package dev.sbs.api.client;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.exception.ApiErrorDecoder;
 import dev.sbs.api.client.exception.ApiException;
+import dev.sbs.api.client.metrics.Latency;
+import dev.sbs.api.client.metrics.TimedPlainConnectionSocketFactory;
+import dev.sbs.api.client.metrics.TimedSecureConnectionSocketFactory;
+import dev.sbs.api.client.metrics.Timings;
 import dev.sbs.api.client.request.Endpoints;
 import dev.sbs.api.client.request.HttpMethod;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
-import dev.sbs.api.client.timing.Latency;
-import dev.sbs.api.client.timing.TimedPlainConnectionSocketFactory;
-import dev.sbs.api.client.timing.TimedSecureConnectionSocketFactory;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
@@ -31,6 +32,7 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
@@ -61,6 +63,7 @@ public abstract class Client<E extends Endpoints> {
     private final @NotNull Optional<Inet6Address> inet6Address;
     @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
     private final @NotNull E endpoints;
+    private final @NotNull Timings timings;
 
     // Requests
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
@@ -84,6 +87,7 @@ public abstract class Client<E extends Endpoints> {
     protected Client(@NotNull String url, @NotNull Optional<Inet6Address> inet6Address) {
         this.baseUrl = url;
         this.inet6Address = inet6Address;
+        this.timings = this.configureTimings();
         this.internalClient = this.configureInternalClient();
         this.requestQueries = this.configureRequestQueries();
         this.requestHeaders = this.configureRequestHeaders();
@@ -110,8 +114,6 @@ public abstract class Client<E extends Endpoints> {
         @SuppressWarnings("deprecation")
         HttpClientBuilder httpClient = HttpClientBuilder.create()
             .setConnectionManager(new PoolingHttpClientConnectionManager(registry))
-            .setMaxConnTotal(100)
-            .setMaxConnPerRoute(20)
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
                 context.setAttribute(Latency.REQUEST_START, System.nanoTime());
                 this.getRequestQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
@@ -157,7 +159,14 @@ public abstract class Client<E extends Endpoints> {
 
                 this.recentResponses.removeIf(recentResponse -> recentResponse.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
             })
-            .evictIdleConnections(30, TimeUnit.SECONDS);
+            .setMaxConnTotal(this.getTimings().getMaxConnections())
+            .setMaxConnPerRoute(this.getTimings().getMaxConnectionsPerRoute())
+            .evictIdleConnections(this.getTimings().getConnectionEvictIdleTimeout(), TimeUnit.SECONDS)
+            .setConnectionTimeToLive(this.getTimings().getConnectionTimeToLive(), TimeUnit.SECONDS)
+            .setKeepAliveStrategy((response, context) -> {
+                long keepAlive = DefaultConnectionKeepAliveStrategy.INSTANCE.getKeepAliveDuration(response, context);
+                return (keepAlive == -1) ? this.getTimings().getConnectionKeepAliveTimeout() * 1_000 : Math.min(keepAlive, 60_000);
+            });
 
         // Custom Local Address
         this.getInet6Address().ifPresent(inet6Address -> httpClient.setDefaultRequestConfig(
@@ -186,9 +195,9 @@ public abstract class Client<E extends Endpoints> {
                 return exception;
             })
             .options(new feign.Request.Options(
-                5,
+                this.getTimings().getConnectionTimeout(),
                 TimeUnit.SECONDS,
-                10,
+                this.getTimings().getSocketTimeout(),
                 TimeUnit.SECONDS,
                 true
             ))
@@ -213,6 +222,10 @@ public abstract class Client<E extends Endpoints> {
 
     protected @NotNull ApiErrorDecoder configureErrorDecoder() {
         return new ApiErrorDecoder.Default();
+    }
+
+    protected @NotNull Timings configureTimings() {
+        return Timings.createDefault();
     }
 
     /**

@@ -1,4 +1,4 @@
-package dev.sbs.api.client.timing;
+package dev.sbs.api.client.metrics;
 
 import org.apache.http.HttpHost;
 import org.apache.http.conn.DnsResolver;
