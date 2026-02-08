@@ -14,7 +14,6 @@ import dev.sbs.api.io.gson.factory.OptionalTypeAdapterFactory;
 import dev.sbs.api.io.gson.factory.PostInitTypeAdapterFactory;
 import dev.sbs.api.io.gson.factory.SerializedPathTypeAdaptorFactory;
 import dev.sbs.api.manager.BuilderManager;
-import dev.sbs.api.manager.CompilerManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
@@ -40,7 +39,6 @@ import java.util.UUID;
  *     <li>Management of key-value associations through {@link KeyManager}.</li>
  *     <li>Centralized service management through {@link ServiceManager}.</li>
  *     <li>Builder class management through {@link BuilderManager}.</li>
- *     <li>Class-to-class mapping configurations through {@link CompilerManager}.</li>
  *     <li>Custom serialization configurations through {@link Gson}.</li>
  *     <li>and more...</li>
  * </ul>
@@ -51,7 +49,6 @@ public class SimplifiedApi {
     @Getter protected static final @NotNull KeyManager<String, String> keyManager = new KeyManager<>((entry, key) -> key.equalsIgnoreCase(entry.getKey()), Manager.Mode.UPDATE);
     @Getter protected static final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.UPDATE);
     @Getter protected static final @NotNull BuilderManager builderManager = new BuilderManager(Manager.Mode.UPDATE);
-    @Getter protected static final @NotNull CompilerManager compilerManager = new CompilerManager(Manager.Mode.UPDATE);
 
     static {
         // Provide Gson

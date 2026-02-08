@@ -1,7 +1,6 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.client.exception.ApiErrorDecoder;
 import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.client.request.Endpoints;
@@ -40,16 +39,16 @@ import java.util.function.Supplier;
  * <p>
  * Subclasses can extend this class to create specific API client implementations.
  *
- * @param <R> An interface with annotated feign methods.
+ * @param <E> An interface with annotated feign methods.
  */
 @Getter
-public abstract class Client<R extends Endpoints> implements ClassCompiler<R> {
+public abstract class Client<E extends Endpoints> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
     private final @NotNull Optional<Inet6Address> inet6Address;
     @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
-    private final @NotNull R endpoints;
+    private final @NotNull E endpoints;
 
     // Requests
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
@@ -92,19 +91,16 @@ public abstract class Client<R extends Endpoints> implements ClassCompiler<R> {
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.errorDecoder = this.configureErrorDecoder();
         this.responseHeaders = this.configureResponseHeaders();
-        this.endpoints = this.build(Reflection.getSuperClass(this));
+        this.endpoints = this.build();
     }
 
     /**
      * Builds and configures an instance of the specified target class using Feign, based on the provided configurations.
      *
-     * @param <T>    The type of the object to be built, which must extend from the parent type {@code R}.
-     * @param tClass The {@code Class} object representing the type of the object to be created. Must be non-null.
      * @return An instance of the specified class type {@code T}, configured with the Feign builder.
      * @throws NullPointerException if {@code tClass} is null.
      */
-    @Override
-    public final <T extends R> @NotNull T build(@NotNull Class<T> tClass) {
+    protected <T extends E> @NotNull T build() {
         return Feign.builder()
             .client(this.internalClient)
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
@@ -167,7 +163,7 @@ public abstract class Client<R extends Endpoints> implements ClassCompiler<R> {
                 TimeUnit.SECONDS,
                 true
             ))
-            .target(tClass, this.getUrl());
+            .target(Reflection.getSuperClass(this), this.getUrl());
     }
 
     protected @NotNull ConcurrentMap<String, String> configureRequestQueries() {
