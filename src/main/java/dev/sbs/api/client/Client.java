@@ -4,6 +4,7 @@ import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.client.exception.ApiErrorDecoder;
 import dev.sbs.api.client.exception.ApiException;
+import dev.sbs.api.client.request.FeignRequest;
 import dev.sbs.api.client.request.HttpMethod;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
@@ -41,7 +42,7 @@ import java.util.function.Supplier;
  * @param <R> An interface with annotated feign methods.
  */
 @Getter
-public abstract class Client<R> implements ClassCompiler<R> {
+public abstract class Client<R extends FeignRequest> implements ClassCompiler<R> {
 
     private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
