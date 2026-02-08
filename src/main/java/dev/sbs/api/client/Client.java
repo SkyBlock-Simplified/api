@@ -5,8 +5,8 @@ import dev.sbs.api.builder.ClassCompiler;
 import dev.sbs.api.client.exception.ApiErrorDecoder;
 import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.client.request.HttpMethod;
+import dev.sbs.api.client.request.HttpRequest;
 import dev.sbs.api.client.request.IRequest;
-import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.Concurrent;
@@ -50,7 +50,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
     @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
 
     // Requests
-    private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
+    private final @NotNull ConcurrentList<HttpRequest> recentRequests = Concurrent.newList();
     private final @NotNull ConcurrentMap<String, String> requestQueries;
     private final @NotNull ConcurrentMap<String, String> requestHeaders;
     private final @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicHeaders;
@@ -113,7 +113,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
                     .ifPresent(value -> context.header(key, value))
                 );
 
-                this.recentRequests.add(new Request.Impl(
+                this.recentRequests.add(new HttpRequest.Impl(
                     System.currentTimeMillis(),
                     HttpMethod.of(context.method()),
                     context.url(),
@@ -127,7 +127,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
                         ))
                         .collect(Concurrent.toUnmodifiableMap())
                 ));
-                this.recentRequests.removeIf(request -> request.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
+                this.recentRequests.removeIf(httpRequest -> httpRequest.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
             })
             .responseInterceptor((context, chain) -> {
                 this.recentResponses.add(new Response.Impl(
@@ -196,7 +196,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
      * @return An {@code Optional} containing the most recent {@code Request}
      *         if available; otherwise, an empty {@code Optional}.
      */
-    public final @NotNull Optional<Request> getLastRequest() {
+    public final @NotNull Optional<HttpRequest> getLastRequest() {
         return this.getRecentRequests()
             .stream()
             .reduce((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()) <= 0 ? o2 : o1);
@@ -230,7 +230,7 @@ public abstract class Client<R extends IRequest> implements ClassCompiler<R> {
      */
     public final long getLatency() {
         return this.getLastRequest()
-            .map(Request::getTimestamp)
+            .map(HttpRequest::getTimestamp)
             .map(Instant::toEpochMilli)
             .flatMap(request -> this.getLastResponse()
                 .map(Response::getTimestamp)

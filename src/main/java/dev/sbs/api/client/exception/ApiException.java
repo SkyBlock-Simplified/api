@@ -3,7 +3,7 @@ package dev.sbs.api.client.exception;
 import com.google.gson.JsonSyntaxException;
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.client.request.HttpMethod;
-import dev.sbs.api.client.request.Request;
+import dev.sbs.api.client.request.HttpRequest;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.Concurrent;
@@ -28,7 +28,7 @@ public class ApiException extends RuntimeException implements Response {
     private final boolean error = true;
     private final @NotNull Instant timestamp;
     private final @NotNull HttpStatus status;
-    private final @NotNull Request request;
+    private final @NotNull HttpRequest request;
     private final @NotNull Optional<String> body;
     private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
     @Setter(AccessLevel.PROTECTED)
@@ -57,7 +57,7 @@ public class ApiException extends RuntimeException implements Response {
             ))
             .collect(Concurrent.toUnmodifiableMap());
 
-        this.request = new Request.Impl(
+        this.request = new HttpRequest.Impl(
             System.currentTimeMillis(),
             HttpMethod.of(exception.request().httpMethod().name()),
             exception.request().url(),
