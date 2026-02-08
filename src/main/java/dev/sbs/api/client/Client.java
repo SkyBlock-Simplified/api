@@ -8,6 +8,9 @@ import dev.sbs.api.client.request.HttpMethod;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
+import dev.sbs.api.client.timing.Latency;
+import dev.sbs.api.client.timing.TimedPlainConnectionSocketFactory;
+import dev.sbs.api.client.timing.TimedSecureConnectionSocketFactory;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
@@ -20,14 +23,23 @@ import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.Inet6Address;
 import java.time.Duration;
-import java.time.Instant;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -72,26 +84,89 @@ public abstract class Client<E extends Endpoints> {
     protected Client(@NotNull String url, @NotNull Optional<Inet6Address> inet6Address) {
         this.baseUrl = url;
         this.inet6Address = inet6Address;
-
-        // Build internal http client
-        HttpClientBuilder httpClient = HttpClientBuilder.create()
-            .setMaxConnTotal(100)
-            .setMaxConnPerRoute(20)
-            .evictIdleConnections(30, TimeUnit.SECONDS);
-
-        inet6Address.ifPresent(address -> httpClient.setDefaultRequestConfig(
-            RequestConfig.copy(RequestConfig.DEFAULT)
-                .setLocalAddress(address)
-                .build()
-        ));
-
-        this.internalClient = new ApacheHttpClient(httpClient.build());
+        this.internalClient = this.configureInternalClient();
         this.requestQueries = this.configureRequestQueries();
         this.requestHeaders = this.configureRequestHeaders();
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.errorDecoder = this.configureErrorDecoder();
         this.responseHeaders = this.configureResponseHeaders();
-        this.endpoints = this.build();
+        this.endpoints = this.configureEndpoints();
+    }
+
+    protected final @NotNull ApacheHttpClient configureInternalClient() {
+        // Timed Socket Factories
+        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+            .register("http", new TimedPlainConnectionSocketFactory(
+                PlainConnectionSocketFactory.getSocketFactory(),
+                SystemDefaultDnsResolver.INSTANCE
+            ))
+            .register("https", new TimedSecureConnectionSocketFactory(
+                SSLConnectionSocketFactory.getSocketFactory(),
+                SystemDefaultDnsResolver.INSTANCE
+            ))
+            .build();
+
+        // HTTP Client
+        @SuppressWarnings("deprecation")
+        HttpClientBuilder httpClient = HttpClientBuilder.create()
+            .setConnectionManager(new PoolingHttpClientConnectionManager(registry))
+            .setMaxConnTotal(100)
+            .setMaxConnPerRoute(20)
+            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
+                context.setAttribute(Latency.REQUEST_START, System.nanoTime());
+                this.getRequestQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
+                this.getRequestHeaders().forEach((key, value) -> request.addHeader(key, value));
+                this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
+                    .ifPresent(value -> request.addHeader(key, value))
+                );
+
+                this.recentRequests.add(new Request.Impl(
+                    System.currentTimeMillis(),
+                    HttpMethod.of(request.getRequestLine().getMethod()),
+                    request.getRequestLine().getUri(),
+                    Arrays.stream(request.getAllHeaders())
+                        .flatMap(header -> Arrays.stream(header.getElements()))
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .map(entry -> Pair.of(
+                            entry.getName(),
+                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
+                        ))
+                        .collect(Concurrent.toUnmodifiableMap())
+                ));
+                this.recentRequests.removeIf(recentRequest -> recentRequest.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
+            })
+            .addInterceptorLast((HttpResponseInterceptor) (response, context) -> {
+                context.setAttribute(Latency.RESPONSE_RECEIVED, System.nanoTime());
+
+                this.recentResponses.add(new Response.Impl(
+                    new Latency(context),
+                    HttpStatus.of(response.getStatusLine().getStatusCode()),
+                    Arrays.stream(response.getAllHeaders())
+                        .flatMap(header -> Arrays.stream(header.getElements()))
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .filter(entry -> this.getResponseHeaders()
+                            .stream()
+                            .anyMatch(key -> entry.getName().equalsIgnoreCase(key))
+                        )
+                        .map(entry -> Pair.of(
+                            entry.getName(),
+                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
+                        ))
+                        .collect(Concurrent.toUnmodifiableMap())
+                ));
+
+                this.recentResponses.removeIf(recentResponse -> recentResponse.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
+            })
+            .evictIdleConnections(30, TimeUnit.SECONDS);
+
+        // Custom Local Address
+        this.getInet6Address().ifPresent(inet6Address -> httpClient.setDefaultRequestConfig(
+            RequestConfig.copy(RequestConfig.DEFAULT)
+                .setLocalAddress(inet6Address)
+                .build()
+        ));
+
+        return new ApacheHttpClient(httpClient.build());
     }
 
     /**
@@ -100,57 +175,11 @@ public abstract class Client<E extends Endpoints> {
      * @return An instance of the specified class type {@code T}, configured with the Feign builder.
      * @throws NullPointerException if {@code tClass} is null.
      */
-    protected <T extends E> @NotNull T build() {
+    protected <T extends E> @NotNull T configureEndpoints() {
         return Feign.builder()
             .client(this.internalClient)
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
-            .requestInterceptor(context -> {
-                this.getRequestQueries().forEach((key, value) -> context.query(key, value));
-                this.getRequestHeaders().forEach((key, value) -> context.header(key, value));
-                this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
-                    .ifPresent(value -> context.header(key, value))
-                );
-
-                this.recentRequests.add(new Request.Impl(
-                    System.currentTimeMillis(),
-                    HttpMethod.of(context.method()),
-                    context.url(),
-                    context.headers()
-                        .entrySet()
-                        .stream()
-                        .filter(entry -> !entry.getValue().isEmpty())
-                        .map(entry -> Pair.of(
-                            entry.getKey(),
-                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
-                        ))
-                        .collect(Concurrent.toUnmodifiableMap())
-                ));
-                this.recentRequests.removeIf(request -> request.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
-            })
-            .responseInterceptor((context, chain) -> {
-                this.recentResponses.add(new Response.Impl(
-                    System.currentTimeMillis(),
-                    HttpStatus.of(context.response().status()),
-                    context.response()
-                        .headers()
-                        .entrySet()
-                        .stream()
-                        .filter(entry -> !entry.getValue().isEmpty())
-                        .filter(entry -> this.getResponseHeaders()
-                            .stream()
-                            .anyMatch(key -> entry.getKey().equalsIgnoreCase(key))
-                        )
-                        .map(entry -> Pair.of(
-                            entry.getKey(),
-                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
-                        ))
-                        .collect(Concurrent.toUnmodifiableMap())
-                ));
-
-                this.recentResponses.removeIf(response -> response.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
-                return chain.next(context);
-            })
             .errorDecoder((methodKey, response) -> {
                 ApiException exception = this.getErrorDecoder().decode(methodKey, response);
                 this.recentResponses.add(exception);
@@ -228,14 +257,9 @@ public abstract class Client<E extends Endpoints> {
      *         or -1 if the request or response is not available.
      */
     public final long getLatency() {
-        return this.getLastRequest()
-            .map(Request::getTimestamp)
-            .map(Instant::toEpochMilli)
-            .flatMap(request -> this.getLastResponse()
-                .map(Response::getTimestamp)
-                .map(Instant::toEpochMilli)
-                .map(response -> request - response)
-            )
+        return this.getLastResponse()
+            .map(Response::getLatency)
+            .map(Latency::getTotal)
             .orElse(-1L);
     }
 
