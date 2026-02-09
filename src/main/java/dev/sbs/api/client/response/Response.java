@@ -1,6 +1,6 @@
 package dev.sbs.api.client.response;
 
-import dev.sbs.api.client.metrics.Latency;
+import dev.sbs.api.client.metrics.ConnectionDetails;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
@@ -54,15 +54,15 @@ public interface Response {
      * @return a {@link Instant} representing the timestamp of the response.
      */
     default @NotNull Instant getTimestamp() {
-        return this.getLatency().getResponseReceived();
+        return this.getDetails().getResponseReceived();
     }
 
     /**
-     * Retrieves the latency timings for this response.
+     * Retrieves the connection details for this response.
      *
-     * @return the latency timings of the response.
+     * @return the connection details of the response.
      */
-    @NotNull Latency getLatency();
+    @NotNull ConnectionDetails getDetails();
 
     /**
      * Determines if the response represents an error state.
@@ -77,7 +77,7 @@ public interface Response {
     @RequiredArgsConstructor
     class Impl implements Response {
 
-        private final @NotNull Latency latency;
+        private final @NotNull ConnectionDetails details;
         private final @NotNull HttpStatus status;
         private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
 

@@ -39,7 +39,7 @@ public final class TimedSecureConnectionSocketFactory implements LayeredConnecti
         long dnsStart = System.nanoTime();
         InetAddress[] addresses = dnsResolver.resolve(host.getHostName());
         long dnsTime = System.nanoTime() - dnsStart;
-        context.setAttribute(Latency.DNS_TIME, dnsTime);
+        context.setAttribute(ConnectionDetails.DNS_TIME, dnsTime);
 
         // Time TCP + TLS connection (combined in initial connect for HTTPS)
         long connectStart = System.nanoTime();
@@ -47,13 +47,13 @@ public final class TimedSecureConnectionSocketFactory implements LayeredConnecti
         long connectTime = System.nanoTime() - connectStart;
 
         // For HTTPS, this includes both TCP and TLS handshake
-        context.setAttribute(Latency.TCP_CONNECT_TIME, connectTime);
+        context.setAttribute(ConnectionDetails.TCP_CONNECT_TIME, connectTime);
 
         // Extract TLS info
         if (result instanceof SSLSocket) {
             SSLSession session = ((SSLSocket) result).getSession();
-            context.setAttribute(Latency.TLS_PROTOCOL, session.getProtocol());
-            context.setAttribute(Latency.TLS_CIPHER, session.getCipherSuite());
+            context.setAttribute(ConnectionDetails.TLS_PROTOCOL, session.getProtocol());
+            context.setAttribute(ConnectionDetails.TLS_CIPHER, session.getCipherSuite());
         }
 
         return result;
@@ -68,13 +68,13 @@ public final class TimedSecureConnectionSocketFactory implements LayeredConnecti
         long tlsStart = System.nanoTime();
         Socket result = delegate.createLayeredSocket(socket, target, port, context);
         long tlsTime = System.nanoTime() - tlsStart;
-        context.setAttribute(Latency.TLS_HANDSHAKE_TIME, tlsTime);
+        context.setAttribute(ConnectionDetails.TLS_HANDSHAKE_TIME, tlsTime);
 
         // Extract TLS info
         if (result instanceof SSLSocket) {
             SSLSession session = ((SSLSocket) result).getSession();
-            context.setAttribute(Latency.TLS_PROTOCOL, session.getProtocol());
-            context.setAttribute(Latency.TLS_CIPHER, session.getCipherSuite());
+            context.setAttribute(ConnectionDetails.TLS_PROTOCOL, session.getProtocol());
+            context.setAttribute(ConnectionDetails.TLS_CIPHER, session.getCipherSuite());
         }
 
         return result;

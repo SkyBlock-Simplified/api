@@ -38,13 +38,13 @@ public final class TimedPlainConnectionSocketFactory implements ConnectionSocket
         long dnsStart = System.nanoTime();
         InetAddress[] addresses = this.dnsResolver.resolve(host.getHostName());
         long dnsTime = System.nanoTime() - dnsStart;
-        context.setAttribute(Latency.DNS_TIME, dnsTime);
+        context.setAttribute(ConnectionDetails.DNS_TIME, dnsTime);
 
         // Time TCP connection
         long connectStart = System.nanoTime();
         Socket result = delegate.connectSocket(connectTimeout, socket, host, remoteAddress, localAddress, context);
         long connectTime = System.nanoTime() - connectStart;
-        context.setAttribute(Latency.TCP_CONNECT_TIME, connectTime);
+        context.setAttribute(ConnectionDetails.TCP_CONNECT_TIME, connectTime);
 
         return result;
     }

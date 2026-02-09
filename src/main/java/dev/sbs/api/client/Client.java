@@ -1,9 +1,9 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.exception.ApiErrorDecoder;
-import dev.sbs.api.client.exception.ApiException;
-import dev.sbs.api.client.metrics.Latency;
+import dev.sbs.api.client.exception.ClientErrorDecoder;
+import dev.sbs.api.client.exception.InternalErrorDecoder;
+import dev.sbs.api.client.metrics.ConnectionDetails;
 import dev.sbs.api.client.metrics.TimedPlainConnectionSocketFactory;
 import dev.sbs.api.client.metrics.TimedSecureConnectionSocketFactory;
 import dev.sbs.api.client.metrics.Timings;
@@ -24,6 +24,7 @@ import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.config.RequestConfig;
@@ -35,12 +36,16 @@ import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
+import org.apache.http.protocol.HttpContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.net.Inet6Address;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -72,7 +77,7 @@ public abstract class Client<E extends Endpoints> {
 
     // Responses
     private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
-    private final @NotNull ApiErrorDecoder errorDecoder;
+    private final @NotNull ClientErrorDecoder errorDecoder;
     private final @NotNull ConcurrentSet<String> responseHeaders;
 
     protected Client(@NotNull String url) {
@@ -93,7 +98,14 @@ public abstract class Client<E extends Endpoints> {
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.responseHeaders = this.configureResponseHeaders();
         this.internalClient = this.configureInternalClient();
-        this.endpoints = this.configureEndpoints();
+        this.endpoints = this.configureUnwrappingProxy(this.configureEndpoints());
+    }
+
+    private static void addHeader(@NotNull HttpRequest request, @NotNull HttpContext context, @NotNull String id) {
+        Object value = context.getAttribute(id);
+
+        if (Objects.nonNull(value))
+            request.addHeader(id, String.valueOf(value));
     }
 
     protected final @NotNull ApacheHttpClient configureInternalClient() {
@@ -112,7 +124,18 @@ public abstract class Client<E extends Endpoints> {
                     .build()
             ))
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-                context.setAttribute(Latency.REQUEST_START, System.nanoTime());
+                long requestStart = System.nanoTime();
+                context.setAttribute(ConnectionDetails.REQUEST_START, requestStart);
+
+                // Store all available connection details in headers
+                addHeader(request, context, ConnectionDetails.REQUEST_START);
+                addHeader(request, context, ConnectionDetails.DNS_TIME);
+                addHeader(request, context, ConnectionDetails.TCP_CONNECT_TIME);
+                addHeader(request, context, ConnectionDetails.TLS_HANDSHAKE_TIME);
+                addHeader(request, context, ConnectionDetails.TLS_PROTOCOL);
+                addHeader(request, context, ConnectionDetails.TLS_CIPHER);
+
+                // Append Custom Queries and Headers
                 this.getRequestQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
                 this.getRequestHeaders().forEach((key, value) -> request.addHeader(key, value));
                 this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
@@ -126,6 +149,7 @@ public abstract class Client<E extends Endpoints> {
                     Arrays.stream(request.getAllHeaders())
                         .flatMap(header -> Arrays.stream(header.getElements()))
                         .filter(entry -> !entry.getValue().isEmpty())
+                        .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getName()))
                         .map(entry -> Pair.of(
                             entry.getName(),
                             (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
@@ -135,14 +159,17 @@ public abstract class Client<E extends Endpoints> {
                 this.recentRequests.removeIf(recentRequest -> recentRequest.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
             })
             .addInterceptorLast((HttpResponseInterceptor) (response, context) -> {
-                context.setAttribute(Latency.RESPONSE_RECEIVED, System.nanoTime());
+                long responseReceived = System.nanoTime();
+                context.setAttribute(ConnectionDetails.RESPONSE_RECEIVED, responseReceived);
+                response.addHeader(ConnectionDetails.RESPONSE_RECEIVED, String.valueOf(responseReceived));
 
                 this.recentResponses.add(new Response.Impl(
-                    new Latency(context),
+                    new ConnectionDetails(context),
                     HttpStatus.of(response.getStatusLine().getStatusCode()),
                     Arrays.stream(response.getAllHeaders())
                         .flatMap(header -> Arrays.stream(header.getElements()))
                         .filter(entry -> !entry.getValue().isEmpty())
+                        .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getName()))
                         .filter(entry -> this.getResponseHeaders()
                             .stream()
                             .anyMatch(key -> entry.getName().equalsIgnoreCase(key))
@@ -186,11 +213,10 @@ public abstract class Client<E extends Endpoints> {
             .client(this.internalClient)
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
             .decoder(new GsonDecoder(SimplifiedApi.getGson()))
-            .errorDecoder((methodKey, response) -> {
-                ApiException exception = this.getErrorDecoder().decode(methodKey, response);
-                this.recentResponses.add(exception);
-                return exception;
-            })
+            .errorDecoder(new InternalErrorDecoder(
+                this.getErrorDecoder(),
+                this.getRecentResponses()
+            ))
             .options(new feign.Request.Options(
                 this.getTimings().getConnectionTimeout(),
                 TimeUnit.SECONDS,
@@ -199,6 +225,27 @@ public abstract class Client<E extends Endpoints> {
                 true
             ))
             .target(Reflection.getSuperClass(this), this.getUrl());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends E> @NotNull T configureUnwrappingProxy(@NotNull T target) {
+        return (T) Proxy.newProxyInstance(
+            target.getClass().getClassLoader(),
+            target.getClass().getInterfaces(),
+            (proxy, method, args) -> {
+                try {
+                    return method.invoke(target, args);
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+
+                    // Unwrap our internal wrapper to expose the original typed exception
+                    if (cause instanceof InternalErrorDecoder.InternalRetryableWrapper)
+                        throw ((InternalErrorDecoder.InternalRetryableWrapper) cause).getWrappedException();
+
+                    throw cause;
+                }
+            }
+        );
     }
 
     protected @NotNull ConcurrentMap<String, String> configureRequestQueries() {
@@ -217,8 +264,8 @@ public abstract class Client<E extends Endpoints> {
         return Concurrent.newUnmodifiableMap();
     }
 
-    protected @NotNull ApiErrorDecoder configureErrorDecoder() {
-        return new ApiErrorDecoder.Default();
+    protected @NotNull ClientErrorDecoder configureErrorDecoder() {
+        return new ClientErrorDecoder.Default();
     }
 
     protected @NotNull Timings configureTimings() {
@@ -268,8 +315,8 @@ public abstract class Client<E extends Endpoints> {
      */
     public final long getLatency() {
         return this.getLastResponse()
-            .map(Response::getLatency)
-            .map(Latency::getTotal)
+            .map(Response::getDetails)
+            .map(ConnectionDetails::getTotalTime)
             .orElse(-1L);
     }
 
