@@ -28,14 +28,13 @@ import java.util.Optional;
 public class ClientException extends RuntimeException implements Response {
 
     private final boolean error = true;
-    @Setter(AccessLevel.PROTECTED)
-    protected @NotNull String name;
-    protected @NotNull ClientErrorResponse response;
+    private final @NotNull String name;
     private final @NotNull HttpStatus status;
     private final @NotNull Optional<String> body;
     private final @NotNull ConnectionDetails details;
     private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
     private final @NotNull Request request;
+    protected @NotNull ClientErrorResponse response;
     @Setter(AccessLevel.PACKAGE)
     private int retryAttempts = 0;
 
@@ -46,21 +45,21 @@ public class ClientException extends RuntimeException implements Response {
     public ClientException(@NotNull FeignException exception, @NotNull feign.Response response, @NotNull String name) {
         super(exception.getMessage(), exception.getCause(), false, true);
         this.name = name;
-        this.response = exception::getMessage;
         this.status = HttpStatus.of(exception.status());
         this.body = exception.responseBody().map(byteBuffer -> StringUtil.toEncodedString(byteBuffer.array(), StandardCharsets.UTF_8));
         this.details = new ConnectionDetails(exception.request(), response);
-        this.headers = filterHeaders(exception.responseHeaders());
+        this.headers = collectHeaders(exception.responseHeaders());
+        this.response = exception::getMessage;
 
         this.request = new Request.Impl(
             this.getDetails().getRequestStart().toEpochMilli(),
             HttpMethod.of(exception.request().httpMethod().name()),
             exception.request().url(),
-            filterHeaders(exception.request().headers())
+            collectHeaders(exception.request().headers())
         );
     }
 
-    private static ConcurrentMap<String, ConcurrentList<String>> filterHeaders(@NotNull Map<String, Collection<String>> headers) {
+    private static ConcurrentMap<String, ConcurrentList<String>> collectHeaders(@NotNull Map<String, Collection<String>> headers) {
         return headers.entrySet()
             .stream()
             .filter(entry -> !entry.getValue().isEmpty())
