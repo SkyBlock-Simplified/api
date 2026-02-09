@@ -71,7 +71,7 @@ public abstract class Client<E extends Endpoints> {
     // Requests
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
     private final @NotNull ConcurrentMap<String, String> requestQueries;
-    private final @NotNull ConcurrentMap<String, String> requestHeaders;
+    private final @NotNull ConcurrentMap<String, String> headers;
     private final @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicHeaders;
 
     // Responses
@@ -92,7 +92,7 @@ public abstract class Client<E extends Endpoints> {
         this.timings = this.configureTimings();
         this.errorDecoder = this.configureErrorDecoder();
         this.requestQueries = this.configureRequestQueries();
-        this.requestHeaders = this.configureRequestHeaders();
+        this.headers = this.configureRequestHeaders();
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.internalClient = this.configureInternalClient();
         this.endpoints = this.configureUnwrappingProxy(this.configureEndpoints());
@@ -134,7 +134,7 @@ public abstract class Client<E extends Endpoints> {
 
                 // Append Custom Queries and Headers
                 this.getRequestQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
-                this.getRequestHeaders().forEach((key, value) -> request.addHeader(key, value));
+                this.getHeaders().forEach((key, value) -> request.addHeader(key, value));
                 this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
                     .ifPresent(value -> request.addHeader(key, value))
                 );
