@@ -70,7 +70,7 @@ public abstract class Client<E extends Endpoints> {
 
     // Requests
     private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
-    private final @NotNull ConcurrentMap<String, String> requestQueries;
+    private final @NotNull ConcurrentMap<String, String> queries;
     private final @NotNull ConcurrentMap<String, String> headers;
     private final @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicHeaders;
 
@@ -91,8 +91,8 @@ public abstract class Client<E extends Endpoints> {
         this.inet6Address = inet6Address;
         this.timings = this.configureTimings();
         this.errorDecoder = this.configureErrorDecoder();
-        this.requestQueries = this.configureRequestQueries();
-        this.headers = this.configureRequestHeaders();
+        this.queries = this.configureQueries();
+        this.headers = this.configureHeaders();
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.internalClient = this.configureInternalClient();
         this.endpoints = this.configureUnwrappingProxy(this.configureEndpoints());
@@ -133,7 +133,7 @@ public abstract class Client<E extends Endpoints> {
                 addHeader(request, context, ConnectionDetails.TLS_CIPHER);
 
                 // Append Custom Queries and Headers
-                this.getRequestQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
+                this.getQueries().forEach((key, value) -> request.getParams().setParameter(key, value));
                 this.getHeaders().forEach((key, value) -> request.addHeader(key, value));
                 this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
                     .ifPresent(value -> request.addHeader(key, value))
@@ -241,11 +241,11 @@ public abstract class Client<E extends Endpoints> {
         );
     }
 
-    protected @NotNull ConcurrentMap<String, String> configureRequestQueries() {
+    protected @NotNull ConcurrentMap<String, String> configureQueries() {
         return Concurrent.newUnmodifiableMap();
     }
 
-    protected @NotNull ConcurrentMap<String, String> configureRequestHeaders() {
+    protected @NotNull ConcurrentMap<String, String> configureHeaders() {
         return Concurrent.newUnmodifiableMap();
     }
 
