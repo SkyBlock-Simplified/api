@@ -15,7 +15,6 @@ import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.stream.pair.Pair;
 import feign.Feign;
@@ -78,7 +77,6 @@ public abstract class Client<E extends Endpoints> {
     // Responses
     private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
     private final @NotNull ClientErrorDecoder errorDecoder;
-    private final @NotNull ConcurrentSet<String> responseHeaders;
 
     protected Client(@NotNull String url) {
         this(url, Optional.empty());
@@ -96,7 +94,6 @@ public abstract class Client<E extends Endpoints> {
         this.requestQueries = this.configureRequestQueries();
         this.requestHeaders = this.configureRequestHeaders();
         this.dynamicHeaders = this.configureDynamicHeaders();
-        this.responseHeaders = this.configureResponseHeaders();
         this.internalClient = this.configureInternalClient();
         this.endpoints = this.configureUnwrappingProxy(this.configureEndpoints());
     }
@@ -170,10 +167,6 @@ public abstract class Client<E extends Endpoints> {
                         .flatMap(header -> Arrays.stream(header.getElements()))
                         .filter(entry -> !entry.getValue().isEmpty())
                         .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getName()))
-                        .filter(entry -> this.getResponseHeaders()
-                            .stream()
-                            .anyMatch(key -> entry.getName().equalsIgnoreCase(key))
-                        )
                         .map(entry -> Pair.of(
                             entry.getName(),
                             (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
@@ -254,10 +247,6 @@ public abstract class Client<E extends Endpoints> {
 
     protected @NotNull ConcurrentMap<String, String> configureRequestHeaders() {
         return Concurrent.newUnmodifiableMap();
-    }
-
-    protected @NotNull ConcurrentSet<String> configureResponseHeaders() {
-        return Concurrent.newUnmodifiableSet();
     }
 
     protected @NotNull ConcurrentMap<String, Supplier<Optional<String>>> configureDynamicHeaders() {
