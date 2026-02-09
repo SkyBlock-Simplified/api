@@ -52,7 +52,7 @@ public final class InternalErrorDecoder implements ErrorDecoder {
         }
 
         // Decode using the custom decoder
-        ClientException exception = this.customDecoder.decode(methodKey, response);
+        ApiException exception = this.customDecoder.decode(methodKey, response);
         exception.setRetryAttempts(context.retryAttempt);
         this.recentResponses.add(exception);
 
@@ -123,22 +123,22 @@ public final class InternalErrorDecoder implements ErrorDecoder {
     @SuppressWarnings("deprecation")
     public static final class InternalRetryableWrapper extends RetryableException {
 
-        private final @NotNull ClientException wrappedException;
+        private final @NotNull ApiException wrappedException;
 
-        InternalRetryableWrapper(@NotNull ClientException clientException, @NotNull Date retryAfter) {
+        InternalRetryableWrapper(@NotNull ApiException apiException, @NotNull Date retryAfter) {
             super(
-                clientException.getStatus().getCode(),
-                clientException.getMessage(),
-                feign.Request.HttpMethod.valueOf(clientException.getRequest().getMethod().name()),
-                clientException.getCause(),
+                apiException.getStatus().getCode(),
+                apiException.getMessage(),
+                feign.Request.HttpMethod.valueOf(apiException.getRequest().getMethod().name()),
+                apiException.getCause(),
                 retryAfter,
-                toFeignRequest(clientException.getRequest())
+                toFeignRequest(apiException.getRequest())
             );
 
-            this.wrappedException = clientException;
+            this.wrappedException = apiException;
         }
 
-        public @NotNull ClientException getWrappedException() {
+        public @NotNull ApiException getWrappedException() {
             return this.wrappedException;
         }
 

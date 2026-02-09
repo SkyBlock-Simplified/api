@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public interface ClientErrorDecoder extends ErrorDecoder {
 
     @Override
-    @NotNull ClientException decode(@NotNull String methodKey, @NotNull Response response);
+    @NotNull ApiException decode(@NotNull String methodKey, @NotNull Response response);
 
     /**
      * Default decoder that creates basic ClientException instances.
@@ -30,8 +30,8 @@ public interface ClientErrorDecoder extends ErrorDecoder {
         }
 
         @Override
-        public @NotNull ClientException decode(@NotNull String methodKey, @NotNull Response response) {
-            return new ClientException(FeignException.errorStatus(
+        public @NotNull ApiException decode(@NotNull String methodKey, @NotNull Response response) {
+            return new ApiException(FeignException.errorStatus(
                 methodKey,
                 response,
                 this.maxBodyBytesLength,

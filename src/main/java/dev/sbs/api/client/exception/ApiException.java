@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-public class ClientException extends RuntimeException implements Response {
+public class ApiException extends RuntimeException implements Response {
 
     private final boolean error = true;
     private final @NotNull String name;
@@ -34,15 +34,15 @@ public class ClientException extends RuntimeException implements Response {
     private final @NotNull ConnectionDetails details;
     private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
     private final @NotNull Request request;
-    protected @NotNull ClientErrorResponse response;
+    protected @NotNull ApiErrorResponse response;
     @Setter(AccessLevel.PACKAGE)
     private int retryAttempts = 0;
 
-    public ClientException(@NotNull String methodKey, @NotNull feign.Response response, @NotNull String name) {
+    public ApiException(@NotNull String methodKey, @NotNull feign.Response response, @NotNull String name) {
         this(FeignException.errorStatus(methodKey, response), response, name);
     }
 
-    public ClientException(@NotNull FeignException exception, @NotNull feign.Response response, @NotNull String name) {
+    public ApiException(@NotNull FeignException exception, @NotNull feign.Response response, @NotNull String name) {
         super(exception.getMessage(), exception.getCause(), false, true);
         this.name = name;
         this.status = HttpStatus.of(exception.status());
