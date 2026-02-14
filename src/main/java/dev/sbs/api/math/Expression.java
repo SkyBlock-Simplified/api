@@ -2,8 +2,8 @@ package dev.sbs.api.math;
 
 import dev.sbs.api.math.function.BuiltinFunction;
 import dev.sbs.api.math.function.MathFunction;
-import dev.sbs.api.math.operator.Operator;
-import dev.sbs.api.math.operator.Operators;
+import dev.sbs.api.math.operator.BuiltinOperator;
+import dev.sbs.api.math.operator.MathOperator;
 import dev.sbs.api.math.tokenizer.FunctionToken;
 import dev.sbs.api.math.tokenizer.NumberToken;
 import dev.sbs.api.math.tokenizer.OperatorToken;
@@ -146,7 +146,7 @@ public class Expression {
                     }
                     break;
                 case Token.TOKEN_OPERATOR:
-                    Operator op = ((OperatorToken) token).getOperator();
+                    MathOperator op = ((OperatorToken) token).getOperator();
                     if (op.getNumOperands() == 2)
                         count--;
 
@@ -267,7 +267,7 @@ public class Expression {
 
         switch (token.getType()) {
             case Token.TOKEN_OPERATOR:
-                Operator operator = ((OperatorToken) token).getOperator();
+                MathOperator operator = ((OperatorToken) token).getOperator();
                 List<List<Token>> operands = getTokensArguments(tokens.subList(0, tokens.size() - 1), operator.getNumOperands());
                 List<Token> leftTokens;
                 List<Token> rightTokens;
@@ -294,7 +294,7 @@ public class Expression {
                 boolean parentheses_right = rightTokens.size() > 1 && rightTokens.get(rightTokens.size() - 1).getType() != Token.TOKEN_FUNCTION;
 
                 if (parentheses_left && leftTokens.get(leftTokens.size() - 1).getType() == Token.TOKEN_OPERATOR) {
-                    Operator leftOperator = ((OperatorToken) leftTokens.get(leftTokens.size() - 1)).getOperator();
+                    MathOperator leftOperator = ((OperatorToken) leftTokens.get(leftTokens.size() - 1)).getOperator();
 
                     if (leftOperator.getNumOperands() == 1 && leftOperator.getSymbol().matches("\\+|-") && !operator.getSymbol().matches("\\+|-"))
                         parentheses_left = true;
@@ -306,7 +306,7 @@ public class Expression {
                     }
                 }
                 if (parentheses_right && rightTokens.get(rightTokens.size() - 1).getType() == Token.TOKEN_OPERATOR) {
-                    Operator rightOperator = ((OperatorToken) rightTokens.get(rightTokens.size() - 1)).getOperator();
+                    MathOperator rightOperator = ((OperatorToken) rightTokens.get(rightTokens.size() - 1)).getOperator();
 
                     if (rightOperator.getNumOperands() == 1 && rightOperator.getSymbol().matches("\\+|-"))
                         parentheses_right = true;
@@ -339,7 +339,7 @@ public class Expression {
                 MathFunction function = ((FunctionToken) token).getFunction();
 
                 if (function.getName().equals("pow")) {
-                    tokens.set(tokens.size() - 1, new OperatorToken(Operators.getBuiltinOperator('^', 2)));
+                    tokens.set(tokens.size() - 1, new OperatorToken(BuiltinOperator.get('^', 2)));
                     return toString(tokens, impMult);
                 }
 
@@ -383,7 +383,7 @@ public class Expression {
                         break;
 
                     case Token.TOKEN_OPERATOR:
-                        Operator operator = ((OperatorToken) t).getOperator();
+                        MathOperator operator = ((OperatorToken) t).getOperator();
                         if (operator.getNumOperands() == 2)
                             size--;
                         break;

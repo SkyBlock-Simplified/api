@@ -1,9 +1,13 @@
 package dev.sbs.api.math.operator;
 
+import dev.sbs.api.util.VarargFunction;
+import lombok.Getter;
+
 /**
  * Class representing operators that can be used in an expression
  */
-public abstract class Operator {
+@Getter
+public abstract class MathOperator implements VarargFunction<Double, Double> {
 
     /**
      * The precedence value for the addition operation
@@ -57,9 +61,7 @@ public abstract class Operator {
      * @param leftAssociative  set to true if the operator is left associative, false if it is right associative
      * @param precedence       the precedence value of the operator
      */
-    public Operator(String symbol, int numberOfOperands, boolean leftAssociative,
-                    int precedence) {
-        super();
+    public MathOperator(String symbol, int numberOfOperands, boolean leftAssociative, int precedence) {
         this.numOperands = numberOfOperands;
         this.leftAssociative = leftAssociative;
         this.symbol = symbol;
@@ -74,55 +76,11 @@ public abstract class Operator {
      */
     public static boolean isAllowedOperatorChar(char ch) {
         for (char allowed : ALLOWED_OPERATOR_CHARS) {
-            if (ch == allowed) {
+            if (ch == allowed)
                 return true;
-            }
         }
+
         return false;
-    }
-
-    /**
-     * Check if the operator is left associative
-     *
-     * @return true os the operator is left associative, false otherwise
-     */
-    public boolean isLeftAssociative() {
-        return leftAssociative;
-    }
-
-    /**
-     * Check the precedence value for the operator
-     *
-     * @return the precedence value
-     */
-    public int getPrecedence() {
-        return precedence;
-    }
-
-    /**
-     * Apply the operation on the given operands
-     *
-     * @param args the operands for the operation
-     * @return the calculated result of the operation
-     */
-    public abstract double apply(double... args);
-
-    /**
-     * Get the operator symbol
-     *
-     * @return the symbol
-     */
-    public String getSymbol() {
-        return symbol;
-    }
-
-    /**
-     * Get the number of operands
-     *
-     * @return the number of operands
-     */
-    public int getNumOperands() {
-        return numOperands;
     }
 
 }

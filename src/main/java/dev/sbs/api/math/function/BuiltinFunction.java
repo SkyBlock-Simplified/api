@@ -2,10 +2,9 @@ package dev.sbs.api.math.function;
 
 import dev.sbs.api.util.ArrayUtil;
 import dev.sbs.api.util.NumberUtil;
+import dev.sbs.api.util.VarargFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Function;
 
 /**
  * Class representing the builtin functions available for use in expressions
@@ -85,14 +84,14 @@ public enum BuiltinFunction {
     INDEX_ROUNDDOWN("rounddown", 1, args -> (double) NumberUtil.roundDown(args[0], args[1].intValue()));
 
     private static final BuiltinFunction[] VALUES = values();
-    private final @NotNull MathFunction function;
+    private final @NotNull MathFunction actual;
 
-    BuiltinFunction(@NotNull String name, int numArguments, @NotNull Function<Double[], Double> function) {
+    BuiltinFunction(@NotNull String name, int numArguments, @NotNull VarargFunction<Double, Double> function) {
         this(name, numArguments, numArguments, function);
     }
 
-    BuiltinFunction(@NotNull String name, int minArguments, int maxArguments, @NotNull Function<Double[], Double> function) {
-        this.function = new MathFunction(name, minArguments, maxArguments) {
+    BuiltinFunction(@NotNull String name, int minArguments, int maxArguments, @NotNull VarargFunction<Double, Double> function) {
+        this.actual = new MathFunction(name, minArguments, maxArguments) {
             @Override
             public Double apply(Double... args) {
                 return function.apply(args);
@@ -103,13 +102,13 @@ public enum BuiltinFunction {
     /**
      * Get the builtin function for a given name
      *
-     * @param name te name of the function
+     * @param name the name of the function
      * @return a Function instance
      */
     public static MathFunction get(@NotNull String name) {
-        for (BuiltinFunction call : VALUES) {
-            if (call.getFunction().getName().equalsIgnoreCase(name))
-                return call.getFunction();
+        for (BuiltinFunction function : VALUES) {
+            if (function.getActual().getName().equalsIgnoreCase(name))
+                return function.getActual();
         }
 
         return null;

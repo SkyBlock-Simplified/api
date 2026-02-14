@@ -2,7 +2,7 @@ package dev.sbs.api.math;
 
 import dev.sbs.api.math.function.BuiltinFunction;
 import dev.sbs.api.math.function.MathFunction;
-import dev.sbs.api.math.operator.Operator;
+import dev.sbs.api.math.operator.MathOperator;
 import dev.sbs.api.math.shuntingyard.ShuntingYard;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ public class ExpressionBuilder {
 
     private final String expression;
     private final Map<String, MathFunction> userFunctions;
-    private final Map<String, Operator> userOperators;
+    private final Map<String, MathOperator> userOperators;
     private final Set<String> variableNames;
     private boolean implicitMultiplication = true;
 
@@ -115,47 +115,47 @@ public class ExpressionBuilder {
     }
 
     /**
-     * Add an {@link Operator} which should be available for use in the expression
+     * Add an {@link MathOperator} which should be available for use in the expression
      *
-     * @param operator the custom {@link Operator} to add
+     * @param operator the custom {@link MathOperator} to add
      * @return the ExpressionBuilder instance
      */
-    public ExpressionBuilder operator(Operator operator) {
+    public ExpressionBuilder operator(MathOperator operator) {
         this.checkOperatorSymbol(operator);
         this.userOperators.put(operator.getSymbol(), operator);
         return this;
     }
 
-    private void checkOperatorSymbol(Operator op) {
+    private void checkOperatorSymbol(MathOperator op) {
         String name = op.getSymbol();
 
         for (char ch : name.toCharArray()) {
-            if (!Operator.isAllowedOperatorChar(ch))
+            if (!MathOperator.isAllowedOperatorChar(ch))
                 throw new IllegalArgumentException(String.format("The operator symbol '%s' is invalid", name));
         }
     }
 
     /**
-     * Add multiple {@link Operator} implementations which should be available for use in the expression
+     * Add multiple {@link MathOperator} implementations which should be available for use in the expression
      *
-     * @param operators the set of custom {@link Operator} implementations to add
+     * @param operators the set of custom {@link MathOperator} implementations to add
      * @return the ExpressionBuilder instance
      */
-    public ExpressionBuilder operator(Operator... operators) {
-        for (Operator o : operators)
+    public ExpressionBuilder operator(MathOperator... operators) {
+        for (MathOperator o : operators)
             this.operator(o);
 
         return this;
     }
 
     /**
-     * Add multiple {@link Operator} implementations which should be available for use in the expression
+     * Add multiple {@link MathOperator} implementations which should be available for use in the expression
      *
-     * @param operators the {@link List} of custom {@link Operator} implementations to add
+     * @param operators the {@link List} of custom {@link MathOperator} implementations to add
      * @return the ExpressionBuilder instance
      */
-    public ExpressionBuilder operator(List<Operator> operators) {
-        for (Operator o : operators) {
+    public ExpressionBuilder operator(List<MathOperator> operators) {
+        for (MathOperator o : operators) {
             this.operator(o);
         }
         return this;

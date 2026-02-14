@@ -1,7 +1,7 @@
 package dev.sbs.api.math.shuntingyard;
 
 import dev.sbs.api.math.function.MathFunction;
-import dev.sbs.api.math.operator.Operator;
+import dev.sbs.api.math.operator.MathOperator;
 import dev.sbs.api.math.tokenizer.FunctionToken;
 import dev.sbs.api.math.tokenizer.OperatorToken;
 import dev.sbs.api.math.tokenizer.Token;
@@ -29,7 +29,7 @@ public class ShuntingYard {
      * @return a {@link Token} array containing the result
      */
     public static Token[] convertToRPN(final String expression, final Map<String, MathFunction> userFunctions,
-                                       final Map<String, Operator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
+                                       final Map<String, MathOperator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
         final Stack<Token> stack = new Stack<>();
         final List<Token> output = new ArrayList<>();
         final Stack<FunctionToken> functionStack = new Stack<>();

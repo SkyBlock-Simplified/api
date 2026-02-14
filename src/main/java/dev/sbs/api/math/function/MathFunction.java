@@ -1,15 +1,14 @@
 package dev.sbs.api.math.function;
 
+import dev.sbs.api.util.VarargFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Function;
 
 /**
  * A class representing a Function which can be used in an expression
  */
 @Getter
-public abstract class MathFunction implements Function<Double[], Double> {
+public abstract class MathFunction implements VarargFunction<Double, Double> {
 
     private final String name;
     protected final int minArguments;

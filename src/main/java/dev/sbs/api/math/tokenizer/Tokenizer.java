@@ -2,8 +2,8 @@ package dev.sbs.api.math.tokenizer;
 
 import dev.sbs.api.math.function.BuiltinFunction;
 import dev.sbs.api.math.function.MathFunction;
-import dev.sbs.api.math.operator.Operator;
-import dev.sbs.api.math.operator.Operators;
+import dev.sbs.api.math.operator.BuiltinOperator;
+import dev.sbs.api.math.operator.MathOperator;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +16,7 @@ public class Tokenizer {
 
     private final Map<String, MathFunction> userFunctions;
 
-    private final Map<String, Operator> userOperators;
+    private final Map<String, MathOperator> userOperators;
 
     private final Set<String> variableNames;
 
@@ -28,7 +28,7 @@ public class Tokenizer {
 
 
     public Tokenizer(String expression, final Map<String, MathFunction> userFunctions,
-                     final Map<String, Operator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
+                     final Map<String, MathOperator> userOperators, final Set<String> variableNames, final boolean implicitMultiplication) {
         this.expression = expression.trim().toCharArray();
         this.expressionLength = this.expression.length;
         this.userFunctions = userFunctions;
@@ -38,7 +38,7 @@ public class Tokenizer {
     }
 
     public Tokenizer(String expression, final Map<String, MathFunction> userFunctions,
-                     final Map<String, Operator> userOperators, final Set<String> variableNames) {
+                     final Map<String, MathOperator> userOperators, final Set<String> variableNames) {
         this.expression = expression.trim().toCharArray();
         this.expressionLength = this.expression.length;
         this.userFunctions = userFunctions;
@@ -81,7 +81,7 @@ public class Tokenizer {
                     && lastToken.getType() != Token.TOKEN_FUNCTION
                     && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
                     // insert an implicit multiplication token
-                    lastToken = new OperatorToken(Operators.getBuiltinOperator('*', 2));
+                    lastToken = new OperatorToken(BuiltinOperator.get('*', 2));
                     return lastToken;
                 }
             }
@@ -95,13 +95,13 @@ public class Tokenizer {
                     && lastToken.getType() != Token.TOKEN_FUNCTION
                     && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
                 // insert an implicit multiplication token
-                lastToken = new OperatorToken(Operators.getBuiltinOperator('*', 2));
+                lastToken = new OperatorToken(BuiltinOperator.get('*', 2));
                 return lastToken;
             }
             return parseParentheses(true);
         } else if (isCloseParentheses(ch)) {
             return parseParentheses(false);
-        } else if (Operator.isAllowedOperatorChar(ch)) {
+        } else if (MathOperator.isAllowedOperatorChar(ch)) {
             return parseOperatorToken(ch);
         } else if (isAlphabetic(ch) || ch == '_') {
             // parse the name which can be a setVariable or a function
@@ -111,7 +111,7 @@ public class Tokenizer {
                     && lastToken.getType() != Token.TOKEN_FUNCTION
                     && lastToken.getType() != Token.TOKEN_SEPARATOR)) {
                 // insert an implicit multiplication token
-                lastToken = new OperatorToken(Operators.getBuiltinOperator('*', 2));
+                lastToken = new OperatorToken(BuiltinOperator.get('*', 2));
                 return lastToken;
             }
             return parseFunctionOrVariable();
@@ -197,15 +197,15 @@ public class Tokenizer {
         final int offset = this.pos;
         int len = 1;
         final StringBuilder symbol = new StringBuilder();
-        Operator lastValid = null;
+        MathOperator lastValid = null;
         symbol.append(firstChar);
 
-        while (!isEndOfExpression(offset + len) && Operator.isAllowedOperatorChar(expression[offset + len])) {
+        while (!isEndOfExpression(offset + len) && MathOperator.isAllowedOperatorChar(expression[offset + len])) {
             symbol.append(expression[offset + len++]);
         }
 
         while (!symbol.isEmpty()) {
-            Operator op = this.getOperator(symbol.toString());
+            MathOperator op = this.getOperator(symbol.toString());
             if (op == null) {
                 symbol.setLength(symbol.length() - 1);
             } else {
@@ -219,8 +219,8 @@ public class Tokenizer {
         return lastToken;
     }
 
-    private Operator getOperator(String symbol) {
-        Operator op = null;
+    private MathOperator getOperator(String symbol) {
+        MathOperator op = null;
         if (this.userOperators != null) {
             op = this.userOperators.get(symbol);
         }
@@ -233,14 +233,14 @@ public class Tokenizer {
                 if (lastTokenType == Token.TOKEN_PARENTHESES_OPEN || lastTokenType == Token.TOKEN_SEPARATOR) {
                     argc = 1;
                 } else if (lastTokenType == Token.TOKEN_OPERATOR) {
-                    final Operator lastOp = ((OperatorToken) lastToken).getOperator();
+                    final MathOperator lastOp = ((OperatorToken) lastToken).getOperator();
                     if (lastOp.getNumOperands() == 2 || (lastOp.getNumOperands() == 1 && !lastOp.isLeftAssociative())) {
                         argc = 1;
                     }
                 }
 
             }
-            op = Operators.getBuiltinOperator(symbol.charAt(0), argc);
+            op = BuiltinOperator.get(symbol.charAt(0), argc);
         }
         return op;
     }
