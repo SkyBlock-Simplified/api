@@ -1,7 +1,6 @@
 package dev.sbs.api.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +73,7 @@ import java.util.Iterator;
  *
  * <p>{@code Preconditions} uses {@link String#format(String, Object...)} to format error message template strings.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class Preconditions {
 
     /**
