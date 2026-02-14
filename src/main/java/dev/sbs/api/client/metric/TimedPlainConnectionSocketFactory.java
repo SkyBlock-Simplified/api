@@ -1,4 +1,4 @@
-package dev.sbs.api.client.metrics;
+package dev.sbs.api.client.metric;
 
 import org.apache.http.HttpHost;
 import org.apache.http.conn.DnsResolver;

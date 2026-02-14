@@ -1,6 +1,6 @@
 package dev.sbs.api.client.response;
 
-import dev.sbs.api.client.metrics.ConnectionDetails;
+import dev.sbs.api.client.metric.ConnectionDetails;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
