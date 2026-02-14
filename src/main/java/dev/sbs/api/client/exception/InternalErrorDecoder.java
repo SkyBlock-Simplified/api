@@ -71,14 +71,6 @@ public final class InternalErrorDecoder implements ErrorDecoder {
         return exception;
     }
 
-    @SuppressWarnings("all")
-    private <T> T firstOrNull(Map<String, Collection<T>> map, String key) {
-        if (map.containsKey(key) && !map.get(key).isEmpty())
-            return map.get(key).iterator().next();
-
-        return null;
-    }
-
     /**
      * Tracks retry state per thread.
      */
