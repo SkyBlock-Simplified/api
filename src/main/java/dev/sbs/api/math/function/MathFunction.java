@@ -1,26 +1,26 @@
 package dev.sbs.api.math.function;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Function;
 
 /**
  * A class representing a Function which can be used in an expression
  */
 @Getter
-public abstract class MathFunction {
+public abstract class MathFunction implements Function<Double[], Double> {
 
+    private final String name;
     protected final int minArguments;
     protected final int maxArguments;
-    /**
-     * Get the name of the Function
-     */
-    private final String name;
 
     /**
      * Create a new Function with a given name that takes a single argument
      *
      * @param name the name of the Function
      */
-    public MathFunction(String name) {
+    public MathFunction(@NotNull String name) {
         this(name, 1, 1);
     }
 
@@ -30,7 +30,7 @@ public abstract class MathFunction {
      * @param name         the name of the Function
      * @param numArguments the number of arguments the function takes
      */
-    public MathFunction(String name, int numArguments) {
+    public MathFunction(@NotNull String name, int numArguments) {
         this(name, numArguments, numArguments);
     }
 
@@ -41,7 +41,7 @@ public abstract class MathFunction {
      * @param minArguments the minimum number of arguments the function takes
      * @param maxArguments the maximum number of arguments the function takes
      */
-    public MathFunction(String name, int minArguments, int maxArguments) {
+    public MathFunction(@NotNull String name, int minArguments, int maxArguments) {
         if (minArguments < 0 || minArguments > maxArguments)
             throw new IllegalArgumentException(String.format("The number of function arguments can not be less than 0 or more than '%s' for '%s'.", maxArguments, name));
 
@@ -109,13 +109,5 @@ public abstract class MathFunction {
 
         return this.minArguments;
     }
-
-    /**
-     * Method that does the actual calculation of the function value given the arguments
-     *
-     * @param args the set of arguments used for calculating the function
-     * @return the result of the function evaluation
-     */
-    public abstract double apply(double... args);
 
 }

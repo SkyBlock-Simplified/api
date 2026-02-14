@@ -1,6 +1,6 @@
 package dev.sbs.api.math.tokenizer;
 
-import dev.sbs.api.math.function.Functions;
+import dev.sbs.api.math.function.BuiltinFunction;
 import dev.sbs.api.math.function.MathFunction;
 import dev.sbs.api.math.operator.Operator;
 import dev.sbs.api.math.operator.Operators;
@@ -188,7 +188,7 @@ public class Tokenizer {
             f = this.userFunctions.get(name);
         }
         if (f == null) {
-            f = Functions.getBuiltinFunction(name);
+            f = BuiltinFunction.get(name);
         }
         return f;
     }

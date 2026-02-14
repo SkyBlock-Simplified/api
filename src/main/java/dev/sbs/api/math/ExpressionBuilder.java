@@ -1,6 +1,6 @@
 package dev.sbs.api.math;
 
-import dev.sbs.api.math.function.Functions;
+import dev.sbs.api.math.function.BuiltinFunction;
 import dev.sbs.api.math.function.MathFunction;
 import dev.sbs.api.math.operator.Operator;
 import dev.sbs.api.math.shuntingyard.ShuntingYard;
@@ -178,7 +178,7 @@ public class ExpressionBuilder {
 
         /* Check if there are duplicate vars/functions */
         for (String var : variableNames) {
-            if (Functions.getBuiltinFunction(var) != null || userFunctions.containsKey(var))
+            if (BuiltinFunction.get(var) != null || userFunctions.containsKey(var))
                 throw new IllegalArgumentException(String.format("A variable can not have the same name as a function [%s].", var));
 
         }

@@ -1,6 +1,6 @@
 package dev.sbs.api.math;
 
-import dev.sbs.api.math.function.Functions;
+import dev.sbs.api.math.function.BuiltinFunction;
 import dev.sbs.api.math.function.MathFunction;
 import dev.sbs.api.math.operator.Operator;
 import dev.sbs.api.math.operator.Operators;
@@ -74,7 +74,7 @@ public class Expression {
     }
 
     private void checkVariableName(String name) {
-        if (this.userFunctionNames.contains(name) || Functions.getBuiltinFunction(name) != null)
+        if (this.userFunctionNames.contains(name) || BuiltinFunction.get(name) != null)
             throw new IllegalArgumentException(String.format("The variable name '%s' is invalid. Since there exists a function with the same name", name));
 
     }
@@ -215,7 +215,7 @@ public class Expression {
                     throw new IllegalArgumentException(String.format("Invalid number of arguments available for '%s' function", func.getFunction().getName()));
 
                 /* collect the arguments from the stack */
-                double[] args = new double[numArguments];
+                Double[] args = new Double[numArguments];
                 for (int j = numArguments - 1; j >= 0; j--)
                     args[j] = output.pop();
 
