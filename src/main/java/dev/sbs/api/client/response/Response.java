@@ -15,17 +15,17 @@ public interface Response {
      * Retrieves the Cloudflare cache status of the response by examining the
      * {@code CF-Cache-Status} header in the response's headers.
      * <p>
-     * Returns a corresponding {@link CFCacheStatus} value or {@code CFCacheStatus.UNKNOWN}
+     * Returns a corresponding {@link CloudflareCacheStatus} value or {@code CloudflareCacheStatus.UNKNOWN}
      * if the header is unavailable or unrecognizable.
      *
-     * @return the {@link CFCacheStatus} indicating the caching status of the response.
+     * @return the {@link CloudflareCacheStatus} indicating the caching status of the response.
      */
-    default @NotNull CFCacheStatus getCFCacheStatus() {
+    default @NotNull CloudflareCacheStatus getCloudflareCacheStatus() {
         return this.getHeaders()
-            .getOptional(CFCacheStatus.HEADER_KEY)
+            .getOptional(CloudflareCacheStatus.HEADER_KEY)
             .flatMap(ConcurrentList::getFirst)
-            .map(CFCacheStatus::of)
-            .orElse(CFCacheStatus.UNKNOWN);
+            .map(CloudflareCacheStatus::of)
+            .orElse(CloudflareCacheStatus.UNKNOWN);
     }
 
     /**

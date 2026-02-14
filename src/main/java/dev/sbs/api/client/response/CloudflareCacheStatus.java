@@ -13,12 +13,12 @@ import java.util.Arrays;
  * indicating its caching behavior or eligibility. These statuses provide insight into
  * whether a resource was cached, served from the origin server, or encountered specific
  * caching behaviors.
+ *
+ * @see <a href="https://developers.cloudflare.com/cache/concepts/cache-responses/">Cloudflare Cache Responses</a>
  */
 @Getter
 @RequiredArgsConstructor
-public enum CFCacheStatus {
-
-    // https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#cloudflare-cache-responses
+public enum CloudflareCacheStatus {
 
     UNKNOWN("The Cloudflare caching status of this resource could not be found."),
     NONE("Cloudflare generated a response that denotes the asset is not eligible for caching."),
@@ -35,7 +35,7 @@ public enum CFCacheStatus {
     public static final @NotNull String HEADER_KEY = "CF-Cache-Status";
     private final @NotNull String description;
 
-    public static @NotNull CFCacheStatus of(@NotNull String name) {
+    public static @NotNull CloudflareCacheStatus of(@NotNull String name) {
         return Arrays.stream(values())
             .filter(value -> value.name().equalsIgnoreCase(name))
             .findFirst()
