@@ -12,11 +12,8 @@ import java.time.Instant;
 public interface Response {
 
     /**
-     * Retrieves the Cloudflare cache status of the response by examining the
-     * {@code CF-Cache-Status} header in the response's headers.
-     * <p>
-     * Returns a corresponding {@link CloudflareCacheStatus} value or {@code CloudflareCacheStatus.UNKNOWN}
-     * if the header is unavailable or unrecognizable.
+     * Retrieves the Cloudflare cache status of the response by examining the {@code CF-Cache-Status} header
+     * in the response's headers  or {@code CloudflareCacheStatus.UNKNOWN} if the header is unavailable or unrecognizable.
      *
      * @return the {@link CloudflareCacheStatus} indicating the caching status of the response.
      */
@@ -29,10 +26,7 @@ public interface Response {
     }
 
     /**
-     * Retrieves the headers of the response as a concurrent map, where each key represents a header name
-     * and the value is a {@link ConcurrentList} of strings containing the respective header values.
-     * <p>
-     * This method provides a thread-safe way to access the HTTP response headers.
+     * Retrieves the headers of the response.
      *
      * @return a {@link ConcurrentMap} where the keys are the header names and the values
      *         are lists of the corresponding header values.
@@ -48,8 +42,7 @@ public interface Response {
     @NotNull HttpStatus getStatus();
 
     /**
-     * Retrieves the timestamp for this response.
-     * The timestamp typically indicates when the response was received or created.
+     * Retrieves the timestamp of when the response was received.
      *
      * @return a {@link Instant} representing the timestamp of the response.
      */
@@ -60,7 +53,7 @@ public interface Response {
     /**
      * Retrieves the connection details for this response.
      *
-     * @return the connection details of the response.
+     * @return the {@link ConnectionDetails} of the response.
      */
     @NotNull ConnectionDetails getDetails();
 

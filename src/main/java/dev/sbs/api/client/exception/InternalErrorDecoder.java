@@ -19,8 +19,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Internal error decoder that wraps custom decoders and handles retry logic transparently.
+ * Internal error decoder that handles retry logic automatically.
  * This keeps all retry complexity confined to the Client class.
+ *
+ * @apiNote Do not implement this class.
  */
 public final class InternalErrorDecoder implements ErrorDecoder {
 
