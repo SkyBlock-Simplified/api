@@ -70,7 +70,7 @@ public interface Response {
      * @return {@code true} if the response indicates an error; {@code false} otherwise.
      */
     default boolean isError() {
-        return false;
+        return this.getStatus().getState().isError();
     }
 
     @Getter
