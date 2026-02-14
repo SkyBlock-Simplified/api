@@ -1,4 +1,4 @@
-package dev.sbs.api.io;
+package dev.sbs.api.io.stream;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
