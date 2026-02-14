@@ -1,6 +1,7 @@
 package dev.sbs.api.math.function;
 
 import dev.sbs.api.util.ArrayUtil;
+import dev.sbs.api.util.NumberUtil;
 
 /**
  * Class representing the builtin functions available for use in expressions
@@ -42,8 +43,10 @@ public class Functions {
     private static final int INDEX_MAX = 32;
     private static final int INDEX_MIN = 33;
     private static final int INDEX_ROUND = 34;
+    private static final int INDEX_ROUNDUP = 35;
+    private static final int INDEX_ROUNDDOWN = 36;
 
-    private static final MathFunction[] BUILT_IN_FUNCTIONS = new MathFunction[35];
+    private static final MathFunction[] BUILT_IN_FUNCTIONS = new MathFunction[37];
 
     static {
         BUILT_IN_FUNCTIONS[INDEX_SIN] = new MathFunction("sin") {
@@ -273,10 +276,25 @@ public class Functions {
                 return Math.min(args[0], args[1]);
             }
         };
-        BUILT_IN_FUNCTIONS[INDEX_ROUND] = new MathFunction("round", 1) {
+        BUILT_IN_FUNCTIONS[INDEX_ROUND] = new MathFunction("round", 1, 2) {
             @Override
             public double apply(double... args) {
-                return Math.round(args[0]);
+                if (args.length == 1)
+                    return Math.round(args[0]);
+                else
+                    return NumberUtil.round(args[0], Double.valueOf(args[1]).intValue());
+            }
+        };
+        BUILT_IN_FUNCTIONS[INDEX_ROUNDUP] = new MathFunction("roundup", 2) {
+            @Override
+            public double apply(double... args) {
+                return NumberUtil.roundUp(args[0], Double.valueOf(args[1]).intValue());
+            }
+        };
+        BUILT_IN_FUNCTIONS[INDEX_ROUNDDOWN] = new MathFunction("rounddown", 2) {
+            @Override
+            public double apply(double... args) {
+                return NumberUtil.roundDown(args[0], Double.valueOf(args[1]).intValue());
             }
         };
 
@@ -324,6 +342,8 @@ public class Functions {
             case "max" -> BUILT_IN_FUNCTIONS[INDEX_MAX];
             case "min" -> BUILT_IN_FUNCTIONS[INDEX_MIN];
             case "round" -> BUILT_IN_FUNCTIONS[INDEX_ROUND];
+            case "roundup" -> BUILT_IN_FUNCTIONS[INDEX_ROUNDUP];
+            case "rounddown" -> BUILT_IN_FUNCTIONS[INDEX_ROUNDDOWN];
             default -> null;
         };
     }
