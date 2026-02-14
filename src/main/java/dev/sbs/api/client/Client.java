@@ -1,6 +1,7 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.client.exception.ClientErrorDecoder;
 import dev.sbs.api.client.exception.InternalErrorDecoder;
 import dev.sbs.api.client.metrics.ConnectionDetails;
@@ -18,6 +19,7 @@ import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.stream.pair.Pair;
 import feign.Feign;
+import feign.FeignException;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
@@ -254,7 +256,16 @@ public abstract class Client<E extends Endpoints> {
     }
 
     protected @NotNull ClientErrorDecoder configureErrorDecoder() {
-        return new ClientErrorDecoder.Default();
+        return (methodKey, response) -> new ApiException(
+            FeignException.errorStatus(
+                methodKey,
+                response,
+                null,
+                null
+            ),
+            response,
+            "Client"
+        );
     }
 
     protected @NotNull Timings configureTimings() {
