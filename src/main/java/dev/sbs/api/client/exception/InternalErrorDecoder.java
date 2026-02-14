@@ -31,8 +31,8 @@ public final class InternalErrorDecoder implements ErrorDecoder {
     private final @NotNull RetryAfterParser retryAfterParser;
     private final @NotNull ThreadLocal<RetryContext> retryContext;
 
-    public InternalErrorDecoder(@NotNull ClientErrorDecoder customDecoder, @NotNull ConcurrentList<Response> recentResponses) {
-        this.customDecoder = customDecoder;
+    public InternalErrorDecoder(@NotNull ClientErrorDecoder clientDecoder, @NotNull ConcurrentList<Response> recentResponses) {
+        this.customDecoder = clientDecoder;
         this.recentResponses = recentResponses;
         this.retryAfterParser = new RetryAfterParser();
         this.retryContext = ThreadLocal.withInitial(RetryContext::new);
