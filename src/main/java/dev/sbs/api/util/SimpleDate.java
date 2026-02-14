@@ -26,14 +26,14 @@ public class SimpleDate {
 
     /**
      * The TimeZone used in {@link #toCalendar()}, {@link #toLocalISO()} and {@link #toString()}.
-     * <br><br>
+     * <p>
      * Defaults to America/New_York.
      */
     private transient @NotNull ZoneId zoneId;
 
     /**
      * The DateTimeFormatter used in {@link #toLocalISO()} and {@link #toString()}.
-     * <br><br>
+     * <p>
      * Defaults to {@link DateTimeFormatter#ISO_LOCAL_DATE_TIME}.
      */
     @Setter
