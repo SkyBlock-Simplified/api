@@ -36,8 +36,8 @@ public final class ConnectionDetails {
     private final @NotNull Optional<String> tlsProtocol;
     private final @NotNull Optional<String> tlsCipher;
 
-    public ConnectionDetails(@NotNull feign.Request request, @NotNull feign.Response response) {
-        this.requestStart = extractHeader(request.headers(), REQUEST_START)
+    public ConnectionDetails(@NotNull feign.Response response) {
+        this.requestStart = extractHeader(response.request().headers(), REQUEST_START)
             .map(Long::parseLong)
             .map(nanos -> Instant.ofEpochSecond(0, nanos))
             .orElse(Instant.now());
@@ -49,20 +49,20 @@ public final class ConnectionDetails {
 
         this.totalTime = responseReceived.toEpochMilli() - requestStart.toEpochMilli();
 
-        this.dnsTime = extractHeader(request.headers(), DNS_TIME)
+        this.dnsTime = extractHeader(response.request().headers(), DNS_TIME)
             .map(Long::parseLong)
             .orElse(0L);
 
-        this.tcpConnectTime = extractHeader(request.headers(), TCP_CONNECT_TIME)
+        this.tcpConnectTime = extractHeader(response.request().headers(), TCP_CONNECT_TIME)
             .map(Long::parseLong)
             .orElse(0L);
 
-        this.tlsHandshakeTime = extractHeader(request.headers(), TLS_HANDSHAKE_TIME)
+        this.tlsHandshakeTime = extractHeader(response.request().headers(), TLS_HANDSHAKE_TIME)
             .map(Long::parseLong)
             .orElse(0L);
 
-        this.tlsProtocol = extractHeader(request.headers(), TLS_PROTOCOL);
-        this.tlsCipher = extractHeader(request.headers(), TLS_CIPHER);
+        this.tlsProtocol = extractHeader(response.request().headers(), TLS_PROTOCOL);
+        this.tlsCipher = extractHeader(response.request().headers(), TLS_CIPHER);
     }
 
     public ConnectionDetails(@NotNull HttpContext context) {

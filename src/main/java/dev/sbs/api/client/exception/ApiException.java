@@ -47,7 +47,7 @@ public class ApiException extends RuntimeException implements Response {
         this.name = name;
         this.status = HttpStatus.of(exception.status());
         this.body = exception.responseBody().map(byteBuffer -> StringUtil.toEncodedString(byteBuffer.array(), StandardCharsets.UTF_8));
-        this.details = new ConnectionDetails(exception.request(), response);
+        this.details = new ConnectionDetails(response);
         this.headers = collectHeaders(exception.responseHeaders());
         this.response = exception::getMessage;
 
