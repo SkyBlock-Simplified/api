@@ -72,8 +72,38 @@ public enum BuiltinFunction {
     INDEX_TO_RADIAN("toradian", 1, args -> Math.toRadians(args[0])),
     INDEX_TO_DEGREE("todegree", 1, args -> Math.toDegrees(args[0])),
     INDEX_LENGTH("length", 1, args -> ArrayUtil.isNotEmpty(args) ? (int) (Math.log10(args[0]) + 1) : 0d),
-    INDEX_MAX("max", 2, args -> Math.max(args[0], args[1])),
-    INDEX_MIN("min", 2, args -> Math.min(args[0], args[1])),
+    INDEX_MAX("max", 1, 100, args -> {
+        double value = args[0];
+
+        for (int i = 1; i < args.length; i++)
+            value = Math.max(value, args[i]);
+
+        return value;
+    }),
+    INDEX_MIN("min", 1, 100, args -> {
+        double value = args[0];
+
+        for (int i = 1; i < args.length; i++)
+            value = Math.min(value, args[i]);
+
+        return value;
+    }),
+    INDEX_SUM("sum", 1, 100, args -> {
+        double value = args[0];
+
+        for (int i = 1; i < args.length; i++)
+            value += args[i];
+
+        return value;
+    }),
+    INDEX_AVG("avg", 1, 100, args -> {
+        double value = args[0];
+
+        for (int i = 1; i < args.length; i++)
+            value += args[i];
+
+        return value / args.length;
+    }),
     INDEX_ROUND("round", 1, 2, args -> {
         if (args.length == 1)
             return (double) Math.round(args[0]);
