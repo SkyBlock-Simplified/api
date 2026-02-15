@@ -1,23 +1,20 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.client.decoder.ClientErrorDecoder;
+import dev.sbs.api.client.decoder.ResponseWrapperDecoder;
 import dev.sbs.api.client.exception.ApiException;
-import dev.sbs.api.client.exception.ClientErrorDecoder;
 import dev.sbs.api.client.exception.InternalErrorDecoder;
 import dev.sbs.api.client.metric.ConnectionDetails;
 import dev.sbs.api.client.metric.TimedPlainConnectionSocketFactory;
 import dev.sbs.api.client.metric.TimedSecureConnectionSocketFactory;
 import dev.sbs.api.client.metric.Timings;
 import dev.sbs.api.client.request.Endpoints;
-import dev.sbs.api.client.request.HttpMethod;
-import dev.sbs.api.client.request.Request;
-import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.reflection.Reflection;
-import dev.sbs.api.stream.pair.Pair;
 import feign.Feign;
 import feign.FeignException;
 import feign.gson.GsonDecoder;
@@ -44,8 +41,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.net.Inet6Address;
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +58,6 @@ import java.util.function.Supplier;
 @Getter
 public abstract class Client<E extends Endpoints> {
 
-    private final static long ONE_HOUR = Duration.ofHours(1).toMillis();
     private final @NotNull String baseUrl;
     private final @NotNull Optional<Inet6Address> inet6Address;
     @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
@@ -71,13 +65,12 @@ public abstract class Client<E extends Endpoints> {
     private final @NotNull Timings timings;
 
     // Requests
-    private final @NotNull ConcurrentList<Request> recentRequests = Concurrent.newList();
     private final @NotNull ConcurrentMap<String, String> queries;
     private final @NotNull ConcurrentMap<String, String> headers;
     private final @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicHeaders;
 
     // Responses
-    private final @NotNull ConcurrentList<Response> recentResponses = Concurrent.newList();
+    private final @NotNull ConcurrentList<Response<?>> recentResponses = Concurrent.newList();
     private final @NotNull ClientErrorDecoder errorDecoder;
 
     protected Client(@NotNull String url) {
@@ -140,43 +133,12 @@ public abstract class Client<E extends Endpoints> {
                 this.getDynamicHeaders().forEach((key, supplier) -> supplier.get()
                     .ifPresent(value -> request.addHeader(key, value))
                 );
-
-                this.recentRequests.add(new Request.Impl(
-                    System.currentTimeMillis(),
-                    HttpMethod.of(request.getRequestLine().getMethod()),
-                    request.getRequestLine().getUri(),
-                    Arrays.stream(request.getAllHeaders())
-                        .flatMap(header -> Arrays.stream(header.getElements()))
-                        .filter(entry -> !entry.getValue().isEmpty())
-                        .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getName()))
-                        .map(entry -> Pair.of(
-                            entry.getName(),
-                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
-                        ))
-                        .collect(Concurrent.toUnmodifiableMap())
-                ));
-                this.recentRequests.removeIf(recentRequest -> recentRequest.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
             })
             .addInterceptorLast((HttpResponseInterceptor) (response, context) -> {
                 long responseReceived = System.nanoTime();
                 context.setAttribute(ConnectionDetails.RESPONSE_RECEIVED, responseReceived);
                 response.addHeader(ConnectionDetails.RESPONSE_RECEIVED, String.valueOf(responseReceived));
-
-                this.recentResponses.add(new Response.Impl(
-                    new ConnectionDetails(context),
-                    HttpStatus.of(response.getStatusLine().getStatusCode()),
-                    Arrays.stream(response.getAllHeaders())
-                        .flatMap(header -> Arrays.stream(header.getElements()))
-                        .filter(entry -> !entry.getValue().isEmpty())
-                        .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getName()))
-                        .map(entry -> Pair.of(
-                            entry.getName(),
-                            (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
-                        ))
-                        .collect(Concurrent.toUnmodifiableMap())
-                ));
-
-                this.recentResponses.removeIf(recentResponse -> recentResponse.getTimestamp().toEpochMilli() < System.currentTimeMillis() - ONE_HOUR);
+                this.recentResponses.removeIf(r -> r.getTimestamp().toEpochMilli() < System.currentTimeMillis() - this.getTimings().getCacheDuration());
             })
             .setMaxConnTotal(this.getTimings().getMaxConnections())
             .setMaxConnPerRoute(this.getTimings().getMaxConnectionsPerRoute())
@@ -207,7 +169,10 @@ public abstract class Client<E extends Endpoints> {
         return Feign.builder()
             .client(this.internalClient)
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
-            .decoder(new GsonDecoder(SimplifiedApi.getGson()))
+            .decoder(new ResponseWrapperDecoder(
+                new GsonDecoder(SimplifiedApi.getGson()),
+                this.getRecentResponses()
+            ))
             .errorDecoder(new InternalErrorDecoder(
                 this.getErrorDecoder(),
                 this.getRecentResponses()
@@ -273,21 +238,6 @@ public abstract class Client<E extends Endpoints> {
     }
 
     /**
-     * Retrieves the most recent request from the list of recent requests.
-     * <p>
-     * The determination of the most recent request is based on the timestamp
-     * associated with each request.
-     *
-     * @return An {@code Optional} containing the most recent {@code Request}
-     *         if available; otherwise, an empty {@code Optional}.
-     */
-    public final @NotNull Optional<Request> getLastRequest() {
-        return this.getRecentRequests()
-            .stream()
-            .reduce((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()) <= 0 ? o2 : o1);
-    }
-
-    /**
      * Retrieves the most recent response from the list of recent responses.
      * <p>
      * The determination of the most recent response is based on the timestamp
@@ -296,7 +246,7 @@ public abstract class Client<E extends Endpoints> {
      * @return An {@code Optional} containing the most recent {@code Response}
      *         if available; otherwise, an empty {@code Optional}.
      */
-    public final @NotNull Optional<Response> getLastResponse() {
+    public final @NotNull Optional<Response<?>> getLastResponse() {
         return this.getRecentResponses()
             .stream()
             .reduce((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()) <= 0 ? o2 : o1);
