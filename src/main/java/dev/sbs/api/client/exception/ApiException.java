@@ -2,9 +2,9 @@ package dev.sbs.api.client.exception;
 
 import com.google.gson.JsonSyntaxException;
 import dev.sbs.api.SimplifiedApi;
-import dev.sbs.api.client.metric.ConnectionDetails;
 import dev.sbs.api.client.request.HttpMethod;
 import dev.sbs.api.client.request.Request;
+import dev.sbs.api.client.response.ConnectionDetails;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.Concurrent;
