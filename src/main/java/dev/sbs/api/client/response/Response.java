@@ -1,6 +1,7 @@
 package dev.sbs.api.client.response;
 
 import dev.sbs.api.client.metric.ConnectionDetails;
+import dev.sbs.api.client.request.Request;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-public interface Response {
+public interface Response<T> {
 
     /**
      * Retrieves the Cloudflare cache status of the response by examining the {@code CF-Cache-Status} header
@@ -26,12 +27,33 @@ public interface Response {
     }
 
     /**
+     * Retrieves the content of the response body.
+     *
+     * @return the body of the response.
+     */
+    @NotNull T getBody();
+
+    /**
+     * Retrieves the connection details for this response.
+     *
+     * @return the {@link ConnectionDetails} of the response.
+     */
+    @NotNull ConnectionDetails getDetails();
+
+    /**
      * Retrieves the headers of the response.
      *
      * @return a {@link ConcurrentMap} where the keys are the header names and the values
      *         are lists of the corresponding header values.
      */
     @NotNull ConcurrentMap<String, ConcurrentList<String>> getHeaders();
+
+    /**
+     * Retrieves the request that generated this response.
+     *
+     * @return the {@link Request} associated with this response.
+     */
+    @NotNull Request getRequest();
 
     /**
      * Retrieves the HTTP status of the response.
@@ -51,13 +73,6 @@ public interface Response {
     }
 
     /**
-     * Retrieves the connection details for this response.
-     *
-     * @return the {@link ConnectionDetails} of the response.
-     */
-    @NotNull ConnectionDetails getDetails();
-
-    /**
      * Determines if the response represents an error state.
      *
      * @return {@code true} if the response indicates an error; {@code false} otherwise.
@@ -68,10 +83,12 @@ public interface Response {
 
     @Getter
     @RequiredArgsConstructor
-    class Impl implements Response {
+    class Impl<T> implements Response<T> {
 
+        private final @NotNull T body;
         private final @NotNull ConnectionDetails details;
         private final @NotNull HttpStatus status;
+        private final @NotNull Request request;
         private final @NotNull ConcurrentMap<String, ConcurrentList<String>> headers;
 
     }
