@@ -1,5 +1,6 @@
 package dev.sbs.api.client.exception;
 
+import dev.sbs.api.client.decoder.ClientErrorDecoder;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import feign.RetryableException;
@@ -27,11 +28,11 @@ import java.util.stream.Collectors;
 public final class InternalErrorDecoder implements ErrorDecoder {
 
     private final @NotNull ClientErrorDecoder customDecoder;
-    private final @NotNull ConcurrentList<Response> recentResponses;
+    private final @NotNull ConcurrentList<Response<?>> recentResponses;
     private final @NotNull RetryAfterParser retryAfterParser;
     private final @NotNull ThreadLocal<RetryContext> retryContext;
 
-    public InternalErrorDecoder(@NotNull ClientErrorDecoder clientDecoder, @NotNull ConcurrentList<Response> recentResponses) {
+    public InternalErrorDecoder(@NotNull ClientErrorDecoder clientDecoder, @NotNull ConcurrentList<Response<?>> recentResponses) {
         this.customDecoder = clientDecoder;
         this.recentResponses = recentResponses;
         this.retryAfterParser = new RetryAfterParser();
