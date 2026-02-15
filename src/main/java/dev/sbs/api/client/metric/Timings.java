@@ -4,22 +4,27 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
+
 @Getter
 @RequiredArgsConstructor
 public class Timings {
 
-    // HTTP Options
+    // HTTP
     private final long connectionTimeToLive;
     private final long connectionEvictIdleTimeout;
     private final long connectionKeepAliveTimeout;
 
-    // Feign Options
+    // Feign
     private final long connectionTimeout;
     private final long socketTimeout;
 
     // Concurrency
     private final int maxConnections;
     private final int maxConnectionsPerRoute;
+
+    // Client
+    private final long cacheDuration;
 
     public static @NotNull Timings createDefault() {
         return new Timings(
@@ -29,7 +34,8 @@ public class Timings {
             5 * 1_000,
             10 * 1_000,
             200,
-            50
+            50,
+            Duration.ofHours(1).toMillis()
         );
     }
 
