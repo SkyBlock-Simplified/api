@@ -1,5 +1,6 @@
-package dev.sbs.api.client.metric;
+package dev.sbs.api.client.factory;
 
+import dev.sbs.api.client.response.ConnectionDetails;
 import org.apache.http.HttpHost;
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
