@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-public class ApiException extends RuntimeException implements Response {
+public class ApiException extends RuntimeException implements Response<Optional<String>> {
 
     private final boolean error = true;
     private final @NotNull String name;
@@ -52,7 +52,6 @@ public class ApiException extends RuntimeException implements Response {
         this.response = exception::getMessage;
 
         this.request = new Request.Impl(
-            this.getDetails().getRequestStart().toEpochMilli(),
             HttpMethod.of(exception.request().httpMethod().name()),
             exception.request().url(),
             collectHeaders(exception.request().headers())
@@ -63,6 +62,7 @@ public class ApiException extends RuntimeException implements Response {
         return headers.entrySet()
             .stream()
             .filter(entry -> !entry.getValue().isEmpty())
+            .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getKey()))
             .map(entry -> Pair.of(
                 entry.getKey(),
                 (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
