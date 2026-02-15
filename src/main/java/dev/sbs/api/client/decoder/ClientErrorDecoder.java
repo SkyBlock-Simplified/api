@@ -1,5 +1,6 @@
-package dev.sbs.api.client.exception;
+package dev.sbs.api.client.decoder;
 
+import dev.sbs.api.client.exception.ApiException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.jetbrains.annotations.NotNull;
