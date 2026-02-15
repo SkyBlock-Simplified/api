@@ -1,4 +1,4 @@
-package dev.sbs.api.client.metric;
+package dev.sbs.api.client.request;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

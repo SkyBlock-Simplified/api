@@ -1,4 +1,4 @@
-package dev.sbs.api.client.expander;
+package dev.sbs.api.client.request.expander;
 
 import feign.Param;
 import org.jetbrains.annotations.NotNull;

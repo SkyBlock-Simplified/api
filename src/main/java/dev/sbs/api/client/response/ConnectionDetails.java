@@ -1,4 +1,4 @@
-package dev.sbs.api.client.metric;
+package dev.sbs.api.client.response;
 
 import lombok.Getter;
 import org.apache.http.protocol.HttpContext;

@@ -1,6 +1,5 @@
 package dev.sbs.api.client.response;
 
-import dev.sbs.api.client.metric.ConnectionDetails;
 import dev.sbs.api.client.request.Request;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
