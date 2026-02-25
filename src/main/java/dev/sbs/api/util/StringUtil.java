@@ -5230,6 +5230,15 @@ public final class StringUtil {
         return new ArrayList<>(Arrays.asList((array == null || array.length == 0) ? new String[] {} : array));
     }
 
+    public static boolean matchesAny(String name, String... candidates) {
+        for (String candidate : candidates) {
+            if (name.equals(candidate))
+                return true;
+        }
+
+        return false;
+    }
+
     /**
      * <p>
      * Similar to <a
