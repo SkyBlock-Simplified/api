@@ -1,4 +1,4 @@
-package dev.sbs.api.client.request.factory;
+package dev.sbs.api.client.factory;
 
 import dev.sbs.api.client.response.ConnectionDetails;
 import org.apache.http.HttpHost;
