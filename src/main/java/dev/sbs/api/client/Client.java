@@ -1,16 +1,22 @@
 package dev.sbs.api.client;
 
 import dev.sbs.api.SimplifiedApi;
+import dev.sbs.api.builder.ClassBuilder;
 import dev.sbs.api.client.decoder.ClientErrorDecoder;
-import dev.sbs.api.client.decoder.ResponseWrapperDecoder;
+import dev.sbs.api.client.decoder.InternalErrorDecoder;
+import dev.sbs.api.client.decoder.InternalResponseDecoder;
 import dev.sbs.api.client.exception.ApiException;
-import dev.sbs.api.client.exception.InternalErrorDecoder;
-import dev.sbs.api.client.metric.ConnectionDetails;
-import dev.sbs.api.client.metric.TimedPlainConnectionSocketFactory;
-import dev.sbs.api.client.metric.TimedSecureConnectionSocketFactory;
-import dev.sbs.api.client.metric.Timings;
+import dev.sbs.api.client.exception.RetryableApiException;
+import dev.sbs.api.client.factory.TimedPlainConnectionSocketFactory;
+import dev.sbs.api.client.factory.TimedSecureConnectionSocketFactory;
+import dev.sbs.api.client.interceptor.RouteRequestInterceptor;
+import dev.sbs.api.client.interceptor.RouteResponseInterceptor;
+import dev.sbs.api.client.ratelimit.RateLimitManager;
 import dev.sbs.api.client.request.Endpoints;
+import dev.sbs.api.client.request.Timings;
+import dev.sbs.api.client.response.ConnectionDetails;
 import dev.sbs.api.client.response.Response;
+import dev.sbs.api.client.route.RouteDiscovery;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
@@ -41,30 +47,23 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.net.Inet6Address;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-/**
- * Represents an abstract base class for API clients built using Feign. The {@code Client} class provides
- * configurable components for handling request and response processing, including caching response headers,
- * managing dynamic/static headers and queries, tracking recent requests and responses, and managing error decoding.
- * <p>
- * Subclasses can extend this class to create specific API client implementations.
- *
- * @param <E> An interface with annotated feign methods.
- */
 @Getter
-public abstract class Client<E extends Endpoints> {
+public abstract class Client<E extends Endpoints> implements ClassBuilder<E> {
 
-    private final @NotNull String baseUrl;
+    private final @NotNull Class<E> target;
     private final @NotNull Optional<Inet6Address> inet6Address;
-    @Getter(AccessLevel.NONE) private final @NotNull ApacheHttpClient internalClient;
-    private final @NotNull E endpoints;
-    private final @NotNull Timings timings;
+    @Getter(AccessLevel.NONE)
+    private final @NotNull ApacheHttpClient internalClient;
+    private final @NotNull RouteDiscovery routeDiscovery;
+    private final @NotNull RateLimitManager rateLimitManager;
 
     // Requests
+    private final @NotNull E endpoints;
+    private final @NotNull Timings timings;
     private final @NotNull ConcurrentMap<String, String> queries;
     private final @NotNull ConcurrentMap<String, String> headers;
     private final @NotNull ConcurrentMap<String, Supplier<Optional<String>>> dynamicHeaders;
@@ -73,31 +72,26 @@ public abstract class Client<E extends Endpoints> {
     private final @NotNull ConcurrentList<Response<?>> recentResponses = Concurrent.newList();
     private final @NotNull ClientErrorDecoder errorDecoder;
 
-    protected Client(@NotNull String url) {
-        this(url, Optional.empty());
+    protected Client() {
+        this(Optional.empty());
     }
 
-    protected Client(@NotNull String url, @Nullable Inet6Address inet6Address) {
-        this(url, Optional.ofNullable(inet6Address));
+    protected Client(@Nullable Inet6Address inet6Address) {
+        this(Optional.ofNullable(inet6Address));
     }
 
-    protected Client(@NotNull String url, @NotNull Optional<Inet6Address> inet6Address) {
-        this.baseUrl = url;
+    protected Client(@NotNull Optional<Inet6Address> inet6Address) {
+        this.target = Reflection.getSuperClass(this);
         this.inet6Address = inet6Address;
+        this.routeDiscovery = new RouteDiscovery(this.getTarget());
+        this.rateLimitManager = new RateLimitManager();
         this.timings = this.configureTimings();
         this.errorDecoder = this.configureErrorDecoder();
         this.queries = this.configureQueries();
         this.headers = this.configureHeaders();
         this.dynamicHeaders = this.configureDynamicHeaders();
         this.internalClient = this.configureInternalClient();
-        this.endpoints = this.configureUnwrappingProxy(this.configureEndpoints());
-    }
-
-    private static void addHeader(@NotNull HttpRequest request, @NotNull HttpContext context, @NotNull String id) {
-        Object value = context.getAttribute(id);
-
-        if (Objects.nonNull(value))
-            request.addHeader(id, String.valueOf(value));
+        this.endpoints = this.configureUnwrappingProxy(this.build());
     }
 
     protected final @NotNull ApacheHttpClient configureInternalClient() {
@@ -138,7 +132,7 @@ public abstract class Client<E extends Endpoints> {
                 long responseReceived = System.nanoTime();
                 context.setAttribute(ConnectionDetails.RESPONSE_RECEIVED, responseReceived);
                 response.addHeader(ConnectionDetails.RESPONSE_RECEIVED, String.valueOf(responseReceived));
-                this.recentResponses.removeIf(r -> r.getTimestamp().toEpochMilli() < System.currentTimeMillis() - this.getTimings().getCacheDuration());
+                this.recentResponses.removeIf(r -> r.getDetails().getResponseReceived().toEpochMilli() < System.currentTimeMillis() - this.getTimings().getCacheDuration());
             })
             .setMaxConnTotal(this.getTimings().getMaxConnections())
             .setMaxConnPerRoute(this.getTimings().getMaxConnectionsPerRoute())
@@ -162,29 +156,38 @@ public abstract class Client<E extends Endpoints> {
     /**
      * Builds and configures an instance of the specified target class using Feign, based on the provided configurations.
      *
-     * @return An instance of the specified class type {@code T}, configured with the Feign builder.
-     * @throws NullPointerException if {@code tClass} is null.
+     * @return An instance of the endpoint interface type {@code E}, configured with the Feign builder
      */
-    protected <T extends E> @NotNull T configureEndpoints() {
+    @Override
+    public final @NotNull E build() {
         return Feign.builder()
             .client(this.internalClient)
             .encoder(new GsonEncoder(SimplifiedApi.getGson()))
-            .decoder(new ResponseWrapperDecoder(
+            .decoder(new InternalResponseDecoder(
                 new GsonDecoder(SimplifiedApi.getGson()),
                 this.getRecentResponses()
             ))
             .errorDecoder(new InternalErrorDecoder(
                 this.getErrorDecoder(),
+                this.getRouteDiscovery(),
                 this.getRecentResponses()
             ))
+            .requestInterceptor(new RouteRequestInterceptor(
+                this.getRateLimitManager(),
+                this.getRouteDiscovery()
+            ))
+            .responseInterceptor(new RouteResponseInterceptor(
+                this.getRateLimitManager(),
+                this.getRouteDiscovery()
+            ))
             .options(new feign.Request.Options(
-                this.getTimings().getConnectionTimeout(),
+                this.getTimings().getConnectTimeout(),
                 TimeUnit.SECONDS,
-                this.getTimings().getSocketTimeout(),
+                this.getTimings().getReadTimeout(),
                 TimeUnit.SECONDS,
                 true
             ))
-            .target(Reflection.getSuperClass(this), this.getUrl());
+            .target(this.getTarget(), "https://placeholder");
     }
 
     @SuppressWarnings("unchecked")
@@ -199,8 +202,8 @@ public abstract class Client<E extends Endpoints> {
                     Throwable cause = e.getCause();
 
                     // Unwrap our internal wrapper to expose the original typed exception
-                    if (cause instanceof InternalErrorDecoder.InternalRetryableWrapper)
-                        throw ((InternalErrorDecoder.InternalRetryableWrapper) cause).getWrappedException();
+                    if (cause instanceof RetryableApiException)
+                        throw ((RetryableApiException) cause).getWrappedException();
 
                     throw cause;
                 }
@@ -208,18 +211,30 @@ public abstract class Client<E extends Endpoints> {
         );
     }
 
+    /**
+     * Override this to configure an included set of query parameters.
+     */
     protected @NotNull ConcurrentMap<String, String> configureQueries() {
         return Concurrent.newUnmodifiableMap();
     }
 
+    /**
+     * Override this to configure an included set of headers.
+     */
     protected @NotNull ConcurrentMap<String, String> configureHeaders() {
         return Concurrent.newUnmodifiableMap();
     }
 
+    /**
+     * Override this to configure an included set of dynamic headers.
+     */
     protected @NotNull ConcurrentMap<String, Supplier<Optional<String>>> configureDynamicHeaders() {
         return Concurrent.newUnmodifiableMap();
     }
 
+    /**
+     * Override this to configure a custom error decoder.
+     */
     protected @NotNull ClientErrorDecoder configureErrorDecoder() {
         return (methodKey, response) -> new ApiException(
             FeignException.errorStatus(
@@ -233,6 +248,9 @@ public abstract class Client<E extends Endpoints> {
         );
     }
 
+    /**
+     * Override this to configure custom request timings.
+     */
     protected @NotNull Timings configureTimings() {
         return Timings.createDefault();
     }
@@ -249,7 +267,10 @@ public abstract class Client<E extends Endpoints> {
     public final @NotNull Optional<Response<?>> getLastResponse() {
         return this.getRecentResponses()
             .stream()
-            .reduce((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()) <= 0 ? o2 : o1);
+            .reduce((o1, o2) -> o1.getDetails()
+                .getResponseReceived()
+                .compareTo(o2.getDetails().getResponseReceived()) <= 0 ? o2 : o1
+            );
     }
 
     /**
@@ -271,14 +292,24 @@ public abstract class Client<E extends Endpoints> {
     }
 
     /**
-     * Retrieves the URL for the client instance, ensuring the returned string is consistently formatted.
-     * <p>
-     * Any protocol prefix (http:// or https&colon;//) from the base URL is stripped and replaced with "https://".
-     *
-     * @return The formatted URL as a non-null string.
+     * Gets remaining requests for a bucket.
      */
-    public final @NotNull String getUrl() {
-        return String.format("https://%s", this.baseUrl.replaceFirst("^https?://", ""));
+    public final long getRemainingRequests(@NotNull String bucketId) {
+        return this.rateLimitManager.getRemaining(bucketId);
+    }
+
+    /**
+     * Checks if a bucket is currently rate-limited.
+     */
+    public final boolean isRateLimited(@NotNull String bucketId) {
+        return this.rateLimitManager.isRateLimited(bucketId);
+    }
+
+    private static void addHeader(@NotNull HttpRequest request, @NotNull HttpContext context, @NotNull String id) {
+        Object value = context.getAttribute(id);
+
+        if (value != null)
+            request.addHeader(id, String.valueOf(value));
     }
 
 }
