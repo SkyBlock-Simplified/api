@@ -5,10 +5,8 @@ import dev.sbs.api.client.request.Request;
 import dev.sbs.api.client.response.ConnectionDetails;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
-import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.stream.pair.Pair;
+import dev.sbs.api.util.ClientUtil;
 import feign.FeignException;
 import feign.codec.Decoder;
 import org.jetbrains.annotations.NotNull;
@@ -16,15 +14,18 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Map;
 
-public class ResponseWrapperDecoder implements Decoder {
+/**
+ * Internal response decoder that wraps endpoint methods with {@link Response}.
+ *
+ * @apiNote Only for internal use.
+ */
+public class InternalResponseDecoder implements Decoder {
     
     private final @NotNull Decoder delegate;
     private final @NotNull ConcurrentList<Response<?>> recentResponses;
     
-    public ResponseWrapperDecoder(@NotNull Decoder delegate, @NotNull ConcurrentList<Response<?>> recentResponses) {
+    public InternalResponseDecoder(@NotNull Decoder delegate, @NotNull ConcurrentList<Response<?>> recentResponses) {
         this.delegate = delegate;
         this.recentResponses = recentResponses;
     }
@@ -34,7 +35,6 @@ public class ResponseWrapperDecoder implements Decoder {
         Type bodyType = type;
         boolean shouldWrap = false;
 
-        // Check if the return type is Response<T>
         if (type instanceof ParameterizedType parameterizedType) {
             if (parameterizedType.getRawType().equals(Response.class)) {
                 shouldWrap = true;
@@ -42,16 +42,9 @@ public class ResponseWrapperDecoder implements Decoder {
             }
         }
 
-        // Decode body
         Object decodedBody = this.delegate.decode(feignResponse, bodyType);
-
-        // Always build Response for caching
         Response<?> response = this.buildResponse(feignResponse, decodedBody);
-
-        // Cache the response
         this.recentResponses.add(response);
-
-        // Return wrapped or unwrapped based on method signature
         return shouldWrap ? response : decodedBody;
     }
 
@@ -63,22 +56,10 @@ public class ResponseWrapperDecoder implements Decoder {
             new Request.Impl(
                 HttpMethod.of(feignResponse.request().httpMethod().name()),
                 feignResponse.request().url(),
-                collectHeaders(feignResponse.request().headers())
+                ClientUtil.getHeaders(feignResponse.request().headers())
             ),
-            collectHeaders(feignResponse.headers())
+            ClientUtil.getHeaders(feignResponse.headers())
         );
-    }
-
-    private static ConcurrentMap<String, ConcurrentList<String>> collectHeaders(@NotNull Map<String, Collection<String>> headers) {
-        return headers.entrySet()
-            .stream()
-            .filter(entry -> !entry.getValue().isEmpty())
-            .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getKey()))
-            .map(entry -> Pair.of(
-                entry.getKey(),
-                (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
-            ))
-            .collect(Concurrent.toUnmodifiableMap());
     }
 
 }
