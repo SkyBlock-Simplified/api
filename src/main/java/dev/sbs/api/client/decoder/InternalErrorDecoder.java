@@ -1,9 +1,12 @@
 package dev.sbs.api.client.decoder;
 
 import dev.sbs.api.client.exception.ApiException;
+import dev.sbs.api.client.exception.RateLimitException;
 import dev.sbs.api.client.exception.RetryableApiException;
+import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.client.response.RetryAfterParser;
+import dev.sbs.api.client.route.RouteDiscovery;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.reflection.Reflection;
 import feign.codec.ErrorDecoder;
@@ -22,11 +25,13 @@ public final class InternalErrorDecoder implements ErrorDecoder {
 
     private static final @NotNull Reflection<ApiException> API_EXCEPTION_REF = Reflection.of(ApiException.class);
     private final @NotNull ClientErrorDecoder customDecoder;
+    private final @NotNull RouteDiscovery routeDiscovery;
     private final @NotNull ConcurrentList<Response<?>> recentResponses;
     private final @NotNull ThreadLocal<RetryContext> retryContext;
 
-    public InternalErrorDecoder(@NotNull ClientErrorDecoder clientDecoder, @NotNull ConcurrentList<Response<?>> recentResponses) {
+    public InternalErrorDecoder(@NotNull ClientErrorDecoder clientDecoder, @NotNull RouteDiscovery routeDiscovery, @NotNull ConcurrentList<Response<?>> recentResponses) {
         this.customDecoder = clientDecoder;
+        this.routeDiscovery = routeDiscovery;
         this.recentResponses = recentResponses;
         this.retryContext = ThreadLocal.withInitial(RetryContext::new);
     }
@@ -46,8 +51,13 @@ public final class InternalErrorDecoder implements ErrorDecoder {
             context.lastMethodKey = methodKey;
         }
 
-        // Decode using the custom decoder
-        ApiException exception = this.customDecoder.decode(methodKey, response);
+        ApiException exception = response.status() == HttpStatus.TOO_MANY_REQUESTS.getCode() ?
+            new RateLimitException(
+                methodKey,
+                response,
+                this.routeDiscovery.findMatchingMetadata(response.request().url())
+            ) : this.customDecoder.decode(methodKey, response);
+
         API_EXCEPTION_REF.setValue("retryAttempts", exception, context.retryAttempt);
         this.recentResponses.add(exception);
 
