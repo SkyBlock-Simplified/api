@@ -6,7 +6,6 @@ import dev.sbs.api.client.response.ConnectionDetails;
 import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.util.ClientUtil;
 import feign.FeignException;
 import feign.codec.Decoder;
 import org.jetbrains.annotations.NotNull;
@@ -56,9 +55,9 @@ public class InternalResponseDecoder implements Decoder {
             new Request.Impl(
                 HttpMethod.of(feignResponse.request().httpMethod().name()),
                 feignResponse.request().url(),
-                ClientUtil.getHeaders(feignResponse.request().headers())
+                Response.getHeaders(feignResponse.request().headers())
             ),
-            ClientUtil.getHeaders(feignResponse.headers())
+            Response.getHeaders(feignResponse.headers())
         );
     }
 

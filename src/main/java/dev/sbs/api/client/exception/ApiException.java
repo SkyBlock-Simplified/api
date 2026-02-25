@@ -9,7 +9,6 @@ import dev.sbs.api.client.response.HttpStatus;
 import dev.sbs.api.client.response.Response;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.ClientUtil;
 import dev.sbs.api.util.StringUtil;
 import feign.FeignException;
 import lombok.Getter;
@@ -42,13 +41,13 @@ public class ApiException extends RuntimeException implements Response<Optional<
         this.status = HttpStatus.of(exception.status());
         this.body = exception.responseBody().map(byteBuffer -> StringUtil.toEncodedString(byteBuffer.array(), StandardCharsets.UTF_8));
         this.details = new ConnectionDetails(response);
-        this.headers = ClientUtil.getHeaders(exception.responseHeaders());
+        this.headers = Response.getHeaders(exception.responseHeaders());
         this.response = exception::getMessage;
 
         this.request = new Request.Impl(
             HttpMethod.of(exception.request().httpMethod().name()),
             exception.request().url(),
-            ClientUtil.getHeaders(exception.request().headers())
+            Response.getHeaders(exception.request().headers())
         );
     }
 

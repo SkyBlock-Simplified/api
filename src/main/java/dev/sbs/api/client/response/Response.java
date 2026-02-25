@@ -1,11 +1,16 @@
 package dev.sbs.api.client.response;
 
 import dev.sbs.api.client.request.Request;
+import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
+import dev.sbs.api.stream.pair.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Map;
 
 public interface Response<T> {
 
@@ -67,6 +72,18 @@ public interface Response<T> {
      */
     default boolean isError() {
         return this.getStatus().getState().isError();
+    }
+
+    static @NotNull ConcurrentMap<String, ConcurrentList<String>> getHeaders(@NotNull Map<String, Collection<String>> headers) {
+        return headers.entrySet()
+            .stream()
+            .filter(entry -> !entry.getValue().isEmpty())
+            .filter(entry -> !ConnectionDetails.isInternalHeader(entry.getKey()))
+            .map(entry -> Pair.of(
+                entry.getKey(),
+                (ConcurrentList<String>) Concurrent.newUnmodifiableList(entry.getValue())
+            ))
+            .collect(Concurrent.toUnmodifiableMap());
     }
 
     @Getter
