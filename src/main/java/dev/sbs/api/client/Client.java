@@ -9,8 +9,8 @@ import dev.sbs.api.client.exception.ApiException;
 import dev.sbs.api.client.exception.RetryableApiException;
 import dev.sbs.api.client.factory.TimedPlainConnectionSocketFactory;
 import dev.sbs.api.client.factory.TimedSecureConnectionSocketFactory;
-import dev.sbs.api.client.interceptor.RouteRequestInterceptor;
-import dev.sbs.api.client.interceptor.RouteResponseInterceptor;
+import dev.sbs.api.client.interceptor.InternalRequestInterceptor;
+import dev.sbs.api.client.interceptor.InternalResponseInterceptor;
 import dev.sbs.api.client.ratelimit.RateLimitManager;
 import dev.sbs.api.client.request.Endpoints;
 import dev.sbs.api.client.request.Timings;
@@ -51,6 +51,14 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+/**
+ * Represents an abstract client that interfaces with a set of defined endpoints incorporating
+ * various mechanisms such as rate-limiting, route discovery, request/response handling,
+ * and error decoding.
+ *
+ * @param <E> A type parameter that extends {@link Endpoints}, indicating the specific endpoints
+ *            this client will interact with.
+ */
 @Getter
 public abstract class Client<E extends Endpoints> implements ClassBuilder<E> {
 
@@ -172,11 +180,11 @@ public abstract class Client<E extends Endpoints> implements ClassBuilder<E> {
                 this.getRouteDiscovery(),
                 this.getRecentResponses()
             ))
-            .requestInterceptor(new RouteRequestInterceptor(
+            .requestInterceptor(new InternalRequestInterceptor(
                 this.getRateLimitManager(),
                 this.getRouteDiscovery()
             ))
-            .responseInterceptor(new RouteResponseInterceptor(
+            .responseInterceptor(new InternalResponseInterceptor(
                 this.getRateLimitManager(),
                 this.getRouteDiscovery()
             ))

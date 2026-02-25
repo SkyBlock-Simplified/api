@@ -15,11 +15,18 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Internal response decoder that wraps endpoint methods with {@link Response}.
+ * Responsible for decoding responses received from Feign clients.
+ * It acts as a wrapper around another {@link Decoder}, adding functionality for handling and storing recent decoded
+ * responses for monitoring or debugging purposes.
+ * <p>
+ * This class allows for decoding of both standard object types and parameterized {@code Response<T>} types. If a
+ * response type is parameterized, the decoded object will be wrapped into a {@link Response} instance with additional
+ * metadata such as HTTP status, headers, and connection details. The decoded responses are added to a
+ * thread-safe {@link ConcurrentList} for future reference.
  *
  * @apiNote Only for internal use.
  */
-public class InternalResponseDecoder implements Decoder {
+public final class InternalResponseDecoder implements Decoder {
     
     private final @NotNull Decoder delegate;
     private final @NotNull ConcurrentList<Response<?>> recentResponses;
