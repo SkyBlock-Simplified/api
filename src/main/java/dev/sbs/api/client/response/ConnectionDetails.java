@@ -1,12 +1,11 @@
 package dev.sbs.api.client.response;
 
+import dev.sbs.api.util.ClientUtil;
 import lombok.Getter;
 import org.apache.http.protocol.HttpContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -37,52 +36,43 @@ public final class ConnectionDetails {
     private final @NotNull Optional<String> tlsCipher;
 
     public ConnectionDetails(@NotNull feign.Response response) {
-        this.requestStart = extractHeader(response.request().headers(), REQUEST_START)
+        this.requestStart = ClientUtil.extractHeader(response.request().headers(), REQUEST_START)
             .map(Long::parseLong)
             .map(nanos -> Instant.ofEpochSecond(0, nanos))
             .orElse(Instant.now());
 
-        this.responseReceived = extractHeader(response.headers(), RESPONSE_RECEIVED)
+        this.responseReceived = ClientUtil.extractHeader(response.headers(), RESPONSE_RECEIVED)
             .map(Long::parseLong)
             .map(nanos -> Instant.ofEpochSecond(0, nanos))
             .orElse(Instant.now());
 
         this.totalTime = responseReceived.toEpochMilli() - requestStart.toEpochMilli();
 
-        this.dnsTime = extractHeader(response.request().headers(), DNS_TIME)
+        this.dnsTime = ClientUtil.extractHeader(response.request().headers(), DNS_TIME)
             .map(Long::parseLong)
             .orElse(0L);
 
-        this.tcpConnectTime = extractHeader(response.request().headers(), TCP_CONNECT_TIME)
+        this.tcpConnectTime = ClientUtil.extractHeader(response.request().headers(), TCP_CONNECT_TIME)
             .map(Long::parseLong)
             .orElse(0L);
 
-        this.tlsHandshakeTime = extractHeader(response.request().headers(), TLS_HANDSHAKE_TIME)
+        this.tlsHandshakeTime = ClientUtil.extractHeader(response.request().headers(), TLS_HANDSHAKE_TIME)
             .map(Long::parseLong)
             .orElse(0L);
 
-        this.tlsProtocol = extractHeader(response.request().headers(), TLS_PROTOCOL);
-        this.tlsCipher = extractHeader(response.request().headers(), TLS_CIPHER);
+        this.tlsProtocol = ClientUtil.extractHeader(response.request().headers(), TLS_PROTOCOL);
+        this.tlsCipher = ClientUtil.extractHeader(response.request().headers(), TLS_CIPHER);
     }
 
     public ConnectionDetails(@NotNull HttpContext context) {
-        this.requestStart = Instant.ofEpochSecond(0L, getAttribute(context, REQUEST_START, 0L));
-        this.responseReceived = Instant.ofEpochSecond(0L, getAttribute(context, RESPONSE_RECEIVED, 0L));
+        this.requestStart = Instant.ofEpochSecond(0L, ClientUtil.getAttribute(context, REQUEST_START, 0L));
+        this.responseReceived = Instant.ofEpochSecond(0L, ClientUtil.getAttribute(context, RESPONSE_RECEIVED, 0L));
         this.totalTime = responseReceived.getNano() - requestStart.getNano();
-        this.dnsTime = getAttribute(context, DNS_TIME, 0L);
-        this.tcpConnectTime = getAttribute(context, TCP_CONNECT_TIME, 0L);
-        this.tlsHandshakeTime = getAttribute(context, TLS_HANDSHAKE_TIME, 0L);
-        this.tlsProtocol = Optional.ofNullable(getAttribute(context, TLS_PROTOCOL, null));
-        this.tlsCipher = Optional.ofNullable(getAttribute(context, TLS_CIPHER, null));
-    }
-
-    private static Optional<String> extractHeader(@NotNull Map<String, Collection<String>> headers, @NotNull String key) {
-        return Optional.ofNullable(headers.get(key)).flatMap(values -> values.stream().findFirst());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getAttribute(@NotNull HttpContext context, @NotNull String id, T defaultValue) {
-        return context.getAttribute(id) != null ? (T) context.getAttribute(id) : defaultValue;
+        this.dnsTime = ClientUtil.getAttribute(context, DNS_TIME, 0L);
+        this.tcpConnectTime = ClientUtil.getAttribute(context, TCP_CONNECT_TIME, 0L);
+        this.tlsHandshakeTime = ClientUtil.getAttribute(context, TLS_HANDSHAKE_TIME, 0L);
+        this.tlsProtocol = Optional.ofNullable(ClientUtil.getAttribute(context, TLS_PROTOCOL, null));
+        this.tlsCipher = Optional.ofNullable(ClientUtil.getAttribute(context, TLS_CIPHER, null));
     }
 
     public static boolean isInternalHeader(@NotNull String headerName) {
