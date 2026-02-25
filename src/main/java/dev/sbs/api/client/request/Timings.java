@@ -16,8 +16,8 @@ public class Timings {
     private final long connectionKeepAliveTimeout;
 
     // Feign
-    private final long connectionTimeout;
-    private final long socketTimeout;
+    private final long connectTimeout;
+    private final long readTimeout;
 
     // Concurrency
     private final int maxConnections;
