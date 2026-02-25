@@ -1,7 +1,6 @@
 package dev.sbs.api.client.ratelimit;
 
 import dev.sbs.api.builder.ClassBuilder;
-import dev.sbs.api.util.ClientUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -123,13 +122,13 @@ public final class RateLimit {
      */
     public static @NotNull Optional<RateLimit> fromHeaders(@NotNull Map<String, Collection<String>> headers) {
         // Try standard headers first (RFC draft)
-        Optional<Long> limit = ClientUtil.getFirstLong(headers, "RateLimit-Limit", "ratelimit-limit");
-        Optional<Long> reset = ClientUtil.getFirstLong(headers, "RateLimit-Reset", "ratelimit-reset");
+        Optional<Long> limit = getFirstLong(headers, "RateLimit-Limit", "ratelimit-limit");
+        Optional<Long> reset = getFirstLong(headers, "RateLimit-Reset", "ratelimit-reset");
 
         // Fall back to X- prefixed headers (common)
         if (limit.isEmpty()) {
-            limit = ClientUtil.getFirstLong(headers, "X-RateLimit-Limit", "x-ratelimit-limit");
-            reset = ClientUtil.getFirstLong(headers, "X-RateLimit-Reset", "x-ratelimit-reset");
+            limit = getFirstLong(headers, "X-RateLimit-Limit", "x-ratelimit-limit");
+            reset = getFirstLong(headers, "X-RateLimit-Reset", "x-ratelimit-reset");
         }
 
         // If we don't have enough info to build a RateLimit, treat as "no info"
@@ -155,6 +154,27 @@ public final class RateLimit {
      */
     public static @NotNull RateLimit unlimited() {
         return new RateLimit(Long.MAX_VALUE, Long.MAX_VALUE / 1000L, true);
+    }
+
+    private static @NotNull Optional<String> getFirst(@NotNull Map<String, Collection<String>> headers, @NotNull String... keys) {
+        for (String key : keys) {
+            Collection<String> values = headers.get(key);
+
+            if (values != null && !values.isEmpty())
+                return Optional.of(values.iterator().next());
+        }
+
+        return Optional.empty();
+    }
+
+    private static @NotNull Optional<Long> getFirstLong(@NotNull Map<String, Collection<String>> headers, @NotNull String... keys) {
+        return getFirst(headers, keys).flatMap(value -> {
+            try {
+                return Optional.of(Long.parseLong(value.trim()));
+            } catch (NumberFormatException e) {
+                return Optional.empty();
+            }
+        });
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -3,7 +3,6 @@ package dev.sbs.api.client.route;
 import dev.sbs.api.client.ratelimit.RateLimit;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.util.ClientUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +43,7 @@ public final class RouteDiscovery {
 
         Route routeAnno = targetClass.getAnnotation(Route.class);
         if (routeAnno != null) {
-            String route = ClientUtil.stripProtocol(routeAnno.value());
+            String route = stripProtocol(routeAnno.value());
             RateLimit rateLimit = RateLimit.fromAnnotation(routeAnno.rateLimit());
             return Optional.of(new Metadata(route, rateLimit));
         }
@@ -67,7 +66,7 @@ public final class RouteDiscovery {
 
                 if (value instanceof DynamicRouteProvider provider) {
                     return Optional.of(new Metadata(
-                        ClientUtil.stripProtocol(provider.getRoute()),
+                        stripProtocol(provider.getRoute()),
                         provider.getRateLimit()
                     ));
                 }
@@ -85,7 +84,7 @@ public final class RouteDiscovery {
      * @apiNote Falls back to the default route if no match is found.
      */
     public @NotNull Metadata findMatchingMetadata(@NotNull String requestUrl) {
-        String stripped = ClientUtil.stripProtocol(requestUrl);
+        String stripped = stripProtocol(requestUrl);
         Metadata defaultRoute = this.defaultRoute;
 
         // Seed with the default route (always the fallback)
@@ -107,6 +106,10 @@ public final class RouteDiscovery {
 
     public @NotNull Metadata getMetadata(@NotNull Method method) {
         return this.getMethodRoutes().getOrDefault(method, this.getDefaultRoute());
+    }
+
+    private static @NotNull String stripProtocol(@NotNull String route) {
+        return route.replaceFirst("^https?://", "");
     }
 
     @Getter
