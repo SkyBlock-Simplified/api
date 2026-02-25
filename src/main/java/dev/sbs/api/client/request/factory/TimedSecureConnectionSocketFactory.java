@@ -1,4 +1,4 @@
-package dev.sbs.api.client.factory;
+package dev.sbs.api.client.request.factory;
 
 import dev.sbs.api.client.response.ConnectionDetails;
 import org.apache.http.HttpHost;
@@ -30,12 +30,7 @@ public final class TimedSecureConnectionSocketFactory implements LayeredConnecti
     }
 
     @Override
-    public Socket connectSocket(int connectTimeout,
-                                @NotNull Socket socket,
-                                @NotNull HttpHost host,
-                                @NotNull InetSocketAddress remoteAddress,
-                                InetSocketAddress localAddress,
-                                @NotNull HttpContext context) throws IOException {
+    public Socket connectSocket(int connectTimeout, @NotNull Socket socket, @NotNull HttpHost host, @NotNull InetSocketAddress remoteAddress, InetSocketAddress localAddress, @NotNull HttpContext context) throws IOException {
         // Time DNS resolution
         long dnsStart = System.nanoTime();
         InetAddress[] addresses = dnsResolver.resolve(host.getHostName());
@@ -61,10 +56,7 @@ public final class TimedSecureConnectionSocketFactory implements LayeredConnecti
     }
 
     @Override
-    public Socket createLayeredSocket(@NotNull Socket socket,
-                                      @NotNull String target,
-                                      int port,
-                                      @NotNull HttpContext context) throws IOException {
+    public Socket createLayeredSocket(@NotNull Socket socket, @NotNull String target, int port, @NotNull HttpContext context) throws IOException {
         // Time TLS handshake specifically (when layering TLS over existing connection)
         long tlsStart = System.nanoTime();
         Socket result = delegate.createLayeredSocket(socket, target, port, context);
@@ -80,4 +72,5 @@ public final class TimedSecureConnectionSocketFactory implements LayeredConnecti
 
         return result;
     }
+
 }

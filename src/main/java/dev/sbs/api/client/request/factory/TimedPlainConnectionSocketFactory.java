@@ -1,4 +1,4 @@
-package dev.sbs.api.client.factory;
+package dev.sbs.api.client.request.factory;
 
 import dev.sbs.api.client.response.ConnectionDetails;
 import org.apache.http.HttpHost;
@@ -29,12 +29,7 @@ public final class TimedPlainConnectionSocketFactory implements ConnectionSocket
     }
 
     @Override
-    public Socket connectSocket(int connectTimeout,
-                                @NotNull Socket socket,
-                                @NotNull HttpHost host,
-                                @NotNull InetSocketAddress remoteAddress,
-                                @Nullable InetSocketAddress localAddress,
-                                @NotNull HttpContext context) throws IOException {
+    public Socket connectSocket(int connectTimeout, @NotNull Socket socket, @NotNull HttpHost host, @NotNull InetSocketAddress remoteAddress, @Nullable InetSocketAddress localAddress, @NotNull HttpContext context) throws IOException {
         // Time DNS resolution
         long dnsStart = System.nanoTime();
         InetAddress[] addresses = this.dnsResolver.resolve(host.getHostName());
@@ -49,4 +44,5 @@ public final class TimedPlainConnectionSocketFactory implements ConnectionSocket
 
         return result;
     }
+
 }
