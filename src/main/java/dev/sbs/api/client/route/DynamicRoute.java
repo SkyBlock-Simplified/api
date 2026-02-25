@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Meta-annotation that creates domain-specific routing annotations that
- * return {@link RouteProvider} implementations as route providers.
+ * return {@link DynamicRouteProvider} implementations as route providers.
  * <p>
  * Example:
  * <pre><code>
@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 public @interface DynamicRoute {
 
     /**
-     * The method name in the annotated annotation that returns the route provider.
+     * The method name in the annotated annotation that returns the {@link DynamicRouteProvider}.
      *
      * @return Method name, defaults to "value"
      */

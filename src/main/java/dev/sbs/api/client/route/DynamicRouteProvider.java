@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @apiNote The protocol will be added automatically when constructing the full URL.
  */
-public interface RouteProvider {
+public interface DynamicRouteProvider {
 
     /**
      * Returns the route (host + optional base path).
@@ -28,7 +28,7 @@ public interface RouteProvider {
      * @apiNote Rate limits are applied per route, not per endpoint.
      */
     default @NotNull RateLimit getRateLimit() {
-        return RateLimit.createUnlimited();
+        return RateLimit.UNLIMITED;
     }
 
     /**
@@ -39,8 +39,8 @@ public interface RouteProvider {
      * @return Unique identifier (typically the route)
      * @apiNote Different routes with the same ID will share rate limit tracking.
      */
-    default @NotNull String getRateLimitId() {
-        return getRoute();
+    default @NotNull String getBucketId() {
+        return this.getRoute();
     }
 
 }
