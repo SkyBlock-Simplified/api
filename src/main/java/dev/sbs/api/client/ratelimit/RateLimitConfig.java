@@ -1,7 +1,10 @@
 package dev.sbs.api.client.ratelimit;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.time.temporal.ChronoUnit;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RateLimitConfig {
@@ -12,11 +15,14 @@ public @interface RateLimitConfig {
     long limit() default Long.MAX_VALUE;
 
     /**
-     * Window duration in seconds.
-     * <p>
-     * Mirrors RateLimit-Reset semantics.
+     * Window duration.
      */
-    long resetSeconds() default 600; // 10 minutes
+    long window() default 600;
+
+    /**
+     * Window duration unit.
+     */
+    @NotNull ChronoUnit unit() default ChronoUnit.SECONDS;
 
     /**
      * Whether this route has unlimited rate limiting.

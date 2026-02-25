@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
@@ -47,11 +46,6 @@ public final class RateLimit {
     private final long resetSeconds;
 
     /**
-     * Normalized window duration.
-     */
-    private final @NotNull Duration windowDuration;
-
-    /**
      * Normalized window duration in milliseconds for efficient comparisons.
      */
     private final long windowDurationMillis;
@@ -77,8 +71,7 @@ public final class RateLimit {
 
         // For "unlimited", we still give a very large window for consistency
         long effectiveReset = unlimited ? Long.MAX_VALUE / 1000L : Math.max(resetSeconds, 1L);
-        this.windowDuration = Duration.ofSeconds(effectiveReset);
-        this.windowDurationMillis = this.windowDuration.toMillis();
+        this.windowDurationMillis = effectiveReset * 1000L;
     }
 
     public static @NotNull Builder builder() {
@@ -103,11 +96,7 @@ public final class RateLimit {
         if (config.unlimited())
             return RateLimit.UNLIMITED;
 
-        return new RateLimit(
-            config.limit(),
-            config.resetSeconds(),
-            false
-        );
+        return new RateLimit(config.limit(), config.window(), config.unit());
     }
 
     /**
