@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Instant;
-
 public interface Response<T> {
 
     /**
@@ -61,15 +59,6 @@ public interface Response<T> {
      * specific HTTP response code and its classification (e.g., success, client error, server error).
      */
     @NotNull HttpStatus getStatus();
-
-    /**
-     * Retrieves the timestamp of when the response was received.
-     *
-     * @return a {@link Instant} representing the timestamp of the response.
-     */
-    default @NotNull Instant getTimestamp() {
-        return this.getDetails().getResponseReceived();
-    }
 
     /**
      * Determines if the response represents an error state.
