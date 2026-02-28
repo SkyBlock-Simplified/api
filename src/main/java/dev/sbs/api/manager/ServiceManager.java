@@ -1,7 +1,5 @@
 package dev.sbs.api.manager;
 
-import dev.sbs.api.collection.concurrent.Concurrent;
-import dev.sbs.api.collection.concurrent.ConcurrentSet;
 import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
@@ -64,27 +62,6 @@ public class ServiceManager extends Manager<Class<?>, Object> {
      */
     public final <T> T get(@NotNull Class<T> service) throws UnknownReferenceException {
         return (T) super.get(service);
-    }
-
-    /**
-     * Gets all values that extend from service.
-     *
-     * @param service Class type to inherit.
-     * @param <T>     Type of service.
-     * @return Set of builder instances for the given class.
-     * @throws UnknownReferenceException When the given service class does not have any registered instances.
-     * @see #isRegistered
-     */
-    public final <T> ConcurrentSet<T> getAll(@NotNull Class<T> service) throws UnknownReferenceException {
-        ConcurrentSet<T> values = this.ref.stream()
-            .filter(entry -> service.isAssignableFrom(entry.getKey()))
-            .map(entry -> (T) entry.getValue())
-            .collect(Concurrent.toUnmodifiableSet());
-
-        if (values.isEmpty())
-            throw new UnknownReferenceException(service);
-
-        return values;
     }
 
     /**
