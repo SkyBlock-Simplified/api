@@ -1,0 +1,30 @@
+package dev.sbs.api.persistence.sql.exception;
+
+import dev.sbs.api.persistence.exception.SessionException;
+import org.intellij.lang.annotations.PrintFormat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public class SqlException extends SessionException {
+
+    public SqlException(@NotNull Throwable cause) {
+        super(cause);
+    }
+
+    public SqlException(@NotNull String message) {
+        super(message);
+    }
+
+    public SqlException(@NotNull Throwable cause, @NotNull String message) {
+        super(cause, message);
+    }
+
+    public SqlException(@NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(message, args);
+    }
+
+    public SqlException(@NotNull Throwable cause, @NotNull @PrintFormat String message, @Nullable Object... args) {
+        super(cause, message, args);
+    }
+
+}

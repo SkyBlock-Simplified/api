@@ -2,12 +2,12 @@ package dev.sbs.api.manager;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.data.Model;
-import dev.sbs.api.data.Repository;
 import dev.sbs.api.manager.exception.InsufficientModeException;
 import dev.sbs.api.manager.exception.InvalidReferenceException;
 import dev.sbs.api.manager.exception.RegisteredReferenceException;
 import dev.sbs.api.manager.exception.UnknownReferenceException;
+import dev.sbs.api.persistence.Model;
+import dev.sbs.api.persistence.Repository;
 import org.jetbrains.annotations.NotNull;
 
 /**

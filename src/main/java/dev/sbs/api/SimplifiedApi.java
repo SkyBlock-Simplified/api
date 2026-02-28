@@ -3,9 +3,6 @@ package dev.sbs.api;
 import com.google.gson.Gson;
 import dev.sbs.api.client.Client;
 import dev.sbs.api.client.request.Endpoints;
-import dev.sbs.api.data.Model;
-import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.SessionManager;
 import dev.sbs.api.io.gson.GsonSettings;
 import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
@@ -17,6 +14,9 @@ import dev.sbs.api.manager.BuilderManager;
 import dev.sbs.api.manager.KeyManager;
 import dev.sbs.api.manager.Manager;
 import dev.sbs.api.manager.ServiceManager;
+import dev.sbs.api.persistence.Model;
+import dev.sbs.api.persistence.Repository;
+import dev.sbs.api.persistence.SessionManager;
 import dev.sbs.api.scheduler.Scheduler;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -106,7 +106,7 @@ public class SimplifiedApi {
      * @param <T> The type of model.
      * @return The repository of type {@link T}.
      */
-    public static <T extends Model> @NotNull Repository<T> getRepositoryOf(@NotNull Class<T> tClass) {
+    public static <T extends Model> @NotNull Repository<T> getRepository(@NotNull Class<T> tClass) {
         return getSessionManager().getRepository(tClass);
     }
 
