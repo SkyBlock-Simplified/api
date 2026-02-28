@@ -1,4 +1,4 @@
-package dev.sbs.api.stream.pair;
+package dev.sbs.api.tuple.pair;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

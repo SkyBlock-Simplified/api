@@ -1,4 +1,4 @@
-package dev.sbs.api.stream.triple;
+package dev.sbs.api.tuple.triple;
 
 import java.util.Objects;
 import java.util.function.Function;

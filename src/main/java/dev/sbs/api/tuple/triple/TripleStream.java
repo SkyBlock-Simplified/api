@@ -1,4 +1,4 @@
-package dev.sbs.api.stream.triple;
+package dev.sbs.api.tuple.triple;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;

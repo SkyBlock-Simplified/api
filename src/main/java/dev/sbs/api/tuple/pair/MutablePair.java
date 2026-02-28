@@ -1,4 +1,4 @@
-package dev.sbs.api.stream.pair;
+package dev.sbs.api.tuple.pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
