@@ -1,59 +1,66 @@
-package dev.sbs.api.mutable;
+package dev.sbs.api.collection.mutable;
+
+import dev.sbs.api.util.NumberUtil;
 
 /**
- * A mutable {@code float} wrapper.
+ * A mutable {@code short} wrapper.
  * <p>
- * Note that as MutableFloat does not extend Float, it is not treated by String.format as a Float parameter.
+ * Note that as MutableShort does not extend Short, it is not treated by String.format as a Short parameter.
  *
- * @see Float
+ * @see Short
  */
-public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
+public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 
     /** The mutable value. */
-    private float value;
+    private short value;
 
     /**
-     * Constructs a new MutableFloat with the default value of zero.
+     * Constructs a new MutableShort with the default value of zero.
      */
-    public MutableFloat() { }
+    public MutableShort() {
+        super();
+    }
 
     /**
-     * Constructs a new MutableFloat with the specified value.
+     * Constructs a new MutableShort with the specified value.
      *
      * @param value  the initial value to store
      */
-    public MutableFloat(final float value) {
+    public MutableShort(final short value) {
+        super();
         this.value = value;
     }
 
     /**
-     * Constructs a new MutableFloat with the specified value.
+     * Constructs a new MutableShort with the specified value.
      *
      * @param value  the initial value to store, not null
      * @throws NullPointerException if the object is null
      */
-    public MutableFloat(final Number value) {
-        this.value = value.floatValue();
+    public MutableShort(final Number value) {
+        super();
+        this.value = value.shortValue();
     }
 
     /**
-     * Constructs a new MutableFloat parsing the given string.
+     * Constructs a new MutableShort parsing the given string.
      *
      * @param value  the string to parse, not null
-     * @throws NumberFormatException if the string cannot be parsed into a float
+     * @throws NumberFormatException if the string cannot be parsed into a short
      */
-    public MutableFloat(final String value) {
-        this.value = Float.parseFloat(value);
+    public MutableShort(final String value) {
+        super();
+        this.value = Short.parseShort(value);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value as a Float instance.
+     * Gets the value as a Short instance.
      *
-     * @return the value as a Float, never null
+     * @return the value as a Short, never null
      */
     @Override
-    public Float get() {
+    public Short get() {
         return this.value;
     }
 
@@ -62,7 +69,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      *
      * @param value  the value to set
      */
-    public void set(final float value) {
+    public void set(final short value) {
         this.value = value;
     }
 
@@ -74,26 +81,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      */
     @Override
     public void set(final Number value) {
-        this.value = value.floatValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks whether the float value is the special NaN value.
-     *
-     * @return true if NaN
-     */
-    public boolean isNaN() {
-        return Float.isNaN(value);
-    }
-
-    /**
-     * Checks whether the float value is infinite.
-     *
-     * @return true if infinite
-     */
-    public boolean isInfinite() {
-        return Float.isInfinite(value);
+        this.value = value.shortValue();
     }
 
     //-----------------------------------------------------------------------
@@ -111,8 +99,8 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      *
      * @return the value associated with the instance before it was incremented
      */
-    public float getAndIncrement() {
-        final float last = value;
+    public short getAndIncrement() {
+        final short last = value;
         value++;
         return last;
     }
@@ -123,13 +111,14 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      *
      * @return the value associated with the instance after it is incremented
      */
-    public float incrementAndGet() {
+    public short incrementAndGet() {
         value++;
         return value;
     }
 
     /**
      * Decrements the value.
+     *
      */
     public void decrement() {
         value--;
@@ -141,8 +130,8 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      *
      * @return the value associated with the instance before it was decremented
      */
-    public float getAndDecrement() {
-        final float last = value;
+    public short getAndDecrement() {
+        final short last = value;
         value--;
         return last;
     }
@@ -153,7 +142,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      *
      * @return the value associated with the instance after it is decremented
      */
-    public float decrementAndGet() {
+    public short decrementAndGet() {
         value--;
         return value;
     }
@@ -164,7 +153,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      *
      * @param operand  the value to add, not null
      */
-    public void add(final float operand) {
+    public void add(final short operand) {
         this.value += operand;
     }
 
@@ -175,15 +164,15 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @throws NullPointerException if the object is null
      */
     public void add(final Number operand) {
-        this.value += operand.floatValue();
+        this.value += operand.shortValue();
     }
 
     /**
      * Subtracts a value from the value of this instance.
      *
-     * @param operand  the value to subtract
+     * @param operand  the value to subtract, not null
      */
-    public void subtract(final float operand) {
+    public void subtract(final short operand) {
         this.value -= operand;
     }
 
@@ -194,7 +183,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @throws NullPointerException if the object is null
      */
     public void subtract(final Number operand) {
-        this.value -= operand.floatValue();
+        this.value -= operand.shortValue();
     }
 
     /**
@@ -204,7 +193,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @param operand the quantity to add, not null
      * @return the value associated with this instance after adding the operand
      */
-    public float addAndGet(final float operand) {
+    public short addAndGet(final short operand) {
         this.value += operand;
         return value;
     }
@@ -217,8 +206,8 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance after adding the operand
      */
-    public float addAndGet(final Number operand) {
-        this.value += operand.floatValue();
+    public short addAndGet(final Number operand) {
+        this.value += operand.shortValue();
         return value;
     }
 
@@ -229,8 +218,8 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @param operand the quantity to add, not null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public float getAndAdd(final float operand) {
-        final float last = value;
+    public short getAndAdd(final short operand) {
+        final short last = value;
         this.value += operand;
         return last;
     }
@@ -243,36 +232,46 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public float getAndAdd(final Number operand) {
-        final float last = value;
-        this.value += operand.floatValue();
+    public short getAndAdd(final Number operand) {
+        final short last = value;
+        this.value += operand.shortValue();
         return last;
     }
 
     //-----------------------------------------------------------------------
-    // shortValue and byteValue rely on Number implementation
+    // byteValue relies on Number implementation
     /**
-     * Returns the value of this MutableFloat as an int.
+     * Returns the value of this MutableShort as a short.
+     *
+     * @return the numeric value represented by this object after conversion to type short.
+     */
+    @Override
+    public short shortValue() {
+        return value;
+    }
+
+    /**
+     * Returns the value of this MutableShort as an int.
      *
      * @return the numeric value represented by this object after conversion to type int.
      */
     @Override
     public int intValue() {
-        return (int) value;
+        return value;
     }
 
     /**
-     * Returns the value of this MutableFloat as a long.
+     * Returns the value of this MutableShort as a long.
      *
      * @return the numeric value represented by this object after conversion to type long.
      */
     @Override
     public long longValue() {
-        return (long) value;
+        return value;
     }
 
     /**
-     * Returns the value of this MutableFloat as a float.
+     * Returns the value of this MutableShort as a float.
      *
      * @return the numeric value represented by this object after conversion to type float.
      */
@@ -282,7 +281,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * Returns the value of this MutableFloat as a double.
+     * Returns the value of this MutableShort as a double.
      *
      * @return the numeric value represented by this object after conversion to type double.
      */
@@ -293,50 +292,29 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
 
     //-----------------------------------------------------------------------
     /**
-     * Gets this mutable as an instance of Float.
+     * Gets this mutable as an instance of Short.
      *
-     * @return a Float instance containing the value from this mutable, never null
+     * @return a Short instance containing the value from this mutable, never null
      */
-    public Float toFloat() {
-        return floatValue();
+    public Short toShort() {
+        return shortValue();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this object against some other object. The result is {@code true} if and only if the argument is
-     * not {@code null} and is a {@code Float} object that represents a {@code float} that has the
-     * identical bit pattern to the bit pattern of the {@code float} represented by this object. For this
-     * purpose, two float values are considered to be the same if and only if the method
-     * {@link Float#floatToIntBits(float)}returns the same int value when applied to each.
-     * <p>
-     * Note that in most cases, for two instances of class {@code Float},{@code f1} and {@code f2},
-     * the value of {@code f1.equals(f2)} is {@code true} if and only if <blockquote>
-     *
-     * <pre>
-     *   f1.floatValue() == f2.floatValue()
-     * </pre>
-     *
-     * </blockquote>
-     * <p>
-     * also has the value {@code true}. However, there are two exceptions:
-     * <ul>
-     * <li>If {@code f1} and {@code f2} both represent {@code Float.NaN}, then the
-     * {@code equals} method returns {@code true}, even though {@code Float.NaN==Float.NaN} has
-     * the value {@code false}.
-     * <li>If {@code f1} represents {@code +0.0f} while {@code f2} represents {@code -0.0f},
-     * or vice versa, the {@code equal} test has the value {@code false}, even though
-     * {@code 0.0f==-0.0f} has the value {@code true}.
-     * </ul>
-     * This definition allows hashtables to operate properly.
+     * Compares this object to the specified object. The result is {@code true} if and only if the argument
+     * is not {@code null} and is a {@code MutableShort} object that contains the same {@code short}
+     * value as this object.
      *
      * @param obj  the object to compare with, null returns false
      * @return {@code true} if the objects are the same; {@code false} otherwise.
-     * @see Float#floatToIntBits(float)
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof MutableFloat
-            && Float.floatToIntBits(((MutableFloat) obj).value) == Float.floatToIntBits(value);
+        if (obj instanceof MutableShort) {
+            return value == ((MutableShort) obj).shortValue();
+        }
+        return false;
     }
 
     /**
@@ -346,7 +324,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      */
     @Override
     public int hashCode() {
-        return Float.floatToIntBits(value);
+        return value;
     }
 
     //-----------------------------------------------------------------------
@@ -357,8 +335,8 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @return negative if this is less, zero if equal, positive if greater
      */
     @Override
-    public int compareTo(final MutableFloat other) {
-        return Float.compare(this.value, other.value);
+    public int compareTo(final MutableShort other) {
+        return NumberUtil.compare(this.value, other.value);
     }
 
     //-----------------------------------------------------------------------
