@@ -4,6 +4,7 @@ import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.query.Sortable;
 import dev.sbs.api.persistence.exception.SessionException;
+import dev.sbs.api.scheduler.ScheduledTask;
 import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +25,8 @@ public interface Repository<T extends Model> extends Sortable<T> {
     @NotNull Session<T> getSession();
 
     long getStartup();
+
+    @NotNull ScheduledTask getTask();
 
     /**
      * Retrieves the class type of the {@link Model} associated with this repository.
