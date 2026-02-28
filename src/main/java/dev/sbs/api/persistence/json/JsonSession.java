@@ -1,5 +1,6 @@
 package dev.sbs.api.persistence.json;
 
+import dev.sbs.api.persistence.Repository;
 import dev.sbs.api.persistence.Session;
 import dev.sbs.api.scheduler.Scheduler;
 import lombok.Getter;
@@ -18,20 +19,13 @@ public final class JsonSession extends Session<JsonModel> {
     }
 
     @Override
-    protected <U extends JsonModel> void addRepository(@NotNull Class<U> model) {
-        this.getServiceManager().addRepository(model, new JsonRepository<>(this, model));
-    }
-
-    @Override
     protected void build() {
         // Doesn't do anything
     }
 
     @Override
-    public void shutdown() {
-        super.shutdown();
-        super.serviceManager.getAll(JsonRepository.class).forEach(repository -> repository.getTask().cancel(true));
-        super.serviceManager.clear();
+    protected @NotNull <U extends JsonModel> Repository<U> createRepository(@NotNull Class<U> model) {
+        return new JsonRepository<>(this, model);
     }
 
 }

@@ -1,8 +1,8 @@
 package dev.sbs.api.persistence;
 
+import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.manager.Manager;
-import dev.sbs.api.manager.ServiceManager;
+import dev.sbs.api.collection.concurrent.ConcurrentMap;
 import dev.sbs.api.persistence.exception.SessionException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,14 +14,14 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Session<T extends Model> {
 
     @Getter(AccessLevel.PROTECTED)
-    protected final @NotNull ServiceManager serviceManager = new ServiceManager(Manager.Mode.ALL);
+    protected final @NotNull ConcurrentMap<Class<? extends T>, Repository<? extends T>> repositories = Concurrent.newMap();
     protected final @NotNull ConcurrentList<Class<T>> models;
     protected boolean active;
     protected boolean cached = false;
     protected long initialization;
     protected long startup;
 
-    protected abstract <U extends T> void addRepository(@NotNull Class<U> model);
+    protected abstract <U extends T> @NotNull Repository<U> createRepository(@NotNull Class<U> model);
 
     public final <M extends T, S extends Session<M>> @NotNull S asType(@NotNull Class<S> sessionType) {
         return sessionType.cast(this);
@@ -35,7 +35,7 @@ public abstract class Session<T extends Model> {
             long startTime = System.currentTimeMillis();
 
             for (Class<? extends T> model : this.getModels())
-                this.addRepository(model);
+                this.repositories.put(model, this.createRepository(model));
 
             this.startup = System.currentTimeMillis() - startTime;
         } else
@@ -50,9 +50,9 @@ public abstract class Session<T extends Model> {
      * @return The repository of type {@link M}.
      */
     @SuppressWarnings("unchecked")
-    public final <M extends T> @NotNull Repository<M> getRepositoryOf(@NotNull Class<M> tClass) {
+    public final <M extends T> @NotNull Repository<M> getRepository(@NotNull Class<M> tClass) {
         if (this.isActive())
-            return (Repository<M>) this.serviceManager.get(tClass);
+            return (Repository<M>) this.repositories.get(tClass);
         else
             throw new SessionException("Session connection is not active.");
     }
@@ -69,6 +69,8 @@ public abstract class Session<T extends Model> {
 
     public void shutdown() {
         this.active = false;
+        this.repositories.forEach((model, repository) -> repository.getTask().cancel(true));
+        this.repositories.clear();
     }
 
 }

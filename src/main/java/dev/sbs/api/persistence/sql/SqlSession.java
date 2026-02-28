@@ -1,5 +1,6 @@
 package dev.sbs.api.persistence.sql;
 
+import dev.sbs.api.persistence.Repository;
 import dev.sbs.api.persistence.Session;
 import dev.sbs.api.persistence.sql.exception.SqlException;
 import dev.sbs.api.scheduler.Scheduler;
@@ -39,12 +40,7 @@ public final class SqlSession extends Session<SqlModel> {
         this.scheduler = new Scheduler();
     }
 
-    @Override
-    protected <U extends SqlModel> void addRepository(@NotNull Class<U> model) {
-        this.getServiceManager().addRepository(model, new SqlRepository<>(this, model));
-    }
-
-    private Class<SqlModel> buildCacheConfiguration(@NotNull Class<SqlModel> type) {
+    private @NotNull Class<SqlModel> buildCacheConfiguration(@NotNull Class<SqlModel> type) {
         this.buildCacheConfiguration(type.getName(), Duration.ETERNAL);
         return type;
     }
@@ -136,6 +132,11 @@ public final class SqlSession extends Session<SqlModel> {
         this.sessionFactory = metadata.buildSessionFactory();
     }
 
+    @Override
+    protected @NotNull <U extends SqlModel> Repository<U> createRepository(@NotNull Class<U> model) {
+        return new SqlRepository<>(this, model);
+    }
+
     public @NotNull org.hibernate.Session openSession() {
         return this.getSessionFactory().openSession();
     }
@@ -161,8 +162,6 @@ public final class SqlSession extends Session<SqlModel> {
     public void shutdown() {
         super.shutdown();
         StandardServiceRegistryBuilder.destroy(this.serviceRegistry);
-        super.serviceManager.getAll(SqlRepository.class).forEach(repository -> repository.getTask().cancel(true));
-        super.serviceManager.clear();
 
         if (this.getSessionFactory() != null)
             this.getSessionFactory().close();
@@ -177,7 +176,7 @@ public final class SqlSession extends Session<SqlModel> {
         }
     }
 
-    public <R> R with(@NotNull Function<org.hibernate.Session, R> function) throws SqlException {
+    public <R>  R with(@NotNull Function<org.hibernate.Session, R> function) throws SqlException {
         try {
             @Cleanup org.hibernate.Session session = this.openSession();
             return function.apply(session);
