@@ -2,7 +2,7 @@ package dev.sbs.api.persistence;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
-import dev.sbs.api.collection.search.Sortable;
+import dev.sbs.api.collection.query.Sortable;
 import dev.sbs.api.persistence.exception.SessionException;
 import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;

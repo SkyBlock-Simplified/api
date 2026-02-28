@@ -4,7 +4,7 @@ import dev.sbs.api.client.request.Request;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.ConcurrentMap;
-import dev.sbs.api.stream.pair.Pair;
+import dev.sbs.api.tuple.pair.Pair;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

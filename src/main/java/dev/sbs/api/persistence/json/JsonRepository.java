@@ -1,9 +1,9 @@
-package dev.sbs.api.data.json;
+package dev.sbs.api.persistence.json;
 
-import dev.sbs.api.data.Repository;
-import dev.sbs.api.data.json.exception.JsonException;
-import dev.sbs.api.data.sql.CacheExpiry;
-import dev.sbs.api.data.sql.exception.SqlException;
+import dev.sbs.api.persistence.CacheExpiry;
+import dev.sbs.api.persistence.Repository;
+import dev.sbs.api.persistence.json.exception.JsonException;
+import dev.sbs.api.persistence.sql.exception.SqlException;
 import dev.sbs.api.scheduler.ScheduledTask;
 import lombok.AccessLevel;
 import lombok.Getter;

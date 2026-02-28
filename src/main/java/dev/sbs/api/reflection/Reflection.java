@@ -11,7 +11,7 @@ import dev.sbs.api.reflection.accessor.FieldAccessor;
 import dev.sbs.api.reflection.accessor.MethodAccessor;
 import dev.sbs.api.reflection.accessor.ResourceAccessor;
 import dev.sbs.api.reflection.exception.ReflectionException;
-import dev.sbs.api.stream.pair.Pair;
+import dev.sbs.api.tuple.pair.Pair;
 import dev.sbs.api.util.ArrayUtil;
 import dev.sbs.api.util.ClassUtil;
 import dev.sbs.api.util.NumberUtil;

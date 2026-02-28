@@ -1,6 +1,6 @@
 package dev.sbs.api.builder;
 
-import dev.sbs.api.stream.pair.Pair;
+import dev.sbs.api.tuple.pair.Pair;
 import dev.sbs.api.util.ArrayUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
