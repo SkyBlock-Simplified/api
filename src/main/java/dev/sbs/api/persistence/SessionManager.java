@@ -96,8 +96,8 @@ public final class SessionManager {
             throw new SessionException("There are no active sessions.");
 
         for (Map.Entry<String, Session<?>> entry : this.sessions) {
-            if (entry.getValue().getServiceManager().isRegistered(tClass))
-                return this.getSession(entry.getKey()).getRepositoryOf(tClass);
+            if (entry.getValue().getRepositories().containsKey(tClass))
+                return this.getSession(entry.getKey()).getRepository(tClass);
         }
 
         throw new SessionException("Repository cannot be retrieved.");
