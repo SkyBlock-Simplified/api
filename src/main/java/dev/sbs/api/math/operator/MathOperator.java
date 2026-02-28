@@ -1,6 +1,6 @@
 package dev.sbs.api.math.operator;
 
-import dev.sbs.api.util.VarargFunction;
+import dev.sbs.api.function.VarargFunction;
 import lombok.Getter;
 
 /**

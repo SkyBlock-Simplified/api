@@ -1,6 +1,6 @@
 package dev.sbs.api.math.function;
 
-import dev.sbs.api.util.VarargFunction;
+import dev.sbs.api.function.VarargFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

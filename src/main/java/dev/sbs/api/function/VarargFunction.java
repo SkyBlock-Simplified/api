@@ -1,4 +1,4 @@
-package dev.sbs.api.util;
+package dev.sbs.api.function;
 
 import java.util.Objects;
 
