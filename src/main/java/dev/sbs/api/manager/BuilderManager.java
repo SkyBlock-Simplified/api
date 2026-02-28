@@ -42,7 +42,7 @@ public class BuilderManager extends Manager<Class<?>, Class<? extends ClassBuild
             Class<?> tClass = Reflection.getSuperClass(builder);
 
             if (tClass.isAssignableFrom(service)) {
-                this.ref.put(service, builder);
+                super.add(service, builder);
                 return;
             }
         } catch (ReflectionException ignore) { }
