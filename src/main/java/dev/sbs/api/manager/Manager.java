@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 @RequiredArgsConstructor
 public abstract class Manager<K, V> {
 
-    protected final transient @NotNull ConcurrentMap<K, V> ref = Concurrent.newMap();
+    private final transient @NotNull ConcurrentMap<K, V> ref = Concurrent.newMap();
     private final transient @NotNull BiFunction<Map.Entry<K, V>, K, Boolean> keyMatcher;
     @Getter private final transient @NotNull Mode mode;
 
@@ -133,11 +133,11 @@ public abstract class Manager<K, V> {
         /**
          * The manager may add new items to and update the registry.
          */
-        UPDATE(0, true, false),
+        UPDATE(1, true, false),
         /**
          * The manager add new items to, update and remove from the registry.
          */
-        ALL(0, true, true);
+        ALL(2, true, true);
 
         private final int level;
         private final boolean updateEnabled;
