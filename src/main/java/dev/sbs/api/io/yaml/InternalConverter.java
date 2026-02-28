@@ -1,15 +1,15 @@
-package dev.sbs.api.data.yaml;
+package dev.sbs.api.io.yaml;
 
-import dev.sbs.api.data.yaml.annotation.Flag;
-import dev.sbs.api.data.yaml.converter.ArrayConverter;
-import dev.sbs.api.data.yaml.converter.ConfigConverter;
-import dev.sbs.api.data.yaml.converter.EnumConverter;
-import dev.sbs.api.data.yaml.converter.ListConverter;
-import dev.sbs.api.data.yaml.converter.MapConverter;
-import dev.sbs.api.data.yaml.converter.PrimitiveConverter;
-import dev.sbs.api.data.yaml.converter.SetConverter;
-import dev.sbs.api.data.yaml.converter.YamlConverter;
-import dev.sbs.api.data.yaml.exception.InvalidConverterException;
+import dev.sbs.api.io.yaml.annotation.Flag;
+import dev.sbs.api.io.yaml.converter.ArrayConverter;
+import dev.sbs.api.io.yaml.converter.ConfigConverter;
+import dev.sbs.api.io.yaml.converter.EnumConverter;
+import dev.sbs.api.io.yaml.converter.ListConverter;
+import dev.sbs.api.io.yaml.converter.MapConverter;
+import dev.sbs.api.io.yaml.converter.PrimitiveConverter;
+import dev.sbs.api.io.yaml.converter.SetConverter;
+import dev.sbs.api.io.yaml.converter.YamlConverter;
+import dev.sbs.api.io.yaml.exception.InvalidConverterException;
 import dev.sbs.api.reflection.accessor.FieldAccessor;
 
 import java.lang.reflect.InvocationTargetException;

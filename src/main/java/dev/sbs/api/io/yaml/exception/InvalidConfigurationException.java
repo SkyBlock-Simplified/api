@@ -1,4 +1,4 @@
-package dev.sbs.api.data.yaml.exception;
+package dev.sbs.api.io.yaml.exception;
 
 import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;

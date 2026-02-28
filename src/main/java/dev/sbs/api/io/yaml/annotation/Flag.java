@@ -1,4 +1,4 @@
-package dev.sbs.api.data.yaml.annotation;
+package dev.sbs.api.io.yaml.annotation;
 
 import org.jetbrains.annotations.NotNull;
 

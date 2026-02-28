@@ -1,4 +1,4 @@
-package dev.sbs.api.data.yaml;
+package dev.sbs.api.io.yaml;
 
 import dev.sbs.api.util.StringUtil;
 

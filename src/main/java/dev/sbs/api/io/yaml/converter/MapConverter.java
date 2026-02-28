@@ -1,7 +1,7 @@
-package dev.sbs.api.data.yaml.converter;
+package dev.sbs.api.io.yaml.converter;
 
-import dev.sbs.api.data.yaml.ConfigSection;
-import dev.sbs.api.data.yaml.InternalConverter;
+import dev.sbs.api.io.yaml.ConfigSection;
+import dev.sbs.api.io.yaml.InternalConverter;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.exception.ReflectionException;
 

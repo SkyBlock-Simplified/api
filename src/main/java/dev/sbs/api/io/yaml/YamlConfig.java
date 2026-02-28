@@ -1,12 +1,12 @@
-package dev.sbs.api.data.yaml;
+package dev.sbs.api.io.yaml;
 
 import dev.sbs.api.SimplifiedApi;
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentSet;
-import dev.sbs.api.data.yaml.annotation.Flag;
-import dev.sbs.api.data.yaml.converter.YamlConverter;
-import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
-import dev.sbs.api.mutable.Mutable;
+import dev.sbs.api.collection.mutable.Mutable;
+import dev.sbs.api.io.yaml.annotation.Flag;
+import dev.sbs.api.io.yaml.converter.YamlConverter;
+import dev.sbs.api.io.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.reflection.Reflection;
 import dev.sbs.api.reflection.accessor.FieldAccessor;
 import dev.sbs.api.scheduler.Scheduler;

@@ -1,9 +1,9 @@
-package dev.sbs.api.data.yaml;
+package dev.sbs.api.io.yaml;
 
 import dev.sbs.api.collection.concurrent.Concurrent;
 import dev.sbs.api.collection.concurrent.ConcurrentList;
 import dev.sbs.api.collection.concurrent.linked.ConcurrentLinkedMap;
-import dev.sbs.api.data.yaml.exception.InvalidConfigurationException;
+import dev.sbs.api.io.yaml.exception.InvalidConfigurationException;
 import dev.sbs.api.util.StringUtil;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;

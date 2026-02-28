@@ -1,11 +1,11 @@
-package dev.sbs.api.data.yaml.exception;
+package dev.sbs.api.io.yaml.exception;
 
-import dev.sbs.api.data.exception.DataException;
+import dev.sbs.api.persistence.exception.SessionException;
 import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class YamlException extends DataException {
+public class YamlException extends SessionException {
 
     public YamlException(@NotNull Throwable cause) {
         super(cause);
