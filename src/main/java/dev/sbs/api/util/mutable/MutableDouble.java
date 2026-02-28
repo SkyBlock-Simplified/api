@@ -1,66 +1,59 @@
-package dev.sbs.api.collection.mutable;
-
-import dev.sbs.api.util.NumberUtil;
+package dev.sbs.api.util.mutable;
 
 /**
- * A mutable {@code short} wrapper.
+ * A mutable {@code double} wrapper.
  * <p>
- * Note that as MutableShort does not extend Short, it is not treated by String.format as a Short parameter.
+ * Note that as MutableDouble does not extend Double, it is not treated by String.format as a Double parameter.
  *
- * @see Short
+ * @see Double
  */
-public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
+public class MutableDouble extends Number implements Comparable<MutableDouble>, Mutable<Number> {
 
     /** The mutable value. */
-    private short value;
+    private double value;
 
     /**
-     * Constructs a new MutableShort with the default value of zero.
+     * Constructs a new MutableDouble with the default value of zero.
      */
-    public MutableShort() {
-        super();
-    }
+    public MutableDouble() { }
 
     /**
-     * Constructs a new MutableShort with the specified value.
+     * Constructs a new MutableDouble with the specified value.
      *
      * @param value  the initial value to store
      */
-    public MutableShort(final short value) {
-        super();
+    public MutableDouble(final double value) {
         this.value = value;
     }
 
     /**
-     * Constructs a new MutableShort with the specified value.
+     * Constructs a new MutableDouble with the specified value.
      *
      * @param value  the initial value to store, not null
      * @throws NullPointerException if the object is null
      */
-    public MutableShort(final Number value) {
-        super();
-        this.value = value.shortValue();
+    public MutableDouble(final Number value) {
+        this.value = value.doubleValue();
     }
 
     /**
-     * Constructs a new MutableShort parsing the given string.
+     * Constructs a new MutableDouble parsing the given string.
      *
      * @param value  the string to parse, not null
-     * @throws NumberFormatException if the string cannot be parsed into a short
+     * @throws NumberFormatException if the string cannot be parsed into a double
      */
-    public MutableShort(final String value) {
-        super();
-        this.value = Short.parseShort(value);
+    public MutableDouble(final String value) {
+        this.value = Double.parseDouble(value);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value as a Short instance.
+     * Gets the value as a Double instance.
      *
-     * @return the value as a Short, never null
+     * @return the value as a Double, never null
      */
     @Override
-    public Short get() {
+    public Double get() {
         return this.value;
     }
 
@@ -69,7 +62,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      *
      * @param value  the value to set
      */
-    public void set(final short value) {
+    public void set(final double value) {
         this.value = value;
     }
 
@@ -81,13 +74,31 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      */
     @Override
     public void set(final Number value) {
-        this.value = value.shortValue();
+        this.value = value.doubleValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether the double value is the special NaN value.
+     *
+     * @return true if NaN
+     */
+    public boolean isNaN() {
+        return Double.isNaN(value);
+    }
+
+    /**
+     * Checks whether the double value is infinite.
+     *
+     * @return true if infinite
+     */
+    public boolean isInfinite() {
+        return Double.isInfinite(value);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Increments the value.
-     *
      */
     public void increment() {
         value++;
@@ -99,8 +110,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      *
      * @return the value associated with the instance before it was incremented
      */
-    public short getAndIncrement() {
-        final short last = value;
+    public double getAndIncrement() {
+        final double last = value;
         value++;
         return last;
     }
@@ -111,14 +122,13 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      *
      * @return the value associated with the instance after it is incremented
      */
-    public short incrementAndGet() {
+    public double incrementAndGet() {
         value++;
         return value;
     }
 
     /**
      * Decrements the value.
-     *
      */
     public void decrement() {
         value--;
@@ -130,8 +140,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      *
      * @return the value associated with the instance before it was decremented
      */
-    public short getAndDecrement() {
-        final short last = value;
+    public double getAndDecrement() {
+        final double last = value;
         value--;
         return last;
     }
@@ -142,7 +152,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      *
      * @return the value associated with the instance after it is decremented
      */
-    public short decrementAndGet() {
+    public double decrementAndGet() {
         value--;
         return value;
     }
@@ -151,9 +161,9 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
     /**
      * Adds a value to the value of this instance.
      *
-     * @param operand  the value to add, not null
+     * @param operand  the value to add
      */
-    public void add(final short operand) {
+    public void add(final double operand) {
         this.value += operand;
     }
 
@@ -164,7 +174,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @throws NullPointerException if the object is null
      */
     public void add(final Number operand) {
-        this.value += operand.shortValue();
+        this.value += operand.doubleValue();
     }
 
     /**
@@ -172,7 +182,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      *
      * @param operand  the value to subtract, not null
      */
-    public void subtract(final short operand) {
+    public void subtract(final double operand) {
         this.value -= operand;
     }
 
@@ -183,7 +193,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @throws NullPointerException if the object is null
      */
     public void subtract(final Number operand) {
-        this.value -= operand.shortValue();
+        this.value -= operand.doubleValue();
     }
 
     /**
@@ -193,7 +203,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @param operand the quantity to add, not null
      * @return the value associated with this instance after adding the operand
      */
-    public short addAndGet(final short operand) {
+    public double addAndGet(final double operand) {
         this.value += operand;
         return value;
     }
@@ -206,8 +216,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance after adding the operand
      */
-    public short addAndGet(final Number operand) {
-        this.value += operand.shortValue();
+    public double addAndGet(final Number operand) {
+        this.value += operand.doubleValue();
         return value;
     }
 
@@ -218,8 +228,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @param operand the quantity to add, not null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public short getAndAdd(final short operand) {
-        final short last = value;
+    public double getAndAdd(final double operand) {
+        final double last = value;
         this.value += operand;
         return last;
     }
@@ -232,56 +242,46 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @throws NullPointerException if {@code operand} is null
      * @return the value associated with this instance immediately before the operand was added
      */
-    public short getAndAdd(final Number operand) {
-        final short last = value;
-        this.value += operand.shortValue();
+    public double getAndAdd(final Number operand) {
+        final double last = value;
+        this.value += operand.doubleValue();
         return last;
     }
 
     //-----------------------------------------------------------------------
-    // byteValue relies on Number implementation
+    // shortValue and byteValue rely on Number implementation
     /**
-     * Returns the value of this MutableShort as a short.
-     *
-     * @return the numeric value represented by this object after conversion to type short.
-     */
-    @Override
-    public short shortValue() {
-        return value;
-    }
-
-    /**
-     * Returns the value of this MutableShort as an int.
+     * Returns the value of this MutableDouble as an int.
      *
      * @return the numeric value represented by this object after conversion to type int.
      */
     @Override
     public int intValue() {
-        return value;
+        return (int) value;
     }
 
     /**
-     * Returns the value of this MutableShort as a long.
+     * Returns the value of this MutableDouble as a long.
      *
      * @return the numeric value represented by this object after conversion to type long.
      */
     @Override
     public long longValue() {
-        return value;
+        return (long) value;
     }
 
     /**
-     * Returns the value of this MutableShort as a float.
+     * Returns the value of this MutableDouble as a float.
      *
      * @return the numeric value represented by this object after conversion to type float.
      */
     @Override
     public float floatValue() {
-        return value;
+        return (float) value;
     }
 
     /**
-     * Returns the value of this MutableShort as a double.
+     * Returns the value of this MutableDouble as a double.
      *
      * @return the numeric value represented by this object after conversion to type double.
      */
@@ -292,29 +292,48 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
 
     //-----------------------------------------------------------------------
     /**
-     * Gets this mutable as an instance of Short.
+     * Gets this mutable as an instance of Double.
      *
-     * @return a Short instance containing the value from this mutable, never null
+     * @return a Double instance containing the value from this mutable, never null
      */
-    public Short toShort() {
-        return shortValue();
+    public Double toDouble() {
+        return doubleValue();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this object to the specified object. The result is {@code true} if and only if the argument
-     * is not {@code null} and is a {@code MutableShort} object that contains the same {@code short}
-     * value as this object.
+     * Compares this object against the specified object. The result is {@code true} if and only if the argument
+     * is not {@code null} and is a {@code Double} object that represents a double that has the identical
+     * bit pattern to the bit pattern of the double represented by this object. For this purpose, two
+     * {@code double} values are considered to be the same if and only if the method
+     * {@link Double#doubleToLongBits(double)}returns the same long value when applied to each.
+     * <p>
+     * Note that in most cases, for two instances of class {@code Double},{@code d1} and {@code d2},
+     * the value of {@code d1.equals(d2)} is {@code true} if and only if <blockquote>
+     *
+     * <pre>
+     *   d1.doubleValue()&nbsp;== d2.doubleValue()
+     * </pre>
+     *
+     * </blockquote>
+     * <p>
+     * also has the value {@code true}. However, there are two exceptions:
+     * <ul>
+     * <li>If {@code d1} and {@code d2} both represent {@code Double.NaN}, then the
+     * {@code equals} method returns {@code true}, even though {@code Double.NaN==Double.NaN} has
+     * the value {@code false}.
+     * <li>If {@code d1} represents {@code +0.0} while {@code d2} represents {@code -0.0},
+     * or vice versa, the {@code equal} test has the value {@code false}, even though
+     * {@code +0.0==-0.0} has the value {@code true}. This allows hashtables to operate properly.
+     * </ul>
      *
      * @param obj  the object to compare with, null returns false
      * @return {@code true} if the objects are the same; {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof MutableShort) {
-            return value == ((MutableShort) obj).shortValue();
-        }
-        return false;
+        return obj instanceof MutableDouble
+            && Double.doubleToLongBits(((MutableDouble) obj).value) == Double.doubleToLongBits(value);
     }
 
     /**
@@ -324,7 +343,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      */
     @Override
     public int hashCode() {
-        return value;
+        final long bits = Double.doubleToLongBits(value);
+        return (int) (bits ^ bits >>> 32);
     }
 
     //-----------------------------------------------------------------------
@@ -335,8 +355,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @return negative if this is less, zero if equal, positive if greater
      */
     @Override
-    public int compareTo(final MutableShort other) {
-        return NumberUtil.compare(this.value, other.value);
+    public int compareTo(final MutableDouble other) {
+        return Double.compare(this.value, other.value);
     }
 
     //-----------------------------------------------------------------------
