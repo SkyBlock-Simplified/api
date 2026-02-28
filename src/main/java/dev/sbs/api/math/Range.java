@@ -1,5 +1,6 @@
-package dev.sbs.api.util;
+package dev.sbs.api.math;
 
+import dev.sbs.api.util.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
