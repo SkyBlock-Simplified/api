@@ -12,7 +12,7 @@ import dev.sbs.api.client.factory.TimedSecureConnectionSocketFactory;
 import dev.sbs.api.client.interceptor.InternalRequestInterceptor;
 import dev.sbs.api.client.interceptor.InternalResponseInterceptor;
 import dev.sbs.api.client.ratelimit.RateLimitManager;
-import dev.sbs.api.client.request.Endpoints;
+import dev.sbs.api.client.request.Endpoint;
 import dev.sbs.api.client.request.Timings;
 import dev.sbs.api.client.response.ConnectionDetails;
 import dev.sbs.api.client.response.Response;
@@ -56,11 +56,11 @@ import java.util.function.Supplier;
  * various mechanisms such as rate-limiting, route discovery, request/response handling,
  * and error decoding.
  *
- * @param <E> A type parameter that extends {@link Endpoints}, indicating the specific endpoints
+ * @param <E> A type parameter that extends {@link Endpoint}, indicating the specific endpoints
  *            this client will interact with.
  */
 @Getter
-public abstract class Client<E extends Endpoints> implements ClassBuilder<E> {
+public abstract class Client<E extends Endpoint> implements ClassBuilder<E> {
 
     private final @NotNull Class<E> target;
     private final @NotNull Optional<Inet6Address> inet6Address;

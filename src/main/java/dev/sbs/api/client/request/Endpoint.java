@@ -7,6 +7,6 @@ import dev.sbs.api.client.Client;
  * Used to constrain {@link Client} implementations and provide
  * type-safe lookup in {@link Client#getEndpoints()}.
  */
-public interface Endpoints {
+public interface Endpoint {
 
 }

@@ -2,7 +2,7 @@ package dev.sbs.api;
 
 import com.google.gson.Gson;
 import dev.sbs.api.client.Client;
-import dev.sbs.api.client.request.Endpoints;
+import dev.sbs.api.client.request.Endpoint;
 import dev.sbs.api.io.gson.GsonSettings;
 import dev.sbs.api.io.gson.adapter.ColorTypeAdapter;
 import dev.sbs.api.io.gson.adapter.InstantTypeAdapter;
@@ -95,7 +95,7 @@ public class SimplifiedApi {
      * @param <T> Request type to match.
      * @param <A> Client type to match.
      */
-    public static <T extends Endpoints, A extends Client<T>> @NotNull A getClient(@NotNull Class<A> tClass) {
+    public static <T extends Endpoint, A extends Client<T>> @NotNull A getClient(@NotNull Class<A> tClass) {
         return serviceManager.get(tClass);
     }
 
