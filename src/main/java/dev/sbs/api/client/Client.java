@@ -13,6 +13,7 @@ import dev.sbs.api.client.interceptor.InternalRequestInterceptor;
 import dev.sbs.api.client.interceptor.InternalResponseInterceptor;
 import dev.sbs.api.client.ratelimit.RateLimitManager;
 import dev.sbs.api.client.request.Endpoint;
+import dev.sbs.api.client.request.ReactiveEndpoint;
 import dev.sbs.api.client.request.Timings;
 import dev.sbs.api.client.response.ConnectionDetails;
 import dev.sbs.api.client.response.Response;
@@ -60,7 +61,7 @@ import java.util.function.Supplier;
  *            this client will interact with.
  */
 @Getter
-public abstract class Client<E extends Endpoint> implements ClassBuilder<E> {
+public abstract class Client<E extends Endpoint> implements ClassBuilder<E>, ReactiveEndpoint<E> {
 
     private final @NotNull Class<E> target;
     private final @NotNull Optional<Inet6Address> inet6Address;
